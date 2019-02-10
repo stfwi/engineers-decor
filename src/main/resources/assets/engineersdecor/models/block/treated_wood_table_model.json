@@ -1,0 +1,190 @@
+{
+	"credit": "I made this with the Blockbench",
+	"parent": "block/cube",
+	"textures": {
+		"o": "engineersdecor:blocks/iestyle/treated_wood",
+		"particle": "engineersdecor:blocks/iestyle/treated_wood"
+	},
+	"elements": [
+		{
+			"from": [1, 0, 1],
+			"to": [3, 14, 3],
+			"faces": {
+				"north": {"texture": "#o"},
+				"east": {"texture": "#o"},
+				"south": {"texture": "#o"},
+				"west": {"texture": "#o"},
+				"up": {"texture": "#o"},
+				"down": {"texture": "#o", "cullface": "down"}
+			}
+		},
+		{
+			"from": [13, 0, 1],
+			"to": [15, 14, 3],
+			"faces": {
+				"north": {"texture": "#o"},
+				"east": {"texture": "#o"},
+				"south": {"texture": "#o"},
+				"west": {"texture": "#o"},
+				"up": {"texture": "#o"},
+				"down": {"texture": "#o", "cullface": "down"}
+			}
+		},
+		{
+			"from": [13, 0, 13],
+			"to": [15, 14, 15],
+			"faces": {
+				"north": {"texture": "#o"},
+				"east": {"texture": "#o"},
+				"south": {"texture": "#o"},
+				"west": {"texture": "#o"},
+				"up": {"texture": "#o"},
+				"down": {"texture": "#o", "cullface": "down"}
+			}
+		},
+		{
+			"from": [1, 0, 13],
+			"to": [3, 14, 15],
+			"faces": {
+				"north": {"texture": "#o"},
+				"east": {"texture": "#o"},
+				"south": {"texture": "#o"},
+				"west": {"texture": "#o"},
+				"up": {"texture": "#o"},
+				"down": {"texture": "#o", "cullface": "down"}
+			}
+		},
+		{
+			"from": [0, 14, 0],
+			"to": [16, 15.875, 16],
+			"faces": {
+				"north": {"texture": "#o"},
+				"east": {"texture": "#o"},
+				"south": {"texture": "#o"},
+				"west": {"texture": "#o"},
+				"up": {"texture": "#o"},
+				"down": {"texture": "#o"}
+			}
+		},
+		{
+			"from": [0.25, 15.875, 0.25],
+			"to": [15.75, 16, 15.75],
+			"faces": {
+				"north": {"texture": "#o"},
+				"east": {"texture": "#o"},
+				"south": {"texture": "#o"},
+				"west": {"texture": "#o"},
+				"up": {"texture": "#o"},
+				"down": {"texture": "#o"}
+			}
+		},
+		{
+			"from": [13, 13.5, 3],
+			"to": [15, 14, 5],
+			"faces": {
+				"north": {"texture": "#o"},
+				"east": {"texture": "#o"},
+				"south": {"texture": "#o"},
+				"west": {"texture": "#o"},
+				"up": {"texture": "#o"},
+				"down": {"texture": "#o"}
+			}
+		},
+		{
+			"from": [13, 13.5, 11],
+			"to": [15, 14, 13],
+			"faces": {
+				"north": {"texture": "#o"},
+				"east": {"texture": "#o"},
+				"south": {"texture": "#o"},
+				"west": {"texture": "#o"},
+				"up": {"texture": "#o"},
+				"down": {"texture": "#o"}
+			}
+		},
+		{
+			"from": [1, 13.5, 11],
+			"to": [3, 14, 13],
+			"faces": {
+				"north": {"texture": "#o"},
+				"east": {"texture": "#o"},
+				"south": {"texture": "#o"},
+				"west": {"texture": "#o"},
+				"up": {"texture": "#o"},
+				"down": {"texture": "#o"}
+			}
+		},
+		{
+			"from": [1, 13.5, 3],
+			"to": [3, 14, 5],
+			"faces": {
+				"north": {"texture": "#o"},
+				"east": {"texture": "#o"},
+				"south": {"texture": "#o"},
+				"west": {"texture": "#o"},
+				"up": {"texture": "#o"},
+				"down": {"texture": "#o"}
+			}
+		},
+		{
+			"from": [11, 13.5, 1],
+			"to": [13, 14, 3],
+			"faces": {
+				"north": {"texture": "#o"},
+				"east": {"texture": "#o"},
+				"south": {"texture": "#o"},
+				"west": {"texture": "#o"},
+				"up": {"texture": "#o"},
+				"down": {"texture": "#o"}
+			}
+		},
+		{
+			"from": [3, 13.5, 1],
+			"to": [5, 14, 3],
+			"faces": {
+				"north": {"texture": "#o"},
+				"east": {"texture": "#o"},
+				"south": {"texture": "#o"},
+				"west": {"texture": "#o"},
+				"up": {"texture": "#o"},
+				"down": {"texture": "#o"}
+			}
+		},
+		{
+			"from": [11, 13.5, 13],
+			"to": [13, 14, 15],
+			"faces": {
+				"north": {"texture": "#o"},
+				"east": {"texture": "#o"},
+				"south": {"texture": "#o"},
+				"west": {"texture": "#o"},
+				"up": {"texture": "#o"},
+				"down": {"texture": "#o"}
+			}
+		},
+		{
+			"from": [3, 13.5, 13],
+			"to": [5, 14, 15],
+			"faces": {
+				"north": {"texture": "#o"},
+				"east": {"texture": "#o"},
+				"south": {"texture": "#o"},
+				"west": {"texture": "#o"},
+				"up": {"texture": "#o"},
+				"down": {"texture": "#o"}
+			}
+		}
+	],
+	"display": {
+		"ground": {
+			"scale": [0.2, 0.2, 0.2]
+		},
+		"gui": {
+			"rotation": [30, 225, 0],
+			"scale": [0.625, 0.625, 0.625]
+		},
+		"fixed": {
+			"scale": [0.5, 0.5, 0.5]
+		}
+	}
+}

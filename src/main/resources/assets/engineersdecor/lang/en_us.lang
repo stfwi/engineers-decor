@@ -1,0 +1,49 @@
+#
+# Engineer's Decor lang file
+#
+#PARSE_ESCAPES
+#
+#-----------------------------------------------------------------------------------------------------------
+itemGroup.tabengineersdecor=Engineer's Decor
+engineersdecor.config.title=Engineer's Decor config
+engineersdecor.tooltip.hint.extended=§6[§9SHIFT§r More info§6]§r
+engineersdecor.tooltip.hint.help=§6[§9CTRL-SHIFT§r Help§6]§r
+
+#-----------------------------------------------------------------------------------------------------------
+# Wall blocks
+#-----------------------------------------------------------------------------------------------------------
+tile.engineersdecor.clinker_brick_block.name=Clinker brick
+tile.engineersdecor.clinker_brick_block.help=§6A brick wall block with position dependent texture variations.§r\nLooks slightly darker and more color intensive than the vanilla brick block.
+tile.engineersdecor.slag_brick_block.name=Slag brick
+tile.engineersdecor.slag_brick_block.help=§6A gray-brown brick wall block with position dependent texture variations.
+
+#-----------------------------------------------------------------------------------------------------------
+# Ladder blocks
+#-----------------------------------------------------------------------------------------------------------
+tile.engineersdecor.metal_rung_ladder.name=Metal rung ladder
+tile.engineersdecor.metal_rung_ladder.help=§6Typical industrial wall ladder, consisting of horizontal metal rod rungs.
+tile.engineersdecor.metal_rung_steps.name=Staggered metal steps
+tile.engineersdecor.metal_rung_steps.help=§6Staggered rod rungs affixed to a wall, allowing to climb up, fall down, and so on.
+tile.engineersdecor.treated_wood_ladder.name=Treated wood ladder
+tile.engineersdecor.treated_wood_ladder.help=§6Weather-proof wooden ladder.
+
+#-----------------------------------------------------------------------------------------------------------
+# Stairs and roofs
+#-----------------------------------------------------------------------------------------------------------
+tile.engineersdecor.clinker_brick_stairs.name=Clinker brick stairs
+tile.engineersdecor.clinker_brick_stairs.help=§6§rLooks slightly darker and more color intensive than the vanilla brick block.
+tile.engineersdecor.slag_brick_stairs.name=Clinker brick stairs
+tile.engineersdecor.slag_brick_stairs.help=§6§rLooks slightly darker and more color intensive than the vanilla brick block.
+tile.engineersdecor.iron_sheet_roof.name=Iron sheet metal roof
+tile.engineersdecor.iron_sheet_roof.help=§6Well, it's a roof.
+
+#-----------------------------------------------------------------------------------------------------------
+# Poles
+#-----------------------------------------------------------------------------------------------------------
+tile.engineersdecor.treated_wood_pole.name=Straight treated wood pole
+tile.engineersdecor.treated_wood_pole.help=§6Straight pole fragment with the diameter of a wire relay.§r\n\
+              Can be useful as alternative to the wire posts if special special lengths are needed, \
+              or as support for structures.
+
+# EOF
+#-----------------------------------------------------------------------------------------------------------

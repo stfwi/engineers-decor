@@ -1,0 +1,28 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:clinker_brick_block"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BBB",
+    "BNB",
+    "BBB"
+  ],
+  "key": {
+    "B": {
+      "item": "#ingotAnyBrick",
+      "data": 0
+    },
+    "N": {
+      "item": "minecraft:brick_block",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:clinker_brick_block",
+    "count": 4
+  }
+}
