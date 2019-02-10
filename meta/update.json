@@ -1,0 +1,10 @@
+{
+  "homepage": "https://www.curseforge.com/minecraft/mc-mods/redstone-gauges-and-switches/",
+  "1.12.2": {
+    "1.0.0-b1": "[A] Initial structure.\n[A] Added clinker bricks and clinker brick stairs.\n[A] Added slag bricks and slag brick stairs.\n[A] Added metal rung ladder.\n[A] Added staggered metal steps ladder.\n[A] Added treated wood ladder.\n[A] Added treated wood pole.\n[A] Added treated wood table."
+  },
+  "promos": {
+    "1.12.2-recommended": "",
+    "1.12.2-latest": "1.0.0-b1"
+  }
+}
