@@ -8,11 +8,9 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import wile.engineersdecor.ModEngineersDecor;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 
 public class BlockDecorStairs extends net.minecraft.block.BlockStairs

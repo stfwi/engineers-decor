@@ -96,3 +96,14 @@ dist: sanatize dist-check clean-all mod
 	@mkdir -p dist
 	@cp build/libs/$(MOD_JAR_PREFIX)* dist/
 	@djs scripts/task-dist.js
+
+# For reviewers: I am using a local repository for experimental changes,
+# this target copies the local working tree to the location of the
+# repository that you cloned.
+sync-main-repo: sanatize
+	@echo "Synchronising to github repository working tree ..."
+	@cd ../engineersdecor-github; rm -rf build documentation gradle meta scripts src
+	@cd ../engineersdecor-github; rm -f .gitignore build.gradle gradle.properties gradlew gradlew.bat license Makefile readme.md
+	@cp -r documentation gradle meta scripts src ../engineersdecor-github/
+	@cp .gitignore build.gradle gradle.properties gradlew gradlew.bat license Makefile readme.md ../engineersdecor-github/
+	@cd ../engineersdecor-github; git status -s

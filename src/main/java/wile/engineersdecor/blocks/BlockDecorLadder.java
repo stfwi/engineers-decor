@@ -12,13 +12,17 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.block.BlockLadder;
 import net.minecraft.block.SoundType;
+import net.minecraft.block.material.EnumPushReaction;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.detail.ModAuxiliaries;
-import net.minecraft.block.BlockHorizontal;
-import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -26,15 +30,13 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 
 
-public class BlockDecorLadder extends BlockDecor
+public class BlockDecorLadder extends BlockLadder
 {
-  public static final PropertyDirection FACING = BlockHorizontal.FACING;
   protected static final AxisAlignedBB EDLADDER_SOUTH_AABB = ModAuxiliaries.getPixeledAABB(3, 0, 0, 13, 16, 2);
   protected static final AxisAlignedBB EDLADDER_EAST_AABB  = ModAuxiliaries.getRotatedAABB(EDLADDER_SOUTH_AABB, EnumFacing.EAST);
   protected static final AxisAlignedBB EDLADDER_WEST_AABB  = ModAuxiliaries.getRotatedAABB(EDLADDER_SOUTH_AABB, EnumFacing.WEST);
@@ -43,37 +45,21 @@ public class BlockDecorLadder extends BlockDecor
 
   public BlockDecorLadder(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound)
   {
-    super(registryName, config, material, hardness, resistance, sound);
+    super();
+    setCreativeTab(ModEngineersDecor.CREATIVE_TAB_ENGINEERSDECOR);
+    setRegistryName(ModEngineersDecor.MODID, registryName);
+    setTranslationKey(ModEngineersDecor.MODID + "." + registryName);
+    setTickRandomly(false);
+    setHardness((hardness > 0) ? hardness : 5.0f);
+    setResistance((resistance > 0) ? resistance : 10.0f);
+    setSoundType((sound==null) ? SoundType.STONE : sound);
     setLightOpacity(0);
-    setResistance(2.0f);
-    setHardness(0.3f);
   }
 
   @Override
   @SideOnly(Side.CLIENT)
-  public BlockRenderLayer getRenderLayer()
-  { return BlockRenderLayer.CUTOUT; }
-
-  @Override
-  public boolean isOpaqueCube(IBlockState state)
-  { return false; }
-
-  @Override
-  public boolean isFullCube(IBlockState state)
-  { return false; }
-
-  @Override
-  public boolean isNormalCube(IBlockState state)
-  { return false; }
-
-  @Override
-  public boolean isLadder(IBlockState state, IBlockAccess world, BlockPos pos, EntityLivingBase entity)
-  { return true; }
-
-  @Override
-  @SuppressWarnings("deprecation")
-  public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face)
-  { return BlockFaceShape.UNDEFINED; }
+  public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag)
+  { ModAuxiliaries.Tooltip.addInformation(stack, world, tooltip, flag, true); }
 
   @Override
   @SuppressWarnings("deprecation")
@@ -88,27 +74,13 @@ public class BlockDecorLadder extends BlockDecor
   }
 
   @Override
-  public IBlockState getStateFromMeta(int meta)
-  {
-    final EnumFacing facing = EnumFacing.byIndex(meta & 0x7);
-    return this.getDefaultState().withProperty(FACING, (facing.getAxis()==EnumFacing.Axis.Y) ? EnumFacing.NORTH : facing);
-  }
+  public boolean canSpawnInBlock()
+  { return false; }
 
   @Override
-  public int getMetaFromState(IBlockState state)
-  { return state.getValue(FACING).getIndex(); }
-
-  @Override
-  protected BlockStateContainer createBlockState()
-  { return new BlockStateContainer(this, FACING); }
-
-  @Override
-  public IBlockState withRotation(IBlockState state, Rotation rot)
-  { return state.withProperty(FACING, rot.rotate((EnumFacing)state.getValue(FACING))); }
-
-  @Override
-  public IBlockState withMirror(IBlockState state, Mirror mirrorIn)
-  { return state.withRotation(mirrorIn.toRotation((EnumFacing)state.getValue(FACING))); }
+  @SuppressWarnings("deprecation")
+  public EnumPushReaction getPushReaction(IBlockState state)
+  { return EnumPushReaction.NORMAL; }
 
   @Override
   public boolean canPlaceBlockOnSide(World world, BlockPos pos, EnumFacing side)
