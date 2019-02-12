@@ -38,7 +38,7 @@ tile.engineersdecor.iron_sheet_roof.name=Iron sheet metal roof
 tile.engineersdecor.iron_sheet_roof.help=§6Well, it's a roof.
 
 #-----------------------------------------------------------------------------------------------------------
-# Poles
+# Poles and supports
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.treated_wood_pole.name=Straight treated wood pole
 tile.engineersdecor.treated_wood_pole.help=§6Straight pole fragment with the diameter of a wire relay.§r\n\

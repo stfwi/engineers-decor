@@ -38,9 +38,10 @@ import java.util.List;
 public class BlockDecor extends Block
 {
 
-  public final long config;
-  public static final long CFG_CUTOUT = 0x0000000000000001L;
-
+  public final long config; // the config combines some aspects of blocks, allowing to define different behaviour at construction time, without excessive polymorphy.
+  public static final long CFG_CUTOUT                 = 0x0000000000000001L; // cutout rendering
+  public static final long CFG_HORIZIONTAL            = 0x0000000000000002L; // horizontal block, affects bounding box calculation at construction time
+  public static final long CFG_HORIZIONTAL_PLACEMENT  = 0x0000000000000004L; // placed in the horizontzal direction the player is looking when placing.
 
   public BlockDecor(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound)
   {

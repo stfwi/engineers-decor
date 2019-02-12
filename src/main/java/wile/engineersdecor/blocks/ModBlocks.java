@@ -34,22 +34,29 @@ import javax.annotation.Nonnull;
 @SuppressWarnings("unused")
 public class ModBlocks
 {
-  // Full blocks
   public static final BlockDecorFull CLINKER_BRICK_WALL = new BlockDecorFull("clinker_brick_block", 0, Material.ROCK, 1.5f, 20f, SoundType.STONE);
   public static final BlockDecorFull SLAG_BRICK_WALL  = new BlockDecorFull("slag_brick_block", 0, Material.ROCK, 1.8f, 25f, SoundType.STONE);
   public static final BlockDecorFull IRON_SHEET_ROOF_FULLBLOCK = new BlockDecorFull("iron_sheet_roof_block", 0, Material.IRON, 1.8f, 25f, SoundType.METAL);
-  // Ladders
+
   public static final BlockDecorLadder METAL_RUNG_LADDER = new BlockDecorLadder("metal_rung_ladder", 0, Material.IRON, 1.8f, 25f, SoundType.METAL);
   public static final BlockDecorLadder METAL_RUNG_STEPS = new BlockDecorLadder("metal_rung_steps", 0, Material.IRON, 1.8f, 25f, SoundType.METAL);
   public static final BlockDecorLadder TREATED_WOOD_LADDER = new BlockDecorLadder("treated_wood_ladder", 0, Material.WOOD, 1.0f, 15f, SoundType.WOOD);
-  // Stairs or stairs-like
+
   public static final BlockDecorStairs CLINKER_BRICK_STAIRS = new BlockDecorStairs("clinker_brick_stairs", CLINKER_BRICK_WALL.getDefaultState());
   public static final BlockDecorStairs SLAG_BRICK_STAIRS = new BlockDecorStairs("slag_brick_stairs", SLAG_BRICK_WALL.getDefaultState());
   public static final BlockDecorStairs IRON_SHEET_ROOF = new BlockDecorStairs("iron_sheet_roof", IRON_SHEET_ROOF_FULLBLOCK.getDefaultState());
-  // Oblongs and poles
-  public static final BlockDecorDirected TREATED_WOOD_POLE = new BlockDecorDirected("treated_wood_pole", 0, Material.WOOD, 1.0f, 15f, SoundType.WOOD, ModAuxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16));
-  // Furniture
-  public static final BlockDecor TREATED_WOOD_TABLE = new BlockDecor("treated_wood_table", BlockDecor.CFG_CUTOUT, Material.WOOD, 1.0f, 15f, SoundType.WOOD);
+
+  public static final BlockDecorDirected TREATED_WOOD_POLE = new BlockDecorDirected(
+    "treated_wood_pole",
+    BlockDecor.CFG_CUTOUT,
+    Material.WOOD, 1.0f, 15f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16)
+  );
+  public static final BlockDecor TREATED_WOOD_TABLE = new BlockDecor(
+    "treated_wood_table",
+    BlockDecor.CFG_CUTOUT,
+    Material.WOOD, 1.0f, 15f, SoundType.WOOD
+  );
 
   private static final Block modBlocks[] = {
     SLAG_BRICK_WALL,
@@ -60,7 +67,7 @@ public class ModBlocks
     CLINKER_BRICK_STAIRS,
     SLAG_BRICK_STAIRS,
     TREATED_WOOD_POLE,
-    TREATED_WOOD_TABLE
+    TREATED_WOOD_TABLE,
   };
 
   private static final Block devBlocks[] = {

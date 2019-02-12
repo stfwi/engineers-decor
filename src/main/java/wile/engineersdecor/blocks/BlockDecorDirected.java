@@ -41,15 +41,15 @@ public class BlockDecorDirected extends BlockDecor
   public BlockDecorDirected(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound, @Nonnull AxisAlignedBB unrotatedAABB)
   {
     super(registryName, config, material, hardness, resistance, sound);
+    final boolean is_horizontal = ((config & CFG_HORIZIONTAL)!=0);
     AABBs = new ArrayList<AxisAlignedBB>(Arrays.asList(
-      ModAuxiliaries.getRotatedAABB(unrotatedAABB, EnumFacing.DOWN),
-      ModAuxiliaries.getRotatedAABB(unrotatedAABB, EnumFacing.UP),
-      ModAuxiliaries.getRotatedAABB(unrotatedAABB, EnumFacing.NORTH),
-      ModAuxiliaries.getRotatedAABB(unrotatedAABB, EnumFacing.SOUTH),
-      ModAuxiliaries.getRotatedAABB(unrotatedAABB, EnumFacing.WEST),
-      ModAuxiliaries.getRotatedAABB(unrotatedAABB, EnumFacing.EAST),
-      ModAuxiliaries.getRotatedAABB(unrotatedAABB, EnumFacing.EAST),
-      ModAuxiliaries.getRotatedAABB(unrotatedAABB, EnumFacing.EAST)
+      ModAuxiliaries.getRotatedAABB(unrotatedAABB, EnumFacing.DOWN, is_horizontal),
+      ModAuxiliaries.getRotatedAABB(unrotatedAABB, EnumFacing.UP, is_horizontal),
+      ModAuxiliaries.getRotatedAABB(unrotatedAABB, EnumFacing.NORTH, is_horizontal),
+      ModAuxiliaries.getRotatedAABB(unrotatedAABB, EnumFacing.SOUTH, is_horizontal),
+      ModAuxiliaries.getRotatedAABB(unrotatedAABB, EnumFacing.WEST, is_horizontal),
+      ModAuxiliaries.getRotatedAABB(unrotatedAABB, EnumFacing.EAST, is_horizontal),
+      unrotatedAABB, unrotatedAABB // Array fill to ensure that the array size covers 4 bit (meta & 0x07).
     ));
   }
 
@@ -108,5 +108,13 @@ public class BlockDecorDirected extends BlockDecor
   @Override
   @SuppressWarnings("deprecation")
   public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
-  { return this.getDefaultState().withProperty(FACING, facing); }
+  {
+    if((config & CFG_HORIZIONTAL_PLACEMENT)!=0) {
+      // placement in direction the player is facing
+      return getDefaultState().withProperty(FACING, placer.getHorizontalFacing());
+    } else {
+      // default: placement on the face the player clicking
+      return getDefaultState().withProperty(FACING, facing);
+    }
+  }
 }

@@ -38,9 +38,9 @@ import java.util.List;
 public class BlockDecorLadder extends BlockLadder
 {
   protected static final AxisAlignedBB EDLADDER_SOUTH_AABB = ModAuxiliaries.getPixeledAABB(3, 0, 0, 13, 16, 2);
-  protected static final AxisAlignedBB EDLADDER_EAST_AABB  = ModAuxiliaries.getRotatedAABB(EDLADDER_SOUTH_AABB, EnumFacing.EAST);
-  protected static final AxisAlignedBB EDLADDER_WEST_AABB  = ModAuxiliaries.getRotatedAABB(EDLADDER_SOUTH_AABB, EnumFacing.WEST);
-  protected static final AxisAlignedBB EDLADDER_NORTH_AABB = ModAuxiliaries.getRotatedAABB(EDLADDER_SOUTH_AABB, EnumFacing.NORTH);
+  protected static final AxisAlignedBB EDLADDER_EAST_AABB  = ModAuxiliaries.getRotatedAABB(EDLADDER_SOUTH_AABB, EnumFacing.EAST, false);
+  protected static final AxisAlignedBB EDLADDER_WEST_AABB  = ModAuxiliaries.getRotatedAABB(EDLADDER_SOUTH_AABB, EnumFacing.WEST, false);
+  protected static final AxisAlignedBB EDLADDER_NORTH_AABB = ModAuxiliaries.getRotatedAABB(EDLADDER_SOUTH_AABB, EnumFacing.NORTH, false);
 
 
   public BlockDecorLadder(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound)

@@ -7,7 +7,7 @@
       "mcversion": "${mcversion}",
       "url": "https://github.com/stfwi/engineers-decor/",
       "authorList": ["wile"],
-      "credits": "The Forge smiths, the Modders of the World.",
+      "credits": "BluSunrize, malte0811, et al., the Forge Smiths, the Modders of the World.",
       "logoFile": "assets/engineersdecor/logo.png",
       "screenshots": [],
       "useDependencyInformation": false,
