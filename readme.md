@@ -74,6 +74,9 @@ More to come slowly but steadily.
                 [A] Added treated wood pole.
                 [A] Added treated wood table.
 
+    - v1.0.0-b2 [A] Added rebar concrete (steel reinforced, expensive, creeper-proof).
+
+
 ### Community references
 
 Mods covering similar features, or may fit well together with IE and the decorations of this mod:

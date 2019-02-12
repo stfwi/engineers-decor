@@ -114,7 +114,6 @@
     ],
     "name": "ingotAnyBrick"
   },
-
   {
     "ingredient": [
       {
@@ -127,6 +126,13 @@
       }
     ],
     "name": "stickFerroMetal"
+  },
+  {
+    "ingredient": {
+      "item": "immersiveengineering:stone_decoration",
+      "data": 5
+    },
+    "name": "blockConcreteIe"
   }
 
 ]

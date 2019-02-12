@@ -34,9 +34,10 @@ import javax.annotation.Nonnull;
 @SuppressWarnings("unused")
 public class ModBlocks
 {
-  public static final BlockDecorFull CLINKER_BRICK_WALL = new BlockDecorFull("clinker_brick_block", 0, Material.ROCK, 1.5f, 20f, SoundType.STONE);
-  public static final BlockDecorFull SLAG_BRICK_WALL  = new BlockDecorFull("slag_brick_block", 0, Material.ROCK, 1.8f, 25f, SoundType.STONE);
+  public static final BlockDecorFull CLINKER_BRICK_WALL = new BlockDecorFull("clinker_brick_block", 0, Material.ROCK, 2f, 50f, SoundType.STONE);
+  public static final BlockDecorFull SLAG_BRICK_WALL  = new BlockDecorFull("slag_brick_block", 0, Material.ROCK, 2f, 50f, SoundType.STONE);
   public static final BlockDecorFull IRON_SHEET_ROOF_FULLBLOCK = new BlockDecorFull("iron_sheet_roof_block", 0, Material.IRON, 1.8f, 25f, SoundType.METAL);
+  public static final BlockDecorFull REBAR_CONCRETE = new BlockDecorFull("rebar_concrete", 0, Material.ROCK, 8f, 2000f, SoundType.STONE);
 
   public static final BlockDecorLadder METAL_RUNG_LADDER = new BlockDecorLadder("metal_rung_ladder", 0, Material.IRON, 1.8f, 25f, SoundType.METAL);
   public static final BlockDecorLadder METAL_RUNG_STEPS = new BlockDecorLadder("metal_rung_steps", 0, Material.IRON, 1.8f, 25f, SoundType.METAL);
@@ -68,6 +69,7 @@ public class ModBlocks
     SLAG_BRICK_STAIRS,
     TREATED_WOOD_POLE,
     TREATED_WOOD_TABLE,
+    REBAR_CONCRETE,
   };
 
   private static final Block devBlocks[] = {

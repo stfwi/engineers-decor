@@ -10,12 +10,14 @@ engineersdecor.tooltip.hint.extended=§6[§9SHIFT§r More info§6]§r
 engineersdecor.tooltip.hint.help=§6[§9CTRL-SHIFT§r Help§6]§r
 
 #-----------------------------------------------------------------------------------------------------------
-# Wall blocks
+# Stone/"ceramic material" based blocks
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.clinker_brick_block.name=Clinker brick
 tile.engineersdecor.clinker_brick_block.help=§6A brick wall block with position dependent texture variations.§r\nLooks slightly darker and more color intensive than the vanilla brick block.
 tile.engineersdecor.slag_brick_block.name=Slag brick
 tile.engineersdecor.slag_brick_block.help=§6A gray-brown brick wall block with position dependent texture variations.
+tile.engineersdecor.rebar_concrete.name=Rebar concrete
+tile.engineersdecor.rebar_concrete.help=§6Steel reinforced concrete block.§r Expensive but Creeper-proof like obsidian.
 
 #-----------------------------------------------------------------------------------------------------------
 # Ladder blocks
