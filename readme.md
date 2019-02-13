@@ -65,6 +65,10 @@ More to come slowly but steadily.
 ----
 ## Revision history
 
+    - v1.0.0-b3 [A] Textures of rebar concrete and treated wood table improved.
+
+    - v1.0.0-b2 [A] Added rebar concrete (steel reinforced, expensive, creeper-proof).
+
     - v1.0.0-b1 [A] Initial structure.
                 [A] Added clinker bricks and clinker brick stairs.
                 [A] Added slag bricks and slag brick stairs.
@@ -73,9 +77,6 @@ More to come slowly but steadily.
                 [A] Added treated wood ladder.
                 [A] Added treated wood pole.
                 [A] Added treated wood table.
-
-    - v1.0.0-b2 [A] Added rebar concrete (steel reinforced, expensive, creeper-proof).
-
 
 ### Community references
 

@@ -2,8 +2,8 @@
 	"credit": "I made this with the Blockbench",
 	"parent": "block/cube",
 	"textures": {
-		"o": "engineersdecor:blocks/iestyle/treated_wood",
-		"particle": "engineersdecor:blocks/iestyle/treated_wood"
+		"o": "engineersdecor:blocks/iestyle/treated_wood_rough_texture",
+		"particle": "engineersdecor:blocks/iestyle/treated_wood_rough_texture"
 	},
 	"elements": [
 		{
