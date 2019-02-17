@@ -66,6 +66,7 @@ More to come slowly but steadily.
 ## Revision history
 
     - v1.0.0-b3 [A] Textures of rebar concrete and treated wood table improved.
+                [A] Added rebar concrete wall.
 
     - v1.0.0-b2 [A] Added rebar concrete (steel reinforced, expensive, creeper-proof).
 

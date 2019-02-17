@@ -1,0 +1,17 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "wall": "engineersdecor:blocks/concrete/rebar_concrete_texture0",
+      "particle": "engineersdecor:blocks/concrete/rebar_concrete_texture0"
+    }
+  },
+  "variants": {
+    "inventory": { "model": "engineersdecor:wall/concrete_wall_inventory" },
+    "up"   : { "false":{}, "true": {"submodel": {"concrete_wall_up"    : {"model": "engineersdecor:wall/concrete_wall_post" }}} },
+    "north": { "false":{}, "true": {"submodel": {"concrete_wall_north" : {"model": "engineersdecor:wall/concrete_wall_side", "uvlock": true, "y":   0 }}} },
+    "east" : { "false":{}, "true": {"submodel": {"concrete_wall_east"  : {"model": "engineersdecor:wall/concrete_wall_side", "uvlock": true, "y":  90 }}} },
+    "south": { "false":{}, "true": {"submodel": {"concrete_wall_south" : {"model": "engineersdecor:wall/concrete_wall_side", "uvlock": true, "y": 180 }}} },
+    "west" : { "false":{}, "true": {"submodel": {"concrete_wall_west"  : {"model": "engineersdecor:wall/concrete_wall_side", "uvlock": true, "y": 270 }}} }
+  }
+}

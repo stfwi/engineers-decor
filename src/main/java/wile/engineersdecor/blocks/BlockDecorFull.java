@@ -25,7 +25,7 @@ public class BlockDecorFull extends BlockDecor
   public BlockDecorFull(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound)
   {
     super(registryName, config, material, hardness, resistance, sound);
-    setLightOpacity(1);
+    setLightOpacity(255);
   }
 
   @Override

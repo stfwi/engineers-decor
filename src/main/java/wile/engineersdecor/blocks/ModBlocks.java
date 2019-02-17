@@ -34,18 +34,21 @@ import javax.annotation.Nonnull;
 @SuppressWarnings("unused")
 public class ModBlocks
 {
-  public static final BlockDecorFull CLINKER_BRICK_WALL = new BlockDecorFull("clinker_brick_block", 0, Material.ROCK, 2f, 50f, SoundType.STONE);
-  public static final BlockDecorFull SLAG_BRICK_WALL  = new BlockDecorFull("slag_brick_block", 0, Material.ROCK, 2f, 50f, SoundType.STONE);
+  public static final BlockDecorFull CLINKER_BRICK_BLOCK = new BlockDecorFull("clinker_brick_block", 0, Material.ROCK, 2f, 50f, SoundType.STONE);
+  public static final BlockDecorStairs CLINKER_BRICK_STAIRS = new BlockDecorStairs("clinker_brick_stairs", CLINKER_BRICK_BLOCK.getDefaultState());
+
+  public static final BlockDecorFull SLAG_BRICK_BLOCK  = new BlockDecorFull("slag_brick_block", 0, Material.ROCK, 2f, 50f, SoundType.STONE);
+  public static final BlockDecorStairs SLAG_BRICK_STAIRS = new BlockDecorStairs("slag_brick_stairs", SLAG_BRICK_BLOCK.getDefaultState());
+
   public static final BlockDecorFull IRON_SHEET_ROOF_FULLBLOCK = new BlockDecorFull("iron_sheet_roof_block", 0, Material.IRON, 1.8f, 25f, SoundType.METAL);
-  public static final BlockDecorFull REBAR_CONCRETE = new BlockDecorFull("rebar_concrete", 0, Material.ROCK, 8f, 2000f, SoundType.STONE);
 
   public static final BlockDecorLadder METAL_RUNG_LADDER = new BlockDecorLadder("metal_rung_ladder", 0, Material.IRON, 1.8f, 25f, SoundType.METAL);
   public static final BlockDecorLadder METAL_RUNG_STEPS = new BlockDecorLadder("metal_rung_steps", 0, Material.IRON, 1.8f, 25f, SoundType.METAL);
   public static final BlockDecorLadder TREATED_WOOD_LADDER = new BlockDecorLadder("treated_wood_ladder", 0, Material.WOOD, 1.0f, 15f, SoundType.WOOD);
 
-  public static final BlockDecorStairs CLINKER_BRICK_STAIRS = new BlockDecorStairs("clinker_brick_stairs", CLINKER_BRICK_WALL.getDefaultState());
-  public static final BlockDecorStairs SLAG_BRICK_STAIRS = new BlockDecorStairs("slag_brick_stairs", SLAG_BRICK_WALL.getDefaultState());
-  public static final BlockDecorStairs IRON_SHEET_ROOF = new BlockDecorStairs("iron_sheet_roof", IRON_SHEET_ROOF_FULLBLOCK.getDefaultState());
+  public static final BlockDecorFull REBAR_CONCRETE_BLOCK = new BlockDecorFull("rebar_concrete", 0, Material.ROCK, 8f, 2000f, SoundType.STONE);
+  public static final BlockDecorStairs REBAR_CONCRETE_STAIRS = new BlockDecorStairs("rebar_concrete_stairs", REBAR_CONCRETE_BLOCK.getDefaultState());
+  public static final BlockDecorWall REBAR_CONCRETE_WALL = new BlockDecorWall("rebar_concrete_wall", BlockDecor.CFG_WALL_DOOR_CONNECTION, Material.ROCK, 8f, 2000f, SoundType.STONE);
 
   public static final BlockDecorDirected TREATED_WOOD_POLE = new BlockDecorDirected(
     "treated_wood_pole",
@@ -53,15 +56,18 @@ public class ModBlocks
     Material.WOOD, 1.0f, 15f, SoundType.WOOD,
     ModAuxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16)
   );
+
   public static final BlockDecor TREATED_WOOD_TABLE = new BlockDecor(
     "treated_wood_table",
     BlockDecor.CFG_CUTOUT,
     Material.WOOD, 1.0f, 15f, SoundType.WOOD
   );
 
+  public static final BlockDecorStairs IRON_SHEET_ROOF = new BlockDecorStairs("iron_sheet_roof", IRON_SHEET_ROOF_FULLBLOCK.getDefaultState());
+
   private static final Block modBlocks[] = {
-    SLAG_BRICK_WALL,
-    CLINKER_BRICK_WALL,
+    SLAG_BRICK_BLOCK,
+    CLINKER_BRICK_BLOCK,
     METAL_RUNG_LADDER,
     METAL_RUNG_STEPS,
     TREATED_WOOD_LADDER,
@@ -69,7 +75,9 @@ public class ModBlocks
     SLAG_BRICK_STAIRS,
     TREATED_WOOD_POLE,
     TREATED_WOOD_TABLE,
-    REBAR_CONCRETE,
+    REBAR_CONCRETE_BLOCK,
+    REBAR_CONCRETE_STAIRS,
+    REBAR_CONCRETE_WALL,
   };
 
   private static final Block devBlocks[] = {
