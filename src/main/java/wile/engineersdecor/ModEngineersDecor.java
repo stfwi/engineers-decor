@@ -31,7 +31,7 @@ import javax.annotation.Nonnull;
   modid = ModEngineersDecor.MODID,
   name = ModEngineersDecor.MODNAME,
   version = ModEngineersDecor.MODVERSION,
-  dependencies = "required-after:forge@[14.23.5.2768,)",
+  dependencies = "required-after:forge@[14.23.5.2768,);before:immersiveengineering",
   useMetadata = true,
   updateJSON = "https://raw.githubusercontent.com/stfwi/engineersdecor/develop/meta/update.json",
   certificateFingerprint = ((ModEngineersDecor.MODFINGERPRINT==("@"+"MOD_SIGNSHA1"+"@")) ? "" : ModEngineersDecor.MODFINGERPRINT)

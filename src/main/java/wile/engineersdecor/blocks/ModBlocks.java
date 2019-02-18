@@ -16,6 +16,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.Loader;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.detail.ModAuxiliaries;
 import wile.engineersdecor.detail.ModConfig;
@@ -50,6 +51,8 @@ public class ModBlocks
   public static final BlockDecorStairs REBAR_CONCRETE_STAIRS = new BlockDecorStairs("rebar_concrete_stairs", REBAR_CONCRETE_BLOCK.getDefaultState());
   public static final BlockDecorWall REBAR_CONCRETE_WALL = new BlockDecorWall("rebar_concrete_wall", BlockDecor.CFG_WALL_DOOR_CONNECTION, Material.ROCK, 8f, 2000f, SoundType.STONE);
 
+  public static final BlockDecorWall CONCRETE_WALL = new BlockDecorWall("concrete_wall", BlockDecor.CFG_WALL_DOOR_CONNECTION, Material.ROCK, 8f, 50f, SoundType.STONE);
+
   public static final BlockDecorDirected TREATED_WOOD_POLE = new BlockDecorDirected(
     "treated_wood_pole",
     BlockDecor.CFG_CUTOUT,
@@ -80,6 +83,10 @@ public class ModBlocks
     REBAR_CONCRETE_WALL,
   };
 
+  private static final Block ieDependentBlocks[] = {
+    CONCRETE_WALL
+  };
+
   private static final Block devBlocks[] = {
     IRON_SHEET_ROOF, // model looks not good enough yet
   };
@@ -96,6 +103,10 @@ public class ModBlocks
     // Config based registry selection
     ArrayList<Block> allBlocks = new ArrayList<>();
     Collections.addAll(allBlocks, modBlocks);
+    if(Loader.isModLoaded("immersiveengineering")) {
+      ModEngineersDecor.logger.info("Immersive Engineering installed, registering dependent blocks...");
+      Collections.addAll(allBlocks, ieDependentBlocks);
+    }
     if(ModConfig.zmisc.with_experimental) Collections.addAll(allBlocks, devBlocks);
     for(Block e:allBlocks) registeredBlocks.add(e);
     for(Block e:registeredBlocks) event.getRegistry().register(e);

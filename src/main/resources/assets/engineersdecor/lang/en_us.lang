@@ -20,6 +20,8 @@ tile.engineersdecor.rebar_concrete.name=Rebar concrete
 tile.engineersdecor.rebar_concrete.help=§6Steel reinforced concrete block.§r Expensive but Creeper-proof like obsidian.
 tile.engineersdecor.rebar_concrete_wall.name=Rebar concrete wall
 tile.engineersdecor.rebar_concrete_wall.help=§6Steel reinforced concrete wall.§r Expensive but Creeper-proof like obsidian.
+tile.engineersdecor.concrete_wall.name=Concrete wall
+tile.engineersdecor.concrete_wall.help=§6Wall made of solid concrete.
 
 #-----------------------------------------------------------------------------------------------------------
 # Ladder blocks
