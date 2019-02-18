@@ -1,6 +1,7 @@
 {
   "forge_marker": 1,
   "defaults": {
+    "model": "engineersdecor:wall/concrete_wall_default",
     "textures": {
       "wall": "engineersdecor:blocks/concrete/rebar_concrete_texture0",
       "particle": "engineersdecor:blocks/concrete/rebar_concrete_texture0"
