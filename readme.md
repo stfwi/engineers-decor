@@ -73,6 +73,10 @@ More to come slowly but steadily.
 ----
 ## Revision history
 
+                -------------------------------------------------------------------
+    - v1.0.0    [R] Release based on v1.0.0-b4
+                -------------------------------------------------------------------
+
     - v1.0.0-b4 [F] Fixed vanished recipe for the rebar concrete wall.
                 [A] Concrete wall, material: IE concrete.
 

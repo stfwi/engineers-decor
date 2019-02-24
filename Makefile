@@ -102,8 +102,4 @@ dist: sanatize dist-check clean-all mod
 # repository that you cloned.
 sync-main-repo: sanatize
 	@echo "Synchronising to github repository working tree ..."
-	@cd ../engineersdecor-github; rm -rf build documentation gradle meta scripts src
-	@cd ../engineersdecor-github; rm -f .gitignore build.gradle gradle.properties gradlew gradlew.bat license Makefile readme.md
-	@cp -r documentation gradle meta scripts src ../engineersdecor-github/
-	@cp .gitignore build.gradle gradle.properties gradlew gradlew.bat license Makefile readme.md ../engineersdecor-github/
-	@cd ../engineersdecor-github; git status -s
+	@djs scripts/sync-main-repo.js

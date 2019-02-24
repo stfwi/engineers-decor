@@ -54,7 +54,7 @@ for(var ver in history) { latest_beta=ver; break; }
 for(var ver in history) if(ver.search(/(rc|b|a)/) < 0) { latest_release=ver; break; }
 
 var update_json = {
-  homepage: "https://www.curseforge.com/minecraft/mc-mods/redstone-gauges-and-switches/",
+  homepage: "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.12.2": history,
   promos: {
     "1.12.2-recommended": latest_release,
