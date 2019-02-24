@@ -1,0 +1,75 @@
+{
+	"credit": "I made this with the Blockbench",
+	"parent": "block/cube",
+	"textures": {
+		"side": "engineersdecor:blocks/pole/treated_wood_pole_side_texture",
+		"particle": "engineersdecor:blocks/pole/treated_wood_pole_side_texture",
+		"top": "engineersdecor:blocks/pole/treated_wood_pole_top_texture"
+	},
+	"elements": [
+		{
+			"from": [5.75, 5.75, 0],
+			"to": [10.25, 10.25, 16],
+			"faces": {
+				"north": {"uv": [5.25, 5.25, 10.75, 10.75], "texture": "#top", "cullface": "north"},
+				"south": {"uv": [5.25, 5.25, 10.75, 10.75], "texture": "#top", "cullface": "south"}
+			}
+		},
+		{
+			"from": [5.75, 10.25, 0],
+			"to": [10.25, 10.5, 16],
+			"faces": {
+				"north": {"uv": [5.25, 10.75, 10.75, 11], "texture": "#top", "cullface": "north"},
+				"east": {"uv": [10.75, 0, 11, 16], "rotation": 90, "texture": "#side"},
+				"south": {"uv": [5.25, 5, 10.75, 5.25], "texture": "#top", "cullface": "south"},
+				"west": {"uv": [5, 0, 5.25, 16], "rotation": 90, "texture": "#side"},
+				"up": {"uv": [5.25, 0, 10.75, 16], "texture": "#side"}
+			}
+		},
+		{
+			"from": [5.75, 5.5, 0],
+			"to": [10.25, 5.75, 16],
+			"faces": {
+				"north": {"uv": [5.25, 5, 10.75, 5.25], "texture": "#top", "cullface": "north"},
+				"east": {"uv": [5, 0, 5.25, 16], "rotation": 90, "texture": "#side"},
+				"south": {"uv": [5.25, 10.75, 10.75, 11], "texture": "#top", "cullface": "south"},
+				"west": {"uv": [10.75, 0, 11, 16], "rotation": 90, "texture": "#side"},
+				"down": {"uv": [5.25, 0, 10.75, 16], "rotation": 180, "texture": "#side"}
+			}
+		},
+		{
+			"from": [10.25, 5.75, 0],
+			"to": [10.5, 10.25, 16],
+			"faces": {
+				"north": {"uv": [10.75, 5.25, 11, 10.75], "texture": "#top", "cullface": "north"},
+				"east": {"uv": [5.25, 0, 10.75, 16], "rotation": 90, "texture": "#side"},
+				"south": {"uv": [10.75, 5.25, 11, 10.75], "texture": "#top", "cullface": "south"},
+				"up": {"uv": [5, 0, 5.25, 16], "texture": "#side"},
+				"down": {"uv": [10.75, 0, 11, 16], "rotation": 180, "texture": "#side"}
+			}
+		},
+		{
+			"from": [5.5, 5.75, 0],
+			"to": [5.75, 10.25, 16],
+			"faces": {
+				"north": {"uv": [5, 5.25, 5.25, 10.75], "texture": "#top", "cullface": "north"},
+				"south": {"uv": [5, 5.25, 5.25, 10.75], "texture": "#top", "cullface": "south"},
+				"west": {"uv": [5.25, 0, 10.75, 16], "rotation": 90, "texture": "#side"},
+				"up": {"uv": [10.75, 0, 11, 16], "texture": "#side"},
+				"down": {"uv": [5, 0, 5.25, 16], "rotation": 180, "texture": "#side"}
+			}
+		}
+	],
+	"display": {
+		"ground": {
+			"scale": [0.2, 0.2, 0.2]
+		},
+		"gui": {
+			"rotation": [30, 225, 0],
+			"scale": [0.625, 0.625, 0.625]
+		},
+		"fixed": {
+			"scale": [0.5, 0.5, 0.5]
+		}
+	}
+}

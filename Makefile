@@ -96,3 +96,10 @@ dist: sanatize dist-check clean-all mod
 	@mkdir -p dist
 	@cp build/libs/$(MOD_JAR_PREFIX)* dist/
 	@djs scripts/task-dist.js
+
+# For reviewers: I am using a local repository for experimental changes,
+# this target copies the local working tree to the location of the
+# repository that you cloned.
+sync-main-repo: sanatize
+	@echo "Synchronising to github repository working tree ..."
+	@djs scripts/sync-main-repo.js

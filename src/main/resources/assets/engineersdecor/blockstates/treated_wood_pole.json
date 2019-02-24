@@ -1,0 +1,17 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "engineersdecor:pole/straight_pole_model",
+    "x":-90,
+    "textures": {
+      "particle": "engineersdecor:blocks/pole/treated_wood_pole_side_texture",
+      "side": "engineersdecor:blocks/pole/treated_wood_pole_side_texture",
+      "top": "engineersdecor:blocks/pole/treated_wood_pole_top_texture"
+    }
+  },
+  "variants": {
+    "normal": [{}],
+    "facing": { "north": {"y":0}, "south": {"y":0}, "west": {"y":90}, "east": {"y":90}, "up": {"x":90}, "down": {"x":90} },
+    "inventory": [{}]
+  }
+}

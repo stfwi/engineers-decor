@@ -26,6 +26,14 @@ no tile entities or user interactions are used. Current feature set:
   explosion resistance than the vanilla brick wall. Also available as stairs, also
   with reverse recipe.
 
+- Rebar (steel) reinforced concrete: Expensive but creeper-proof. Crafted 3x3 from
+  four concrete blocks and five steel rods. Texture design oriented at the IE concrete,
+  slightly darker, eight (position dependent) random texture variations with rust
+  traces. Also creaftable in form of *stairs* and *walls*.
+
+- Concrete wall: Solid concrete wall (not the vanilla wall design), crafted 3x3
+  from six IE concrete blocks (normal wall recipe).
+
 - *Treated wood ladder*: Crafted 3x3 with the known ladder pattern, items are
   treated wood sticks.
 
@@ -64,6 +72,18 @@ More to come slowly but steadily.
 
 ----
 ## Revision history
+
+                -------------------------------------------------------------------
+    - v1.0.0    [R] Release based on v1.0.0-b4
+                -------------------------------------------------------------------
+
+    - v1.0.0-b4 [F] Fixed vanished recipe for the rebar concrete wall.
+                [A] Concrete wall, material: IE concrete.
+
+    - v1.0.0-b3 [A] Textures of rebar concrete and treated wood table improved.
+                [A] Added rebar concrete wall.
+
+    - v1.0.0-b2 [A] Added rebar concrete (steel reinforced, expensive, creeper-proof).
 
     - v1.0.0-b1 [A] Initial structure.
                 [A] Added clinker bricks and clinker brick stairs.

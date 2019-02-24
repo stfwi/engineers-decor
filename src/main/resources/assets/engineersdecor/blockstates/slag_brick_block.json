@@ -1,0 +1,20 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "engineersdecor:decor_full_block_model",
+    "textures": { "all": "engineersdecor:blocks/slag_brick/slag_brick_texture0" }
+  },
+  "variants": {
+    "normal": [
+      { "textures": { "all": "engineersdecor:blocks/slag_brick/slag_brick_texture0" } },
+      { "textures": { "all": "engineersdecor:blocks/slag_brick/slag_brick_texture1" } },
+      { "textures": { "all": "engineersdecor:blocks/slag_brick/slag_brick_texture2" } },
+      { "textures": { "all": "engineersdecor:blocks/slag_brick/slag_brick_texture3" } },
+      { "textures": { "all": "engineersdecor:blocks/slag_brick/slag_brick_texture4" } },
+      { "textures": { "all": "engineersdecor:blocks/slag_brick/slag_brick_texture5" } },
+      { "textures": { "all": "engineersdecor:blocks/slag_brick/slag_brick_texture6" } },
+      { "textures": { "all": "engineersdecor:blocks/slag_brick/slag_brick_texture7" } }
+    ],
+    "inventory": [{}]
+  }
+}

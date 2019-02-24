@@ -1,0 +1,14 @@
+{
+  "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
+  "1.12.2": {
+    "1.0.0": "[R] Release based on v1.0.0-b4",
+    "1.0.0-b4": "[F] Fixed vanished recipe for the rebar concrete wall.\n[A] Concrete wall, material: IE concrete.",
+    "1.0.0-b3": "[A] Textures of rebar concrete and treated wood table improved.\n[A] Added rebar concrete wall.",
+    "1.0.0-b2": "[A] Added rebar concrete (steel reinforced, expensive, creeper-proof).",
+    "1.0.0-b1": "[A] Initial structure.\n[A] Added clinker bricks and clinker brick stairs.\n[A] Added slag bricks and slag brick stairs.\n[A] Added metal rung ladder.\n[A] Added staggered metal steps ladder.\n[A] Added treated wood ladder.\n[A] Added treated wood pole.\n[A] Added treated wood table."
+  },
+  "promos": {
+    "1.12.2-recommended": "1.0.0",
+    "1.12.2-latest": "1.0.0"
+  }
+}

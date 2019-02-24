@@ -1,0 +1,25 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:treated_wood_ladder",
+      "required": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "S S",
+    "SSS",
+    "S S"
+  ],
+  "key": {
+    "S": {
+      "item": "#stickTreatedWood",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:treated_wood_ladder",
+    "count": 4
+  }
+}

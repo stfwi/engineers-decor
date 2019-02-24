@@ -1,0 +1,16 @@
+[
+    {
+      "modid": "engineersdecor",
+      "name": "Engineer's Decor",
+      "description": "Adds cosmetic blocks for the engineer's workshop, factory and home.",
+      "version": "${version}",
+      "mcversion": "${mcversion}",
+      "url": "https://github.com/stfwi/engineers-decor/",
+      "authorList": ["wile"],
+      "credits": "BluSunrize, malte0811, et al., the Forge Smiths, the Modders of the World.",
+      "logoFile": "assets/engineersdecor/logo.png",
+      "screenshots": [],
+      "useDependencyInformation": false,
+      "dependencies": ["Forge"]
+    }
+]

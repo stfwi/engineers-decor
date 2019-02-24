@@ -1,0 +1,24 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:rebar_concrete_stairs"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "C  ",
+    "CC ",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "engineersdecor:rebar_concrete",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:rebar_concrete_stairs",
+    "count": 9
+  }
+}
