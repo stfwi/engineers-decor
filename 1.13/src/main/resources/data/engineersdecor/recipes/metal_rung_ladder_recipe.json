@@ -1,0 +1,22 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:metal_rung_ladder",
+  "later_required": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "S S",
+    "SSS",
+    "   "
+  ],
+  "key": {
+    "S": { "constant": "engineersdecor:any_ferro_metal_stick" }
+  },
+  "result": {
+    "item": "engineersdecor:metal_rung_ladder",
+    "count": 4
+  }
+}

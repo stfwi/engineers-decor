@@ -13,93 +13,37 @@
 # For image stripping install imagemagick and
 # also put the "magick" executable in the PATH.
 #
-MOD_JAR_PREFIX=engineersdecor-
-MOD_JAR=$(filter-out %-sources.jar,$(wildcard build/libs/${MOD_JAR_PREFIX}*.jar))
+.PHONY: default init clean clean-all dist sync-main-repo sanatize update-json
+.PHONY: init-1.12 clean-1.12 clean-all-1.12 dist-1.12 sanatize-1.12
+.PHONY: init-1.13 clean-1.13 clean-all-1.13 dist-1.13 sanatize-1.13
 
-ifeq ($(OS),Windows_NT)
-GRADLE=gradlew.bat --no-daemon
-GRADLE_STOP=gradlew.bat --stop
-INSTALL_DIR=$(realpath ${APPDATA}/.minecraft)
-SERVER_INSTALL_DIR=$(realpath ${APPDATA}/minecraft-server-forge-1.12.2-14.23.5.2768)
-DJS=djs
-else
-GRADLE=./gradlew --no-daemon
-GRADLE_STOP=./gradlew --stop
-INSTALL_DIR=~/.minecraft
-SERVER_INSTALL_DIR=~/.minecraft-server-forge-1.12.2-14.23.5.2768
-DJS=djs
-endif
+default:	;	@echo "(You are not in a MC specific version directory)"
+clean: clean-1.12 clean-1.13
+clean-all: clean-all-1.13
+init: init-1.12 init-1.13
 
-wildcardr=$(foreach d,$(wildcard $1*),$(call wildcardr,$d/,$2) $(filter $(subst *,%,$2),$d))
+clean-1.12: 		; -@cd 1.12; make -s clean
+clean-1.13: 		; -@cd 1.13; make -s clean
+clean-all-1.12: ;	-@cd 1.12; make -s clean-all
+clean-all-1.13: ;	-@cd 1.13; make -s clean-all
+init-1.12:			; -@cd 1.12; make -s init
+init-1.13:			; -@cd 1.13; make -s init
+dist-1.12:			; @cd 1.12; make -s dist
+dist-1.13:			; @cd 1.13; make -s dist
+dist: dist-1.12 dist-1.13 | update-json
 
-#
-# Targets
-#
-.PHONY: default mod init clean clean-all all run install sanatize dist-check dist start-server sync-main-repo
-
-default: mod
-
-all: clean clean-all mod | install
-
-mod:
-	@echo "Building mod using gradle ..."
-	@$(GRADLE) build $(GRADLE_OPTS)
-
-clean:
-	@echo "Cleaning ..."
-	@rm -f build/libs/*
-	@$(GRADLE) clean
-
-clean-all: clean
-	@echo "Cleaning using gradle ..."
-	@rm -f dist/*
-	@$(GRADLE) clean cleanCache
-
-init:
-	@echo "Initialising eclipse workspace using gradle ..."
-	@$(GRADLE) setupDecompWorkspace
-
-run:
-	@echo "Running client ..."
-	@$(GRADLE) runClient
-
-install: $(MOD_JAR) |
-	@sleep 2s
-	@if [ ! -d "$(INSTALL_DIR)" ]; then echo "Cannot find installation minecraft directory."; false; fi
-	@echo "Installing '$(MOD_JAR)' to '$(INSTALL_DIR)/mods' ..."
-	@[ -d "$(INSTALL_DIR)/mods" ] || mkdir "$(INSTALL_DIR)/mods"
-	@rm -f "$(INSTALL_DIR)/mods/${MOD_JAR_PREFIX}"*.jar
-	@cp -f "$(MOD_JAR)" "$(INSTALL_DIR)/mods/"
-	@echo "Installing '$(MOD_JAR)' to '$(SERVER_INSTALL_DIR)/mods' ..."
-	@rm -f "$(SERVER_INSTALL_DIR)/mods/${MOD_JAR_PREFIX}"*.jar
-	@[ -d "$(SERVER_INSTALL_DIR)/mods" ] && cp -f "$(MOD_JAR)" "$(SERVER_INSTALL_DIR)/mods/"
-
-start-server: install
-	@echo "Starting local dedicated server ..."
-	@cd "$(SERVER_INSTALL_DIR)" && java -jar forge-1.12.2-14.23.5.2768-universal.jar nogui
+update-json:
+	@echo "[main] Update update.json ..."
+	@djs tasks.js update-json
 
 sanatize:
-	@echo "Running sanatising tasks ..."
-	@djs scripts/sanatize-trailing-whitespaces.js
-	@djs scripts/sanatize-tabs-to-spaces.js
-	@djs scripts/sanatize-sync-languages.js
-	@djs scripts/sanatize-version-check.js
-	@djs scripts/task-update-json.js
-	@git status -s
-
-dist-check:
-	@echo "Running dist checks ..."
-	@djs scripts/sanatize-dist-check.js
-
-dist: sanatize dist-check clean-all mod
-	@echo "Distribution files ..."
-	@mkdir -p dist
-	@cp build/libs/$(MOD_JAR_PREFIX)* dist/
-	@djs scripts/task-dist.js
+	@cd 1.12; make -s sanatize
+	@cd 1.13; make -s sanatize
+	@make -s update-json
 
 # For reviewers: I am using a local repository for experimental changes,
 # this target copies the local working tree to the location of the
 # repository that you cloned.
-sync-main-repo: sanatize
-	@echo "Synchronising to github repository working tree ..."
-	@djs scripts/sync-main-repo.js
+sync-main-repo: sanatize update-json
+	@echo "[main] Synchronising to github repository working tree ..."
+	@djs tasks.js sync-main-repository
