@@ -1,4 +1,5 @@
 #!/usr/bin/djs
+// Note for reviewers/clones: This file is a auxiliary script for my setup. It's not needed to build the mod.
 "use strict";
 if(!fs.chdir(fs.dirname(fs.realpath(sys.script)))) throw new Error("Failed to switch to mod source directory.");
 if(!fs.isdir("../.git")) throw new Error("Missing git repository in parent directory of mod source.");

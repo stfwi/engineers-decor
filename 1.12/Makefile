@@ -2,16 +2,9 @@
 # @author Stefan Wilhelm (wile)
 # @license MIT
 #
-# GNU Make makefile for, well, speeding
-# up the development a bit.
-# You very likely need some tools installed
-# to use all build targets, so this file is
-# not "official". If you work on windows and
-# install GIT with complete shell PATH (the
-# red marked option in the GIT installer) you
-# should have the needed unix tools available.
-# For image stripping install imagemagick and
-# also put the "magick" executable in the PATH.
+# GNU Make makefile based build relay.
+# Note for reviewers/clones: This file is a auxiliary script for my setup.
+# It's not needed to build the mod.
 #
 MOD_JAR_PREFIX=engineersdecor-
 MOD_JAR=$(filter-out %-sources.jar,$(wildcard build/libs/${MOD_JAR_PREFIX}*.jar))
