@@ -52,6 +52,7 @@ public class ModBlocks
   public static final BlockDecorWall REBAR_CONCRETE_WALL = new BlockDecorWall("rebar_concrete_wall", BlockDecor.CFG_WALL_DOOR_CONNECTION, Material.ROCK, 8f, 2000f, SoundType.STONE);
 
   public static final BlockDecorWall CONCRETE_WALL = new BlockDecorWall("concrete_wall", BlockDecor.CFG_WALL_DOOR_CONNECTION, Material.ROCK, 8f, 50f, SoundType.STONE);
+  public static final BlockDecorWall CLINKER_BRICK_WALL = new BlockDecorWall("clinker_brick_wall", BlockDecor.CFG_WALL_DOOR_CONNECTION, Material.ROCK, 8f, 50f, SoundType.STONE);
 
   public static final BlockDecorDirected TREATED_WOOD_POLE = new BlockDecorDirected(
     "treated_wood_pole",
@@ -81,6 +82,7 @@ public class ModBlocks
     REBAR_CONCRETE_BLOCK,
     REBAR_CONCRETE_STAIRS,
     REBAR_CONCRETE_WALL,
+    CLINKER_BRICK_WALL,
   };
 
   private static final Block ieDependentBlocks[] = {

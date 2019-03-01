@@ -154,8 +154,8 @@ public class BlockDecorWall extends BlockDecor
     boolean e = canWallConnectTo(worldIn, pos, EnumFacing.EAST);
     boolean s = canWallConnectTo(worldIn, pos, EnumFacing.SOUTH);
     boolean w = canWallConnectTo(worldIn, pos, EnumFacing.WEST);
-    boolean straight = (n && !e && s && !w) || (!n && e && !s && w);
-    return state.withProperty(UP,!straight).withProperty(NORTH, n).withProperty(EAST, e).withProperty(SOUTH, s).withProperty(WEST, w);
+    boolean nopole = (n && s && !e && !w) || (!n && !s && e && w);
+    return state.withProperty(UP,!nopole).withProperty(NORTH, n).withProperty(EAST, e).withProperty(SOUTH, s).withProperty(WEST, w);
   }
 
   @Override

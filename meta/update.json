@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.12.2": {
+    "1.0.1-b1": "[F] Fixed missing condition for ie:stone_deco in recipe constants.\n[A] Added clinker brick wall.",
     "1.0.0": "[R] Release based on v1.0.0-b4",
     "1.0.0-b4": "[F] Fixed vanished recipe for the rebar concrete wall.\n[A] Concrete wall, material: IE concrete.",
     "1.0.0-b3": "[A] Textures of rebar concrete and treated wood table improved.\n[A] Added rebar concrete wall.",
@@ -12,7 +13,7 @@
   },
   "promos": {
     "1.12.2-recommended": "1.0.0",
-    "1.12.2-latest": "1.0.0",
+    "1.12.2-latest": "1.0.1-b1",
     "1.13.2-recommended": "",
     "1.13.2-latest": "1.0.0-a1"
   }

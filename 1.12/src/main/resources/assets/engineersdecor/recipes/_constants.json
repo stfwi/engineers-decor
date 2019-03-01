@@ -128,6 +128,9 @@
     "name": "stickFerroMetal"
   },
   {
+    "conditions": [
+      { "type": "minecraft:item_exists", "item": "immersiveengineering:stone_decoration" }
+    ],
     "ingredient": {
       "item": "immersiveengineering:stone_decoration",
       "data": 5
