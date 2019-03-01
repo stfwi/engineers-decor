@@ -10,6 +10,9 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+    - v1.0.1-b2 [F] Fixed ladder bounding boxes to allow climbing connected trap doors
+                    (issue #6, thanks to Forgilageord).
+
     - v1.0.1-b1 [F] Fixed missing condition for ie:stone_deco in recipe constants.
                 [A] Added clinker brick wall.
 
