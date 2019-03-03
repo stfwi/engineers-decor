@@ -1,0 +1,15 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "engineersdecor:furniture/treated_wood_stool_model",
+    "textures": {
+      "o": "engineersdecor:blocks/iestyle/treated_wood_framed_texture",
+      "particle": "engineersdecor:blocks/iestyle/treated_wood_framed_texture"
+    }
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "facing": { "north": {"y":0}, "south": {"y":0}, "west": {"y":90}, "east": {"y":90}, "up":{}, "down":{} }
+  }
+}

@@ -105,7 +105,7 @@ public class BlockDecorWall extends BlockDecor
 
   @Override
   @SuppressWarnings("deprecation")
-  public boolean isPassable(IBlockAccess worldIn, BlockPos pos)
+  public boolean isPassable(IBlockAccess world, BlockPos pos)
   { return false; }
 
   @Override
@@ -118,13 +118,15 @@ public class BlockDecorWall extends BlockDecor
   public boolean isNormalCube(IBlockState state)
   { return false; }
 
-  private boolean canConnectTo(IBlockAccess worldIn, BlockPos pos, EnumFacing p_176253_3_)
+  private boolean canConnectTo(IBlockAccess world, BlockPos pos, BlockPos other, EnumFacing facing)
   {
-    IBlockState iblockstate = worldIn.getBlockState(pos);
-    Block block = iblockstate.getBlock();
-    BlockFaceShape blockfaceshape = iblockstate.getBlockFaceShape(worldIn, pos, p_176253_3_);
-    boolean flag = blockfaceshape == BlockFaceShape.MIDDLE_POLE_THICK || blockfaceshape == BlockFaceShape.MIDDLE_POLE && block instanceof BlockFenceGate;
-    return !isExcepBlockForAttachWithPiston(block) && blockfaceshape == BlockFaceShape.SOLID || flag;
+    final IBlockState state = world.getBlockState(other);
+    final Block block = state.getBlock();
+    if((block instanceof BlockDecorWall) || (block instanceof BlockFenceGate)) return true;
+    if(world.getBlockState(pos.offset(facing)).getBlock()!=this) return false;
+    if(block instanceof BlockFence) return true;
+    final BlockFaceShape shp = state.getBlockFaceShape(world, other, facing);
+    return (shp == BlockFaceShape.SOLID) && (!isExcepBlockForAttachWithPiston(block));
   }
 
   protected static boolean isExcepBlockForAttachWithPiston(Block b)
@@ -148,12 +150,12 @@ public class BlockDecorWall extends BlockDecor
 
   @Override
   @SuppressWarnings("deprecation")
-  public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+  public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
   {
-    boolean n = canWallConnectTo(worldIn, pos, EnumFacing.NORTH);
-    boolean e = canWallConnectTo(worldIn, pos, EnumFacing.EAST);
-    boolean s = canWallConnectTo(worldIn, pos, EnumFacing.SOUTH);
-    boolean w = canWallConnectTo(worldIn, pos, EnumFacing.WEST);
+    boolean n = canWallConnectTo(world, pos, EnumFacing.NORTH);
+    boolean e = canWallConnectTo(world, pos, EnumFacing.EAST);
+    boolean s = canWallConnectTo(world, pos, EnumFacing.SOUTH);
+    boolean w = canWallConnectTo(world, pos, EnumFacing.WEST);
     boolean nopole = (n && s && !e && !w) || (!n && !s && e && w);
     return state.withProperty(UP,!nopole).withProperty(NORTH, n).withProperty(EAST, e).withProperty(SOUTH, s).withProperty(WEST, w);
   }
@@ -164,17 +166,13 @@ public class BlockDecorWall extends BlockDecor
 
   @Override
   @SuppressWarnings("deprecation")
-  public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face)
-  { return ((face!=EnumFacing.UP) && (face!=EnumFacing.DOWN)) ? (BlockFaceShape.MIDDLE_POLE_THICK) : (BlockFaceShape.CENTER_BIG); }
+  public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face)
+  { return (face==EnumFacing.UP) ? (BlockFaceShape.SOLID) : ((face!=EnumFacing.DOWN) ? (BlockFaceShape.MIDDLE_POLE_THICK) : (BlockFaceShape.CENTER_BIG)); }
 
   @Override
   public boolean canBeConnectedTo(IBlockAccess world, BlockPos pos, EnumFacing facing)
-  { return canConnectTo(world, pos.offset(facing), facing.getOpposite()); }
+  { return canConnectTo(world, pos, pos.offset(facing), facing.getOpposite()); }
 
   private boolean canWallConnectTo(IBlockAccess world, BlockPos pos, EnumFacing facing)
-  {
-    BlockPos other = pos.offset(facing);
-    Block block = world.getBlockState(other).getBlock();
-    return block.canBeConnectedTo(world, other, facing.getOpposite()) || canConnectTo(world, other, facing.getOpposite());
-  }
+  { return canConnectTo(world, pos, pos.offset(facing), facing.getOpposite()); }
 }

@@ -1,0 +1,32 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:treated_wood_crafting_table",
+      "required": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SS",
+    "PC"
+  ],
+  "key": {
+    "S": {
+      "item": "#slabTreatedWood",
+      "data": 0
+    },
+    "P": {
+      "item": "#plankTreatedWood",
+      "data": 0
+    },
+    "C": {
+      "item": "#crateTreatedWood",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:treated_wood_crafting_table",
+    "count": 1
+  }
+}

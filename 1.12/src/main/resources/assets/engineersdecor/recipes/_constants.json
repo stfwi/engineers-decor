@@ -136,6 +136,16 @@
       "data": 5
     },
     "name": "blockConcreteIe"
+  },
+  {
+    "conditions": [
+      { "type": "minecraft:item_exists", "item": "immersiveengineering:wooden_device0" }
+    ],
+    "ingredient": {
+      "item": "immersiveengineering:wooden_device0",
+      "data": 0
+    },
+    "name": "crateTreatedWood"
   }
 
 ]

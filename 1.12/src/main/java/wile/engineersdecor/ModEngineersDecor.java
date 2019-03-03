@@ -8,6 +8,14 @@
  */
 package wile.engineersdecor;
 
+import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import wile.engineersdecor.blocks.BlockDecorCraftingTable;
 import wile.engineersdecor.detail.ModConfig;
 import wile.engineersdecor.blocks.ModBlocks;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -75,7 +83,10 @@ public class ModEngineersDecor
 
   @Mod.EventHandler
   public void init(FMLInitializationEvent event)
-  { proxy.init(event); }
+  {
+    proxy.init(event);
+    NetworkRegistry.INSTANCE.registerGuiHandler(this, new ModEngineersDecor.GuiHandler());
+  }
 
   @Mod.EventHandler
   public void postInit(FMLPostInitializationEvent event)
@@ -104,5 +115,36 @@ public class ModEngineersDecor
     public @Nonnull ItemStack createIcon()
     { return new ItemStack(ModBlocks.TREATED_WOOD_LADDER); }
   });
+
+  public static final class GuiHandler implements IGuiHandler
+  {
+    public static final int GUIID_CRAFTING_TABLE = 213101;
+
+    @Override
+    public Object getServerGuiElement(final int guiid, final EntityPlayer player, final World world, int x, int y, int z)
+    {
+      final BlockPos pos = new BlockPos(x,y,z);
+      final TileEntity te = world.getTileEntity(pos);
+      switch(guiid) {
+        case GUIID_CRAFTING_TABLE:
+          return (te instanceof BlockDecorCraftingTable.BEntity) ? (new BlockDecorCraftingTable.BContainer(player.inventory, world, pos)) : null;
+      }
+      return null;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public Object getClientGuiElement(final int guiid, final EntityPlayer player, final World world, int x, int y, int z)
+    {
+      final BlockPos pos = new BlockPos(x,y,z);
+      final TileEntity te = (world instanceof WorldClient) ? world.getTileEntity(pos) : null;
+      switch(guiid) {
+        case GUIID_CRAFTING_TABLE:
+          return (te instanceof BlockDecorCraftingTable.BEntity) ? (new BlockDecorCraftingTable.BGuiCrafting(player.inventory, world, pos)) : null;
+      }
+      return null;
+    }
+
+  }
 
 }

@@ -17,6 +17,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.detail.ModAuxiliaries;
 import wile.engineersdecor.detail.ModConfig;
@@ -66,6 +67,21 @@ public class ModBlocks
     BlockDecor.CFG_CUTOUT,
     Material.WOOD, 1.0f, 15f, SoundType.WOOD
   );
+  public static final BlockDecorChair TREATED_WOOD_STOOL = new BlockDecorChair(
+    "treated_wood_stool",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL_PLACEMENT|BlockDecor.CFG_HORIZIONTAL,
+    Material.WOOD, 1.0f, 15f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(4.1,0,4.1, 11.8,8.8,11.8)
+  );
+
+  public static final BlockDecorCraftingTable TREATED_WOOD_CRAFTING_TABLE = new BlockDecorCraftingTable(
+    "treated_wood_crafting_table",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL_PLACEMENT|BlockDecor.CFG_HORIZIONTAL,
+    Material.WOOD, 1.0f, 15f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(0.5,0,3, 15.5,15.125,15.5)
+  );
+
+
 
   public static final BlockDecorStairs IRON_SHEET_ROOF = new BlockDecorStairs("iron_sheet_roof", IRON_SHEET_ROOF_FULLBLOCK.getDefaultState());
 
@@ -83,6 +99,8 @@ public class ModBlocks
     REBAR_CONCRETE_STAIRS,
     REBAR_CONCRETE_WALL,
     CLINKER_BRICK_WALL,
+    TREATED_WOOD_STOOL,
+    TREATED_WOOD_CRAFTING_TABLE,
   };
 
   private static final Block ieDependentBlocks[] = {
@@ -113,6 +131,8 @@ public class ModBlocks
     for(Block e:allBlocks) registeredBlocks.add(e);
     for(Block e:registeredBlocks) event.getRegistry().register(e);
     ModEngineersDecor.logger.info("Registered " + Integer.toString(registeredBlocks.size()) + " blocks.");
+    // TEs
+    GameRegistry.registerTileEntity(BlockDecorCraftingTable.BEntity.class, new ResourceLocation(ModEngineersDecor.MODID, "te_crafting_table"));
   }
 
   // Invoked from ClientProxy.registerModels()

@@ -12,7 +12,9 @@ Mod components derived/inspired by IE:
   - Style color scheme of treated wood/steel/concrete to match IE color scheme.
   - Recipe _constants.json file (for using IE items as ingredients)
 
-IE components referenced in this mod:
+IE components used in this mod:
 
   - immersiveengineering:textures/block/stone_decoration_concrete.png (for IE
     concrete wall).
+
+  - Image pattern of wooden GUIs (background, slots, etc.).
