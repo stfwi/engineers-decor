@@ -10,8 +10,10 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+    - v1.0.1-b3 [A] <version info updated, will be replaced>
+
     - v1.0.1-b2 [A] Added treated wood crafting table.
-                [A] Added treated stool.
+                [A] Added treated wood stool.
                 [F] Fixed ladder bounding boxes to allow climbing connected trap doors
                     (issue #6, thanks to Forgilageord).
                 [M] Improved wall-block connections (wall elements only connect to other
