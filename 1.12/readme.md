@@ -10,7 +10,7 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
-    - v1.0.1-b3 [A] <version info updated, will be replaced>
+    - v1.0.1-b3 [A] Mod logo updated to an IE style design.
 
     - v1.0.1-b2 [A] Added treated wood crafting table.
                 [A] Added treated wood stool.
