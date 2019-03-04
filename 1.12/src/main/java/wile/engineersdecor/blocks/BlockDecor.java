@@ -41,10 +41,13 @@ public class BlockDecor extends Block
   // The config combines some aspects of blocks, allowing to define different behaviour at construction time, without excessive polymorphy.
   // It's an old school flag set as it is used internally only and shall not have as littlt impact on performance as possible.
   public final long config;
+  public static final long CFG_DEFAULT                = 0x0000000000000000L; // no special config
   public static final long CFG_CUTOUT                 = 0x0000000000000001L; // cutout rendering
   public static final long CFG_HORIZIONTAL            = 0x0000000000000002L; // horizontal block, affects bounding box calculation at construction time
   public static final long CFG_HORIZIONTAL_PLACEMENT  = 0x0000000000000004L; // placed in the horizontzal direction the player is looking when placing.
-  public static final long CFG_WALL_DOOR_CONNECTION   = 0x0000000000000008L; // wall block connects to fence gates and doors.
+  public static final long CFG_OPPOSITE_PLACEMENT     = 0x0000000000000008L; // placed placed in the opposite direction of the face the player clicked.
+  public static final long CFG_LIGHT_VALUE_MASK       = 0x00000000000000f0L; // fixed value for getLightValue()
+  public static final long CFG_LIGHT_VALUE_SHIFT      = 4L;
 
   public BlockDecor(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound)
   {
@@ -56,6 +59,7 @@ public class BlockDecor extends Block
     setHardness((hardness > 0) ? hardness : 5.0f);
     setResistance((resistance > 0) ? resistance : 10.0f);
     setSoundType((sound==null) ? SoundType.STONE : sound);
+    setLightOpacity(0);
     this.config = config;
   }
 
@@ -147,6 +151,10 @@ public class BlockDecor extends Block
   @SuppressWarnings("deprecation")
   public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos)
   {}
+
+  @Override
+  public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos)
+  { return (int)((config & CFG_LIGHT_VALUE_MASK) >> CFG_LIGHT_VALUE_SHIFT); }
 
   @Override
   public boolean canPlaceBlockOnSide(World world, BlockPos pos, EnumFacing side)

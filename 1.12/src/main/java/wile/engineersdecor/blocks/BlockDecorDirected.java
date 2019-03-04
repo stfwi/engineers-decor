@@ -114,7 +114,7 @@ public class BlockDecorDirected extends BlockDecor
       return getDefaultState().withProperty(FACING, placer.getHorizontalFacing());
     } else {
       // default: placement on the face the player clicking
-      return getDefaultState().withProperty(FACING, facing);
+      return getDefaultState().withProperty(FACING, ((config & CFG_OPPOSITE_PLACEMENT)==0) ? facing : facing.getOpposite());
     }
   }
 }

@@ -10,7 +10,10 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
-    - v1.0.1-b3 [A] Mod logo updated to an IE style design.
+    - v1.0.1-b3 [A] Added inset light (glowstone-metal, light level like torch,
+                    can be used as floor/ceiling/wall light).
+                [M] Crafting table model updated (issue #7, thanks majijn).
+                [M] Logo image updated.
 
     - v1.0.1-b2 [A] Added treated wood crafting table.
                 [A] Added treated wood stool.

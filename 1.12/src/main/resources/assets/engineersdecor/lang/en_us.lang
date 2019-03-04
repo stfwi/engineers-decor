@@ -60,11 +60,15 @@ tile.engineersdecor.treated_wood_pole.help=§6Straight pole fragment with the di
 # Furniture
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.treated_wood_table.name=Treated wood table
-tile.engineersdecor.treated_wood_table.help=§6Robust four-legged wood table.§r\n Indoor and outdoor use.
+tile.engineersdecor.treated_wood_table.help=§6Robust four-legged wood table.§r Indoor and outdoor use.
 tile.engineersdecor.treated_wood_stool.name=Treated wood stool
-tile.engineersdecor.treated_wood_stool.help=§6Robust wood stool.§r\n Indoor and outdoor use.
+tile.engineersdecor.treated_wood_stool.help=§6Robust wood stool.§r Indoor and outdoor use.
 tile.engineersdecor.treated_wood_crafting_table.name=Treated wood crafting table
-tile.engineersdecor.treated_wood_crafting_table.help=§6Robust and weather-proof.§r
+tile.engineersdecor.treated_wood_crafting_table.help=§6Robust and weather-proof.
+tile.engineersdecor.iron_inset_light.name=Inset light
+tile.engineersdecor.iron_inset_light.help=§6Small glowstone light source, sunk into the floor, ceiling or wall.§r\n\
+                                               Useful to light up places where electrical light installations are problematic.\
+                                               Light level like a torch.
 
 # EOF
 #-----------------------------------------------------------------------------------------------------------
