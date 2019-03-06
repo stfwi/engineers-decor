@@ -8,20 +8,16 @@
   ],
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "SS",
+    "PP",
     "PC"
   ],
   "key": {
-    "S": {
-      "item": "#slabTreatedWood",
-      "data": 0
-    },
     "P": {
       "item": "#plankTreatedWood",
       "data": 0
     },
     "C": {
-      "item": "#crateTreatedWood",
+      "item": "#itemCraftingTable",
       "data": 0
     }
   },

@@ -10,6 +10,10 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+    - v1.0.1-b4 [M] Crafting table keeps inventory and has eight storage slots.
+                [M] Adapted inset light strength and harvest tool.
+                [M] Crafting table recipe adapted.
+
     - v1.0.1-b3 [A] Added inset light (glowstone-metal, light level like torch,
                     can be used as floor/ceiling/wall light).
                 [M] Crafting table model updated (issue #7, thanks majijn).

@@ -184,6 +184,15 @@
     },
     "name": "paneGlass"
   },
+
+  {
+    "ingredient": {
+      "item": "minecraft:crafting_table",
+      "data": 0
+    },
+    "name": "itemCraftingTable"
+  },
+
   {
     "ingredient": [
       {

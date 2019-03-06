@@ -165,7 +165,6 @@ public class BlockDecor extends Block
   { return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand); }
 
   @Override
-  public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
-  { return super.removedByPlayer(state, world, pos, player, willHarvest); }
-
+  public boolean canHarvestBlock(IBlockAccess world, BlockPos pos, EntityPlayer player)
+  { return true; }
 }

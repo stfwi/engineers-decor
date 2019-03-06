@@ -175,4 +175,9 @@ public class BlockDecorWall extends BlockDecor
 
   private boolean canWallConnectTo(IBlockAccess world, BlockPos pos, EnumFacing facing)
   { return canConnectTo(world, pos, pos.offset(facing), facing.getOpposite()); }
+
+  @Override
+  public boolean canPlaceTorchOnTop(IBlockState state, IBlockAccess world, BlockPos pos)
+  { return true; }
+
 }

@@ -126,8 +126,7 @@ public class ModEngineersDecor
       final BlockPos pos = new BlockPos(x,y,z);
       final TileEntity te = world.getTileEntity(pos);
       switch(guiid) {
-        case GUIID_CRAFTING_TABLE:
-          return (te instanceof BlockDecorCraftingTable.BEntity) ? (new BlockDecorCraftingTable.BContainer(player.inventory, world, pos)) : null;
+        case GUIID_CRAFTING_TABLE: return BlockDecorCraftingTable.getServerGuiElement(player, world, pos, te);
       }
       return null;
     }
@@ -139,8 +138,7 @@ public class ModEngineersDecor
       final BlockPos pos = new BlockPos(x,y,z);
       final TileEntity te = (world instanceof WorldClient) ? world.getTileEntity(pos) : null;
       switch(guiid) {
-        case GUIID_CRAFTING_TABLE:
-          return (te instanceof BlockDecorCraftingTable.BEntity) ? (new BlockDecorCraftingTable.BGuiCrafting(player.inventory, world, pos)) : null;
+        case GUIID_CRAFTING_TABLE: return BlockDecorCraftingTable.getClientGuiElement(player, world, pos, te);
       }
       return null;
     }

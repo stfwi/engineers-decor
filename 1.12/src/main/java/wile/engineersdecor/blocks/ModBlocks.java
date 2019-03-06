@@ -84,7 +84,7 @@ public class ModBlocks
   public static final BlockDecorDirected INSET_LIGHT_IRON = new BlockDecorDirected(
     "iron_inset_light",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT|(14<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
-    Material.IRON, 1.0f, 15f, SoundType.METAL,
+    Material.IRON, 0.3f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(5.2,5.2,15.7, 10.8,10.8,16.0)
   );
 
@@ -138,7 +138,7 @@ public class ModBlocks
     for(Block e:registeredBlocks) event.getRegistry().register(e);
     ModEngineersDecor.logger.info("Registered " + Integer.toString(registeredBlocks.size()) + " blocks.");
     // TEs
-    GameRegistry.registerTileEntity(BlockDecorCraftingTable.BEntity.class, new ResourceLocation(ModEngineersDecor.MODID, "te_crafting_table"));
+    GameRegistry.registerTileEntity(BlockDecorCraftingTable.BTileEntity.class, new ResourceLocation(ModEngineersDecor.MODID, "te_crafting_table"));
   }
 
   // Invoked from ClientProxy.registerModels()

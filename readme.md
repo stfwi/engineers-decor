@@ -42,8 +42,9 @@ no tile entities or user interactions are used. Current feature set:
   with reverse recipe.
 
 - *Treated wood crafting table*: 3x3 crafting table with IE style GUI and a model
-  fitting better in the engineer's  workshop. Crafted 2x2 with two treated wood
-  slabs, one crate, and one treated wood plank.
+  fitting better in the engineer's workshop. Keeps its inventory, has eight additional
+  storage slots on the left side of the crafting grid. Crafted 2x2 with three
+  treated wood planks and one vanilla crafting table.
 
 - *Treated wood ladder*: Crafted 3x3 with the known ladder pattern, items are
   treated wood sticks.
