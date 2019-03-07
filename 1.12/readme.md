@@ -10,6 +10,16 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+                -------------------------------------------------------------------
+    - v1.0.1    [R] Release based on v1.0.1-b4
+                    * Treated wood crafting table
+                    * Clinker brick wall
+                    * Treated wood stool
+                    * Inset spot light
+                    * Recipe fixes
+                    * Logo updated
+                -------------------------------------------------------------------
+
     - v1.0.1-b4 [M] Crafting table keeps inventory and has eight storage slots.
                 [M] Adapted inset light strength and harvest tool.
                 [M] Crafting table recipe adapted.
