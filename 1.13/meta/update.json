@@ -1,0 +1,10 @@
+{
+  "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
+  "1.13.2": {
+    "1.0.0-a1": "[A] Initial port to 1.13.2 with Forge beta."
+  },
+  "promos": {
+    "1.13.2-recommended": "",
+    "1.13.2-latest": "1.0.0-a1"
+  }
+}

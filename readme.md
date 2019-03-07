@@ -7,24 +7,18 @@ for the Engineer's factory, workshop, and home.
 
 ![](documentation/engineers-decor-v100a-summary.png)
 
+### Distribution file download
+
+Main distribution channel for this mod is CurseForge:
+
+  - Release/beta versions: https://www.curseforge.com/minecraft/mc-mods/engineers-decor/files
+  - All versions: https://minecraft.curseforge.com/projects/engineers-decor/files
+
 ----
 ### Details
 
 The mod has its focus on non-functional, decorative blocks. If anyhow possible,
 no tile entities or user interactions are used. Current feature set:
-
-- *Clinker bricks*: Slightly darker and more colorful version of the vanilla brick
-  block. Eight position dependent texture variations are implemented to make the
-  wall look more "alive". Crafted 3x3 with a brick block in the centre and any
-  combination of bricks and nether bricks around (actually, anything where the
-  ore dictionary says it's a "brick ingot"). Higher explosion resistance than the
-  vanilla brick wall. Also available as stairs, crafted as usual. There is a
-  reverse recipe to get three clinker brick blocks back from four stairs.
-
-- *Slag bricks*: Gray-brownish brick, also eight texture variations. Crafted 3x3
-  from slag in the centre and any kind of bricks ("brick ingot") around. Has a higher
-  explosion resistance than the vanilla brick wall. Also available as stairs, also
-  with reverse recipe.
 
 - Rebar (steel) reinforced concrete: Expensive but creeper-proof. Crafted 3x3 from
   four concrete blocks and five steel rods. Texture design oriented at the IE concrete,
@@ -33,6 +27,24 @@ no tile entities or user interactions are used. Current feature set:
 
 - Concrete wall: Solid concrete wall (not the vanilla wall design), crafted 3x3
   from six IE concrete blocks (normal wall recipe).
+
+- *Clinker bricks*: Slightly darker and more colorful version of the vanilla brick
+  block. Eight position dependent texture variations are implemented to make the
+  wall look more "alive". Crafted 3x3 with a brick block in the centre and any
+  combination of bricks and nether bricks around (actually, anything where the
+  ore dictionary says it's a "brick ingot"). Higher explosion resistance than the
+  vanilla brick wall. Also available as stairs and wall, crafted as usual. There
+  is a reverse recipe to get three clinker brick blocks back from four stairs.
+
+- *Slag bricks*: Gray-brownish brick, also eight texture variations. Crafted 3x3
+  from slag in the centre and any kind of bricks ("brick ingot") around. Has a higher
+  explosion resistance than the vanilla brick wall. Also available as stairs, also
+  with reverse recipe.
+
+- *Treated wood crafting table*: 3x3 crafting table with IE style GUI and a model
+  fitting better in the engineer's workshop. Keeps its inventory, has eight additional
+  storage slots on the left side of the crafting grid. Crafted 2x2 with three
+  treated wood planks and one vanilla crafting table.
 
 - *Treated wood ladder*: Crafted 3x3 with the known ladder pattern, items are
   treated wood sticks.
@@ -45,6 +57,9 @@ no tile entities or user interactions are used. Current feature set:
 
 - *Treated wood table*: Four leg table made out of treated wood. Crafted 3x3
   with three treated wood slabs and four treated wood poles. Guess the pattern.
+
+- *Treated wood stool*: Simple small stool fitting to the table. Crafted 3x3
+  with three treated wood slabs and one treated wood pole.
 
 - *Treated wood pole*: Pole fragment that can be placed in all directions. It
   does intentionally not connect to posts, fences, etc - just a straigt pole.
@@ -73,26 +88,15 @@ More to come slowly but steadily.
 ----
 ## Revision history
 
-                -------------------------------------------------------------------
-    - v1.0.0    [R] Release based on v1.0.0-b4
-                -------------------------------------------------------------------
+Mod versions are tracked in the readme files for individual Minecraft versions, and
+of course in the commits of this repository. Beta and release versions that are
+distributed as compiled `jar`s are tagged accordingly. Release versions are merged
+into the `master` branch, while beta/alpha version tags link to `develop` branch
+commits.
 
-    - v1.0.0-b4 [F] Fixed vanished recipe for the rebar concrete wall.
-                [A] Concrete wall, material: IE concrete.
+  - [1.12](1.12/readme.md)
 
-    - v1.0.0-b3 [A] Textures of rebar concrete and treated wood table improved.
-                [A] Added rebar concrete wall.
-
-    - v1.0.0-b2 [A] Added rebar concrete (steel reinforced, expensive, creeper-proof).
-
-    - v1.0.0-b1 [A] Initial structure.
-                [A] Added clinker bricks and clinker brick stairs.
-                [A] Added slag bricks and slag brick stairs.
-                [A] Added metal rung ladder.
-                [A] Added staggered metal steps ladder.
-                [A] Added treated wood ladder.
-                [A] Added treated wood pole.
-                [A] Added treated wood table.
+  - [1.13](1.13/readme.md)
 
 ### Community references
 
@@ -111,3 +115,11 @@ Mods covering similar features, or may fit well together with IE and the decorat
 
 - [Chisel](https://www.curseforge.com/minecraft/mc-mods/chisel) needless to say, Chisel has a variety
   of factory blocks.
+
+### Screenshots
+
+![Concrete](documentation/engineers-decor-v100a-concrete-stuff.png)
+
+![Concrete](documentation/engineers-decor-v101a-added.png)
+
+![Concrete](documentation/engineers-decor-v101a-craftinggui.png)

@@ -1,0 +1,22 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:metal_rung_steps",
+"later_required": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " SS",
+    "SS ",
+    " SS"
+  ],
+  "key": {
+    "S": { "constant": "engineersdecor:any_ferro_metal_stick" }
+  },
+  "result": {
+    "item": "engineersdecor:metal_rung_steps",
+    "count": 4
+  }
+}

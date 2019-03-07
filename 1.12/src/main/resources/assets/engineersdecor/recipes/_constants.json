@@ -1,0 +1,230 @@
+[
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "itemSlag"
+    },
+    "name": "itemSlag"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "plankTreatedWood"
+    },
+    "name": "plankTreatedWood"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "slabTreatedWood"
+    },
+    "name": "slabTreatedWood"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "stickTreatedWood"
+    },
+    "name": "stickTreatedWood"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "plateIron"
+    },
+    "name": "plateIron"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "plateSteel"
+    },
+    "name": "plateSteel"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "plateAluminium"
+    },
+    "name": "plateAluminium"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "stickSteel"
+    },
+    "name": "stickSteel"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "stickIron"
+    },
+    "name": "stickIron"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "stickAluminium"
+    },
+    "name": "stickAluminium"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "plankWood"
+    },
+    "name": "plankWood"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "stickWood"
+    },
+    "name": "stickWood"
+  },
+
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "sand"
+    },
+    "name": "sand"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "sandstone"
+    },
+    "name": "sandstone"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "bricksStone"
+    },
+    "name": "bricksStone"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "ingotBrick"
+    },
+    "name": "ingotBrick"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "ingotBrickNether"
+    },
+    "name": "ingotBrickNether"
+  },
+
+  {
+    "ingredient": [
+      {
+        "type": "forge:ore_dict",
+        "ore": "plateIron"
+      },
+      {
+        "type": "forge:ore_dict",
+        "ore": "plateSteel"
+      },
+      {
+        "type": "forge:ore_dict",
+        "ore": "plateCopper"
+      },
+      {
+        "type": "forge:ore_dict",
+        "ore": "plateAluminium"
+      },
+      {
+        "type": "forge:ore_dict",
+        "ore": "plateNickel"
+      },
+      {
+        "type": "forge:ore_dict",
+        "ore": "plateLead"
+      }
+    ],
+    "name": "plateAnyMetal"
+  },
+
+  {
+    "ingredient": [
+      {
+        "type": "forge:ore_dict",
+        "ore": "ingotBrick"
+      },
+      {
+        "type": "forge:ore_dict",
+        "ore": "ingotBrickNether"
+      }
+    ],
+    "name": "ingotAnyBrick"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "dustGlowstone"
+    },
+    "name": "luminescentDust"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "glowstone"
+    },
+    "name": "luminescentBlock"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "paneGlass"
+    },
+    "name": "paneGlass"
+  },
+
+  {
+    "ingredient": {
+      "item": "minecraft:crafting_table",
+      "data": 0
+    },
+    "name": "itemCraftingTable"
+  },
+
+  {
+    "ingredient": [
+      {
+        "type": "forge:ore_dict",
+        "ore": "stickIron"
+      },
+      {
+        "type": "forge:ore_dict",
+        "ore": "stickSteel"
+      }
+    ],
+    "name": "stickFerroMetal"
+  },
+  {
+    "conditions": [
+      { "type": "minecraft:item_exists", "item": "immersiveengineering:stone_decoration" }
+    ],
+    "ingredient": {
+      "item": "immersiveengineering:stone_decoration",
+      "data": 5
+    },
+    "name": "blockConcreteIe"
+  },
+  {
+    "conditions": [
+      { "type": "minecraft:item_exists", "item": "immersiveengineering:wooden_device0" }
+    ],
+    "ingredient": {
+      "item": "immersiveengineering:wooden_device0",
+      "data": 0
+    },
+    "name": "crateTreatedWood"
+  }
+
+]

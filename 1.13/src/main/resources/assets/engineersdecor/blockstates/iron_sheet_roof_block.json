@@ -1,0 +1,11 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "engineersdecor:block/std/decor_full_block_model",
+    "textures": { "all": "engineersdecor:block/iestyle/ironsheet_roof" }
+  },
+  "variants": {
+    "": [{}],
+    "inventory": [{}]
+  }
+}

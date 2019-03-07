@@ -1,0 +1,23 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:treated_wood_pole",
+"later_required": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " S ",
+    " W ",
+    " W "
+  ],
+  "key": {
+    "W": { "constant": "engineersdecor:treated_wood_planks" },
+    "S": { "constant": "engineersdecor:treated_wood_slab" }
+  },
+  "result": {
+    "item": "engineersdecor:treated_wood_pole",
+    "count": 6
+  }
+}

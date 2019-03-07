@@ -1,0 +1,14 @@
+{
+  "variants": {
+    "": [
+      { "model": "engineersdecor:block/brick/clinker_brick_model0" },
+      { "model": "engineersdecor:block/brick/clinker_brick_model1" },
+      { "model": "engineersdecor:block/brick/clinker_brick_model2" },
+      { "model": "engineersdecor:block/brick/clinker_brick_model3" },
+      { "model": "engineersdecor:block/brick/clinker_brick_model4" },
+      { "model": "engineersdecor:block/brick/clinker_brick_model5" },
+      { "model": "engineersdecor:block/brick/clinker_brick_model6" },
+      { "model": "engineersdecor:block/brick/clinker_brick_model7" }
+    ]
+  }
+}

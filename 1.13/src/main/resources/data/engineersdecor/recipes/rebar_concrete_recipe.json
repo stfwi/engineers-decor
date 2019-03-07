@@ -1,0 +1,22 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:rebar_concrete"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SCS",
+    "CSC",
+    "SCS"
+  ],
+  "key": {
+    "C": { "constant": "engineersdecor:concrete" },
+    "S": { "constant": "engineersdecor:steel_stick" }
+  },
+  "result": {
+    "item": "engineersdecor:rebar_concrete",
+    "count": 4
+  }
+}
