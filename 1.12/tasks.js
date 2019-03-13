@@ -26,9 +26,9 @@ tasks["dist-check"] = function() {
   if(git_remote.replace(/[\s]/g,"").indexOf("git@github.com:stfwi/engineers-decor.git(push)") < 0) fails.push("Not the reference repository.");
   if((git_branch != "develop") && (git_branch != "master")) {
     fails.push("No valid branch for dist. (branch:'"+git_branch+"')");
-  } else if((git_branch == "develop") && (version_engineersdecor.replace(/[^\w\.-]/g,"")=="")) {
+  } else if((git_branch == "develop") && (version_engineersdecor.replace(/[^ab\.-]/g,"")=="")) {
     fails.push("Cannot make release dist on develop branch.");
-  } else if((git_branch == "master") && (version_engineersdecor.replace(/[^\w\.-]/g,"")!="")) {
+  } else if((git_branch == "master") && (version_engineersdecor.replace(/[^ab\.-]/g,"")!="")) {
     fails.push("Cannot make beta dist on master branch.");
   }
   if(git_diff !== "") fails.push("Not everything committed to the GIT repository.");

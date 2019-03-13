@@ -66,6 +66,10 @@ no tile entities or user interactions are used. Current feature set:
   Can be used e.g. for structural support or wire relay post, where the height
   of the IE wire posts does not match.
 
+- *Panzer glass*: Reinforced, dark gray tinted glass block. Explosion-proof.
+  Faint structural lines are visible, multiple texture variations for seemless
+  look. Crafted 3x3 with four metal rods, four glass blocks, and one diamond.
+
 More to come slowly but steadily.
 
 ----

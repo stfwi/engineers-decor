@@ -10,6 +10,12 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+    - v1.0.2-b1 [A] Added rebar concrete tile.
+                [A] Added panzer glass (explosion-resistant reinforced glass).
+                [M] Treated wood crafting table supports shift-click to transfer
+                    stacks between player inventory and crafting table storage
+                    (thanks majijn for the hint).
+
                 -------------------------------------------------------------------
     - v1.0.1    [R] Release based on v1.0.1-b4
                     * Treated wood crafting table
