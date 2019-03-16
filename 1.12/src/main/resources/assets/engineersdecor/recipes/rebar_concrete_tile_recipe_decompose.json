@@ -2,22 +2,22 @@
   "conditions": [
     {
       "type": "engineersdecor:grc",
-      "result": "engineersdecor:clinker_brick_block"
+      "result": "engineersdecor:rebar_concrete"
     }
   ],
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "SS",
-    "SS"
+    "CC",
+    "CC"
   ],
   "key": {
-    "S": {
-      "item": "engineersdecor:clinker_brick_stairs",
+    "C": {
+      "item": "engineersdecor:rebar_concrete_tile",
       "data": 0
     }
   },
   "result": {
-    "item": "engineersdecor:clinker_brick_block",
+    "item": "engineersdecor:rebar_concrete",
     "count": 4
   }
 }

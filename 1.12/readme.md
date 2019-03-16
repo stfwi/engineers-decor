@@ -10,6 +10,11 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+    - v1.0.2-b2 [A] Added rebar concrete tile stairs.
+                [A] Added treated wood window sill.
+                [A] Added decomposition recipes for stairs and tiles.
+                [M] Changed stair recipe yield quantity from 9 to 6.
+
     - v1.0.2-b1 [A] Added rebar concrete tile.
                 [A] Added panzer glass (explosion-resistant reinforced glass).
                 [M] Treated wood crafting table supports shift-click to transfer

@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.12.2": {
+    "1.0.2-b2": "[A] Added rebar concrete tile stairs.\n[A] Added treated wood window sill.\n[A] Added decomposition recipes for stairs and tiles.\n[M] Changed stair recipe yield quantity from 9 to 6.",
     "1.0.2-b1": "[A] Added rebar concrete tile.\n[A] Added panzer glass (explosion-resistant reinforced glass).\n[M] Treated wood crafting table supports shift-click to transfer stacks between player inventory and crafting table storage (thanks majijn for the hint).",
     "1.0.1": "[R] Release based on v1.0.1-b4 * Treated wood crafting table * Clinker brick wall * Treated wood stool * Inset spot light * Recipe fixes * Logo updated",
     "1.0.1-b4": "[M] Crafting table keeps inventory and has eight storage slots.\n[M] Adapted inset light strength and harvest tool.\n[M] Crafting table recipe adapted.",
@@ -15,6 +16,6 @@
   },
   "promos": {
     "1.12.2-recommended": "1.0.1",
-    "1.12.2-latest": "1.0.2-b1"
+    "1.12.2-latest": "1.0.2-b2"
   }
 }

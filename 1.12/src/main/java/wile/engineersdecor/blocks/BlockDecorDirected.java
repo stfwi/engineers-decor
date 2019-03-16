@@ -107,14 +107,29 @@ public class BlockDecorDirected extends BlockDecor
 
   @Override
   @SuppressWarnings("deprecation")
+  public boolean canPlaceBlockOnSide(World world, BlockPos pos, EnumFacing side)
+  {
+    if(!super.canPlaceBlockOnSide(world, pos, side)) return false;
+    return !(((config & (CFG_HORIZIONTAL|CFG_LOOK_PLACEMENT))==(CFG_HORIZIONTAL)) && ((side==EnumFacing.UP)||(side==EnumFacing.DOWN)));
+  }
+
+  @Override
+  @SuppressWarnings("deprecation")
   public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
   {
-    if((config & CFG_HORIZIONTAL_PLACEMENT)!=0) {
-      // placement in direction the player is facing
-      return getDefaultState().withProperty(FACING, placer.getHorizontalFacing());
+    if((config & (CFG_HORIZIONTAL|CFG_LOOK_PLACEMENT)) == (CFG_HORIZIONTAL|CFG_LOOK_PLACEMENT)) {
+      // horizontal placement in direction the player is looking
+      facing = placer.getHorizontalFacing();
+    } else if((config & (CFG_HORIZIONTAL|CFG_LOOK_PLACEMENT)) == (CFG_HORIZIONTAL)) {
+      // horizontal placement on a face
+      facing = ((facing==EnumFacing.UP)||(facing==EnumFacing.DOWN)) ? (EnumFacing.NORTH) : facing;
+    } else if((config & CFG_LOOK_PLACEMENT)!=0) {
+      // placement in direction the player is looking, with up and down
+      facing = EnumFacing.getDirectionFromEntityLiving(pos, placer);
     } else {
       // default: placement on the face the player clicking
-      return getDefaultState().withProperty(FACING, ((config & CFG_OPPOSITE_PLACEMENT)==0) ? facing : facing.getOpposite());
     }
+    if((config & CFG_OPPOSITE_PLACEMENT)!=0) facing = facing.getOpposite();
+    return getDefaultState().withProperty(FACING, facing);
   }
 }

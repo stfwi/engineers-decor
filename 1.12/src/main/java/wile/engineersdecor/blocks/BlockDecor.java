@@ -41,13 +41,15 @@ public class BlockDecor extends Block
   // The config combines some aspects of blocks, allowing to define different behaviour at construction time, without excessive polymorphy.
   // It's an old school flag set as it is used internally only and shall not have as littlt impact on performance as possible.
   public final long config;
-  public static final long CFG_DEFAULT                = 0x0000000000000000L; // no special config
-  public static final long CFG_CUTOUT                 = 0x0000000000000001L; // cutout rendering
-  public static final long CFG_HORIZIONTAL            = 0x0000000000000002L; // horizontal block, affects bounding box calculation at construction time
-  public static final long CFG_HORIZIONTAL_PLACEMENT  = 0x0000000000000004L; // placed in the horizontzal direction the player is looking when placing.
-  public static final long CFG_OPPOSITE_PLACEMENT     = 0x0000000000000008L; // placed placed in the opposite direction of the face the player clicked.
-  public static final long CFG_LIGHT_VALUE_MASK       = 0x00000000000000f0L; // fixed value for getLightValue()
-  public static final long CFG_LIGHT_VALUE_SHIFT      = 4L;
+  public static final long CFG_DEFAULT                    = 0x0000000000000000L; // no special config
+  public static final long CFG_CUTOUT                     = 0x0000000000000001L; // cutout rendering
+  public static final long CFG_HORIZIONTAL                = 0x0000000000000002L; // horizontal block, affects bounding box calculation at construction time and placement
+  public static final long CFG_LOOK_PLACEMENT             = 0x0000000000000004L; // placed in direction the player is looking when placing.
+  public static final long CFG_FACING_PLACEMENT           = 0x0000000000000008L; // placed on the facing the player has clicked.
+  public static final long CFG_OPPOSITE_PLACEMENT         = 0x0000000000000020L; // placed placed in the opposite direction of the face the player clicked.
+
+  public static final long CFG_LIGHT_VALUE_MASK           = 0x0000000000000f00L; // fixed value for getLightValue()
+  public static final long CFG_LIGHT_VALUE_SHIFT          = 8L;
 
   public BlockDecor(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound)
   {

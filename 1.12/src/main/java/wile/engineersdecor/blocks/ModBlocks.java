@@ -46,6 +46,7 @@ public class ModBlocks
   public static final BlockDecorStairs REBAR_CONCRETE_STAIRS = new BlockDecorStairs("rebar_concrete_stairs", REBAR_CONCRETE_BLOCK.getDefaultState());
   public static final BlockDecorWall REBAR_CONCRETE_WALL = new BlockDecorWall("rebar_concrete_wall", BlockDecor.CFG_DEFAULT, Material.ROCK, 8f, 2000f, SoundType.STONE);
   public static final BlockDecorFull REBAR_CONCRETE_TILE = new BlockDecorFull("rebar_concrete_tile", 0, Material.ROCK, 8f, 2000f, SoundType.STONE);
+  public static final BlockDecorStairs REBAR_CONCRETE_TILE_STAIRS = new BlockDecorStairs("rebar_concrete_tile_stairs", REBAR_CONCRETE_TILE.getDefaultState());
 
   public static final BlockDecorWall CONCRETE_WALL = new BlockDecorWall("concrete_wall", BlockDecor.CFG_DEFAULT, Material.ROCK, 8f, 50f, SoundType.STONE);
 
@@ -57,26 +58,26 @@ public class ModBlocks
 
   public static final BlockDecorDirected TREATED_WOOD_POLE = new BlockDecorDirected(
     "treated_wood_pole",
-    BlockDecor.CFG_CUTOUT,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT,
     Material.WOOD, 1.0f, 15f, SoundType.WOOD,
     ModAuxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16)
   );
 
   public static final BlockDecor TREATED_WOOD_TABLE = new BlockDecor(
     "treated_wood_table",
-    BlockDecor.CFG_CUTOUT,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
     Material.WOOD, 1.0f, 15f, SoundType.WOOD
   );
   public static final BlockDecorChair TREATED_WOOD_STOOL = new BlockDecorChair(
     "treated_wood_stool",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL_PLACEMENT|BlockDecor.CFG_HORIZIONTAL,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
     Material.WOOD, 1.0f, 15f, SoundType.WOOD,
     ModAuxiliaries.getPixeledAABB(4.1,0,4.1, 11.8,8.8,11.8)
   );
 
   public static final BlockDecorCraftingTable TREATED_WOOD_CRAFTING_TABLE = new BlockDecorCraftingTable(
     "treated_wood_crafting_table",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL_PLACEMENT|BlockDecor.CFG_HORIZIONTAL,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
     Material.WOOD, 1.0f, 15f, SoundType.WOOD,
     ModAuxiliaries.getPixeledAABB(0.0,0,0, 16,15.9,16)
   );
@@ -88,29 +89,38 @@ public class ModBlocks
     ModAuxiliaries.getPixeledAABB(5.2,5.2,15.7, 10.8,10.8,16.0)
   );
 
+  public static final BlockDecorDirected TREATED_WOOD_WINDOWSILL = new BlockDecorDirected(
+    "treated_wood_windowsill",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_FACING_PLACEMENT,
+    Material.WOOD, 1.0f, 15f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(0.5,15,10.5, 15.5,16,16)
+  );
+
   public static final BlockDecorFull IRON_SHEET_ROOF_FULLBLOCK = new BlockDecorFull("iron_sheet_roof_block", 0, Material.IRON, 1.8f, 25f, SoundType.METAL);
   public static final BlockDecorStairs IRON_SHEET_ROOF = new BlockDecorStairs("iron_sheet_roof", IRON_SHEET_ROOF_FULLBLOCK.getDefaultState());
 
   private static final Block modBlocks[] = {
-    SLAG_BRICK_BLOCK,
+    TREATED_WOOD_CRAFTING_TABLE,
     CLINKER_BRICK_BLOCK,
-    METAL_RUNG_LADDER,
-    METAL_RUNG_STEPS,
-    TREATED_WOOD_LADDER,
     CLINKER_BRICK_STAIRS,
+    CLINKER_BRICK_WALL,
+    SLAG_BRICK_BLOCK,
     SLAG_BRICK_STAIRS,
-    TREATED_WOOD_POLE,
-    TREATED_WOOD_TABLE,
     REBAR_CONCRETE_BLOCK,
     REBAR_CONCRETE_STAIRS,
     REBAR_CONCRETE_WALL,
     REBAR_CONCRETE_TILE,
-    CLINKER_BRICK_WALL,
-    TREATED_WOOD_STOOL,
-    TREATED_WOOD_CRAFTING_TABLE,
-    INSET_LIGHT_IRON,
+    REBAR_CONCRETE_TILE_STAIRS,
+    CONCRETE_WALL,
     PANZERGLASS_BLOCK,
-    CONCRETE_WALL
+    METAL_RUNG_LADDER,
+    METAL_RUNG_STEPS,
+    TREATED_WOOD_LADDER,
+    TREATED_WOOD_POLE,
+    TREATED_WOOD_TABLE,
+    TREATED_WOOD_STOOL,
+    TREATED_WOOD_WINDOWSILL,
+    INSET_LIGHT_IRON,
   };
 
   private static final Block devBlocks[] = {

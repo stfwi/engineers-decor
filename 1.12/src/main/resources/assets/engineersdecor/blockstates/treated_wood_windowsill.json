@@ -1,0 +1,11 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "engineersdecor:furniture/treated_wood_windowsill_model"
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "facing": { "north": {"y":0}, "south": {"y":180}, "west": {"y":-90}, "east": {"y":90}, "up":{}, "down":{} }
+  }
+}

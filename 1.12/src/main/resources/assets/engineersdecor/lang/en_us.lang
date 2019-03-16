@@ -43,6 +43,8 @@ tile.engineersdecor.slag_brick_stairs.name=Clinker brick stairs
 tile.engineersdecor.slag_brick_stairs.help=§6Looks slightly darker and more color intensive than the vanilla brick block.
 tile.engineersdecor.rebar_concrete_stairs.name=Rebar concrete stairs
 tile.engineersdecor.rebar_concrete_stairs.help=§6Steel reinforced concrete stairs.§r Expensive but Creeper-proof like obsidian.
+tile.engineersdecor.rebar_concrete_tile_stairs.name=Rebar concrete tile stairs
+tile.engineersdecor.rebar_concrete_tile_stairs.help=§6Steel reinforced concrete tile stairs.§r Expensive but Creeper-proof like obsidian.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.treated_wood_pole.name=Straight treated wood pole
 tile.engineersdecor.treated_wood_pole.help=§6Straight pole fragment with the diameter of a wire relay.§r\n\
@@ -54,11 +56,13 @@ tile.engineersdecor.treated_wood_table.help=§6Robust four-legged wood table.§r
 tile.engineersdecor.treated_wood_stool.name=Treated wood stool
 tile.engineersdecor.treated_wood_stool.help=§6Robust wood stool.§r Indoor and outdoor use.
 tile.engineersdecor.treated_wood_crafting_table.name=Treated wood crafting table
-tile.engineersdecor.treated_wood_crafting_table.help=§6Robust and weather-proof.
+tile.engineersdecor.treated_wood_crafting_table.help=§6Robust and weather-proof. Eight storage slots. Keeps inventory.
 tile.engineersdecor.iron_inset_light.name=Inset light
 tile.engineersdecor.iron_inset_light.help=§6Small glowstone light source, sunk into the floor, ceiling or wall.§r\n\
                                                Useful to light up places where electrical light installations are problematic.\
                                                Light level like a torch.
+tile.engineersdecor.treated_wood_windowsill.name=Treated wood window sill
+tile.engineersdecor.treated_wood_windowsill.help=§6Simple window decoration.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.iron_sheet_roof.name=Iron sheet metal roof
 tile.engineersdecor.iron_sheet_roof.help=§6Well, it's a roof.
