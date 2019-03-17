@@ -47,7 +47,7 @@ public class BlockDecor extends Block
   public static final long CFG_LOOK_PLACEMENT             = 0x0000000000000004L; // placed in direction the player is looking when placing.
   public static final long CFG_FACING_PLACEMENT           = 0x0000000000000008L; // placed on the facing the player has clicked.
   public static final long CFG_OPPOSITE_PLACEMENT         = 0x0000000000000020L; // placed placed in the opposite direction of the face the player clicked.
-
+  public static final long CFG_TRANSLUCENT                = 0x0000000000000040L; // indicates a block/pane is glass like (transparent, etc)
   public static final long CFG_LIGHT_VALUE_MASK           = 0x0000000000000f00L; // fixed value for getLightValue()
   public static final long CFG_LIGHT_VALUE_SHIFT          = 8L;
 
@@ -79,7 +79,13 @@ public class BlockDecor extends Block
   @Override
   @SideOnly(Side.CLIENT)
   public BlockRenderLayer getRenderLayer()
-  { return ((config & CFG_CUTOUT)!=0) ? BlockRenderLayer.CUTOUT : BlockRenderLayer.SOLID; }
+  { return ((config & CFG_CUTOUT)!=0) ? (BlockRenderLayer.CUTOUT) : ( ((config & CFG_TRANSLUCENT)!=0) ? (BlockRenderLayer.TRANSLUCENT) : (BlockRenderLayer.SOLID)); }
+
+  @Override
+  @SideOnly(Side.CLIENT)
+  @SuppressWarnings("deprecation")
+  public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
+  { return true; }
 
   @Override
   @SuppressWarnings("deprecation")
@@ -89,16 +95,20 @@ public class BlockDecor extends Block
   @Override
   @SuppressWarnings("deprecation")
   public boolean isNormalCube(IBlockState state)
-  { return ((config & CFG_CUTOUT)==0); }
+  { return ((config & (CFG_CUTOUT|CFG_TRANSLUCENT))==0); }
 
   @Override
   @SuppressWarnings("deprecation")
   public boolean isOpaqueCube(IBlockState state)
-  { return ((config & CFG_CUTOUT)==0); }
+  { return ((config & (CFG_CUTOUT|CFG_TRANSLUCENT))==0); }
 
   @Override
   public boolean canSpawnInBlock()
   { return false; }
+
+  @Override
+  public boolean canHarvestBlock(IBlockAccess world, BlockPos pos, EntityPlayer player)
+  { return true; }
 
   @Override
   @SuppressWarnings("deprecation")
@@ -166,7 +176,4 @@ public class BlockDecor extends Block
   public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
   { return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand); }
 
-  @Override
-  public boolean canHarvestBlock(IBlockAccess world, BlockPos pos, EntityPlayer player)
-  { return true; }
 }

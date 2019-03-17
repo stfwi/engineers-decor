@@ -29,13 +29,15 @@ tile.engineersdecor.concrete_wall.name=Concrete wall
 tile.engineersdecor.concrete_wall.help=§6Wall made of solid concrete.
 tile.engineersdecor.clinker_brick_wall.name=Clinker brick wall
 tile.engineersdecor.clinker_brick_wall.help=§6Simplistic clinker brick wall.
+tile.engineersdecor.slag_brick_wall.name=Slag brick wall
+tile.engineersdecor.slag_brick_wall.help=§6Simplistic slag brick wall.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.metal_rung_ladder.name=Metal rung ladder
-tile.engineersdecor.metal_rung_ladder.help=§6Typical industrial wall ladder, consisting of horizontal metal rod rungs.
+tile.engineersdecor.metal_rung_ladder.help=§6Typical industrial wall ladder, consisting of horizontal metal rod rungs.§r Look up/down to climb faster.
 tile.engineersdecor.metal_rung_steps.name=Staggered metal steps
-tile.engineersdecor.metal_rung_steps.help=§6Staggered rod rungs affixed to a wall, allowing to climb up, fall down, and so on.
+tile.engineersdecor.metal_rung_steps.help=§6Staggered rod rungs affixed to a wall, allowing to climb up, fall down, and so on.§r Look up/down to climb faster.
 tile.engineersdecor.treated_wood_ladder.name=Treated wood ladder
-tile.engineersdecor.treated_wood_ladder.help=§6Weather-proof wooden ladder.
+tile.engineersdecor.treated_wood_ladder.help=§6Weather-proof wooden ladder.§r Look up/down to climb faster.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.clinker_brick_stairs.name=Clinker brick stairs
 tile.engineersdecor.clinker_brick_stairs.help=§6Looks slightly darker and more color intensive than the vanilla brick block.
@@ -61,6 +63,8 @@ tile.engineersdecor.iron_inset_light.name=Inset light
 tile.engineersdecor.iron_inset_light.help=§6Small glowstone light source, sunk into the floor, ceiling or wall.§r\n\
                                                Useful to light up places where electrical light installations are problematic.\
                                                Light level like a torch.
+tile.engineersdecor.treated_wood_window.name=Treated wood window
+tile.engineersdecor.treated_wood_window.help=§6Wood framed tripple glazed window. Well insulating.
 tile.engineersdecor.treated_wood_windowsill.name=Treated wood window sill
 tile.engineersdecor.treated_wood_windowsill.help=§6Simple window decoration.
 #-----------------------------------------------------------------------------------------------------------

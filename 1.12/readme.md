@@ -10,6 +10,15 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+    - v1.0.2-b3 [A] Added slag brick wall.
+                [A] Added wall decomposition recipes.
+                [A] Added treated wood window.
+                [M] Climbing/descending mod ladders is faster when
+                    looking up or down and not sneaking.
+                [M] Panzer glass material definition changed.
+                [M] Explicitly preventing spawning in and on "non-full"
+                    blocks of the mod.
+
     - v1.0.2-b2 [A] Added rebar concrete tile stairs.
                 [A] Added treated wood window sill.
                 [A] Added decomposition recipes for stairs and tiles.

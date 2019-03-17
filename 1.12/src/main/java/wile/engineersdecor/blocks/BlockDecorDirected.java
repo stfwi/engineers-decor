@@ -21,12 +21,9 @@ import net.minecraft.world.World;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -66,6 +63,10 @@ public class BlockDecorDirected extends BlockDecor
   { return false; }
 
   @Override
+  public boolean canCreatureSpawn(IBlockState state, IBlockAccess world, BlockPos pos, net.minecraft.entity.EntityLiving.SpawnPlacementType type)
+  { return false; }
+
+  @Override
   @SuppressWarnings("deprecation")
   public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face)
   { return BlockFaceShape.UNDEFINED; }
@@ -79,11 +80,6 @@ public class BlockDecorDirected extends BlockDecor
   @Nullable
   public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
   { return getBoundingBox(state, world, pos); }
-
-  @Override
-  @SideOnly(Side.CLIENT)
-  public BlockRenderLayer getRenderLayer()
-  { return BlockRenderLayer.CUTOUT; }
 
   @Override
   public IBlockState getStateFromMeta(int meta)

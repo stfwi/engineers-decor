@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.12.2": {
+    "1.0.2-b3": "[A] Added slag brick wall.\n[A] Added wall decomposition recipes.\n[A] Added treated wood window.\n[M] Climbing/descending mod ladders is faster when looking up or down and not sneaking.\n[M] Panzer glass material definition changed.\n[M] Explicitly preventing spawning in and on \"non-full\" blocks of the mod.",
     "1.0.2-b2": "[A] Added rebar concrete tile stairs.\n[A] Added treated wood window sill.\n[A] Added decomposition recipes for stairs and tiles.\n[M] Changed stair recipe yield quantity from 9 to 6.",
     "1.0.2-b1": "[A] Added rebar concrete tile.\n[A] Added panzer glass (explosion-resistant reinforced glass).\n[M] Treated wood crafting table supports shift-click to transfer stacks between player inventory and crafting table storage (thanks majijn for the hint).",
     "1.0.1": "[R] Release based on v1.0.1-b4 * Treated wood crafting table * Clinker brick wall * Treated wood stool * Inset spot light * Recipe fixes * Logo updated",
@@ -15,6 +16,7 @@
     "1.0.0-b1": "[A] Initial structure.\n[A] Added clinker bricks and clinker brick stairs.\n[A] Added slag bricks and slag brick stairs.\n[A] Added metal rung ladder.\n[A] Added staggered metal steps ladder.\n[A] Added treated wood ladder.\n[A] Added treated wood pole.\n[A] Added treated wood table."
   },
   "1.13.2": {
+    "1.0.2-b2": "[A] Added wall decomposition recipes.\n[A] Added slag brick wall.\n[M] Climbing/descending mod ladders is faster when looking up or down and not sneaking.\n[M] Panzer glass material definition changed.",
     "1.0.2-b1": "[A] Added Treated wood crafting table.\n[A] Added decomposition recipes for stairs and tiles.\n[N] Note: All v1.0.2-b1-mc1.12.2 blocks are ported to 1.13.2 (alpha -^ beta version).\n[N] Note: Until IE is out for 1.13.2, the recipes are temporary with vanilla items.",
     "1.0.0-a3": "[A] Added iron inset light.\n[A] Added rebar concrete tile.\n[A] Added rebar concrete tile stairs.\n[A] Added clinker brick wall.\n[A] Added treated wood stool.\n[A] Added treated window sill.",
     "1.0.0-a2": "[A] Added panzer glass.",
@@ -22,8 +24,8 @@
   },
   "promos": {
     "1.12.2-recommended": "1.0.1",
-    "1.12.2-latest": "1.0.2-b2",
+    "1.12.2-latest": "1.0.2-b3",
     "1.13.2-recommended": "",
-    "1.13.2-latest": "1.0.2-b1"
+    "1.13.2-latest": "1.0.2-b2"
   }
 }

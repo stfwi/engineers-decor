@@ -57,6 +57,10 @@ public class BlockDecorGlassBlock extends BlockDecor
   { return false; }
 
   @Override
+  public boolean canCreatureSpawn(IBlockState state, IBlockAccess world, BlockPos pos, net.minecraft.entity.EntityLiving.SpawnPlacementType type)
+  { return false; }
+
+  @Override
   @SuppressWarnings("deprecation")
   public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face)
   { return BlockFaceShape.SOLID; }
@@ -74,11 +78,11 @@ public class BlockDecorGlassBlock extends BlockDecor
   @Override
   @SuppressWarnings("deprecation")
   public boolean isFullCube(IBlockState state)
-  { return true; }
+  { return false; }
 
   @Override
   @SuppressWarnings("deprecation")
   public boolean isNormalCube(IBlockState state)
-  { return true; }
+  { return false; }
 
 }

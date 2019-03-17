@@ -22,4 +22,9 @@ public class BlockDecorStairs extends net.minecraft.block.BlockStairs
     setRegistryName(ModEngineersDecor.MODID, registryName);
     setTranslationKey(ModEngineersDecor.MODID + "." + registryName);
   }
+
+  @Override
+  public boolean canSpawnInBlock()
+  { return false; }
+
 }

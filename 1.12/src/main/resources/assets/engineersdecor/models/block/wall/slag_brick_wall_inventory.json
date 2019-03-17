@@ -2,9 +2,9 @@
 	"parent": "block/block",
 	"ambientocclusion": false,
 	"textures": {
-		"wall": "engineersdecor:blocks/clinker_brick/clinker_brick_wall",
-		"particle": "engineersdecor:blocks/clinker_brick/clinker_brick_wall",
-		"top": "engineersdecor:blocks/clinker_brick/clinker_brick_top"
+		"wall": "engineersdecor:blocks/slag_brick/slag_brick_wall",
+		"particle": "engineersdecor:blocks/slag_brick/slag_brick_wall",
+		"top": "engineersdecor:blocks/slag_brick/slag_brick_top"
 	},
 	"elements": [
 		{

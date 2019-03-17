@@ -1,5 +1,4 @@
 {
-  "credit": "I made this with the Blockbench",
   "parent": "block/cube",
 	"textures": {
     "particle": "engineersdecor:blocks/iestyle/steel_texture",

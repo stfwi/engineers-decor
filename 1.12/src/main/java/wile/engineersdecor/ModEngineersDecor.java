@@ -13,9 +13,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import wile.engineersdecor.blocks.BlockDecorCraftingTable;
+import wile.engineersdecor.blocks.BlockDecorLadder;
 import wile.engineersdecor.detail.ModConfig;
 import wile.engineersdecor.blocks.ModBlocks;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -63,13 +66,13 @@ public class ModEngineersDecor
 
   public interface IProxy
   {
-    default void preInit(FMLPreInitializationEvent e) {}
-    default void init(FMLInitializationEvent e) {}
-    default void postInit(FMLPostInitializationEvent e) {}
+    default void preInit(final FMLPreInitializationEvent e) {}
+    default void init(final FMLInitializationEvent e) {}
+    default void postInit(final FMLPostInitializationEvent e) {}
   }
 
   @Mod.EventHandler
-  public void preInit(FMLPreInitializationEvent event)
+  public void preInit(final FMLPreInitializationEvent event)
   {
     logger = event.getModLog();
     logger.info(MODNAME + ": Version " + MODMCVERSION + "-" + MODVERSION + ( (MODBUILDID=="@"+"MOD_BUILDID"+"@") ? "" : (" "+MODBUILDID) ) + ".");
@@ -79,33 +82,34 @@ public class ModEngineersDecor
       logger.info(MODNAME + ": Found valid fingerprint " + MODFINGERPRINT + ".");
     }
     proxy.preInit(event);
+    MinecraftForge.EVENT_BUS.register(new PlayerEventHandler());
   }
 
   @Mod.EventHandler
-  public void init(FMLInitializationEvent event)
+  public void init(final FMLInitializationEvent event)
   {
     proxy.init(event);
     NetworkRegistry.INSTANCE.registerGuiHandler(this, new ModEngineersDecor.GuiHandler());
   }
 
   @Mod.EventHandler
-  public void postInit(FMLPostInitializationEvent event)
+  public void postInit(final FMLPostInitializationEvent event)
   { ModConfig.onPostInit(event); proxy.postInit(event); }
 
   @Mod.EventBusSubscriber
   public static final class RegistrationSubscriptions
   {
     @SubscribeEvent
-    public static void registerBlocks(RegistryEvent.Register<Block> event)
+    public static void registerBlocks(final RegistryEvent.Register<Block> event)
     { ModBlocks.registerBlocks(event); }
 
     @SubscribeEvent
-    public static void registerItems(RegistryEvent.Register<Item> event)
+    public static void registerItems(final RegistryEvent.Register<Item> event)
     { ModBlocks.registerItemBlocks(event); }
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
-    public static void registerModels(ModelRegistryEvent event)
+    public static void registerModels(final ModelRegistryEvent event)
     { ModBlocks.initModels(); }
   }
 
@@ -143,6 +147,19 @@ public class ModEngineersDecor
       return null;
     }
 
+  }
+
+  @Mod.EventBusSubscriber
+  public static class PlayerEventHandler
+  {
+    @SubscribeEvent
+    public void update(final LivingEvent.LivingUpdateEvent event)
+    {
+      if(!(event.getEntity() instanceof EntityPlayer)) return;
+      final EntityPlayer player = (EntityPlayer)event.getEntity();
+      if(player.world == null) return;
+      if(player.isOnLadder()) BlockDecorLadder.onPlayerUpdateEvent(player);
+    }
   }
 
 }
