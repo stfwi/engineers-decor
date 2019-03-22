@@ -26,9 +26,9 @@ tasks["dist-check"] = function() {
   if(git_remote.replace(/[\s]/g,"").indexOf("git@github.com:stfwi/engineers-decor.git(push)") < 0) fails.push("Not the reference repository.");
   if((git_branch != "develop") && (git_branch != "master")) {
     fails.push("No valid branch for dist. (branch:'"+git_branch+"')");
-  } else if((git_branch == "develop") && (version_engineersdecor.replace(/[^\w\.-]/g,"")=="")) {
+  } else if((git_branch == "develop") && (version_engineersdecor.replace(/[^ab]/g,"")=="")) {
     fails.push("Cannot make release dist on develop branch.");
-  } else if((git_branch == "master") && (version_engineersdecor.replace(/[^\w\.-]/g,"")!="")) {
+  } else if((git_branch == "master") && (version_engineersdecor.replace(/[^ab]/g,"")!="")) {
     fails.push("Cannot make beta dist on master branch.");
   }
   if(git_diff !== "") fails.push("Not everything committed to the GIT repository.");
@@ -305,7 +305,7 @@ tasks["update-json"] = function() {
     // Condense log entries sepatated with newlines to one line for each version
     for(var i=readme.length-1; i>0; --i) {
       var line = readme[i].replace(/^\s+/,"");
-      if(line.search(/^-/) < 0) {
+      if(line.search(/^[-~]/) < 0) {
         readme[i-1] += "\n" + line;
         readme[i] = "";
       }
@@ -317,6 +317,7 @@ tasks["update-json"] = function() {
       var line = readme[i].replace(/^[\sv-]+/g,"").trim();
       var ver = line.substr(0, line.search(" ")).trim().toLowerCase();
       var txt = line.substr(line.search(" ")).trim();
+      if(ver.search("~")===0) continue;
       if(history[ver] !== undefined) throw new Error("Double definition of version '" + ver + "' in the readme revision history.");
       history[ver] = txt;
     }

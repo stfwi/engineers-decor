@@ -1,0 +1,19 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "engineersdecor:glass/panzerglass_block_model",
+    "textures": { "all": "engineersdecor:blocks/glass/panzerglass_block_texture0" }
+  },
+  "variants": {
+    "normal": [
+      { "textures": { "all": "engineersdecor:blocks/glass/panzerglass_block_texture0" } },
+      { "textures": { "all": "engineersdecor:blocks/glass/panzerglass_block_texture1" } },
+      { "textures": { "all": "engineersdecor:blocks/glass/panzerglass_block_texture2" } },
+      { "textures": { "all": "engineersdecor:blocks/glass/panzerglass_block_texture3" } }
+    ],
+    "inventory": {
+      "model": "engineersdecor:glass/panzerglass_block_model",
+      "textures": { "all": "engineersdecor:blocks/glass/panzerglass_block_texture_inventory" }
+    }
+  }
+}

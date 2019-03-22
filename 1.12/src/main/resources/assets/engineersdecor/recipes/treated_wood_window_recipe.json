@@ -1,0 +1,29 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:treated_wood_window",
+      "required": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WGW",
+    "GGG",
+    "WGW"
+  ],
+  "key": {
+    "W": {
+      "item": "#slabTreatedWood",
+      "data": 0
+    },
+    "G": {
+      "item": "#paneGlass",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:treated_wood_window",
+    "count": 9
+  }
+}

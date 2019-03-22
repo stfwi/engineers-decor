@@ -11,6 +11,38 @@ Mod sources for Minecraft version 1.12.2.
 ## Revision history
 
                 -------------------------------------------------------------------
+    - v1.0.2    [R] Release based on v1.0.2-b3
+                    * Fixes: Spawning.
+                    * Crafting table: Shift-click.
+                    * Ladders: Faster climbing/descending.
+                    * Concrete: Rebar tiles, tile stairs.
+                    * Treated wood: window, windowsill.
+                    * Slag brick: wall.
+                    * Panzer glass: added.
+                    * Recipes: Adaptions, added decompositions.
+                -------------------------------------------------------------------
+
+    - v1.0.2-b3 [A] Added slag brick wall.
+                [A] Added wall decomposition recipes.
+                [A] Added treated wood window.
+                [M] Climbing/descending mod ladders is faster when
+                    looking up or down and not sneaking.
+                [M] Panzer glass material definition changed.
+                [M] Explicitly preventing spawning in and on "non-full"
+                    blocks of the mod.
+
+    - v1.0.2-b2 [A] Added rebar concrete tile stairs.
+                [A] Added treated wood window sill.
+                [A] Added decomposition recipes for stairs and tiles.
+                [M] Changed stair recipe yield quantity from 9 to 6.
+
+    - v1.0.2-b1 [A] Added rebar concrete tile.
+                [A] Added panzer glass (explosion-resistant reinforced glass).
+                [M] Treated wood crafting table supports shift-click to transfer
+                    stacks between player inventory and crafting table storage
+                    (thanks majijn for the hint).
+
+                -------------------------------------------------------------------
     - v1.0.1    [R] Release based on v1.0.1-b4
                     * Treated wood crafting table
                     * Clinker brick wall

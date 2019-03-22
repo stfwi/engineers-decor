@@ -159,10 +159,6 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
-    {}
-
-    @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
     {
       GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -251,19 +247,18 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
     @Override
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index)
     {
-      ItemStack stack = ItemStack.EMPTY;
       Slot slot = this.inventorySlots.get(index);
-      if((slot == null) || (!slot.getHasStack())) return stack;
+      if((slot == null) || (!slot.getHasStack())) return ItemStack.EMPTY;
       ItemStack slotstack = slot.getStack();
-      stack = slotstack.copy();
+      ItemStack stack = slotstack.copy();
       if(index == 0) {
         slotstack.getItem().onCreated(slotstack, this.world, playerIn);
         if(!this.mergeItemStack(slotstack, 10, 46, true)) return ItemStack.EMPTY;
         slot.onSlotChange(slotstack, stack);
-      } else if (index >= 10 && (index < 37)) {
-        if(!this.mergeItemStack(slotstack, 37, 46, false)) return ItemStack.EMPTY;
-      } else if((index >= 37) && (index < 46)) {
-        if(!this.mergeItemStack(slotstack, 10, 37, false)) return ItemStack.EMPTY;
+      } else if(index >= 10 && (index < 46)) {
+        if(!this.mergeItemStack(slotstack, 46, 54, false)) return ItemStack.EMPTY;
+      } else if((index >= 46) && (index < 54)) {
+        if(!this.mergeItemStack(slotstack, 10, 46, false)) return ItemStack.EMPTY;
       } else if(!this.mergeItemStack(slotstack, 10, 46, false)) {
         return ItemStack.EMPTY;
       }
@@ -373,18 +368,6 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound)
     { super.writeToNBT(compound); writenbt(compound); return compound; }
-
-    //@Override
-    //public NBTTagCompound getUpdateTag()
-    //{ return writeToNBT(new NBTTagCompound()); }
-
-    //@Override
-    //public SPacketUpdateTileEntity getUpdatePacket()
-    //{ return new SPacketUpdateTileEntity(getPos(), 0x1, getUpdateTag()); }
-    //
-    //@Override
-    //public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
-    //{ readFromNBT(pkt.getNbtCompound()); super.onDataPacket(net, pkt); }
 
     // IWorldNamable ---------------------------------------------------------------------------
 

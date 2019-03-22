@@ -118,6 +118,14 @@ public class BlockDecorWall extends BlockDecor
   public boolean isNormalCube(IBlockState state)
   { return false; }
 
+  @Override
+  public boolean canCreatureSpawn(IBlockState state, IBlockAccess world, BlockPos pos, net.minecraft.entity.EntityLiving.SpawnPlacementType type)
+  { return false; }
+
+  @Override
+  public boolean canSpawnInBlock()
+  { return false; }
+
   private boolean canConnectTo(IBlockAccess world, BlockPos pos, BlockPos other, EnumFacing facing)
   {
     final IBlockState state = world.getBlockState(other);

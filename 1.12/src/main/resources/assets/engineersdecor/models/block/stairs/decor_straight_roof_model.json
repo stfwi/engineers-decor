@@ -1,5 +1,5 @@
 {
-	"credit": "I made this with the Blockbench",
+	"ambientocclusion": false,
 	"parent": "block/block",
 	"textures": {
 		"side": "engineersdecor:blocks/iestyle/ironsheet_roof",

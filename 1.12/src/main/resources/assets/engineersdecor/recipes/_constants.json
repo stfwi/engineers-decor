@@ -184,7 +184,20 @@
     },
     "name": "paneGlass"
   },
-
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "blockGlass"
+    },
+    "name": "blockGlass"
+  },
+  {
+    "ingredient": {
+      "item": "minecraft:diamond",
+      "data": 0
+    },
+    "name": "itemDiamond"
+  },
   {
     "ingredient": {
       "item": "minecraft:crafting_table",
@@ -192,7 +205,6 @@
     },
     "name": "itemCraftingTable"
   },
-
   {
     "ingredient": [
       {

@@ -67,7 +67,8 @@ install: $(MOD_JAR) |
 	@rm -f "$(SERVER_INSTALL_DIR)/mods/${MOD_JAR_PREFIX}"*.jar
 	@[ -d "$(SERVER_INSTALL_DIR)/mods" ] && cp -f "$(MOD_JAR)" "$(SERVER_INSTALL_DIR)/mods/"
 
-start-server: install
+start-server:
+	-@make -s install
 	@echo "[1.12] Starting local dedicated server ..."
 	@cd "$(SERVER_INSTALL_DIR)" && java -jar forge-1.12.2-14.23.5.2768-universal.jar nogui
 

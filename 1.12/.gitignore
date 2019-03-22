@@ -30,3 +30,4 @@ src/main/resources/assets/minecraft
 .gimp
 *.xcf
 desktop.ini
+/*.txt

@@ -18,25 +18,26 @@ tile.engineersdecor.slag_brick_block.name=Slag brick
 tile.engineersdecor.slag_brick_block.help=§6A gray-brown brick block with position dependent texture variations.
 tile.engineersdecor.rebar_concrete.name=Rebar concrete
 tile.engineersdecor.rebar_concrete.help=§6Steel reinforced concrete block.§r Expensive but Creeper-proof like obsidian.
+tile.engineersdecor.panzerglass_block.name=Panzer glass
+tile.engineersdecor.panzerglass_block.help=§6Reinforced glass block.§r Expensive, explosion-proof. Dark gray tint, faint structural lines visible, multi texture for seemless look.
+tile.engineersdecor.rebar_concrete_tile.name=Rebar concrete tile
+tile.engineersdecor.rebar_concrete_tile.help=§6Steel reinforced concrete tile.§r Expensive but Creeper-proof like obsidian.
+#-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.rebar_concrete_wall.name=Rebar concrete wall
 tile.engineersdecor.rebar_concrete_wall.help=§6Steel reinforced concrete wall.§r Expensive but Creeper-proof like obsidian.
 tile.engineersdecor.concrete_wall.name=Concrete wall
 tile.engineersdecor.concrete_wall.help=§6Wall made of solid concrete.
 tile.engineersdecor.clinker_brick_wall.name=Clinker brick wall
 tile.engineersdecor.clinker_brick_wall.help=§6Simplistic clinker brick wall.
-
-#-----------------------------------------------------------------------------------------------------------
-# Ladder blocks
+tile.engineersdecor.slag_brick_wall.name=Slag brick wall
+tile.engineersdecor.slag_brick_wall.help=§6Simplistic slag brick wall.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.metal_rung_ladder.name=Metal rung ladder
-tile.engineersdecor.metal_rung_ladder.help=§6Typical industrial wall ladder, consisting of horizontal metal rod rungs.
+tile.engineersdecor.metal_rung_ladder.help=§6Typical industrial wall ladder, consisting of horizontal metal rod rungs.§r Look up/down to climb faster.
 tile.engineersdecor.metal_rung_steps.name=Staggered metal steps
-tile.engineersdecor.metal_rung_steps.help=§6Staggered rod rungs affixed to a wall, allowing to climb up, fall down, and so on.
+tile.engineersdecor.metal_rung_steps.help=§6Staggered rod rungs affixed to a wall, allowing to climb up, fall down, and so on.§r Look up/down to climb faster.
 tile.engineersdecor.treated_wood_ladder.name=Treated wood ladder
-tile.engineersdecor.treated_wood_ladder.help=§6Weather-proof wooden ladder.
-
-#-----------------------------------------------------------------------------------------------------------
-# Stairs and roofs
+tile.engineersdecor.treated_wood_ladder.help=§6Weather-proof wooden ladder.§r Look up/down to climb faster.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.clinker_brick_stairs.name=Clinker brick stairs
 tile.engineersdecor.clinker_brick_stairs.help=§6Looks slightly darker and more color intensive than the vanilla brick block.
@@ -44,31 +45,31 @@ tile.engineersdecor.slag_brick_stairs.name=Clinker brick stairs
 tile.engineersdecor.slag_brick_stairs.help=§6Looks slightly darker and more color intensive than the vanilla brick block.
 tile.engineersdecor.rebar_concrete_stairs.name=Rebar concrete stairs
 tile.engineersdecor.rebar_concrete_stairs.help=§6Steel reinforced concrete stairs.§r Expensive but Creeper-proof like obsidian.
-
-tile.engineersdecor.iron_sheet_roof.name=Iron sheet metal roof
-tile.engineersdecor.iron_sheet_roof.help=§6Well, it's a roof.
-
-#-----------------------------------------------------------------------------------------------------------
-# Poles and supports
+tile.engineersdecor.rebar_concrete_tile_stairs.name=Rebar concrete tile stairs
+tile.engineersdecor.rebar_concrete_tile_stairs.help=§6Steel reinforced concrete tile stairs.§r Expensive but Creeper-proof like obsidian.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.treated_wood_pole.name=Straight treated wood pole
 tile.engineersdecor.treated_wood_pole.help=§6Straight pole fragment with the diameter of a wire relay.§r\n\
               Can be useful as alternative to the wire posts if special special lengths are needed, \
               or as support for structures.
-
-#-----------------------------------------------------------------------------------------------------------
-# Furniture
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.treated_wood_table.name=Treated wood table
 tile.engineersdecor.treated_wood_table.help=§6Robust four-legged wood table.§r Indoor and outdoor use.
 tile.engineersdecor.treated_wood_stool.name=Treated wood stool
 tile.engineersdecor.treated_wood_stool.help=§6Robust wood stool.§r Indoor and outdoor use.
 tile.engineersdecor.treated_wood_crafting_table.name=Treated wood crafting table
-tile.engineersdecor.treated_wood_crafting_table.help=§6Robust and weather-proof.
+tile.engineersdecor.treated_wood_crafting_table.help=§6Robust and weather-proof. Eight storage slots. Keeps inventory.
 tile.engineersdecor.iron_inset_light.name=Inset light
 tile.engineersdecor.iron_inset_light.help=§6Small glowstone light source, sunk into the floor, ceiling or wall.§r\n\
                                                Useful to light up places where electrical light installations are problematic.\
                                                Light level like a torch.
-
+tile.engineersdecor.treated_wood_window.name=Treated wood window
+tile.engineersdecor.treated_wood_window.help=§6Wood framed tripple glazed window. Well insulating.
+tile.engineersdecor.treated_wood_windowsill.name=Treated wood window sill
+tile.engineersdecor.treated_wood_windowsill.help=§6Simple window decoration.
+#-----------------------------------------------------------------------------------------------------------
+tile.engineersdecor.iron_sheet_roof.name=Iron sheet metal roof
+tile.engineersdecor.iron_sheet_roof.help=§6Well, it's a roof.
+#-----------------------------------------------------------------------------------------------------------
 # EOF
 #-----------------------------------------------------------------------------------------------------------

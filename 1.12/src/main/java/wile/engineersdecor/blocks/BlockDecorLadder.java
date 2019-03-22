@@ -16,7 +16,10 @@ import net.minecraft.block.BlockLadder;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.MoverType;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import wile.engineersdecor.ModEngineersDecor;
@@ -78,6 +81,10 @@ public class BlockDecorLadder extends BlockLadder
   { return false; }
 
   @Override
+  public boolean canCreatureSpawn(IBlockState state, IBlockAccess world, BlockPos pos, net.minecraft.entity.EntityLiving.SpawnPlacementType type)
+  { return false; }
+
+  @Override
   @SuppressWarnings("deprecation")
   public EnumPushReaction getPushReaction(IBlockState state)
   { return EnumPushReaction.NORMAL; }
@@ -103,4 +110,18 @@ public class BlockDecorLadder extends BlockLadder
     return (!isExceptBlockForAttachWithPiston(state.getBlock())) && (state.getBlockFaceShape(world, pos, side) == BlockFaceShape.SOLID);
   }
 
+  // Player update event, forwarded from the main mod instance.
+  public static void onPlayerUpdateEvent(final EntityPlayer player)
+  {
+    if(!player.isOnLadder() || (player.isSneaking()) || (player.isSpectator())) return;
+    if((Math.abs(player.motionY) < 0.1) || (Math.abs(player.motionY) > 0.7) || ((player.getLookVec().y > 0) != (player.motionY > 0))) return;
+    if(Math.abs(player.getLookVec().y) < 0.9) return;
+    final BlockPos pos = new BlockPos(player.posX, player.posY, player.posZ);
+    if(!(player.world.getBlockState(pos).getBlock() instanceof BlockDecorLadder)) return;
+    player.fallDistance = 0;
+    player.motionY = (player.motionY < -0.25) ? (-0.7) : ((player.motionY > 0.25) ? (0.7) : (player.motionY));
+    player.motionX = MathHelper.clamp(player.motionX, -0.15, 0.15);
+    player.motionZ = MathHelper.clamp(player.motionX, -0.15, 0.15);
+    player.move(MoverType.PLAYER, player.motionX, player.motionY, player.motionZ);
+  }
 }

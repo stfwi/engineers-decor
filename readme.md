@@ -23,7 +23,9 @@ no tile entities or user interactions are used. Current feature set:
 - Rebar (steel) reinforced concrete: Expensive but creeper-proof. Crafted 3x3 from
   four concrete blocks and five steel rods. Texture design oriented at the IE concrete,
   slightly darker, eight (position dependent) random texture variations with rust
-  traces. Also creaftable in form of *stairs* and *walls*.
+  traces. Also creaftable in form of *stairs* and *walls*. Like the IE contrete tiles,
+  you can craft rebar concrete tiles with corresponding stairs. Reverse recipes
+  available for all blocks crafted from rebar concrete.
 
 - Concrete wall: Solid concrete wall (not the vanilla wall design), crafted 3x3
   from six IE concrete blocks (normal wall recipe).
@@ -33,13 +35,13 @@ no tile entities or user interactions are used. Current feature set:
   wall look more "alive". Crafted 3x3 with a brick block in the centre and any
   combination of bricks and nether bricks around (actually, anything where the
   ore dictionary says it's a "brick ingot"). Higher explosion resistance than the
-  vanilla brick wall. Also available as stairs and wall, crafted as usual. There
-  is a reverse recipe to get three clinker brick blocks back from four stairs.
+  vanilla bricks. Also available as stairs and wall, crafted as usual. There
+  is a reverse recipe to get three clinker brick blocks back from stairs or walls.
 
 - *Slag bricks*: Gray-brownish brick, also eight texture variations. Crafted 3x3
   from slag in the centre and any kind of bricks ("brick ingot") around. Has a higher
-  explosion resistance than the vanilla brick wall. Also available as stairs, also
-  with reverse recipe.
+  explosion resistance than bricks. Also available as stairs and wall, also with
+  reverse recipes.
 
 - *Treated wood crafting table*: 3x3 crafting table with IE style GUI and a model
   fitting better in the engineer's workshop. Keeps its inventory, has eight additional
@@ -47,13 +49,15 @@ no tile entities or user interactions are used. Current feature set:
   treated wood planks and one vanilla crafting table.
 
 - *Treated wood ladder*: Crafted 3x3 with the known ladder pattern, items are
-  treated wood sticks.
+  treated wood sticks. Climbing is faster if looking up/down and not sneaking.
 
 - *Metal rung ladder*: Industrial wall-fixed ladder with horizontal bent rods.
-  Crafted 3x3 with five iron or steel rods in a "U" pattern.
+  Crafted 3x3 with five iron or steel rods in a "U" pattern. Climbing is faster
+  if looking up/down and not sneaking.
 
 - *Staggered metal steps*: Industrial wall-fixed sparse ladder with steps in a
-  zip pattern. Crafted 3x3 with six iron or steel rods in a zip pattern.
+  zip pattern. Crafted 3x3 with six iron or steel rods in a zip pattern. Climbing
+  is faster when looking up/down and not sneaking.
 
 - *Treated wood table*: Four leg table made out of treated wood. Crafted 3x3
   with three treated wood slabs and four treated wood poles. Guess the pattern.
@@ -65,6 +69,10 @@ no tile entities or user interactions are used. Current feature set:
   does intentionally not connect to posts, fences, etc - just a straigt pole.
   Can be used e.g. for structural support or wire relay post, where the height
   of the IE wire posts does not match.
+
+- *Panzer glass*: Reinforced, dark gray tinted glass block. Explosion-proof.
+  Faint structural lines are visible, multiple texture variations for seemless
+  look. Crafted 3x3 with four metal rods, four glass blocks, and one diamond.
 
 More to come slowly but steadily.
 
