@@ -10,6 +10,18 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+                -------------------------------------------------------------------
+    - v1.0.2    [R] Release based on v1.0.2-b3
+                    * Fixes: Spawning.
+                    * Crafting table: Shift-click.
+                    * Ladders: Faster climbing/descending.
+                    * Concrete: Rebar tiles, tile stairs.
+                    * Treated wood: window, windowsill.
+                    * Slag brick: wall.
+                    * Panzer glass: added.
+                    * Recipes: Adaptions, added decompositions.
+                -------------------------------------------------------------------
+
     - v1.0.2-b3 [A] Added slag brick wall.
                 [A] Added wall decomposition recipes.
                 [A] Added treated wood window.

@@ -305,7 +305,7 @@ tasks["update-json"] = function() {
     // Condense log entries sepatated with newlines to one line for each version
     for(var i=readme.length-1; i>0; --i) {
       var line = readme[i].replace(/^\s+/,"");
-      if(line.search(/^-/) < 0) {
+      if(line.search(/^[-~]/) < 0) {
         readme[i-1] += "\n" + line;
         readme[i] = "";
       }
@@ -317,6 +317,7 @@ tasks["update-json"] = function() {
       var line = readme[i].replace(/^[\sv-]+/g,"").trim();
       var ver = line.substr(0, line.search(" ")).trim().toLowerCase();
       var txt = line.substr(line.search(" ")).trim();
+      if(ver.search("~")===0) continue;
       if(history[ver] !== undefined) throw new Error("Double definition of version '" + ver + "' in the readme revision history.");
       history[ver] = txt;
     }
