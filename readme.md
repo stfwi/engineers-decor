@@ -5,7 +5,7 @@ A [Minecraft](https://minecraft.net) (Java Edition) mod based on
 [`Forge`](http://www.minecraftforge.net/), adding cosmetic blocks
 for the Engineer's factory, workshop, and home.
 
-![](documentation/engineers-decor-v100a-summary.png)
+![](documentation/engineers-decor-v103-summary.png)
 
 ### Distribution file download
 
@@ -25,7 +25,7 @@ no tile entities or user interactions are used. Current feature set:
   storage slots on the left side of the crafting grid. Crafted 2x2 with three
   treated wood planks and one vanilla crafting table.
 
-- *Small laboratry furnace*: Solid fuel consuming, updraught. Slightly hotter and
+- *Small laboratory furnace*: Solid fuel consuming, updraught. Slightly hotter and
   better isolated than a cobblestone furnace, therefore more efficient. Has internal
   hopper FiFos for input, output, and fuel (two stacks each). Two auxilliary slots
   (storage tray). Keeps inventory when relocated. Crafted with one cobblestone
@@ -138,6 +138,6 @@ Mods covering similar features, or may fit well together with IE and the decorat
 
 ![Concrete](documentation/engineers-decor-v100a-concrete-stuff.png)
 
-![Concrete](documentation/engineers-decor-v101a-added.png)
+![Concrete](documentation/engineers-decor-v101a-summary.png)
 
 ![Concrete](documentation/engineers-decor-v101a-craftinggui.png)
