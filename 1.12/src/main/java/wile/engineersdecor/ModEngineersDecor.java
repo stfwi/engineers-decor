@@ -18,6 +18,7 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import wile.engineersdecor.blocks.BlockDecorCraftingTable;
+import wile.engineersdecor.blocks.BlockDecorFurnace;
 import wile.engineersdecor.blocks.BlockDecorLadder;
 import wile.engineersdecor.detail.ModConfig;
 import wile.engineersdecor.blocks.ModBlocks;
@@ -123,6 +124,7 @@ public class ModEngineersDecor
   public static final class GuiHandler implements IGuiHandler
   {
     public static final int GUIID_CRAFTING_TABLE = 213101;
+    public static final int GUIID_SMALL_LAB_FURNACE = 213102;
 
     @Override
     public Object getServerGuiElement(final int guiid, final EntityPlayer player, final World world, int x, int y, int z)
@@ -131,6 +133,7 @@ public class ModEngineersDecor
       final TileEntity te = world.getTileEntity(pos);
       switch(guiid) {
         case GUIID_CRAFTING_TABLE: return BlockDecorCraftingTable.getServerGuiElement(player, world, pos, te);
+        case GUIID_SMALL_LAB_FURNACE: return BlockDecorFurnace.getServerGuiElement(player, world, pos, te);
       }
       return null;
     }
@@ -143,6 +146,7 @@ public class ModEngineersDecor
       final TileEntity te = (world instanceof WorldClient) ? world.getTileEntity(pos) : null;
       switch(guiid) {
         case GUIID_CRAFTING_TABLE: return BlockDecorCraftingTable.getClientGuiElement(player, world, pos, te);
+        case GUIID_SMALL_LAB_FURNACE: return BlockDecorFurnace.getClientGuiElement(player, world, pos, te);
       }
       return null;
     }

@@ -70,6 +70,8 @@ tile.engineersdecor.treated_wood_windowsill.help=§6Simple window decoration.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.iron_sheet_roof.name=Iron sheet metal roof
 tile.engineersdecor.iron_sheet_roof.help=§6Well, it's a roof.
+tile.engineersdecor.small_lab_furnace.name=Small laboratry furnace
+tile.engineersdecor.small_lab_furnace.help=§6Small metal cased lab kiln.§r Solid fuel consuming, updraught. Slightly hotter and better isolated than a cobblestone furnace, therefore more efficient. Two stack internal hopper fifos for input, output, and fuel.
 #-----------------------------------------------------------------------------------------------------------
 # EOF
 #-----------------------------------------------------------------------------------------------------------

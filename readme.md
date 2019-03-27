@@ -20,10 +20,21 @@ Main distribution channel for this mod is CurseForge:
 The mod has its focus on non-functional, decorative blocks. If anyhow possible,
 no tile entities or user interactions are used. Current feature set:
 
+- *Treated wood crafting table*: 3x3 crafting table with IE style GUI and a model
+  fitting better in the engineer's workshop. Keeps its inventory, has eight additional
+  storage slots on the left side of the crafting grid. Crafted 2x2 with three
+  treated wood planks and one vanilla crafting table.
+
+- *Small laboratry furnace*: Solid fuel consuming, updraught. Slightly hotter and
+  better isolated than a cobblestone furnace, therefore more efficient. Has internal
+  hopper FiFos for input, output, and fuel (two stacks each). Two auxilliary slots
+  (storage tray). Keeps inventory when relocated. Crafted with one cobblestone
+  furnace, one hopper, and seven metal plates.
+
 - Rebar (steel) reinforced concrete: Expensive but creeper-proof. Crafted 3x3 from
   four concrete blocks and five steel rods. Texture design oriented at the IE concrete,
   slightly darker, eight (position dependent) random texture variations with rust
-  traces. Also creaftable in form of *stairs* and *walls*. Like the IE contrete tiles,
+  traces. Also creaftable in form of *stairs* and *walls*. Like the IE contrete *tiles*,
   you can craft rebar concrete tiles with corresponding stairs. Reverse recipes
   available for all blocks crafted from rebar concrete.
 
@@ -43,11 +54,6 @@ no tile entities or user interactions are used. Current feature set:
   explosion resistance than bricks. Also available as stairs and wall, also with
   reverse recipes.
 
-- *Treated wood crafting table*: 3x3 crafting table with IE style GUI and a model
-  fitting better in the engineer's workshop. Keeps its inventory, has eight additional
-  storage slots on the left side of the crafting grid. Crafted 2x2 with three
-  treated wood planks and one vanilla crafting table.
-
 - *Treated wood ladder*: Crafted 3x3 with the known ladder pattern, items are
   treated wood sticks. Climbing is faster if looking up/down and not sneaking.
 
@@ -58,6 +64,10 @@ no tile entities or user interactions are used. Current feature set:
 - *Staggered metal steps*: Industrial wall-fixed sparse ladder with steps in a
   zip pattern. Crafted 3x3 with six iron or steel rods in a zip pattern. Climbing
   is faster when looking up/down and not sneaking.
+
+- *Panzer glass*: Reinforced, dark gray tinted glass block. Explosion-proof.
+  Faint structural lines are visible, multiple texture variations for seemless
+  look. Crafted 3x3 with four metal rods, four glass blocks, and one diamond.
 
 - *Treated wood table*: Four leg table made out of treated wood. Crafted 3x3
   with three treated wood slabs and four treated wood poles. Guess the pattern.
@@ -70,9 +80,9 @@ no tile entities or user interactions are used. Current feature set:
   Can be used e.g. for structural support or wire relay post, where the height
   of the IE wire posts does not match.
 
-- *Panzer glass*: Reinforced, dark gray tinted glass block. Explosion-proof.
-  Faint structural lines are visible, multiple texture variations for seemless
-  look. Crafted 3x3 with four metal rods, four glass blocks, and one diamond.
+- *Inset spot light*: Small metal framed glowstone based light source for ceiling,
+  wall, or floor. Light level like a torch. Thin, hence not blocking the way.
+  Allows illuminating places where electrical light installations are problematic.
 
 More to come slowly but steadily.
 

@@ -134,16 +134,16 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
   { return (te instanceof BTileEntity) ? (new BContainer(player.inventory, world, pos, (BTileEntity)te)) : null; }
 
   public static Object getClientGuiElement(final EntityPlayer player, final World world, final BlockPos pos, final TileEntity te)
-  { return (te instanceof BTileEntity) ? (new BGuiCrafting(player.inventory, world, pos, (BTileEntity)te)) : null; }
+  { return (te instanceof BTileEntity) ? (new BGui(player.inventory, world, pos, (BTileEntity)te)) : null; }
 
   //--------------------------------------------------------------------------------------------------------------------
   // GUI
   //--------------------------------------------------------------------------------------------------------------------
 
   @SideOnly(Side.CLIENT)
-  public static class BGuiCrafting extends GuiContainer
+  private static class BGui extends GuiContainer
   {
-     public BGuiCrafting(InventoryPlayer playerInventory, World world, BlockPos pos, BTileEntity te)
+     public BGui(InventoryPlayer playerInventory, World world, BlockPos pos, BTileEntity te)
     { super(new BContainer(playerInventory, world, pos, te)); }
 
     @Override
@@ -171,7 +171,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
   // Crafting container
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class BContainer extends Container
+  private static class BContainer extends Container
   {
     private final World world;
     private final BlockPos pos;
@@ -282,7 +282,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
   // Crafting inventory (needed to allow SlotCrafting to have a InventoryCrafting)
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class BInventoryCrafting extends InventoryCrafting
+  private static class BInventoryCrafting extends InventoryCrafting
   {
     protected final Container container;
     protected final IInventory inventory;

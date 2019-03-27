@@ -206,6 +206,13 @@
     "name": "itemCraftingTable"
   },
   {
+    "ingredient": {
+      "item": "minecraft:hopper",
+      "data": 0
+    },
+    "name": "anyHopper"
+  },
+  {
     "ingredient": [
       {
         "type": "forge:ore_dict",
@@ -237,6 +244,12 @@
       "data": 0
     },
     "name": "crateTreatedWood"
+  },
+  {
+    "ingredient": {
+      "item": "minecraft:furnace",
+      "data": 0
+    },
+    "name": "itemFurnace"
   }
-
 ]

@@ -10,6 +10,9 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+    - v1.0.3-b1 [A] Added small laboratry furnace.
+                [M] Panzer glass opacity/light level set explicitly 0.
+
                 -------------------------------------------------------------------
     - v1.0.2    [R] Release based on v1.0.2-b3
                     * Fixes: Spawning.

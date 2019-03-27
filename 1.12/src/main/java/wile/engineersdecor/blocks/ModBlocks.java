@@ -105,6 +105,13 @@ public class ModBlocks
     ModAuxiliaries.getPixeledAABB(0,0,7, 16,16,9)
   );
 
+  public static final BlockDecorFurnace SMALL_LAB_FURNACE = new BlockDecorFurnace(
+    "small_lab_furnace",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
+    Material.IRON, 1.0f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(1,0,1, 15,15,16.0)
+  );
+
   public static final BlockDecorFull IRON_SHEET_ROOF_FULLBLOCK = new BlockDecorFull("iron_sheet_roof_block", 0, Material.IRON, 1.8f, 25f, SoundType.METAL);
   public static final BlockDecorStairs IRON_SHEET_ROOF = new BlockDecorStairs("iron_sheet_roof", IRON_SHEET_ROOF_FULLBLOCK.getDefaultState());
 
@@ -132,10 +139,11 @@ public class ModBlocks
     TREATED_WOOD_WINDOW,
     TREATED_WOOD_WINDOWSILL,
     INSET_LIGHT_IRON,
+    SMALL_LAB_FURNACE,
   };
 
   private static final Block devBlocks[] = {
-    IRON_SHEET_ROOF, // model looks not good enough yet
+    IRON_SHEET_ROOF,    // model looks not good enough yet
   };
 
   private static ArrayList<Block> registeredBlocks = new ArrayList<>();
@@ -157,6 +165,7 @@ public class ModBlocks
     ModEngineersDecor.logger.info("Registered " + Integer.toString(registeredBlocks.size()) + " blocks.");
     // TEs
     GameRegistry.registerTileEntity(BlockDecorCraftingTable.BTileEntity.class, new ResourceLocation(ModEngineersDecor.MODID, "te_crafting_table"));
+    GameRegistry.registerTileEntity(BlockDecorFurnace.BTileEntity.class, new ResourceLocation(ModEngineersDecor.MODID, "te_small_lab_furnace"));
   }
 
   // Invoked from ClientProxy.registerModels()

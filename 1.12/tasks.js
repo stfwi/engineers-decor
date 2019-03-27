@@ -225,9 +225,9 @@ tasks["version-check"] = function() {
   })
   const combined_version = version_minecraft + "-" + version_engineersdecor;
   var readme_version_found = fs.readfile("readme.md", function(line){
-    var m = line.match(/^[\s]+-[\s]+v([\d]+[\.][\d]+[\.][\d]+[-][abrc][\d]+)/i);
+    var m = line.match(/^[\s]+[-~][\s]+v([\d]+[\.][\d]+[\.][\d]+[-][abrc][\d]+)/i);
     if((!m) || (!m.length) || (m.length < 2)) {
-      m = line.match(/^[\s]+-[\s]+v([\d]+[\.][\d]+[\.][\d]+)/i);
+      m = line.match(/^[\s]+[-~][\s]+v([\d]+[\.][\d]+[\.][\d]+)/i);
       if((!m) || (!m.length) || (m.length < 2)) return false;
     }
     return m[1]==version_engineersdecor;
