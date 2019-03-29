@@ -37,6 +37,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import org.apache.logging.log4j.Logger;
+import wile.engineersdecor.detail.RecipeCondModSpecific;
+
 import javax.annotation.Nonnull;
 
 @Mod(
@@ -95,7 +97,12 @@ public class ModEngineersDecor
 
   @Mod.EventHandler
   public void postInit(final FMLPostInitializationEvent event)
-  { ModConfig.onPostInit(event); proxy.postInit(event); }
+  {
+    ModConfig.onPostInit(event);
+    proxy.postInit(event);
+    if(RecipeCondModSpecific.num_skipped > 0) logger.info("Excluded " + RecipeCondModSpecific.num_skipped + " recipes due to config opt-out.");
+    if(ModConfig.zmisc.with_experimental) logger.info("Included experimental features due to mod config.");
+  }
 
   @Mod.EventBusSubscriber
   public static final class RegistrationSubscriptions

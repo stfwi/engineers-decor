@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.12.2": {
+    "1.0.3-b2": "[A] Added config options for selective feature opt-outs (soft opt-out).\n[A] Added config skip registration of opt-out features (hard opt-out).\n[A] Added config to disable all internal recipes (for packs).\n[A] Added JEI API adapter for soft opt-outs.\n[A] Added lab furnace recipe override config to smelt ores to nuggets that would normally be smelted into ingots. Can be changed on-the-fly.",
     "1.0.3-b1": "[A] Added small laboratory furnace.\n[M] Panzer glass opacity/light level set explicitly 0.",
     "1.0.2": "[R] Release based on v1.0.2-b3 * Fixes: Spawning. * Crafting table: Shift-click. * Ladders: Faster climbing/descending. * Concrete: Rebar tiles, tile stairs. * Treated wood: window, windowsill. * Slag brick: wall. * Panzer glass: added. * Recipes: Adaptions, added decompositions.",
     "1.0.2-b3": "[A] Added slag brick wall.\n[A] Added wall decomposition recipes.\n[A] Added treated wood window.\n[M] Climbing/descending mod ladders is faster when looking up or down and not sneaking.\n[M] Panzer glass material definition changed.\n[M] Explicitly preventing spawning in and on \"non-full\" blocks of the mod.",
@@ -19,6 +20,6 @@
   },
   "promos": {
     "1.12.2-recommended": "1.0.2",
-    "1.12.2-latest": "1.0.3-b1"
+    "1.12.2-latest": "1.0.3-b2"
   }
 }

@@ -11,6 +11,7 @@ buildscript {
   }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'idea'
 sourceCompatibility = targetCompatibility = '1.8'
 compileJava { // Need this here so eclipse task generates correctly.
   sourceCompatibility = targetCompatibility = '1.8'
@@ -47,7 +48,13 @@ minecraft {
   replaceIn "ModEngineersDecor.java"
 }
 
+repositories {
+  maven { name = "Progwml6 maven"; url = "https://dvs1.progwml6.com/files/maven/" } // JEI files
+  maven { name = "ModMaven"; url = "modmaven.k-4u.nl" } // JEI files, fallback
+}
 dependencies {
+  deobfProvided "mezz.jei:jei_${version_minecraft}:${version_jei}:api"
+  runtime "mezz.jei:jei_${version_minecraft}:${version_jei}"
 }
 
 processResources {
@@ -63,7 +70,7 @@ processResources {
 }
 
 task signJar(type: SignJar, dependsOn: reobfJar) {
-  onlyIf { signing.getProperty("keystore_file"); }
+  onlyIf { signing.getProperty("keystore_file") }
   keyStore = signing.getProperty("keystore_file")
   alias = signing.getProperty("keystore_alias")
   storePass = signing.getProperty("keystore_pass")

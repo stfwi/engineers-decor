@@ -8,6 +8,8 @@
  */
 package wile.engineersdecor.blocks;
 
+import com.google.common.collect.Maps;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.init.SoundEvents;
 import wile.engineersdecor.ModEngineersDecor;
 import net.minecraft.stats.StatList;
@@ -46,6 +48,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -238,10 +241,59 @@ public class BlockDecorFurnace extends BlockDecorDirected
     { super(inv, index, xpos, ypos); }
   }
 
-  public static class BSlotOutFifo extends SlotFurnaceOutput
+  public static class BSlotOutFifo extends BSlotResult
   {
     public BSlotOutFifo(EntityPlayer player, BTileEntity te, int index, int xpos, int ypos)
     { super(player, te, index, xpos, ypos); }
+  }
+
+  public static class BSlotResult extends Slot
+  {
+    // This class is basically SlotFurnaceOutput.onCrafting(), except that the recipe overrides
+    // are used, unfortunately a copy is needed due to private instance variables.
+    private final EntityPlayer player;
+    private int removeCount = 0;
+
+    public BSlotResult(EntityPlayer player, BTileEntity te, int index, int xpos, int ypos)
+    { super(te, index, xpos, ypos); this.player = player; }
+
+    @Override
+    public boolean isItemValid(ItemStack stack)
+    { return false; }
+
+    @Override
+    public ItemStack decrStackSize(int amount)
+    { removeCount += getHasStack() ? Math.min(amount, getStack().getCount()) : 0; return super.decrStackSize(amount); }
+
+    @Override
+    public ItemStack onTake(EntityPlayer thePlayer, ItemStack stack)
+    { onCrafting(stack); super.onTake(thePlayer, stack); return stack; }
+
+    @Override
+    protected void onCrafting(ItemStack stack, int amount)
+    { removeCount += amount; onCrafting(stack); }
+
+    @Override
+    protected void onCrafting(ItemStack stack)
+    {
+      stack.onCrafting(player.world, player, removeCount);
+      if(!player.world.isRemote) {
+        int xp = removeCount;
+        float sxp = BRecipes.instance().getSmeltingExperience(stack);
+        if(sxp == 0) {
+          xp = 0;
+        } else if(sxp < 1.0) {
+          xp = (int)((sxp*xp) + Math.round(Math.random()+0.75));
+        }
+        while(xp > 0) {
+          int k = EntityXPOrb.getXPSplit(xp);
+          xp -= k;
+          player.world.spawnEntity(new EntityXPOrb(player.world, player.posX, player.posY+0.5, player.posZ+0.5, k));
+        }
+      }
+      removeCount = 0;
+      net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerSmeltedEvent(player, stack);
+    }
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -268,7 +320,7 @@ public class BlockDecorFurnace extends BlockDecorDirected
       this.te = te;
       addSlotToContainer(new Slot(te, 0, 59, 17)); // smelting input
       addSlotToContainer(new SlotFurnaceFuel(te, 1, 59, 53)); // fuel
-      addSlotToContainer(new SlotFurnaceOutput(playerInventory.player, te, 2, 101, 35)); // smelting result
+      addSlotToContainer(new BSlotResult(playerInventory.player, te, 2, 101, 35)); // smelting result
       addSlotToContainer(new BSlotInpFifo(te, 3, 34, 17)); // input fifo 0
       addSlotToContainer(new BSlotInpFifo(te, 4, 16, 17)); // input fifo 1
       addSlotToContainer(new BSlotFuelFifo(te, 5, 34, 53)); // fuel fifo 0
@@ -338,7 +390,7 @@ public class BlockDecorFurnace extends BlockDecorDirected
         if(!mergeItemStack(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+36, false)) return ItemStack.EMPTY;
       } else if((index >= PLAYER_INV_START_SLOTNO) && (index <= PLAYER_INV_START_SLOTNO+36)) {
         // Player inventory
-        if(!FurnaceRecipes.instance().getSmeltingResult(slot_stack).isEmpty()) {
+        if(!BRecipes.instance().getSmeltingResult(slot_stack).isEmpty()) {
           if(
             (!mergeItemStack(slot_stack, 0, 1, false)) && // smelting input
             (!mergeItemStack(slot_stack, 3, 4, false)) && // fifo0
@@ -684,7 +736,7 @@ public class BlockDecorFurnace extends BlockDecorDirected
     private boolean canSmelt()
     {
       if(stacks_.get(SMELTING_INPUT_SLOT_NO).isEmpty()) return false;
-      final ItemStack recipe_result_items = FurnaceRecipes.instance().getSmeltingResult(stacks_.get(SMELTING_INPUT_SLOT_NO));
+      final ItemStack recipe_result_items = BRecipes.instance().getSmeltingResult(stacks_.get(SMELTING_INPUT_SLOT_NO));
       if(recipe_result_items.isEmpty()) return false;
       final ItemStack result_stack = stacks_.get(SMELTING_OUTPUT_SLOT_NO);
       if(result_stack.isEmpty()) return true;
@@ -697,7 +749,7 @@ public class BlockDecorFurnace extends BlockDecorDirected
     {
       if(!canSmelt()) return;
       final ItemStack smelting_input_stack = stacks_.get(SMELTING_INPUT_SLOT_NO);
-      final ItemStack recipe_result_items = FurnaceRecipes.instance().getSmeltingResult(smelting_input_stack);
+      final ItemStack recipe_result_items = BRecipes.instance().getSmeltingResult(smelting_input_stack);
       final ItemStack smelting_output_stack = stacks_.get(SMELTING_OUTPUT_SLOT_NO);
       final ItemStack fuel_stack = stacks_.get(SMELTING_FUEL_SLOT_NO);
       if(smelting_output_stack.isEmpty()) {
@@ -743,6 +795,76 @@ public class BlockDecorFurnace extends BlockDecorDirected
       if(facing == EnumFacing.UP) return (T) sided_itemhandler_top_;
       return (T) sided_itemhandler_sides_;
     }
+
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Furnace recipe overrides
+  //--------------------------------------------------------------------------------------------------------------------
+  // Based on net.minecraft.item.crafting.FurnaceRecipes, copy as
+  // needed methods are private.
+  public static class BRecipes
+  {
+    private static final BRecipes RECIPPE_OVERRIDES = new BRecipes();
+    private final Map<ItemStack, ItemStack> recipes_ = Maps.<ItemStack, ItemStack>newHashMap();
+    private final Map<ItemStack, Float> experiences_ = Maps.<ItemStack, Float>newHashMap();
+
+    public static BRecipes instance()
+    { return RECIPPE_OVERRIDES; }
+
+    private BRecipes()
+    {}
+
+    public Map<ItemStack, ItemStack> getRecipes()
+    { return recipes_; }
+
+    public void reset()
+    { recipes_.clear(); experiences_.clear(); }
+
+    public ItemStack getSmeltingResult(final ItemStack stack)
+    {
+      ItemStack res = override_result(stack);
+      if(res.isEmpty()) res = FurnaceRecipes.instance().getSmeltingResult(stack);
+      return res;
+    }
+
+    public float getSmeltingExperience(ItemStack stack)
+    {
+      float ret = stack.getItem().getSmeltingExperience(stack);
+      if(ret != -1) return ret;
+      for(Map.Entry<ItemStack, Float> e : experiences_.entrySet()) {
+        if(compare(stack, e.getKey())) return e.getValue();
+      }
+      return FurnaceRecipes.instance().getSmeltingExperience(stack);
+    }
+
+    public void add(Block input, ItemStack stack, float experience)
+    { add(Item.getItemFromBlock(input), stack, experience); }
+
+    public void add(Item input, ItemStack stack, float experience)
+    { add(new ItemStack(input, 1, 32767), stack, experience); }
+
+    public void add(ItemStack input, ItemStack stack, float xp)
+    {
+      // Forced override setting
+      if(input==ItemStack.EMPTY) return;
+      if(recipes_.containsKey(input)) recipes_.remove(input);
+      if(experiences_.containsKey(input)) experiences_.remove(input);
+      if((stack==null) || (stack==ItemStack.EMPTY)) return;
+      recipes_.put(input, stack);
+      experiences_.put(stack, xp);
+    }
+
+    public ItemStack override_result(ItemStack stack)
+    {
+      for(Map.Entry<ItemStack, ItemStack> e:recipes_.entrySet()) {
+        if(compare(stack, e.getKey())) return e.getValue();
+      }
+      return ItemStack.EMPTY;
+    }
+
+    private boolean compare(final ItemStack stack1, final ItemStack stack2)
+    { return (stack2.getItem() == stack1.getItem()) && ((stack2.getMetadata() == 32767) || (stack2.getMetadata() == stack1.getMetadata())); }
 
   }
 

@@ -10,6 +10,13 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+    - v1.0.3-b2 [A] Added config options for selective feature opt-outs (soft opt-out).
+                [A] Added config skip registration of opt-out features (hard opt-out).
+                [A] Added config to disable all internal recipes (for packs).
+                [A] Added JEI API adapter for soft opt-outs.
+                [A] Added lab furnace recipe override config to smelt ores to nuggets
+                    that would normally be smelted into ingots. Can be changed on-the-fly.
+
     - v1.0.3-b1 [A] Added small laboratory furnace.
                 [M] Panzer glass opacity/light level set explicitly 0.
 

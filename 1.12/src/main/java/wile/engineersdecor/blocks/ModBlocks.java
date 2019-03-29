@@ -149,20 +149,31 @@ public class ModBlocks
   private static ArrayList<Block> registeredBlocks = new ArrayList<>();
 
   @Nonnull
-  public static List getRegisteredBlocks()
+  public static List<Block> getRegisteredBlocks()
   { return Collections.unmodifiableList(registeredBlocks); }
 
   // Invoked from CommonProxy.registerBlocks()
   public static final void registerBlocks(RegistryEvent.Register<Block> event)
   {
     // Config based registry selection
+    int num_registrations_skipped = 0;
     ArrayList<Block> allBlocks = new ArrayList<>();
     Collections.addAll(allBlocks, modBlocks);
     //if(Loader.isModLoaded("immersiveengineering")){}
     if(ModConfig.zmisc.with_experimental) Collections.addAll(allBlocks, devBlocks);
-    for(Block e:allBlocks) registeredBlocks.add(e);
+    final boolean woor = ModConfig.isWithoutOptOutRegistration();
+    for(Block e:allBlocks) {
+      if((!woor) || (!ModConfig.isOptedOut(e))) {
+        registeredBlocks.add(e);
+      } else {
+        ++num_registrations_skipped;
+      }
+    }
     for(Block e:registeredBlocks) event.getRegistry().register(e);
     ModEngineersDecor.logger.info("Registered " + Integer.toString(registeredBlocks.size()) + " blocks.");
+    if(num_registrations_skipped > 0) {
+      ModEngineersDecor.logger.info("Skipped registration of " + num_registrations_skipped + " blocks due to no-register-opt-out config.");
+    }
     // TEs
     GameRegistry.registerTileEntity(BlockDecorCraftingTable.BTileEntity.class, new ResourceLocation(ModEngineersDecor.MODID, "te_crafting_table"));
     GameRegistry.registerTileEntity(BlockDecorFurnace.BTileEntity.class, new ResourceLocation(ModEngineersDecor.MODID, "te_small_lab_furnace"));
