@@ -1,0 +1,77 @@
+#
+# Engineer's Decor lang file
+#
+#PARSE_ESCAPES
+#
+#-----------------------------------------------------------------------------------------------------------
+itemGroup.tabengineersdecor=Engineer's Decor
+engineersdecor.config.title=Engineer's Decor конфигурация
+engineersdecor.tooltip.hint.extended=§6[§9SHIFT§r Больше информации§6]§r
+engineersdecor.tooltip.hint.help=§6[§9CTRL-SHIFT§r Помощь§6]§r
+
+#-----------------------------------------------------------------------------------------------------------
+# Stone/"ceramic material" based blocks
+#-----------------------------------------------------------------------------------------------------------
+tile.engineersdecor.clinker_brick_block.name=Клинкерный кирпич
+tile.engineersdecor.clinker_brick_block.help=§6Кирпичный блок с вариациями текстуры, зависящими от положения.§r\nВыглядит немного темнее и интенсивнее, чем ванильный кирпичный блок.
+tile.engineersdecor.slag_brick_block.name=Шлакоблок
+tile.engineersdecor.slag_brick_block.help=§6Серо-коричневый кирпичный блок с зависимыми от положения вариациями текстуры.
+tile.engineersdecor.rebar_concrete.name=Железобетон
+tile.engineersdecor.rebar_concrete.help=§6Стальной железобетонный блок.§r Дорогой, но взрывоустойчивый, как обсидиан.
+tile.engineersdecor.panzerglass_block.name=Бронированное стекло
+tile.engineersdecor.panzerglass_block.help=§6Усиленный стеклоблок.§r Дорогой, взрывоустойчивый. Имеет темно-серый оттенок, видны слабые структурные линии, мульти текстура для бесшовного отображения.
+tile.engineersdecor.rebar_concrete_tile.name=Железобетонная плита
+tile.engineersdecor.rebar_concrete_tile.help=§6Стальная железобетонная плитка.§r Дорогоая, но взрывоустойчивая, как обсидиан.
+#-----------------------------------------------------------------------------------------------------------
+tile.engineersdecor.rebar_concrete_wall.name=Железобетонная стена
+tile.engineersdecor.rebar_concrete_wall.help=§6Стальная железобетонная стена.§r Дорогоая, но взрывоустойчивая, как обсидиан.
+tile.engineersdecor.concrete_wall.name=Бетонная стена
+tile.engineersdecor.concrete_wall.help=§6Стена из твердого бетона.
+tile.engineersdecor.clinker_brick_wall.name=Клинкерная кирпичная стена
+tile.engineersdecor.clinker_brick_wall.help=§6Обыкновенная клинкерная кирпичная стена.
+tile.engineersdecor.slag_brick_wall.name=Кирпичная стена из шлакоблока
+tile.engineersdecor.slag_brick_wall.help=§6Обыкновенная стена из шлакоблока.
+#-----------------------------------------------------------------------------------------------------------
+tile.engineersdecor.metal_rung_ladder.name=Металлическая лестница
+tile.engineersdecor.metal_rung_ladder.help=§6Типичная промышленная настенная лестница, состоящая из горизонтальных металлических стержней.§r Смотри вверх / вниз, чтобы подняться быстрее.
+tile.engineersdecor.metal_rung_steps.name=Настенные металлические ступеньки
+tile.engineersdecor.metal_rung_steps.help=§6Металлические ступеньки, крепятся к стене. Позволяют подыматся/спускатся.§r Смотри вверх / вниз, чтобы подняться быстрее.
+tile.engineersdecor.treated_wood_ladder.name=Лестница из обработанного дерева
+tile.engineersdecor.treated_wood_ladder.help=§6Погодоустойчивая деревянная лестница.§r Смотри вверх / вниз, чтобы подняться быстрее.
+#-----------------------------------------------------------------------------------------------------------
+tile.engineersdecor.clinker_brick_stairs.name=Клинкерная кирпичная лестница
+tile.engineersdecor.clinker_brick_stairs.help=§6По цвету выглядит немного темнее и интенсивнее, чем ванильный кирпичный блок
+tile.engineersdecor.slag_brick_stairs.name=Клинкерная кирпичная лестница
+tile.engineersdecor.slag_brick_stairs.help=§6По цвету выглядит немного темнее и интенсивнее, чем ванильный кирпичный блок.
+tile.engineersdecor.rebar_concrete_stairs.name=Железобетонная лестница
+tile.engineersdecor.rebar_concrete_stairs.help=§6Железобетонная лестница.§r Дорогая, но взрывоустойчивая, как обсидиан.
+tile.engineersdecor.rebar_concrete_tile_stairs.name=Железобетонная лестница
+tile.engineersdecor.rebar_concrete_tile_stairs.help=§6Железобетонная лестница.§r Дорогая, но взрывоустойчивая, как обсидиан.
+#-----------------------------------------------------------------------------------------------------------
+tile.engineersdecor.treated_wood_pole.name=Надежно обработанный деревянный столб
+tile.engineersdecor.treated_wood_pole.help=§6Надёжный столб с диаметром, схожим с реле.§r\n\
+              Может быть полезен в качестве альтернативы электро-столбам, если требуются специальные особые растояния, \
+              или как опора для конструкций.
+#-----------------------------------------------------------------------------------------------------------
+tile.engineersdecor.treated_wood_table.name=Стол из обработанного дерева
+tile.engineersdecor.treated_wood_table.help=§6Прочный деревянный стол с четырьмя ножками .§r Для использования в помещении и улице.
+tile.engineersdecor.treated_wood_stool.name=Табурет из обработанного дерева
+tile.engineersdecor.treated_wood_stool.help=§6Крепкий деревянный табурет.§r Для использования в помещении и улице.
+tile.engineersdecor.treated_wood_crafting_table.name=Верстак из обработанного дерева
+tile.engineersdecor.treated_wood_crafting_table.help=§6Прочный и устойчивый к погодным условиям. Восемь слотов для хранения. Хранит инвентарь.
+tile.engineersdecor.iron_inset_light.name=Встраиваемый осветитель
+tile.engineersdecor.iron_inset_light.help=§6Маленький источник света, интегрируемый в стены, пол или потолок.§r\n\
+                                               Полезно для освещения мест, где проблематичны электрические осветительные установки.\
+                                               Уровень света - как факел.
+tile.engineersdecor.treated_wood_window.name=Обработанное деревянное окно
+tile.engineersdecor.treated_wood_window.help=§6Деревянный каркас окна с тройным остеклением. Ну и шумоизоляция.
+tile.engineersdecor.treated_wood_windowsill.name=Обработанный деревянный подоконник
+tile.engineersdecor.treated_wood_windowsill.help=§6Простое оформление окон.
+#-----------------------------------------------------------------------------------------------------------
+tile.engineersdecor.iron_sheet_roof.name=Кровля из листового металла
+tile.engineersdecor.iron_sheet_roof.help=§6Ну, это кровля.
+tile.engineersdecor.small_lab_furnace.name=Компактная лабораторная печь
+tile.engineersdecor.small_lab_furnace.help=§6Лабораторная печь в металлическом корпусе.§r Подача твёрдого топлива - сверху. Немного горячее чем каменная, поэтому быстрее. Два внутренних слота для ввода, выхода и топлива.
+#-----------------------------------------------------------------------------------------------------------
+# EOF
+#-----------------------------------------------------------------------------------------------------------
