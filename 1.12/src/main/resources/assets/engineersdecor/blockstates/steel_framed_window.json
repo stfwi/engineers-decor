@@ -1,0 +1,11 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "engineersdecor:furniture/steel_framed_window_model"
+  },
+  "variants": {
+    "normal": [{}],
+    "facing": { "north": {"y":0}, "south": {"y":0}, "west": {"y":90}, "east": {"y":90}, "up": {"x":90}, "down": {"x":90} },
+    "inventory": [{}]
+  }
+}

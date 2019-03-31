@@ -11,17 +11,16 @@ package wile.engineersdecor;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import wile.engineersdecor.blocks.BlockDecorCraftingTable;
-import wile.engineersdecor.blocks.BlockDecorFurnace;
-import wile.engineersdecor.blocks.BlockDecorLadder;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
+import wile.engineersdecor.blocks.*;
 import wile.engineersdecor.detail.ModConfig;
-import wile.engineersdecor.blocks.ModBlocks;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -93,6 +92,7 @@ public class ModEngineersDecor
   {
     proxy.init(event);
     NetworkRegistry.INSTANCE.registerGuiHandler(this, new ModEngineersDecor.GuiHandler());
+    EntityRegistry.registerModEntity(new ResourceLocation(ModEngineersDecor.MODID, "chair_entity"), BlockDecorChair.EntityChair.class,"DecorChair",0,this,80,1,false);
   }
 
   @Mod.EventHandler

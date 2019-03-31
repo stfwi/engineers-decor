@@ -52,6 +52,10 @@ tile.engineersdecor.treated_wood_pole.name=Straight treated wood pole
 tile.engineersdecor.treated_wood_pole.help=§6Straight pole fragment with the diameter of a wire relay.§r\n\
               Can be useful as alternative to the wire posts if special special lengths are needed, \
               or as support for structures.
+tile.engineersdecor.treated_wood_pole_head.name=Straight treated wood pole head/foot
+tile.engineersdecor.treated_wood_pole_head.help=§6Wooden part fitting as foot or head of straight poles.
+tile.engineersdecor.treated_wood_pole_support.name=Straight treated wood pole support
+tile.engineersdecor.treated_wood_pole_support.help=§6Heavy duty wooden support part fitting as foot or head of straight poles.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.treated_wood_table.name=Treated wood table
 tile.engineersdecor.treated_wood_table.help=§6Robust four-legged wood table.§r Indoor and outdoor use.
@@ -64,14 +68,16 @@ tile.engineersdecor.iron_inset_light.help=§6Small glowstone light source, sunk 
                                                Useful to light up places where electrical light installations are problematic.\
                                                Light level like a torch.
 tile.engineersdecor.treated_wood_window.name=Treated wood window
-tile.engineersdecor.treated_wood_window.help=§6Wood framed tripple glazed window. Well insulating.
+tile.engineersdecor.treated_wood_window.help=§6Wood framed tripple glazed window. Well insulating.§r Does not connect to adjacent blocks like glass panes.
 tile.engineersdecor.treated_wood_windowsill.name=Treated wood window sill
 tile.engineersdecor.treated_wood_windowsill.help=§6Simple window decoration.
-#-----------------------------------------------------------------------------------------------------------
-tile.engineersdecor.iron_sheet_roof.name=Iron sheet metal roof
-tile.engineersdecor.iron_sheet_roof.help=§6Well, it's a roof.
 tile.engineersdecor.small_lab_furnace.name=Small laboratry furnace
 tile.engineersdecor.small_lab_furnace.help=§6Small metal cased lab kiln.§r Solid fuel consuming, updraught. Slightly hotter and better isolated than a cobblestone furnace, therefore more efficient. Two stack internal hopper fifos for input, output, and fuel.
+tile.engineersdecor.steel_framed_window.name=Steel framed window
+tile.engineersdecor.steel_framed_window.help=§6Steel framed tripple glazed window. Well insulating. §r Does not connect to adjacent blocks like glass panes.
+#-----------------------------------------------------------------------------------------------------------
+tile.engineersdecor.iron_sheet_roof.name=Iron sheet metal roof (experimental)
+tile.engineersdecor.iron_sheet_roof.help=§6Well, I just can't get that model right in a way that I could like it. Gimme some time.
 #-----------------------------------------------------------------------------------------------------------
 # EOF
 #-----------------------------------------------------------------------------------------------------------

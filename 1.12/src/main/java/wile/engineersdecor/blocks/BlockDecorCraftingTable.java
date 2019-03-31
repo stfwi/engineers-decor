@@ -1,10 +1,11 @@
 /*
- * @file BlockDecorFull.java
+ * @file BlockDecorCraftingTable.java
  * @author Stefan Wilhelm (wile)
  * @copyright (C) 2019 Stefan Wilhelm
  * @license MIT (see https://opensource.org/licenses/MIT)
  *
- * Full block characteristics class.
+ * Mod crafting table, different style, UI and fetature set
+ * than vanilla crafting table.
  */
 package wile.engineersdecor.blocks;
 

@@ -10,6 +10,18 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+    - v1.0.3-b3 [A] Added sitting on treated wood stool, Zombies included.
+                [A] Added steel framed window.
+                [A] Added treated wood pole support head/foot and heavy duty support.
+                [A] Added language Russian language support, thanks to yaroslav4167.
+                [A] Added config for furnace smelting speed (percent of vanilla furnace).
+                [A] Added config for furnace fuel efficiency (in percent, ref is vanilla).
+                [F] Treated pole model changed to circumvent potential texture bleeding.
+                [M] Treated wood table bounding box aligned with the legs.
+                [M] Treated wood crafting table bounding box aligned with the legs.
+                [M] Treated wood window can be vertically placed for rooflights.
+                [M] Treated wood window can be vertically placed for rooflights.
+
     - v1.0.3-b2 [A] Added config options for selective feature opt-outs (soft opt-out).
                 [A] Added config skip registration of opt-out features (hard opt-out).
                 [A] Added config to disable all internal recipes (for packs).

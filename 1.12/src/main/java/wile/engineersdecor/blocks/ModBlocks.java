@@ -12,18 +12,18 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.detail.ModAuxiliaries;
 import wile.engineersdecor.detail.ModConfig;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -57,9 +57,23 @@ public class ModBlocks
 
   public static final BlockDecorGlassBlock PANZERGLASS_BLOCK = new BlockDecorGlassBlock("panzerglass_block", 0, Material.GLASS, 0.8f, 2000f, SoundType.GLASS);
 
-  public static final BlockDecorDirected TREATED_WOOD_POLE = new BlockDecorDirected(
+  public static final BlockDecorStraightPole TREATED_WOOD_POLE = new BlockDecorStraightPole(
     "treated_wood_pole",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT,
+    Material.WOOD, 1.0f, 15f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16)
+  );
+
+  public static final BlockDecorStraightPole TREATED_WOOD_POLE_HEAD = new BlockDecorStraightPole(
+    "treated_wood_pole_head",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_IF_SAME,
+    Material.WOOD, 1.0f, 15f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16)
+  );
+
+  public static final BlockDecorStraightPole TREATED_WOOD_POLE_SUPPORT = new BlockDecorStraightPole(
+    "treated_wood_pole_support",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_IF_SAME,
     Material.WOOD, 1.0f, 15f, SoundType.WOOD,
     ModAuxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16)
   );
@@ -67,7 +81,8 @@ public class ModBlocks
   public static final BlockDecor TREATED_WOOD_TABLE = new BlockDecor(
     "treated_wood_table",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
-    Material.WOOD, 1.0f, 15f, SoundType.WOOD
+    Material.WOOD, 1.0f, 15f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(1,0,1, 15,15.9,15)
   );
 
   public static final BlockDecorChair TREATED_WOOD_STOOL = new BlockDecorChair(
@@ -81,7 +96,7 @@ public class ModBlocks
     "treated_wood_crafting_table",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
     Material.WOOD, 1.0f, 15f, SoundType.WOOD,
-    ModAuxiliaries.getPixeledAABB(0.0,0,0, 16,15.9,16)
+    ModAuxiliaries.getPixeledAABB(1,0,1, 15,15.9,15)
   );
 
   public static final BlockDecorDirected INSET_LIGHT_IRON = new BlockDecorDirected(
@@ -98,11 +113,18 @@ public class ModBlocks
     ModAuxiliaries.getPixeledAABB(0.5,15,10.5, 15.5,16,16)
   );
 
-  public static final BlockDecorDirected TREATED_WOOD_WINDOW = new BlockDecorDirected(
+  public static final BlockDecorWindow TREATED_WOOD_WINDOW = new BlockDecorWindow(
     "treated_wood_window",
-    BlockDecor.CFG_TRANSLUCENT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
+    BlockDecor.CFG_TRANSLUCENT|BlockDecor.CFG_LOOK_PLACEMENT,
     Material.WOOD, 0.5f, 15f, SoundType.GLASS,
     ModAuxiliaries.getPixeledAABB(0,0,7, 16,16,9)
+  );
+
+  public static final BlockDecorWindow STEEL_FRAMED_WINDOW = new BlockDecorWindow(
+    "steel_framed_window",
+    BlockDecor.CFG_TRANSLUCENT|BlockDecor.CFG_LOOK_PLACEMENT,
+    Material.IRON, 0.5f, 30f, SoundType.GLASS,
+    ModAuxiliaries.getPixeledAABB(0,0,7.5, 16,16,8.5)
   );
 
   public static final BlockDecorFurnace SMALL_LAB_FURNACE = new BlockDecorFurnace(
@@ -140,6 +162,9 @@ public class ModBlocks
     TREATED_WOOD_WINDOWSILL,
     INSET_LIGHT_IRON,
     SMALL_LAB_FURNACE,
+    STEEL_FRAMED_WINDOW,
+    TREATED_WOOD_POLE_SUPPORT,
+    TREATED_WOOD_POLE_HEAD
   };
 
   private static final Block devBlocks[] = {
@@ -174,6 +199,7 @@ public class ModBlocks
     if(num_registrations_skipped > 0) {
       ModEngineersDecor.logger.info("Skipped registration of " + num_registrations_skipped + " blocks due to no-register-opt-out config.");
     }
+
     // TEs
     GameRegistry.registerTileEntity(BlockDecorCraftingTable.BTileEntity.class, new ResourceLocation(ModEngineersDecor.MODID, "te_crafting_table"));
     GameRegistry.registerTileEntity(BlockDecorFurnace.BTileEntity.class, new ResourceLocation(ModEngineersDecor.MODID, "te_small_lab_furnace"));

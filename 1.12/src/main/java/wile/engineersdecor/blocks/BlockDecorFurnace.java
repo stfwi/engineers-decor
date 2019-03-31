@@ -222,7 +222,7 @@ public class BlockDecorFurnace extends BlockDecorDirected
     { final int tc=te.getField(2), T=te.getField(3); return ((T>0) && (tc>0)) ? (tc * pixels / T) : (0); }
 
     private int flame_px(int pixels)
-    { int ibt = te.getField(1); return ((te.getField(0) * pixels) / ((ibt>0) ? (ibt) : (te.proc_speed_interval_))); }
+    { int ibt = te.getField(1); return ((te.getField(0) * pixels) / ((ibt>0) ? (ibt) : (BTileEntity.proc_speed_interval_))); }
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -455,14 +455,24 @@ public class BlockDecorFurnace extends BlockDecorDirected
     private final IItemHandler sided_itemhandler_down_  = new SidedInvWrapper(this, EnumFacing.DOWN);
     private final IItemHandler sided_itemhandler_sides_ = new SidedInvWrapper(this, EnumFacing.WEST);
 
+    private static int  proc_speed_interval_ = DEFAULT_SPEED_INTERVAL;
+    private static double proc_fuel_efficiency_ = 1.0;
+
     private int tick_timer_;
     private int fifo_timer_;
     private int burntime_left_;
     private int fuel_burntime_;
     private int proc_time_elapsed_;
     private int proc_time_needed_;
-    private int proc_speed_interval_;
     private NonNullList<ItemStack> stacks_;
+
+    public static void on_config(int speed_percent, int fuel_efficiency_percent)
+    {
+      double ratio = (100.0 / MathHelper.clamp(speed_percent, 10, 500)) ;
+      proc_speed_interval_ = MathHelper.clamp((int)(ratio * VANILLA_FURNACE_SPEED_INTERVAL), 20, 400);
+      proc_fuel_efficiency_ = ((double) MathHelper.clamp(fuel_efficiency_percent, 10, 500)) / 100;
+      ModEngineersDecor.logger.info("Config lab furnace interval:" + proc_speed_interval_ + ", efficiency:" + proc_fuel_efficiency_);
+    }
 
     public BTileEntity()
     { reset(); }
@@ -470,7 +480,6 @@ public class BlockDecorFurnace extends BlockDecorDirected
     public void reset()
     {
       stacks_ = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
-      proc_speed_interval_ = DEFAULT_SPEED_INTERVAL;
       proc_time_elapsed_ = 0;
       proc_time_needed_ = 0;
       burntime_left_ = 0;
@@ -658,8 +667,8 @@ public class BlockDecorFurnace extends BlockDecorDirected
       ItemStack fuel = stacks_.get(SMELTING_FUEL_SLOT_NO);
       if(isBurning() || (!fuel.isEmpty()) && (!(stacks_.get(SMELTING_INPUT_SLOT_NO)).isEmpty())) {
         if(!isBurning() && canSmelt()) {
-          burntime_left_ = getItemBurnTime(fuel);
-          fuel_burntime_ = ((burntime_left_ * proc_speed_interval_) / VANILLA_FURNACE_SPEED_INTERVAL);
+          burntime_left_ = (int)MathHelper.clamp((proc_fuel_efficiency_ * getItemBurnTime(fuel)), 0, MAX_BURNTIME);
+          fuel_burntime_ = (burntime_left_ * proc_speed_interval_) / VANILLA_FURNACE_SPEED_INTERVAL;
           if(isBurning()) {
             dirty = true;
             if(!fuel.isEmpty()) {

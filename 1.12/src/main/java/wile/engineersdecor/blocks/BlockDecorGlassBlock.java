@@ -1,10 +1,10 @@
 /*
- * @file BlockDecorFull.java
+ * @file BlockDecorGlassBlock.java
  * @author Stefan Wilhelm (wile)
  * @copyright (C) 2019 Stefan Wilhelm
  * @license MIT (see https://opensource.org/licenses/MIT)
  *
- * Full block characteristics class.
+ * Full block-size glass blocks.
  */
 package wile.engineersdecor.blocks;
 

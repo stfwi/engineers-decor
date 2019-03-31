@@ -52,6 +52,10 @@ tile.engineersdecor.treated_wood_pole.name=Надежно обработанны
 tile.engineersdecor.treated_wood_pole.help=§6Надёжный столб с диаметром, схожим с реле.§r\n\
               Может быть полезен в качестве альтернативы электро-столбам, если требуются специальные особые растояния, \
               или как опора для конструкций.
+tile.engineersdecor.treated_wood_pole_head.name=Straight treated wood pole head/foot
+#tile.engineersdecor.treated_wood_pole_head.help=§6Wooden part fitting as foot or head of straight poles.
+tile.engineersdecor.treated_wood_pole_support.name=Straight treated wood pole support
+#tile.engineersdecor.treated_wood_pole_support.help=§6Heavy duty wooden support part fitting as foot or head of straight poles.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.treated_wood_table.name=Стол из обработанного дерева
 tile.engineersdecor.treated_wood_table.help=§6Прочный деревянный стол с четырьмя ножками .§r Для использования в помещении и улице.
@@ -67,11 +71,13 @@ tile.engineersdecor.treated_wood_window.name=Обработанное дерев
 tile.engineersdecor.treated_wood_window.help=§6Деревянный каркас окна с тройным остеклением. Ну и шумоизоляция.
 tile.engineersdecor.treated_wood_windowsill.name=Обработанный деревянный подоконник
 tile.engineersdecor.treated_wood_windowsill.help=§6Простое оформление окон.
+tile.engineersdecor.small_lab_furnace.name=Компактная лабораторная печь
+tile.engineersdecor.small_lab_furnace.help=§6Лабораторная печь в металлическом корпусе.§r Подача твёрдого топлива - сверху. Немного горячее чем каменная, поэтому быстрее. Два внутренних слота для ввода, выхода и топлива.
+tile.engineersdecor.steel_framed_window.name=Steel framed window
+#tile.engineersdecor.steel_framed_window.help=§6Steel framed tripple glazed window. Well insulating. §r Does not connect to adjacent blocks like glass panes.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.iron_sheet_roof.name=Кровля из листового металла
 tile.engineersdecor.iron_sheet_roof.help=§6Ну, это кровля.
-tile.engineersdecor.small_lab_furnace.name=Компактная лабораторная печь
-tile.engineersdecor.small_lab_furnace.help=§6Лабораторная печь в металлическом корпусе.§r Подача твёрдого топлива - сверху. Немного горячее чем каменная, поэтому быстрее. Два внутренних слота для ввода, выхода и топлива.
 #-----------------------------------------------------------------------------------------------------------
 # EOF
 #-----------------------------------------------------------------------------------------------------------

@@ -46,13 +46,16 @@ public class BlockDecor extends Block
   public static final long CFG_HORIZIONTAL                = 0x0000000000000002L; // horizontal block, affects bounding box calculation at construction time and placement
   public static final long CFG_LOOK_PLACEMENT             = 0x0000000000000004L; // placed in direction the player is looking when placing.
   public static final long CFG_FACING_PLACEMENT           = 0x0000000000000008L; // placed on the facing the player has clicked.
-  public static final long CFG_OPPOSITE_PLACEMENT         = 0x0000000000000020L; // placed placed in the opposite direction of the face the player clicked.
+  public static final long CFG_OPPOSITE_PLACEMENT         = 0x0000000000000010L; // placed placed in the opposite direction of the face the player clicked.
+  public static final long CFG_FLIP_PLACEMENT_IF_SAME     = 0x0000000000000020L; // placement direction flipped if an instance of the same class was clicked
   public static final long CFG_TRANSLUCENT                = 0x0000000000000040L; // indicates a block/pane is glass like (transparent, etc)
   public static final long CFG_LIGHT_VALUE_MASK           = 0x0000000000000f00L; // fixed value for getLightValue()
   public static final long CFG_LIGHT_VALUE_SHIFT          = 8L;
   public static final long CFG_LAB_FURNACE_CRUDE          = 0x0000000000010000L; // For DecorFurnace, denotes that it is a crude furnace.
 
-  public BlockDecor(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound)
+  protected final AxisAlignedBB aabb;
+
+  public BlockDecor(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound, @Nullable AxisAlignedBB boundingbox)
   {
     super((material!=null) ? (material) : (Material.IRON));
     setCreativeTab(ModEngineersDecor.CREATIVE_TAB_ENGINEERSDECOR);
@@ -64,13 +67,11 @@ public class BlockDecor extends Block
     setSoundType((sound==null) ? SoundType.STONE : sound);
     setLightOpacity(0);
     this.config = config;
+    this.aabb = (boundingbox==null) ? (FULL_BLOCK_AABB) : (boundingbox);
   }
 
-  @Override
-  @Nullable
-  @SuppressWarnings("deprecation")
-  public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
-  { return getBoundingBox(state, world, pos); }
+  public BlockDecor(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound)
+  { this(registryName, config, material, hardness, resistance, sound, null); }
 
   @Override
   @SideOnly(Side.CLIENT)
@@ -143,6 +144,17 @@ public class BlockDecor extends Block
   @SuppressWarnings("deprecation")
   public IBlockState withMirror(IBlockState state, Mirror mirrorIn)
   { return state; }
+
+  @Override
+  @Nullable
+  @SuppressWarnings("deprecation")
+  public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
+  { return getBoundingBox(state, world, pos); }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+  { return aabb; }
 
   @Override
   public boolean hasTileEntity(IBlockState state)

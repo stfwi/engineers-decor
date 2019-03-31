@@ -94,6 +94,19 @@ public class ModConfig
     @Config.Name("Without ladders")
     @Config.RequiresMcRestart
     public boolean without_ladders = false;
+
+    @Config.Comment({"Disable possibility to sit on stools and chairs."})
+    @Config.Name("Without chair sitting")
+    public boolean without_chair_sitting = false;
+
+    @Config.Comment({"Disable that mobs will sit on chairs and stools."})
+    @Config.Name("Without chair mob sitting")
+    public boolean without_mob_chair_sitting = false;
+
+    @Config.Comment({"Disable the speed boost of ladders in this mod."})
+    @Config.Name("Without ladder speed boost")
+    public boolean without_ladder_speed_boost = false;
+
   }
 
   @Config.Comment({
@@ -127,10 +140,47 @@ public class ModConfig
   {
     @Config.Comment({
       "Smelts ores to nuggets that are normally smelted to ingots, " +
-      "if detectable in the Forge ore dict. Prefers IE recipe results."
+      "if detectable in the Forge ore dict. Prefers IE recipe results. " +
+      "The value can be changed on-the-fly for testing or age progression."
     })
     @Config.Name("Furnace: Nugget smelting")
     public boolean furnace_smelts_nuggets = false;
+
+    @Config.Comment({
+      "Defines, in percent, how fast the lab furnace smelts compared to " +
+      "a vanilla furnace. 100% means vanilla furnace speed, 150% means the " +
+      "lab furnace is faster. The value can be changed on-the-fly for tuning."
+    })
+    @Config.Name("Furnace: Smelting speed %")
+    @Config.RangeInt(min=50, max=500)
+    public int furnace_smelting_speed_percent = 130;
+
+    @Config.Comment({
+      "Defines, in percent, how fuel efficient the lab furnace is, compared " +
+      "to a vanilla furnace. 100% means vanilla furnace consumiton, 200% means " +
+      "the lab furnace needs about half the fuel of a vanilla furnace, " +
+      "The value can be changed on-the-fly for tuning."
+    })
+    @Config.Name("Furnace: Fuel efficiency %")
+    @Config.RangeInt(min=50, max=250)
+    public int furnace_fuel_efficiency_percent = 100;
+
+    @Config.Comment({
+      "Defines, in percent, how high the probability is that a mob sits on a chair " +
+      "when colliding with it. Can be changed on-the-fly for tuning."
+    })
+    @Config.Name("Chairs: Sitting chance %")
+    @Config.RangeDouble(min=0.0, max=80)
+    public double chair_mob_sitting_probability_percent = 10;
+
+    @Config.Comment({
+      "Defines, in percent, probable it is that a mob leaves a chair when sitting " +
+      "on it. The 'dice is rolled' about every 20 ticks. There is also a minimum " +
+      "Sitting time of about 3s. The config value can be changed on-the-fly for tuning."
+    })
+    @Config.Name("Chairs: Stand up chance %")
+    @Config.RangeDouble(min=0.001, max=10)
+    public double chair_mob_standup_probability_percent = 1;
   }
 
   @SuppressWarnings("unused")
@@ -184,8 +234,11 @@ public class ModConfig
 
   public static final void apply()
   {
+    BlockDecorFurnace.BTileEntity.on_config(tweaks.furnace_smelting_speed_percent, tweaks.furnace_fuel_efficiency_percent);
     ModRecipes.furnaceRecipeOverrideReset();
     if(tweaks.furnace_smelts_nuggets) ModRecipes.furnaceRecipeOverrideSmeltsOresToNuggets();
+    BlockDecorChair.on_config(optout.without_chair_sitting, optout.without_mob_chair_sitting, tweaks.chair_mob_sitting_probability_percent, tweaks.chair_mob_standup_probability_percent);
+    BlockDecorLadder.on_config(optout.without_ladder_speed_boost);
   }
 
 }

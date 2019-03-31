@@ -1,0 +1,17 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:treated_wood_pole_support"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "engineersdecor:treated_wood_pole_head"
+    }
+  ],
+  "result": {
+    "item": "engineersdecor:treated_wood_pole_support"
+  }
+}

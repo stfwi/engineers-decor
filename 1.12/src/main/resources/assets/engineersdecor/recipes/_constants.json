@@ -87,6 +87,28 @@
   {
     "ingredient": {
       "type": "forge:ore_dict",
+      "ore": "slabSheetmetalIron"
+    },
+    "name": "slabSheetmetalIron"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "slabSheetmetalSteel"
+    },
+    "name": "slabSheetmetalSteel"
+  },
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "slabSheetmetalAluminium"
+    },
+    "name": "slabSheetmetalAluminium"
+  },
+
+  {
+    "ingredient": {
+      "type": "forge:ore_dict",
       "ore": "sand"
     },
     "name": "sand"
