@@ -19,7 +19,6 @@ import net.minecraftforge.common.crafting.IConditionFactory;
 import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-
 import com.google.gson.*;
 import java.util.function.BooleanSupplier;
 

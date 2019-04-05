@@ -11,6 +11,8 @@ package wile.engineersdecor.blocks;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.init.SoundEvents;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import wile.engineersdecor.ModEngineersDecor;
 import net.minecraft.stats.StatList;
 import net.minecraft.block.properties.PropertyBool;
@@ -46,11 +48,11 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import wile.engineersdecor.detail.ExtItems;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Random;
-
 
 public class BlockDecorFurnace extends BlockDecorDirected
 {
@@ -428,11 +430,12 @@ public class BlockDecorFurnace extends BlockDecorDirected
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class BTileEntity extends TileEntity implements ITickable, ISidedInventory
+  public static class BTileEntity extends TileEntity implements ITickable, ISidedInventory, IEnergyStorage
   {
     public static final int TICK_INTERVAL = 4;
     public static final int FIFO_INTERVAL = 20;
     public static final int MAX_BURNTIME = 0x7fff;
+    public static final int DEFAULT_BOOST_ENERGY = 32;
     public static final int VANILLA_FURNACE_SPEED_INTERVAL = 200;
     public static final int DEFAULT_SPEED_INTERVAL  = 150;
     public static final int NUM_OF_SLOTS = 11;
@@ -454,9 +457,9 @@ public class BlockDecorFurnace extends BlockDecorDirected
     private final IItemHandler sided_itemhandler_top_   = new SidedInvWrapper(this, EnumFacing.UP);
     private final IItemHandler sided_itemhandler_down_  = new SidedInvWrapper(this, EnumFacing.DOWN);
     private final IItemHandler sided_itemhandler_sides_ = new SidedInvWrapper(this, EnumFacing.WEST);
-
-    private static int  proc_speed_interval_ = DEFAULT_SPEED_INTERVAL;
     private static double proc_fuel_efficiency_ = 1.0;
+    private static int proc_speed_interval_ = DEFAULT_SPEED_INTERVAL;
+    private static int boost_energy_consumption = DEFAULT_BOOST_ENERGY * TICK_INTERVAL;
 
     private int tick_timer_;
     private int fifo_timer_;
@@ -464,13 +467,16 @@ public class BlockDecorFurnace extends BlockDecorDirected
     private int fuel_burntime_;
     private int proc_time_elapsed_;
     private int proc_time_needed_;
+    private int boost_energy_; // small, not saved in nbt.
+    private boolean heater_inserted_ = false;
     private NonNullList<ItemStack> stacks_;
 
-    public static void on_config(int speed_percent, int fuel_efficiency_percent)
+    public static void on_config(int speed_percent, int fuel_efficiency_percent, int boost_energy_per_tick)
     {
       double ratio = (100.0 / MathHelper.clamp(speed_percent, 10, 500)) ;
       proc_speed_interval_ = MathHelper.clamp((int)(ratio * VANILLA_FURNACE_SPEED_INTERVAL), 20, 400);
       proc_fuel_efficiency_ = ((double) MathHelper.clamp(fuel_efficiency_percent, 10, 500)) / 100;
+      boost_energy_consumption = TICK_INTERVAL * MathHelper.clamp(boost_energy_per_tick, 16, 512);
       ModEngineersDecor.logger.info("Config lab furnace interval:" + proc_speed_interval_ + ", efficiency:" + proc_fuel_efficiency_);
     }
 
@@ -663,6 +669,9 @@ public class BlockDecorFurnace extends BlockDecorDirected
         if(transferItems(FIFO_FUEL_1_SLOT_NO, FIFO_FUEL_0_SLOT_NO, 1)) dirty = true;
         if(transferItems(FIFO_INPUT_0_SLOT_NO, SMELTING_INPUT_SLOT_NO, 1)) dirty = true;
         if(transferItems(FIFO_INPUT_1_SLOT_NO, FIFO_INPUT_0_SLOT_NO, 1)) dirty = true;
+        heater_inserted_ = (ExtItems.IE_EXTERNAL_HEATER==null) // without IE always allow electrical boost
+          || (stacks_.get(AUX_0_SLOT_NO).getItem()==ExtItems.IE_EXTERNAL_HEATER)
+          || (stacks_.get(AUX_1_SLOT_NO).getItem()==ExtItems.IE_EXTERNAL_HEATER);
       }
       ItemStack fuel = stacks_.get(SMELTING_FUEL_SLOT_NO);
       if(isBurning() || (!fuel.isEmpty()) && (!(stacks_.get(SMELTING_INPUT_SLOT_NO)).isEmpty())) {
@@ -680,6 +689,7 @@ public class BlockDecorFurnace extends BlockDecorDirected
         }
         if(isBurning() && canSmelt()) {
           proc_time_elapsed_ += TICK_INTERVAL;
+          if(heater_inserted_ && (boost_energy_ >= boost_energy_consumption)) { boost_energy_ = 0; proc_time_elapsed_ += TICK_INTERVAL; }
           if(proc_time_elapsed_ >= proc_time_needed_) {
             proc_time_elapsed_ = 0;
             proc_time_needed_ = getCookTime(stacks_.get(SMELTING_INPUT_SLOT_NO));
@@ -775,6 +785,8 @@ public class BlockDecorFurnace extends BlockDecorDirected
     public static boolean isItemFuel(ItemStack stack)
     { return TileEntityFurnace.isItemFuel(stack); }
 
+    // ISidedInventory ----------------------------------------------------------------------------
+
     @Override
     public int[] getSlotsForFace(EnumFacing side)
     {
@@ -794,17 +806,51 @@ public class BlockDecorFurnace extends BlockDecorDirected
       return (stack.getItem()==Items.BUCKET);
     }
 
+    // IEnergyStorage ----------------------------------------------------------------------------
+
+    public boolean canExtract()
+    { return false; }
+
+    public boolean canReceive()
+    { return true; }
+
+    public int getMaxEnergyStored()
+    { return boost_energy_consumption; }
+
+    public int getEnergyStored()
+    { return boost_energy_; }
+
+    public int extractEnergy(int maxExtract, boolean simulate)
+    { return 0; }
+
+    public int receiveEnergy(int maxReceive, boolean simulate)
+    { // only speedup support, no buffering, not in nbt -> no markdirty
+      if((boost_energy_ >= boost_energy_consumption) || (maxReceive < boost_energy_consumption)) return 0;
+      if(!simulate) boost_energy_ = boost_energy_consumption;
+      return boost_energy_consumption;
+    }
+
+    // Capability export ----------------------------------------------------------------------------
+
+    @Override
+    public boolean hasCapability(Capability<?> cap, EnumFacing facing)
+    { return ((cap==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) || (cap==CapabilityEnergy.ENERGY)) || super.hasCapability(cap, facing); }
+
     @Override
     @SuppressWarnings("unchecked")
     @Nullable
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
     {
-      if((facing == null) || (capability != CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)) return super.getCapability(capability, facing);
-      if(facing == EnumFacing.DOWN) return (T) sided_itemhandler_down_;
-      if(facing == EnumFacing.UP) return (T) sided_itemhandler_top_;
-      return (T) sided_itemhandler_sides_;
+      if((facing != null) && (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)) {
+        if(facing == EnumFacing.DOWN) return (T) sided_itemhandler_down_;
+        if(facing == EnumFacing.UP) return (T) sided_itemhandler_top_;
+        return (T) sided_itemhandler_sides_;
+      } else if(capability == CapabilityEnergy.ENERGY) {
+        return (T)this;
+      } else {
+        return super.getCapability(capability, facing);
+      }
     }
-
   }
 
   //--------------------------------------------------------------------------------------------------------------------

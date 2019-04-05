@@ -8,20 +8,19 @@
  */
 package wile.engineersdecor.detail;
 
+import net.minecraft.world.World;
 import wile.engineersdecor.ModEngineersDecor;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.model.obj.OBJLoader;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public class ClientProxy implements ModEngineersDecor.IProxy
 {
+  @Override
   public void preInit(FMLPreInitializationEvent e)
   { OBJLoader.INSTANCE.addDomain(ModEngineersDecor.MODID); }
 
-  public void init(FMLInitializationEvent e)
-  {}
-
-  public void postInit(FMLPostInitializationEvent e)
-  {}
+  @Override
+  public World getWorlClientSide()
+  { return Minecraft.getMinecraft().world; }
 }

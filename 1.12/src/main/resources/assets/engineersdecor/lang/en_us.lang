@@ -65,16 +65,21 @@ tile.engineersdecor.treated_wood_crafting_table.name=Treated wood crafting table
 tile.engineersdecor.treated_wood_crafting_table.help=§6Robust and weather-proof. Eight storage slots. Keeps inventory.
 tile.engineersdecor.iron_inset_light.name=Inset light
 tile.engineersdecor.iron_inset_light.help=§6Small glowstone light source, sunk into the floor, ceiling or wall.§r\n\
-                                               Useful to light up places where electrical light installations are problematic.\
-                                               Light level like a torch.
+                                          Useful to light up places where electrical light installations are problematic.\
+                                          Light level like a torch.
 tile.engineersdecor.treated_wood_window.name=Treated wood window
 tile.engineersdecor.treated_wood_window.help=§6Wood framed tripple glazed window. Well insulating.§r Does not connect to adjacent blocks like glass panes.
 tile.engineersdecor.treated_wood_windowsill.name=Treated wood window sill
 tile.engineersdecor.treated_wood_windowsill.help=§6Simple window decoration.
-tile.engineersdecor.small_lab_furnace.name=Small laboratry furnace
-tile.engineersdecor.small_lab_furnace.help=§6Small metal cased lab kiln.§r Solid fuel consuming, updraught. Slightly hotter and better isolated than a cobblestone furnace, therefore more efficient. Two stack internal hopper fifos for input, output, and fuel.
 tile.engineersdecor.steel_framed_window.name=Steel framed window
 tile.engineersdecor.steel_framed_window.help=§6Steel framed tripple glazed window. Well insulating. §r Does not connect to adjacent blocks like glass panes.
+#-----------------------------------------------------------------------------------------------------------
+tile.engineersdecor.small_lab_furnace.name=Small laboratry furnace
+tile.engineersdecor.small_lab_furnace.help=§6Small metal cased lab kiln.§r Solid fuel consuming, updraught. \
+                                           Slightly hotter and better isolated than a cobblestone furnace, therefore more efficient. \
+                                           Two auxiliary slots e.g. for storage. Two stack internal hopper fifos for input, output, \
+                                           and fuel. Place an external heater into a aux slot and connect power for electrical \
+                                           smelting speed boost.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.iron_sheet_roof.name=Iron sheet metal roof (experimental)
 tile.engineersdecor.iron_sheet_roof.help=§6Well, I just can't get that model right in a way that I could like it. Gimme some time.

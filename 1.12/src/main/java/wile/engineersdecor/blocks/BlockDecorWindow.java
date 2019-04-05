@@ -53,7 +53,4 @@ public class BlockDecorWindow extends BlockDecorDirected
   public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face)
   { return false; }
 
-  @Override
-  public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer)
-  { return (layer==BlockRenderLayer.TRANSLUCENT) || (layer==BlockRenderLayer.CUTOUT); }
 }

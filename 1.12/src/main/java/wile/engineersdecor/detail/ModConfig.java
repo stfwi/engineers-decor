@@ -9,15 +9,15 @@
  */
 package wile.engineersdecor.detail;
 
-import net.minecraft.block.Block;
 import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.blocks.*;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
+import net.minecraft.block.Block;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import wile.engineersdecor.blocks.*;
 
 import javax.annotation.Nullable;
 
@@ -166,6 +166,17 @@ public class ModConfig
     public int furnace_fuel_efficiency_percent = 100;
 
     @Config.Comment({
+      "Defines the energy consumption (per tick) for speeding up the smelting process. " +
+      "If IE is installed, an external heater has to be inserted into an auxiliary slot " +
+      "of the lab furnace. The power source needs to be able to provide at least 4 times " +
+      "this consumption (fixed threshold value). The value can be changed on-the-fly for tuning. " +
+      "The default value corresponds to the IE heater consumption."
+    })
+    @Config.Name("Furnace: Boost energy")
+    @Config.RangeInt(min=16, max=256)
+    public int furnace_boost_energy_consumption = 24;
+
+    @Config.Comment({
       "Defines, in percent, how high the probability is that a mob sits on a chair " +
       "when colliding with it. Can be changed on-the-fly for tuning."
     })
@@ -234,11 +245,12 @@ public class ModConfig
 
   public static final void apply()
   {
-    BlockDecorFurnace.BTileEntity.on_config(tweaks.furnace_smelting_speed_percent, tweaks.furnace_fuel_efficiency_percent);
+    BlockDecorFurnace.BTileEntity.on_config(tweaks.furnace_smelting_speed_percent, tweaks.furnace_fuel_efficiency_percent, tweaks.furnace_boost_energy_consumption);
     ModRecipes.furnaceRecipeOverrideReset();
     if(tweaks.furnace_smelts_nuggets) ModRecipes.furnaceRecipeOverrideSmeltsOresToNuggets();
     BlockDecorChair.on_config(optout.without_chair_sitting, optout.without_mob_chair_sitting, tweaks.chair_mob_sitting_probability_percent, tweaks.chair_mob_standup_probability_percent);
     BlockDecorLadder.on_config(optout.without_ladder_speed_boost);
+    BlockDecorCraftingTable.on_config(!zmisc.with_experimental);
   }
 
 }

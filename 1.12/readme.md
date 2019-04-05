@@ -10,6 +10,11 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+    - v1.0.3-b4 [A] Lab furnace supports electrical speedup when a IE external
+                    is placed in one of the two auxiliary slots.
+                [F] Fixed window rendering issue (issue #15, thanks to ILLOMIURGE).
+                [M] Updated ru_ru lang file (Yaroslavik).
+
     - v1.0.3-b3 [A] Added sitting on treated wood stool, Zombies included.
                 [A] Added steel framed window.
                 [A] Added treated wood pole support head/foot and heavy duty support.

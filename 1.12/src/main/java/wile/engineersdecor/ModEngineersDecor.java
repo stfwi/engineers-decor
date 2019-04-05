@@ -8,37 +8,39 @@
  */
 package wile.engineersdecor;
 
+import wile.engineersdecor.detail.ModConfig;
+import wile.engineersdecor.detail.ExtItems;
+import wile.engineersdecor.detail.Networking;
+import wile.engineersdecor.detail.RecipeCondModSpecific;
+import wile.engineersdecor.blocks.*;
+import net.minecraft.world.World;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Item;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
-import wile.engineersdecor.blocks.*;
-import wile.engineersdecor.detail.ModConfig;
-import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.ItemStack;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
+import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
-import wile.engineersdecor.detail.RecipeCondModSpecific;
-
 import javax.annotation.Nonnull;
+
 
 @Mod(
   modid = ModEngineersDecor.MODID,
@@ -63,6 +65,10 @@ public class ModEngineersDecor
   @Mod.Instance
   public static ModEngineersDecor instance;
 
+  //--------------------------------------------------------------------------------------------------------------------
+  // Side handling
+  //--------------------------------------------------------------------------------------------------------------------
+
   @SidedProxy(clientSide = "wile.engineersdecor.detail.ClientProxy", serverSide = "wile.engineersdecor.detail.ServerProxy")
   public static IProxy proxy;
 
@@ -71,7 +77,12 @@ public class ModEngineersDecor
     default void preInit(final FMLPreInitializationEvent e) {}
     default void init(final FMLInitializationEvent e) {}
     default void postInit(final FMLPostInitializationEvent e) {}
+    default World getWorlClientSide() { return null; }
   }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Init
+  //--------------------------------------------------------------------------------------------------------------------
 
   @Mod.EventHandler
   public void preInit(final FMLPreInitializationEvent event)
@@ -85,6 +96,7 @@ public class ModEngineersDecor
     }
     proxy.preInit(event);
     MinecraftForge.EVENT_BUS.register(new PlayerEventHandler());
+    Networking.init();
   }
 
   @Mod.EventHandler
@@ -102,6 +114,7 @@ public class ModEngineersDecor
     proxy.postInit(event);
     if(RecipeCondModSpecific.num_skipped > 0) logger.info("Excluded " + RecipeCondModSpecific.num_skipped + " recipes due to config opt-out.");
     if(ModConfig.zmisc.with_experimental) logger.info("Included experimental features due to mod config.");
+    ExtItems.onPostInit();
   }
 
   @Mod.EventBusSubscriber
@@ -127,6 +140,10 @@ public class ModEngineersDecor
     public @Nonnull ItemStack createIcon()
     { return new ItemStack(ModBlocks.TREATED_WOOD_LADDER); }
   });
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Player interaction/notification
+  //--------------------------------------------------------------------------------------------------------------------
 
   public static final class GuiHandler implements IGuiHandler
   {
