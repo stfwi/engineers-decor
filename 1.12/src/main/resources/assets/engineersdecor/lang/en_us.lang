@@ -81,8 +81,5 @@ tile.engineersdecor.small_lab_furnace.help=§6Small metal cased lab kiln.§r Sol
                                            and fuel. Place an external heater into a aux slot and connect power for electrical \
                                            smelting speed boost.
 #-----------------------------------------------------------------------------------------------------------
-tile.engineersdecor.iron_sheet_roof.name=Iron sheet metal roof (experimental)
-tile.engineersdecor.iron_sheet_roof.help=§6Well, I just can't get that model right in a way that I could like it. Gimme some time.
-#-----------------------------------------------------------------------------------------------------------
 # EOF
 #-----------------------------------------------------------------------------------------------------------

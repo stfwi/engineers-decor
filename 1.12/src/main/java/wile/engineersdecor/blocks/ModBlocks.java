@@ -134,9 +134,6 @@ public class ModBlocks
     ModAuxiliaries.getPixeledAABB(1,0,1, 15,15,16.0)
   );
 
-  public static final BlockDecorFull IRON_SHEET_ROOF_FULLBLOCK = new BlockDecorFull("iron_sheet_roof_block", 0, Material.IRON, 1.8f, 25f, SoundType.METAL);
-  public static final BlockDecorStairs IRON_SHEET_ROOF = new BlockDecorStairs("iron_sheet_roof", IRON_SHEET_ROOF_FULLBLOCK.getDefaultState());
-
   private static final Block modBlocks[] = {
     TREATED_WOOD_CRAFTING_TABLE,
     CLINKER_BRICK_BLOCK,
@@ -168,7 +165,6 @@ public class ModBlocks
   };
 
   private static final Block devBlocks[] = {
-    IRON_SHEET_ROOF,    // model looks not good enough yet
   };
 
   private static ArrayList<Block> registeredBlocks = new ArrayList<>();
