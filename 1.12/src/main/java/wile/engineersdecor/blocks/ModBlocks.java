@@ -134,6 +134,13 @@ public class ModBlocks
     ModAuxiliaries.getPixeledAABB(1,0,1, 15,15,16.0)
   );
 
+  public static final BlockDecorDirected SIGN_MODLOGO = new BlockDecorDirected(
+    "sign_decor",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
+    Material.WOOD, 0.1f, 1000f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(0,0,15.6, 16,16,16.0)
+  );
+
   private static final Block modBlocks[] = {
     TREATED_WOOD_CRAFTING_TABLE,
     CLINKER_BRICK_BLOCK,
@@ -161,7 +168,8 @@ public class ModBlocks
     SMALL_LAB_FURNACE,
     STEEL_FRAMED_WINDOW,
     TREATED_WOOD_POLE_SUPPORT,
-    TREATED_WOOD_POLE_HEAD
+    TREATED_WOOD_POLE_HEAD,
+    SIGN_MODLOGO
   };
 
   private static final Block devBlocks[] = {

@@ -1,0 +1,36 @@
+{
+	"parent": "block/cube",
+	"textures": {
+		"s": "engineersdecor:blocks/iestyle/treated_wood_rough_texture",
+		"f": "engineersdecor:blocks/sign/engineersdecor-logo",
+		"particle": "engineersdecor:blocks/iestyle/treated_wood_rough_texture"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 0.5],
+			"faces": {
+				"north": {"texture": "#s"},
+				"east": {"texture": "#s"},
+				"south": {"texture": "#f"},
+				"west": {"texture": "#s"},
+				"up": {"texture": "#s"},
+				"down": {"texture": "#s"}
+			}
+		}
+	],
+	"display": {
+		"ground": {
+			"translation": [0, 0, 7],
+			"scale": [0.7, 0.7, 0.7]
+		},
+		"gui": {
+			"rotation": [0, 0, 0],
+			"translation": [0, 0.5, 0]
+		},
+		"fixed": {
+			"rotation": [0, 180, 0],
+			"translation": [0, 0, -7.3]
+		}
+	}
+}

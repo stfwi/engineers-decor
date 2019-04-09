@@ -77,5 +77,8 @@ tile.engineersdecor.steel_framed_window.name=Окно со стальной ра
 tile.engineersdecor.small_lab_furnace.name=Компактная лабораторная печь
 tile.engineersdecor.small_lab_furnace.help=§6Лабораторная печь в металлическом корпусе.§r Подача твёрдого топлива - сверху. Немного горячее чем каменная, поэтому быстрее. Два внутренних слота для ввода, выхода и топлива.
 #-----------------------------------------------------------------------------------------------------------
+tile.engineersdecor.sign_decor.name=Sign plate (Engineer's decor logo)
+#tile.engineersdecor.sign_decor.help=§6This should not be craftable or visible in JEI. Used for creative tab and screenshots.
+#-----------------------------------------------------------------------------------------------------------
 # EOF
 #-----------------------------------------------------------------------------------------------------------

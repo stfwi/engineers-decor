@@ -1,0 +1,32 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:treated_wood_crafting_table",
+      "missing": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PP",
+    "SC"
+  ],
+  "key": {
+    "P": {
+      "item": "#plankWood",
+      "data": 0
+    },
+    "C": {
+      "item": "#itemCraftingTable",
+      "data": 0
+    },
+    "S": {
+      "item": "#itemAnyChest",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:treated_wood_crafting_table",
+    "count": 1
+  }
+}

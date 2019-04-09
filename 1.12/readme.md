@@ -10,6 +10,13 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+    - v1.0.3-b5 [F] Fixed typo in en-en lang file.
+                [F] Fixed IE concrete texture missing bailout in log if IE is not installed.
+                [F] Using forge multi-layer models for windows to circumvent glitches.
+                [M] Changed creative tab logo to the mod logo.
+                [A] Added alternative recipes for crafting table and furnace if main
+                    IE ingredients are missing (for "stand-alone" mod usage).
+
     - v1.0.3-b4 [A] Lab furnace supports electrical speedup when a IE external
                     is placed in one of the two auxiliary slots.
                 [F] Fixed window rendering issue (issue #15, thanks to ILLOMIURGE).

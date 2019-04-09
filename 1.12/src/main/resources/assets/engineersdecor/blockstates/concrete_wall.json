@@ -3,8 +3,8 @@
   "defaults": {
     "model": "engineersdecor:wall/concrete_wall_default",
     "textures": {
-      "wall": "immersiveengineering:blocks/stone_decoration_concrete",
-      "particle": "immersiveengineering:blocks/stone_decoration_concrete"
+      "wall": "engineersdecor:blocks/iestyle/stone_decoration_concrete_by_blusunrize",
+      "particle": "engineersdecor:blocks/iestyle/stone_decoration_concrete_by_blusunrize"
     }
   },
   "variants": {

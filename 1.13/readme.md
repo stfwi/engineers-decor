@@ -10,6 +10,8 @@ Mod sources for Minecraft version 1.13.2.
 ----
 ## Revision history
 
+    ~ v1.0.2-b4 [A]
+
     - v1.0.2-b3 [A] Added treated wood window.
                 [A] Added treated wood pole support.
                 [A] Added treated wood pole head.

@@ -74,12 +74,15 @@ tile.engineersdecor.treated_wood_windowsill.help=§6Simple window decoration.
 tile.engineersdecor.steel_framed_window.name=Steel framed window
 tile.engineersdecor.steel_framed_window.help=§6Steel framed tripple glazed window. Well insulating. §r Does not connect to adjacent blocks like glass panes.
 #-----------------------------------------------------------------------------------------------------------
-tile.engineersdecor.small_lab_furnace.name=Small laboratry furnace
+tile.engineersdecor.small_lab_furnace.name=Small laboratory furnace
 tile.engineersdecor.small_lab_furnace.help=§6Small metal cased lab kiln.§r Solid fuel consuming, updraught. \
                                            Slightly hotter and better isolated than a cobblestone furnace, therefore more efficient. \
                                            Two auxiliary slots e.g. for storage. Two stack internal hopper fifos for input, output, \
                                            and fuel. Place an external heater into a aux slot and connect power for electrical \
                                            smelting speed boost.
+#-----------------------------------------------------------------------------------------------------------
+tile.engineersdecor.sign_decor.name=Sign plate (Engineer's decor logo)
+tile.engineersdecor.sign_decor.help=§6This should not be craftable or visible in JEI. Used for creative tab and screenshots.
 #-----------------------------------------------------------------------------------------------------------
 # EOF
 #-----------------------------------------------------------------------------------------------------------

@@ -138,7 +138,7 @@ public class ModEngineersDecor
     @Override
     @SideOnly(Side.CLIENT)
     public @Nonnull ItemStack createIcon()
-    { return new ItemStack(ModBlocks.TREATED_WOOD_LADDER); }
+    { return new ItemStack(ModBlocks.SIGN_MODLOGO); }
   });
 
   //--------------------------------------------------------------------------------------------------------------------

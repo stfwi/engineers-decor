@@ -219,6 +219,7 @@ public class ModConfig
   public static final boolean isOptedOut(final @Nullable Block block)
   {
     if((block == null) || (optout==null)) return true;
+    if(block == ModBlocks.SIGN_MODLOGO) return true;
     final String rn = block.getRegistryName().getPath();
     if(optout.without_clinker_bricks && rn.startsWith("clinker_brick_")) return true;
     if(optout.without_slag_bricks && rn.startsWith("slag_brick_")) return true;
