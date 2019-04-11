@@ -10,6 +10,21 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+                -------------------------------------------------------------------
+    - v1.0.3    [R] Release based on v1.0.3-b5. Release-to-release changes:
+                    * Small laboratory furnace added.
+                    * Extensive config options for mod packing and tuning added.
+                    * Rendering issues fixes (window bleeding, optifine).
+                    * Steel framed window added.
+                    * Treated wood pole "end pieces" added (two support variants).
+                    * Sitting on treated wood stool added including mobs (but not
+                      villagers, as these are obviously very upright people).
+                    * Lang ru_ru added (github contribution from Yaroslavik).
+                    * Creative tab logo changed to mod logo.
+                    * Table/crafting table bounding boxes refined.
+                    * Standalone "escape" recipes added if IE is not installed.
+                -------------------------------------------------------------------
+
     - v1.0.3-b5 [F] Fixed typo in en-en lang file.
                 [F] Fixed IE concrete texture missing bailout in log if IE is not installed.
                 [F] Using forge multi-layer models for windows to circumvent glitches.
@@ -31,7 +46,6 @@ Mod sources for Minecraft version 1.12.2.
                 [F] Treated pole model changed to circumvent potential texture bleeding.
                 [M] Treated wood table bounding box aligned with the legs.
                 [M] Treated wood crafting table bounding box aligned with the legs.
-                [M] Treated wood window can be vertically placed for rooflights.
                 [M] Treated wood window can be vertically placed for rooflights.
 
     - v1.0.3-b2 [A] Added config options for selective feature opt-outs (soft opt-out).

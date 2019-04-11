@@ -1,9 +1,10 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.12.2": {
+    "1.0.3": "[R] Release based on v1.0.3-b5. Release-to-release changes: * Small laboratory furnace added. * Extensive config options for mod packing and tuning added. * Rendering issues fixes (window bleeding, optifine). * Steel framed window added. * Treated wood pole \"end pieces\" added (two support variants). * Sitting on treated wood stool added including mobs (but not villagers, as these are obviously very upright people). * Lang ru_ru added (github contribution from Yaroslavik). * Creative tab logo changed to mod logo. * Table/crafting table bounding boxes refined. * Standalone \"escape\" recipes added if IE is not installed.",
     "1.0.3-b5": "[F] Fixed typo in en-en lang file.\n[F] Fixed IE concrete texture missing bailout in log if IE is not installed.\n[F] Using forge multi-layer models for windows to circumvent glitches.\n[M] Changed creative tab logo to the mod logo.\n[A] Added alternative recipes for crafting table and furnace if main IE ingredients are missing (for \"stand-alone\" mod usage).",
     "1.0.3-b4": "[A] Lab furnace supports electrical speedup when a IE external is placed in one of the two auxiliary slots.\n[F] Fixed window rendering issue (issue #15, thanks to ILLOMIURGE).\n[M] Updated ru_ru lang file (Yaroslavik).",
-    "1.0.3-b3": "[A] Added sitting on treated wood stool, Zombies included.\n[A] Added steel framed window.\n[A] Added treated wood pole support head/foot and heavy duty support.\n[A] Added language Russian language support, thanks to yaroslav4167.\n[A] Added config for furnace smelting speed (percent of vanilla furnace).\n[A] Added config for furnace fuel efficiency (in percent, ref is vanilla).\n[F] Treated pole model changed to circumvent potential texture bleeding.\n[M] Treated wood table bounding box aligned with the legs.\n[M] Treated wood crafting table bounding box aligned with the legs.\n[M] Treated wood window can be vertically placed for rooflights.\n[M] Treated wood window can be vertically placed for rooflights.",
+    "1.0.3-b3": "[A] Added sitting on treated wood stool, Zombies included.\n[A] Added steel framed window.\n[A] Added treated wood pole support head/foot and heavy duty support.\n[A] Added language Russian language support, thanks to yaroslav4167.\n[A] Added config for furnace smelting speed (percent of vanilla furnace).\n[A] Added config for furnace fuel efficiency (in percent, ref is vanilla).\n[F] Treated pole model changed to circumvent potential texture bleeding.\n[M] Treated wood table bounding box aligned with the legs.\n[M] Treated wood crafting table bounding box aligned with the legs.\n[M] Treated wood window can be vertically placed for rooflights.",
     "1.0.3-b2": "[A] Added config options for selective feature opt-outs (soft opt-out).\n[A] Added config skip registration of opt-out features (hard opt-out).\n[A] Added config to disable all internal recipes (for packs).\n[A] Added JEI API adapter for soft opt-outs.\n[A] Added lab furnace recipe override config to smelt ores to nuggets that would normally be smelted into ingots. Can be changed on-the-fly.",
     "1.0.3-b1": "[A] Added small laboratory furnace.\n[M] Panzer glass opacity/light level set explicitly 0.",
     "1.0.2": "[R] Release based on v1.0.2-b3 * Fixes: Spawning. * Crafting table: Shift-click. * Ladders: Faster climbing/descending. * Concrete: Rebar tiles, tile stairs. * Treated wood: window, windowsill. * Slag brick: wall. * Panzer glass: added. * Recipes: Adaptions, added decompositions.",
@@ -30,8 +31,8 @@
     "1.0.0-a1": "[A] Initial port to 1.13.2 with Forge beta."
   },
   "promos": {
-    "1.12.2-recommended": "1.0.2",
-    "1.12.2-latest": "1.0.3-b5",
+    "1.12.2-recommended": "1.0.3",
+    "1.12.2-latest": "1.0.3",
     "1.13.2-recommended": "",
     "1.13.2-latest": "1.0.2-b3"
   }
