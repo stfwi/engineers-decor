@@ -1,0 +1,19 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "forge:multi-layer",
+    "transform": "forge:default-block",
+    "custom": {
+      "base": "engineersdecor:steel_framed_window#frame",
+      "Cutout": "engineersdecor:steel_framed_window#frame",
+      "Translucent": "engineersdecor:steel_framed_window#pane"
+    }
+},
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "facing": { "north": {"y":0}, "south": {"y":0}, "west": {"y":90}, "east": {"y":90}, "up": {"x":90}, "down": {"x":90} },
+    "frame": [ {"model":"engineersdecor:furniture/steel_framed_window_submodel" }],
+    "pane":  [ {"model":"engineersdecor:furniture/framed_window_glasspane_submodel" }]
+  }
+}

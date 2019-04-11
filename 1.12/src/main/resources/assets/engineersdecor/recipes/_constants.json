@@ -1,220 +1,138 @@
 [
   {
-    "ingredient": {
-      "type": "forge:ore_dict",
-      "ore": "itemSlag"
-    },
+    "ingredient": { "type": "forge:ore_dict", "ore": "itemSlag" },
     "name": "itemSlag"
   },
   {
-    "ingredient": {
-      "type": "forge:ore_dict",
-      "ore": "plankTreatedWood"
-    },
+    "ingredient": { "type": "forge:ore_dict", "ore": "plankTreatedWood" },
     "name": "plankTreatedWood"
   },
   {
-    "ingredient": {
-      "type": "forge:ore_dict",
-      "ore": "slabTreatedWood"
-    },
+    "ingredient": { "type": "forge:ore_dict", "ore": "slabTreatedWood" },
     "name": "slabTreatedWood"
   },
   {
-    "ingredient": {
-      "type": "forge:ore_dict",
-      "ore": "stickTreatedWood"
-    },
+    "ingredient": { "type": "forge:ore_dict", "ore": "stickTreatedWood" },
     "name": "stickTreatedWood"
   },
   {
-    "ingredient": {
-      "type": "forge:ore_dict",
-      "ore": "plateIron"
-    },
+    "ingredient": { "type": "forge:ore_dict", "ore": "ingotIron" },
+    "name": "ingotIron"
+  },
+  {
+    "ingredient": { "type": "forge:ore_dict", "ore": "plateIron" },
     "name": "plateIron"
   },
   {
-    "ingredient": {
-      "type": "forge:ore_dict",
-      "ore": "plateSteel"
-    },
+    "ingredient": { "type": "forge:ore_dict", "ore": "plateSteel" },
     "name": "plateSteel"
   },
   {
-    "ingredient": {
-      "type": "forge:ore_dict",
-      "ore": "plateAluminium"
-    },
+    "ingredient": { "type": "forge:ore_dict", "ore": "plateAluminium" },
     "name": "plateAluminium"
   },
   {
-    "ingredient": {
-      "type": "forge:ore_dict",
-      "ore": "stickSteel"
-    },
+    "ingredient": { "type": "forge:ore_dict", "ore": "stickSteel" },
     "name": "stickSteel"
   },
   {
-    "ingredient": {
-      "type": "forge:ore_dict",
-      "ore": "stickIron"
-    },
+    "ingredient": { "type": "forge:ore_dict", "ore": "stickIron" },
     "name": "stickIron"
   },
   {
-    "ingredient": {
-      "type": "forge:ore_dict",
-      "ore": "stickAluminium"
-    },
+    "ingredient": { "type": "forge:ore_dict", "ore": "stickAluminium" },
     "name": "stickAluminium"
   },
   {
-    "ingredient": {
-      "type": "forge:ore_dict",
-      "ore": "plankWood"
-    },
+    "ingredient": { "type": "forge:ore_dict", "ore": "plankWood" },
     "name": "plankWood"
   },
   {
-    "ingredient": {
-      "type": "forge:ore_dict",
-      "ore": "stickWood"
-    },
+    "ingredient": { "type": "forge:ore_dict", "ore": "stickWood" },
     "name": "stickWood"
   },
-
   {
-    "ingredient": {
-      "type": "forge:ore_dict",
-      "ore": "sand"
-    },
+    "ingredient": { "type": "forge:ore_dict", "ore": "slabSheetmetalIron" },
+    "name": "slabSheetmetalIron"
+  },
+  {
+    "ingredient": { "type": "forge:ore_dict", "ore": "slabSheetmetalSteel" },
+    "name": "slabSheetmetalSteel"
+  },
+  {
+    "ingredient": { "type": "forge:ore_dict", "ore": "slabSheetmetalAluminium" },
+    "name": "slabSheetmetalAluminium"
+  },
+  {
+    "ingredient": { "type": "forge:ore_dict", "ore": "sand" },
     "name": "sand"
   },
   {
-    "ingredient": {
-      "type": "forge:ore_dict",
-      "ore": "sandstone"
-    },
+    "ingredient": { "type": "forge:ore_dict", "ore": "sandstone" },
     "name": "sandstone"
   },
   {
-    "ingredient": {
-      "type": "forge:ore_dict",
-      "ore": "bricksStone"
-    },
+    "ingredient": { "type": "forge:ore_dict", "ore": "bricksStone" },
     "name": "bricksStone"
   },
   {
-    "ingredient": {
-      "type": "forge:ore_dict",
-      "ore": "ingotBrick"
-    },
+    "ingredient": { "type": "forge:ore_dict", "ore": "ingotBrick" },
     "name": "ingotBrick"
   },
   {
-    "ingredient": {
-      "type": "forge:ore_dict",
-      "ore": "ingotBrickNether"
-    },
+    "ingredient": { "type": "forge:ore_dict", "ore": "ingotBrickNether" },
     "name": "ingotBrickNether"
   },
-
   {
     "ingredient": [
-      {
-        "type": "forge:ore_dict",
-        "ore": "plateIron"
-      },
-      {
-        "type": "forge:ore_dict",
-        "ore": "plateSteel"
-      },
-      {
-        "type": "forge:ore_dict",
-        "ore": "plateCopper"
-      },
-      {
-        "type": "forge:ore_dict",
-        "ore": "plateAluminium"
-      },
-      {
-        "type": "forge:ore_dict",
-        "ore": "plateNickel"
-      },
-      {
-        "type": "forge:ore_dict",
-        "ore": "plateLead"
-      }
+      { "type": "forge:ore_dict", "ore": "plateIron"      },
+      { "type": "forge:ore_dict", "ore": "plateSteel"     },
+      { "type": "forge:ore_dict", "ore": "plateCopper"    },
+      { "type": "forge:ore_dict", "ore": "plateAluminium" },
+      { "type": "forge:ore_dict", "ore": "plateNickel"    },
+      { "type": "forge:ore_dict", "ore": "plateLead"      }
     ],
     "name": "plateAnyMetal"
   },
-
   {
     "ingredient": [
-      {
-        "type": "forge:ore_dict",
-        "ore": "ingotBrick"
-      },
-      {
-        "type": "forge:ore_dict",
-        "ore": "ingotBrickNether"
-      }
+      { "type": "forge:ore_dict", "ore": "ingotBrick"       },
+      { "type": "forge:ore_dict", "ore": "ingotBrickNether" }
     ],
     "name": "ingotAnyBrick"
   },
   {
-    "ingredient": {
-      "type": "forge:ore_dict",
-      "ore": "dustGlowstone"
-    },
+    "ingredient": { "type": "forge:ore_dict", "ore": "dustGlowstone" },
     "name": "luminescentDust"
   },
   {
-    "ingredient": {
-      "type": "forge:ore_dict",
-      "ore": "glowstone"
-    },
+    "ingredient": { "type": "forge:ore_dict", "ore": "glowstone" },
     "name": "luminescentBlock"
   },
   {
-    "ingredient": {
-      "type": "forge:ore_dict",
-      "ore": "paneGlass"
-    },
+    "ingredient": { "type": "forge:ore_dict", "ore": "paneGlass" },
     "name": "paneGlass"
   },
   {
-    "ingredient": {
-      "type": "forge:ore_dict",
-      "ore": "blockGlass"
-    },
+    "ingredient": { "type": "forge:ore_dict", "ore": "blockGlass" },
     "name": "blockGlass"
   },
   {
-    "ingredient": {
-      "item": "minecraft:diamond",
-      "data": 0
-    },
+    "ingredient": { "item": "minecraft:diamond", "data": 0 },
     "name": "itemDiamond"
   },
   {
-    "ingredient": {
-      "item": "minecraft:crafting_table",
-      "data": 0
-    },
+    "ingredient": { "item": "minecraft:crafting_table", "data": 0 },
     "name": "itemCraftingTable"
   },
   {
+    "ingredient": { "item": "minecraft:hopper", "data": 0 },
+    "name": "anyHopper"
+  },
+  {
     "ingredient": [
-      {
-        "type": "forge:ore_dict",
-        "ore": "stickIron"
-      },
-      {
-        "type": "forge:ore_dict",
-        "ore": "stickSteel"
-      }
+      { "type": "forge:ore_dict",  "ore": "stickIron"  },
+      { "type": "forge:ore_dict",  "ore": "stickSteel" }
     ],
     "name": "stickFerroMetal"
   },
@@ -222,21 +140,35 @@
     "conditions": [
       { "type": "minecraft:item_exists", "item": "immersiveengineering:stone_decoration" }
     ],
-    "ingredient": {
-      "item": "immersiveengineering:stone_decoration",
-      "data": 5
-    },
+    "ingredient": { "item": "immersiveengineering:stone_decoration", "data": 5 },
     "name": "blockConcreteIe"
   },
   {
     "conditions": [
       { "type": "minecraft:item_exists", "item": "immersiveengineering:wooden_device0" }
     ],
-    "ingredient": {
-      "item": "immersiveengineering:wooden_device0",
-      "data": 0
-    },
+    "ingredient": { "item": "immersiveengineering:wooden_device0", "data": 0 },
     "name": "crateTreatedWood"
+  },
+  {
+    "conditions": [
+      { "type": "engineersdecor:grc", "missing": ["immersiveengineering:stone_decoration"] }
+    ],
+    "ingredient": [
+      { "item": "minecraft:concrete", "data": 32767 },
+      { "item": "minecraft:concrete_powder", "data": 32767 }
+    ],
+    "name": "blockConcreteMc"
+  },
+  {
+    "ingredient": [
+      { "item": "minecraft:chest" },
+      { "type": "forge:ore_dict",  "ore": "chestWood" }
+    ],
+    "name": "itemAnyChest"
+  },
+  {
+    "ingredient": { "item": "minecraft:furnace", "data": 0 },
+    "name": "itemFurnace"
   }
-
 ]

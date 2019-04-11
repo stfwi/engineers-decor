@@ -11,6 +11,54 @@ Mod sources for Minecraft version 1.12.2.
 ## Revision history
 
                 -------------------------------------------------------------------
+    - v1.0.3    [R] Release based on v1.0.3-b5. Release-to-release changes:
+                    * Small laboratory furnace added.
+                    * Extensive config options for mod packing and tuning added.
+                    * Rendering issues fixes (window bleeding, optifine).
+                    * Steel framed window added.
+                    * Treated wood pole "end pieces" added (two support variants).
+                    * Sitting on treated wood stool added including mobs (but not
+                      villagers, as these are obviously very upright people).
+                    * Lang ru_ru added (github contribution from Yaroslavik).
+                    * Creative tab logo changed to mod logo.
+                    * Table/crafting table bounding boxes refined.
+                    * Standalone "escape" recipes added if IE is not installed.
+                -------------------------------------------------------------------
+
+    - v1.0.3-b5 [F] Fixed typo in en-en lang file.
+                [F] Fixed IE concrete texture missing bailout in log if IE is not installed.
+                [F] Using forge multi-layer models for windows to circumvent glitches.
+                [M] Changed creative tab logo to the mod logo.
+                [A] Added alternative recipes for crafting table and furnace if main
+                    IE ingredients are missing (for "stand-alone" mod usage).
+
+    - v1.0.3-b4 [A] Lab furnace supports electrical speedup when a IE external
+                    is placed in one of the two auxiliary slots.
+                [F] Fixed window rendering issue (issue #15, thanks to ILLOMIURGE).
+                [M] Updated ru_ru lang file (Yaroslavik).
+
+    - v1.0.3-b3 [A] Added sitting on treated wood stool, Zombies included.
+                [A] Added steel framed window.
+                [A] Added treated wood pole support head/foot and heavy duty support.
+                [A] Added language Russian language support, thanks to yaroslav4167.
+                [A] Added config for furnace smelting speed (percent of vanilla furnace).
+                [A] Added config for furnace fuel efficiency (in percent, ref is vanilla).
+                [F] Treated pole model changed to circumvent potential texture bleeding.
+                [M] Treated wood table bounding box aligned with the legs.
+                [M] Treated wood crafting table bounding box aligned with the legs.
+                [M] Treated wood window can be vertically placed for rooflights.
+
+    - v1.0.3-b2 [A] Added config options for selective feature opt-outs (soft opt-out).
+                [A] Added config skip registration of opt-out features (hard opt-out).
+                [A] Added config to disable all internal recipes (for packs).
+                [A] Added JEI API adapter for soft opt-outs.
+                [A] Added lab furnace recipe override config to smelt ores to nuggets
+                    that would normally be smelted into ingots. Can be changed on-the-fly.
+
+    - v1.0.3-b1 [A] Added small laboratory furnace.
+                [M] Panzer glass opacity/light level set explicitly 0.
+
+                -------------------------------------------------------------------
     - v1.0.2    [R] Release based on v1.0.2-b3
                     * Fixes: Spawning.
                     * Crafting table: Shift-click.

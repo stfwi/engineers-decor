@@ -1,0 +1,17 @@
+{
+	"parent": "block/cube",
+	"ambientocclusion": false,
+	"textures": {
+		"glass": "engineersdecor:blocks/glass/window_glass_texture"
+	},
+	"elements": [
+		{
+			"from": [1, 1, 7.5],
+			"to": [15, 15, 8.5],
+			"faces": {
+				"north": {"texture": "#glass"},
+				"south": {"texture": "#glass"}
+			}
+		}
+	]
+}

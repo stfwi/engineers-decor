@@ -44,7 +44,11 @@ public class BlockDecorLadder extends BlockLadder
   protected static final AxisAlignedBB EDLADDER_EAST_AABB  = ModAuxiliaries.getRotatedAABB(EDLADDER_SOUTH_AABB, EnumFacing.EAST, false);
   protected static final AxisAlignedBB EDLADDER_WEST_AABB  = ModAuxiliaries.getRotatedAABB(EDLADDER_SOUTH_AABB, EnumFacing.WEST, false);
   protected static final AxisAlignedBB EDLADDER_NORTH_AABB = ModAuxiliaries.getRotatedAABB(EDLADDER_SOUTH_AABB, EnumFacing.NORTH, false);
+  protected static final double ladder_speed = 0.7;
+  protected static boolean with_ladder_speed_boost = true;
 
+  public static final void on_config(boolean without_ladder_speed_boost)
+  { with_ladder_speed_boost = !without_ladder_speed_boost; }
 
   public BlockDecorLadder(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound)
   {
@@ -113,15 +117,16 @@ public class BlockDecorLadder extends BlockLadder
   // Player update event, forwarded from the main mod instance.
   public static void onPlayerUpdateEvent(final EntityPlayer player)
   {
+    if(!with_ladder_speed_boost) return;
     if(!player.isOnLadder() || (player.isSneaking()) || (player.isSpectator())) return;
-    if((Math.abs(player.motionY) < 0.1) || (Math.abs(player.motionY) > 0.7) || ((player.getLookVec().y > 0) != (player.motionY > 0))) return;
+    if((Math.abs(player.motionY) < 0.1) || (Math.abs(player.motionY) > ladder_speed) || ((player.getLookVec().y > 0) != (player.motionY > 0))) return;
     if(Math.abs(player.getLookVec().y) < 0.9) return;
     final BlockPos pos = new BlockPos(player.posX, player.posY, player.posZ);
     if(!(player.world.getBlockState(pos).getBlock() instanceof BlockDecorLadder)) return;
     player.fallDistance = 0;
-    player.motionY = (player.motionY < -0.25) ? (-0.7) : ((player.motionY > 0.25) ? (0.7) : (player.motionY));
-    player.motionX = MathHelper.clamp(player.motionX, -0.15, 0.15);
-    player.motionZ = MathHelper.clamp(player.motionX, -0.15, 0.15);
+    player.motionY = (player.motionY < -0.25) ? (-ladder_speed) : ((player.motionY > 0.25) ? (ladder_speed) : (player.motionY));
+    player.motionX = MathHelper.clamp(player.motionX, -0.05, 0.05);
+    player.motionZ = MathHelper.clamp(player.motionZ, -0.05, 0.05);
     player.move(MoverType.PLAYER, player.motionX, player.motionY, player.motionZ);
   }
 }

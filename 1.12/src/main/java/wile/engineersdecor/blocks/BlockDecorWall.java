@@ -66,7 +66,7 @@ public class BlockDecorWall extends BlockDecor
     new AxisAlignedBB(d_0, d_0, d_0, d_1, d_1, d_b),
     new AxisAlignedBB(d_0, d_0, d_0, d_1, d_1, d_1)
   };
-  private static final double clip_height = 1.5d;
+  private static final double clip_height = 1.8d;
   protected static final AxisAlignedBB[] CLIP_AABB_BY_INDEX = new AxisAlignedBB[] { AABB_BY_INDEX[0].setMaxY(clip_height), AABB_BY_INDEX[1].setMaxY(clip_height), AABB_BY_INDEX[2].setMaxY(clip_height), AABB_BY_INDEX[3].setMaxY(clip_height), AABB_BY_INDEX[4].setMaxY(clip_height), AABB_BY_INDEX[5].setMaxY(clip_height), AABB_BY_INDEX[6].setMaxY(clip_height), AABB_BY_INDEX[7].setMaxY(clip_height), AABB_BY_INDEX[8].setMaxY(clip_height), AABB_BY_INDEX[9].setMaxY(clip_height), AABB_BY_INDEX[10].setMaxY(clip_height), AABB_BY_INDEX[11].setMaxY(clip_height), AABB_BY_INDEX[12].setMaxY(clip_height), AABB_BY_INDEX[13].setMaxY(clip_height), AABB_BY_INDEX[14].setMaxY(clip_height), AABB_BY_INDEX[15].setMaxY(clip_height) };
 
   public BlockDecorWall(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound)

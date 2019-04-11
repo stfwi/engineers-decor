@@ -14,7 +14,11 @@ Mod components derived/inspired by IE:
 
 IE components used in this mod:
 
-  - immersiveengineering:textures/block/stone_decoration_concrete.png (for IE
-    concrete wall).
+  - Image pattern of wooden GUIs (background, slots) to make them look
+    identical to the IE GUI style.
 
-  - Image pattern of wooden GUIs (background, slots, etc.).
+  - immersiveengineering:textures/block/stone_decoration_concrete.png (for IE
+    concrete wall). The texture had to be copied into this mod to prevent
+    reported bailouts if IE is not installed, local path in the mod is
+    "engineersdecor:blocks/iestyle/stone_decoration_concrete_by_blusunrize",
+    used in block "engineersdecor:concrete_wall".

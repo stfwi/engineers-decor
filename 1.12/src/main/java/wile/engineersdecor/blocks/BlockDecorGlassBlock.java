@@ -1,10 +1,10 @@
 /*
- * @file BlockDecorFull.java
+ * @file BlockDecorGlassBlock.java
  * @author Stefan Wilhelm (wile)
  * @copyright (C) 2019 Stefan Wilhelm
  * @license MIT (see https://opensource.org/licenses/MIT)
  *
- * Full block characteristics class.
+ * Full block-size glass blocks.
  */
 package wile.engineersdecor.blocks;
 
@@ -57,6 +57,24 @@ public class BlockDecorGlassBlock extends BlockDecor
   { return false; }
 
   @Override
+  @SuppressWarnings("deprecation")
+  public boolean isFullCube(IBlockState state)
+  { return false; }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  public boolean isNormalCube(IBlockState state)
+  { return false; }
+
+  @Override
+  public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos)
+  { return 0; }
+
+  @Override
+  public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos)
+  { return 0; }
+
+  @Override
   public boolean canCreatureSpawn(IBlockState state, IBlockAccess world, BlockPos pos, net.minecraft.entity.EntityLiving.SpawnPlacementType type)
   { return false; }
 
@@ -74,15 +92,5 @@ public class BlockDecorGlassBlock extends BlockDecor
   @Nullable
   public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
   { return FULL_BLOCK_AABB; }
-
-  @Override
-  @SuppressWarnings("deprecation")
-  public boolean isFullCube(IBlockState state)
-  { return false; }
-
-  @Override
-  @SuppressWarnings("deprecation")
-  public boolean isNormalCube(IBlockState state)
-  { return false; }
 
 }

@@ -8,15 +8,15 @@
  */
 package wile.engineersdecor.detail;
 
-import net.minecraft.util.EnumFacing;
 import wile.engineersdecor.ModEngineersDecor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.world.World;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Keyboard;
