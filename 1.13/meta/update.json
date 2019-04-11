@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.13.2": {
+    "1.0.2-b3": "[A] Added treated wood window.\n[A] Added treated wood pole support.\n[A] Added treated wood pole head.\n[A] Added steel framed window.",
     "1.0.2-b2": "[A] Added wall decomposition recipes.\n[A] Added slag brick wall.\n[M] Climbing/descending mod ladders is faster when looking up or down and not sneaking.\n[M] Panzer glass material definition changed.",
     "1.0.2-b1": "[A] Added Treated wood crafting table.\n[A] Added decomposition recipes for stairs and tiles.\n[N] Note: All v1.0.2-b1-mc1.12.2 blocks are ported to 1.13.2 (alpha -^ beta version).\n[N] Note: Until IE is out for 1.13.2, the recipes are temporary with vanilla items.",
     "1.0.0-a3": "[A] Added iron inset light.\n[A] Added rebar concrete tile.\n[A] Added rebar concrete tile stairs.\n[A] Added clinker brick wall.\n[A] Added treated wood stool.\n[A] Added treated window sill.",
@@ -9,6 +10,6 @@
   },
   "promos": {
     "1.13.2-recommended": "",
-    "1.13.2-latest": "1.0.2-b2"
+    "1.13.2-latest": "1.0.2-b3"
   }
 }
