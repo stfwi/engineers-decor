@@ -107,6 +107,9 @@ public class ModConfig
     @Config.Name("Without ladder speed boost")
     public boolean without_ladder_speed_boost = false;
 
+    @Config.Comment({"Disable history refabrication feature of the treated wood crafting table."})
+    @Config.Name("Without crafting table history")
+    public boolean without_crafting_table_history = false;
   }
 
   @Config.Comment({
@@ -192,6 +195,12 @@ public class ModConfig
     @Config.Name("Chairs: Stand up chance %")
     @Config.RangeDouble(min=0.001, max=10)
     public double chair_mob_standup_probability_percent = 1;
+
+    @Config.Comment({"Enables small quick-move arrows from/to player/block storage. " +
+      "Makes the UI a bit too busy, therefore disabled by default."
+    })
+    @Config.Name("Crafting table: Move buttons")
+    public boolean with_crafting_quickmove_buttons = false;
   }
 
   @SuppressWarnings("unused")
@@ -251,7 +260,7 @@ public class ModConfig
     if(tweaks.furnace_smelts_nuggets) ModRecipes.furnaceRecipeOverrideSmeltsOresToNuggets();
     BlockDecorChair.on_config(optout.without_chair_sitting, optout.without_mob_chair_sitting, tweaks.chair_mob_sitting_probability_percent, tweaks.chair_mob_standup_probability_percent);
     BlockDecorLadder.on_config(optout.without_ladder_speed_boost);
-    BlockDecorCraftingTable.on_config(!zmisc.with_experimental);
+    BlockDecorCraftingTable.on_config(optout.without_crafting_table_history, false, tweaks.with_crafting_quickmove_buttons);
   }
 
 }
