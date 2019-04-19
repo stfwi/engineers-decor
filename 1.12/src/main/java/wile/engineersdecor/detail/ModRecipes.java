@@ -5,23 +5,43 @@
  * @license MIT (see https://opensource.org/licenses/MIT)
  *
  * General handling auxiliaries for mod recipes.
+ *
+ * Credits/references:
+ *
+ *  - Looked up how blusunrise did the ore-to-grit recipes in `blusunrize.immersiveengineering.common.IERecipes`.
  */
 package wile.engineersdecor.detail;
 
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.blocks.BlockDecorFurnace;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraft.item.ItemStack;
+
 import java.util.*;
 
 
 public class ModRecipes
 {
+  public static final void registerRecipes(RegistryEvent.Register<IRecipe> event)
+  {}
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Furnace
+  //--------------------------------------------------------------------------------------------------------------------
+
+  /**
+   * Not a standard recipe, on-the-fly changable behaviour of the furnace.
+   */
   public static final void furnaceRecipeOverrideReset()
   { BlockDecorFurnace.BRecipes.instance().reset(); }
 
+  /**
+   * Not a standard recipe, on-the-fly changable behaviour of the furnace.
+   */
   public static final void furnaceRecipeOverrideSmeltsOresToNuggets()
   {
     try {

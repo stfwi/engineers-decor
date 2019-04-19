@@ -1,7 +1,7 @@
 {
 	"credit": "I made this with the Blockbench",
 	"textures": {
-		"wall": "engineersdecor:blocks/clinker_brick/clinker_brick_wall",
+		"wall": "engineersdecor:blocks/clinker_brick/clinker_brick_wall0",
 		"top": "engineersdecor:blocks/clinker_brick/clinker_brick_top",
 		"particle": "engineersdecor:blocks/clinker_brick/clinker_brick_top"
 	},

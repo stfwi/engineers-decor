@@ -14,11 +14,11 @@ import wile.engineersdecor.blocks.*;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-
 import javax.annotation.Nullable;
 
 @Config(modid = ModEngineersDecor.MODID)
@@ -250,6 +250,12 @@ public class ModConfig
       if(rn.equals("treated_wood_windowsill")) return true;
       if(rn.equals("treated_wood_window")) return true;
     }
+    return false;
+  }
+
+  public static final boolean isOptedOut(final @Nullable Item item)
+  {
+    if((item == null) || (optout == null)) return true;
     return false;
   }
 

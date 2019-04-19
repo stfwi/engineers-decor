@@ -10,6 +10,9 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+    - v1.0.4-b2 [A] Added position dependent texture variation to clinker wall,
+                    slag brick wall and rebar concrete wall.
+
     - v1.0.4-b1 [A] Crafting table: JEI integration for recipe placement added.
                 [A] Crafting table: History re-fab added, allowing to quickly select
                     and re-craft recent recipes. Selection with arrow buttons,

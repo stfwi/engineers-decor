@@ -13,6 +13,7 @@
     "north": { "false":{}, "true": {"submodel": {"concrete_wall_north" : {"model": "engineersdecor:wall/concrete_wall_side", "uvlock": true, "y":   0 }}} },
     "east" : { "false":{}, "true": {"submodel": {"concrete_wall_east"  : {"model": "engineersdecor:wall/concrete_wall_side", "uvlock": true, "y":  90 }}} },
     "south": { "false":{}, "true": {"submodel": {"concrete_wall_south" : {"model": "engineersdecor:wall/concrete_wall_side", "uvlock": true, "y": 180 }}} },
-    "west" : { "false":{}, "true": {"submodel": {"concrete_wall_west"  : {"model": "engineersdecor:wall/concrete_wall_side", "uvlock": true, "y": 270 }}} }
+    "west" : { "false":{}, "true": {"submodel": {"concrete_wall_west"  : {"model": "engineersdecor:wall/concrete_wall_side", "uvlock": true, "y": 270 }}} },
+    "tvariant": { "0":{},"1":{},"2":{},"3":{},"4":{},"5":{},"6":{},"7":{} }
   }
 }

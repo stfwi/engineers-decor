@@ -12,6 +12,7 @@ import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -41,6 +42,7 @@ public class BlockDecorWall extends BlockDecor
   public static final PropertyBool EAST = BlockWall.EAST;
   public static final PropertyBool SOUTH = BlockWall.SOUTH;
   public static final PropertyBool WEST = BlockWall.WEST;
+  public static final PropertyInteger TEXTURE_VARIANT = PropertyInteger.create("tvariant", 0, 7);
 
   private static final double d_0 = 0.0d;
   private static final double d_1 = 1.0d;
@@ -165,12 +167,13 @@ public class BlockDecorWall extends BlockDecor
     boolean s = canWallConnectTo(world, pos, EnumFacing.SOUTH);
     boolean w = canWallConnectTo(world, pos, EnumFacing.WEST);
     boolean nopole = (n && s && !e && !w) || (!n && !s && e && w);
-    return state.withProperty(UP,!nopole).withProperty(NORTH, n).withProperty(EAST, e).withProperty(SOUTH, s).withProperty(WEST, w);
+    long prnd = pos.toLong(); prnd = (prnd>>29) ^ (prnd>>17) ^ (prnd>>9) ^ (prnd>>4) ^ pos.getX() ^ pos.getY() ^ pos.getZ();
+    return state.withProperty(UP,!nopole).withProperty(NORTH, n).withProperty(EAST, e).withProperty(SOUTH, s).withProperty(WEST, w).withProperty(TEXTURE_VARIANT, ((int)prnd) & 0x7);
   }
 
   @Override
   protected BlockStateContainer createBlockState()
-  { return new BlockStateContainer(this, new IProperty[] {UP, NORTH, EAST, WEST, SOUTH}); }
+  { return new BlockStateContainer(this, new IProperty[] {UP, NORTH, EAST, WEST, SOUTH, TEXTURE_VARIANT}); }
 
   @Override
   @SuppressWarnings("deprecation")

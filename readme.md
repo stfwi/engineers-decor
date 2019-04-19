@@ -17,8 +17,7 @@ Main distribution channel for this mod is CurseForge:
 ----
 ### Details
 
-The mod has its focus on non-functional, decorative blocks. If anyhow possible,
-no tile entities or user interactions are used. Current feature set:
+The mod has its focus decorative blocks. Current feature set:
 
 - *Treated wood crafting table*: 3x3 crafting table with IE style GUI and a model
   fitting better in the engineer's workshop. Keeps its inventory, has eight additional
@@ -138,6 +137,8 @@ Mods covering similar features, or may fit well together with IE and the decorat
 
 ![Concrete](documentation/engineers-decor-v100a-concrete-stuff.png)
 
-![Concrete](documentation/engineers-decor-v101a-summary.png)
+![v1.0.1 summary](documentation/engineers-decor-v101a-summary.png)
 
-![Concrete](documentation/engineers-decor-v101a-craftinggui.png)
+![Crafting table GUI](documentation/engineers-decor-v104a-craftinggui.png)
+
+![Lab furnace GUI](documentation/engineers-decor-v103-labfurnacegui.png)

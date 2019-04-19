@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.12.2": {
+    "1.0.4-b2": "[A] Added position dependent texture variation to clinker wall, slag brick wall and rebar concrete wall.",
     "1.0.4-b1": "[A] Crafting table: JEI integration for recipe placement added.\n[A] Crafting table: History re-fab added, allowing to quickly select and re-craft recent recipes. Selection with arrow buttons, ingredient placement by clicking the result slot. Automatic item distribution on shift-click. Quick-move buttons.\n[F] Crafting table textures modified to prevent optifine glitches on the edges of the legs.",
     "1.0.3": "[R] Release based on v1.0.3-b5. Release-to-release changes: * Small laboratory furnace added. * Extensive config options for mod packing and tuning added. * Rendering issues fixes (window bleeding, optifine). * Steel framed window added. * Treated wood pole \"end pieces\" added (two support variants). * Sitting on treated wood stool added including mobs (but not villagers, as these are obviously very upright people). * Lang ru_ru added (github contribution from Yaroslavik). * Creative tab logo changed to mod logo. * Table/crafting table bounding boxes refined. * Standalone \"escape\" recipes added if IE is not installed.",
     "1.0.3-b5": "[F] Fixed typo in en-en lang file.\n[F] Fixed IE concrete texture missing bailout in log if IE is not installed.\n[F] Using forge multi-layer models for windows to circumvent glitches.\n[M] Changed creative tab logo to the mod logo.\n[A] Added alternative recipes for crafting table and furnace if main IE ingredients are missing (for \"stand-alone\" mod usage).",
@@ -33,7 +34,7 @@
   },
   "promos": {
     "1.12.2-recommended": "1.0.3",
-    "1.12.2-latest": "1.0.4-b1",
+    "1.12.2-latest": "1.0.4-b2",
     "1.13.2-recommended": "",
     "1.13.2-latest": "1.0.2-b3"
   }

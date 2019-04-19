@@ -20,6 +20,10 @@
     "name": "ingotIron"
   },
   {
+    "ingredient": { "type": "forge:ore_dict", "ore": "blockIron" },
+    "name": "blockIron"
+  },
+  {
     "ingredient": { "type": "forge:ore_dict", "ore": "plateIron" },
     "name": "plateIron"
   },
