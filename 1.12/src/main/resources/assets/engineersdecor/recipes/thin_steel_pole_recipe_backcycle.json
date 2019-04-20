@@ -1,0 +1,17 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:thin_steel_pole"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "engineersdecor:thin_steel_pole_head"
+    }
+  ],
+  "result": {
+    "item": "engineersdecor:thin_steel_pole"
+  }
+}

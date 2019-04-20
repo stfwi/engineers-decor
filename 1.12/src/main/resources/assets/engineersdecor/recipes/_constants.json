@@ -28,6 +28,10 @@
     "name": "plateIron"
   },
   {
+    "ingredient": { "type": "forge:ore_dict", "ore": "ingotSteel" },
+    "name": "ingotSteel"
+  },
+  {
     "ingredient": { "type": "forge:ore_dict", "ore": "plateSteel" },
     "name": "plateSteel"
   },

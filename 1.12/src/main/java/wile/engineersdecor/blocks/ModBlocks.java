@@ -78,6 +78,34 @@ public class ModBlocks
     ModAuxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16)
   );
 
+  public static final BlockDecorStraightPole THIN_STEEL_POLE = new BlockDecorStraightPole(
+    "thin_steel_pole",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT,
+    Material.IRON, 1.0f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(6,6,0, 10,10,16)
+  );
+
+  public static final BlockDecorStraightPole THIN_STEEL_POLE_HEAD = new BlockDecorStraightPole(
+    "thin_steel_pole_head",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_IF_SAME,
+    Material.IRON, 1.0f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(6,6,0, 10,10,16)
+  );
+
+  public static final BlockDecorStraightPole THICK_STEEL_POLE = new BlockDecorStraightPole(
+    "thick_steel_pole",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT,
+    Material.IRON, 1.0f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(5,5,0, 11,11,16)
+  );
+
+  public static final BlockDecorStraightPole THICK_STEEL_POLE_HEAD = new BlockDecorStraightPole(
+    "thick_steel_pole_head",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_IF_SAME,
+    Material.IRON, 1.0f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(5,5,0, 11,11,16)
+  );
+
   public static final BlockDecor TREATED_WOOD_TABLE = new BlockDecor(
     "treated_wood_table",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
@@ -169,7 +197,11 @@ public class ModBlocks
     STEEL_FRAMED_WINDOW,
     TREATED_WOOD_POLE_SUPPORT,
     TREATED_WOOD_POLE_HEAD,
-    SIGN_MODLOGO
+    SIGN_MODLOGO,
+    THIN_STEEL_POLE,
+    THICK_STEEL_POLE,
+    THIN_STEEL_POLE_HEAD,
+    THICK_STEEL_POLE_HEAD
   };
 
   private static final Block devBlocks[] = {

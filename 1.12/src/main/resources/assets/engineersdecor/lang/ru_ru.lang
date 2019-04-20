@@ -56,6 +56,14 @@ tile.engineersdecor.treated_wood_pole_head.name=Прямой обработан�
 #tile.engineersdecor.treated_wood_pole_head.help=§6Wooden part fitting as foot or head of straight poles.
 tile.engineersdecor.treated_wood_pole_support.name=Прямой обработанный деревянный столб
 #tile.engineersdecor.treated_wood_pole_support.help=§6Heavy duty wooden support part fitting as foot or head of straight poles.
+tile.engineersdecor.thick_steel_pole.name=Straight thick steel pole
+#tile.engineersdecor.thick_steel_pole.help=§6Straight hollow pole fragment (6x6x16) for structural support purposes.
+tile.engineersdecor.thin_steel_pole.name=Straight thin steel pole
+#tile.engineersdecor.thin_steel_pole.help=§6Straight hollow pole fragment (4x4x16) for structural support purposes.
+tile.engineersdecor.thin_steel_pole_head.name=Straight thin steel pole head/foot
+#tile.engineersdecor.thin_steel_pole_head.help=§6Steel part fitting as foot or head of the thin steel pole (4x4x16).
+tile.engineersdecor.thick_steel_pole_head.name=Straight thick steel pole head/foot
+#tile.engineersdecor.thick_steel_pole_head.help=§6Steel part fitting as foot or head of the thick steel pole (6x6x16).
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.treated_wood_table.name=Стол из обработанного дерева
 tile.engineersdecor.treated_wood_table.help=§6Прочный деревянный стол с четырьмя ножками .§r Для использования в помещении и на улице.

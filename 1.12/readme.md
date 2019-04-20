@@ -10,6 +10,9 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+    - v1.0.4-b3 [A] Added thin (4x4x16) and thick (6x6x16) steel hollow poles.
+                [A] Added support head/foot components for thin and thick steel poles.
+
     - v1.0.4-b2 [A] Added position dependent texture variation to clinker wall,
                     slag brick wall and rebar concrete wall.
 
