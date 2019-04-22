@@ -89,7 +89,7 @@ tile.engineersdecor.small_lab_furnace.help=§6Small metal cased lab kiln.§r Sol
                                            and fuel. Place an external heater into a aux slot and connect power for electrical \
                                            smelting speed boost.
 #-----------------------------------------------------------------------------------------------------------
-tile.engineersdecor.sign_decor.name=Sign plate (Engineer's decor logo)
+tile.engineersdecor.sign_decor.name=Sign plate (Engineer's decor)
 tile.engineersdecor.sign_decor.help=§6This should not be craftable or visible in JEI. Used for creative tab and screenshots.
 
 #-----------------------------------------------------------------------------------------------------------

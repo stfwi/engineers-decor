@@ -26,6 +26,7 @@
     "1.0.0-b1": "[A] Initial structure.\n[A] Added clinker bricks and clinker brick stairs.\n[A] Added slag bricks and slag brick stairs.\n[A] Added metal rung ladder.\n[A] Added staggered metal steps ladder.\n[A] Added treated wood ladder.\n[A] Added treated wood pole.\n[A] Added treated wood table."
   },
   "1.13.2": {
+    "1.0.4-b3": "[V] Version assignment: All features of v1.0.4-b3-1.12.2 that can be ported to 1.13.2 implemented/prepared, therefore version re-iterated.\n[A] Lab furnace ported to 1.13.\n[A] Treated wood crafting table: Added crafting table history/quick craft.\n[A] Treated wood stool: Sitting on the stool implemented.\n[A] Steel poles (thick/thin) with support heads/foots added.\n[E] Prepared position dependent texture variation for walls (clinker, slag, rebar concrete), missing one forge feature yet for completion.\n[E] Prepared multi-layer rendering for windows, needs forge feature implementation.",
     "1.0.2-b3": "[A] Added treated wood window.\n[A] Added treated wood pole support.\n[A] Added treated wood pole head.\n[A] Added steel framed window.",
     "1.0.2-b2": "[A] Added wall decomposition recipes.\n[A] Added slag brick wall.\n[M] Climbing/descending mod ladders is faster when looking up or down and not sneaking.\n[M] Panzer glass material definition changed.",
     "1.0.2-b1": "[A] Added Treated wood crafting table.\n[A] Added decomposition recipes for stairs and tiles.\n[N] Note: All v1.0.2-b1-mc1.12.2 blocks are ported to 1.13.2 (alpha -^ beta version).\n[N] Note: Until IE is out for 1.13.2, the recipes are temporary with vanilla items.",
@@ -37,6 +38,6 @@
     "1.12.2-recommended": "1.0.3",
     "1.12.2-latest": "1.0.4-b3",
     "1.13.2-recommended": "",
-    "1.13.2-latest": "1.0.2-b3"
+    "1.13.2-latest": "1.0.4-b3"
   }
 }
