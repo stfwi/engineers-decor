@@ -12,13 +12,13 @@ engineersdecor.tooltip.hint.help=§6[§9CTRL-SHIFT§r Help§6]§r
 #-----------------------------------------------------------------------------------------------------------
 # Stone/"ceramic material" based blocks
 #-----------------------------------------------------------------------------------------------------------
-tile.engineersdecor.clinker_brick_block.name=Clinker brick
+tile.engineersdecor.clinker_brick_block.name=Clinker brick block
 tile.engineersdecor.clinker_brick_block.help=§6A brick block with position dependent texture variations.§r\nLooks slightly darker and more color intensive than the vanilla brick block.
-tile.engineersdecor.slag_brick_block.name=Slag brick
+tile.engineersdecor.slag_brick_block.name=Slag brick block
 tile.engineersdecor.slag_brick_block.help=§6A gray-brown brick block with position dependent texture variations.
-tile.engineersdecor.rebar_concrete.name=Rebar concrete
+tile.engineersdecor.rebar_concrete.name=Rebar concrete block
 tile.engineersdecor.rebar_concrete.help=§6Steel reinforced concrete block.§r Expensive but Creeper-proof like obsidian.
-tile.engineersdecor.panzerglass_block.name=Panzer glass
+tile.engineersdecor.panzerglass_block.name=Panzer glass block
 tile.engineersdecor.panzerglass_block.help=§6Reinforced glass block.§r Expensive, explosion-proof. Dark gray tint, faint structural lines visible, multi texture for seemless look.
 tile.engineersdecor.rebar_concrete_tile.name=Rebar concrete tile
 tile.engineersdecor.rebar_concrete_tile.help=§6Steel reinforced concrete tile.§r Expensive but Creeper-proof like obsidian.
@@ -49,7 +49,7 @@ tile.engineersdecor.rebar_concrete_tile_stairs.name=Rebar concrete tile stairs
 tile.engineersdecor.rebar_concrete_tile_stairs.help=§6Steel reinforced concrete tile stairs.§r Expensive but Creeper-proof like obsidian.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.treated_wood_pole.name=Straight treated wood pole
-tile.engineersdecor.treated_wood_pole.help=§6Straight pole fragment with the diameter of a wire relay.§r\n\
+tile.engineersdecor.treated_wood_pole.help=§6Straight pole fragment with a diameter of a wire relay.§r\n\
               Can be useful as alternative to the wire posts if special special lengths are needed, \
               or as support for structures.
 tile.engineersdecor.treated_wood_pole_head.name=Straight treated wood pole head/foot
@@ -70,7 +70,10 @@ tile.engineersdecor.treated_wood_table.help=§6Robust four-legged wood table.§r
 tile.engineersdecor.treated_wood_stool.name=Treated wood stool
 tile.engineersdecor.treated_wood_stool.help=§6Robust wood stool.§r Indoor and outdoor use.
 tile.engineersdecor.treated_wood_crafting_table.name=Treated wood crafting table
-tile.engineersdecor.treated_wood_crafting_table.help=§6Robust and weather-proof. Eight storage slots. Keeps inventory.
+tile.engineersdecor.treated_wood_crafting_table.help=§6Robust and weather-proof.§r Eight storage slots, keeps inventory, no vanilla recipe book.\n\
+                                                     Click up/down arrow buttons for crafting history selection, output slot for item placement, X-button \
+                                                     to clear crafting grid and history. Shift-click stack: player-to-storage stack transfer when crafting \
+                                                     grid empty, otherwise player-to-grid stack transfer. Automatically distributes the clicked stack.
 tile.engineersdecor.iron_inset_light.name=Inset light
 tile.engineersdecor.iron_inset_light.help=§6Small glowstone light source, sunk into the floor, ceiling or wall.§r\n\
                                           Useful to light up places where electrical light installations are problematic.\
@@ -88,6 +91,9 @@ tile.engineersdecor.small_lab_furnace.help=§6Small metal cased lab kiln.§r Sol
                                            Two auxiliary slots e.g. for storage. Two stack internal hopper fifos for input, output, \
                                            and fuel. Place an external heater into a aux slot and connect power for electrical \
                                            smelting speed boost.
+#-----------------------------------------------------------------------------------------------------------
+tile.engineersdecor.steel_double_t_support.name=Steel double T support
+tile.engineersdecor.steel_double_t_support.help=§6Horizontal ceiling support bream fragment.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.sign_decor.name=Sign plate (Engineer's decor)
 tile.engineersdecor.sign_decor.help=§6This should not be craftable or visible in JEI. Used for creative tab and screenshots.

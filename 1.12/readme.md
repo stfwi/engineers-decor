@@ -10,6 +10,18 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+    - v1.0.4-b4 [F] Clinker/slag brick wall side cullfacing disabled to prevent
+                    texture leaks when connecting to concrete walls.
+                [F] Unused treated wood pole texture regions filled (optifine).
+                [F] Using mipped cutout format for window multi-layer model
+                    (issue #19, thanks rixmswey for reporting and details).
+                [M] Recipe tuning, added standalone recipe for all mod blocks.
+                [M] In-game CTRL-SHIFT tooltip documentation updated.
+                [M] Panzer glass block: Ambient occlusion and light opacity tuned.
+                [M] Stairs: Light opacity tuned.
+                [A] Tooltip documentation added for mod stairs.
+                [E] Horizontal steel double-T support beam (config:experimental).
+
     - v1.0.4-b3 [A] Added thin (4x4x16) and thick (6x6x16) steel hollow poles.
                 [A] Added support head/foot components for thin and thick steel poles.
 

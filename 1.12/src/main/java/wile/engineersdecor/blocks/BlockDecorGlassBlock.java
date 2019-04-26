@@ -50,7 +50,7 @@ public class BlockDecorGlassBlock extends BlockDecor
   @SideOnly(Side.CLIENT)
   @SuppressWarnings("deprecation")
   public float getAmbientOcclusionLightValue(IBlockState state)
-  { return 1.0F; }
+  { return 0.9F; }
 
   @Override
   public boolean isOpaqueCube(IBlockState state)
@@ -59,7 +59,7 @@ public class BlockDecorGlassBlock extends BlockDecor
   @Override
   @SuppressWarnings("deprecation")
   public boolean isFullCube(IBlockState state)
-  { return false; }
+  { return true; }
 
   @Override
   @SuppressWarnings("deprecation")
@@ -68,7 +68,7 @@ public class BlockDecorGlassBlock extends BlockDecor
 
   @Override
   public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos)
-  { return 0; }
+  { return 2; }
 
   @Override
   public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos)

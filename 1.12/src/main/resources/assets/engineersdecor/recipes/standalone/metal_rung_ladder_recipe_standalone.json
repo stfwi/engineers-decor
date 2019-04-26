@@ -3,17 +3,18 @@
     {
       "type": "engineersdecor:grc",
       "result": "engineersdecor:metal_rung_ladder",
-      "required": ["immersiveengineering:material"]
+      "missing": ["immersiveengineering:material"]
     }
   ],
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "S S",
-    "SSS"
+    "SSS",
+    "   "
   ],
   "key": {
     "S": {
-      "item": "#stickFerroMetal",
+      "item": "#ingotIron",
       "data": 0
     }
   },

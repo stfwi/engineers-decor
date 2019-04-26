@@ -169,6 +169,14 @@ public class ModBlocks
     ModAuxiliaries.getPixeledAABB(0,0,15.6, 16,16,16.0)
   );
 
+  public static final BlockDecorHorizontalSupport STEEL_DOUBLE_T_SUPPORT = new BlockDecorHorizontalSupport(
+    "steel_double_t_support",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
+    Material.IRON, 1.0f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(5,11,0, 11,16,16)
+  );
+
+
   private static final Block modBlocks[] = {
     TREATED_WOOD_CRAFTING_TABLE,
     CLINKER_BRICK_BLOCK,
@@ -201,7 +209,8 @@ public class ModBlocks
     THIN_STEEL_POLE,
     THICK_STEEL_POLE,
     THIN_STEEL_POLE_HEAD,
-    THICK_STEEL_POLE_HEAD
+    THICK_STEEL_POLE_HEAD,
+    STEEL_DOUBLE_T_SUPPORT
   };
 
   private static final Block devBlocks[] = {

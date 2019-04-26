@@ -1,0 +1,17 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "engineersdecor:hsupport/steel_double_t_support_model",
+    "textures": {
+      "particle": "engineersdecor:blocks/hsupport/steel_double_t_support_side_texture",
+      "side": "engineersdecor:blocks/hsupport/steel_double_t_support_side_texture",
+      "top": "engineersdecor:blocks/hsupport/steel_double_t_support_top_texture",
+      "end": "engineersdecor:blocks/hsupport/steel_double_t_support_end_texture"
+    }
+  },
+  "variants": {
+    "normal": [{}],
+    "eastwest": { "false":{"y":0}, "true": {"y":90}},
+    "inventory": [{}]
+  }
+}

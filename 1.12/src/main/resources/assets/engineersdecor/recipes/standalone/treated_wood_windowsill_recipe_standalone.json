@@ -3,7 +3,7 @@
     {
       "type": "engineersdecor:grc",
       "result": "engineersdecor:treated_wood_windowsill",
-      "required": ["immersiveengineering:material"]
+      "missing": ["immersiveengineering:material"]
     }
   ],
   "type": "minecraft:crafting_shaped",
@@ -13,16 +13,14 @@
   ],
   "key": {
     "W": {
-      "item": "#slabTreatedWood",
-      "data": 0
+      "item": "#slabWood"
     },
     "S": {
-      "item": "#stickTreatedWood",
-      "data": 0
+      "item": "engineersdecor:treated_wood_pole"
     }
   },
   "result": {
     "item": "engineersdecor:treated_wood_windowsill",
-    "count": 2
+    "count": 4
   }
 }

@@ -2,23 +2,24 @@
   "conditions": [
     {
       "type": "engineersdecor:grc",
-      "result": "engineersdecor:metal_rung_ladder",
-      "required": ["immersiveengineering:material"]
+      "result": "engineersdecor:metal_rung_steps",
+      "missing": ["immersiveengineering:material"]
     }
   ],
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "S S",
-    "SSS"
+    " SS",
+    "SS ",
+    " SS"
   ],
   "key": {
     "S": {
-      "item": "#stickFerroMetal",
+      "item": "#ingotIron",
       "data": 0
     }
   },
   "result": {
-    "item": "engineersdecor:metal_rung_ladder",
+    "item": "engineersdecor:metal_rung_steps",
     "count": 4
   }
 }

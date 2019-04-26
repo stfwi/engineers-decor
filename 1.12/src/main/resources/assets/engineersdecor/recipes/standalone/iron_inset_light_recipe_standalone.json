@@ -3,7 +3,7 @@
     {
       "type": "engineersdecor:grc",
       "result": "engineersdecor:iron_inset_light",
-      "required": ["immersiveengineering:material"]
+      "missing": ["immersiveengineering:material"]
     }
   ],
   "type": "minecraft:crafting_shaped",
@@ -13,7 +13,7 @@
   ],
   "key": {
     "P": {
-      "item": "#plateAnyMetal",
+      "item": "#ingotIron",
       "data": 0
     },
     "L": {

@@ -2,24 +2,23 @@
   "conditions": [
     {
       "type": "engineersdecor:grc",
-      "result": "engineersdecor:thin_steel_pole",
+      "result": "engineersdecor:steel_double_t_support",
       "required": ["engineersdecor:thin_steel_pole"]
     }
   ],
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "PP ",
-    "PP ",
-    "PP "
+    "PPP",
+    " P ",
+    "PPP"
   ],
   "key": {
     "P": {
-      "item": "engineersdecor:thin_steel_pole",
-      "data": 0
+      "item": "engineersdecor:thin_steel_pole"
     }
   },
   "result": {
-    "item": "engineersdecor:thick_steel_pole",
-    "count": 4
+    "item": "engineersdecor:steel_double_t_support",
+    "count": 6
   }
 }

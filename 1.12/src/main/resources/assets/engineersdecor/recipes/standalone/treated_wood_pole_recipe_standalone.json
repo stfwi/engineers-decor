@@ -3,7 +3,7 @@
     {
       "type": "engineersdecor:grc",
       "result": "engineersdecor:treated_wood_pole",
-      "required": ["immersiveengineering:material"]
+      "missing": ["immersiveengineering:material"]
     }
   ],
   "type": "minecraft:crafting_shaped",
@@ -14,11 +14,11 @@
   ],
   "key": {
     "W": {
-      "item": "#plankTreatedWood",
+      "item": "#plankWood",
       "data": 0
     },
     "S": {
-      "item": "#slabTreatedWood",
+      "item": "#slabWood",
       "data": 0
     }
   },

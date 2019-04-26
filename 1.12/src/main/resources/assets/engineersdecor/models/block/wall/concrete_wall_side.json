@@ -1,5 +1,4 @@
 {
-	"credit": "I made this with the Blockbench",
 	"textures": {
 		"wall": "engineersdecor:blocks/concrete/rebar_concrete_texture0",
 		"particle": "engineersdecor:blocks/concrete/rebar_concrete_texture0"

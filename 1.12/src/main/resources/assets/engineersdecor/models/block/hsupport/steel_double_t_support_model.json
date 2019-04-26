@@ -1,0 +1,67 @@
+{
+	"parent": "block/cube",
+	"textures": {
+		"end": "engineersdecor:blocks/hsupport/steel_double_t_support_end_texture",
+		"side": "engineersdecor:blocks/hsupport/steel_double_t_support_side_texture",
+		"top": "engineersdecor:blocks/hsupport/steel_double_t_support_top_texture",
+		"particle": "engineersdecor:blocks/hsupport/steel_double_t_support_end_texture"
+	},
+	"elements": [
+		{
+			"from": [5, 15, 0],
+			"to": [11, 16, 16],
+			"faces": {
+				"north": {"texture": "#end"},
+				"east": {"texture": "#side"},
+				"south": {"texture": "#end"},
+				"west": {"texture": "#side"},
+				"up": {"texture": "#top"},
+				"down": {"texture": "#top"}
+			}
+		},
+		{
+			"from": [9, 12, 0],
+			"to": [10, 15, 16],
+			"faces": {
+				"north": {"texture": "#end"},
+				"east": {"texture": "#side"},
+				"south": {"texture": "#end"},
+				"west": {"texture": "#side"}
+			}
+		},
+		{
+			"from": [6, 12, 0],
+			"to": [7, 15, 16],
+			"faces": {
+				"north": {"texture": "#end"},
+				"east": {"texture": "#side"},
+				"south": {"texture": "#end"},
+				"west": {"texture": "#side"}
+			}
+		},
+		{
+			"from": [5, 11, 0],
+			"to": [11, 12, 16],
+			"faces": {
+				"north": {"texture": "#end"},
+				"east": {"texture": "#side"},
+				"south": {"texture": "#end"},
+				"west": {"texture": "#side"},
+				"up": {"texture": "#top"},
+				"down": {"texture": "#top"}
+			}
+		}
+	],
+	"display": {
+		"ground": {
+			"scale": [0.2, 0.2, 0.2]
+		},
+		"gui": {
+			"rotation": [30, 225, 0],
+			"scale": [0.625, 0.625, 0.625]
+		},
+		"fixed": {
+			"scale": [0.5, 0.5, 0.5]
+		}
+	}
+}
