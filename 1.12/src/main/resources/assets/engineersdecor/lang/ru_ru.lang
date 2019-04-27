@@ -64,6 +64,8 @@ tile.engineersdecor.thin_steel_pole_head.name=Straight thin steel pole head/foot
 #tile.engineersdecor.thin_steel_pole_head.help=§6Steel part fitting as foot or head of the thin steel pole (4x4x16).
 tile.engineersdecor.thick_steel_pole_head.name=Straight thick steel pole head/foot
 #tile.engineersdecor.thick_steel_pole_head.help=§6Steel part fitting as foot or head of the thick steel pole (6x6x16).
+tile.engineersdecor.steel_double_t_support.name=Steel double T support
+#tile.engineersdecor.steel_double_t_support.help=§6Horizontal ceiling support bream fragment.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.treated_wood_table.name=Стол из обработанного дерева
 tile.engineersdecor.treated_wood_table.help=§6Прочный деревянный стол с четырьмя ножками .§r Для использования в помещении и на улице.
@@ -85,12 +87,11 @@ tile.engineersdecor.steel_framed_window.name=Окно со стальной ра
 tile.engineersdecor.small_lab_furnace.name=Компактная лабораторная печь
 tile.engineersdecor.small_lab_furnace.help=§6Лабораторная печь в металлическом корпусе.§r Подача твёрдого топлива - сверху. Немного горячее чем каменная, поэтому быстрее. Два внутренних слота для ввода, выхода и топлива.
 #-----------------------------------------------------------------------------------------------------------
-tile.engineersdecor.steel_double_t_support.name=Steel double T support
-#tile.engineersdecor.steel_double_t_support.help=§6Horizontal ceiling support bream fragment.
+tile.engineersdecor.straight_pipe_valve.name=Straight fluid valve
+#tile.engineersdecor.straight_pipe_valve.help=§6Straight fluid pipe fragment.§r Conducts fluids only in one direction. Does not connect to the sides. Sneak to place in reverse direction.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.sign_decor.name=Sign plate (Engineer's decor logo)
 #tile.engineersdecor.sign_decor.help=§6This should not be craftable or visible in JEI. Used for creative tab and screenshots.
-
 #-----------------------------------------------------------------------------------------------------------
 # EOF
 #-----------------------------------------------------------------------------------------------------------

@@ -164,6 +164,13 @@
   },
   {
     "conditions": [
+      { "type": "minecraft:item_exists", "item": "immersiveengineering:metal_device1" }
+    ],
+    "ingredient": { "item": "immersiveengineering:metal_device1", "data": 6 },
+    "name": "itemFluidPipe"
+  },
+  {
+    "conditions": [
       { "type": "engineersdecor:grc", "missing": ["immersiveengineering:stone_decoration"] }
     ],
     "ingredient": [

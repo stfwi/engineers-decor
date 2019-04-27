@@ -79,9 +79,22 @@ The mod has its focus decorative blocks. Current feature set:
   Can be used e.g. for structural support or wire relay post, where the height
   of the IE wire posts does not match.
 
+- *Thin and thick steel support poles*: Hollow steel pole fragments, can be
+  placed in all directions. Also with head/food end components. Thin poles crafted
+  3x3 from three steel ingots (output 12), thick poles crafted 3x3 from six thin
+  steel poles.
+
+- Double-T steel support: Horizontal top-aligned support beam, placed in the
+  direction you look. Auto connects to adjacent beams if facing towards them. Auto
+  connects to steel poles underneath. Crafted 3x3 from thin steel poles in a T-shape
+  (output: 6 beams).
+
 - *Inset spot light*: Small metal framed glowstone based light source for ceiling,
   wall, or floor. Light level like a torch. Thin, hence not blocking the way.
   Allows illuminating places where electrical light installations are problematic.
+
+- *Fluid pipe check valve*: IE fluid pipe styled straight valve that conducts fluids
+  only in one direction. Crafted from 3x3 from three fluid pipes.
 
 More to come slowly but steadily.
 

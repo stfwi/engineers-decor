@@ -10,6 +10,10 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+    - v1.0.4-b5 [A] Horizontal steel double-T support beam with pole connections.
+                [A] Added fluid pipe check valve (straight, conducts only one way).
+                [M] Internal registration block/te handling changed.
+
     - v1.0.4-b4 [F] Clinker/slag brick wall side cullfacing disabled to prevent
                     texture leaks when connecting to concrete walls.
                 [F] Unused treated wood pole texture regions filled (optifine).

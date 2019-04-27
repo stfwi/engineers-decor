@@ -12,6 +12,7 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.tileentity.TileEntity;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.detail.ModAuxiliaries;
 import wile.engineersdecor.detail.ModConfig;
@@ -35,6 +36,10 @@ import javax.annotation.Nonnull;
 @SuppressWarnings("unused")
 public class ModBlocks
 {
+  //--------------------------------------------------------------------------------------------------------------------
+  //-- Blocks
+  //--------------------------------------------------------------------------------------------------------------------
+
   public static final BlockDecorFull CLINKER_BRICK_BLOCK = new BlockDecorFull("clinker_brick_block", 0, Material.ROCK, 2f, 50f, SoundType.STONE);
   public static final BlockDecorStairs CLINKER_BRICK_STAIRS = new BlockDecorStairs("clinker_brick_stairs", CLINKER_BRICK_BLOCK.getDefaultState());
   public static final BlockDecorWall CLINKER_BRICK_WALL = new BlockDecorWall("clinker_brick_wall", BlockDecor.CFG_DEFAULT, Material.ROCK, 8f, 50f, SoundType.STONE);
@@ -176,9 +181,40 @@ public class ModBlocks
     ModAuxiliaries.getPixeledAABB(5,11,0, 11,16,16)
   );
 
+  public static final BlockDecorPipeValve STRAIGHT_PIPE_VALVE = new BlockDecorPipeValve(
+    "straight_pipe_valve",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT,
+    Material.IRON, 1.0f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
+  );
 
-  private static final Block modBlocks[] = {
-    TREATED_WOOD_CRAFTING_TABLE,
+  //--------------------------------------------------------------------------------------------------------------------
+  //-- Tile entities
+  //--------------------------------------------------------------------------------------------------------------------
+
+  private static class TileEntityRegistrationData
+  {
+    public final Class<? extends TileEntity> clazz;
+    public final ResourceLocation key;
+    public TileEntityRegistrationData(Class<? extends TileEntity> c, String k) { clazz=c; key = new ResourceLocation(ModEngineersDecor.MODID, k); }
+  }
+
+  private static final TileEntityRegistrationData TREATED_WOOD_CRAFTING_TABLE_TEI = new TileEntityRegistrationData(
+    BlockDecorCraftingTable.BTileEntity.class, "te_crafting_table"
+  );
+  private static final TileEntityRegistrationData SMALL_LAB_FURNACE_TEI = new TileEntityRegistrationData(
+    BlockDecorFurnace.BTileEntity.class, "te_small_lab_furnace"
+  );
+  private static final TileEntityRegistrationData STRAIGHT_PIPE_VALVE_TEI = new TileEntityRegistrationData(
+    BlockDecorPipeValve.BTileEntity.class, "te_pipe_valve"
+  );
+
+  //--------------------------------------------------------------------------------------------------------------------
+  //-- Registration list
+  //--------------------------------------------------------------------------------------------------------------------
+
+  private static final Object content[] = {
+    TREATED_WOOD_CRAFTING_TABLE, TREATED_WOOD_CRAFTING_TABLE_TEI,
     CLINKER_BRICK_BLOCK,
     CLINKER_BRICK_STAIRS,
     CLINKER_BRICK_WALL,
@@ -201,7 +237,7 @@ public class ModBlocks
     TREATED_WOOD_WINDOW,
     TREATED_WOOD_WINDOWSILL,
     INSET_LIGHT_IRON,
-    SMALL_LAB_FURNACE,
+    SMALL_LAB_FURNACE, SMALL_LAB_FURNACE_TEI,
     STEEL_FRAMED_WINDOW,
     TREATED_WOOD_POLE_SUPPORT,
     TREATED_WOOD_POLE_HEAD,
@@ -210,13 +246,19 @@ public class ModBlocks
     THICK_STEEL_POLE,
     THIN_STEEL_POLE_HEAD,
     THICK_STEEL_POLE_HEAD,
-    STEEL_DOUBLE_T_SUPPORT
+    STEEL_DOUBLE_T_SUPPORT,
+    STRAIGHT_PIPE_VALVE, STRAIGHT_PIPE_VALVE_TEI
   };
 
-  private static final Block devBlocks[] = {
+  private static final Object dev_content[] = {
   };
+
+  //--------------------------------------------------------------------------------------------------------------------
+  //-- Init
+  //--------------------------------------------------------------------------------------------------------------------
 
   private static ArrayList<Block> registeredBlocks = new ArrayList<>();
+  private static ArrayList<TileEntityRegistrationData> registeredTileEntityInits = new ArrayList<>();
 
   @Nonnull
   public static List<Block> getRegisteredBlocks()
@@ -226,28 +268,33 @@ public class ModBlocks
   public static final void registerBlocks(RegistryEvent.Register<Block> event)
   {
     // Config based registry selection
-    int num_registrations_skipped = 0;
-    ArrayList<Block> allBlocks = new ArrayList<>();
-    Collections.addAll(allBlocks, modBlocks);
-    //if(Loader.isModLoaded("immersiveengineering")){}
-    if(ModConfig.zmisc.with_experimental) Collections.addAll(allBlocks, devBlocks);
+    int num_block_registrations_skipped = 0;
     final boolean woor = ModConfig.isWithoutOptOutRegistration();
-    for(Block e:allBlocks) {
-      if((!woor) || (!ModConfig.isOptedOut(e))) {
-        registeredBlocks.add(e);
-      } else {
-        ++num_registrations_skipped;
+    for(Object e:content) {
+      if(e instanceof Block) {
+        if((!woor) || (!ModConfig.isOptedOut((Block)e))) {
+          registeredBlocks.add((Block) e);
+        } else {
+          ++num_block_registrations_skipped;
+        }
+      } else if(e instanceof TileEntityRegistrationData) {
+        registeredTileEntityInits.add((TileEntityRegistrationData)e);
+      }
+    }
+    if(ModConfig.zmisc.with_experimental) {
+      for(Object e:dev_content) {
+        if(e instanceof Block) {
+          registeredBlocks.add((Block) e);
+        } else if(e instanceof TileEntityRegistrationData) {
+          registeredTileEntityInits.add((TileEntityRegistrationData) e);
+        }
       }
     }
     for(Block e:registeredBlocks) event.getRegistry().register(e);
     ModEngineersDecor.logger.info("Registered " + Integer.toString(registeredBlocks.size()) + " blocks.");
-    if(num_registrations_skipped > 0) {
-      ModEngineersDecor.logger.info("Skipped registration of " + num_registrations_skipped + " blocks due to no-register-opt-out config.");
-    }
-
-    // TEs
-    GameRegistry.registerTileEntity(BlockDecorCraftingTable.BTileEntity.class, new ResourceLocation(ModEngineersDecor.MODID, "te_crafting_table"));
-    GameRegistry.registerTileEntity(BlockDecorFurnace.BTileEntity.class, new ResourceLocation(ModEngineersDecor.MODID, "te_small_lab_furnace"));
+    if(num_block_registrations_skipped > 0) ModEngineersDecor.logger.info("Skipped registration of " + num_block_registrations_skipped + " blocks.");
+    for(TileEntityRegistrationData e:registeredTileEntityInits) GameRegistry.registerTileEntity(e.clazz, e.key);
+    ModEngineersDecor.logger.info("Registered " + Integer.toString(registeredTileEntityInits.size()) + " tile entities.");
   }
 
   // Invoked from ClientProxy.registerModels()

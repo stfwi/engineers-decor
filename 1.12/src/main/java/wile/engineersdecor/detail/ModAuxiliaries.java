@@ -144,4 +144,6 @@ public class ModAuxiliaries
     }
     return bb;
   }
+
+  public interface IExperimentalFeature{}
 }

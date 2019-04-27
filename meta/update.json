@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.12.2": {
+    "1.0.4-b5": "[A] Horizontal steel double-T support beam with pole connections.\n[A] Added fluid pipe check valve (straight, conducts only one way).\n[M] Internal registration block/te handling changed.",
     "1.0.4-b4": "[F] Clinker/slag brick wall side cullfacing disabled to prevent texture leaks when connecting to concrete walls.\n[F] Unused treated wood pole texture regions filled (optifine).\n[F] Using mipped cutout format for window multi-layer model (issue #19, thanks rixmswey for reporting and details).\n[M] Recipe tuning, added standalone recipe for all mod blocks.\n[M] In-game CTRL-SHIFT tooltip documentation updated.\n[M] Panzer glass block: Ambient occlusion and light opacity tuned.\n[M] Stairs: Light opacity tuned.\n[A] Tooltip documentation added for mod stairs.\n[E] Horizontal steel double-T support beam (config:experimental).",
     "1.0.4-b3": "[A] Added thin (4x4x16) and thick (6x6x16) steel hollow poles.\n[A] Added support head/foot components for thin and thick steel poles.",
     "1.0.4-b2": "[A] Added position dependent texture variation to clinker wall, slag brick wall and rebar concrete wall.",
@@ -37,7 +38,7 @@
   },
   "promos": {
     "1.12.2-recommended": "1.0.3",
-    "1.12.2-latest": "1.0.4-b4",
+    "1.12.2-latest": "1.0.4-b5",
     "1.13.2-recommended": "",
     "1.13.2-latest": "1.0.4-b3"
   }
