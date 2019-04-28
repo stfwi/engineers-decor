@@ -10,6 +10,10 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+    - v1.0.4-b6 [A] Added redstone controlled fluid valve.
+                [A] Added redstone controlled analog fluid valve.
+                [M] Check valve recipe adapted (thanks majijn).
+
     - v1.0.4-b5 [A] Horizontal steel double-T support beam with pole connections.
                 [A] Added fluid pipe check valve (straight, conducts only one way).
                 [M] Internal registration block/te handling changed.

@@ -181,9 +181,23 @@ public class ModBlocks
     ModAuxiliaries.getPixeledAABB(5,11,0, 11,16,16)
   );
 
-  public static final BlockDecorPipeValve STRAIGHT_PIPE_VALVE = new BlockDecorPipeValve(
+  public static final BlockDecorPipeValve STRAIGHT_CHECK_VALVE = new BlockDecorPipeValve(
     "straight_pipe_valve",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT,
+    Material.IRON, 1.0f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
+  );
+
+  public static final BlockDecorPipeValve STRAIGHT_REDSTONE_VALVE = new BlockDecorPipeValve(
+    "straight_pipe_valve_redstone",
+    BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_REDSTONE_CONTROLLED,
+    Material.IRON, 1.0f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
+  );
+
+  public static final BlockDecorPipeValve STRAIGHT_REDSTONE_ANALOG_VALVE = new BlockDecorPipeValve(
+    "straight_pipe_valve_redstone_analog",
+    BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_REDSTONE_CONTROLLED|BlockDecor.CFG_ANALOG,
     Material.IRON, 1.0f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
   );
@@ -247,11 +261,10 @@ public class ModBlocks
     THIN_STEEL_POLE_HEAD,
     THICK_STEEL_POLE_HEAD,
     STEEL_DOUBLE_T_SUPPORT,
-    STRAIGHT_PIPE_VALVE, STRAIGHT_PIPE_VALVE_TEI
+    STRAIGHT_CHECK_VALVE, STRAIGHT_REDSTONE_VALVE, STRAIGHT_REDSTONE_ANALOG_VALVE, STRAIGHT_PIPE_VALVE_TEI
   };
 
-  private static final Object dev_content[] = {
-  };
+  private static final Object dev_content[] = {};
 
   //--------------------------------------------------------------------------------------------------------------------
   //-- Init

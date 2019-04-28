@@ -88,7 +88,17 @@ tile.engineersdecor.small_lab_furnace.name=Компактная лаборато
 tile.engineersdecor.small_lab_furnace.help=§6Лабораторная печь в металлическом корпусе.§r Подача твёрдого топлива - сверху. Немного горячее чем каменная, поэтому быстрее. Два внутренних слота для ввода, выхода и топлива.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.straight_pipe_valve.name=Straight fluid valve
-#tile.engineersdecor.straight_pipe_valve.help=§6Straight fluid pipe fragment.§r Conducts fluids only in one direction. Does not connect to the sides. Sneak to place in reverse direction.
+#tile.engineersdecor.straight_pipe_valve.help=§6Straight fluid pipe fragment.§r Conducts fluids only in one direction. \
+                                             Does not connect to the sides. Reduces flow rate. Sneak to place in reverse direction.
+tile.engineersdecor.straight_pipe_valve_redstone.name=Redstone controlled fluid valve
+#tile.engineersdecor.straight_pipe_valve_redstone.help=§6Straight fluid pipe fragment.§r Conducts fluids only in one direction. \
+                                                      Does not connect to the sides. Sneak to place in reverse direction. \
+                                                      Blocks if not redstone powered.
+tile.engineersdecor.straight_pipe_valve_redstone_analog.name=Redstone analog fluid valve
+#tile.engineersdecor.straight_pipe_valve_redstone_analog.help=§6Straight fluid pipe fragment.§r Conducts fluids only in one direction. \
+                                                      Does not connect to the sides. Sneak to place in reverse direction. \
+                                                      Blocks if not redstone powered, reduces the flow rate linear from power 1 to 14, \
+                                                      opens to maximum possible valve flow rate for power 15.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.sign_decor.name=Sign plate (Engineer's decor logo)
 #tile.engineersdecor.sign_decor.help=§6This should not be craftable or visible in JEI. Used for creative tab and screenshots.

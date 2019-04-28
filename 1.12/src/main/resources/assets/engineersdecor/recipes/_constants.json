@@ -108,6 +108,20 @@
   },
   {
     "ingredient": [
+      { "item": "immersiveengineering:material", "data": 8 },
+      { "item": "immersiveengineering:material", "data": 9 }
+    ],
+    "name": "anyMechanicalComponent"
+  },
+  {
+    "ingredient": [
+      { "item": "immersiveengineering:connector", "data": 12 },
+      { "item": "immersiveengineering:connector", "data": 13 }
+    ],
+    "name": "anyDirectedRedstoneConnector"
+  },
+  {
+    "ingredient": [
       { "type": "forge:ore_dict", "ore": "ingotBrick"       },
       { "type": "forge:ore_dict", "ore": "ingotBrickNether" }
     ],
@@ -128,6 +142,10 @@
   {
     "ingredient": { "type": "forge:ore_dict", "ore": "blockGlass" },
     "name": "blockGlass"
+  },
+  {
+    "ingredient": { "type": "forge:ore_dict", "ore": "dustRedstone" },
+    "name": "dustRedstone"
   },
   {
     "ingredient": { "item": "minecraft:diamond", "data": 0 },

@@ -201,6 +201,26 @@ public class ModConfig
     })
     @Config.Name("Crafting table: Move buttons")
     public boolean with_crafting_quickmove_buttons = false;
+
+    @Config.Comment({
+      "Defines how many millibuckets can be transferred (per tick) through the valves. " +
+      "That is technically the 'storage size' specified for blocks that want to fill " +
+      "fluids into the valve (the valve has no container and forward that to the output " +
+      "block), The value can be changed on-the-fly for tuning. "
+    })
+    @Config.Name("Valves: Max flow rate")
+    @Config.RangeInt(min=1, max=10000)
+    public int pipevalve_max_flowrate = 1000;
+
+    @Config.Comment({
+      "Defines how many millibuckets per redstone signal strength can be transferred per tick " +
+      "through the analog redstone controlled valves. Note: power 0 is always off, power 15 is always " +
+      "the max flow rate. Between power 1 and 14 this scaler will result in a flow = 'redstone slope' * 'current redstone power'. " +
+      "The value can be changed on-the-fly for tuning. "
+    })
+    @Config.Name("Valves: Redstone slope")
+    @Config.RangeInt(min=1, max=10000)
+    public int pipevalve_redstone_slope = 20;
   }
 
   @SuppressWarnings("unused")
@@ -268,6 +288,7 @@ public class ModConfig
     BlockDecorChair.on_config(optout.without_chair_sitting, optout.without_mob_chair_sitting, tweaks.chair_mob_sitting_probability_percent, tweaks.chair_mob_standup_probability_percent);
     BlockDecorLadder.on_config(optout.without_ladder_speed_boost);
     BlockDecorCraftingTable.on_config(optout.without_crafting_table_history, false, tweaks.with_crafting_quickmove_buttons);
+    BlockDecorPipeValve.on_config(tweaks.pipevalve_max_flowrate, tweaks.pipevalve_redstone_slope);
   }
 
 }

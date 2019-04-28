@@ -4,6 +4,7 @@
   "variants": {
     "normal": [{}],
     "inventory": [{}],
-    "facing": { "north":{"y":0}, "south":{"y":180}, "west":{"y":270}, "east":{"y":90}, "up": {"x":-90}, "down": {"x":90} }
+    "facing": { "north":{"y":0}, "south":{"y":180}, "west":{"y":270}, "east":{"y":90}, "up": {"x":-90}, "down": {"x":90} },
+    "rsdir": { "0":{},"1":{},"2":{},"3":{},"4":{} }
   }
 }

@@ -1,0 +1,42 @@
+{
+	"textures": {
+		"rsside": "engineersdecor:blocks/pipe/straight_pipe_valve_side_redstone_texture",
+		"particle": "engineersdecor:blocks/pipe/straight_pipe_valve_side_redstone_texture",
+		"rsend": "engineersdecor:blocks/pipe/straight_pipe_valve_side_redstone_cn_texture"
+	},
+	"elements": [
+		{
+			"from": [5, 5, 0],
+			"to": [11, 11, 3],
+			"faces": {
+				"north": {"uv": [5, 5, 11, 11], "rotation": 90, "texture": "#rsend"},
+				"east": {"uv": [13, 5, 16, 11], "texture": "#rsside"},
+				"west": {"uv": [13, 5, 16, 11], "rotation": 180, "texture": "#rsside"},
+				"up": {"uv": [13, 5, 16, 11], "rotation": 270, "texture": "#rsside"},
+				"down": {"uv": [13, 5, 16, 11], "rotation": 90, "texture": "#rsside"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [120, 15, 0],
+			"translation": [-1, -1, -2],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"firstperson_righthand": {
+			"rotation": [120, 30, 0],
+			"translation": [2, 3, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"ground": {
+			"scale": [0.2, 0.2, 0.2]
+		},
+		"gui": {
+			"rotation": [30, 225, 0],
+			"scale": [0.625, 0.625, 0.625]
+		},
+		"fixed": {
+			"scale": [0.5, 0.5, 0.5]
+		}
+	}
+}

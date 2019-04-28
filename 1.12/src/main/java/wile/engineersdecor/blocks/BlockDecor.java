@@ -51,7 +51,9 @@ public class BlockDecor extends Block
   public static final long CFG_TRANSLUCENT                = 0x0000000000000040L; // indicates a block/pane is glass like (transparent, etc)
   public static final long CFG_LIGHT_VALUE_MASK           = 0x0000000000000f00L; // fixed value for getLightValue()
   public static final long CFG_LIGHT_VALUE_SHIFT          = 8L;
-  public static final long CFG_LAB_FURNACE_CRUDE          = 0x0000000000010000L; // For DecorFurnace, denotes that it is a crude furnace.
+  public static final long CFG_ELECTRICAL                 = 0x0000000000010000L; // Denotes if a component is mainly flux driven.
+  public static final long CFG_REDSTONE_CONTROLLED        = 0x0000000000020000L; // Denotes if a component has somehow a redstone control input
+  public static final long CFG_ANALOG                     = 0x0000000000040000L; // Denotes if a component has analog behaviour
 
   protected final AxisAlignedBB aabb;
 

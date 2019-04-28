@@ -8,11 +8,14 @@
   ],
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "PPP"
+    "PMP"
   ],
   "key": {
     "P": {
       "item": "#itemFluidPipe"
+    },
+    "M": {
+      "item": "#anyMechanicalComponent"
     }
   },
   "result": {
