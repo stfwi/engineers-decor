@@ -17,6 +17,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
@@ -42,9 +43,9 @@ public class BlockDecorPipeValve extends BlockDecorDirected
 
   public static void on_config(int container_size_decl, int redstone_slope)
   {
-    BTileEntity.fluid_capacity_mb = MathHelper.clamp(container_size_decl, 1, 10000);
+    BTileEntity.fluid_maxflow_mb = MathHelper.clamp(container_size_decl, 1, 10000);
     BTileEntity.redstone_flow_slope_mb = MathHelper.clamp(redstone_slope, 1, 10000);
-    ModEngineersDecor.logger.info("Config pipe valve: maxflow:" + BTileEntity.fluid_capacity_mb + "mb, redstone amp:" + BTileEntity.redstone_flow_slope_mb + "mb/sig");
+    ModEngineersDecor.logger.info("Config pipe valve: maxflow:" + BTileEntity.fluid_maxflow_mb + "mb, redstone amp:" + BTileEntity.redstone_flow_slope_mb + "mb/sig");
   }
 
   public BlockDecorPipeValve(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound, @Nonnull AxisAlignedBB unrotatedAABB)
@@ -130,7 +131,7 @@ public class BlockDecorPipeValve extends BlockDecorDirected
   public static class BTileEntity extends TileEntity implements IFluidHandler, IFluidTankProperties, ICapabilityProvider
   {
     private static final BackFlowHandler back_flow_handler_ = new BackFlowHandler();
-    protected static int fluid_capacity_mb = 1000; // likely also the max flow per tick
+    protected static int fluid_maxflow_mb = 1000;
     protected static int redstone_flow_slope_mb = 1000/15;
     private final IFluidTankProperties[] fluid_props_ = {this};
     private EnumFacing block_facing_ = EnumFacing.NORTH;
@@ -207,11 +208,19 @@ public class BlockDecorPipeValve extends BlockDecorDirected
         if(rs <= 0) return 0;
         if(((block_config_ & CFG_ANALOG) != 0) && (rs < 15)) resource.amount = MathHelper.clamp(rs * redstone_flow_slope_mb, 1, resource.amount);
       }
+      FluidStack res = resource.copy();
+      if(res.amount > fluid_maxflow_mb) res.amount = fluid_maxflow_mb;
+      if(res.amount > 50) {
+        // forward pressureized tag
+        if(res.tag==null) res.tag = new NBTTagCompound();
+        res.tag.setBoolean("pressurized", true);
+      }
       final IFluidHandler fh = forward_fluid_handler();
       if(fh==null) return 0;
       filling_ = true; // in case someone does not check the cap, but just "forwards back" what is beeing filled right now.
-      int n_filled = forward_fluid_handler().fill(resource, doFill);
+      int n_filled = forward_fluid_handler().fill(res, doFill);
       filling_ = false;
+      //if(n_filled > 0) System.out.println("F:" + resource.amount + "->" + n_filled);
       return n_filled;
     }
 
@@ -237,7 +246,7 @@ public class BlockDecorPipeValve extends BlockDecorDirected
     { return null; }
 
     public int getCapacity()
-    { return fluid_capacity_mb; }
+    { return 10000; }
 
     @Override
     public boolean canFill()
@@ -271,5 +280,6 @@ public class BlockDecorPipeValve extends BlockDecorDirected
       @Override public boolean canFillFluidType(FluidStack fluidStack) { return false; }
       @Override public boolean canDrainFluidType(FluidStack fluidStack) { return false; }
     }
+
   }
 }
