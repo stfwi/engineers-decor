@@ -9,6 +9,7 @@
  */
 package wile.engineersdecor.blocks;
 
+import wile.engineersdecor.ModEngineersDecor;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.item.ItemStack;
@@ -31,7 +32,6 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fluids.FluidStack;
-import wile.engineersdecor.ModEngineersDecor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -172,6 +172,25 @@ public class BlockDecorPipeValve extends BlockDecorDirected
       final IBlockState state = world.getBlockState(pos);
       if((!(state.getBlock() instanceof BlockDecorPipeValve))) return;
       block_reconfigure(state.getValue(FACING), block_config_);
+      world.notifyNeighborsOfStateChange(pos, state.getBlock(), false);
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbt)
+    {
+      super.readFromNBT(nbt);
+      int i = nbt.getInteger("facing");
+      if((i>=0) || (i<6)) block_facing_ = EnumFacing.byIndex(i);
+      block_config_ = nbt.getLong("conf");
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+    {
+      super.writeToNBT(nbt);
+      nbt.setInteger("facing", block_facing_.getIndex());
+      nbt.setLong("conf", block_config_);
+      return nbt;
     }
 
     // ICapabilityProvider --------------------------------------------------------------------
