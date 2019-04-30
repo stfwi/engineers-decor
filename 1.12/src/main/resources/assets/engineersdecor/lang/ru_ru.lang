@@ -99,6 +99,9 @@ tile.engineersdecor.straight_pipe_valve_redstone_analog.name=Redstone analog flu
                                                       Does not connect to the sides. Sneak to place in reverse direction. \
                                                       Blocks if not redstone powered, reduces the flow rate linear from power 1 to 14, \
                                                       opens to maximum possible valve flow rate for power 15.
+tile.engineersdecor.passive_fluid_accumulator.name=Passive fluid accumulator
+#tile.engineersdecor.passive_fluid_accumulator.help=§6Vacuum suction based fluid collector.§r Has one output, all other sides are input. \
+                                                   Drains fluids from adjacent tanks when being drained from the output port by a pump.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.sign_decor.name=Sign plate (Engineer's decor logo)
 #tile.engineersdecor.sign_decor.help=§6This should not be craftable or visible in JEI. Used for creative tab and screenshots.

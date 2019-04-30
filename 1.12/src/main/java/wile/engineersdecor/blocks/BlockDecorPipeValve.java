@@ -9,6 +9,7 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.util.EnumHand;
 import wile.engineersdecor.ModEngineersDecor;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
@@ -56,13 +57,8 @@ public class BlockDecorPipeValve extends BlockDecorDirected
   { return new BlockStateContainer(this, FACING, RS_CONNECTION_DIR); }
 
   @Override
-  @SuppressWarnings("deprecation")
-  public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
-  {
-    IBlockState state = super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer);
-    if(!placer.isSneaking()) state = state.withProperty(FACING, state.getValue(FACING).getOpposite()).withProperty(RS_CONNECTION_DIR, 0);
-    return state;
-  }
+  public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
+  { return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand).withProperty(RS_CONNECTION_DIR, 0); }
 
   // world to model index transformations. [Facing block][Facing neighbour] -> int 0=nothing, 1=top, 2=right, 3=down, 4=left.
   private static final int rsconnectors[][] = {
@@ -93,7 +89,6 @@ public class BlockDecorPipeValve extends BlockDecorDirected
   }
 
   @Override
-  @SuppressWarnings("deprecation")
   public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos)
   {
     EnumFacing fc = state.getValue(FACING);

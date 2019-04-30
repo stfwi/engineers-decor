@@ -1,7 +1,7 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "engineersdecor:decor_full_block_model",
+    "model": "engineersdecor:std/decor_full_block_model",
     "textures": { "all": "engineersdecor:blocks/slag_brick/slag_brick_texture0" }
   },
   "variants": {

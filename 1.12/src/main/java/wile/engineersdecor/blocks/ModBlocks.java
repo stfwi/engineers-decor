@@ -127,7 +127,7 @@ public class ModBlocks
 
   public static final BlockDecorCraftingTable TREATED_WOOD_CRAFTING_TABLE = new BlockDecorCraftingTable(
     "treated_wood_crafting_table",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Material.WOOD, 1.0f, 15f, SoundType.WOOD,
     ModAuxiliaries.getPixeledAABB(1,0,1, 15,15.9,15)
   );
@@ -162,7 +162,7 @@ public class ModBlocks
 
   public static final BlockDecorFurnace SMALL_LAB_FURNACE = new BlockDecorFurnace(
     "small_lab_furnace",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Material.IRON, 1.0f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(1,0,1, 15,15,16.0)
   );
@@ -183,23 +183,34 @@ public class ModBlocks
 
   public static final BlockDecorPipeValve STRAIGHT_CHECK_VALVE = new BlockDecorPipeValve(
     "straight_pipe_valve",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT,
+    BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
+    BlockDecor.CFG_CUTOUT,
     Material.IRON, 0.5f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
   );
 
   public static final BlockDecorPipeValve STRAIGHT_REDSTONE_VALVE = new BlockDecorPipeValve(
     "straight_pipe_valve_redstone",
-    BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_REDSTONE_CONTROLLED,
+    BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_REDSTONE_CONTROLLED,
     Material.IRON, 0.5f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
   );
 
   public static final BlockDecorPipeValve STRAIGHT_REDSTONE_ANALOG_VALVE = new BlockDecorPipeValve(
     "straight_pipe_valve_redstone_analog",
-    BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_REDSTONE_CONTROLLED|BlockDecor.CFG_ANALOG,
+    BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_REDSTONE_CONTROLLED|BlockDecor.CFG_ANALOG,
     Material.IRON, 0.5f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
+  );
+
+  public static final BlockDecorPassiveFluidAccumulator PASSIVE_FLUID_ACCUMULATOR = new BlockDecorPassiveFluidAccumulator(
+    "passive_fluid_accumulator",
+    BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
+    BlockDecor.CFG_CUTOUT,
+    Material.IRON, 0.5f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   );
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -221,6 +232,9 @@ public class ModBlocks
   );
   private static final TileEntityRegistrationData STRAIGHT_PIPE_VALVE_TEI = new TileEntityRegistrationData(
     BlockDecorPipeValve.BTileEntity.class, "te_pipe_valve"
+  );
+  private static final TileEntityRegistrationData PASSIVE_FLUID_ACCUMULATOR_TEI = new TileEntityRegistrationData(
+    BlockDecorPassiveFluidAccumulator.BTileEntity.class, "te_passive_fluid_accumulator"
   );
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -264,7 +278,9 @@ public class ModBlocks
     STRAIGHT_CHECK_VALVE, STRAIGHT_REDSTONE_VALVE, STRAIGHT_REDSTONE_ANALOG_VALVE, STRAIGHT_PIPE_VALVE_TEI
   };
 
-  private static final Object dev_content[] = {};
+  private static final Object dev_content[] = {
+    PASSIVE_FLUID_ACCUMULATOR, PASSIVE_FLUID_ACCUMULATOR_TEI
+  };
 
   //--------------------------------------------------------------------------------------------------------------------
   //-- Init

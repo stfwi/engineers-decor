@@ -9,13 +9,14 @@
  * - MC block defaults.
  * - Tooltip functionality
  * - Model initialisation
+ * - Accumulating "deprecated" warnings from Block where "overriding/implementing is fine".
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.block.SoundType;
-import net.minecraft.util.*;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.detail.ModAuxiliaries;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
@@ -25,8 +26,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.item.ItemStack;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
@@ -48,7 +49,8 @@ public class BlockDecor extends Block
   public static final long CFG_FACING_PLACEMENT           = 0x0000000000000008L; // placed on the facing the player has clicked.
   public static final long CFG_OPPOSITE_PLACEMENT         = 0x0000000000000010L; // placed placed in the opposite direction of the face the player clicked.
   public static final long CFG_FLIP_PLACEMENT_IF_SAME     = 0x0000000000000020L; // placement direction flipped if an instance of the same class was clicked
-  public static final long CFG_TRANSLUCENT                = 0x0000000000000040L; // indicates a block/pane is glass like (transparent, etc)
+  public static final long CFG_FLIP_PLACEMENT_SHIFTCLICK  = 0x0000000000000040L; // placement direction flipped if player is sneaking
+  public static final long CFG_TRANSLUCENT                = 0x0000000000000080L; // indicates a block/pane is glass like (transparent, etc)
   public static final long CFG_LIGHT_VALUE_MASK           = 0x0000000000000f00L; // fixed value for getLightValue()
   public static final long CFG_LIGHT_VALUE_SHIFT          = 8L;
   public static final long CFG_ELECTRICAL                 = 0x0000000000010000L; // Denotes if a component is mainly flux driven.
@@ -90,6 +92,11 @@ public class BlockDecor extends Block
   @SuppressWarnings("deprecation")
   public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
   { return true; }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face)
+  { return BlockFaceShape.SOLID; }
 
   @Override
   @SuppressWarnings("deprecation")
@@ -158,37 +165,18 @@ public class BlockDecor extends Block
   public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
   { return aabb; }
 
+  @SideOnly(Side.CLIENT)
+  @SuppressWarnings("deprecation")
+  public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos)
+  { return state.getBoundingBox(worldIn, pos).offset(pos); }
+
   @Override
   public boolean hasTileEntity(IBlockState state)
   { return false; }
 
   @Override
-  public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
-  {}
-
-  @Override
-  public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
-  { return false; }
-
-  @Override
-  public void onBlockClicked(World world, BlockPos pos, EntityPlayer player)
-  {}
-
-  @Override
   @SuppressWarnings("deprecation")
   public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos)
   {}
-
-  @Override
-  public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos)
-  { return (int)((config & CFG_LIGHT_VALUE_MASK) >> CFG_LIGHT_VALUE_SHIFT); }
-
-  @Override
-  public boolean canPlaceBlockOnSide(World world, BlockPos pos, EnumFacing side)
-  { return super.canPlaceBlockOnSide(world, pos, side); }
-
-  @Override
-  public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
-  { return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand); }
 
 }

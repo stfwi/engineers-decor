@@ -10,8 +10,10 @@ package wile.engineersdecor.blocks;
 
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockStairs;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -25,7 +27,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 
-public class BlockDecorStairs extends net.minecraft.block.BlockStairs
+public class BlockDecorStairs extends BlockStairs
 {
   public BlockDecorStairs(@Nonnull String registryName, IBlockState modelState)
   {
@@ -33,8 +35,7 @@ public class BlockDecorStairs extends net.minecraft.block.BlockStairs
     setCreativeTab(ModEngineersDecor.CREATIVE_TAB_ENGINEERSDECOR);
     setRegistryName(ModEngineersDecor.MODID, registryName);
     setTranslationKey(ModEngineersDecor.MODID + "." + registryName);
-    setLightLevel(0);
-    setLightOpacity(64);
+    setLightOpacity(0);
   }
 
   @Override
@@ -58,10 +59,6 @@ public class BlockDecorStairs extends net.minecraft.block.BlockStairs
   { return false; }
 
   @Override
-  public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos)
-  { return 0; }
-
-  @Override
   public boolean canSpawnInBlock()
   { return false; }
 
@@ -73,9 +70,5 @@ public class BlockDecorStairs extends net.minecraft.block.BlockStairs
   @SuppressWarnings("deprecation")
   public EnumPushReaction getPushReaction(IBlockState state)
   { return EnumPushReaction.NORMAL; }
-
-  @Override
-  public boolean hasTileEntity(IBlockState state)
-  { return false; }
 
 }

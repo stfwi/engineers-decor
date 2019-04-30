@@ -39,7 +39,6 @@ public class BlockDecorGlassBlock extends BlockDecor
 
   @Override
   @SideOnly(Side.CLIENT)
-  @SuppressWarnings("deprecation")
   public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
   {
     final IBlockState neighbourState = world.getBlockState(pos.offset(side));
@@ -57,12 +56,10 @@ public class BlockDecorGlassBlock extends BlockDecor
   { return false; }
 
   @Override
-  @SuppressWarnings("deprecation")
   public boolean isFullCube(IBlockState state)
   { return true; }
 
   @Override
-  @SuppressWarnings("deprecation")
   public boolean isNormalCube(IBlockState state)
   { return false; }
 
@@ -79,12 +76,10 @@ public class BlockDecorGlassBlock extends BlockDecor
   { return false; }
 
   @Override
-  @SuppressWarnings("deprecation")
   public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face)
   { return BlockFaceShape.SOLID; }
 
   @Override
-  @SuppressWarnings("deprecation")
   public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
   { return FULL_BLOCK_AABB; }
 

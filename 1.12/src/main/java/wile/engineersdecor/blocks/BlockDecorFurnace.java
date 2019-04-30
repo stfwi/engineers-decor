@@ -8,12 +8,9 @@
  */
 package wile.engineersdecor.blocks;
 
-import com.google.common.collect.Maps;
-import net.minecraft.entity.item.EntityXPOrb;
-import net.minecraft.init.SoundEvents;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.detail.ExtItems;
+
 import net.minecraft.stats.StatList;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
@@ -23,6 +20,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.world.World;
 import net.minecraft.world.Explosion;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,6 +28,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.init.Items;
 import net.minecraft.item.*;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -43,12 +42,15 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.*;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import wile.engineersdecor.detail.ExtItems;
+
+import com.google.common.collect.Maps;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;

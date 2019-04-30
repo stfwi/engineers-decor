@@ -84,7 +84,7 @@ The mod has its focus decorative blocks. Current feature set:
   3x3 from three steel ingots (output 12), thick poles crafted 3x3 from six thin
   steel poles.
 
-- Double-T steel support: Horizontal top-aligned support beam, placed in the
+- *Double-T steel support*: Horizontal top-aligned support beam, placed in the
   direction you look. Auto connects to adjacent beams if facing towards them. Auto
   connects to steel poles underneath. Crafted 3x3 from thin steel poles in a T-shape
   (output: 6 beams).

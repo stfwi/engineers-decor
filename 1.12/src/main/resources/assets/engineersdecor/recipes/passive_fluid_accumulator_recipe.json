@@ -1,0 +1,30 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:passive_fluid_accumulator",
+      "required": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SPS",
+    "PMP",
+    "SPS"
+  ],
+  "key": {
+    "P": {
+      "item": "#itemFluidPipe"
+    },
+    "M": {
+      "item": "#anyMechanicalComponent"
+    },
+    "S": {
+      "item": "#slabSheetmetalIron"
+    }
+  },
+  "result": {
+    "item": "engineersdecor:passive_fluid_accumulator",
+    "count": 1
+  }
+}

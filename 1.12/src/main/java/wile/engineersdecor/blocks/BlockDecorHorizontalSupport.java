@@ -12,6 +12,7 @@ package wile.engineersdecor.blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import wile.engineersdecor.detail.ModAuxiliaries;
@@ -72,17 +73,14 @@ public class BlockDecorHorizontalSupport extends BlockDecor
   { return false; }
 
   @Override
-  @SuppressWarnings("deprecation")
   public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face)
   { return BlockFaceShape.UNDEFINED; }
 
   @SideOnly(Side.CLIENT)
-  @SuppressWarnings("deprecation")
   public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos)
   { return AABBs.get(state.getValue(EASTWEST) ? 0x3 : 0x2).offset(pos); }
 
   @Override
-  @SuppressWarnings("deprecation")
   public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
   { return AABBs.get(state.getValue(EASTWEST) ? 0x1 : 0x0); }
 
@@ -136,13 +134,11 @@ public class BlockDecorHorizontalSupport extends BlockDecor
   { return state; }
 
   @Override
-  @SuppressWarnings("deprecation")
   public boolean canPlaceBlockOnSide(World world, BlockPos pos, EnumFacing side)
   { return super.canPlaceBlockOnSide(world, pos, side); }
 
   @Override
-  @SuppressWarnings("deprecation")
-  public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
+  public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
   { return getActualState(getDefaultState().withProperty(EASTWEST, (placer.getHorizontalFacing().getAxis()==EnumFacing.Axis.X)), world, pos); }
 
 }

@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.12.2": {
+    "1.0.4-b8": "[F] Fixed stairs rendering without smooth light (thanks rastot9).\n[A] Added passive fluid accumulator.",
     "1.0.4-b7": "[F] Fixed recipe loading issue if IE is not installed.\n[M] Valves support IE pressurized fluid transfer.",
     "1.0.4-b6": "[A] Added redstone controlled fluid valve.\n[A] Added redstone controlled analog fluid valve.\n[M] Check valve recipe adapted (thanks majijn).",
     "1.0.4-b5": "[A] Horizontal steel double-T support beam with pole connections.\n[A] Added fluid pipe check valve (straight, conducts only one way).\n[M] Internal registration block/te handling changed.",
@@ -31,6 +32,6 @@
   },
   "promos": {
     "1.12.2-recommended": "1.0.3",
-    "1.12.2-latest": "1.0.4-b7"
+    "1.12.2-latest": "1.0.4-b8"
   }
 }

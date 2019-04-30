@@ -78,7 +78,6 @@ public class BlockDecorWall extends BlockDecor
   }
 
   @Override
-  @SuppressWarnings("deprecation")
   public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
   { return AABB_BY_INDEX[getAABBIndex(getActualState(state, source, pos))]; }
 
@@ -89,7 +88,6 @@ public class BlockDecorWall extends BlockDecor
 
   @Nullable
   @Override
-  @SuppressWarnings("deprecation")
   public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
   { return CLIP_AABB_BY_INDEX[getAABBIndex(getActualState(state, world, pos))]; }
 
@@ -101,22 +99,18 @@ public class BlockDecorWall extends BlockDecor
   }
 
   @Override
-  @SuppressWarnings("deprecation")
   public boolean isFullCube(IBlockState state)
   { return false; }
 
   @Override
-  @SuppressWarnings("deprecation")
   public boolean isPassable(IBlockAccess world, BlockPos pos)
   { return false; }
 
   @Override
-  @SuppressWarnings("deprecation")
   public boolean isOpaqueCube(IBlockState state)
   { return false; }
 
   @Override
-  @SuppressWarnings("deprecation")
   public boolean isNormalCube(IBlockState state)
   { return false; }
 
@@ -143,23 +137,19 @@ public class BlockDecorWall extends BlockDecor
   { return Block.isExceptBlockForAttachWithPiston(b) || (b==Blocks.BARRIER) || (b==Blocks.MELON_BLOCK) || (b==Blocks.PUMPKIN) || (b==Blocks.LIT_PUMPKIN); }
 
   @Override
-  @SuppressWarnings("deprecation")
   @SideOnly(Side.CLIENT)
   public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side)
   { return (side!=EnumFacing.DOWN) || (super.shouldSideBeRendered(blockState, blockAccess, pos, side)); }
 
   @Override
-  @SuppressWarnings("deprecation")
   public IBlockState getStateFromMeta(int meta)
   { return getDefaultState(); }
 
   @Override
-  @SuppressWarnings("deprecation")
   public int getMetaFromState(IBlockState state)
   { return 0; }
 
   @Override
-  @SuppressWarnings("deprecation")
   public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
   {
     boolean n = canWallConnectTo(world, pos, EnumFacing.NORTH);
@@ -176,7 +166,6 @@ public class BlockDecorWall extends BlockDecor
   { return new BlockStateContainer(this, new IProperty[] {UP, NORTH, EAST, WEST, SOUTH, TEXTURE_VARIANT}); }
 
   @Override
-  @SuppressWarnings("deprecation")
   public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face)
   { return (face==EnumFacing.UP) ? (BlockFaceShape.SOLID) : ((face!=EnumFacing.DOWN) ? (BlockFaceShape.MIDDLE_POLE_THICK) : (BlockFaceShape.CENTER_BIG)); }
 

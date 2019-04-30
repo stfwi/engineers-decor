@@ -10,6 +10,7 @@
 package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.detail.Networking;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -44,7 +45,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 import com.google.common.collect.ImmutableList;
-import wile.engineersdecor.detail.Networking;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
