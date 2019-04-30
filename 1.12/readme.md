@@ -11,7 +11,7 @@ Mod sources for Minecraft version 1.12.2.
 ## Revision history
 
     - v1.0.4-b8 [F] Fixed stairs rendering without smooth light (thanks rastot9).
-                [A] Added passive fluid accumulator.
+                [E] Added passive fluid accumulator (experimental feature, see config).
 
     - v1.0.4-b7 [F] Fixed recipe loading issue if IE is not installed.
                 [M] Valves support IE pressurized fluid transfer.
