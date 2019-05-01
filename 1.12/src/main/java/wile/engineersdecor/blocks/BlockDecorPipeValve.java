@@ -9,21 +9,23 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.util.EnumHand;
 import wile.engineersdecor.ModEngineersDecor;
+import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -81,9 +83,7 @@ public class BlockDecorPipeValve extends BlockDecorDirected
       if(f.getAxis() == bfa) continue;
       BlockPos nbp = pos.offset(f);
       IBlockState nbs = world.getBlockState(nbp);
-      if(nbs.canProvidePower() && (nbs.getBlock().canConnectRedstone(nbs, world, nbp, f))) {
-        return state.withProperty(RS_CONNECTION_DIR, rsconnectors[state.getValue(FACING).getIndex()][f.getIndex()]);
-      }
+      if(nbs.canProvidePower()) return state.withProperty(RS_CONNECTION_DIR, rsconnectors[state.getValue(FACING).getIndex()][f.getIndex()]);
     }
     return state.withProperty(RS_CONNECTION_DIR, 0);
   }
@@ -102,6 +102,11 @@ public class BlockDecorPipeValve extends BlockDecorDirected
     world.notifyNeighborsOfStateChange(pos, this, true);
   }
 
+  @Override
+  public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face)
+  { return BlockFaceShape.SOLID; }
+
+  @Override
   public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, @Nullable EnumFacing side)
   { return (side!=null) && (side!=state.getValue(FACING)) && (side!=state.getValue(FACING).getOpposite()); }
 
@@ -123,7 +128,7 @@ public class BlockDecorPipeValve extends BlockDecorDirected
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class BTileEntity extends TileEntity implements IFluidHandler, IFluidTankProperties, ICapabilityProvider
+  public static class BTileEntity extends TileEntity implements IFluidHandler, IFluidTankProperties, ICapabilityProvider, IFluidPipe
   {
     private static final BackFlowHandler back_flow_handler_ = new BackFlowHandler();
     protected static int fluid_maxflow_mb = 1000;
@@ -131,6 +136,7 @@ public class BlockDecorPipeValve extends BlockDecorDirected
     private final IFluidTankProperties[] fluid_props_ = {this};
     private EnumFacing block_facing_ = EnumFacing.NORTH;
     private boolean filling_ = false;
+    private boolean getlocked_ = false;
     private boolean filling_enabled_ = true;
     private long block_config_ = 0;
 
@@ -224,14 +230,17 @@ public class BlockDecorPipeValve extends BlockDecorDirected
       }
       FluidStack res = resource.copy();
       if(res.amount > fluid_maxflow_mb) res.amount = fluid_maxflow_mb;
-      if(res.amount > 50) {
-        // forward pressureized tag
-        if(res.tag==null) res.tag = new NBTTagCompound();
-        res.tag.setBoolean("pressurized", true);
-      }
       final IFluidHandler fh = forward_fluid_handler();
       if(fh==null) return 0;
       filling_ = true; // in case someone does not check the cap, but just "forwards back" what is beeing filled right now.
+      if(res.amount > 50) {
+        final TileEntity te = world.getTileEntity(pos.offset(block_facing_));
+        if(te instanceof IFluidPipe) {
+          // forward pressureized tag
+          if(res.tag == null) res.tag = new NBTTagCompound();
+          res.tag.setBoolean("pressurized", true);
+        }
+      }
       int n_filled = forward_fluid_handler().fill(res, doFill);
       filling_ = false;
       //if(n_filled > 0) System.out.println("F:" + resource.amount + "->" + n_filled);
@@ -260,7 +269,7 @@ public class BlockDecorPipeValve extends BlockDecorDirected
     { return null; }
 
     public int getCapacity()
-    { return 10000; }
+    { return 1000; }
 
     @Override
     public boolean canFill()
@@ -293,6 +302,24 @@ public class BlockDecorPipeValve extends BlockDecorDirected
       @Override public boolean canDrain() { return false; }
       @Override public boolean canFillFluidType(FluidStack fluidStack) { return false; }
       @Override public boolean canDrainFluidType(FluidStack fluidStack) { return false; }
+    }
+
+    // IFluidPipe
+
+    @Override
+    public boolean hasOutputConnection(EnumFacing side)
+    { return (side == block_facing_); }
+
+    @Override
+    public boolean canOutputPressurized(boolean consumePower)
+    {
+      if(getlocked_ || (!filling_enabled_)) return false;
+      final TileEntity te = world.getTileEntity(pos.offset(block_facing_));
+      if(!(te instanceof IFluidPipe)) return false;
+      getlocked_ = true; // not sure if IE explicitly pre-detects loops, so let's lock recurion here, too.
+      boolean r = ((IFluidPipe)te).canOutputPressurized(consumePower);
+      getlocked_ = false;
+      return r;
     }
 
   }

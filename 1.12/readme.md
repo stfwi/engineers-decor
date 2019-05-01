@@ -10,6 +10,11 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+    - v1.0.4-b9 [F] Inserting fluids with pressurized tag only into IE piping.
+                [F] Valve redstone connector rendering does not check for
+                    "can connect redstone" but only for "can provide power".
+                [M] Valves are adpted to be detected as pipe by IE.
+
     - v1.0.4-b8 [F] Fixed stairs rendering without smooth light (thanks rastot9).
                 [E] Added passive fluid accumulator (experimental feature, see config).
 

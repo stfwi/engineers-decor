@@ -4,11 +4,19 @@
  * @copyright (C) 2019 Stefan Wilhelm
  * @license MIT (see https://opensource.org/licenses/MIT)
  *
- * Basically a piece of pipe that does not connect to
- * pipes on the side, and conducts fluids only in one way.
+ * A device that collects fluids from adjacent tank outputs
+ * when a pump drains on the (only) output side. Shall support
+ * high flow rates, and a vavuum suction delay. Shall not drain
+ * high amounts of fluid from the adjacent tanks when no fluid
+ * is requested at the output port. Shall drain balanced from
+ * the adjacent input sides.
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumHand;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.detail.ModAuxiliaries;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -46,6 +54,15 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected implem
   public TileEntity createTileEntity(World world, IBlockState state)
   { return new BlockDecorPassiveFluidAccumulator.BTileEntity(); }
 
+  public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+  {
+    if(world.isRemote) return true;
+    TileEntity te = world.getTileEntity(pos);
+    if(!(te instanceof BTileEntity)) return true;
+    ((BTileEntity)te).debug_info_dump(player);
+    return true;
+  }
+
   public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos)
   { TileEntity te = world.getTileEntity(pos); if(te instanceof BlockDecorPipeValve.BTileEntity) ((BTileEntity)te).block_changed(); }
 
@@ -57,17 +74,25 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected implem
   {
     protected static int tick_idle_interval = 20; // ca 1000ms, simulates suction delay and saves CPU when not drained.
     protected static int max_flowrate = 1000;
-    protected static int tank_capacity_mb = max_flowrate * 2;
     private final IFluidTankProperties[] fluid_props_ = {this};
     private final InputFillHandler fill_handler_ = new InputFillHandler(this);
     private EnumFacing block_facing_ = EnumFacing.NORTH;
     private FluidStack tank_ = null;
-    private FluidStack last_drain_request_fluid_ = null;
     private int last_drain_request_amount_ = 0;
     private int vacuum_ = 0;
     private int tick_timer_ = 0;
     private int round_robin_ = 0;
     private boolean initialized_ = false;
+
+
+    private int total_volume_filled_ = 0;
+    private int total_volume_drained_ = 0;
+    @Deprecated
+    public void debug_info_dump(EntityPlayer player)
+    {
+      int t_vol = (tank_==null) ? 0 : (tank_.amount);
+      ModAuxiliaries.playerChatMessage(player,"pfacc I:" + total_volume_filled_ + " O:" + total_volume_drained_ + " B:" + t_vol);
+    }
 
     public void block_changed()
     { initialized_ = false; tick_timer_ = MathHelper.clamp(tick_timer_ , 0, tick_idle_interval); }
@@ -79,39 +104,16 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected implem
       private final BTileEntity parent_;
       private final IFluidTankProperties[] props_ = {this};
       InputFillHandler(BTileEntity parent) { parent_ = parent; }
+      @Override public int fill(FluidStack resource, boolean doFill) { return 0; }
       @Override @Nullable public FluidStack drain(FluidStack resource, boolean doDrain) { return null; }
       @Override @Nullable public FluidStack drain(int maxDrain, boolean doDrain) { return null; }
+      @Override @Nullable public FluidStack getContents() { return null; }
       @Override public IFluidTankProperties[] getTankProperties() { return props_; }
-      @Override public int getCapacity() { return tank_capacity_mb; }
+      @Override public int getCapacity() { return max_flowrate; }
       @Override public boolean canFill() { return true; }
       @Override public boolean canDrain() { return false; }
       @Override public boolean canFillFluidType(FluidStack fluidStack) { return true; }
       @Override public boolean canDrainFluidType(FluidStack fluidStack) { return false; }
-
-      @Nullable
-      @Override public FluidStack getContents()
-      {
-        if(parent_.tank_==null) return null;
-        FluidStack res = parent_.tank_.copy();
-        if(res.amount > max_flowrate) res.amount = max_flowrate;
-        return res;
-      }
-
-      @Override public int fill(FluidStack resource, boolean doFill)
-      {
-        if(!parent_.initialized_) return 0;
-        FluidStack res = resource.copy();
-        if(parent_.tank_ == null) {
-          res.amount = MathHelper.clamp(res.amount, 0, max_flowrate*2);
-          if(doFill) parent_.tank_ = res;
-          return res.amount;
-        } else {
-          res.amount = MathHelper.clamp(res.amount, 0, Math.min(max_flowrate*2, tank_capacity_mb-parent_.tank_.amount));
-          if((res.amount <= 0) || (!parent_.tank_.isFluidEqual(resource))) return 0;
-          if(doFill) parent_.tank_.amount += res.amount;
-          return res.amount;
-        }
-      }
     }
 
     // TileEntity ------------------------------------------------------------------------------
@@ -170,8 +172,8 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected implem
     @Nullable
     public FluidStack drain(FluidStack resource, boolean doDrain)
     {
-      if(doDrain) last_drain_request_fluid_ = resource.copy();
-      return ((tank_==null) || (!tank_.isFluidEqual(resource))) ? (null) : drain(resource.amount, doDrain);
+      if((resource==null) || (tank_==null)) return null;
+      return (!(tank_.isFluidEqual(resource))) ? (null) : drain(resource.amount, doDrain);
     }
 
     @Override
@@ -179,18 +181,15 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected implem
     public FluidStack drain(int maxDrain, boolean doDrain)
     {
       if(!initialized_) return null;
-      if(doDrain) last_drain_request_amount_ = maxDrain;
+      if(doDrain && (maxDrain > 0)) last_drain_request_amount_ = maxDrain;
       if(tank_==null) return null;
-      FluidStack res;
-      if(maxDrain >= tank_.amount) {
-        if(!doDrain) return tank_.copy();
-        res = tank_;
-        tank_ = null;
-      } else {
-        res = tank_.copy();
-        res.amount = maxDrain;
-        if(doDrain) tank_.amount -= maxDrain;
-      }
+      maxDrain = MathHelper.clamp(maxDrain ,0 , tank_.amount);
+      if(!doDrain) return tank_.copy();
+      FluidStack res = tank_.copy();
+      res.amount = maxDrain;
+      tank_.amount -= maxDrain;
+      if(tank_.amount <= 0) tank_= null;
+      total_volume_drained_ += res.amount;
       return res;
     }
 
@@ -216,46 +215,53 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected implem
         block_facing_ = state.getValue(FACING);
       }
       int n_requested = last_drain_request_amount_;
-      final FluidStack req_res = last_drain_request_fluid_;
       last_drain_request_amount_ = 0;
-      last_drain_request_fluid_ = null;
-      if(tank_!=null) {
-        if((n_requested > 0) && ((req_res == null) || (tank_.isFluidEqual(req_res)))) { vacuum_ += 2; } else { --vacuum_; }
-        vacuum_ = MathHelper.clamp(vacuum_, 0, 5);
-        if(vacuum_ <= 0) return; // nothing to do, noone's draining or can't because the fuild does not match.
+      if(n_requested > 0) {
+        vacuum_ += 2;
+        if(vacuum_ > 5) vacuum_ = 5;
       } else {
-        n_requested = 10; // drip in
+        if((--vacuum_) <= 0) {
+          vacuum_ = 0;
+          if(tank_!=null) {
+            return; // nothing to do, noone's draining.
+          } else {
+            n_requested = 10; // drip in
+          }
+        }
       }
-      int tank_level = MathHelper.clamp( (tank_==null) ? 0 : tank_.amount, 0, tank_capacity_mb);
-      if(tank_level >= Math.min(tank_capacity_mb, n_requested * 4)) return; // enough reserve
-      tick_timer_ = 0; // pull next tick
-      FluidStack match = (tank_==null) ? (req_res) : (tank_);
+      boolean has_refilled = false;
+      n_requested += (vacuum_ * 50);
+      int tank_buffer_needed = n_requested;
+      if(tank_buffer_needed > max_flowrate) tank_buffer_needed = max_flowrate;
       for(int i=0; i<6; ++i) {
         if(++round_robin_ > 5) round_robin_ = 0;
+        if(n_requested <= 0) break;
+        if(((tank_!=null) && (tank_.amount >= tank_buffer_needed))) break;
         final EnumFacing f = EnumFacing.byIndex(round_robin_);
         if(f == block_facing_) continue;
         final TileEntity te = world.getTileEntity(pos.offset(f));
-        if((te==null) || (!te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite()))) continue;
+        if((te==null) || (te instanceof BTileEntity) || (!te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite()))) continue;
         final IFluidHandler fh = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite());
         if(fh==null) continue;
-        int refill = Math.min(Math.max(n_requested, 100), tank_capacity_mb-tank_level);
-        if(refill <= 0) break;
-        FluidStack res;
-        if(match==null) {
-          res = fh.drain(refill, true);
-          if(res != null) match = res.copy();
-        } else {
-          match.amount = refill;
-          res = fh.drain(match.copy(), true);
-        }
-        if(res == null) continue;
         if(tank_==null) {
-          tank_ = res;
+          FluidStack res = fh.drain(n_requested, true);
+          if((res == null) || (res.amount==0)) continue;
+          total_volume_filled_ += res.amount;
+          tank_ = res.copy();
+          has_refilled = true;
         } else {
+          if((tank_.amount + n_requested) > max_flowrate) n_requested = (max_flowrate - tank_.amount);
+          FluidStack rq = tank_.copy();
+          rq.amount = n_requested;
+          FluidStack res = fh.drain(rq, true);
+          if(res == null) continue;
           tank_.amount += res.amount;
+          total_volume_filled_ += res.amount;
+          has_refilled = true;
+          if(tank_.amount >= max_flowrate) break;
         }
-        if(tank_.amount >= tank_capacity_mb) break;
       }
+      if(has_refilled) tick_timer_ = 0;
     }
   }
 }
