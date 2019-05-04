@@ -11,6 +11,67 @@ Mod sources for Minecraft version 1.12.2.
 ## Revision history
 
                 -------------------------------------------------------------------
+    - v1.0.4    [R] Release based on v1.0.3-b9. Release-to-release changes:
+                    * Crafting table: Quick crafting history re-fab, JEI integration.
+                    * Rendering improvements and issue fixes (stairs, ambient occlusion,
+                      optifine, etc).
+                    * Walls with texture variations.
+                    * Thin/thick steel poles with support feet/heads.
+                    * Horizontal steel double-T support beams added.
+                    * Fluid pipe valves added: Check valve, redstone controlled valve,
+                      analog redstone controlled valve. Support pressuzized transfer.
+                    * Tooltip documentation (CTRL-SHIFT) for stairs added.
+                    * Internal code cleanups.
+                    * Recipes tuned.
+                -------------------------------------------------------------------
+                [E] Added pass-through electrical furnace (experimental, see config).
+
+    - v1.0.4-b9 [F] Inserting fluids with pressurized tag only into IE piping.
+                [F] Valve redstone connector rendering does not check for
+                    "can connect redstone" but only for "can provide power".
+                [M] Valves are adapted to be detected as pipe by IE.
+
+    - v1.0.4-b8 [F] Fixed stairs rendering without smooth light (thanks rastot9).
+                [E] Added passive fluid accumulator (experimental feature, see config).
+
+    - v1.0.4-b7 [F] Fixed recipe loading issue if IE is not installed.
+                [M] Valves support IE pressurized fluid transfer.
+
+    - v1.0.4-b6 [A] Added redstone controlled fluid valve.
+                [A] Added redstone controlled analog fluid valve.
+                [M] Check valve recipe adapted (thanks majijn).
+
+    - v1.0.4-b5 [A] Horizontal steel double-T support beam with pole connections.
+                [A] Added fluid pipe check valve (straight, conducts only one way).
+                [M] Internal registration block/te handling changed.
+
+    - v1.0.4-b4 [F] Clinker/slag brick wall side cullfacing disabled to prevent
+                    texture leaks when connecting to concrete walls.
+                [F] Unused treated wood pole texture regions filled (optifine).
+                [F] Using mipped cutout format for window multi-layer model
+                    (issue #19, thanks rixmswey for reporting and details).
+                [M] Recipe tuning, added standalone recipe for all mod blocks.
+                [M] In-game CTRL-SHIFT tooltip documentation updated.
+                [M] Panzer glass block: Ambient occlusion and light opacity tuned.
+                [M] Stairs: Light opacity tuned.
+                [A] Tooltip documentation added for mod stairs.
+                [E] Horizontal steel double-T support beam (config:experimental).
+
+    - v1.0.4-b3 [A] Added thin (4x4x16) and thick (6x6x16) steel hollow poles.
+                [A] Added support head/foot components for thin and thick steel poles.
+
+    - v1.0.4-b2 [A] Added position dependent texture variation to clinker wall,
+                    slag brick wall and rebar concrete wall.
+
+    - v1.0.4-b1 [A] Crafting table: JEI integration for recipe placement added.
+                [A] Crafting table: History re-fab added, allowing to quickly select
+                    and re-craft recent recipes. Selection with arrow buttons,
+                    ingredient placement by clicking the result slot. Automatic
+                    item distribution on shift-click. Quick-move buttons.
+                [F] Crafting table textures modified to prevent optifine glitches
+                    on the edges of the legs.
+
+                -------------------------------------------------------------------
     - v1.0.3    [R] Release based on v1.0.3-b5. Release-to-release changes:
                     * Small laboratory furnace added.
                     * Extensive config options for mod packing and tuning added.

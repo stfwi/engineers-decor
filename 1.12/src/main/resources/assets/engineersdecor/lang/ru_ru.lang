@@ -56,6 +56,16 @@ tile.engineersdecor.treated_wood_pole_head.name=Прямой обработан�
 #tile.engineersdecor.treated_wood_pole_head.help=§6Wooden part fitting as foot or head of straight poles.
 tile.engineersdecor.treated_wood_pole_support.name=Прямой обработанный деревянный столб
 #tile.engineersdecor.treated_wood_pole_support.help=§6Heavy duty wooden support part fitting as foot or head of straight poles.
+tile.engineersdecor.thick_steel_pole.name=Straight thick steel pole
+#tile.engineersdecor.thick_steel_pole.help=§6Straight hollow pole fragment (6x6x16) for structural support purposes.
+tile.engineersdecor.thin_steel_pole.name=Straight thin steel pole
+#tile.engineersdecor.thin_steel_pole.help=§6Straight hollow pole fragment (4x4x16) for structural support purposes.
+tile.engineersdecor.thin_steel_pole_head.name=Straight thin steel pole head/foot
+#tile.engineersdecor.thin_steel_pole_head.help=§6Steel part fitting as foot or head of the thin steel pole (4x4x16).
+tile.engineersdecor.thick_steel_pole_head.name=Straight thick steel pole head/foot
+#tile.engineersdecor.thick_steel_pole_head.help=§6Steel part fitting as foot or head of the thick steel pole (6x6x16).
+tile.engineersdecor.steel_double_t_support.name=Steel double T support
+#tile.engineersdecor.steel_double_t_support.help=§6Horizontal ceiling support bream fragment.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.treated_wood_table.name=Стол из обработанного дерева
 tile.engineersdecor.treated_wood_table.help=§6Прочный деревянный стол с четырьмя ножками .§r Для использования в помещении и на улице.
@@ -76,6 +86,28 @@ tile.engineersdecor.steel_framed_window.name=Окно со стальной ра
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.small_lab_furnace.name=Компактная лабораторная печь
 tile.engineersdecor.small_lab_furnace.help=§6Лабораторная печь в металлическом корпусе.§r Подача твёрдого топлива - сверху. Немного горячее чем каменная, поэтому быстрее. Два внутренних слота для ввода, выхода и топлива.
+tile.engineersdecor.small_electrical_furnace.name=Small electrical furnace
+#tile.engineersdecor.small_electrical_furnace.help=§6Small metal cased pass-through furnace.§r \
+                                           Automatically draws items from the input side and puts items into the inventory at the output side. \
+                                           Items can be inserted or drawn from all sides using hoppers. Implicitly bypasses items that cannot be \
+                                           smelted or cooked to the output. Slightly more energy efficient and faster than a heated cobblestone \
+                                           furnace. Fifos and feeders transfer whole stacks. Feeders require a bit of power.
+#-----------------------------------------------------------------------------------------------------------
+tile.engineersdecor.straight_pipe_valve.name=Straight fluid valve
+#tile.engineersdecor.straight_pipe_valve.help=§6Straight fluid pipe fragment.§r Conducts fluids only in one direction. \
+                                             Does not connect to the sides. Reduces flow rate. Sneak to place in reverse direction.
+tile.engineersdecor.straight_pipe_valve_redstone.name=Redstone controlled fluid valve
+#tile.engineersdecor.straight_pipe_valve_redstone.help=§6Straight fluid pipe fragment.§r Conducts fluids only in one direction. \
+                                                      Does not connect to the sides. Sneak to place in reverse direction. \
+                                                      Blocks if not redstone powered.
+tile.engineersdecor.straight_pipe_valve_redstone_analog.name=Redstone analog fluid valve
+#tile.engineersdecor.straight_pipe_valve_redstone_analog.help=§6Straight fluid pipe fragment.§r Conducts fluids only in one direction. \
+                                                      Does not connect to the sides. Sneak to place in reverse direction. \
+                                                      Blocks if not redstone powered, reduces the flow rate linear from power 1 to 14, \
+                                                      opens to maximum possible valve flow rate for power 15.
+tile.engineersdecor.passive_fluid_accumulator.name=Passive fluid accumulator
+#tile.engineersdecor.passive_fluid_accumulator.help=§6Vacuum suction based fluid collector.§r Has one output, all other sides are input. \
+                                                   Drains fluids from adjacent tanks when being drained from the output port by a pump.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.sign_decor.name=Sign plate (Engineer's decor logo)
 #tile.engineersdecor.sign_decor.help=§6This should not be craftable or visible in JEI. Used for creative tab and screenshots.

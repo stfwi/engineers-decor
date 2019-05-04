@@ -8,11 +8,10 @@
  */
 package wile.engineersdecor;
 
-import wile.engineersdecor.detail.ModConfig;
-import wile.engineersdecor.detail.ExtItems;
-import wile.engineersdecor.detail.Networking;
-import wile.engineersdecor.detail.RecipeCondModSpecific;
+import net.minecraft.item.crafting.IRecipe;
+import wile.engineersdecor.detail.*;
 import wile.engineersdecor.blocks.*;
+import wile.engineersdecor.items.*;
 import net.minecraft.world.World;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -39,6 +38,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
+
 import javax.annotation.Nonnull;
 
 
@@ -126,12 +126,16 @@ public class ModEngineersDecor
 
     @SubscribeEvent
     public static void registerItems(final RegistryEvent.Register<Item> event)
-    { ModBlocks.registerItemBlocks(event); }
+    { ModBlocks.registerItemBlocks(event); ModItems.registerItems(event); }
+
+    @SubscribeEvent
+    public static void registerRecipes(RegistryEvent.Register<IRecipe> event)
+    { ModRecipes.registerRecipes(event); }
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public static void registerModels(final ModelRegistryEvent event)
-    { ModBlocks.initModels(); }
+    { ModBlocks.initModels(); ModItems.initModels(); }
   }
 
   public static final CreativeTabs CREATIVE_TAB_ENGINEERSDECOR = (new CreativeTabs("tabengineersdecor") {
@@ -149,6 +153,7 @@ public class ModEngineersDecor
   {
     public static final int GUIID_CRAFTING_TABLE = 213101;
     public static final int GUIID_SMALL_LAB_FURNACE = 213102;
+    public static final int GUIID_ELECTRICAL_LAB_FURNACE = 213103;
 
     @Override
     public Object getServerGuiElement(final int guiid, final EntityPlayer player, final World world, int x, int y, int z)
@@ -158,6 +163,7 @@ public class ModEngineersDecor
       switch(guiid) {
         case GUIID_CRAFTING_TABLE: return BlockDecorCraftingTable.getServerGuiElement(player, world, pos, te);
         case GUIID_SMALL_LAB_FURNACE: return BlockDecorFurnace.getServerGuiElement(player, world, pos, te);
+        case GUIID_ELECTRICAL_LAB_FURNACE: return BlockDecorFurnaceElectrical.getServerGuiElement(player, world, pos, te);
       }
       return null;
     }
@@ -171,6 +177,7 @@ public class ModEngineersDecor
       switch(guiid) {
         case GUIID_CRAFTING_TABLE: return BlockDecorCraftingTable.getClientGuiElement(player, world, pos, te);
         case GUIID_SMALL_LAB_FURNACE: return BlockDecorFurnace.getClientGuiElement(player, world, pos, te);
+        case GUIID_ELECTRICAL_LAB_FURNACE: return BlockDecorFurnaceElectrical.getClientGuiElement(player, world, pos, te);
       }
       return null;
     }

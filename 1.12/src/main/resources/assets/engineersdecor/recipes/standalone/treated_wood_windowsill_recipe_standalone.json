@@ -1,0 +1,26 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:treated_wood_windowsill",
+      "missing": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WWW",
+    "S S"
+  ],
+  "key": {
+    "W": {
+      "item": "#slabWood"
+    },
+    "S": {
+      "item": "engineersdecor:treated_wood_pole"
+    }
+  },
+  "result": {
+    "item": "engineersdecor:treated_wood_windowsill",
+    "count": 4
+  }
+}

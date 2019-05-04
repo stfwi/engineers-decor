@@ -8,7 +8,6 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.block.SoundType;
 import wile.engineersdecor.detail.ModAuxiliaries;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.BlockDirectional;
@@ -16,9 +15,11 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.SoundType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.world.World;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.EnumFacing;
@@ -67,12 +68,14 @@ public class BlockDecorDirected extends BlockDecor
   { return false; }
 
   @Override
-  @SuppressWarnings("deprecation")
+  public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos)
+  { return (int)((config & CFG_LIGHT_VALUE_MASK) >> CFG_LIGHT_VALUE_SHIFT); }
+
+  @Override
   public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face)
   { return BlockFaceShape.UNDEFINED; }
 
   @Override
-  @SuppressWarnings("deprecation")
   public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
   { return AABBs.get(((EnumFacing)state.getValue(FACING)).getIndex() & 0x7); }
 
@@ -102,7 +105,6 @@ public class BlockDecorDirected extends BlockDecor
   { return state.withRotation(mirrorIn.toRotation((EnumFacing)state.getValue(FACING))); }
 
   @Override
-  @SuppressWarnings("deprecation")
   public boolean canPlaceBlockOnSide(World world, BlockPos pos, EnumFacing side)
   {
     if(!super.canPlaceBlockOnSide(world, pos, side)) return false;
@@ -110,8 +112,7 @@ public class BlockDecorDirected extends BlockDecor
   }
 
   @Override
-  @SuppressWarnings("deprecation")
-  public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
+  public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
   {
     if((config & (CFG_HORIZIONTAL|CFG_LOOK_PLACEMENT)) == (CFG_HORIZIONTAL|CFG_LOOK_PLACEMENT)) {
       // horizontal placement in direction the player is looking
@@ -126,6 +127,7 @@ public class BlockDecorDirected extends BlockDecor
       // default: placement on the face the player clicking
     }
     if((config & CFG_OPPOSITE_PLACEMENT)!=0) facing = facing.getOpposite();
+    if(((config & CFG_FLIP_PLACEMENT_SHIFTCLICK) != 0) && (placer.isSneaking())) facing = facing.getOpposite();
     return getDefaultState().withProperty(FACING, facing);
   }
 }

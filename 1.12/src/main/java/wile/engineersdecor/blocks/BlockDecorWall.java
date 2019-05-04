@@ -12,6 +12,7 @@ import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -41,6 +42,7 @@ public class BlockDecorWall extends BlockDecor
   public static final PropertyBool EAST = BlockWall.EAST;
   public static final PropertyBool SOUTH = BlockWall.SOUTH;
   public static final PropertyBool WEST = BlockWall.WEST;
+  public static final PropertyInteger TEXTURE_VARIANT = PropertyInteger.create("tvariant", 0, 7);
 
   private static final double d_0 = 0.0d;
   private static final double d_1 = 1.0d;
@@ -76,7 +78,6 @@ public class BlockDecorWall extends BlockDecor
   }
 
   @Override
-  @SuppressWarnings("deprecation")
   public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
   { return AABB_BY_INDEX[getAABBIndex(getActualState(state, source, pos))]; }
 
@@ -87,7 +88,6 @@ public class BlockDecorWall extends BlockDecor
 
   @Nullable
   @Override
-  @SuppressWarnings("deprecation")
   public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
   { return CLIP_AABB_BY_INDEX[getAABBIndex(getActualState(state, world, pos))]; }
 
@@ -99,22 +99,18 @@ public class BlockDecorWall extends BlockDecor
   }
 
   @Override
-  @SuppressWarnings("deprecation")
   public boolean isFullCube(IBlockState state)
   { return false; }
 
   @Override
-  @SuppressWarnings("deprecation")
   public boolean isPassable(IBlockAccess world, BlockPos pos)
   { return false; }
 
   @Override
-  @SuppressWarnings("deprecation")
   public boolean isOpaqueCube(IBlockState state)
   { return false; }
 
   @Override
-  @SuppressWarnings("deprecation")
   public boolean isNormalCube(IBlockState state)
   { return false; }
 
@@ -141,23 +137,19 @@ public class BlockDecorWall extends BlockDecor
   { return Block.isExceptBlockForAttachWithPiston(b) || (b==Blocks.BARRIER) || (b==Blocks.MELON_BLOCK) || (b==Blocks.PUMPKIN) || (b==Blocks.LIT_PUMPKIN); }
 
   @Override
-  @SuppressWarnings("deprecation")
   @SideOnly(Side.CLIENT)
   public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side)
   { return (side!=EnumFacing.DOWN) || (super.shouldSideBeRendered(blockState, blockAccess, pos, side)); }
 
   @Override
-  @SuppressWarnings("deprecation")
   public IBlockState getStateFromMeta(int meta)
   { return getDefaultState(); }
 
   @Override
-  @SuppressWarnings("deprecation")
   public int getMetaFromState(IBlockState state)
   { return 0; }
 
   @Override
-  @SuppressWarnings("deprecation")
   public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
   {
     boolean n = canWallConnectTo(world, pos, EnumFacing.NORTH);
@@ -165,15 +157,15 @@ public class BlockDecorWall extends BlockDecor
     boolean s = canWallConnectTo(world, pos, EnumFacing.SOUTH);
     boolean w = canWallConnectTo(world, pos, EnumFacing.WEST);
     boolean nopole = (n && s && !e && !w) || (!n && !s && e && w);
-    return state.withProperty(UP,!nopole).withProperty(NORTH, n).withProperty(EAST, e).withProperty(SOUTH, s).withProperty(WEST, w);
+    long prnd = pos.toLong(); prnd = (prnd>>29) ^ (prnd>>17) ^ (prnd>>9) ^ (prnd>>4) ^ pos.getX() ^ pos.getY() ^ pos.getZ();
+    return state.withProperty(UP,!nopole).withProperty(NORTH, n).withProperty(EAST, e).withProperty(SOUTH, s).withProperty(WEST, w).withProperty(TEXTURE_VARIANT, ((int)prnd) & 0x7);
   }
 
   @Override
   protected BlockStateContainer createBlockState()
-  { return new BlockStateContainer(this, new IProperty[] {UP, NORTH, EAST, WEST, SOUTH}); }
+  { return new BlockStateContainer(this, new IProperty[] {UP, NORTH, EAST, WEST, SOUTH, TEXTURE_VARIANT}); }
 
   @Override
-  @SuppressWarnings("deprecation")
   public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face)
   { return (face==EnumFacing.UP) ? (BlockFaceShape.SOLID) : ((face!=EnumFacing.DOWN) ? (BlockFaceShape.MIDDLE_POLE_THICK) : (BlockFaceShape.CENTER_BIG)); }
 

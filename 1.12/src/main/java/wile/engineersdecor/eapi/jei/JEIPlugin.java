@@ -8,12 +8,13 @@
  */
 package wile.engineersdecor.eapi.jei;
 
+import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.blocks.BlockDecorCraftingTable;
+import wile.engineersdecor.blocks.ModBlocks;
+import wile.engineersdecor.detail.ModConfig;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.blocks.ModBlocks;
-import wile.engineersdecor.detail.ModConfig;
 
 @mezz.jei.api.JEIPlugin
 public class JEIPlugin implements mezz.jei.api.IModPlugin
@@ -22,6 +23,7 @@ public class JEIPlugin implements mezz.jei.api.IModPlugin
   @SuppressWarnings("deprecation")
   public void register(mezz.jei.api.IModRegistry registry)
   {
+    // Block/item hiding
     try {
       for(Block e:ModBlocks.getRegisteredBlocks()) {
         if(ModConfig.isOptedOut(e)) {
@@ -37,7 +39,20 @@ public class JEIPlugin implements mezz.jei.api.IModPlugin
         }
       }
     } catch(Throwable e) {
-      ModEngineersDecor.logger.warn("Exception in JEI opt-out processing: '" + e.getMessage() + "', skipping further JEI processing.");
+      ModEngineersDecor.logger.warn("Exception in JEI opt-out processing: '" + e.getMessage() + "', skipping further JEI optout processing.");
+    }
+    // Crafting table registration
+    if(!ModConfig.optout.without_crafting_table) {
+      try {
+        mezz.jei.api.recipe.transfer.IRecipeTransferRegistry recipeTranferRegistry = registry.getRecipeTransferRegistry();
+        recipeTranferRegistry.addRecipeTransferHandler(
+          BlockDecorCraftingTable.BContainer.class,
+          mezz.jei.api.recipe.VanillaRecipeCategoryUid.CRAFTING,
+          1, 9, 10, 44
+        );
+      } catch(Throwable e) {
+        ModEngineersDecor.logger.warn("Exception in JEI crafting table handler registration: '" + e.getMessage() + "'.");
+      }
     }
   }
 }

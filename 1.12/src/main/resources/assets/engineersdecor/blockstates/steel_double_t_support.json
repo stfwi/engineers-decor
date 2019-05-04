@@ -1,0 +1,28 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "engineersdecor:hsupport/steel_double_t_support_model",
+    "textures": {
+      "particle": "engineersdecor:blocks/hsupport/steel_double_t_support_side_texture",
+      "side": "engineersdecor:blocks/hsupport/steel_double_t_support_side_texture",
+      "top": "engineersdecor:blocks/hsupport/steel_double_t_support_top_texture",
+      "end": "engineersdecor:blocks/hsupport/steel_double_t_support_end_texture"
+    }
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "eastwest": { "false":{"y":0}, "true": {"y":90}},
+    "rightbeam": { "false":{}, "true": {
+      "submodel": {"rsteelsupport": { "model": "engineersdecor:hsupport/steel_double_t_support_xconnect_model", "y":   0 }}
+    }},
+    "leftbeam": { "false":{}, "true": {
+      "submodel": {"lsteelsupport": { "model": "engineersdecor:hsupport/steel_double_t_support_xconnect_model", "y": 180 }}
+    }},
+    "downconnect": {
+      "0": {},
+      "1": { "submodel": {"dthinpole": { "model": "engineersdecor:hsupport/steel_double_t_support_xconnect_thin_pole_model"}} },
+      "2": { "submodel": {"dthickpole": { "model": "engineersdecor:hsupport/steel_double_t_support_xconnect_thick_pole_model"}} }
+    }
+  }
+}

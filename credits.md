@@ -22,3 +22,10 @@ IE components used in this mod:
     reported bailouts if IE is not installed, local path in the mod is
     "engineersdecor:blocks/iestyle/stone_decoration_concrete_by_blusunrize",
     used in block "engineersdecor:concrete_wall".
+
+  - immersiveengineering:textures/block/metal_device1_fluid_pipe.png (for
+    valves).
+
+Source codes derived (inspected e.g. for trouble shooting and learning how things work):
+
+  - Ore dict based recipe registration from blusunrize.immersiveengineering.common.IERecipes.

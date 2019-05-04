@@ -2,8 +2,8 @@
 	"parent": "block/block",
 	"ambientocclusion": false,
 	"textures": {
-		"wall": "engineersdecor:blocks/slag_brick/slag_brick_wall",
-		"particle": "engineersdecor:blocks/slag_brick/slag_brick_wall",
+		"wall": "engineersdecor:blocks/slag_brick/slag_brick_wall0",
+		"particle": "engineersdecor:blocks/slag_brick/slag_brick_wall0",
 		"top": "engineersdecor:blocks/slag_brick/slag_brick_top"
 	},
 	"elements": [

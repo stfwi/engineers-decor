@@ -1,6 +1,16 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.12.2": {
+    "1.0.4": "[R] Release based on v1.0.3-b9. Release-to-release changes: * Crafting table: Quick crafting history re-fab, JEI integration. * Rendering improvements and issue fixes (stairs, ambient occlusion, optifine, etc). * Walls with texture variations. * Thin/thick steel poles with support feet/heads. * Horizontal steel double-T support beams added. * Fluid pipe valves added: Check valve, redstone controlled valve, analog redstone controlled valve. Support pressuzized transfer. * Tooltip documentation (CTRL-SHIFT) for stairs added. * Internal code cleanups. * Recipes tuned.\n[E] Added pass-through electrical furnace (experimental, see config).",
+    "1.0.4-b9": "[F] Inserting fluids with pressurized tag only into IE piping.\n[F] Valve redstone connector rendering does not check for \"can connect redstone\" but only for \"can provide power\".\n[M] Valves are adapted to be detected as pipe by IE.",
+    "1.0.4-b8": "[F] Fixed stairs rendering without smooth light (thanks rastot9).\n[E] Added passive fluid accumulator (experimental feature, see config).",
+    "1.0.4-b7": "[F] Fixed recipe loading issue if IE is not installed.\n[M] Valves support IE pressurized fluid transfer.",
+    "1.0.4-b6": "[A] Added redstone controlled fluid valve.\n[A] Added redstone controlled analog fluid valve.\n[M] Check valve recipe adapted (thanks majijn).",
+    "1.0.4-b5": "[A] Horizontal steel double-T support beam with pole connections.\n[A] Added fluid pipe check valve (straight, conducts only one way).\n[M] Internal registration block/te handling changed.",
+    "1.0.4-b4": "[F] Clinker/slag brick wall side cullfacing disabled to prevent texture leaks when connecting to concrete walls.\n[F] Unused treated wood pole texture regions filled (optifine).\n[F] Using mipped cutout format for window multi-layer model (issue #19, thanks rixmswey for reporting and details).\n[M] Recipe tuning, added standalone recipe for all mod blocks.\n[M] In-game CTRL-SHIFT tooltip documentation updated.\n[M] Panzer glass block: Ambient occlusion and light opacity tuned.\n[M] Stairs: Light opacity tuned.\n[A] Tooltip documentation added for mod stairs.\n[E] Horizontal steel double-T support beam (config:experimental).",
+    "1.0.4-b3": "[A] Added thin (4x4x16) and thick (6x6x16) steel hollow poles.\n[A] Added support head/foot components for thin and thick steel poles.",
+    "1.0.4-b2": "[A] Added position dependent texture variation to clinker wall, slag brick wall and rebar concrete wall.",
+    "1.0.4-b1": "[A] Crafting table: JEI integration for recipe placement added.\n[A] Crafting table: History re-fab added, allowing to quickly select and re-craft recent recipes. Selection with arrow buttons, ingredient placement by clicking the result slot. Automatic item distribution on shift-click. Quick-move buttons.\n[F] Crafting table textures modified to prevent optifine glitches on the edges of the legs.",
     "1.0.3": "[R] Release based on v1.0.3-b5. Release-to-release changes: * Small laboratory furnace added. * Extensive config options for mod packing and tuning added. * Rendering issues fixes (window bleeding, optifine). * Steel framed window added. * Treated wood pole \"end pieces\" added (two support variants). * Sitting on treated wood stool added including mobs (but not villagers, as these are obviously very upright people). * Lang ru_ru added (github contribution from Yaroslavik). * Creative tab logo changed to mod logo. * Table/crafting table bounding boxes refined. * Standalone \"escape\" recipes added if IE is not installed.",
     "1.0.3-b5": "[F] Fixed typo in en-en lang file.\n[F] Fixed IE concrete texture missing bailout in log if IE is not installed.\n[F] Using forge multi-layer models for windows to circumvent glitches.\n[M] Changed creative tab logo to the mod logo.\n[A] Added alternative recipes for crafting table and furnace if main IE ingredients are missing (for \"stand-alone\" mod usage).",
     "1.0.3-b4": "[A] Lab furnace supports electrical speedup when a IE external is placed in one of the two auxiliary slots.\n[F] Fixed window rendering issue (issue #15, thanks to ILLOMIURGE).\n[M] Updated ru_ru lang file (Yaroslavik).",
@@ -23,7 +33,7 @@
     "1.0.0-b1": "[A] Initial structure.\n[A] Added clinker bricks and clinker brick stairs.\n[A] Added slag bricks and slag brick stairs.\n[A] Added metal rung ladder.\n[A] Added staggered metal steps ladder.\n[A] Added treated wood ladder.\n[A] Added treated wood pole.\n[A] Added treated wood table."
   },
   "promos": {
-    "1.12.2-recommended": "1.0.3",
-    "1.12.2-latest": "1.0.3"
+    "1.12.2-recommended": "1.0.4",
+    "1.12.2-latest": "1.0.4"
   }
 }

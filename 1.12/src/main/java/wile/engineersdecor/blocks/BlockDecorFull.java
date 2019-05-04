@@ -23,10 +23,7 @@ import javax.annotation.Nullable;
 public class BlockDecorFull extends BlockDecor
 {
   public BlockDecorFull(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound)
-  {
-    super(registryName, config, material, hardness, resistance, sound);
-    setLightOpacity(255);
-  }
+  { super(registryName, config, material, hardness, resistance, sound); }
 
   @Override
   public boolean isOpaqueCube(IBlockState state)

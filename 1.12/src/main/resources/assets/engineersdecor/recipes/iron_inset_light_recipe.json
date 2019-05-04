@@ -2,12 +2,12 @@
   "conditions": [
     {
       "type": "engineersdecor:grc",
-      "result": "engineersdecor:iron_inset_light"
+      "result": "engineersdecor:iron_inset_light",
+      "required": ["immersiveengineering:material"]
     }
   ],
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "   ",
     "GGG",
     "PLP"
   ],

@@ -1,0 +1,25 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:straight_pipe_valve",
+      "required": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PMP"
+  ],
+  "key": {
+    "P": {
+      "item": "#itemFluidPipe"
+    },
+    "M": {
+      "item": "#anyMechanicalComponent"
+    }
+  },
+  "result": {
+    "item": "engineersdecor:straight_pipe_valve",
+    "count": 3
+  }
+}

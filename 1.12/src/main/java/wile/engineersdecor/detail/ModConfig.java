@@ -14,11 +14,11 @@ import wile.engineersdecor.blocks.*;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-
 import javax.annotation.Nullable;
 
 @Config(modid = ModEngineersDecor.MODID)
@@ -107,6 +107,9 @@ public class ModConfig
     @Config.Name("Without ladder speed boost")
     public boolean without_ladder_speed_boost = false;
 
+    @Config.Comment({"Disable history refabrication feature of the treated wood crafting table."})
+    @Config.Name("Without crafting table history")
+    public boolean without_crafting_table_history = false;
   }
 
   @Config.Comment({
@@ -192,6 +195,51 @@ public class ModConfig
     @Config.Name("Chairs: Stand up chance %")
     @Config.RangeDouble(min=0.001, max=10)
     public double chair_mob_standup_probability_percent = 1;
+
+    @Config.Comment({"Enables small quick-move arrows from/to player/block storage. " +
+      "Makes the UI a bit too busy, therefore disabled by default."
+    })
+    @Config.Name("Crafting table: Move buttons")
+    public boolean with_crafting_quickmove_buttons = false;
+
+    @Config.Comment({
+      "Defines how many millibuckets can be transferred (per tick) through the valves. " +
+      "That is technically the 'storage size' specified for blocks that want to fill " +
+      "fluids into the valve (the valve has no container and forward that to the output " +
+      "block), The value can be changed on-the-fly for tuning. "
+    })
+    @Config.Name("Valves: Max flow rate")
+    @Config.RangeInt(min=1, max=10000)
+    public int pipevalve_max_flowrate = 1000;
+
+    @Config.Comment({
+      "Defines how many millibuckets per redstone signal strength can be transferred per tick " +
+      "through the analog redstone controlled valves. Note: power 0 is always off, power 15 is always " +
+      "the max flow rate. Between power 1 and 14 this scaler will result in a flow = 'redstone slope' * 'current redstone power'. " +
+      "The value can be changed on-the-fly for tuning. "
+    })
+    @Config.Name("Valves: Redstone slope")
+    @Config.RangeInt(min=1, max=10000)
+    public int pipevalve_redstone_slope = 20;
+
+    @Config.Comment({
+      "Defines, in percent, how fast the electrical furnace smelts compared to " +
+      "a vanilla furnace. 100% means vanilla furnace speed, 150% means the " +
+      "electrical furnace is faster. The value can be changed on-the-fly for tuning."
+    })
+    @Config.Name("E-furnace: Smelting speed %")
+    @Config.RangeInt(min=50, max=500)
+    public int e_furnace_speed_percent = BlockDecorFurnaceElectrical.BTileEntity.DEFAULT_SPEED_PERCENT;
+
+    @Config.Comment({
+      "Defines how much RF per tick the the electrical furnace consumed (average) for smelting. " +
+      "The feeders transferring items from/to adjacent have this consumption/8 for each stack transaction. " +
+      "The default value is only slightly higher than a furnace with an IE external heater (and no burning fuel inside)." +
+      "The config value can be changed on-the-fly for tuning."
+    })
+    @Config.Name("E-furnace: Power consumption")
+    @Config.RangeInt(min=10, max=256)
+    public int e_furnace_power_consumption = BlockDecorFurnaceElectrical.BTileEntity.DEFAULT_ENERGY_CONSUMPTION;
   }
 
   @SuppressWarnings("unused")
@@ -220,6 +268,7 @@ public class ModConfig
   {
     if((block == null) || (optout==null)) return true;
     if(block == ModBlocks.SIGN_MODLOGO) return true;
+    if((!zmisc.with_experimental) && (block instanceof ModAuxiliaries.IExperimentalFeature)) return true;
     final String rn = block.getRegistryName().getPath();
     if(optout.without_clinker_bricks && rn.startsWith("clinker_brick_")) return true;
     if(optout.without_slag_bricks && rn.startsWith("slag_brick_")) return true;
@@ -244,6 +293,12 @@ public class ModConfig
     return false;
   }
 
+  public static final boolean isOptedOut(final @Nullable Item item)
+  {
+    if((item == null) || (optout == null)) return true;
+    return false;
+  }
+
   public static final void apply()
   {
     BlockDecorFurnace.BTileEntity.on_config(tweaks.furnace_smelting_speed_percent, tweaks.furnace_fuel_efficiency_percent, tweaks.furnace_boost_energy_consumption);
@@ -251,7 +306,9 @@ public class ModConfig
     if(tweaks.furnace_smelts_nuggets) ModRecipes.furnaceRecipeOverrideSmeltsOresToNuggets();
     BlockDecorChair.on_config(optout.without_chair_sitting, optout.without_mob_chair_sitting, tweaks.chair_mob_sitting_probability_percent, tweaks.chair_mob_standup_probability_percent);
     BlockDecorLadder.on_config(optout.without_ladder_speed_boost);
-    BlockDecorCraftingTable.on_config(!zmisc.with_experimental);
+    BlockDecorCraftingTable.on_config(optout.without_crafting_table_history, false, tweaks.with_crafting_quickmove_buttons);
+    BlockDecorPipeValve.on_config(tweaks.pipevalve_max_flowrate, tweaks.pipevalve_redstone_slope);
+    BlockDecorFurnaceElectrical.BTileEntity.on_config(tweaks.e_furnace_speed_percent, tweaks.e_furnace_power_consumption);
   }
 
 }

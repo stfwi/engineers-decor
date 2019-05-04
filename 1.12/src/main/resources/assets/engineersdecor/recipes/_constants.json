@@ -20,8 +20,16 @@
     "name": "ingotIron"
   },
   {
+    "ingredient": { "type": "forge:ore_dict", "ore": "blockIron" },
+    "name": "blockIron"
+  },
+  {
     "ingredient": { "type": "forge:ore_dict", "ore": "plateIron" },
     "name": "plateIron"
+  },
+  {
+    "ingredient": { "type": "forge:ore_dict", "ore": "ingotSteel" },
+    "name": "ingotSteel"
   },
   {
     "ingredient": { "type": "forge:ore_dict", "ore": "plateSteel" },
@@ -46,6 +54,10 @@
   {
     "ingredient": { "type": "forge:ore_dict", "ore": "plankWood" },
     "name": "plankWood"
+  },
+  {
+    "ingredient": { "type": "forge:ore_dict", "ore": "slabWood" },
+    "name": "slabWood"
   },
   {
     "ingredient": { "type": "forge:ore_dict", "ore": "stickWood" },
@@ -95,6 +107,37 @@
     "name": "plateAnyMetal"
   },
   {
+    "conditions": [
+      { "type": "minecraft:item_exists", "item": "immersiveengineering:material" }
+    ],
+    "ingredient": [
+      { "item": "immersiveengineering:material", "data": 8 },
+      { "item": "immersiveengineering:material", "data": 9 }
+    ],
+    "name": "anyMechanicalComponent"
+  },
+  {
+    "conditions": [
+      { "type": "minecraft:item_exists", "item": "immersiveengineering:connector" }
+    ],
+    "ingredient": [
+      { "item": "immersiveengineering:connector", "data": 12 },
+      { "item": "immersiveengineering:connector", "data": 13 }
+    ],
+    "name": "anyDirectedRedstoneConnector"
+  },
+  {
+    "conditions": [
+      { "type": "minecraft:item_exists", "item": "immersiveengineering:connector" }
+    ],
+    "ingredient": [
+      { "item": "immersiveengineering:connector", "data": 0 },
+      { "item": "immersiveengineering:connector", "data": 2 },
+      { "item": "immersiveengineering:connector", "data": 4 }
+    ],
+    "name": "electricalConnector"
+  },
+  {
     "ingredient": [
       { "type": "forge:ore_dict", "ore": "ingotBrick"       },
       { "type": "forge:ore_dict", "ore": "ingotBrickNether" }
@@ -116,6 +159,10 @@
   {
     "ingredient": { "type": "forge:ore_dict", "ore": "blockGlass" },
     "name": "blockGlass"
+  },
+  {
+    "ingredient": { "type": "forge:ore_dict", "ore": "dustRedstone" },
+    "name": "dustRedstone"
   },
   {
     "ingredient": { "item": "minecraft:diamond", "data": 0 },
@@ -149,6 +196,13 @@
     ],
     "ingredient": { "item": "immersiveengineering:wooden_device0", "data": 0 },
     "name": "crateTreatedWood"
+  },
+  {
+    "conditions": [
+      { "type": "minecraft:item_exists", "item": "immersiveengineering:metal_device1" }
+    ],
+    "ingredient": { "item": "immersiveengineering:metal_device1", "data": 6 },
+    "name": "itemFluidPipe"
   },
   {
     "conditions": [

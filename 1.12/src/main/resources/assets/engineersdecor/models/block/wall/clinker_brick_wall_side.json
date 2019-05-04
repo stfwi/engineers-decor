@@ -1,7 +1,7 @@
 {
 	"credit": "I made this with the Blockbench",
 	"textures": {
-		"wall": "engineersdecor:blocks/clinker_brick/clinker_brick_wall",
+		"wall": "engineersdecor:blocks/clinker_brick/clinker_brick_wall0",
 		"top": "engineersdecor:blocks/clinker_brick/clinker_brick_top",
 		"particle": "engineersdecor:blocks/clinker_brick/clinker_brick_top"
 	},
@@ -10,7 +10,7 @@
 			"from": [4.125, 0, 0],
 			"to": [11.875, 15.98, 8],
 			"faces": {
-				"north": {"texture": "#wall", "cullface": "north"},
+				"north": {"texture": "#wall"},
 				"east": {"texture": "#wall"},
 				"west": {"texture": "#wall"},
 				"up": {"texture": "#top"},

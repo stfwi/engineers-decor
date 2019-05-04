@@ -8,9 +8,9 @@
   ],
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " S ",
-    " W ",
-    " W "
+    "S",
+    "W",
+    "W"
   ],
   "key": {
     "W": {

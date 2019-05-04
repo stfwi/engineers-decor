@@ -1,0 +1,10 @@
+{
+  "forge_marker": 1,
+  "defaults": { "model": "engineersdecor:pipe/straight_pipe_valve_model" },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "facing": { "north":{"y":0}, "south":{"y":180}, "west":{"y":270}, "east":{"y":90}, "up": {"x":-90}, "down": {"x":90} },
+    "rsdir": { "0":{},"1":{},"2":{},"3":{},"4":{} }
+  }
+}

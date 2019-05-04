@@ -1,0 +1,25 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:metal_rung_ladder",
+      "missing": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "S S",
+    "SSS",
+    "   "
+  ],
+  "key": {
+    "S": {
+      "item": "#ingotIron",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:metal_rung_ladder",
+    "count": 4
+  }
+}

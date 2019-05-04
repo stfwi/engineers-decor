@@ -1,0 +1,32 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:iron_inset_light",
+      "missing": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GGG",
+    "PLP"
+  ],
+  "key": {
+    "P": {
+      "item": "#ingotIron",
+      "data": 0
+    },
+    "L": {
+      "item": "#luminescentBlock",
+      "data": 0
+    },
+    "G": {
+      "item": "#paneGlass",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:iron_inset_light",
+    "count": 8
+  }
+}

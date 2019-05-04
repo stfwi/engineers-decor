@@ -8,6 +8,7 @@
  */
 package wile.engineersdecor.detail;
 
+import net.minecraft.entity.player.EntityPlayer;
 import wile.engineersdecor.ModEngineersDecor;
 import net.minecraft.world.World;
 import net.minecraft.item.ItemStack;
@@ -144,4 +145,14 @@ public class ModAuxiliaries
     }
     return bb;
   }
+
+  @SuppressWarnings("unused")
+  public static void playerChatMessage(EntityPlayer player, final String message)
+  {
+    String s = message.trim();
+    if(!s.isEmpty()) player.sendMessage(new TextComponentTranslation(s));
+  }
+
+  @SuppressWarnings("unused")
+  public interface IExperimentalFeature{}
 }
