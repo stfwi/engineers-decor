@@ -221,6 +221,25 @@ public class ModConfig
     @Config.Name("Valves: Redstone slope")
     @Config.RangeInt(min=1, max=10000)
     public int pipevalve_redstone_slope = 20;
+
+    @Config.Comment({
+      "Defines, in percent, how fast the electrical furnace smelts compared to " +
+      "a vanilla furnace. 100% means vanilla furnace speed, 150% means the " +
+      "electrical furnace is faster. The value can be changed on-the-fly for tuning."
+    })
+    @Config.Name("E-furnace: Smelting speed %")
+    @Config.RangeInt(min=50, max=500)
+    public int e_furnace_speed_percent = BlockDecorFurnaceElectrical.BTileEntity.DEFAULT_SPEED_PERCENT;
+
+    @Config.Comment({
+      "Defines how much RF per tick the the electrical furnace consumed (average) for smelting. " +
+      "The feeders transferring items from/to adjacent have this consumption/8 for each stack transaction. " +
+      "The default value is only slightly higher than a furnace with an IE external heater (and no burning fuel inside)." +
+      "The config value can be changed on-the-fly for tuning."
+    })
+    @Config.Name("E-furnace: Power consumption")
+    @Config.RangeInt(min=10, max=256)
+    public int e_furnace_power_consumption = BlockDecorFurnaceElectrical.BTileEntity.DEFAULT_ENERGY_CONSUMPTION;
   }
 
   @SuppressWarnings("unused")
@@ -289,6 +308,7 @@ public class ModConfig
     BlockDecorLadder.on_config(optout.without_ladder_speed_boost);
     BlockDecorCraftingTable.on_config(optout.without_crafting_table_history, false, tweaks.with_crafting_quickmove_buttons);
     BlockDecorPipeValve.on_config(tweaks.pipevalve_max_flowrate, tweaks.pipevalve_redstone_slope);
+    BlockDecorFurnaceElectrical.BTileEntity.on_config(tweaks.e_furnace_speed_percent, tweaks.e_furnace_power_consumption);
   }
 
 }

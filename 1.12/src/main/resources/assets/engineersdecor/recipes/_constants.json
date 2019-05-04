@@ -127,6 +127,17 @@
     "name": "anyDirectedRedstoneConnector"
   },
   {
+    "conditions": [
+      { "type": "minecraft:item_exists", "item": "immersiveengineering:connector" }
+    ],
+    "ingredient": [
+      { "item": "immersiveengineering:connector", "data": 0 },
+      { "item": "immersiveengineering:connector", "data": 2 },
+      { "item": "immersiveengineering:connector", "data": 4 }
+    ],
+    "name": "electricalConnector"
+  },
+  {
     "ingredient": [
       { "type": "forge:ore_dict", "ore": "ingotBrick"       },
       { "type": "forge:ore_dict", "ore": "ingotBrickNether" }

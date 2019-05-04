@@ -163,21 +163,28 @@ public class ModBlocks
   public static final BlockDecorFurnace SMALL_LAB_FURNACE = new BlockDecorFurnace(
     "small_lab_furnace",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
-    Material.IRON, 1.0f, 15f, SoundType.METAL,
-    ModAuxiliaries.getPixeledAABB(1,0,1, 15,15,16.0)
+    Material.IRON, 0.35f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(1,0,1, 15,15,16)
+  );
+
+  public static final BlockDecorFurnaceElectrical SMALL_ELECTRICAL_FURNACE = new BlockDecorFurnaceElectrical(
+    "small_electrical_furnace",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
+    Material.IRON, 0.35f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   );
 
   public static final BlockDecorDirected SIGN_MODLOGO = new BlockDecorDirected(
     "sign_decor",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
     Material.WOOD, 0.1f, 1000f, SoundType.WOOD,
-    ModAuxiliaries.getPixeledAABB(0,0,15.6, 16,16,16.0)
+    ModAuxiliaries.getPixeledAABB(0,0,15.6, 16,16,16)
   );
 
   public static final BlockDecorHorizontalSupport STEEL_DOUBLE_T_SUPPORT = new BlockDecorHorizontalSupport(
     "steel_double_t_support",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
-    Material.IRON, 1.0f, 15f, SoundType.METAL,
+    Material.IRON, 0.5f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(5,11,0, 11,16,16)
   );
 
@@ -185,7 +192,7 @@ public class ModBlocks
     "straight_pipe_valve",
     BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
     BlockDecor.CFG_CUTOUT,
-    Material.IRON, 0.5f, 15f, SoundType.METAL,
+    Material.IRON, 0.35f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
   );
 
@@ -193,7 +200,7 @@ public class ModBlocks
     "straight_pipe_valve_redstone",
     BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_REDSTONE_CONTROLLED,
-    Material.IRON, 0.5f, 15f, SoundType.METAL,
+    Material.IRON, 0.35f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
   );
 
@@ -201,7 +208,7 @@ public class ModBlocks
     "straight_pipe_valve_redstone_analog",
     BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_REDSTONE_CONTROLLED|BlockDecor.CFG_ANALOG,
-    Material.IRON, 0.5f, 15f, SoundType.METAL,
+    Material.IRON, 0.35f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
   );
 
@@ -209,7 +216,7 @@ public class ModBlocks
     "passive_fluid_accumulator",
     BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
     BlockDecor.CFG_CUTOUT,
-    Material.IRON, 0.5f, 15f, SoundType.METAL,
+    Material.IRON, 0.35f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   );
 
@@ -229,6 +236,9 @@ public class ModBlocks
   );
   private static final TileEntityRegistrationData SMALL_LAB_FURNACE_TEI = new TileEntityRegistrationData(
     BlockDecorFurnace.BTileEntity.class, "te_small_lab_furnace"
+  );
+  private static final TileEntityRegistrationData SMALL_ELECTRICAL_FURNACE_TEI = new TileEntityRegistrationData(
+    BlockDecorFurnaceElectrical.BTileEntity.class, "te_electrical_lab_furnace"
   );
   private static final TileEntityRegistrationData STRAIGHT_PIPE_VALVE_TEI = new TileEntityRegistrationData(
     BlockDecorPipeValve.BTileEntity.class, "te_pipe_valve"
@@ -279,7 +289,8 @@ public class ModBlocks
   };
 
   private static final Object dev_content[] = {
-    PASSIVE_FLUID_ACCUMULATOR, PASSIVE_FLUID_ACCUMULATOR_TEI
+    PASSIVE_FLUID_ACCUMULATOR, PASSIVE_FLUID_ACCUMULATOR_TEI,
+    SMALL_ELECTRICAL_FURNACE, SMALL_ELECTRICAL_FURNACE_TEI
   };
 
   //--------------------------------------------------------------------------------------------------------------------

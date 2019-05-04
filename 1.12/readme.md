@@ -10,10 +10,26 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+                -------------------------------------------------------------------
+    - v1.0.4    [R] Release based on v1.0.3-b9. Release-to-release changes:
+                    * Crafting table: Quick crafting history re-fab, JEI integration.
+                    * Rendering improvements and issue fixes (stairs, ambient occlusion,
+                      optifine, etc).
+                    * Walls with texture variations.
+                    * Thin/thick steel poles with support feet/heads.
+                    * Horizontal steel double-T support beams added.
+                    * Fluid pipe valves added: Check valve, redstone controlled valve,
+                      analog redstone controlled valve. Support pressuzized transfer.
+                    * Tooltip documentation (CTRL-SHIFT) for stairs added.
+                    * Internal code cleanups.
+                    * Recipes tuned.
+                -------------------------------------------------------------------
+                [E] Added pass-through electrical furnace (experimental, see config).
+
     - v1.0.4-b9 [F] Inserting fluids with pressurized tag only into IE piping.
                 [F] Valve redstone connector rendering does not check for
                     "can connect redstone" but only for "can provide power".
-                [M] Valves are adpted to be detected as pipe by IE.
+                [M] Valves are adapted to be detected as pipe by IE.
 
     - v1.0.4-b8 [F] Fixed stairs rendering without smooth light (thanks rastot9).
                 [E] Added passive fluid accumulator (experimental feature, see config).

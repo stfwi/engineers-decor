@@ -86,6 +86,12 @@ tile.engineersdecor.steel_framed_window.name=Окно со стальной ра
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.small_lab_furnace.name=Компактная лабораторная печь
 tile.engineersdecor.small_lab_furnace.help=§6Лабораторная печь в металлическом корпусе.§r Подача твёрдого топлива - сверху. Немного горячее чем каменная, поэтому быстрее. Два внутренних слота для ввода, выхода и топлива.
+tile.engineersdecor.small_electrical_furnace.name=Small electrical furnace
+#tile.engineersdecor.small_electrical_furnace.help=§6Small metal cased pass-through furnace.§r \
+                                           Automatically draws items from the input side and puts items into the inventory at the output side. \
+                                           Items can be inserted or drawn from all sides using hoppers. Implicitly bypasses items that cannot be \
+                                           smelted or cooked to the output. Slightly more energy efficient and faster than a heated cobblestone \
+                                           furnace. Fifos and feeders transfer whole stacks. Feeders require a bit of power.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.straight_pipe_valve.name=Straight fluid valve
 #tile.engineersdecor.straight_pipe_valve.help=§6Straight fluid pipe fragment.§r Conducts fluids only in one direction. \

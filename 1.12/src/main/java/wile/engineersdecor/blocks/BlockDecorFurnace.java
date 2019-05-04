@@ -471,7 +471,7 @@ public class BlockDecorFurnace extends BlockDecorDirected
     private int proc_time_needed_;
     private int boost_energy_; // small, not saved in nbt.
     private boolean heater_inserted_ = false;
-    private NonNullList<ItemStack> stacks_;
+    protected NonNullList<ItemStack> stacks_;
 
     public static void on_config(int speed_percent, int fuel_efficiency_percent, int boost_energy_per_tick)
     {
@@ -485,7 +485,7 @@ public class BlockDecorFurnace extends BlockDecorDirected
     public BTileEntity()
     { reset(); }
 
-    public void reset()
+    protected void reset()
     {
       stacks_ = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
       proc_time_elapsed_ = 0;
@@ -507,7 +507,7 @@ public class BlockDecorFurnace extends BlockDecorDirected
       fuel_burntime_ = getItemBurnTime(stacks_.get(SMELTING_FUEL_SLOT_NO));
     }
 
-    private void writenbt(NBTTagCompound compound)
+    protected void writenbt(NBTTagCompound compound)
     {
       compound.setInteger("BurnTime", MathHelper.clamp(burntime_left_,0 , MAX_BURNTIME));
       compound.setInteger("CookTime", MathHelper.clamp(proc_time_elapsed_, 0, MAX_BURNTIME));
@@ -652,68 +652,6 @@ public class BlockDecorFurnace extends BlockDecorDirected
     public void clear()
     { stacks_.clear(); }
 
-    @Override
-    public void update()
-    {
-      if(--tick_timer_ > 0) return;
-      tick_timer_ = TICK_INTERVAL;
-      final boolean was_burning = isBurning();
-      if(was_burning) burntime_left_ -= TICK_INTERVAL;
-      if(burntime_left_ < 0) burntime_left_ = 0;
-      if(world.isRemote) return;
-      boolean dirty = false;
-      if(--fifo_timer_ <= 0) {
-        fifo_timer_ = FIFO_INTERVAL/TICK_INTERVAL;
-        // note, intentionally not using bitwise OR piping.
-        if(transferItems(FIFO_OUTPUT_0_SLOT_NO, FIFO_OUTPUT_1_SLOT_NO, 1)) dirty = true;
-        if(transferItems(SMELTING_OUTPUT_SLOT_NO, FIFO_OUTPUT_0_SLOT_NO, 1)) dirty = true;
-        if(transferItems(FIFO_FUEL_0_SLOT_NO, SMELTING_FUEL_SLOT_NO, 1)) dirty = true;
-        if(transferItems(FIFO_FUEL_1_SLOT_NO, FIFO_FUEL_0_SLOT_NO, 1)) dirty = true;
-        if(transferItems(FIFO_INPUT_0_SLOT_NO, SMELTING_INPUT_SLOT_NO, 1)) dirty = true;
-        if(transferItems(FIFO_INPUT_1_SLOT_NO, FIFO_INPUT_0_SLOT_NO, 1)) dirty = true;
-        heater_inserted_ = (ExtItems.IE_EXTERNAL_HEATER==null) // without IE always allow electrical boost
-          || (stacks_.get(AUX_0_SLOT_NO).getItem()==ExtItems.IE_EXTERNAL_HEATER)
-          || (stacks_.get(AUX_1_SLOT_NO).getItem()==ExtItems.IE_EXTERNAL_HEATER);
-      }
-      ItemStack fuel = stacks_.get(SMELTING_FUEL_SLOT_NO);
-      if(isBurning() || (!fuel.isEmpty()) && (!(stacks_.get(SMELTING_INPUT_SLOT_NO)).isEmpty())) {
-        if(!isBurning() && canSmelt()) {
-          burntime_left_ = (int)MathHelper.clamp((proc_fuel_efficiency_ * getItemBurnTime(fuel)), 0, MAX_BURNTIME);
-          fuel_burntime_ = (burntime_left_ * proc_speed_interval_) / VANILLA_FURNACE_SPEED_INTERVAL;
-          if(isBurning()) {
-            dirty = true;
-            if(!fuel.isEmpty()) {
-              Item fuel_item = fuel.getItem();
-              fuel.shrink(1);
-              if(fuel.isEmpty()) stacks_.set(SMELTING_FUEL_SLOT_NO, fuel_item.getContainerItem(fuel));
-            }
-          }
-        }
-        if(isBurning() && canSmelt()) {
-          proc_time_elapsed_ += TICK_INTERVAL;
-          if(heater_inserted_ && (boost_energy_ >= boost_energy_consumption)) { boost_energy_ = 0; proc_time_elapsed_ += TICK_INTERVAL; }
-          if(proc_time_elapsed_ >= proc_time_needed_) {
-            proc_time_elapsed_ = 0;
-            proc_time_needed_ = getCookTime(stacks_.get(SMELTING_INPUT_SLOT_NO));
-            smeltItem();
-            dirty = true;
-          }
-        } else {
-          proc_time_elapsed_ = 0;
-        }
-      } else if(!isBurning() && (proc_time_elapsed_ > 0)) {
-        proc_time_elapsed_ = MathHelper.clamp(proc_time_elapsed_-2, 0, proc_time_needed_);
-      }
-      if(was_burning != isBurning()) {
-        dirty = true;
-        final IBlockState state = world.getBlockState(pos);
-        if(state.getBlock() instanceof BlockDecorFurnace) {
-          world.setBlockState(pos, state.withProperty(LIT, isBurning()));
-        }
-      }
-      if(dirty) markDirty();
-    }
-
     public boolean isBurning()
     { return burntime_left_ > 0; }
 
@@ -754,7 +692,7 @@ public class BlockDecorFurnace extends BlockDecorDirected
       return changed;
     }
 
-    private boolean canSmelt()
+    protected boolean canSmelt()
     {
       if(stacks_.get(SMELTING_INPUT_SLOT_NO).isEmpty()) return false;
       final ItemStack recipe_result_items = BRecipes.instance().getSmeltingResult(stacks_.get(SMELTING_INPUT_SLOT_NO));
@@ -772,7 +710,6 @@ public class BlockDecorFurnace extends BlockDecorDirected
       final ItemStack smelting_input_stack = stacks_.get(SMELTING_INPUT_SLOT_NO);
       final ItemStack recipe_result_items = BRecipes.instance().getSmeltingResult(smelting_input_stack);
       final ItemStack smelting_output_stack = stacks_.get(SMELTING_OUTPUT_SLOT_NO);
-      final ItemStack fuel_stack = stacks_.get(SMELTING_FUEL_SLOT_NO);
       if(smelting_output_stack.isEmpty()) {
         stacks_.set(SMELTING_OUTPUT_SLOT_NO, recipe_result_items.copy());
       } else if(smelting_output_stack.getItem() == recipe_result_items.getItem()) {
@@ -852,6 +789,70 @@ public class BlockDecorFurnace extends BlockDecorDirected
       } else {
         return super.getCapability(capability, facing);
       }
+    }
+
+    // ITickable ------------------------------------------------------------------------------------
+
+    @Override
+    public void update()
+    {
+      if(--tick_timer_ > 0) return;
+      tick_timer_ = TICK_INTERVAL;
+      final boolean was_burning = isBurning();
+      if(was_burning) burntime_left_ -= TICK_INTERVAL;
+      if(burntime_left_ < 0) burntime_left_ = 0;
+      if(world.isRemote) return;
+      boolean dirty = false;
+      if(--fifo_timer_ <= 0) {
+        fifo_timer_ = FIFO_INTERVAL/TICK_INTERVAL;
+        // note, intentionally not using bitwise OR piping.
+        if(transferItems(FIFO_OUTPUT_0_SLOT_NO, FIFO_OUTPUT_1_SLOT_NO, 1)) dirty = true;
+        if(transferItems(SMELTING_OUTPUT_SLOT_NO, FIFO_OUTPUT_0_SLOT_NO, 1)) dirty = true;
+        if(transferItems(FIFO_FUEL_0_SLOT_NO, SMELTING_FUEL_SLOT_NO, 1)) dirty = true;
+        if(transferItems(FIFO_FUEL_1_SLOT_NO, FIFO_FUEL_0_SLOT_NO, 1)) dirty = true;
+        if(transferItems(FIFO_INPUT_0_SLOT_NO, SMELTING_INPUT_SLOT_NO, 1)) dirty = true;
+        if(transferItems(FIFO_INPUT_1_SLOT_NO, FIFO_INPUT_0_SLOT_NO, 1)) dirty = true;
+        heater_inserted_ = (ExtItems.IE_EXTERNAL_HEATER==null) // without IE always allow electrical boost
+          || (stacks_.get(AUX_0_SLOT_NO).getItem()==ExtItems.IE_EXTERNAL_HEATER)
+          || (stacks_.get(AUX_1_SLOT_NO).getItem()==ExtItems.IE_EXTERNAL_HEATER);
+      }
+      ItemStack fuel = stacks_.get(SMELTING_FUEL_SLOT_NO);
+      if(isBurning() || (!fuel.isEmpty()) && (!(stacks_.get(SMELTING_INPUT_SLOT_NO)).isEmpty())) {
+        if(!isBurning() && canSmelt()) {
+          burntime_left_ = (int)MathHelper.clamp((proc_fuel_efficiency_ * getItemBurnTime(fuel)), 0, MAX_BURNTIME);
+          fuel_burntime_ = (burntime_left_ * proc_speed_interval_) / VANILLA_FURNACE_SPEED_INTERVAL;
+          if(isBurning()) {
+            dirty = true;
+            if(!fuel.isEmpty()) {
+              Item fuel_item = fuel.getItem();
+              fuel.shrink(1);
+              if(fuel.isEmpty()) stacks_.set(SMELTING_FUEL_SLOT_NO, fuel_item.getContainerItem(fuel));
+            }
+          }
+        }
+        if(isBurning() && canSmelt()) {
+          proc_time_elapsed_ += TICK_INTERVAL;
+          if(heater_inserted_ && (boost_energy_ >= boost_energy_consumption)) { boost_energy_ = 0; proc_time_elapsed_ += TICK_INTERVAL; }
+          if(proc_time_elapsed_ >= proc_time_needed_) {
+            proc_time_elapsed_ = 0;
+            proc_time_needed_ = getCookTime(stacks_.get(SMELTING_INPUT_SLOT_NO));
+            smeltItem();
+            dirty = true;
+          }
+        } else {
+          proc_time_elapsed_ = 0;
+        }
+      } else if(!isBurning() && (proc_time_elapsed_ > 0)) {
+        proc_time_elapsed_ = MathHelper.clamp(proc_time_elapsed_-2, 0, proc_time_needed_);
+      }
+      if(was_burning != isBurning()) {
+        dirty = true;
+        final IBlockState state = world.getBlockState(pos);
+        if(state.getBlock() instanceof BlockDecorFurnace) {
+          world.setBlockState(pos, state.withProperty(LIT, isBurning()));
+        }
+      }
+      if(dirty) markDirty();
     }
   }
 

@@ -153,6 +153,7 @@ public class ModEngineersDecor
   {
     public static final int GUIID_CRAFTING_TABLE = 213101;
     public static final int GUIID_SMALL_LAB_FURNACE = 213102;
+    public static final int GUIID_ELECTRICAL_LAB_FURNACE = 213103;
 
     @Override
     public Object getServerGuiElement(final int guiid, final EntityPlayer player, final World world, int x, int y, int z)
@@ -162,6 +163,7 @@ public class ModEngineersDecor
       switch(guiid) {
         case GUIID_CRAFTING_TABLE: return BlockDecorCraftingTable.getServerGuiElement(player, world, pos, te);
         case GUIID_SMALL_LAB_FURNACE: return BlockDecorFurnace.getServerGuiElement(player, world, pos, te);
+        case GUIID_ELECTRICAL_LAB_FURNACE: return BlockDecorFurnaceElectrical.getServerGuiElement(player, world, pos, te);
       }
       return null;
     }
@@ -175,6 +177,7 @@ public class ModEngineersDecor
       switch(guiid) {
         case GUIID_CRAFTING_TABLE: return BlockDecorCraftingTable.getClientGuiElement(player, world, pos, te);
         case GUIID_SMALL_LAB_FURNACE: return BlockDecorFurnace.getClientGuiElement(player, world, pos, te);
+        case GUIID_ELECTRICAL_LAB_FURNACE: return BlockDecorFurnaceElectrical.getClientGuiElement(player, world, pos, te);
       }
       return null;
     }
