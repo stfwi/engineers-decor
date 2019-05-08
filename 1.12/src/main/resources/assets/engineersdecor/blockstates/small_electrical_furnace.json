@@ -7,6 +7,9 @@
     "normal": [{}],
     "inventory": [{}],
     "facing": { "north": {"y":0}, "south": {"y":180}, "west": {"y":-90}, "east": {"y":90}, "up":{}, "down":{} },
-    "lit": { "false":{ "textures":{ "gloom": "engineersdecor:blocks/furnace/small_electrical_furnace_gloom_off" } }, "true":{}}
+    "lit": { "false":{}, "true":{ "textures": {
+      "front": "engineersdecor:blocks/furnace/small_electrical_furnace_front_lit",
+      "back": "engineersdecor:blocks/furnace/small_electrical_furnace_back_lit"
+    }}}
   }
 }

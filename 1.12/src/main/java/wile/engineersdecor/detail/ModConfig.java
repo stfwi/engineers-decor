@@ -75,6 +75,11 @@ public class ModConfig
     @Config.RequiresMcRestart
     public boolean without_lab_furnace = false;
 
+    @Config.Comment({"Disable small electrical pass-through furnace."})
+    @Config.Name("Without electrical furnace")
+    @Config.RequiresMcRestart
+    public boolean without_electrical_furnace = false;
+
     @Config.Comment({"Disable treated wood table, stool, windowsill, pole, etc."})
     @Config.Name("Without tr. wood furniture")
     @Config.RequiresMcRestart
@@ -110,6 +115,14 @@ public class ModConfig
     @Config.Comment({"Disable history refabrication feature of the treated wood crafting table."})
     @Config.Name("Without crafting table history")
     public boolean without_crafting_table_history = false;
+
+    @Config.Comment({"Disable check valve, and redstone controlled valves."})
+    @Config.Name("Without valves")
+    public boolean without_valves = false;
+
+    @Config.Comment({"Disable the passive fluid accumulator."})
+    @Config.Name("Without fluid accumulator")
+    public boolean without_passive_fluid_accumulator = false;
   }
 
   @Config.Comment({
@@ -276,12 +289,15 @@ public class ModConfig
     if(optout.without_ie_concrete_wall && rn.startsWith("concrete_wall")) return true;
     if(optout.without_panzer_glass && rn.startsWith("panzerglass_")) return true;
     if(optout.without_crafting_table && (block instanceof BlockDecorCraftingTable)) return true;
-    if(optout.without_lab_furnace && (block instanceof BlockDecorFurnace)) return true;
+    if(optout.without_lab_furnace && ((block instanceof BlockDecorFurnace)) && (!(block instanceof BlockDecorFurnaceElectrical))) return true;
+    if(optout.without_electrical_furnace && (block instanceof BlockDecorFurnaceElectrical)) return true;
+    if(optout.without_passive_fluid_accumulator && (block instanceof BlockDecorPassiveFluidAccumulator)) return true;
     if(optout.without_windows && rn.endsWith("_window")) return true;
     if(optout.without_light_sources && rn.endsWith("_light")) return true;
     if(optout.without_ladders && (block instanceof BlockDecorLadder)) return true;
     if(optout.without_walls && rn.endsWith("_wall")) return true;
     if(optout.without_stairs && rn.endsWith("_stairs")) return true;
+    if(optout.without_valves && rn.contains("_pipe_valve")) return true;
     if(optout.without_treated_wood_furniture) {
       if(block instanceof BlockDecorChair) return true;
       if(rn.equals("treated_wood_pole")) return true;

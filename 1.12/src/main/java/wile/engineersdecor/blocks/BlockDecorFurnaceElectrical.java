@@ -4,20 +4,20 @@
  * @copyright (C) 2019 Stefan Wilhelm
  * @license MIT (see https://opensource.org/licenses/MIT)
  *
- * ED electrical furnace.
+ * ED small electrical pass-through furnace.
  */
 package wile.engineersdecor.blocks;
 
 
 import wile.engineersdecor.ModEngineersDecor;
 
-import net.minecraft.stats.StatList;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.world.World;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.init.Items;
@@ -29,6 +29,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.*;
+import net.minecraft.stats.StatList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -60,6 +61,20 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
     player.openGui(ModEngineersDecor.instance, ModEngineersDecor.GuiHandler.GUIID_ELECTRICAL_LAB_FURNACE, world, pos.getX(), pos.getY(), pos.getZ());
     player.addStat(StatList.FURNACE_INTERACTION);
     return true;
+  }
+
+  @Override
+  public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
+  {
+    world.setBlockState(pos, state.withProperty(LIT, false));
+    if(world.isRemote) return;
+    if((!stack.hasTagCompound()) || (!stack.getTagCompound().hasKey("inventory"))) return;
+    NBTTagCompound inventory_nbt = stack.getTagCompound().getCompoundTag("inventory");
+    if(inventory_nbt.isEmpty()) return;
+    final TileEntity te = world.getTileEntity(pos);
+    if(!(te instanceof BlockDecorFurnaceElectrical.BTileEntity)) return;
+    ((BlockDecorFurnaceElectrical.BTileEntity)te).readnbt(inventory_nbt);
+    ((BlockDecorFurnaceElectrical.BTileEntity)te).markDirty();
   }
 
   @Override
@@ -382,7 +397,7 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
     {  return 7; }
 
     public boolean isBurning()
-    { return burntime_left_ > 0; }
+    { return (burntime_left_ > 0); }
 
     private boolean transferItems(final int index_from, final int index_to, int count)
     {
@@ -622,6 +637,14 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
       return true;
     }
 
+    private void sync_blockstate()
+    {
+      final IBlockState state = world.getBlockState(pos);
+      if((state.getBlock() instanceof BlockDecorFurnaceElectrical) && (state.getValue(LIT) != isBurning())) {
+        world.setBlockState(pos, state.withProperty(LIT, isBurning()), 2);
+      }
+    }
+
     @Override
     public void update()
     {
@@ -631,7 +654,8 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
       if(was_burning) burntime_left_ -= TICK_INTERVAL;
       if(burntime_left_ < 0) burntime_left_ = 0;
       if(world.isRemote) return;
-      boolean dirty = false;
+      boolean update_blockstate = (was_burning != isBurning());
+      boolean dirty = update_blockstate;
       boolean shift_in = false;
       boolean shift_out = false;
       if(--fifo_timer_ <= 0) {
@@ -649,7 +673,7 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
         } else {
           // smelt
           if(!isBurning() && can_smelt) {
-            if(heat_up()) dirty = true;
+            if(heat_up()) { dirty = true; update_blockstate = true; }
           }
           if(isBurning() && can_smelt) {
             if(heat_up()) dirty = true;
@@ -667,14 +691,11 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
         }
       } else if(proc_time_elapsed_ > 0) {
         proc_time_elapsed_ -= ((stacks_.get(SMELTING_INPUT_SLOT_NO)).isEmpty() ? 20 : 1);
-        if(proc_time_elapsed_ < 0) { proc_time_elapsed_ = 0; shift_out = true; }
+        if(proc_time_elapsed_ < 0) { proc_time_elapsed_ = 0; shift_out = true; update_blockstate = true; }
       }
-      if(was_burning != isBurning()) {
+      if(update_blockstate) {
         dirty = true;
-        final IBlockState state = world.getBlockState(pos);
-        if(state.getBlock() instanceof BlockDecorFurnace) {
-          world.setBlockState(pos, state.withProperty(LIT, isBurning()));
-        }
+        sync_blockstate();
       }
       if(adjacent_inventory_shift(shift_in, shift_out)) dirty = true;
       if(dirty) markDirty();

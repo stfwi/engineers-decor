@@ -15,8 +15,6 @@ package wile.engineersdecor.blocks;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHand;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.detail.ModAuxiliaries;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -41,7 +39,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 
-public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected implements ModAuxiliaries.IExperimentalFeature
+public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected
 {
   public BlockDecorPassiveFluidAccumulator(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound, @Nonnull AxisAlignedBB unrotatedAABB)
   { super(registryName, config, material, hardness, resistance, sound, unrotatedAABB); }
@@ -59,7 +57,7 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected implem
     if(world.isRemote) return true;
     TileEntity te = world.getTileEntity(pos);
     if(!(te instanceof BTileEntity)) return true;
-    ((BTileEntity)te).debug_info_dump(player);
+    ((BTileEntity)te).send_device_stats(player);
     return true;
   }
 
@@ -70,7 +68,7 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected implem
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class BTileEntity extends TileEntity implements IFluidHandler, IFluidTankProperties, ICapabilityProvider, ITickable, ModAuxiliaries.IExperimentalFeature
+  public static class BTileEntity extends TileEntity implements IFluidHandler, IFluidTankProperties, ICapabilityProvider, ITickable
   {
     protected static int tick_idle_interval = 20; // ca 1000ms, simulates suction delay and saves CPU when not drained.
     protected static int max_flowrate = 1000;
@@ -83,15 +81,13 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected implem
     private int tick_timer_ = 0;
     private int round_robin_ = 0;
     private boolean initialized_ = false;
-
-
     private int total_volume_filled_ = 0;
     private int total_volume_drained_ = 0;
-    @Deprecated
-    public void debug_info_dump(EntityPlayer player)
+
+    public void send_device_stats(EntityPlayer player)
     {
       int t_vol = (tank_==null) ? 0 : (tank_.amount);
-      ModAuxiliaries.playerChatMessage(player,"pfacc I:" + total_volume_filled_ + " O:" + total_volume_drained_ + " B:" + t_vol);
+      ModAuxiliaries.playerChatMessage(player,"" + t_vol + "mB");
     }
 
     public void block_changed()
