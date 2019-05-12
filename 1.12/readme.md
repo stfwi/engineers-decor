@@ -10,6 +10,17 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+                -------------------------------------------------------------------
+    - v1.0.5    [R] Release based on v1.0.5-b1. Release-to-release changes:
+                    * Small electrical passthrough-furnace added.
+                    * Passive fluid accumulator added.
+                    * Config options added.
+                    * Sign plates added.
+                    * Minor bug fixes.
+                -------------------------------------------------------------------
+                [A] Added sign "Electrical hazzard"/"Caution hot wire".
+                [A] Added sign "Caution dangerous there" (skull/bones).
+
     - v1.0.5-b1 [A] Added passive fluid accumulator.
                 [A] Added small electrical passthrough-furnace.
                 [F] Fixed version check URL.

@@ -1,0 +1,16 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:sign_hotwire",
+      "required": ["engineersdecor:sign_danger"]
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    { "item": "engineersdecor:sign_danger" }
+  ],
+  "result": {
+    "item": "engineersdecor:sign_hotwire"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:sign_hotwire",
+      "required": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SSS",
+    "SPS",
+    "SSS"
+  ],
+  "key": {
+    "S": { "item": "#stickTreatedWood" },
+    "P": { "item": "#paperAny" }
+  },
+  "result": {
+    "item": "engineersdecor:sign_hotwire",
+    "count": 1
+  }
+}

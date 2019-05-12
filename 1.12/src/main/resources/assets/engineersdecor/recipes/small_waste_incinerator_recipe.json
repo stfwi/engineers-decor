@@ -1,0 +1,33 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:small_waste_incinerator",
+      "required": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "HPP",
+    "PHP",
+    "PLP"
+  ],
+  "key": {
+    "L": {
+      "item": "#anyLavaItem",
+      "data": 0
+    },
+    "P": {
+      "item": "#plateIron",
+      "data": 0
+    },
+    "H": {
+      "item": "#anyHopper",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:small_waste_incinerator",
+    "count": 1
+  }
+}
