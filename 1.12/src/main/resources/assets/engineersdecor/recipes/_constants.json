@@ -224,5 +224,13 @@
   {
     "ingredient": { "item": "minecraft:furnace", "data": 0 },
     "name": "itemFurnace"
+  },
+  {
+    "ingredient": { "item": "minecraft:paper", "data": 0 },
+    "name": "paperAny"
+  },
+  {
+    "ingredient": { "item": "minecraft:lava_bucket", "data": 0 },
+    "name": "anyLavaItem"
   }
 ]

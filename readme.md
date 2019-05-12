@@ -17,7 +17,8 @@ Main distribution channel for this mod is CurseForge:
 ----
 ### Details
 
-The mod has its focus decorative blocks. Current feature set:
+The mod has its focus decorative blocks and devices helping you to build nice
+looking manufacturing contraptions. Current feature set:
 
 - *Treated wood crafting table*: 3x3 crafting table with IE style GUI and a model
   fitting better in the engineer's workshop. Keeps its inventory, has eight additional
@@ -29,6 +30,13 @@ The mod has its focus decorative blocks. Current feature set:
   hopper FiFos for input, output, and fuel (two stacks each). Two auxilliary slots
   (storage tray). Keeps inventory when relocated. Crafted with one cobblestone
   furnace, one hopper, and seven metal plates.
+
+- *Small electrical furnace*: Pass-through electrical furnace. Can pull items out
+  input side inventories, inserts items into inventories at the output side. Internal
+  fifo slots. Automatically bypasses items that cannot be cooked or smelted. Electrical
+  RF/FE power can be applied on all sides. Items can be inserted or drawn from all
+  sides (e.g. with filtered hopper or whatever). Fits ideally into a conveyor belt
+  line/lane. Consumption and efficiency tunable via config.
 
 - Rebar (steel) reinforced concrete: Expensive but creeper-proof. Crafted 3x3 from
   four concrete blocks and five steel rods. Texture design oriented at the IE concrete,
@@ -93,8 +101,27 @@ The mod has its focus decorative blocks. Current feature set:
   wall, or floor. Light level like a torch. Thin, hence not blocking the way.
   Allows illuminating places where electrical light installations are problematic.
 
-- *Fluid pipe check valve*: IE fluid pipe styled straight valve that conducts fluids
-  only in one direction. Crafted from 3x3 from three fluid pipes.
+- *Fluid pipe check valve*: Check valve: IE fluid pipe styled straight valve that
+  conducts fluids only in one direction. Crafted from 3x3 from three fluid pipes.
+  Supports IE pressurized fluid transfer.
+
+- *Redstone controlled valves*: Conduct only in one direction, on-off
+  variant (open on redstone power) and analog variant (closed at power 0, linear
+  flow slope, fully open at power 15). Support IE pressurized fluid transfer.
+
+- *Passive fluid accumulator*: Block with one output and five input sides, that
+  draws fluids out of adjacent tanks when a pump drains fluid from the output port.
+  Implicit round-robin balanced drain from adjacent blocks. Random initial fluid
+  drip-in to allow pumps to detect that fluids can be drained. The accumulator
+  has a vacuum suction delay.
+
+- *Industrial signs*: "Danger", "electrical hazard", etc.
+
+- *Small waste incinerator*: Buffered and delayed item disposal device. 16 fifo
+  slots are filled when new items are pushed in from any side. A GUI allows to
+  take out accidentally trashed items or put in items to get rid of. When the fifo
+  is full, the oldest stack will be disposed. The processing speed can be increased
+  by connecting electrical RF/FE power.
 
 More to come slowly but steadily.
 

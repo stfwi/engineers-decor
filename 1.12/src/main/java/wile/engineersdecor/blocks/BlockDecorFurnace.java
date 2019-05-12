@@ -11,7 +11,6 @@ package wile.engineersdecor.blocks;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.detail.ExtItems;
 
-import net.minecraft.stats.StatList;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.Block;
@@ -41,6 +40,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.*;
+import net.minecraft.stats.StatList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -109,9 +109,9 @@ public class BlockDecorFurnace extends BlockDecorDirected
     NBTTagCompound inventory_nbt = stack.getTagCompound().getCompoundTag("inventory");
     if(inventory_nbt.isEmpty()) return;
     final TileEntity te = world.getTileEntity(pos);
-    if(!(te instanceof BTileEntity)) return;
-    ((BTileEntity)te).readnbt(inventory_nbt);
-    ((BTileEntity)te).markDirty();
+    if(!(te instanceof BlockDecorFurnace.BTileEntity)) return;
+    ((BlockDecorFurnace.BTileEntity)te).readnbt(inventory_nbt);
+    ((BlockDecorFurnace.BTileEntity)te).markDirty();
   }
 
   @Override

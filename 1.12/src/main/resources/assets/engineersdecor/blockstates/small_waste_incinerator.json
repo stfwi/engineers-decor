@@ -1,0 +1,11 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "engineersdecor:furnace/small_waste_incinerator_model"
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "lit": { "false":{}, "true":{}}
+  }
+}

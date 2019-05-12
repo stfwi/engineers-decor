@@ -7,7 +7,8 @@
 		"left": "engineersdecor:blocks/furnace/small_electrical_furnace_left",
 		"right": "engineersdecor:blocks/furnace/small_electrical_furnace_right",
 		"front": "engineersdecor:blocks/furnace/small_electrical_furnace_front",
-		"back": "engineersdecor:blocks/furnace/small_electrical_furnace_back"
+		"back": "engineersdecor:blocks/furnace/small_electrical_furnace_back",
+		"radiator": "engineersdecor:blocks/furnace/small_electrical_furnace_radiator"
 	},
 	"elements": [
 		{
@@ -15,9 +16,9 @@
 			"to": [13.75, 17, 15],
 			"rotation": {"angle": 45, "axis": "z", "origin": [15.5, 13.5, 8]},
 			"faces": {
-				"north": {"uv": [0, 0, 1, 5.5], "texture": "#front"},
-				"east": {"uv": [0, 1, 5, 15], "rotation": 90, "texture": "#top"},
-				"south": {"uv": [0, 0, 1, 5.5], "texture": "#back"}
+				"north": {"uv": [0, 0, 1, 5.5], "texture": "#radiator"},
+				"east": {"uv": [0, 1, 5, 15], "rotation": 90, "texture": "#radiator"},
+				"south": {"uv": [0, 0, 1, 5.5], "texture": "#radiator"}
 			}
 		},
 		{
@@ -25,9 +26,9 @@
 			"to": [3.25, 17, 15],
 			"rotation": {"angle": -45, "axis": "z", "origin": [0.5, 13.5, 8]},
 			"faces": {
-				"north": {"uv": [0, 0, 1, 5.5], "texture": "#front"},
-				"south": {"uv": [0, 0, 1, 5.5], "texture": "#back"},
-				"west": {"uv": [0, 1, 5, 15], "rotation": 270, "texture": "#top"}
+				"north": {"uv": [0, 0, 1, 5.5], "texture": "#radiator"},
+				"south": {"uv": [0, 0, 1, 5.5], "texture": "#radiator"},
+				"west": {"uv": [11, 1, 16, 15], "rotation": 270, "texture": "#radiator"}
 			}
 		},
 		{

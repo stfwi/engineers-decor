@@ -220,6 +220,34 @@ public class ModBlocks
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   );
 
+  public static final BlockDecorDirected SIGN_HOTWIRE = new BlockDecorDirected(
+    "sign_hotwire",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
+    Material.WOOD, 0.1f, 1f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
+  );
+
+  public static final BlockDecorDirected SIGN_MINDSTEP = new BlockDecorDirected(
+    "sign_mindstep",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
+    Material.WOOD, 0.1f, 1f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
+  );
+
+  public static final BlockDecorDirected SIGN_DANGER = new BlockDecorDirected(
+    "sign_danger",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
+    Material.WOOD, 0.1f, 1f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
+  );
+
+  public static final BlockDecorWasteIncinerator SMALL_WASTE_INCINERATOR = new BlockDecorWasteIncinerator(
+    "small_waste_incinerator",
+    BlockDecor.CFG_DEFAULT,
+    Material.IRON, 0.3f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+  );
+
   //--------------------------------------------------------------------------------------------------------------------
   //-- Tile entities
   //--------------------------------------------------------------------------------------------------------------------
@@ -245,6 +273,9 @@ public class ModBlocks
   );
   private static final TileEntityRegistrationData PASSIVE_FLUID_ACCUMULATOR_TEI = new TileEntityRegistrationData(
     BlockDecorPassiveFluidAccumulator.BTileEntity.class, "te_passive_fluid_accumulator"
+  );
+  private static final TileEntityRegistrationData WASTE_INCINERATOR_TEI = new TileEntityRegistrationData(
+    BlockDecorWasteIncinerator.BTileEntity.class, "te_small_waste_incinerator"
   );
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -285,12 +316,15 @@ public class ModBlocks
     THIN_STEEL_POLE_HEAD,
     THICK_STEEL_POLE_HEAD,
     STEEL_DOUBLE_T_SUPPORT,
-    STRAIGHT_CHECK_VALVE, STRAIGHT_REDSTONE_VALVE, STRAIGHT_REDSTONE_ANALOG_VALVE, STRAIGHT_PIPE_VALVE_TEI
+    STRAIGHT_CHECK_VALVE, STRAIGHT_REDSTONE_VALVE, STRAIGHT_REDSTONE_ANALOG_VALVE, STRAIGHT_PIPE_VALVE_TEI,
+    PASSIVE_FLUID_ACCUMULATOR, PASSIVE_FLUID_ACCUMULATOR_TEI,
+    SMALL_ELECTRICAL_FURNACE, SMALL_ELECTRICAL_FURNACE_TEI,
+    SIGN_HOTWIRE, SIGN_DANGER
   };
 
   private static final Object dev_content[] = {
-    PASSIVE_FLUID_ACCUMULATOR, PASSIVE_FLUID_ACCUMULATOR_TEI,
-    SMALL_ELECTRICAL_FURNACE, SMALL_ELECTRICAL_FURNACE_TEI
+    SIGN_MINDSTEP,
+    SMALL_WASTE_INCINERATOR, WASTE_INCINERATOR_TEI
   };
 
   //--------------------------------------------------------------------------------------------------------------------

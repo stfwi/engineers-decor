@@ -243,7 +243,6 @@ public class BlockDecorPipeValve extends BlockDecorDirected
       }
       int n_filled = forward_fluid_handler().fill(res, doFill);
       filling_ = false;
-      //if(n_filled > 0) System.out.println("F:" + resource.amount + "->" + n_filled);
       return n_filled;
     }
 

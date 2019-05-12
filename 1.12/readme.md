@@ -11,7 +11,24 @@ Mod sources for Minecraft version 1.12.2.
 ## Revision history
 
                 -------------------------------------------------------------------
-    - v1.0.4    [R] Release based on v1.0.3-b9. Release-to-release changes:
+    - v1.0.5    [R] Release based on v1.0.5-b1. Release-to-release changes:
+                    * Small electrical passthrough-furnace added.
+                    * Passive fluid accumulator added.
+                    * Config options added.
+                    * Sign plates added.
+                    * Minor bug fixes.
+                -------------------------------------------------------------------
+                [A] Added sign "Electrical hazzard"/"Caution hot wire".
+                [A] Added sign "Caution dangerous there" (skull/bones).
+
+    - v1.0.5-b1 [A] Added passive fluid accumulator.
+                [A] Added small electrical passthrough-furnace.
+                [F] Fixed version check URL.
+                [M] Opt-out config options for valves, passive fluid accumulator,
+                    and furni.
+
+                -------------------------------------------------------------------
+    - v1.0.4    [R] Release based on v1.0.4-b9. Release-to-release changes:
                     * Crafting table: Quick crafting history re-fab, JEI integration.
                     * Rendering improvements and issue fixes (stairs, ambient occlusion,
                       optifine, etc).
@@ -19,8 +36,8 @@ Mod sources for Minecraft version 1.12.2.
                     * Thin/thick steel poles with support feet/heads.
                     * Horizontal steel double-T support beams added.
                     * Fluid pipe valves added: Check valve, redstone controlled valve,
-                      analog redstone controlled valve. Support pressuzized transfer.
-                    * Tooltip documentation (CTRL-SHIFT) for stairs added.
+                      analog redstone controlled valve. Support pressurized transfer.
+                    * Tool tip documentation (CTRL-SHIFT) for stairs added.
                     * Internal code cleanups.
                     * Recipes tuned.
                 -------------------------------------------------------------------

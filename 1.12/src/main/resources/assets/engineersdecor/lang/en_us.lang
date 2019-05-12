@@ -99,6 +99,11 @@ tile.engineersdecor.small_electrical_furnace.help=§6Small metal cased pass-thro
                                            Items can be inserted or drawn from all sides using hoppers. Implicitly bypasses items that cannot be \
                                            smelted or cooked to the output. Slightly more energy efficient and faster than a heated cobblestone \
                                            furnace. Fifos and feeders transfer whole stacks. Feeders require a bit of power.
+tile.engineersdecor.small_waste_incinerator.name=Small waste incinerator
+tile.engineersdecor.small_waste_incinerator.help=§6Trash with internal fifo slots.§r Items can be inserted on all sides, and are kept until \
+                                                  there is no space left in the fifo. After that the oldest stack will be incinerated. Apply \
+                                                  electrical RF/FE power to increase the processing speed. Keeps its inventory when being \
+                                                  relocated.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.straight_pipe_valve.name=Fluid pipe check valve
 tile.engineersdecor.straight_pipe_valve.help=§6Straight fluid pipe fragment.§r Conducts fluids only in one direction. \
@@ -118,6 +123,13 @@ tile.engineersdecor.passive_fluid_accumulator.help=§6Vacuum suction based fluid
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.sign_decor.name=Sign plate (Engineer's decor)
 tile.engineersdecor.sign_decor.help=§6This should not be craftable or visible in JEI. Used for creative tab and screenshots.
+tile.engineersdecor.sign_hotwire.name=Sign "Caution hot wire"
+tile.engineersdecor.sign_hotwire.help=§6Placable on walls (horizontally).
+tile.engineersdecor.sign_mindstep.name=Sign "Mind the step"
+tile.engineersdecor.sign_mindstep.help=§6Placable on walls (horizontally).
+tile.engineersdecor.sign_danger.name=Sign "Caution really dangerous there"
+tile.engineersdecor.sign_danger.help=§6Placable on walls (horizontally).
+
 #-----------------------------------------------------------------------------------------------------------
 # EOF
 #-----------------------------------------------------------------------------------------------------------
