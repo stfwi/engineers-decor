@@ -79,8 +79,7 @@ public class BlockDecorFurnace extends BlockDecorDirected
   { return (state.getValue(FACING).getHorizontalIndex() & 0x3) | (state.getValue(LIT) ? 4 : 0); }
 
   @Override
-  @SuppressWarnings("deprecation")
-  public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
+  public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
   { return getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite()).withProperty(LIT, false); }
 
   @Override
@@ -747,21 +746,27 @@ public class BlockDecorFurnace extends BlockDecorDirected
 
     // IEnergyStorage ----------------------------------------------------------------------------
 
+    @Override
     public boolean canExtract()
     { return false; }
 
+    @Override
     public boolean canReceive()
     { return true; }
 
+    @Override
     public int getMaxEnergyStored()
     { return boost_energy_consumption; }
 
+    @Override
     public int getEnergyStored()
     { return boost_energy_; }
 
+    @Override
     public int extractEnergy(int maxExtract, boolean simulate)
     { return 0; }
 
+    @Override
     public int receiveEnergy(int maxReceive, boolean simulate)
     { // only speedup support, no buffering, not in nbt -> no markdirty
       if((boost_energy_ >= boost_energy_consumption) || (maxReceive < boost_energy_consumption)) return 0;

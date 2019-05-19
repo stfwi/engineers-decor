@@ -226,6 +226,10 @@
     "name": "itemFurnace"
   },
   {
+    "ingredient": { "item": "minecraft:dropper", "data": 0 },
+    "name": "itemDropper"
+  },
+  {
     "ingredient": { "item": "minecraft:paper", "data": 0 },
     "name": "paperAny"
   },

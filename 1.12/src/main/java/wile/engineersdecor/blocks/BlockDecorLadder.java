@@ -98,8 +98,7 @@ public class BlockDecorLadder extends BlockLadder
   { return canAttachTo(world, pos.west(), side) || canAttachTo(world, pos.east(), side) || canAttachTo(world, pos.north(), side) || canAttachTo(world, pos.south(), side); }
 
   @Override
-  @SuppressWarnings("deprecation")
-  public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
+  public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
   {
     if(facing.getAxis().isHorizontal() && canAttachTo(world, pos.offset(facing.getOpposite()), facing)) return this.getDefaultState().withProperty(FACING, facing);
     for(EnumFacing e:EnumFacing.Plane.HORIZONTAL) {

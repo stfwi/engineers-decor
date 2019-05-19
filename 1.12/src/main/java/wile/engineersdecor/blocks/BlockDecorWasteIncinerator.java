@@ -70,8 +70,7 @@ public class BlockDecorWasteIncinerator extends BlockDecor
   { return (state.getValue(LIT) ? 4 : 0); }
 
   @Override
-  @SuppressWarnings("deprecation")
-  public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
+  public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
   { return getDefaultState().withProperty(LIT, false); }
 
   @Override
@@ -320,7 +319,7 @@ public class BlockDecorWasteIncinerator extends BlockDecor
     private int tick_timer_;
     private int check_timer_;
     private int energy_stored_;
-    protected NonNullList<ItemStack> stacks_;
+    protected NonNullList<ItemStack> stacks_ = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
 
     public static void on_config(int speed_percent, int fuel_efficiency_percent, int boost_energy_per_tick)
     {
@@ -340,9 +339,10 @@ public class BlockDecorWasteIncinerator extends BlockDecor
 
     public void readnbt(NBTTagCompound compound)
     {
-      reset();
-      ItemStackHelper.loadAllItems(compound, stacks_);
-      while(stacks_.size() < NUM_OF_SLOTS) stacks_.add(ItemStack.EMPTY);
+      NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
+      ItemStackHelper.loadAllItems(compound, stacks);
+      while(stacks.size() < NUM_OF_SLOTS) stacks.add(ItemStack.EMPTY);
+      stacks_ = stacks;
       energy_stored_ = compound.getInteger("Energy");
     }
 
@@ -436,7 +436,7 @@ public class BlockDecorWasteIncinerator extends BlockDecor
 
     @Override
     public ItemStack getStackInSlot(int index)
-    { return (index < getSizeInventory()) ? stacks_.get(index) : ItemStack.EMPTY; }
+    { return ((index >= 0) && (index < getSizeInventory())) ? stacks_.get(index) : ItemStack.EMPTY; }
 
     @Override
     public ItemStack decrStackSize(int index, int count)
@@ -512,21 +512,27 @@ public class BlockDecorWasteIncinerator extends BlockDecor
 
     // IEnergyStorage ----------------------------------------------------------------------------
 
+    @Override
     public boolean canExtract()
     { return false; }
 
+    @Override
     public boolean canReceive()
     { return true; }
 
+    @Override
     public int getMaxEnergyStored()
     { return MAX_ENERGY_BUFFER; }
 
+    @Override
     public int getEnergyStored()
     { return energy_stored_; }
 
+    @Override
     public int extractEnergy(int maxExtract, boolean simulate)
     { return 0; }
 
+    @Override
     public int receiveEnergy(int maxReceive, boolean simulate)
     {
       if(energy_stored_ >= MAX_ENERGY_BUFFER) return 0;

@@ -450,21 +450,27 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
 
     // IEnergyStorage ----------------------------------------------------------------------------
 
+    @Override
     public boolean canExtract()
     { return false; }
 
+    @Override
     public boolean canReceive()
     { return true; }
 
+    @Override
     public int getMaxEnergyStored()
     { return MAX_ENERGY_BUFFER; }
 
+    @Override
     public int getEnergyStored()
     { return energy_stored_; }
 
+    @Override
     public int extractEnergy(int maxExtract, boolean simulate)
     { return 0; }
 
+    @Override
     public int receiveEnergy(int maxReceive, boolean simulate)
     {
       if(energy_stored_ >= MAX_ENERGY_BUFFER) return 0;

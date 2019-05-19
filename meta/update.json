@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.12.2": {
+    "1.0.6-b1": "[A] Added small waste incinerator (delayed fifo-buffered item disposal).\n[M] Fixed item/block name capitalization (by Voxelo).\n[M] Metal ladders are easier to break/harvest.",
     "1.0.5": "[R] Release based on v1.0.5-b1. Release-to-release changes: * Small electrical passthrough-furnace added. * Passive fluid accumulator added. * Config options added. * Sign plates added. * Minor bug fixes.\n[A] Added sign \"Electrical hazzard\"/\"Caution hot wire\".\n[A] Added sign \"Caution dangerous there\" (skull/bones).",
     "1.0.5-b1": "[A] Added passive fluid accumulator.\n[A] Added small electrical passthrough-furnace.\n[F] Fixed version check URL.\n[M] Opt-out config options for valves, passive fluid accumulator, and furni.",
     "1.0.4": "[R] Release based on v1.0.4-b9. Release-to-release changes: * Crafting table: Quick crafting history re-fab, JEI integration. * Rendering improvements and issue fixes (stairs, ambient occlusion, optifine, etc). * Walls with texture variations. * Thin/thick steel poles with support feet/heads. * Horizontal steel double-T support beams added. * Fluid pipe valves added: Check valve, redstone controlled valve, analog redstone controlled valve. Support pressurized transfer. * Tool tip documentation (CTRL-SHIFT) for stairs added. * Internal code cleanups. * Recipes tuned.\n[E] Added pass-through electrical furnace (experimental, see config).",
@@ -45,7 +46,7 @@
   },
   "promos": {
     "1.12.2-recommended": "1.0.5",
-    "1.12.2-latest": "1.0.5",
+    "1.12.2-latest": "1.0.6-b1",
     "1.13.2-recommended": "",
     "1.13.2-latest": "1.0.4-b3"
   }

@@ -121,6 +121,9 @@ tile.engineersdecor.passive_fluid_accumulator.name=Passive Fluid Accumulator
 tile.engineersdecor.passive_fluid_accumulator.help=§6Vacuum suction based fluid collector.§r Has one output, all other sides are input. \
                                                    Drains fluids from adjacent tanks when being drained from the output port by a pump.
 #-----------------------------------------------------------------------------------------------------------
+tile.engineersdecor.factory_dropper.name=Factory Dropper
+tile.engineersdecor.factory_dropper.help=§6Dropper suitable for advanced factory automation.§r
+#-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.sign_decor.name=Sign Plate (Engineer's decor)
 tile.engineersdecor.sign_decor.help=§6This should not be craftable or visible in JEI. Used for creative tab and screenshots.
 tile.engineersdecor.sign_hotwire.name=Sign "Caution Hot Wire"
