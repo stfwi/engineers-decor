@@ -452,12 +452,6 @@ public class BlockDecorFurnace extends BlockDecorDirected
     public static final int AUX_0_SLOT_NO           = 9;
     public static final int AUX_1_SLOT_NO           =10;
 
-    private static final int[] SLOTS_TOP    = new int[] {FIFO_INPUT_1_SLOT_NO};
-    private static final int[] SLOTS_BOTTOM = new int[] {FIFO_OUTPUT_1_SLOT_NO};
-    private static final int[] SLOTS_SIDES  = new int[] {FIFO_FUEL_1_SLOT_NO};
-    private final IItemHandler sided_itemhandler_top_   = new SidedInvWrapper(this, EnumFacing.UP);
-    private final IItemHandler sided_itemhandler_down_  = new SidedInvWrapper(this, EnumFacing.DOWN);
-    private final IItemHandler sided_itemhandler_sides_ = new SidedInvWrapper(this, EnumFacing.WEST);
     private static double proc_fuel_efficiency_ = 1.0;
     private static int proc_speed_interval_ = DEFAULT_SPEED_INTERVAL;
     private static int boost_energy_consumption = DEFAULT_BOOST_ENERGY * TICK_INTERVAL;
@@ -724,6 +718,13 @@ public class BlockDecorFurnace extends BlockDecorDirected
     { return TileEntityFurnace.isItemFuel(stack); }
 
     // ISidedInventory ----------------------------------------------------------------------------
+
+    private static final int[] SLOTS_TOP    = new int[] {FIFO_INPUT_1_SLOT_NO};
+    private static final int[] SLOTS_BOTTOM = new int[] {FIFO_OUTPUT_1_SLOT_NO};
+    private static final int[] SLOTS_SIDES  = new int[] {FIFO_FUEL_1_SLOT_NO};
+    private final IItemHandler sided_itemhandler_top_   = new SidedInvWrapper(this, EnumFacing.UP);
+    private final IItemHandler sided_itemhandler_down_  = new SidedInvWrapper(this, EnumFacing.DOWN);
+    private final IItemHandler sided_itemhandler_sides_ = new SidedInvWrapper(this, EnumFacing.WEST);
 
     @Override
     public int[] getSlotsForFace(EnumFacing side)

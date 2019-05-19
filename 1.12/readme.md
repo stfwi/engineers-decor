@@ -13,6 +13,7 @@ Mod sources for Minecraft version 1.12.2.
     - v1.0.6-b1 [A] Added small waste incinerator (delayed fifo-buffered item disposal).
                 [M] Fixed item/block name capitalization (by Voxelo).
                 [M] Metal ladders are easier to break/harvest.
+                [F] Fixed FML remapping issue by using dedicated IItemHandler instances.
 
                 -------------------------------------------------------------------
     - v1.0.5    [R] Release based on v1.0.5-b1. Release-to-release changes:

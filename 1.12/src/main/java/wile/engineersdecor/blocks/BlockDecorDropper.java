@@ -391,7 +391,7 @@ public class BlockDecorDropper extends BlockDecorDirected
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class BTileEntity extends TileEntity implements ITickable, ISidedInventory, IItemHandler, Networking.IPacketReceiver
+  public static class BTileEntity extends TileEntity implements ITickable, ISidedInventory, Networking.IPacketReceiver
   {
     public static final int TICK_INTERVAL = 32;
     public static final int NUM_OF_SLOTS = 15;
@@ -666,80 +666,95 @@ public class BlockDecorDropper extends BlockDecorDirected
 
     // IItemHandler  --------------------------------------------------------------------------------
 
-    @Override
-    public int getSlots()
-    { return SIDED_INV_SLOTS.length; }
-
-    @Override
-    public int getSlotLimit(int index)
-    { return getInventoryStackLimit(); }
-
-    @Override
-    public boolean isItemValid(int slot, @Nonnull ItemStack stack)
-    { return is_input_slot(slot); }
-
-    @Override
-    @Nonnull
-    public ItemStack insertItem(int index, @Nonnull ItemStack stack, boolean simulate)
+    protected static class BItemHandler implements IItemHandler
     {
-      if((stack.isEmpty()) || (!is_input_slot(index))) return ItemStack.EMPTY;
-      int slotno = 0;
-      ItemStack slotstack = getStackInSlot(slotno);
-      if(!slotstack.isEmpty())
+      private BTileEntity te;
+
+      BItemHandler(BTileEntity te)
+      { this.te = te; }
+
+      @Override
+      public int getSlots()
+      { return SIDED_INV_SLOTS.length; }
+
+      @Override
+      public int getSlotLimit(int index)
+      { return te.getInventoryStackLimit(); }
+
+      @Override
+      public boolean isItemValid(int slot, @Nonnull ItemStack stack)
+      { return te.is_input_slot(slot); }
+
+      @Override
+      @Nonnull
+      public ItemStack insertItem(int index, @Nonnull ItemStack stack, boolean simulate)
       {
-        if(slotstack.getCount() >= Math.min(slotstack.getMaxStackSize(), getSlotLimit(index))) return stack;
-        if(!ItemHandlerHelper.canItemStacksStack(stack, slotstack)) return stack;
-        if(!canInsertItem(slotno, stack, EnumFacing.UP) || (!isItemValidForSlot(slotno, stack))) return stack;
-        int n = Math.min(stack.getMaxStackSize(), getSlotLimit(index)) - slotstack.getCount();
-        if(stack.getCount() <= n) {
-          if(!simulate) {
-            ItemStack copy = stack.copy();
-            copy.grow(slotstack.getCount());
-            setInventorySlotContents(slotno, copy);
-          }
-          return ItemStack.EMPTY;
-        } else {
-          stack = stack.copy();
-          if(!simulate) {
-            ItemStack copy = stack.splitStack(n);
-            copy.grow(slotstack.getCount());
-            setInventorySlotContents(slotno, copy);
-            return stack;
+        if((stack.isEmpty()) || (!te.is_input_slot(index))) return ItemStack.EMPTY;
+        int slotno = 0;
+        ItemStack slotstack = getStackInSlot(slotno);
+        if(!slotstack.isEmpty())
+        {
+          if(slotstack.getCount() >= Math.min(slotstack.getMaxStackSize(), getSlotLimit(index))) return stack;
+          if(!ItemHandlerHelper.canItemStacksStack(stack, slotstack)) return stack;
+          if(!te.canInsertItem(slotno, stack, EnumFacing.UP) || (!te.isItemValidForSlot(slotno, stack))) return stack;
+          int n = Math.min(stack.getMaxStackSize(), getSlotLimit(index)) - slotstack.getCount();
+          if(stack.getCount() <= n) {
+            if(!simulate) {
+              ItemStack copy = stack.copy();
+              copy.grow(slotstack.getCount());
+              te.setInventorySlotContents(slotno, copy);
+            }
+            return ItemStack.EMPTY;
           } else {
-            stack.shrink(n);
-            return stack;
-          }
-        }
-      } else {
-        if(!canInsertItem(slotno, stack, EnumFacing.UP) || (!isItemValidForSlot(slotno, stack))) return stack;
-        int n = Math.min(stack.getMaxStackSize(), getSlotLimit(index));
-        if(n < stack.getCount()) {
-          stack = stack.copy();
-          if(!simulate) {
-            setInventorySlotContents(slotno, stack.splitStack(n));
-            return stack;
-          } else {
-            stack.shrink(n);
-            return stack;
+            stack = stack.copy();
+            if(!simulate) {
+              ItemStack copy = stack.splitStack(n);
+              copy.grow(slotstack.getCount());
+              te.setInventorySlotContents(slotno, copy);
+              return stack;
+            } else {
+              stack.shrink(n);
+              return stack;
+            }
           }
         } else {
-          if(!simulate) setInventorySlotContents(slotno, stack);
-          return ItemStack.EMPTY;
+          if(!te.canInsertItem(slotno, stack, EnumFacing.UP) || (!te.isItemValidForSlot(slotno, stack))) return stack;
+          int n = Math.min(stack.getMaxStackSize(), getSlotLimit(index));
+          if(n < stack.getCount()) {
+            stack = stack.copy();
+            if(!simulate) {
+              te.setInventorySlotContents(slotno, stack.splitStack(n));
+              return stack;
+            } else {
+              stack.shrink(n);
+              return stack;
+            }
+          } else {
+            if(!simulate) te.setInventorySlotContents(slotno, stack);
+            return ItemStack.EMPTY;
+          }
         }
       }
+
+      @Override
+      @Nonnull
+      public ItemStack extractItem(int index, int amount, boolean simulate)
+      {
+        if((amount <= 0) || (!te.is_input_slot(index))) return ItemStack.EMPTY;
+        ItemStack stack = te.stacks_.get(index).copy();
+        if(stack.getCount() > amount) stack.setCount(amount);
+        if(simulate) return stack;
+        te.stacks_.get(index).shrink(stack.getCount());
+        return stack;
+      }
+
+      @Override
+      @Nonnull
+      public ItemStack getStackInSlot(int index)
+      { return te.getStackInSlot(index); }
     }
 
-    @Override
-    @Nonnull
-    public ItemStack extractItem(int index, int amount, boolean simulate)
-    {
-      if((amount <= 0) || (!is_input_slot(index))) return ItemStack.EMPTY;
-      ItemStack stack = stacks_.get(index).copy();
-      if(stack.getCount() > amount) stack.setCount(amount);
-      if(simulate) return stack;
-      stacks_.get(index).shrink(stack.getCount());
-      return stack;
-    }
+    BItemHandler item_handler_ = new BItemHandler(this);
 
     // Capability export ----------------------------------------------------------------------------
 
@@ -752,11 +767,8 @@ public class BlockDecorDropper extends BlockDecorDirected
     @Nullable
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
     {
-      if((facing != null) && (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)) {
-        return (T)this;
-      } else {
-        return super.getCapability(capability, facing);
-      }
+      if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return (T)item_handler_;
+      return super.getCapability(capability, facing);
     }
 
     // IPacketReceiver -------------------------------------------------------------------------------
