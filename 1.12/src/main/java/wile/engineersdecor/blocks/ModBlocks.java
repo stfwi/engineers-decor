@@ -253,7 +253,7 @@ public class ModBlocks
     "factory_dropper",
     BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_REDSTONE_CONTROLLED,
     Material.IRON, 0.3f, 15f, SoundType.METAL,
-    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,15)
   );
 
   //--------------------------------------------------------------------------------------------------------------------

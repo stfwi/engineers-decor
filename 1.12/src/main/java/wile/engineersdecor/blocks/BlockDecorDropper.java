@@ -8,7 +8,9 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.detail.Networking;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.Block;
@@ -26,6 +28,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.item.*;
 import net.minecraft.inventory.*;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.*;
@@ -38,14 +41,13 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import wile.engineersdecor.detail.Networking;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class BlockDecorDropper extends BlockDecorDirected
 {
@@ -192,16 +194,18 @@ public class BlockDecorDropper extends BlockDecorDirected
       BContainer container = (BContainer)inventorySlots;
       if(container.fields_.length != 16) return;
       int mx = mouseX - getGuiLeft(), my = mouseY - getGuiTop();
-      if(isPointInRegion(130, 10, 12, 25, mouseX, mouseY)) {
+      if(!isPointInRegion(114, 1, 61, 79, mouseX, mouseY)) {
+        return;
+      } else if(isPointInRegion(130, 10, 12, 25, mouseX, mouseY)) {
         int force_percent = 100 - MathHelper.clamp(((my-10)*100)/25, 0, 100);
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setInteger("drop_speed", force_percent);
         Networking.PacketTileNotify.sendToServer(te, nbt);
       } else if(isPointInRegion(145, 10, 25, 25, mouseX, mouseY)) {
-        int xdev = MathHelper.clamp(((mx-157) * 100) / 12, -100, 100);
-        int ydev = -MathHelper.clamp(((my-22) * 100) / 12, -100, 100);
-        if(Math.abs(xdev) < 3) xdev = 0;
-        if(Math.abs(ydev) < 3) ydev = 0;
+        int xdev = MathHelper.clamp( (int)Math.round(((double)((mx-157) * 100)) / 12), -100, 100);
+        int ydev = MathHelper.clamp(-(int)Math.round(((double)((my- 22) * 100)) / 12), -100, 100);
+        if(Math.abs(xdev) < 9) xdev = 0;
+        if(Math.abs(ydev) < 9) ydev = 0;
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setInteger("drop_xdev", xdev);
         nbt.setInteger("drop_ydev", ydev);
@@ -209,21 +213,43 @@ public class BlockDecorDropper extends BlockDecorDirected
       } else if(isPointInRegion(129, 40, 44, 10, mouseX, mouseY)) {
         int ndrop = (mx-135);
         if(ndrop < -1) {
-          ndrop = container.fields_[4] - 1;  // -
-        } else if(ndrop >= 36) {
+          ndrop = container.fields_[4] - 1; // -
+        } else if(ndrop >= 34) {
           ndrop = container.fields_[4] + 1; // +
         } else {
-          ndrop = MathHelper.clamp(1+ndrop, 1, 32); // slider
+          ndrop = MathHelper.clamp(1+ndrop, 1, BTileEntity.MAX_DROP_COUNT); // slider
         }
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setInteger("drop_count", ndrop);
         Networking.PacketTileNotify.sendToServer(te, nbt);
-      } else if(
-        isPointInRegion(114, 51, 9, 9, mouseX, mouseY) ||
-        isPointInRegion(162, 66, 7, 9, mouseX, mouseY)
-      ) {
+      } else if(isPointInRegion(129, 50, 44, 10, mouseX, mouseY)) {
+        int period = (mx-135);
+        if(period < -1) {
+          period = container.fields_[6] - 1; // -
+        } else if(period >= 34) {
+          period = container.fields_[6] + 1; // +
+        } else {
+          period = (int)(0.5 + ((100.0 * period)/34));
+        }
+        period = MathHelper.clamp(period, 0, 100);
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setInteger("drop_period", period);
+        Networking.PacketTileNotify.sendToServer(te, nbt);
+      } else if(isPointInRegion(114, 51, 9, 9, mouseX, mouseY)) {
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setInteger("manual_rstrigger", 1);
+        Networking.PacketTileNotify.sendToServer(te, nbt);
+      } else if(isPointInRegion(162, 66, 7, 9, mouseX, mouseY)) {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setInteger("manual_trigger", 1);
+        Networking.PacketTileNotify.sendToServer(te, nbt);
+      } else if(isPointInRegion(132, 66, 9, 9, mouseX, mouseY)) {
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setInteger("drop_logic", container.fields_[5] ^ BTileEntity.DROPLOGIC_FILTER_ANDGATE);
+        Networking.PacketTileNotify.sendToServer(te, nbt);
+      } else if(isPointInRegion(148, 66, 9, 9, mouseX, mouseY)) {
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setInteger("drop_logic", container.fields_[5] ^ BTileEntity.DROPLOGIC_EXTERN_ANDGATE);
         Networking.PacketTileNotify.sendToServer(te, nbt);
       }
     }
@@ -269,13 +295,33 @@ public class BlockDecorDropper extends BlockDecorDirected
       // drop count
       {
         int x = x0 + 134 - 2 + (container.fields_[4]);
-        int y = y0 + 44;
+        int y = y0 + 45;
+        drawTexturedModalRect(x, y, 190, 31, 5, 5);
+      }
+      // drop period
+      {
+        int px = ((container.fields_[6] * 34) / 100);
+        int x = x0 + 134 - 2 + MathHelper.clamp(px, 0, 33);
+        int y = y0 + 56;
         drawTexturedModalRect(x, y, 190, 31, 5, 5);
       }
       // redstone input
       {
         if(container.fields_[11] != 0) {
           drawTexturedModalRect(x0+114, y0+51, 189, 18, 9, 9);
+        }
+      }
+      // trigger logic
+      {
+        int filter_gate_offset = ((container.fields_[5] & BTileEntity.DROPLOGIC_FILTER_ANDGATE) != 0) ? 11 : 0;
+        int extern_gate_offset = ((container.fields_[5] & BTileEntity.DROPLOGIC_EXTERN_ANDGATE) != 0) ? 11 : 0;
+        drawTexturedModalRect(x0+132, y0+66, 179+filter_gate_offset, 66, 9, 9);
+        drawTexturedModalRect(x0+148, y0+66, 179+extern_gate_offset, 66, 9, 9);
+      }
+      // drop timer running indicator
+      {
+        if((container.fields_[9] > BTileEntity.DROP_PERIOD_OFFSET) && ((System.currentTimeMillis() % 1000) < 500)) {
+          drawTexturedModalRect(x0+149, y0+51, 201, 39, 3, 3);
         }
       }
     }
@@ -399,19 +445,30 @@ public class BlockDecorDropper extends BlockDecorDirected
     public static final int INPUT_SLOTS_SIZE = 12;
     public static final int CTRL_SLOTS_FIRST = INPUT_SLOTS_SIZE;
     public static final int CTRL_SLOTS_SIZE = 3;
-
-    private int tick_timer_ = 0;
+    public static final int SHUTTER_CLOSE_DELAY = 40;
+    public static final int MAX_DROP_COUNT = 32;
+    public static final int DROP_PERIOD_OFFSET = 10;
+    ///
+    public static final int DROPLOGIC_FILTER_ANDGATE = 0x1;
+    public static final int DROPLOGIC_EXTERN_ANDGATE = 0x2;
+    public static final int DROPLOGIC_SILENT_DROP    = 0x4;
+    public static final int DROPLOGIC_SILENT_OPEN    = 0x8;
+    ///
     private int filter_matches_[] = new int[CTRL_SLOTS_SIZE];
-    private boolean active_ = false;
+    private int open_timer_ = 0;
+    private int drop_timer_ = 0;
+    private boolean triggered_ = false;
     private boolean block_power_signal_ = false;
     private boolean block_power_updated_ = false;
     private int drop_speed_ = 10;
     private int drop_noise_ = 0;
     private int drop_xdev_ = 0;
     private int drop_ydev_ = 0;
+    private int drop_count_ = 1;
+    private int drop_logic_ = 0;
+    private int drop_period_ = 20;
     private int drop_slot_index_ = 0;
-    private int drop_count_ = 0;
-
+    private int tick_timer_ = 0;
     protected NonNullList<ItemStack> stacks_;
 
     public static void on_config(int cooldown_ticks)
@@ -427,7 +484,9 @@ public class BlockDecorDropper extends BlockDecorDirected
       stacks_ = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
       block_power_signal_ = false;
       block_power_updated_ = false;
-      drop_count_ = 0;
+      drop_count_ = 1;
+      drop_period_ = 20;
+      drop_logic_ = DROPLOGIC_EXTERN_ANDGATE;
       for(int i=0; i<filter_matches_.length; ++i) filter_matches_[i] = 0;
     }
 
@@ -436,71 +495,31 @@ public class BlockDecorDropper extends BlockDecorDirected
       stacks_ = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
       ItemStackHelper.loadAllItems(nbt, stacks_);
       while(stacks_.size() < NUM_OF_SLOTS) stacks_.add(ItemStack.EMPTY);
-      active_ = nbt.getBoolean("active");
       block_power_signal_ = nbt.getBoolean("powered");
+      open_timer_ = nbt.getInteger("open_timer");
       drop_speed_ = nbt.getInteger("drop_speed");
       drop_noise_ = nbt.getInteger("drop_noise");
       drop_xdev_ = nbt.getInteger("drop_xdev");
       drop_ydev_ = nbt.getInteger("drop_ydev");
       drop_slot_index_ = nbt.getInteger("drop_slot_index");
-      drop_count_ = nbt.getInteger("drop_count");
+      drop_count_ = MathHelper.clamp(nbt.getInteger("drop_count"), 1, MAX_DROP_COUNT);
+      drop_logic_ = nbt.getInteger("drop_logic");
+      drop_period_ = nbt.getInteger("drop_period");
     }
 
     protected void writenbt(NBTTagCompound nbt, boolean update_packet)
     {
       ItemStackHelper.saveAllItems(nbt, stacks_);
-      nbt.setBoolean("active", active_);
       nbt.setBoolean("powered", block_power_signal_);
+      nbt.setInteger("open_timer", open_timer_);
       nbt.setInteger("drop_speed", drop_speed_);
       nbt.setInteger("drop_noise", drop_noise_);
       nbt.setInteger("drop_xdev", drop_xdev_);
       nbt.setInteger("drop_ydev", drop_ydev_);
       nbt.setInteger("drop_slot_index", drop_slot_index_);
       nbt.setInteger("drop_count", drop_count_);
-    }
-
-    private ItemStack shiftStacks(final int index_from, final int index_to)
-    {
-      if(index_from >= index_to) return ItemStack.EMPTY;
-      ItemStack out_stack = ItemStack.EMPTY;
-      ItemStack stack = stacks_.get(index_from);
-      for(int i=index_from+1; i<=index_to; ++i) {
-        out_stack = stacks_.get(i);
-        stacks_.set(i, stack);
-        stack = out_stack;
-      }
-      stacks_.set(index_from, ItemStack.EMPTY);
-      return out_stack;
-    }
-
-    private boolean transferItems(final int index_from, final int index_to, int count)
-    {
-      ItemStack from = stacks_.get(index_from);
-      if(from.isEmpty()) return false;
-      ItemStack to = stacks_.get(index_to);
-      if(from.getCount() < count) count = from.getCount();
-      if(count <= 0) return false;
-      boolean changed = true;
-      if(to.isEmpty()) {
-        stacks_.set(index_to, from.splitStack(count));
-      } else if(to.getCount() >= to.getMaxStackSize()) {
-        changed = false;
-      } else if((!from.isItemEqual(to)) || (!ItemStack.areItemStackTagsEqual(from, to))) {
-        changed = false;
-      } else {
-        if((to.getCount()+count) >= to.getMaxStackSize()) {
-          from.shrink(to.getMaxStackSize()-to.getCount());
-          to.setCount(to.getMaxStackSize());
-        } else {
-          from.shrink(count);
-          to.grow(count);
-        }
-      }
-      if(from.isEmpty() && from!=ItemStack.EMPTY) {
-        stacks_.set(index_from, ItemStack.EMPTY);
-        changed = true;
-      }
-      return changed;
+      nbt.setInteger("drop_logic", drop_logic_);
+      nbt.setInteger("drop_period", drop_period_);
     }
 
     public void block_updated()
@@ -570,7 +589,7 @@ public class BlockDecorDropper extends BlockDecorDirected
     {
       stacks_.set(index, stack);
       if(stack.getCount() > getInventoryStackLimit()) stack.setCount(getInventoryStackLimit());
-      tick_timer_ = 2;
+      if(tick_timer_ > 8) tick_timer_ = 8;
       markDirty();
     }
 
@@ -607,7 +626,10 @@ public class BlockDecorDropper extends BlockDecorDirected
         case  2: return drop_ydev_;
         case  3: return drop_noise_;
         case  4: return drop_count_;
-        case 10: return active_ ? 1 : 0;
+        case  5: return drop_logic_;
+        case  6: return drop_period_;
+        case  9: return drop_timer_;
+        case 10: return open_timer_;
         case 11: return block_power_signal_ ? 1 : 0;
         case 12: return filter_matches_[0];
         case 13: return filter_matches_[1];
@@ -621,12 +643,15 @@ public class BlockDecorDropper extends BlockDecorDirected
     public void setField(int id, int value)
     {
       switch(id) {
-        case 0: drop_speed_ = MathHelper.clamp(value,    0, 100); return;
-        case 1: drop_xdev_  = MathHelper.clamp(value, -100, 100); return;
-        case 2: drop_ydev_  = MathHelper.clamp(value, -100, 100); return;
-        case 3: drop_noise_ = MathHelper.clamp(value,    0, 100); return;
-        case 4: drop_count_ = MathHelper.clamp(value,    1,  64); return;
-        case 10: active_ = (value != 0); return;
+        case  0: drop_speed_ = MathHelper.clamp(value,    0, 100); return;
+        case  1: drop_xdev_  = MathHelper.clamp(value, -100, 100); return;
+        case  2: drop_ydev_  = MathHelper.clamp(value, -100, 100); return;
+        case  3: drop_noise_ = MathHelper.clamp(value,    0, 100); return;
+        case  4: drop_count_ = MathHelper.clamp(value,    1,  MAX_DROP_COUNT); return;
+        case  5: drop_logic_ = value; return;
+        case  6: drop_period_ = MathHelper.clamp(value,   0,  100); return;
+        case  9: drop_timer_ = MathHelper.clamp(value,    0,  400); return;
+        case 10: open_timer_ = MathHelper.clamp(value,    0,  400); return;
         case 11: block_power_signal_ = (value != 0); return;
         case 12: filter_matches_[0] = (value & 0x3); return;
         case 13: filter_matches_[1] = (value & 0x3); return;
@@ -646,10 +671,11 @@ public class BlockDecorDropper extends BlockDecorDirected
 
     // ISidedInventory ----------------------------------------------------------------------------
 
+    private final IItemHandler item_handler_ = new SidedInvWrapper(this, EnumFacing.UP);
     private static final int[] SIDED_INV_SLOTS;
     static {
       SIDED_INV_SLOTS = new int[INPUT_SLOTS_SIZE];
-      for(int i=INPUT_SLOTS_FIRST; i<INPUT_SLOTS_SIZE; ++i) SIDED_INV_SLOTS[i] = i;
+      for(int i=0; i<INPUT_SLOTS_SIZE; ++i) SIDED_INV_SLOTS[i] = i+INPUT_SLOTS_FIRST;
     }
 
     @Override
@@ -657,104 +683,12 @@ public class BlockDecorDropper extends BlockDecorDirected
     { return SIDED_INV_SLOTS; }
 
     @Override
-    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction)
-    { return is_input_slot(index) && isItemValidForSlot(index, itemStackIn); }
+    public boolean canInsertItem(int index, ItemStack stack, EnumFacing direction)
+    { return is_input_slot(index) && isItemValidForSlot(index, stack); }
 
     @Override
     public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
     { return false; }
-
-    // IItemHandler  --------------------------------------------------------------------------------
-
-    protected static class BItemHandler implements IItemHandler
-    {
-      private BTileEntity te;
-
-      BItemHandler(BTileEntity te)
-      { this.te = te; }
-
-      @Override
-      public int getSlots()
-      { return SIDED_INV_SLOTS.length; }
-
-      @Override
-      public int getSlotLimit(int index)
-      { return te.getInventoryStackLimit(); }
-
-      @Override
-      public boolean isItemValid(int slot, @Nonnull ItemStack stack)
-      { return te.is_input_slot(slot); }
-
-      @Override
-      @Nonnull
-      public ItemStack insertItem(int index, @Nonnull ItemStack stack, boolean simulate)
-      {
-        if((stack.isEmpty()) || (!te.is_input_slot(index))) return ItemStack.EMPTY;
-        int slotno = 0;
-        ItemStack slotstack = getStackInSlot(slotno);
-        if(!slotstack.isEmpty())
-        {
-          if(slotstack.getCount() >= Math.min(slotstack.getMaxStackSize(), getSlotLimit(index))) return stack;
-          if(!ItemHandlerHelper.canItemStacksStack(stack, slotstack)) return stack;
-          if(!te.canInsertItem(slotno, stack, EnumFacing.UP) || (!te.isItemValidForSlot(slotno, stack))) return stack;
-          int n = Math.min(stack.getMaxStackSize(), getSlotLimit(index)) - slotstack.getCount();
-          if(stack.getCount() <= n) {
-            if(!simulate) {
-              ItemStack copy = stack.copy();
-              copy.grow(slotstack.getCount());
-              te.setInventorySlotContents(slotno, copy);
-            }
-            return ItemStack.EMPTY;
-          } else {
-            stack = stack.copy();
-            if(!simulate) {
-              ItemStack copy = stack.splitStack(n);
-              copy.grow(slotstack.getCount());
-              te.setInventorySlotContents(slotno, copy);
-              return stack;
-            } else {
-              stack.shrink(n);
-              return stack;
-            }
-          }
-        } else {
-          if(!te.canInsertItem(slotno, stack, EnumFacing.UP) || (!te.isItemValidForSlot(slotno, stack))) return stack;
-          int n = Math.min(stack.getMaxStackSize(), getSlotLimit(index));
-          if(n < stack.getCount()) {
-            stack = stack.copy();
-            if(!simulate) {
-              te.setInventorySlotContents(slotno, stack.splitStack(n));
-              return stack;
-            } else {
-              stack.shrink(n);
-              return stack;
-            }
-          } else {
-            if(!simulate) te.setInventorySlotContents(slotno, stack);
-            return ItemStack.EMPTY;
-          }
-        }
-      }
-
-      @Override
-      @Nonnull
-      public ItemStack extractItem(int index, int amount, boolean simulate)
-      {
-        if((amount <= 0) || (!te.is_input_slot(index))) return ItemStack.EMPTY;
-        ItemStack stack = te.stacks_.get(index).copy();
-        if(stack.getCount() > amount) stack.setCount(amount);
-        if(simulate) return stack;
-        te.stacks_.get(index).shrink(stack.getCount());
-        return stack;
-      }
-
-      @Override
-      @Nonnull
-      public ItemStack getStackInSlot(int index)
-      { return te.getStackInSlot(index); }
-    }
-
-    BItemHandler item_handler_ = new BItemHandler(this);
 
     // Capability export ----------------------------------------------------------------------------
 
@@ -783,8 +717,11 @@ public class BlockDecorDropper extends BlockDecorDirected
       if(nbt.hasKey("drop_speed")) drop_speed_ = MathHelper.clamp(nbt.getInteger("drop_speed"), 0, 100);
       if(nbt.hasKey("drop_xdev"))  drop_xdev_  = MathHelper.clamp(nbt.getInteger("drop_xdev"), -100, 100);
       if(nbt.hasKey("drop_ydev"))  drop_ydev_  = MathHelper.clamp(nbt.getInteger("drop_ydev"), -100, 100);
-      if(nbt.hasKey("drop_count")) drop_count_  = MathHelper.clamp(nbt.getInteger("drop_count"), 1, 64);
-      if(nbt.hasKey("manual_trigger") && (nbt.getInteger("manual_trigger")!=0)) { block_power_signal_ = true; block_power_updated_ = true; tick_timer_ = 1; }
+      if(nbt.hasKey("drop_count")) drop_count_  = MathHelper.clamp(nbt.getInteger("drop_count"), 1, MAX_DROP_COUNT);
+      if(nbt.hasKey("drop_period")) drop_period_ = MathHelper.clamp(nbt.getInteger("drop_period"),   0,  100);
+      if(nbt.hasKey("drop_logic")) drop_logic_  = nbt.getInteger("drop_logic");
+      if(nbt.hasKey("manual_rstrigger") && (nbt.getInteger("manual_rstrigger")!=0)) { block_power_signal_=true; block_power_updated_=true; tick_timer_=1; }
+      if(nbt.hasKey("manual_trigger") && (nbt.getInteger("manual_trigger")!=0)) { tick_timer_ = 1; triggered_ = true; }
       markDirty();
     }
 
@@ -829,9 +766,17 @@ public class BlockDecorDropper extends BlockDecorDirected
     {
       IBlockState state = world.getBlockState(pos);
       if(!(state.getBlock() instanceof BlockDecorDropper)) return null;
-      if(state.getValue(OPEN) != active_) {
-        state = state.withProperty(OPEN, active_);
-        world.setBlockState(pos, state);
+      boolean open = (open_timer_ > 0);
+      if(state.getValue(OPEN) != open) {
+        state = state.withProperty(OPEN, open);
+        world.setBlockState(pos, state, 2|16);
+        if((drop_logic_ & DROPLOGIC_SILENT_OPEN) == 0) {
+          if(open) {
+            world.playSound(null, pos, SoundEvents.BLOCK_WOODEN_TRAPDOOR_OPEN, SoundCategory.BLOCKS, 0.08f, 3f);
+          } else {
+            world.playSound(null, pos, SoundEvents.BLOCK_WOODEN_TRAPDOOR_CLOSE, SoundCategory.BLOCKS, 0.08f, 3f);
+          }
+        }
       }
       return state;
     }
@@ -842,71 +787,122 @@ public class BlockDecorDropper extends BlockDecorDirected
     @Override
     public void update()
     {
-      if((world.isRemote) || (--tick_timer_ > 0)) return;
+      if(world.isRemote) return;
+      if(--open_timer_ < 0) open_timer_ = 0;
+      if((drop_timer_ > 0) && ((--drop_timer_) == 0)) markDirty();
+      if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
-      final IBlockState state = update_blockstate();
-      if(state == null) { block_power_signal_= false; return; }
       boolean dirty = block_power_updated_;
-      boolean trigger = (block_power_signal_ && block_power_updated_);
-      int drop_count = MathHelper.clamp(drop_count_, 1, 64);
-      boolean slot_assigned = false;
-      if(!trigger) {
-        int last_filter_matches_[] = filter_matches_.clone();
-        for(int ci=0; ci<CTRL_SLOTS_SIZE; ++ci) {
-          filter_matches_[ci] = 0;
-          final ItemStack cmp_stack = stacks_.get(CTRL_SLOTS_FIRST+ci);
-          if(cmp_stack.isEmpty()) continue;
-          filter_matches_[ci] = 1;
-          final int cmp_stack_count = cmp_stack.getCount();
-          int dropslot = drop_slot_index_;
-          for(int i=INPUT_SLOTS_FIRST; i<(INPUT_SLOTS_FIRST+INPUT_SLOTS_SIZE); ++i) {
-            final ItemStack inp_stack = stacks_.get(dropslot);
-            if((inp_stack.getCount() < cmp_stack_count) || (!inp_stack.isItemEqual(cmp_stack))) {
-              dropslot = next_slot(dropslot);
-              continue;
+      boolean redstone_trigger = (block_power_signal_ && block_power_updated_);
+      boolean filter_trigger;
+      boolean trigger;
+      int filter_trigger_slots[] = {-1,-1,-1};
+      // Trigger logic
+      {
+        boolean droppable_slot_found = false;
+        for(int i=INPUT_SLOTS_FIRST; i<(INPUT_SLOTS_FIRST+INPUT_SLOTS_SIZE); ++i) {
+          if(stacks_.get(i).getCount() >= drop_count_) { droppable_slot_found = true; break; }
+        }
+        int filter_nset = 0;
+        // From filters / inventory checks
+        {
+          int last_filter_matches_[] = filter_matches_.clone();
+          boolean slot_assigned = false;
+          for(int ci=0; ci<CTRL_SLOTS_SIZE; ++ci) {
+            filter_matches_[ci] = 0;
+            final ItemStack cmp_stack = stacks_.get(CTRL_SLOTS_FIRST+ci);
+            if(cmp_stack.isEmpty()) continue;
+            filter_matches_[ci] = 1;
+            final int cmp_stack_count = cmp_stack.getCount();
+            int slot = drop_slot_index_;
+            for(int i=INPUT_SLOTS_FIRST; i<(INPUT_SLOTS_FIRST+INPUT_SLOTS_SIZE); ++i) {
+              final ItemStack inp_stack = stacks_.get(slot);
+              if((inp_stack.getCount() < cmp_stack_count) || (!inp_stack.isItemEqual(cmp_stack))) { slot = next_slot(slot); continue; }
+              filter_matches_[ci] = 2;
+              filter_trigger_slots[ci] = slot;
+              break;
             }
-            trigger = true;
-            dirty = true;
-            filter_matches_[ci] = 2;
-            if(!slot_assigned) {
-              slot_assigned = true;
-              drop_slot_index_ = dropslot;
-            }
-            break;
+          }
+          int nmatched = 0;
+          for(int i=0; i<filter_matches_.length; ++i) {
+            if(filter_matches_[i] > 0) ++filter_nset;
+            if(filter_matches_[i] > 1) ++nmatched;
+            if(filter_matches_[i] != last_filter_matches_[i]) dirty = true;
+          }
+          filter_trigger = ((filter_nset >0) && (nmatched > 0));
+          if(((drop_logic_ & DROPLOGIC_FILTER_ANDGATE) != 0) && (nmatched != filter_nset)) filter_trigger = false;
+        }
+        // gates
+        {
+          if(filter_nset > 0) {
+            trigger = ((drop_logic_ & DROPLOGIC_EXTERN_ANDGATE) != 0) ? (filter_trigger && redstone_trigger) : (filter_trigger || redstone_trigger);
+          } else {
+            trigger = redstone_trigger;
+          }
+          if(triggered_) { triggered_ = false; trigger = true; }
+          if(!droppable_slot_found) {
+            if(open_timer_> 10) open_timer_ = 10; // override if dropping is not possible at all.
+          } else if(trigger || filter_trigger || redstone_trigger) {
+            open_timer_ = SHUTTER_CLOSE_DELAY;
           }
         }
-        for(int i=0; i<filter_matches_.length; ++i) {
-          if(filter_matches_[i] != last_filter_matches_[i]) { dirty = true; break; }
+        // edge detection for next cycle
+        if(trigger) {
+          boolean tr = world.isBlockPowered(pos);
+          block_power_updated_ = (block_power_signal_ != tr);
+          block_power_signal_ = tr;
+          dirty = true;
         }
       }
+      // block state update
+      final IBlockState state = update_blockstate();
+      if(state == null) { block_power_signal_= false; return; }
+      // dispense action
       if(trigger) {
-        boolean tr = world.isBlockPowered(pos); // effect active next cycle
-        block_power_updated_ = (block_power_signal_ != tr);
-        block_power_signal_ = tr;
-        ItemStack drop_stack = ItemStack.EMPTY;
-        for(int i=0; i<INPUT_SLOTS_SIZE; ++i) {
-          if(drop_slot_index_ >= INPUT_SLOTS_SIZE) drop_slot_index_ = 0;
-          int ic = drop_slot_index_;
-          drop_slot_index_ = next_slot(drop_slot_index_);
-          ItemStack ds = stacks_.get(ic);
-          if((!ds.isEmpty()) && (ds.getCount() >= drop_count)) {
-            drop_stack = ds.splitStack(drop_count);
-            break;
+        // drop stack for non-filter triggers
+        if(!filter_trigger) {
+          Arrays.fill(filter_trigger_slots,-1);
+          for(int i=0; i<INPUT_SLOTS_SIZE; ++i) {
+            if(drop_slot_index_ >= INPUT_SLOTS_SIZE) drop_slot_index_ = 0;
+            int ic = drop_slot_index_;
+            drop_slot_index_ = next_slot(drop_slot_index_);
+            ItemStack ds = stacks_.get(ic);
+            if((!ds.isEmpty()) && (ds.getCount() >= drop_count_)) {
+              filter_trigger_slots[0] = ic;
+              break;
+            }
           }
         }
-        for(int i=0; i<INPUT_SLOTS_SIZE; ++i) {
-          if(!stacks_.get(drop_slot_index_).isEmpty()) break;
-          drop_slot_index_ = next_slot(drop_slot_index_);
-        }
-        if(!drop_stack.isEmpty()) {
-          dirty = true;
-          // todo: Check inventory insert before ...
-          drop(world, pos, state.getValue(FACING), drop_stack, drop_speed_, drop_xdev_, drop_ydev_, drop_noise_);
+        // drop action
+        if(drop_timer_ <= 0) {
+          boolean dropped = false;
+          for(int i = 0; i < filter_trigger_slots.length; ++i) {
+            if(filter_trigger_slots[i] < 0) continue;
+            ItemStack ds = stacks_.get(filter_trigger_slots[i]);
+            if(ds.getCount() >= drop_count_) {
+              ItemStack drop_stack = ds.splitStack(drop_count_);
+              if(!drop_stack.isEmpty()) {
+                dirty = true;
+                drop(world, pos, state.getValue(FACING), drop_stack, drop_speed_, drop_xdev_, drop_ydev_, drop_noise_);
+                dropped = true;
+              }
+            }
+          }
+          // cooldown
+          if(dropped) drop_timer_ = DROP_PERIOD_OFFSET + drop_period_ * 2; // 0.1s time base -> 100%===10s
+          // drop sound
+          if(dropped && ((drop_logic_ & DROPLOGIC_SILENT_DROP) == 0)) {
+            world.playSound(null, pos, SoundEvents.BLOCK_CLOTH_STEP, SoundCategory.BLOCKS, 0.1f, 4f);
+          }
+          // advance to next nonempty slot.
+          for(int i = 0; i < INPUT_SLOTS_SIZE; ++i) {
+            if(!stacks_.get(drop_slot_index_).isEmpty()) break;
+            drop_slot_index_ = next_slot(drop_slot_index_);
+          }
         }
       }
       if(dirty) markDirty();
       if(trigger && (tick_timer_ > 10)) tick_timer_ = 10;
     }
   }
-
 }

@@ -10,6 +10,16 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+                -------------------------------------------------------------------
+    - v1.0.6    [R] Release based on v1.0.6-b1. Release-to-release changes:
+                    * Fixed FML remapping issue (COULD CAUSE CRASHES).
+                    * Small waste incinerator added.
+                    * Lang files updated/corrections.
+                    * Metal ladder easier to break.
+                -------------------------------------------------------------------
+                [A] Added factory dropper (config:experimental).
+                [C] Thx to abdurraslan for the detailed issue #25.
+
     - v1.0.6-b1 [A] Added small waste incinerator (delayed fifo-buffered item disposal).
                 [M] Fixed item/block name capitalization (by Voxelo).
                 [M] Metal ladders are easier to break/harvest.
