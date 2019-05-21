@@ -118,11 +118,23 @@ public class ModConfig
 
     @Config.Comment({"Disable check valve, and redstone controlled valves."})
     @Config.Name("Without valves")
+    @Config.RequiresMcRestart
     public boolean without_valves = false;
 
     @Config.Comment({"Disable the passive fluid accumulator."})
     @Config.Name("Without fluid accumulator")
+    @Config.RequiresMcRestart
     public boolean without_passive_fluid_accumulator = false;
+
+    @Config.Comment({"Disable item disposal/trash/void incinerator device."})
+    @Config.Name("Without waste incinerator")
+    @Config.RequiresMcRestart
+    public boolean without_waste_incinerator = false;
+
+    @Config.Comment({"Disable decorative sign plates (caution, hazards, etc)."})
+    @Config.Name("Without signs")
+    @Config.RequiresMcRestart
+    public boolean without_sign_plates = false;
   }
 
   @Config.Comment({
@@ -292,9 +304,11 @@ public class ModConfig
     if(optout.without_lab_furnace && ((block instanceof BlockDecorFurnace)) && (!(block instanceof BlockDecorFurnaceElectrical))) return true;
     if(optout.without_electrical_furnace && (block instanceof BlockDecorFurnaceElectrical)) return true;
     if(optout.without_passive_fluid_accumulator && (block instanceof BlockDecorPassiveFluidAccumulator)) return true;
+    if(optout.without_waste_incinerator && (block instanceof BlockDecorWasteIncinerator)) return true;
     if(optout.without_windows && rn.endsWith("_window")) return true;
     if(optout.without_light_sources && rn.endsWith("_light")) return true;
     if(optout.without_ladders && (block instanceof BlockDecorLadder)) return true;
+    if(optout.without_sign_plates && rn.startsWith("sign_")) return true;
     if(optout.without_walls && rn.endsWith("_wall")) return true;
     if(optout.without_stairs && rn.endsWith("_stairs")) return true;
     if(optout.without_valves && rn.contains("_pipe_valve")) return true;

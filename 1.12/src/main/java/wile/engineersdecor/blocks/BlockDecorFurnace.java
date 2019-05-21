@@ -79,8 +79,7 @@ public class BlockDecorFurnace extends BlockDecorDirected
   { return (state.getValue(FACING).getHorizontalIndex() & 0x3) | (state.getValue(LIT) ? 4 : 0); }
 
   @Override
-  @SuppressWarnings("deprecation")
-  public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
+  public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
   { return getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite()).withProperty(LIT, false); }
 
   @Override
@@ -453,12 +452,6 @@ public class BlockDecorFurnace extends BlockDecorDirected
     public static final int AUX_0_SLOT_NO           = 9;
     public static final int AUX_1_SLOT_NO           =10;
 
-    private static final int[] SLOTS_TOP    = new int[] {FIFO_INPUT_1_SLOT_NO};
-    private static final int[] SLOTS_BOTTOM = new int[] {FIFO_OUTPUT_1_SLOT_NO};
-    private static final int[] SLOTS_SIDES  = new int[] {FIFO_FUEL_1_SLOT_NO};
-    private final IItemHandler sided_itemhandler_top_   = new SidedInvWrapper(this, EnumFacing.UP);
-    private final IItemHandler sided_itemhandler_down_  = new SidedInvWrapper(this, EnumFacing.DOWN);
-    private final IItemHandler sided_itemhandler_sides_ = new SidedInvWrapper(this, EnumFacing.WEST);
     private static double proc_fuel_efficiency_ = 1.0;
     private static int proc_speed_interval_ = DEFAULT_SPEED_INTERVAL;
     private static int boost_energy_consumption = DEFAULT_BOOST_ENERGY * TICK_INTERVAL;
@@ -726,6 +719,13 @@ public class BlockDecorFurnace extends BlockDecorDirected
 
     // ISidedInventory ----------------------------------------------------------------------------
 
+    private static final int[] SLOTS_TOP    = new int[] {FIFO_INPUT_1_SLOT_NO};
+    private static final int[] SLOTS_BOTTOM = new int[] {FIFO_OUTPUT_1_SLOT_NO};
+    private static final int[] SLOTS_SIDES  = new int[] {FIFO_FUEL_1_SLOT_NO};
+    private final IItemHandler sided_itemhandler_top_   = new SidedInvWrapper(this, EnumFacing.UP);
+    private final IItemHandler sided_itemhandler_down_  = new SidedInvWrapper(this, EnumFacing.DOWN);
+    private final IItemHandler sided_itemhandler_sides_ = new SidedInvWrapper(this, EnumFacing.WEST);
+
     @Override
     public int[] getSlotsForFace(EnumFacing side)
     {
@@ -747,21 +747,27 @@ public class BlockDecorFurnace extends BlockDecorDirected
 
     // IEnergyStorage ----------------------------------------------------------------------------
 
+    @Override
     public boolean canExtract()
     { return false; }
 
+    @Override
     public boolean canReceive()
     { return true; }
 
+    @Override
     public int getMaxEnergyStored()
     { return boost_energy_consumption; }
 
+    @Override
     public int getEnergyStored()
     { return boost_energy_; }
 
+    @Override
     public int extractEnergy(int maxExtract, boolean simulate)
     { return 0; }
 
+    @Override
     public int receiveEnergy(int maxReceive, boolean simulate)
     { // only speedup support, no buffering, not in nbt -> no markdirty
       if((boost_energy_ >= boost_energy_consumption) || (maxReceive < boost_energy_consumption)) return 0;

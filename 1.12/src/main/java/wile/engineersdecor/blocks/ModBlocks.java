@@ -12,13 +12,13 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.tileentity.TileEntity;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.detail.ModAuxiliaries;
 import wile.engineersdecor.detail.ModConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
@@ -56,9 +56,9 @@ public class ModBlocks
 
   public static final BlockDecorWall CONCRETE_WALL = new BlockDecorWall("concrete_wall", BlockDecor.CFG_DEFAULT, Material.ROCK, 5f, 20f, SoundType.STONE);
 
-  public static final BlockDecorLadder METAL_RUNG_LADDER = new BlockDecorLadder("metal_rung_ladder", 0, Material.IRON, 1.0f, 20f, SoundType.METAL);
-  public static final BlockDecorLadder METAL_RUNG_STEPS = new BlockDecorLadder("metal_rung_steps", 0, Material.IRON, 1.0f, 20f, SoundType.METAL);
-  public static final BlockDecorLadder TREATED_WOOD_LADDER = new BlockDecorLadder("treated_wood_ladder", 0, Material.WOOD, 1.0f, 10f, SoundType.WOOD);
+  public static final BlockDecorLadder METAL_RUNG_LADDER = new BlockDecorLadder("metal_rung_ladder", 0, Material.IRON, 0.5f, 20f, SoundType.METAL);
+  public static final BlockDecorLadder METAL_RUNG_STEPS = new BlockDecorLadder("metal_rung_steps", 0, Material.IRON, 0.5f, 20f, SoundType.METAL);
+  public static final BlockDecorLadder TREATED_WOOD_LADDER = new BlockDecorLadder("treated_wood_ladder", 0, Material.WOOD, 0.5f, 10f, SoundType.WOOD);
 
   public static final BlockDecorGlassBlock PANZERGLASS_BLOCK = new BlockDecorGlassBlock("panzerglass_block", 0, Material.GLASS, 0.8f, 2000f, SoundType.GLASS);
 
@@ -162,14 +162,15 @@ public class ModBlocks
 
   public static final BlockDecorFurnace SMALL_LAB_FURNACE = new BlockDecorFurnace(
     "small_lab_furnace",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|
+    BlockDecor.CFG_ELECTRICAL,
     Material.IRON, 0.35f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(1,0,1, 15,15,16)
   );
 
   public static final BlockDecorFurnaceElectrical SMALL_ELECTRICAL_FURNACE = new BlockDecorFurnaceElectrical(
     "small_electrical_furnace",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_ELECTRICAL,
     Material.IRON, 0.35f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   );
@@ -243,9 +244,16 @@ public class ModBlocks
 
   public static final BlockDecorWasteIncinerator SMALL_WASTE_INCINERATOR = new BlockDecorWasteIncinerator(
     "small_waste_incinerator",
-    BlockDecor.CFG_DEFAULT,
+    BlockDecor.CFG_DEFAULT|BlockDecor.CFG_ELECTRICAL,
     Material.IRON, 0.3f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+  );
+
+  public static final BlockDecorDropper FACTORY_DROPPER = new BlockDecorDropper(
+    "factory_dropper",
+    BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_REDSTONE_CONTROLLED,
+    Material.IRON, 0.3f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,15)
   );
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -276,6 +284,9 @@ public class ModBlocks
   );
   private static final TileEntityRegistrationData WASTE_INCINERATOR_TEI = new TileEntityRegistrationData(
     BlockDecorWasteIncinerator.BTileEntity.class, "te_small_waste_incinerator"
+  );
+  private static final TileEntityRegistrationData FACTORY_DROPPER_TEI = new TileEntityRegistrationData(
+    BlockDecorDropper.BTileEntity.class, "te_factory_dropper"
   );
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -319,12 +330,13 @@ public class ModBlocks
     STRAIGHT_CHECK_VALVE, STRAIGHT_REDSTONE_VALVE, STRAIGHT_REDSTONE_ANALOG_VALVE, STRAIGHT_PIPE_VALVE_TEI,
     PASSIVE_FLUID_ACCUMULATOR, PASSIVE_FLUID_ACCUMULATOR_TEI,
     SMALL_ELECTRICAL_FURNACE, SMALL_ELECTRICAL_FURNACE_TEI,
-    SIGN_HOTWIRE, SIGN_DANGER
+    SIGN_HOTWIRE, SIGN_DANGER,
+    SMALL_WASTE_INCINERATOR, WASTE_INCINERATOR_TEI,
   };
 
   private static final Object dev_content[] = {
     SIGN_MINDSTEP,
-    SMALL_WASTE_INCINERATOR, WASTE_INCINERATOR_TEI
+    FACTORY_DROPPER, FACTORY_DROPPER_TEI
   };
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -346,7 +358,7 @@ public class ModBlocks
     final boolean woor = ModConfig.isWithoutOptOutRegistration();
     for(Object e:content) {
       if(e instanceof Block) {
-        if((!woor) || (!ModConfig.isOptedOut((Block)e))) {
+        if((!woor) || (!ModConfig.isOptedOut((Block)e)) || (e==SIGN_MODLOGO)) {
           registeredBlocks.add((Block) e);
         } else {
           ++num_block_registrations_skipped;

@@ -70,8 +70,7 @@ public class BlockDecorWasteIncinerator extends BlockDecor
   { return (state.getValue(LIT) ? 4 : 0); }
 
   @Override
-  @SuppressWarnings("deprecation")
-  public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
+  public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
   { return getDefaultState().withProperty(LIT, false); }
 
   @Override
@@ -304,7 +303,7 @@ public class BlockDecorWasteIncinerator extends BlockDecor
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class BTileEntity extends TileEntity implements ITickable, ISidedInventory, IEnergyStorage, IItemHandler
+  public static class BTileEntity extends TileEntity implements ITickable, ISidedInventory, IEnergyStorage
   {
     public static final int TICK_INTERVAL = 20;
     public static final int ENERGIZED_TICK_INTERVAL = 5;
@@ -320,7 +319,7 @@ public class BlockDecorWasteIncinerator extends BlockDecor
     private int tick_timer_;
     private int check_timer_;
     private int energy_stored_;
-    protected NonNullList<ItemStack> stacks_;
+    protected NonNullList<ItemStack> stacks_ = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
 
     public static void on_config(int speed_percent, int fuel_efficiency_percent, int boost_energy_per_tick)
     {
@@ -340,9 +339,10 @@ public class BlockDecorWasteIncinerator extends BlockDecor
 
     public void readnbt(NBTTagCompound compound)
     {
-      reset();
-      ItemStackHelper.loadAllItems(compound, stacks_);
-      while(stacks_.size() < NUM_OF_SLOTS) stacks_.add(ItemStack.EMPTY);
+      NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
+      ItemStackHelper.loadAllItems(compound, stacks);
+      while(stacks.size() < NUM_OF_SLOTS) stacks.add(ItemStack.EMPTY);
+      stacks_ = stacks;
       energy_stored_ = compound.getInteger("Energy");
     }
 
@@ -436,7 +436,7 @@ public class BlockDecorWasteIncinerator extends BlockDecor
 
     @Override
     public ItemStack getStackInSlot(int index)
-    { return (index < getSizeInventory()) ? stacks_.get(index) : ItemStack.EMPTY; }
+    { return ((index >= 0) && (index < getSizeInventory())) ? stacks_.get(index) : ItemStack.EMPTY; }
 
     @Override
     public ItemStack decrStackSize(int index, int count)
@@ -449,8 +449,8 @@ public class BlockDecorWasteIncinerator extends BlockDecor
     @Override
     public void setInventorySlotContents(int index, ItemStack stack)
     {
-      stacks_.set(index, stack);
       if(stack.getCount() > getInventoryStackLimit()) stack.setCount(getInventoryStackLimit());
+      stacks_.set(index, stack);
       markDirty();
     }
 
@@ -476,7 +476,7 @@ public class BlockDecorWasteIncinerator extends BlockDecor
 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack)
-    { return index==0; }
+    { return (index==0); }
 
     @Override
     public int getField(int id)
@@ -512,21 +512,27 @@ public class BlockDecorWasteIncinerator extends BlockDecor
 
     // IEnergyStorage ----------------------------------------------------------------------------
 
+    @Override
     public boolean canExtract()
     { return false; }
 
+    @Override
     public boolean canReceive()
     { return true; }
 
+    @Override
     public int getMaxEnergyStored()
     { return MAX_ENERGY_BUFFER; }
 
+    @Override
     public int getEnergyStored()
     { return energy_stored_; }
 
+    @Override
     public int extractEnergy(int maxExtract, boolean simulate)
     { return 0; }
 
+    @Override
     public int receiveEnergy(int maxReceive, boolean simulate)
     {
       if(energy_stored_ >= MAX_ENERGY_BUFFER) return 0;
@@ -538,74 +544,89 @@ public class BlockDecorWasteIncinerator extends BlockDecor
 
     // IItemHandler  --------------------------------------------------------------------------------
 
-    @Override
-    public int getSlots()
-    { return 1; }
-
-    @Override
-    public int getSlotLimit(int index)
-    { return getInventoryStackLimit(); }
-
-    @Override
-    public boolean isItemValid(int slot, @Nonnull ItemStack stack)
-    { return true; }
-
-    @Override
-    @Nonnull
-    public ItemStack insertItem(int index, @Nonnull ItemStack stack, boolean simulate)
+    protected static class BItemHandler implements IItemHandler
     {
-      if(stack.isEmpty()) return ItemStack.EMPTY;
-      if(index != 0) return ItemStack.EMPTY;
-      int slotno = 0;
-      ItemStack slotstack = getStackInSlot(slotno);
-      if(!slotstack.isEmpty())
+      private BTileEntity te;
+
+      BItemHandler(BTileEntity te)
+      { this.te = te; }
+
+      @Override
+      public int getSlots()
+      { return 1; }
+
+      @Override
+      public int getSlotLimit(int index)
+      { return te.getInventoryStackLimit(); }
+
+      @Override
+      public boolean isItemValid(int slot, @Nonnull ItemStack stack)
+      { return true; }
+
+      @Override
+      @Nonnull
+      public ItemStack insertItem(int index, @Nonnull ItemStack stack, boolean simulate)
       {
-        if(slotstack.getCount() >= Math.min(slotstack.getMaxStackSize(), getSlotLimit(index))) return stack;
-        if(!ItemHandlerHelper.canItemStacksStack(stack, slotstack)) return stack;
-        if(!canInsertItem(slotno, stack, EnumFacing.UP) || (!isItemValidForSlot(slotno, stack))) return stack;
-        int n = Math.min(stack.getMaxStackSize(), getSlotLimit(index)) - slotstack.getCount();
-        if(stack.getCount() <= n) {
-          if(!simulate) {
-            ItemStack copy = stack.copy();
-            copy.grow(slotstack.getCount());
-            setInventorySlotContents(slotno, copy);
-          }
-          return ItemStack.EMPTY;
-        } else {
-          stack = stack.copy();
-          if(!simulate) {
-            ItemStack copy = stack.splitStack(n);
-            copy.grow(slotstack.getCount());
-            setInventorySlotContents(slotno, copy);
-            return stack;
+        if(stack.isEmpty()) return ItemStack.EMPTY;
+        if(index != 0) return ItemStack.EMPTY;
+        int slotno = 0;
+        ItemStack slotstack = getStackInSlot(slotno);
+        if(!slotstack.isEmpty())
+        {
+          if(slotstack.getCount() >= Math.min(slotstack.getMaxStackSize(), getSlotLimit(index))) return stack;
+          if(!ItemHandlerHelper.canItemStacksStack(stack, slotstack)) return stack;
+          if(!te.canInsertItem(slotno, stack, EnumFacing.UP) || (!te.isItemValidForSlot(slotno, stack))) return stack;
+          int n = Math.min(stack.getMaxStackSize(), getSlotLimit(index)) - slotstack.getCount();
+          if(stack.getCount() <= n) {
+            if(!simulate) {
+              ItemStack copy = stack.copy();
+              copy.grow(slotstack.getCount());
+              te.setInventorySlotContents(slotno, copy);
+            }
+            return ItemStack.EMPTY;
           } else {
-            stack.shrink(n);
-            return stack;
-          }
-        }
-      } else {
-        if(!canInsertItem(slotno, stack, EnumFacing.UP) || (!isItemValidForSlot(slotno, stack))) return stack;
-        int n = Math.min(stack.getMaxStackSize(), getSlotLimit(index));
-        if(n < stack.getCount()) {
-          stack = stack.copy();
-          if(!simulate) {
-            setInventorySlotContents(slotno, stack.splitStack(n));
-            return stack;
-          } else {
-            stack.shrink(n);
-            return stack;
+            stack = stack.copy();
+            if(!simulate) {
+              ItemStack copy = stack.splitStack(n);
+              copy.grow(slotstack.getCount());
+              te.setInventorySlotContents(slotno, copy);
+              return stack;
+            } else {
+              stack.shrink(n);
+              return stack;
+            }
           }
         } else {
-          if(!simulate) setInventorySlotContents(slotno, stack);
-          return ItemStack.EMPTY;
+          if(!te.canInsertItem(slotno, stack, EnumFacing.UP) || (!te.isItemValidForSlot(slotno, stack))) return stack;
+          int n = Math.min(stack.getMaxStackSize(), getSlotLimit(index));
+          if(n < stack.getCount()) {
+            stack = stack.copy();
+            if(!simulate) {
+              te.setInventorySlotContents(slotno, stack.splitStack(n));
+              return stack;
+            } else {
+              stack.shrink(n);
+              return stack;
+            }
+          } else {
+            if(!simulate) te.setInventorySlotContents(slotno, stack);
+            return ItemStack.EMPTY;
+          }
         }
       }
+
+      @Override
+      @Nonnull
+      public ItemStack extractItem(int index, int amount, boolean simulate)
+      { return ItemStack.EMPTY; }
+
+      @Override
+      @Nonnull
+      public ItemStack getStackInSlot(int index)
+      { return te.getStackInSlot(index); }
     }
 
-    @Override
-    @Nonnull
-    public ItemStack extractItem(int index, int amount, boolean simulate)
-    { return ItemStack.EMPTY; }
+    private BItemHandler item_handler_ = new BItemHandler(this);
 
     // Capability export ----------------------------------------------------------------------------
 
@@ -619,7 +640,7 @@ public class BlockDecorWasteIncinerator extends BlockDecor
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
     {
       if((facing != null) && (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)) {
-        return (T)this;
+        return (T)item_handler_;
       } else if(capability == CapabilityEnergy.ENERGY) {
         return (T)this;
       } else {
