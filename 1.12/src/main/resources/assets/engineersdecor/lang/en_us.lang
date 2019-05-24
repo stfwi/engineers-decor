@@ -122,7 +122,12 @@ tile.engineersdecor.passive_fluid_accumulator.help=§6Vacuum suction based fluid
                                                    Drains fluids from adjacent tanks when being drained from the output port by a pump.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.factory_dropper.name=Factory Dropper
-tile.engineersdecor.factory_dropper.help=§6Dropper suitable for advanced factory automation.§r
+tile.engineersdecor.factory_dropper.help=§6Dropper suitable for advanced factory automation.§r Has twelve round-robin selected slots. \
+                                         Drop force, angle, stack size, and cool-down delay adjustable in the GUI. Three stack compare \
+                                         solts with logical AND or OR can be used as internal trigger source. Internal trigger can be \
+                                         AND'ed or OR'ed with the external redstone signal trigger. Trigger simulation buttons for testing. \
+                                         Pre-opens shutter door when internal trigger conditions are met. Drops all matching stacks \
+                                         simultaneously. Click on all elements in the GUI to see how it works.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.sign_decor.name=Sign Plate (Engineer's decor)
 tile.engineersdecor.sign_decor.help=§6This should not be craftable or visible in JEI. Used for creative tab and screenshots.

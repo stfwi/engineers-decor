@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.12.2": {
+    "1.0.7-b1": "[A] Factory dropper (config:experimental) button placement fixed, GUI vs external view x/y markers added, internal trigger logic simplified. Thx @overchoice for beta testing!",
     "1.0.6": "[R] Release based on v1.0.6-b1. Release-to-release changes: * Fixed FML remapping issue (COULD CAUSE CRASHES). * Small waste incinerator added. * Lang files updated/corrections. * Metal ladder easier to break.\n[A] Added factory dropper (config:experimental).\n[C] Thx to abdurraslan for the detailed issue #25.",
     "1.0.6-b1": "[A] Added small waste incinerator (delayed fifo-buffered item disposal).\n[M] Fixed item/block name capitalization (by Voxelo).\n[M] Metal ladders are easier to break/harvest.\n[F] Fixed FML remapping issue by using dedicated IItemHandler instances.",
     "1.0.5": "[R] Release based on v1.0.5-b1. Release-to-release changes: * Small electrical passthrough-furnace added. * Passive fluid accumulator added. * Config options added. * Sign plates added. * Minor bug fixes.\n[A] Added sign \"Electrical hazzard\"/\"Caution hot wire\".\n[A] Added sign \"Caution dangerous there\" (skull/bones).",
@@ -37,6 +38,7 @@
     "1.0.0-b1": "[A] Initial structure.\n[A] Added clinker bricks and clinker brick stairs.\n[A] Added slag bricks and slag brick stairs.\n[A] Added metal rung ladder.\n[A] Added staggered metal steps ladder.\n[A] Added treated wood ladder.\n[A] Added treated wood pole.\n[A] Added treated wood table."
   },
   "1.13.2": {
+    "1.0.4-b4": "[U] Updated forge dependency: REQUIRES FORGE >= 1.13.2-25.0.214.\n[A] Added sign \"Electrical hazzard\"/\"Caution hot wire\".\n[A] Added sign \"Caution dangerous there\" (skull/bones).\n[A] Added horizontal steel double-T support beam with pole connections.",
     "1.0.4-b3": "[V] Version assignment: All features of v1.0.4-b3-1.12.2 that can be ported to 1.13.2 implemented/prepared, therefore version re-iterated.\n[A] Lab furnace ported to 1.13.\n[A] Treated wood crafting table: Added crafting table history/quick craft.\n[A] Treated wood stool: Sitting on the stool implemented.\n[A] Steel poles (thick/thin) with support heads/foots added.\n[E] Prepared position dependent texture variation for walls (clinker, slag, rebar concrete), missing one forge feature yet for completion.\n[E] Prepared multi-layer rendering for windows, needs forge feature implementation.",
     "1.0.2-b3": "[A] Added treated wood window.\n[A] Added treated wood pole support.\n[A] Added treated wood pole head.\n[A] Added steel framed window.",
     "1.0.2-b2": "[A] Added wall decomposition recipes.\n[A] Added slag brick wall.\n[M] Climbing/descending mod ladders is faster when looking up or down and not sneaking.\n[M] Panzer glass material definition changed.",
@@ -47,8 +49,8 @@
   },
   "promos": {
     "1.12.2-recommended": "1.0.6",
-    "1.12.2-latest": "1.0.6",
+    "1.12.2-latest": "1.0.7-b1",
     "1.13.2-recommended": "",
-    "1.13.2-latest": "1.0.4-b3"
+    "1.13.2-latest": "1.0.4-b4"
   }
 }

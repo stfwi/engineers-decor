@@ -10,6 +10,10 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+    - v1.0.7-b1 [A] Factory dropper (config:experimental) button placement fixed,
+                    GUI vs external view x/y markers added, internal trigger logic
+                    simplified. Thx @overchoice for beta testing!
+
                 -------------------------------------------------------------------
     - v1.0.6    [R] Release based on v1.0.6-b1. Release-to-release changes:
                     * Fixed FML remapping issue (COULD CAUSE CRASHES).

@@ -10,6 +10,11 @@ Mod sources for Minecraft version 1.13.2.
 ----
 ## Revision history
 
+    - v1.0.4-b4 [U] Updated forge dependency: REQUIRES FORGE >= 1.13.2-25.0.214.
+                [A] Added sign "Electrical hazzard"/"Caution hot wire".
+                [A] Added sign "Caution dangerous there" (skull/bones).
+                [A] Added horizontal steel double-T support beam with pole connections.
+
     - v1.0.4-b3 [V] Version assignment: All features of v1.0.4-b3-1.12.2 that can be ported
                     to 1.13.2 implemented/prepared, therefore version re-iterated.
                 [A] Lab furnace ported to 1.13.
