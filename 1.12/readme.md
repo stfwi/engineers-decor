@@ -10,7 +10,13 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
-    - v1.0.7-b1 [A] Factory dropper (config:experimental) button placement fixed,
+    - v1.0.7-b2 [A] Added Defense System Warning sign (design by J. Carver).
+                [M] Factory dropper non-experimental now. GUI click area tuning.
+                    "Fast drop" symbol replaced from arrow to dog icon (thx
+                    overchoice for that icon).
+                [M] Lang files updated.
+
+    - v1.0.7-b1 [M] Factory dropper (config:experimental) button placement fixed,
                     GUI vs external view x/y markers added, internal trigger logic
                     simplified. Thx @overchoice for beta testing!
 
@@ -37,7 +43,7 @@ Mod sources for Minecraft version 1.12.2.
                     * Sign plates added.
                     * Minor bug fixes.
                 -------------------------------------------------------------------
-                [A] Added sign "Electrical hazzard"/"Caution hot wire".
+                [A] Added sign "Electrical hazard"/"Caution hot wire".
                 [A] Added sign "Caution dangerous there" (skull/bones).
 
     - v1.0.5-b1 [A] Added passive fluid accumulator.

@@ -132,11 +132,13 @@ tile.engineersdecor.factory_dropper.help=§6Dropper suitable for advanced factor
 tile.engineersdecor.sign_decor.name=Sign Plate (Engineer's decor)
 tile.engineersdecor.sign_decor.help=§6This should not be craftable or visible in JEI. Used for creative tab and screenshots.
 tile.engineersdecor.sign_hotwire.name=Sign "Caution Hot Wire"
-tile.engineersdecor.sign_hotwire.help=§6Placable on walls (horizontally).
+tile.engineersdecor.sign_hotwire.help=§6Electrical hazard warning. Don't forget to place around HV, or you'll have a mark in the next audit.
 tile.engineersdecor.sign_mindstep.name=Sign "Mind The Step"
 tile.engineersdecor.sign_mindstep.help=§6Placable on walls (horizontally).
-tile.engineersdecor.sign_danger.name=Sign "Caution Really dangerous there"
-tile.engineersdecor.sign_danger.help=§6Placable on walls (horizontally).
+tile.engineersdecor.sign_danger.name=Sign "Caution Really Dangerous There"
+tile.engineersdecor.sign_danger.help=§6General danger warning.
+tile.engineersdecor.sign_defense.name=Sign "Caution Defense System Ahead"
+tile.engineersdecor.sign_defense.help=§6Warning sign for turrets, Tesla Coils, and traps.
 
 #-----------------------------------------------------------------------------------------------------------
 # EOF

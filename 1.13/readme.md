@@ -11,7 +11,7 @@ Mod sources for Minecraft version 1.13.2.
 ## Revision history
 
     - v1.0.4-b4 [U] Updated forge dependency: REQUIRES FORGE >= 1.13.2-25.0.214.
-                [A] Added sign "Electrical hazzard"/"Caution hot wire".
+                [A] Added sign "Electrical hazard"/"Caution hot wire".
                 [A] Added sign "Caution dangerous there" (skull/bones).
                 [A] Added horizontal steel double-T support beam with pole connections.
 

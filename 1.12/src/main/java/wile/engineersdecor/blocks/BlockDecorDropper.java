@@ -231,9 +231,9 @@ public class BlockDecorDropper extends BlockDecorDirected
       } else if(isPointInRegion(129, 50, 44, 10, mouseX, mouseY)) {
         int period = (mx-135);
         if(period < -1) {
-          period = container.fields_[6] - 1; // -
+          period = container.fields_[6] - 3; // -
         } else if(period >= 34) {
-          period = container.fields_[6] + 1; // +
+          period = container.fields_[6] + 3; // +
         } else {
           period = (int)(0.5 + ((100.0 * period)/34));
         }
@@ -306,7 +306,7 @@ public class BlockDecorDropper extends BlockDecorDirected
       }
       // drop period
       {
-        int px = ((container.fields_[6] * 34) / 100);
+        int px = (int)Math.round(((33.0 * container.fields_[6]) / 100) + 1);
         int x = x0 + 134 - 2 + MathHelper.clamp(px, 0, 33);
         int y = y0 + 56;
         drawTexturedModalRect(x, y, 190, 31, 5, 5);

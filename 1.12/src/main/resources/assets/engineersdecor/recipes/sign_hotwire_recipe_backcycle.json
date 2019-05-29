@@ -3,12 +3,12 @@
     {
       "type": "engineersdecor:grc",
       "result": "engineersdecor:sign_hotwire",
-      "required": ["engineersdecor:sign_danger"]
+      "required": ["engineersdecor:sign_defense"]
     }
   ],
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    { "item": "engineersdecor:sign_danger" }
+    { "item": "engineersdecor:sign_defense" }
   ],
   "result": {
     "item": "engineersdecor:sign_hotwire"
