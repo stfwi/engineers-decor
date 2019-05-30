@@ -48,10 +48,12 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected
   public boolean hasTileEntity(IBlockState state)
   { return true; }
 
+  @Override
   @Nullable
   public TileEntity createTileEntity(World world, IBlockState state)
   { return new BlockDecorPassiveFluidAccumulator.BTileEntity(); }
 
+  @Override
   public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
   {
     if(world.isRemote) return true;
@@ -61,6 +63,7 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected
     return true;
   }
 
+  @Override
   public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos)
   { TileEntity te = world.getTileEntity(pos); if(te instanceof BlockDecorPipeValve.BTileEntity) ((BTileEntity)te).block_changed(); }
 

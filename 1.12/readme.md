@@ -10,6 +10,8 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+    ~ v1.0.7-b3 [A] Added standalone recipes for signs and factory dropper.
+
     - v1.0.7-b2 [A] Added Defense System Warning sign (design by J. Carver).
                 [M] Factory dropper non-experimental now. GUI click area tuning.
                     "Fast drop" symbol replaced from arrow to dog icon (thx

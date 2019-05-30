@@ -123,6 +123,17 @@ looking manufacturing contraptions. Current feature set:
   is full, the oldest stack will be disposed. The processing speed can be increased
   by connecting electrical RF/FE power.
 
+- *Factory dropper*: Dropper with GUI configurable drop force, direction, stack size,
+  trigger cool-down delay, and trigger logic. Three trigger slots ("filter slots") can
+  be used as internal trigger. They emit an internal signal if their item is found in
+  in the dropper inventory (also at least the stack size of a trigger slot). Internal
+  triggers can be easily combined with the external redstone signal trigger using
+  logical *AND* or *OR* gates. If internal triggers match, the dropper will spit out
+  exactly the stacks in these slots. That allows to drop e.g. always nine lapis,
+  redstone, nuggets, etc on a conveyor to feed a compression metal press - instantly
+  and automatically after nine of these items have been inserted into the dropper.
+
+
 More to come slowly but steadily.
 
 ----

@@ -96,6 +96,7 @@ public class BlockDecorFurnace extends BlockDecorDirected
   public boolean hasTileEntity(IBlockState state)
   { return true; }
 
+  @Override
   @Nullable
   public TileEntity createTileEntity(World world, IBlockState state)
   { return new BlockDecorFurnace.BTileEntity(); }

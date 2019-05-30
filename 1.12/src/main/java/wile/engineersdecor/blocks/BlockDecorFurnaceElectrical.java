@@ -50,6 +50,7 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
     super(registryName, config, material, hardness, resistance, sound, unrotatedAABB);
   }
 
+  @Override
   @Nullable
   public TileEntity createTileEntity(World world, IBlockState state)
   { return new BlockDecorFurnaceElectrical.BTileEntity(); }

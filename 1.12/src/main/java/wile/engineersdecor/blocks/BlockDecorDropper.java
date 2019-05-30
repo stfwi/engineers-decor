@@ -91,6 +91,7 @@ public class BlockDecorDropper extends BlockDecorDirected
   public boolean hasTileEntity(IBlockState state)
   { return true; }
 
+  @Override
   @Nullable
   public TileEntity createTileEntity(World world, IBlockState state)
   { return new BlockDecorDropper.BTileEntity(); }
