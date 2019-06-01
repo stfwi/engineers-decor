@@ -10,7 +10,18 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
-    ~ v1.0.7-b3 [A] Added standalone recipes for signs and factory dropper.
+                -------------------------------------------------------------------
+    - v1.0.7    [R] Release based on v1.0.7-b2. Release-to-release changes:
+                    * Factory dropper added.
+                    * Defense system warning sign added.
+                    * Warning sign backgrounds adapted.
+                    * Standalone recipes added.
+                    * Lang files updated.
+                -------------------------------------------------------------------
+                [A] Added standalone recipes for signs, factory dropper, and
+                    electrical furnace.
+                [M] Adapted "Caution" sign backgrounds to the yellow defense
+                    system warning background.
 
     - v1.0.7-b2 [A] Added Defense System Warning sign (design by J. Carver).
                 [M] Factory dropper non-experimental now. GUI click area tuning.

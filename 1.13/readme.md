@@ -10,6 +10,17 @@ Mod sources for Minecraft version 1.13.2.
 ----
 ## Revision history
 
+    - v1.0.7-b3 [V] Version assignment: All features of v1.0.7-b3-1.12.2 that can be ported
+                    to 1.13.2 implemented/prepared, therefore version re-assigned.
+                [A] Sign background colors adapted.
+
+    - v1.0.4-b6 [A] Added Small Electrical Furnace.
+                [A] Added Small Waste Incinerator.
+                [A] Experimental: Added fluid check valve.
+                [A] Experimental: Added fluid redstone controlled valve.
+                [A] Experimental: Added fluid redstone analog valve.
+                [A] Experimental: Added passive fluid accumulator.
+
     - v1.0.4-b5 [A] Added Factory Dropper.
                 [A] Added "Caution Defense System Ahead" sign.
 
