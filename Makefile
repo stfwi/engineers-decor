@@ -23,7 +23,7 @@ init-1.12:			; -@cd 1.12; make -s init
 init-1.13:			; -@cd 1.13; make -s init
 dist-1.12:			; @cd 1.12; make -s dist
 dist-1.13:			; @cd 1.13; make -s dist
-dist: dist-1.12 dist-1.13 | update-json
+dist:           ; @echo "First change to specific version directory."
 
 update-json:
 	@echo "[main] Update update.json ..."

@@ -242,6 +242,13 @@ public class ModBlocks
     ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
   );
 
+  public static final BlockDecorDirected SIGN_DEFENSE = new BlockDecorDirected(
+    "sign_defense",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
+    Material.WOOD, 0.1f, 1f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
+  );
+
   public static final BlockDecorWasteIncinerator SMALL_WASTE_INCINERATOR = new BlockDecorWasteIncinerator(
     "small_waste_incinerator",
     BlockDecor.CFG_DEFAULT|BlockDecor.CFG_ELECTRICAL,
@@ -332,11 +339,12 @@ public class ModBlocks
     SMALL_ELECTRICAL_FURNACE, SMALL_ELECTRICAL_FURNACE_TEI,
     SIGN_HOTWIRE, SIGN_DANGER,
     SMALL_WASTE_INCINERATOR, WASTE_INCINERATOR_TEI,
+    SIGN_DEFENSE,
+    FACTORY_DROPPER, FACTORY_DROPPER_TEI
   };
 
   private static final Object dev_content[] = {
     SIGN_MINDSTEP,
-    FACTORY_DROPPER, FACTORY_DROPPER_TEI
   };
 
   //--------------------------------------------------------------------------------------------------------------------

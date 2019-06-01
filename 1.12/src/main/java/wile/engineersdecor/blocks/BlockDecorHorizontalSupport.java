@@ -45,7 +45,6 @@ public class BlockDecorHorizontalSupport extends BlockDecor
   public BlockDecorHorizontalSupport(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound, @Nonnull AxisAlignedBB unrotatedAABB)
   {
     super(registryName, config|CFG_HORIZIONTAL, material, hardness, resistance, sound);
-    final boolean is_horizontal = ((config & CFG_HORIZIONTAL)!=0);
     AABBs = new ArrayList<AxisAlignedBB>(Arrays.asList(
       // Effective bounding box
       ModAuxiliaries.getRotatedAABB(unrotatedAABB.grow(2.0/16, 0, 0), EnumFacing.NORTH, true),

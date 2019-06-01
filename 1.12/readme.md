@@ -11,6 +11,29 @@ Mod sources for Minecraft version 1.12.2.
 ## Revision history
 
                 -------------------------------------------------------------------
+    - v1.0.7    [R] Release based on v1.0.7-b2. Release-to-release changes:
+                    * Factory dropper added.
+                    * Defense system warning sign added.
+                    * Warning sign backgrounds adapted.
+                    * Standalone recipes added.
+                    * Lang files updated.
+                -------------------------------------------------------------------
+                [A] Added standalone recipes for signs, factory dropper, and
+                    electrical furnace.
+                [M] Adapted "Caution" sign backgrounds to the yellow defense
+                    system warning background.
+
+    - v1.0.7-b2 [A] Added Defense System Warning sign (design by J. Carver).
+                [M] Factory dropper non-experimental now. GUI click area tuning.
+                    "Fast drop" symbol replaced from arrow to dog icon (thx
+                    overchoice for that icon).
+                [M] Lang files updated.
+
+    - v1.0.7-b1 [M] Factory dropper (config:experimental) button placement fixed,
+                    GUI vs external view x/y markers added, internal trigger logic
+                    simplified. Thx @overchoice for beta testing!
+
+                -------------------------------------------------------------------
     - v1.0.6    [R] Release based on v1.0.6-b1. Release-to-release changes:
                     * Fixed FML remapping issue (COULD CAUSE CRASHES).
                     * Small waste incinerator added.
@@ -33,7 +56,7 @@ Mod sources for Minecraft version 1.12.2.
                     * Sign plates added.
                     * Minor bug fixes.
                 -------------------------------------------------------------------
-                [A] Added sign "Electrical hazzard"/"Caution hot wire".
+                [A] Added sign "Electrical hazard"/"Caution hot wire".
                 [A] Added sign "Caution dangerous there" (skull/bones).
 
     - v1.0.5-b1 [A] Added passive fluid accumulator.

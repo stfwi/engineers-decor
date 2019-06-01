@@ -8,6 +8,8 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.block.state.BlockFaceShape;
+import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.detail.Networking;
@@ -47,7 +49,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.Arrays;
 
 public class BlockDecorDropper extends BlockDecorDirected
 {
@@ -55,6 +56,10 @@ public class BlockDecorDropper extends BlockDecorDirected
 
   public BlockDecorDropper(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound, @Nonnull AxisAlignedBB unrotatedAABB)
   { super(registryName, config, material, hardness, resistance, sound, unrotatedAABB); }
+
+  @Override
+  public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face)
+  { return BlockFaceShape.SOLID; }
 
   @Override
   protected BlockStateContainer createBlockState()
@@ -86,6 +91,7 @@ public class BlockDecorDropper extends BlockDecorDirected
   public boolean hasTileEntity(IBlockState state)
   { return true; }
 
+  @Override
   @Nullable
   public TileEntity createTileEntity(World world, IBlockState state)
   { return new BlockDecorDropper.BTileEntity(); }
@@ -94,12 +100,13 @@ public class BlockDecorDropper extends BlockDecorDirected
   public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
   {
     if(world.isRemote) return;
-    if((!stack.hasTagCompound()) || (!stack.getTagCompound().hasKey("inventory"))) return;
-    NBTTagCompound inventory_nbt = stack.getTagCompound().getCompoundTag("inventory");
-    if(inventory_nbt.isEmpty()) return;
+    if((!stack.hasTagCompound()) || (!stack.getTagCompound().hasKey("tedata"))) return;
+    NBTTagCompound te_nbt = stack.getTagCompound().getCompoundTag("tedata");
+    if(te_nbt.isEmpty()) return;
     final TileEntity te = world.getTileEntity(pos);
     if(!(te instanceof BlockDecorDropper.BTileEntity)) return;
-    ((BlockDecorDropper.BTileEntity)te).readnbt(inventory_nbt, false);
+    ((BlockDecorDropper.BTileEntity)te).readnbt(te_nbt, false);
+    ((BlockDecorDropper.BTileEntity)te).reset_rtstate();
     ((BlockDecorDropper.BTileEntity)te).markDirty();
   }
 
@@ -110,11 +117,11 @@ public class BlockDecorDropper extends BlockDecorDirected
     TileEntity te = world.getTileEntity(pos);
     if(!(te instanceof BTileEntity)) return super.removedByPlayer(state, world, pos, player, willHarvest);
     ItemStack stack = new ItemStack(this, 1);
-    NBTTagCompound inventory_nbt = new NBTTagCompound();
-    ItemStackHelper.saveAllItems(inventory_nbt, ((BTileEntity)te).stacks_, false);
-    if(!inventory_nbt.isEmpty()) {
+    NBTTagCompound te_nbt = new NBTTagCompound();
+    ((BTileEntity) te).writenbt(te_nbt, false);
+    if(!te_nbt.isEmpty()) {
       NBTTagCompound nbt = new NBTTagCompound();
-      nbt.setTag("inventory", inventory_nbt);
+      nbt.setTag("tedata", te_nbt);
       stack.setTagCompound(nbt);
     }
     world.spawnEntity(new EntityItem(world, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, stack));
@@ -132,7 +139,7 @@ public class BlockDecorDropper extends BlockDecorDirected
     for(ItemStack stack: ((BTileEntity)te).stacks_) {
       if(!stack.isEmpty()) world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), stack));
     }
-    ((BTileEntity)te).reset();
+    ((BTileEntity)te).reset_rtstate();
     super.onBlockExploded(world, pos, explosion);
   }
 
@@ -225,9 +232,9 @@ public class BlockDecorDropper extends BlockDecorDirected
       } else if(isPointInRegion(129, 50, 44, 10, mouseX, mouseY)) {
         int period = (mx-135);
         if(period < -1) {
-          period = container.fields_[6] - 1; // -
+          period = container.fields_[6] - 3; // -
         } else if(period >= 34) {
-          period = container.fields_[6] + 1; // +
+          period = container.fields_[6] + 3; // +
         } else {
           period = (int)(0.5 + ((100.0 * period)/34));
         }
@@ -300,7 +307,7 @@ public class BlockDecorDropper extends BlockDecorDirected
       }
       // drop period
       {
-        int px = ((container.fields_[6] * 34) / 100);
+        int px = (int)Math.round(((33.0 * container.fields_[6]) / 100) + 1);
         int x = x0 + 134 - 2 + MathHelper.clamp(px, 0, 33);
         int y = y0 + 56;
         drawTexturedModalRect(x, y, 190, 31, 5, 5);
@@ -465,8 +472,8 @@ public class BlockDecorDropper extends BlockDecorDirected
     private int drop_xdev_ = 0;
     private int drop_ydev_ = 0;
     private int drop_count_ = 1;
-    private int drop_logic_ = 0;
-    private int drop_period_ = 20;
+    private int drop_logic_ = DROPLOGIC_EXTERN_ANDGATE;
+    private int drop_period_ = 0;
     private int drop_slot_index_ = 0;
     private int tick_timer_ = 0;
     protected NonNullList<ItemStack> stacks_;
@@ -477,16 +484,15 @@ public class BlockDecorDropper extends BlockDecorDirected
     }
 
     public BTileEntity()
-    { reset(); }
-
-    protected void reset()
     {
       stacks_ = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
+      reset_rtstate();
+    }
+
+    public void reset_rtstate()
+    {
       block_power_signal_ = false;
       block_power_updated_ = false;
-      drop_count_ = 1;
-      drop_period_ = 20;
-      drop_logic_ = DROPLOGIC_EXTERN_ANDGATE;
       for(int i=0; i<filter_matches_.length; ++i) filter_matches_[i] = 0;
     }
 
@@ -736,7 +742,7 @@ public class BlockDecorDropper extends BlockDecorDirected
         double vdx = 1e-2 * MathHelper.clamp(xdeviation, -100, 100);
         double vdy = 1e-2 * MathHelper.clamp(ydeviation, -100, 100);
         switch(facing) { // switch-case faster than coorsys fwd transform
-          case DOWN:  v0 = v0.add( vdx, 0, vdy); break; // down/up: use xz
+          case DOWN:  v0 = v0.add( vdx, 0,-vdy); break;
           case NORTH: v0 = v0.add( vdx, vdy, 0); break;
           case SOUTH: v0 = v0.add(-vdx, vdy, 0); break;
           case EAST:  v0 = v0.add(0, vdy,  vdx); break;
@@ -796,7 +802,6 @@ public class BlockDecorDropper extends BlockDecorDirected
       boolean redstone_trigger = (block_power_signal_ && block_power_updated_);
       boolean filter_trigger;
       boolean trigger;
-      int filter_trigger_slots[] = {-1,-1,-1};
       // Trigger logic
       {
         boolean droppable_slot_found = false;
@@ -814,12 +819,14 @@ public class BlockDecorDropper extends BlockDecorDirected
             if(cmp_stack.isEmpty()) continue;
             filter_matches_[ci] = 1;
             final int cmp_stack_count = cmp_stack.getCount();
+            int inventory_item_count = 0;
             int slot = drop_slot_index_;
             for(int i=INPUT_SLOTS_FIRST; i<(INPUT_SLOTS_FIRST+INPUT_SLOTS_SIZE); ++i) {
               final ItemStack inp_stack = stacks_.get(slot);
-              if((inp_stack.getCount() < cmp_stack_count) || (!inp_stack.isItemEqual(cmp_stack))) { slot = next_slot(slot); continue; }
+              if(!inp_stack.isItemEqual(cmp_stack)) { slot = next_slot(slot); continue; }
+              inventory_item_count += inp_stack.getCount();
+              if(inventory_item_count < cmp_stack_count) { slot = next_slot(slot); continue; }
               filter_matches_[ci] = 2;
-              filter_trigger_slots[ci] = slot;
               break;
             }
           }
@@ -847,58 +854,71 @@ public class BlockDecorDropper extends BlockDecorDirected
           }
         }
         // edge detection for next cycle
-        if(trigger) {
+        {
           boolean tr = world.isBlockPowered(pos);
           block_power_updated_ = (block_power_signal_ != tr);
           block_power_signal_ = tr;
-          dirty = true;
+          if(block_power_updated_) dirty = true;
         }
       }
       // block state update
       final IBlockState state = update_blockstate();
       if(state == null) { block_power_signal_= false; return; }
       // dispense action
-      if(trigger) {
+      if(trigger && (drop_timer_ <= 0)) {
         // drop stack for non-filter triggers
+        ItemStack drop_stacks[] = {ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY};
         if(!filter_trigger) {
-          Arrays.fill(filter_trigger_slots,-1);
           for(int i=0; i<INPUT_SLOTS_SIZE; ++i) {
             if(drop_slot_index_ >= INPUT_SLOTS_SIZE) drop_slot_index_ = 0;
             int ic = drop_slot_index_;
             drop_slot_index_ = next_slot(drop_slot_index_);
             ItemStack ds = stacks_.get(ic);
             if((!ds.isEmpty()) && (ds.getCount() >= drop_count_)) {
-              filter_trigger_slots[0] = ic;
+              drop_stacks[0] = ds.splitStack(drop_count_);
+              stacks_.set(ic, ds);
               break;
+            }
+          }
+        } else {
+          for(int fi=0; fi<filter_matches_.length; ++fi) {
+            if(filter_matches_[fi] > 1) {
+              drop_stacks[fi] = stacks_.get(CTRL_SLOTS_FIRST+fi).copy();
+              int ntoremove = drop_stacks[fi].getCount();
+              for(int i=INPUT_SLOTS_SIZE-1; (i>=0) && (ntoremove>0); --i) {
+                ItemStack stack = stacks_.get(i);
+                if(!stack.isItemEqual(drop_stacks[fi])) continue;
+                if(stack.getCount() <= ntoremove) {
+                  ntoremove -= stack.getCount();
+                  stacks_.set(i, ItemStack.EMPTY);
+                } else {
+                  stack.shrink(ntoremove);
+                  ntoremove = 0;
+                  stacks_.set(i, stack);
+                }
+              }
+              if(ntoremove > 0) drop_stacks[fi].shrink(ntoremove);
             }
           }
         }
         // drop action
-        if(drop_timer_ <= 0) {
-          boolean dropped = false;
-          for(int i = 0; i < filter_trigger_slots.length; ++i) {
-            if(filter_trigger_slots[i] < 0) continue;
-            ItemStack ds = stacks_.get(filter_trigger_slots[i]);
-            if(ds.getCount() >= drop_count_) {
-              ItemStack drop_stack = ds.splitStack(drop_count_);
-              if(!drop_stack.isEmpty()) {
-                dirty = true;
-                drop(world, pos, state.getValue(FACING), drop_stack, drop_speed_, drop_xdev_, drop_ydev_, drop_noise_);
-                dropped = true;
-              }
-            }
-          }
-          // cooldown
-          if(dropped) drop_timer_ = DROP_PERIOD_OFFSET + drop_period_ * 2; // 0.1s time base -> 100%===10s
-          // drop sound
-          if(dropped && ((drop_logic_ & DROPLOGIC_SILENT_DROP) == 0)) {
-            world.playSound(null, pos, SoundEvents.BLOCK_CLOTH_STEP, SoundCategory.BLOCKS, 0.1f, 4f);
-          }
-          // advance to next nonempty slot.
-          for(int i = 0; i < INPUT_SLOTS_SIZE; ++i) {
-            if(!stacks_.get(drop_slot_index_).isEmpty()) break;
-            drop_slot_index_ = next_slot(drop_slot_index_);
-          }
+        boolean dropped = false;
+        for(int i = 0; i < drop_stacks.length; ++i) {
+          if(drop_stacks[i].isEmpty()) continue;
+          dirty = true;
+          drop(world, pos, state.getValue(FACING), drop_stacks[i], drop_speed_, drop_xdev_, drop_ydev_, drop_noise_);
+          dropped = true;
+        }
+        // cooldown
+        if(dropped) drop_timer_ = DROP_PERIOD_OFFSET + drop_period_ * 2; // 0.1s time base -> 100%===10s
+        // drop sound
+        if(dropped && ((drop_logic_ & DROPLOGIC_SILENT_DROP) == 0)) {
+          world.playSound(null, pos, SoundEvents.BLOCK_CLOTH_STEP, SoundCategory.BLOCKS, 0.1f, 4f);
+        }
+        // advance to next nonempty slot.
+        for(int i = 0; i < INPUT_SLOTS_SIZE; ++i) {
+          if(!stacks_.get(drop_slot_index_).isEmpty()) break;
+          drop_slot_index_ = next_slot(drop_slot_index_);
         }
       }
       if(dirty) markDirty();
