@@ -56,6 +56,7 @@ public class BlockDecor extends Block
   public static final long CFG_ELECTRICAL                 = 0x0000000000010000L; // Denotes if a component is mainly flux driven.
   public static final long CFG_REDSTONE_CONTROLLED        = 0x0000000000020000L; // Denotes if a component has somehow a redstone control input
   public static final long CFG_ANALOG                     = 0x0000000000040000L; // Denotes if a component has analog behaviour
+  public static final long CFG_HARD_IE_DEPENDENT          = 0x8000000000000000L; // Defines that this block abolutely needs IE to be installed.
 
   protected final AxisAlignedBB aabb;
 
@@ -70,6 +71,8 @@ public class BlockDecor extends Block
     setResistance((resistance > 0) ? resistance : 10.0f);
     setSoundType((sound==null) ? SoundType.STONE : sound);
     setLightOpacity(0);
+    // @todo double check that instance variable
+    // not sure here ... if((config & CFG_TRANSLUCENT) != 0) this.translucent = true;
     this.config = config;
     this.aabb = (boundingbox==null) ? (FULL_BLOCK_AABB) : (boundingbox);
   }

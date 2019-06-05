@@ -10,6 +10,11 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+    - v1.0.8-b1 [A] Added "Factory area" sign.
+                [M] Electrical furnace recipe changed (hoppers to conveyors).
+                [A] Opt-out config options added.
+                [F] Lang file fixes for en_us (Angela, PR#29).
+
                 -------------------------------------------------------------------
     - v1.0.7    [R] Release based on v1.0.7-b2. Release-to-release changes:
                     * Factory dropper added.

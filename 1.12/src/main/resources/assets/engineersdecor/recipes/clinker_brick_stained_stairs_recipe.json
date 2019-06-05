@@ -1,0 +1,24 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:clinker_brick_stained_stairs"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "C  ",
+    "CC ",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "engineersdecor:clinker_brick_stained_block",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:clinker_brick_stained_stairs",
+    "count": 6
+  }
+}

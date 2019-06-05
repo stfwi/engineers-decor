@@ -12,7 +12,9 @@ Mod sources for Minecraft version 1.13.2.
 
     - v1.0.7-b3 [V] Version assignment: All features of v1.0.7-b3-1.12.2 that can be ported
                     to 1.13.2 implemented/prepared, therefore version re-assigned.
-                [A] Sign background colors adapted.
+                [A] Added "Factory Area" sign.
+                [M] Sign background colors adapted.
+                [M] EN lang file updated (PR#28, Voxelo).
 
     - v1.0.4-b6 [A] Added Small Electrical Furnace.
                 [A] Added Small Waste Incinerator.

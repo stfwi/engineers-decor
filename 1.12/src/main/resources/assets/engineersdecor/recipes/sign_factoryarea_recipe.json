@@ -1,0 +1,16 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:sign_defense",
+      "required": ["engineersdecor:sign_danger"]
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    { "item": "engineersdecor:sign_defense" }
+  ],
+  "result": {
+    "item": "engineersdecor:sign_factoryarea"
+  }
+}

@@ -135,6 +135,16 @@ public class ModConfig
     @Config.Name("Without signs")
     @Config.RequiresMcRestart
     public boolean without_sign_plates = false;
+
+    @Config.Comment({"Disable the factory dropper."})
+    @Config.Name("Without factory dropper")
+    @Config.RequiresMcRestart
+    public boolean without_factory_dropper = false;
+
+    @Config.Comment({"Disable stackable 1/8 block slices."})
+    @Config.Name("Without slab slices")
+    @Config.RequiresMcRestart
+    public boolean without_halfslabs = false;
   }
 
   @Config.Comment({
@@ -305,6 +315,8 @@ public class ModConfig
     if(optout.without_electrical_furnace && (block instanceof BlockDecorFurnaceElectrical)) return true;
     if(optout.without_passive_fluid_accumulator && (block instanceof BlockDecorPassiveFluidAccumulator)) return true;
     if(optout.without_waste_incinerator && (block instanceof BlockDecorWasteIncinerator)) return true;
+    if(optout.without_factory_dropper && (block instanceof BlockDecorDropper)) return true;
+    if(optout.without_halfslabs && (block instanceof BlockDecorHalfSlab)) return true;
     if(optout.without_windows && rn.endsWith("_window")) return true;
     if(optout.without_light_sources && rn.endsWith("_light")) return true;
     if(optout.without_ladders && (block instanceof BlockDecorLadder)) return true;

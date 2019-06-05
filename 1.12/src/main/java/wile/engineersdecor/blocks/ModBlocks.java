@@ -24,8 +24,9 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.ArrayList;
@@ -43,6 +44,9 @@ public class ModBlocks
   public static final BlockDecorFull CLINKER_BRICK_BLOCK = new BlockDecorFull("clinker_brick_block", 0, Material.ROCK, 2f, 15f, SoundType.STONE);
   public static final BlockDecorStairs CLINKER_BRICK_STAIRS = new BlockDecorStairs("clinker_brick_stairs", CLINKER_BRICK_BLOCK.getDefaultState());
   public static final BlockDecorWall CLINKER_BRICK_WALL = new BlockDecorWall("clinker_brick_wall", BlockDecor.CFG_DEFAULT, Material.ROCK, 2f, 20f, SoundType.STONE);
+
+  public static final BlockDecorFull CLINKER_BRICK_STAINED_BLOCK = new BlockDecorFull("clinker_brick_stained_block", 0, Material.ROCK, 2f, 15f, SoundType.STONE);
+  public static final BlockDecorStairs CLINKER_BRICK_STAINED_STAIRS = new BlockDecorStairs("clinker_brick_stained_stairs", CLINKER_BRICK_STAINED_BLOCK.getDefaultState());
 
   public static final BlockDecorFull SLAG_BRICK_BLOCK  = new BlockDecorFull("slag_brick_block", 0, Material.ROCK, 2f, 15f, SoundType.STONE);
   public static final BlockDecorStairs SLAG_BRICK_STAIRS = new BlockDecorStairs("slag_brick_stairs", SLAG_BRICK_BLOCK.getDefaultState());
@@ -263,6 +267,54 @@ public class ModBlocks
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,15)
   );
 
+  public static final BlockDecorDirected SIGN_FACTORY_AREA = new BlockDecorDirected(
+    "sign_factoryarea",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+    Material.WOOD, 0.1f, 1f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(2,2,15.6, 15,15,16)
+  );
+
+  public static final BlockDecorHalfSlab HALFSLAB_REBARCONCRETE = new BlockDecorHalfSlab(
+    "halfslab_rebar_concrete",
+    BlockDecor.CFG_CUTOUT,
+    Material.ROCK, 2f, 2000f, SoundType.STONE
+  );
+  public static final BlockDecorHalfSlab HALFSLAB_CONCRETE = new BlockDecorHalfSlab(
+    "halfslab_concrete",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
+    Material.ROCK, 0.4f, 10f, SoundType.STONE
+  );
+  public static final BlockDecorHalfSlab HALFSLAB_TREATEDWOOD = new BlockDecorHalfSlab(
+    "halfslab_treated_wood",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
+    Material.WOOD, 0.4f, 4f, SoundType.WOOD
+  );
+  public static final BlockDecorHalfSlab HALFSLAB_SHEETMETALIRON = new BlockDecorHalfSlab(
+    "halfslab_sheetmetal_iron",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
+    Material.IRON, 0.4f, 10f, SoundType.METAL
+  );
+  public static final BlockDecorHalfSlab HALFSLAB_SHEETMETALSTEEL = new BlockDecorHalfSlab(
+    "halfslab_sheetmetal_steel",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
+    Material.IRON, 0.4f, 10f, SoundType.METAL
+  );
+  public static final BlockDecorHalfSlab HALFSLAB_SHEETMETALCOPPER = new BlockDecorHalfSlab(
+    "halfslab_sheetmetal_copper",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
+    Material.IRON, 0.4f, 10f, SoundType.METAL
+  );
+  public static final BlockDecorHalfSlab HALFSLAB_SHEETMETALGOLD = new BlockDecorHalfSlab(
+    "halfslab_sheetmetal_gold",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
+    Material.IRON, 0.4f, 10f, SoundType.METAL
+  );
+  public static final BlockDecorHalfSlab HALFSLAB_SHEETMETALALUMINIUM = new BlockDecorHalfSlab(
+    "halfslab_sheetmetal_aluminum",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
+    Material.IRON, 0.4f, 10f, SoundType.METAL
+  );
+
   //--------------------------------------------------------------------------------------------------------------------
   //-- Tile entities
   //--------------------------------------------------------------------------------------------------------------------
@@ -322,29 +374,39 @@ public class ModBlocks
     TREATED_WOOD_TABLE,
     TREATED_WOOD_STOOL,
     TREATED_WOOD_WINDOW,
+    STEEL_FRAMED_WINDOW,
     TREATED_WOOD_WINDOWSILL,
     INSET_LIGHT_IRON,
-    SMALL_LAB_FURNACE, SMALL_LAB_FURNACE_TEI,
-    STEEL_FRAMED_WINDOW,
     TREATED_WOOD_POLE_SUPPORT,
     TREATED_WOOD_POLE_HEAD,
-    SIGN_MODLOGO,
     THIN_STEEL_POLE,
     THICK_STEEL_POLE,
     THIN_STEEL_POLE_HEAD,
     THICK_STEEL_POLE_HEAD,
     STEEL_DOUBLE_T_SUPPORT,
+    SIGN_HOTWIRE, SIGN_DANGER, SIGN_DEFENSE, SIGN_FACTORY_AREA, SIGN_MODLOGO,
+    SMALL_LAB_FURNACE, SMALL_LAB_FURNACE_TEI,
+    SMALL_ELECTRICAL_FURNACE, SMALL_ELECTRICAL_FURNACE_TEI,
+    FACTORY_DROPPER, FACTORY_DROPPER_TEI,
+    SMALL_WASTE_INCINERATOR, WASTE_INCINERATOR_TEI,
     STRAIGHT_CHECK_VALVE, STRAIGHT_REDSTONE_VALVE, STRAIGHT_REDSTONE_ANALOG_VALVE, STRAIGHT_PIPE_VALVE_TEI,
     PASSIVE_FLUID_ACCUMULATOR, PASSIVE_FLUID_ACCUMULATOR_TEI,
-    SMALL_ELECTRICAL_FURNACE, SMALL_ELECTRICAL_FURNACE_TEI,
-    SIGN_HOTWIRE, SIGN_DANGER,
-    SMALL_WASTE_INCINERATOR, WASTE_INCINERATOR_TEI,
-    SIGN_DEFENSE,
-    FACTORY_DROPPER, FACTORY_DROPPER_TEI
   };
 
   private static final Object dev_content[] = {
     SIGN_MINDSTEP,
+    // design not sure yet ...
+    CLINKER_BRICK_STAINED_BLOCK,
+    CLINKER_BRICK_STAINED_STAIRS,
+    // handling not sure yet ...
+    HALFSLAB_REBARCONCRETE,
+    HALFSLAB_CONCRETE,
+    HALFSLAB_TREATEDWOOD,
+    HALFSLAB_SHEETMETALIRON,
+    HALFSLAB_SHEETMETALSTEEL,
+    HALFSLAB_SHEETMETALCOPPER,
+    HALFSLAB_SHEETMETALGOLD,
+    HALFSLAB_SHEETMETALALUMINIUM,
   };
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -362,15 +424,22 @@ public class ModBlocks
   public static final void registerBlocks(RegistryEvent.Register<Block> event)
   {
     // Config based registry selection
+    final boolean ie_installed = Loader.isModLoaded("immersiveengineering");
     int num_block_registrations_skipped = 0;
+    int num_block_registrations_skipped_noie = 0;
     final boolean woor = ModConfig.isWithoutOptOutRegistration();
     for(Object e:content) {
       if(e instanceof Block) {
-        if((!woor) || (!ModConfig.isOptedOut((Block)e)) || (e==SIGN_MODLOGO)) {
-          registeredBlocks.add((Block) e);
-        } else {
+        if((!ie_installed) && ((e instanceof BlockDecor) && ((((BlockDecor)e).config & BlockDecor.CFG_HARD_IE_DEPENDENT)!=0))) {
           ++num_block_registrations_skipped;
+          ++num_block_registrations_skipped_noie;
+          continue;
         }
+        if((woor) && (ModConfig.isOptedOut((Block)e)) && (e!=SIGN_MODLOGO)) {
+          ++num_block_registrations_skipped;
+          continue;
+        }
+        registeredBlocks.add((Block) e);
       } else if(e instanceof TileEntityRegistrationData) {
         registeredTileEntityInits.add((TileEntityRegistrationData)e);
       }
@@ -386,7 +455,7 @@ public class ModBlocks
     }
     for(Block e:registeredBlocks) event.getRegistry().register(e);
     ModEngineersDecor.logger.info("Registered " + Integer.toString(registeredBlocks.size()) + " blocks.");
-    if(num_block_registrations_skipped > 0) ModEngineersDecor.logger.info("Skipped registration of " + num_block_registrations_skipped + " blocks.");
+    if(num_block_registrations_skipped > 0) ModEngineersDecor.logger.info("Skipped registration of " + num_block_registrations_skipped + " blocks, " + num_block_registrations_skipped_noie + " because IE is not installed.");
     for(TileEntityRegistrationData e:registeredTileEntityInits) GameRegistry.registerTileEntity(e.clazz, e.key);
     ModEngineersDecor.logger.info("Registered " + Integer.toString(registeredTileEntityInits.size()) + " tile entities.");
   }

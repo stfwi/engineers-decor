@@ -1,0 +1,4 @@
+{
+  "parent": "engineersdecor:block/sign/sign_rect14x14_model",
+  "textures": { "f": "engineersdecor:blocks/sign/sign_factoryarea_texture" }
+}

@@ -14,6 +14,8 @@ engineersdecor.tooltip.hint.help=§6[§9CTRL-SHIFT§r Помощь§6]§r
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.clinker_brick_block.name=Клинкерный кирпич
 tile.engineersdecor.clinker_brick_block.help=§6Кирпичный блок с вариациями текстуры, зависящими от положения.§r\nВыглядит немного темнее и интенсивнее, чем ванильный кирпичный блок.
+tile.engineersdecor.clinker_brick_stained_block.name=Stained Clinker Brick Block
+#tile.engineersdecor.clinker_brick_stained_block.help=§6A brick block with position dependent texture variations.§r\nLooks slightly darker and more color intensive than the vanilla brick block. Has more visible traces of grime or stain.
 tile.engineersdecor.slag_brick_block.name=Шлакоблок
 tile.engineersdecor.slag_brick_block.help=§6Серо-коричневый кирпичный блок с зависимыми от положения вариациями текстуры.
 tile.engineersdecor.rebar_concrete.name=Железобетон
@@ -41,6 +43,8 @@ tile.engineersdecor.treated_wood_ladder.help=§6Погодоустойчивая
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.clinker_brick_stairs.name=Клинкерная кирпичная лестница
 tile.engineersdecor.clinker_brick_stairs.help=§6По цвету выглядит немного темнее и интенсивнее, чем ванильный кирпичный блок
+tile.engineersdecor.clinker_brick_stained_stairs.name=Stained Clinker Brick Stairs
+#tile.engineersdecor.clinker_brick_stained_stairs.help=§6Looks slightly darker and more color intensive than the vanilla brick block. Has more visible traces of grime or stain.
 tile.engineersdecor.slag_brick_stairs.name=Клинкерная кирпичная лестница
 tile.engineersdecor.slag_brick_stairs.help=§6По цвету выглядит немного темнее и интенсивнее, чем ванильный кирпичный блок.
 tile.engineersdecor.rebar_concrete_stairs.name=Железобетонная лестница
@@ -132,7 +136,25 @@ tile.engineersdecor.sign_danger.name=Sign "Caution really dangerous there"
 #tile.engineersdecor.sign_danger.help=§6General danger warning.
 tile.engineersdecor.sign_defense.name=Sign "Caution Defense System Ahead"
 #tile.engineersdecor.sign_defense.help=§6Warning sign for turrets, Tesla Coils, and traps.
-
+tile.engineersdecor.sign_factoryarea.name=Sign "Factory Area"
+#tile.engineersdecor.sign_factoryarea.help=§6Marker sign for buildings or areas where the really big machines are.
+#-----------------------------------------------------------------------------------------------------------
+tile.engineersdecor.halfslab_rebar_concrete.name=Rebar Concrete Slice
+#tile.engineersdecor.halfslab_rebar_concrete.help=§6Vertically stackable slice.§rRight/left click with the slice stack on the top or bottom surface to add/remove slices.
+tile.engineersdecor.halfslab_concrete.name=Concrete Slice
+#tile.engineersdecor.halfslab_concrete.help=§6Vertically stackable slice.§rRight/left click with the slice stack on the top or bottom surface to add/remove slices.
+tile.engineersdecor.halfslab_treated_wood.name=Treated Wood Slice
+#tile.engineersdecor.halfslab_treated_wood.help=§6Vertically stackable slice.§rRight/left click with the slice stack on the top or bottom surface to add/remove slices.
+tile.engineersdecor.halfslab_sheetmetal_iron.name=Iron Sheet Metal Slice
+#tile.engineersdecor.halfslab_sheetmetal_iron.help=§6Vertically stackable slice.§rRight/left click with the slice stack on the top or bottom surface to add/remove slices.
+tile.engineersdecor.halfslab_sheetmetal_steel.name=Steel Sheet Metal Slice
+#tile.engineersdecor.halfslab_sheetmetal_steel.help=§6Vertically stackable slice.§rRight/left click with the slice stack on the top or bottom surface to add/remove slices.
+tile.engineersdecor.halfslab_sheetmetal_copper.name=Copper Sheet Metal Slice
+#tile.engineersdecor.halfslab_sheetmetal_copper.help=§6Vertically stackable slice.§rRight/left click with the slice stack on the top or bottom surface to add/remove slices.
+tile.engineersdecor.halfslab_sheetmetal_gold.name=Gold Sheet Metal Slice
+#tile.engineersdecor.halfslab_sheetmetal_gold.help=§6Vertically stackable slice.§rRight/left click with the slice stack on the top or bottom surface to add/remove slices.
+tile.engineersdecor.halfslab_sheetmetal_aluminum.name=Aluminum Sheet Metal Slice
+#tile.engineersdecor.halfslab_sheetmetal_aluminum.help=§6Vertically stackable slice.§rRight/left click with the slice stack on the top or bottom surface to add/remove slices.
 #-----------------------------------------------------------------------------------------------------------
 # EOF
 #-----------------------------------------------------------------------------------------------------------

@@ -1,0 +1,21 @@
+{
+	"parent": "engineersdecor:block/slab/halfslab_s0_model",
+	"textures": {
+    "particle": "#all",
+		"all": "engineersdecor:blocks/iestyle/treated_wood_framed_nailed_texture"
+	},
+	"elements": [
+		{
+			"from": [0, 8, 0],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"texture": "#all"},
+				"east": {"texture": "#all"},
+				"south": {"texture": "#all"},
+				"west": {"texture": "#all"},
+				"up": {"texture": "#all"},
+				"down": {"texture": "#all"}
+			}
+		}
+	]
+}

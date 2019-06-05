@@ -3,27 +3,20 @@
     {
       "type": "engineersdecor:grc",
       "result": "engineersdecor:small_electrical_furnace",
-      "required": ["immersiveengineering:material", "engineersdecor:small_lab_furnace"]
+      "required": ["immersiveengineering:material"]
     }
   ],
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " C ",
-    "HFH"
+    "PCP",
+    "HFH",
+    "PPP"
   ],
   "key": {
-    "F": {
-      "item": "engineersdecor:small_lab_furnace",
-      "data": 0
-    },
-    "C": {
-      "item": "#electricalConnector",
-      "data": 0
-    },
-    "H": {
-      "item": "#anyHopper",
-      "data": 0
-    }
+    "F": { "item": "#itemFurnace" },
+    "C": { "item": "#electricalConnector" },
+    "H": { "item": "#normalConveyor" },
+    "P": { "item": "#plateAnyFerroMetal" }
   },
   "result": {
     "item": "engineersdecor:small_electrical_furnace",
