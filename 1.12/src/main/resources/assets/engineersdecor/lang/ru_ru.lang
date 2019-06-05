@@ -82,7 +82,7 @@ tile.engineersdecor.treated_wood_window.help=§6Деревянный карка�
 tile.engineersdecor.treated_wood_windowsill.name=Обработанный деревянный подоконник
 tile.engineersdecor.treated_wood_windowsill.help=§6Простое оформление окон.
 tile.engineersdecor.steel_framed_window.name=Окно со стальной рамой
-#tile.engineersdecor.steel_framed_window.help=§6Steel framed tripple glazed window. Well insulating. §r Does not connect to adjacent blocks like glass panes.
+#tile.engineersdecor.steel_framed_window.help=§6Steel framed triple glazed window. Well insulating. §r Does not connect to adjacent blocks like glass panes.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.small_lab_furnace.name=Компактная лабораторная печь
 tile.engineersdecor.small_lab_furnace.help=§6Лабораторная печь в металлическом корпусе.§r Подача твёрдого топлива - сверху. Немного горячее чем каменная, поэтому быстрее. Два внутренних слота для ввода, выхода и топлива.
@@ -117,7 +117,7 @@ tile.engineersdecor.passive_fluid_accumulator.name=Passive fluid accumulator
 tile.engineersdecor.factory_dropper.name=Factory dropper
 #tile.engineersdecor.factory_dropper.help=§6Dropper suitable for advanced factory automation.§r Has twelve round-robin selected slots. \
                                          Drop force, angle, stack size, and cool-down delay adjustable in the GUI. Three stack compare \
-                                         solts with logical AND or OR can be used as internal trigger source. Internal trigger can be \
+                                         slots with logical AND or OR can be used as internal trigger source. Internal trigger can be \
                                          AND'ed or OR'ed with the external redstone signal trigger. Trigger simulation buttons for testing. \
                                          Pre-opens shutter door when internal trigger conditions are met. Drops all matching stacks \
                                          simultaneously. Click on all elements in the GUI to see how it works.

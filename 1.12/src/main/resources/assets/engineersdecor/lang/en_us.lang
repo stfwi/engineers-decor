@@ -50,7 +50,7 @@ tile.engineersdecor.rebar_concrete_tile_stairs.help=§6Steel reinforced concrete
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.treated_wood_pole.name=Straight Treated Wood Pole
 tile.engineersdecor.treated_wood_pole.help=§6Straight pole fragment with a diameter of a wire relay.§r\n\
-              Can be useful as alternative to the wire posts if special special lengths are needed, \
+              Can be useful as alternative to the wire posts if special lengths are needed, \
               or as support for structures.
 tile.engineersdecor.treated_wood_pole_head.name=Straight Treated Wood Pole Head/Foot
 tile.engineersdecor.treated_wood_pole_head.help=§6Wooden part fitting as foot or head of straight poles.
@@ -81,11 +81,11 @@ tile.engineersdecor.iron_inset_light.help=§6Small glowstone light source, sunk 
                                           Useful to light up places where electrical light installations are problematic.\
                                           Light level like a torch.
 tile.engineersdecor.treated_wood_window.name=Treated Wood Window
-tile.engineersdecor.treated_wood_window.help=§6Wood framed tripple glazed window. Well insulating.§r Does not connect to adjacent blocks like glass panes.
+tile.engineersdecor.treated_wood_window.help=§6Wood framed triple glazed window. Well insulating.§r Does not connect to adjacent blocks like glass panes.
 tile.engineersdecor.treated_wood_windowsill.name=Treated Wood Window Sill
 tile.engineersdecor.treated_wood_windowsill.help=§6Simple window decoration.
 tile.engineersdecor.steel_framed_window.name=Steel Framed Window
-tile.engineersdecor.steel_framed_window.help=§6Steel framed tripple glazed window. Well insulating. §r Does not connect to adjacent blocks like glass panes.
+tile.engineersdecor.steel_framed_window.help=§6Steel framed triple glazed window. Well insulating. §r Does not connect to adjacent blocks like glass panes.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.small_lab_furnace.name=Small Laboratory Furnace
 tile.engineersdecor.small_lab_furnace.help=§6Small metal cased lab kiln.§r Solid fuel consuming, updraught. \
@@ -124,7 +124,7 @@ tile.engineersdecor.passive_fluid_accumulator.help=§6Vacuum suction based fluid
 tile.engineersdecor.factory_dropper.name=Factory Dropper
 tile.engineersdecor.factory_dropper.help=§6Dropper suitable for advanced factory automation.§r Has twelve round-robin selected slots. \
                                          Drop force, angle, stack size, and cool-down delay adjustable in the GUI. Three stack compare \
-                                         solts with logical AND or OR can be used as internal trigger source. Internal trigger can be \
+                                         slots with logical AND or OR can be used as internal trigger source. Internal trigger can be \
                                          AND'ed or OR'ed with the external redstone signal trigger. Trigger simulation buttons for testing. \
                                          Pre-opens shutter door when internal trigger conditions are met. Drops all matching stacks \
                                          simultaneously. Click on all elements in the GUI to see how it works.
