@@ -435,7 +435,8 @@ public class ModBlocks
           ++num_block_registrations_skipped_noie;
           continue;
         }
-        if((woor) && (ModConfig.isOptedOut((Block)e)) && (e!=SIGN_MODLOGO)) {
+        if((woor) && (e != SIGN_MODLOGO) && (ModConfig.isOptedOut((Block)e))) {
+          ModEngineersDecor.logger.info("Registration opt-out: " + ((Block) e).getRegistryName().getPath());
           ++num_block_registrations_skipped;
           continue;
         }

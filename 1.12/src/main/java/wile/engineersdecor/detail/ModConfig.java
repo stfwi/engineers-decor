@@ -20,6 +20,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 
 @Config(modid = ModEngineersDecor.MODID)
 @Config.LangKey("engineersdecor.config.title")
@@ -30,6 +31,26 @@ public class ModConfig
   public static final SettingsOptouts optout = new SettingsOptouts();
   public static final class SettingsOptouts
   {
+    @Config.Comment({"Opt-out any block by its registry name ('*' wildcard matching, "
+      + "comma separated list, whitespaces ignored. You must match the whole name, "
+      + "means maybe add '*' also at the begin and end. Example: '*wood*,*steel*' "
+      + "excludes everything that has 'wood' or 'steel' in the registry name. "
+      + "The matching result is also traced in the log file. "
+    })
+    @Config.Name("Pattern excludes")
+    @Config.RequiresMcRestart
+    public String excludes = "";
+
+    @Config.Comment({"Prevent blocks from being opt'ed by registry name ('*' wildcard matching, "
+      + "comma separated list, whitespaces ignored. Evaluated before all other opt-out checks. "
+      + "You must match the whole name, means maybe add '*' also at the begin and end. Example: "
+      + "'*wood*,*steel*' includes everything that has 'wood' or 'steel' in the registry name."
+      + "The matching result is also traced in the log file."
+    })
+    @Config.Name("Pattern includes")
+    @Config.RequiresMcRestart
+    public String includes = "";
+
     @Config.Comment({"Disable clinker bricks and derived blocks."})
     @Config.Name("Without clinker bricks")
     @Config.RequiresMcRestart
@@ -80,7 +101,7 @@ public class ModConfig
     @Config.RequiresMcRestart
     public boolean without_electrical_furnace = false;
 
-    @Config.Comment({"Disable treated wood table, stool, windowsill, pole, etc."})
+    @Config.Comment({"Disable treated wood table, stool, windowsill, etc."})
     @Config.Name("Without tr. wood furniture")
     @Config.RequiresMcRestart
     public boolean without_treated_wood_furniture = false;
@@ -145,6 +166,16 @@ public class ModConfig
     @Config.Name("Without slab slices")
     @Config.RequiresMcRestart
     public boolean without_halfslabs = false;
+
+    @Config.Comment({"Disable poles of any material."})
+    @Config.Name("Without poles")
+    @Config.RequiresMcRestart
+    public boolean without_poles = false;
+
+    @Config.Comment({"Disable horizontal supports like the double-T support."})
+    @Config.Name("Without h. supports")
+    @Config.RequiresMcRestart
+    public boolean without_hsupports = false;
   }
 
   @Config.Comment({
@@ -290,8 +321,15 @@ public class ModConfig
   }
 
   @SuppressWarnings("unused")
-  public static final void onPostInit(FMLPostInitializationEvent event)
+  public static final void onPreInit()
   { apply(); }
+
+  @SuppressWarnings("unused")
+  public static final void onPostInit(FMLPostInitializationEvent event)
+  { for(Block e:ModBlocks.getRegisteredBlocks()) ModConfig.isOptedOut(e, true); }
+
+  private static final ArrayList<String> includes_ = new ArrayList<String>();
+  private static final ArrayList<String> excludes_ = new ArrayList<String>();
 
   public static final boolean isWithoutOptOutRegistration()
   { return (zmisc!=null) && (zmisc.without_optout_registration); }
@@ -300,37 +338,62 @@ public class ModConfig
   { return (zmisc==null) || (zmisc.without_recipes); }
 
   public static final boolean isOptedOut(final @Nullable Block block)
+  { return isOptedOut(block, false); }
+
+  public static final boolean isOptedOut(final @Nullable Block block, boolean with_log_details)
   {
     if((block == null) || (optout==null)) return true;
     if(block == ModBlocks.SIGN_MODLOGO) return true;
     if((!zmisc.with_experimental) && (block instanceof ModAuxiliaries.IExperimentalFeature)) return true;
     final String rn = block.getRegistryName().getPath();
-    if(optout.without_clinker_bricks && rn.startsWith("clinker_brick_")) return true;
+    // Force-include/exclude pattern matching
+    try {
+      for(String e:includes_) {
+        if(rn.matches(e)) {
+          if(with_log_details) ModEngineersDecor.logger.info("Optout force include: " + rn);
+          return false;
+        }
+      }
+      for(String e:excludes_) {
+        if(rn.matches(e)) {
+          if(with_log_details) ModEngineersDecor.logger.info("Optout force exclude: " + rn);
+          return true;
+        }
+      }
+    } catch(Throwable ex) {
+      ModEngineersDecor.logger.error("optout include pattern failed, disabling.");
+      includes_.clear();
+      excludes_.clear();
+    }
+    // Early non-opt out type based evaluation
+    if(block instanceof BlockDecorCraftingTable) return optout.without_crafting_table;
+    if(block instanceof BlockDecorFurnaceElectrical) return optout.without_electrical_furnace;
+    if((block instanceof BlockDecorFurnace) && (!(block instanceof BlockDecorFurnaceElectrical))) return optout.without_lab_furnace;
+    if(block instanceof BlockDecorPassiveFluidAccumulator) return optout.without_passive_fluid_accumulator;
+    if(block instanceof BlockDecorWasteIncinerator) return optout.without_waste_incinerator;
+    if(block instanceof BlockDecorDropper) return optout.without_factory_dropper;
+    if(block instanceof BlockDecorHalfSlab) return optout.without_halfslabs;
+    if(block instanceof BlockDecorLadder) return optout.without_ladders;
+    if(block instanceof BlockDecorWindow) return optout.without_windows;
+    if(block instanceof BlockDecorPipeValve) return optout.without_valves;
+    if(block instanceof BlockDecorHorizontalSupport) return optout.without_hsupports;
+    // Type based evaluation where later filters may match, too
+    if(optout.without_stairs && (block instanceof BlockDecorStairs)) return true;
+    if(optout.without_walls && (block instanceof BlockDecorWall)) return true;
+    if(optout.without_poles && (block instanceof BlockDecorStraightPole)) return true;
+    // String matching based evaluation
+    if(optout.without_clinker_bricks && (rn.startsWith("clinker_brick_")) || (rn.startsWith("clinker_brick_stained_"))) return true;
     if(optout.without_slag_bricks && rn.startsWith("slag_brick_")) return true;
     if(optout.without_rebar_concrete && rn.startsWith("rebar_concrete")) return true;
     if(optout.without_ie_concrete_wall && rn.startsWith("concrete_wall")) return true;
     if(optout.without_panzer_glass && rn.startsWith("panzerglass_")) return true;
-    if(optout.without_crafting_table && (block instanceof BlockDecorCraftingTable)) return true;
-    if(optout.without_lab_furnace && ((block instanceof BlockDecorFurnace)) && (!(block instanceof BlockDecorFurnaceElectrical))) return true;
-    if(optout.without_electrical_furnace && (block instanceof BlockDecorFurnaceElectrical)) return true;
-    if(optout.without_passive_fluid_accumulator && (block instanceof BlockDecorPassiveFluidAccumulator)) return true;
-    if(optout.without_waste_incinerator && (block instanceof BlockDecorWasteIncinerator)) return true;
-    if(optout.without_factory_dropper && (block instanceof BlockDecorDropper)) return true;
-    if(optout.without_halfslabs && (block instanceof BlockDecorHalfSlab)) return true;
-    if(optout.without_windows && rn.endsWith("_window")) return true;
     if(optout.without_light_sources && rn.endsWith("_light")) return true;
-    if(optout.without_ladders && (block instanceof BlockDecorLadder)) return true;
     if(optout.without_sign_plates && rn.startsWith("sign_")) return true;
-    if(optout.without_walls && rn.endsWith("_wall")) return true;
-    if(optout.without_stairs && rn.endsWith("_stairs")) return true;
-    if(optout.without_valves && rn.contains("_pipe_valve")) return true;
     if(optout.without_treated_wood_furniture) {
       if(block instanceof BlockDecorChair) return true;
-      if(rn.equals("treated_wood_pole")) return true;
       if(rn.equals("treated_wood_table")) return true;
       if(rn.equals("treated_wood_stool")) return true;
       if(rn.equals("treated_wood_windowsill")) return true;
-      if(rn.equals("treated_wood_window")) return true;
     }
     return false;
   }
@@ -351,6 +414,26 @@ public class ModConfig
     BlockDecorCraftingTable.on_config(optout.without_crafting_table_history, false, tweaks.with_crafting_quickmove_buttons);
     BlockDecorPipeValve.on_config(tweaks.pipevalve_max_flowrate, tweaks.pipevalve_redstone_slope);
     BlockDecorFurnaceElectrical.BTileEntity.on_config(tweaks.e_furnace_speed_percent, tweaks.e_furnace_power_consumption);
+    {
+      optout.includes = optout.includes.toLowerCase().replaceAll(ModEngineersDecor.MODID+":", "").replaceAll("[^*_,a-z0-9]", "");
+      if(!optout.includes.isEmpty()) ModEngineersDecor.logger.info("Pattern includes: '" + optout.includes + "'");
+      String[] incl = optout.includes.split(",");
+      includes_.clear();
+      for(int i=0; i< incl.length; ++i) {
+        incl[i] = incl[i].replaceAll("[*]", ".*?");
+        if(!incl[i].isEmpty()) includes_.add(incl[i]);
+      }
+    }
+    {
+      optout.excludes = optout.excludes.toLowerCase().replaceAll(ModEngineersDecor.MODID+":", "").replaceAll("[^*_,a-z0-9]", "");
+      if(!optout.excludes.isEmpty()) ModEngineersDecor.logger.info("Pattern excludes: '" + optout.excludes + "'");
+      String[] excl = optout.excludes.split(",");
+      excludes_.clear();
+      for(int i=0; i< excl.length; ++i) {
+        excl[i] = excl[i].replaceAll("[*]", ".*?");
+        if(!excl[i].isEmpty()) excludes_.add(excl[i]);
+      }
+    }
   }
 
 }

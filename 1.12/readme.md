@@ -10,6 +10,10 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+    - v1.0.8-b2 [F] Config opt-out fixed (thx IronPiston for the report #30).
+                [A] Added opt-out config for detailed including/excluding
+                    of features (using registry name wildcard matching).
+
     - v1.0.8-b1 [A] Added "Factory area" sign.
                 [M] Electrical furnace recipe changed (hoppers to conveyors).
                 [A] Opt-out config options added.
