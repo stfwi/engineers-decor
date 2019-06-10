@@ -85,6 +85,7 @@ public class ModAuxiliaries
     {
       // Note: intentionally not using keybinding here, this must be `control` or `shift`. MC uses lwjgl Keyboard,
       //       so using this also here should be ok.
+      if(ModConfig.noToolTips()) return false;
       final boolean help_available = (helpTranslationKey != null) && ModAuxiliaries.hasTranslation(helpTranslationKey + ".help");
       final boolean tip_available = (advancedTooltipTranslationKey != null) && ModAuxiliaries.hasTranslation(helpTranslationKey + ".tip");
       if((!help_available) && (!tip_available)) return false;

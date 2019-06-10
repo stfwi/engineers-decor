@@ -76,8 +76,16 @@
     "name": "slabSheetmetalSteel"
   },
   {
-    "ingredient": { "type": "forge:ore_dict", "ore": "slabSheetmetalAluminium" },
+    "ingredient": { "type": "forge:ore_dict", "ore": "slabSheetmetalAluminum" },
     "name": "slabSheetmetalAluminium"
+  },
+  {
+    "ingredient": { "type": "forge:ore_dict", "ore": "slabSheetmetalCopper" },
+    "name": "slabSheetmetalCopper"
+  },
+  {
+    "ingredient": { "type": "forge:ore_dict", "ore": "slabSheetmetalGold" },
+    "name": "slabSheetmetalGold"
   },
   {
     "ingredient": { "type": "forge:ore_dict", "ore": "sand" },
@@ -111,6 +119,13 @@
     "name": "plateAnyMetal"
   },
   {
+    "ingredient": [
+      { "type": "forge:ore_dict", "ore": "plateIron"      },
+      { "type": "forge:ore_dict", "ore": "plateSteel"     }
+    ],
+    "name": "plateAnyFerroMetal"
+  },
+  {
     "conditions": [
       { "type": "minecraft:item_exists", "item": "immersiveengineering:material" }
     ],
@@ -140,6 +155,25 @@
       { "item": "immersiveengineering:connector", "data": 4 }
     ],
     "name": "electricalConnector"
+  },
+  {
+    "conditions": [
+      { "type": "minecraft:item_exists", "item": "immersiveengineering:conveyor" }
+    ],
+    "ingredient": [
+      { "type": "minecraft:item_nbt", "item": "immersiveengineering:conveyor", "nbt": { "conveyorType": "immersiveengineering:conveyor" } },
+      { "type": "minecraft:item_nbt", "item": "immersiveengineering:conveyor", "nbt": { "conveyorType": "immersiveengineering:uncontrolled" } }
+    ],
+    "name": "normalConveyor"
+  },
+  {
+    "conditions": [
+      { "type": "minecraft:item_exists", "item": "immersiveengineering:conveyor" }
+    ],
+    "ingredient": [
+      { "type": "minecraft:item_nbt", "item": "immersiveengineering:conveyor", "nbt": { "conveyorType": "immersiveengineering:dropper" } }
+    ],
+    "name": "droppingConveyor"
   },
   {
     "ingredient": [
@@ -196,6 +230,13 @@
   },
   {
     "conditions": [
+      { "type": "minecraft:item_exists", "item": "immersiveengineering:stone_decoration" }
+    ],
+    "ingredient": { "item": "immersiveengineering:stone_decoration_slab", "data": 5 },
+    "name": "slabConcreteIe"
+  },
+  {
+    "conditions": [
       { "type": "minecraft:item_exists", "item": "immersiveengineering:wooden_device0" }
     ],
     "ingredient": { "item": "immersiveengineering:wooden_device0", "data": 0 },
@@ -240,5 +281,9 @@
   {
     "ingredient": { "item": "minecraft:lava_bucket", "data": 0 },
     "name": "anyLavaItem"
+  },
+  {
+    "ingredient": { "item": "minecraft:dirt", "data": 0  },
+    "name": "anyDirt"
   }
 ]

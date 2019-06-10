@@ -97,6 +97,7 @@ public class ModEngineersDecor
     proxy.preInit(event);
     MinecraftForge.EVENT_BUS.register(new PlayerEventHandler());
     Networking.init();
+    ModConfig.onPreInit();
   }
 
   @Mod.EventHandler

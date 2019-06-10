@@ -1,0 +1,21 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:halfslab_rebar_concrete",
+      "required": ["engineersdecor:rebar_concrete"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "S",
+    "S"
+  ],
+  "key": {
+    "S": { "item": "engineersdecor:rebar_concrete" }
+  },
+  "result": {
+    "item": "engineersdecor:halfslab_rebar_concrete",
+    "count": 16
+  }
+}

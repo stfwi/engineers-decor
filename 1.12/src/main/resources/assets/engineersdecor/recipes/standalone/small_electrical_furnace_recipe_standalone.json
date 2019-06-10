@@ -3,7 +3,8 @@
     {
       "type": "engineersdecor:grc",
       "result": "engineersdecor:small_electrical_furnace",
-      "required": ["engineersdecor:small_lab_furnace"]
+      "required": ["engineersdecor:small_lab_furnace"],
+      "missing": ["immersiveengineering:material"]
     }
   ],
   "type": "minecraft:crafting_shaped",

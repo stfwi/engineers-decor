@@ -1,6 +1,9 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.12.2": {
+    "1.0.8": "[R] Release based on v1.0.8-b2. Release-to-release changes: * Added factory area sign. * Added stained clinker. * Config opt-out fixes, detailed feature selection possible now. * Recipe adaptions and fixes. * Lang files updated.\n[A] Added stained clinker brick block/stairs. Can be mixed with \"normal\" clinkers.\n[A] Added opt-out option for CTRL-SHIFT tooltips.\n[M] Recipe condition requirements updated, recipes categorized.",
+    "1.0.8-b2": "[F] Config opt-out fixed (thx IronPiston for the report #30).\n[A] Added opt-out config for detailed including/excluding of features (using registry name wildcard matching).",
+    "1.0.8-b1": "[A] Added \"Factory area\" sign.\n[M] Electrical furnace recipe changed (hoppers to conveyors).\n[A] Opt-out config options added.\n[F] Lang file fixes for en_us (Angela, PR#29).",
     "1.0.7": "[R] Release based on v1.0.7-b2. Release-to-release changes: * Factory dropper added. * Defense system warning sign added. * Warning sign backgrounds adapted. * Standalone recipes added. * Lang files updated.\n[A] Added standalone recipes for signs, factory dropper, and electrical furnace.\n[M] Adapted \"Caution\" sign backgrounds to the yellow defense system warning background.",
     "1.0.7-b2": "[A] Added Defense System Warning sign (design by J. Carver).\n[M] Factory dropper non-experimental now. GUI click area tuning. \"Fast drop\" symbol replaced from arrow to dog icon (thx overchoice for that icon).\n[M] Lang files updated.",
     "1.0.7-b1": "[M] Factory dropper (config:experimental) button placement fixed, GUI vs external view x/y markers added, internal trigger logic simplified. Thx @overchoice for beta testing!",
@@ -40,7 +43,7 @@
     "1.0.0-b1": "[A] Initial structure.\n[A] Added clinker bricks and clinker brick stairs.\n[A] Added slag bricks and slag brick stairs.\n[A] Added metal rung ladder.\n[A] Added staggered metal steps ladder.\n[A] Added treated wood ladder.\n[A] Added treated wood pole.\n[A] Added treated wood table."
   },
   "promos": {
-    "1.12.2-recommended": "1.0.7",
-    "1.12.2-latest": "1.0.7"
+    "1.12.2-recommended": "1.0.8",
+    "1.12.2-latest": "1.0.8"
   }
 }

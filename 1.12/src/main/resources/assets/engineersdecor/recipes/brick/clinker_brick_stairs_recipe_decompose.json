@@ -1,0 +1,24 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:clinker_brick_block",
+      "required": ["engineersdecor:clinker_brick_stairs"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SS",
+    "SS"
+  ],
+  "key": {
+    "S": {
+      "item": "engineersdecor:clinker_brick_stairs",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:clinker_brick_block",
+    "count": 4
+  }
+}

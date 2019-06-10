@@ -1,0 +1,28 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "engineersdecor:slab/halfslab_s0_model",
+    "textures": { "all": "engineersdecor:blocks/concrete/rebar_concrete_texture0" }
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "parts": {
+      "0" : { "model": "engineersdecor:slab/halfslab_s0_model" },
+      "1" : { "model": "engineersdecor:slab/halfslab_s1_model" },
+      "2" : { "model": "engineersdecor:slab/halfslab_s2_model" },
+      "3" : { "model": "engineersdecor:slab/halfslab_s3_model" },
+      "4" : { "model": "engineersdecor:slab/halfslab_s4_model" },
+      "5" : { "model": "engineersdecor:slab/halfslab_s5_model" },
+      "6" : { "model": "engineersdecor:slab/halfslab_s6_model" },
+      "7" : { "model": "engineersdecor:slab/halfslab_s7_model" },
+      "8" : { "model": "engineersdecor:slab/halfslab_s8_model" },
+      "9" : { "model": "engineersdecor:slab/halfslab_s9_model" },
+      "10": { "model": "engineersdecor:slab/halfslab_sa_model" },
+      "11": { "model": "engineersdecor:slab/halfslab_sb_model" },
+      "12": { "model": "engineersdecor:slab/halfslab_sc_model" },
+      "13": { "model": "engineersdecor:slab/halfslab_sd_model" },
+      "14": { "model": "engineersdecor:slab/halfslab_se_model" }
+    }
+  }
+}

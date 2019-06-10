@@ -1,0 +1,21 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:halfslab_concrete",
+      "required": ["immersiveengineering:stone_decoration"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SS",
+    "SS"
+  ],
+  "key": {
+    "S": { "item": "#slabConcreteIe" }
+  },
+  "result": {
+    "item": "engineersdecor:halfslab_concrete",
+    "count": 16
+  }
+}
