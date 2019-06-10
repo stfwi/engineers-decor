@@ -10,6 +10,19 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+                -------------------------------------------------------------------
+    - v1.0.8    [R] Release based on v1.0.8-b2. Release-to-release changes:
+                    * Added factory area sign.
+                    * Added stained clinker.
+                    * Config opt-out fixes, detailed feature selection possible now.
+                    * Recipe adaptions and fixes.
+                    * Lang files updated.
+                -------------------------------------------------------------------
+                [A] Added stained clinker brick block/stairs. Can be mixed with
+                    "normal" clinkers.
+                [A] Added opt-out option for CTRL-SHIFT tooltips.
+                [M] Recipe condition requirements updated, recipes categorized.
+
     - v1.0.8-b2 [F] Config opt-out fixed (thx IronPiston for the report #30).
                 [A] Added opt-out config for detailed including/excluding
                     of features (using registry name wildcard matching).

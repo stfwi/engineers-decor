@@ -176,6 +176,10 @@ public class ModConfig
     @Config.Name("Without h. supports")
     @Config.RequiresMcRestart
     public boolean without_hsupports = false;
+
+    @Config.Comment({"Disable CTRL-SHIFT item tooltip display."})
+    @Config.Name("Without tooltips")
+    public boolean without_tooltips = false;
   }
 
   @Config.Comment({
@@ -337,6 +341,9 @@ public class ModConfig
   public static final boolean isWithoutRecipes()
   { return (zmisc==null) || (zmisc.without_recipes); }
 
+  public static boolean noToolTips()
+  { return optout.without_tooltips; }
+
   public static final boolean isOptedOut(final @Nullable Block block)
   { return isOptedOut(block, false); }
 
@@ -382,7 +389,7 @@ public class ModConfig
     if(optout.without_walls && (block instanceof BlockDecorWall)) return true;
     if(optout.without_poles && (block instanceof BlockDecorStraightPole)) return true;
     // String matching based evaluation
-    if(optout.without_clinker_bricks && (rn.startsWith("clinker_brick_")) || (rn.startsWith("clinker_brick_stained_"))) return true;
+    if(optout.without_clinker_bricks && (rn.startsWith("clinker_brick_"))) return true;
     if(optout.without_slag_bricks && rn.startsWith("slag_brick_")) return true;
     if(optout.without_rebar_concrete && rn.startsWith("rebar_concrete")) return true;
     if(optout.without_ie_concrete_wall && rn.startsWith("concrete_wall")) return true;

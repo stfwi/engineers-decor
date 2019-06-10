@@ -1,0 +1,24 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:slag_brick_block",
+      "required": ["engineersdecor:slag_brick_wall"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WW",
+    "WW"
+  ],
+  "key": {
+    "W": {
+      "item": "engineersdecor:slag_brick_wall",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:slag_brick_block",
+    "count": 4
+  }
+}

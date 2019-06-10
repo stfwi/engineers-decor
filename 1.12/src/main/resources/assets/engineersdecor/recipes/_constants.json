@@ -76,8 +76,16 @@
     "name": "slabSheetmetalSteel"
   },
   {
-    "ingredient": { "type": "forge:ore_dict", "ore": "slabSheetmetalAluminium" },
+    "ingredient": { "type": "forge:ore_dict", "ore": "slabSheetmetalAluminum" },
     "name": "slabSheetmetalAluminium"
+  },
+  {
+    "ingredient": { "type": "forge:ore_dict", "ore": "slabSheetmetalCopper" },
+    "name": "slabSheetmetalCopper"
+  },
+  {
+    "ingredient": { "type": "forge:ore_dict", "ore": "slabSheetmetalGold" },
+    "name": "slabSheetmetalGold"
   },
   {
     "ingredient": { "type": "forge:ore_dict", "ore": "sand" },
@@ -219,6 +227,13 @@
     ],
     "ingredient": { "item": "immersiveengineering:stone_decoration", "data": 5 },
     "name": "blockConcreteIe"
+  },
+  {
+    "conditions": [
+      { "type": "minecraft:item_exists", "item": "immersiveengineering:stone_decoration" }
+    ],
+    "ingredient": { "item": "immersiveengineering:stone_decoration_slab", "data": 5 },
+    "name": "slabConcreteIe"
   },
   {
     "conditions": [
