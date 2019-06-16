@@ -14,8 +14,8 @@ engineersdecor.tooltip.hint.help=§6[§9CTRL-SHIFT§r Помощь§6]§r
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.clinker_brick_block.name=Клинкерный кирпич
 tile.engineersdecor.clinker_brick_block.help=§6Кирпичный блок с вариациями текстуры, зависящими от положения.§r\nВыглядит немного темнее и интенсивнее, чем ванильный кирпичный блок.
-tile.engineersdecor.clinker_brick_stained_block.name=Stained Clinker Brick Block
-#tile.engineersdecor.clinker_brick_stained_block.help=§6A brick block with position dependent texture variations.§r\nLooks slightly darker and more color intensive than the vanilla brick block. Has more visible traces of grime or stain.
+tile.engineersdecor.clinker_brick_stained_block.name=Грязный клинкерный кирпич
+tile.engineersdecor.clinker_brick_stained_block.help=§6Кирпичный блок с вариациями текстуры, зависящими от положения.§r\nВыглядит немного темнее и интенсивнее, чем ванильный кирпичный блок. Имеет более заметные следы грязи или пятен.
 tile.engineersdecor.slag_brick_block.name=Шлакоблок
 tile.engineersdecor.slag_brick_block.help=§6Серо-коричневый кирпичный блок с зависимыми от положения вариациями текстуры.
 tile.engineersdecor.rebar_concrete.name=Железобетон
@@ -43,8 +43,8 @@ tile.engineersdecor.treated_wood_ladder.help=§6Погодоустойчивая
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.clinker_brick_stairs.name=Клинкерная кирпичная лестница
 tile.engineersdecor.clinker_brick_stairs.help=§6По цвету выглядит немного темнее и интенсивнее, чем ванильный кирпичный блок
-tile.engineersdecor.clinker_brick_stained_stairs.name=Stained Clinker Brick Stairs
-#tile.engineersdecor.clinker_brick_stained_stairs.help=§6Looks slightly darker and more color intensive than the vanilla brick block. Has more visible traces of grime or stain.
+tile.engineersdecor.clinker_brick_stained_stairs.name=Грязная кирпичная лестница
+tile.engineersdecor.clinker_brick_stained_stairs.help=§6Выглядит немного темнее и интенсивнее, чем ванильный кирпичный блок. Имеет более заметные следы грязи или пятен.
 tile.engineersdecor.slag_brick_stairs.name=Клинкерная кирпичная лестница
 tile.engineersdecor.slag_brick_stairs.help=§6По цвету выглядит немного темнее и интенсивнее, чем ванильный кирпичный блок.
 tile.engineersdecor.rebar_concrete_stairs.name=Железобетонная лестница
@@ -57,19 +57,19 @@ tile.engineersdecor.treated_wood_pole.help=§6Надёжный столб с д�
               Может быть полезен в качестве альтернативы электро-столбам, если требуется особая специальная длина, \
               или как опора для конструкций.
 tile.engineersdecor.treated_wood_pole_head.name=Прямой обработанный деревянный столб верхняя часть/основание
-#tile.engineersdecor.treated_wood_pole_head.help=§6Wooden part fitting as foot or head of straight poles.
+tile.engineersdecor.treated_wood_pole_head.help=§6Деревянная часть, подходит как основание или наконечник прямых столбов.
 tile.engineersdecor.treated_wood_pole_support.name=Прямой обработанный деревянный столб
-#tile.engineersdecor.treated_wood_pole_support.help=§6Heavy duty wooden support part fitting as foot or head of straight poles.
-tile.engineersdecor.thick_steel_pole.name=Straight thick steel pole
-#tile.engineersdecor.thick_steel_pole.help=§6Straight hollow pole fragment (6x6x16) for structural support purposes.
-tile.engineersdecor.thin_steel_pole.name=Straight thin steel pole
-#tile.engineersdecor.thin_steel_pole.help=§6Straight hollow pole fragment (4x4x16) for structural support purposes.
-tile.engineersdecor.thin_steel_pole_head.name=Straight thin steel pole head/foot
-#tile.engineersdecor.thin_steel_pole_head.help=§6Steel part fitting as foot or head of the thin steel pole (4x4x16).
-tile.engineersdecor.thick_steel_pole_head.name=Straight thick steel pole head/foot
-#tile.engineersdecor.thick_steel_pole_head.help=§6Steel part fitting as foot or head of the thick steel pole (6x6x16).
-tile.engineersdecor.steel_double_t_support.name=Steel double T support
-#tile.engineersdecor.steel_double_t_support.help=§6Horizontal ceiling support bream fragment.
+tile.engineersdecor.treated_wood_pole_support.help=§6Усиленная деревянная опорная часть, подходит как основание или наконечник прямых столбов.
+tile.engineersdecor.thick_steel_pole.name=Прямой толстый стальной столб
+tile.engineersdecor.thick_steel_pole.help=§6Фрагмент прямого полого столба (6x6x16) для поддержки конструкции.
+tile.engineersdecor.thin_steel_pole.name=Прямой тонкий стальной столб
+tile.engineersdecor.thin_steel_pole.help=§6Фрагмент прямого полого столба (4x4x16) для поддержки конструкции.
+tile.engineersdecor.thin_steel_pole_head.name=Прямое тонкое стальное основание/наконечник столбов
+tile.engineersdecor.thin_steel_pole_head.help=§6Стальная часть, подходящая как основание или наконечник тонкого стального столба (4x4x16).
+tile.engineersdecor.thick_steel_pole_head.name=Прямое толстое стальное основание/наконечник столбов
+tile.engineersdecor.thick_steel_pole_head.help=§6Стальная часть, подходящая как основание или наконечник тонкого стального столба (4x4x16).
+tile.engineersdecor.steel_double_t_support.name=Стальная двойная Т-образная опора
+tile.engineersdecor.steel_double_t_support.help=§6Фрагмент горизонтальной потолочной опорной балки.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.treated_wood_table.name=Стол из обработанного дерева
 tile.engineersdecor.treated_wood_table.help=§6Прочный деревянный стол с четырьмя ножками .§r Для использования в помещении и на улице.
@@ -86,59 +86,62 @@ tile.engineersdecor.treated_wood_window.help=§6Деревянный карка�
 tile.engineersdecor.treated_wood_windowsill.name=Обработанный деревянный подоконник
 tile.engineersdecor.treated_wood_windowsill.help=§6Простое оформление окон.
 tile.engineersdecor.steel_framed_window.name=Окно со стальной рамой
-#tile.engineersdecor.steel_framed_window.help=§6Steel framed triple glazed window. Well insulating. §r Does not connect to adjacent blocks like glass panes.
+tile.engineersdecor.steel_framed_window.help=§6Стальной каркас окна с тройным остеклением. Хорошо изолирует. §r Не подключается к смежным блокам, таким как стеклянные панели.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.small_lab_furnace.name=Компактная лабораторная печь
 tile.engineersdecor.small_lab_furnace.help=§6Лабораторная печь в металлическом корпусе.§r Подача твёрдого топлива - сверху. Немного горячее чем каменная, поэтому быстрее. Два внутренних слота для ввода, выхода и топлива.
-tile.engineersdecor.small_electrical_furnace.name=Small electrical furnace
-#tile.engineersdecor.small_electrical_furnace.help=§6Small metal cased pass-through furnace.§r \
-                                           Automatically draws items from the input side and puts items into the inventory at the output side. \
-                                           Items can be inserted or drawn from all sides using hoppers. Implicitly bypasses items that cannot be \
-                                           smelted or cooked to the output. Slightly more energy efficient and faster than a heated cobblestone \
-                                           furnace. Fifos and feeders transfer whole stacks. Feeders require a bit of power.
-tile.engineersdecor.small_waste_incinerator.name=Small waste incinerator
-#tile.engineersdecor.small_waste_incinerator.help=§6Trash with internal fifo slots.§r Items can be inserted on all sides, and are kept until \
-                                                  there is no space left in the fifo. After that the oldest stack will be incinerated. Apply \
-                                                  electrical RF/FE power to increase the processing speed. Keeps its inventory when being \
-                                                  relocated.
+tile.engineersdecor.small_electrical_furnace.name=Компактная конвейерная электрическая печь
+tile.engineersdecor.small_electrical_furnace.help=§6Компактная конвейерная печь в металлическом корпусе.§r \
+                                           Автоматически принимает предметы со стороны ввода и складывает в инвентарь со стороны вывода. \
+                                           Предметы могут быть импортированы/вытянуты со всех сторон с помощью воронок. Без проблем пропускает \
+                                           элементы, которые нельзя выплавить или приготовить. Чуть более энергоэффективная и быстра, \
+                                           чем утеплённая булыжная печь. Транспортировка работает стеками. Механизм требует немного энергии.
+tile.engineersdecor.small_waste_incinerator.name=Компактный сжигатель отходов
+tile.engineersdecor.small_waste_incinerator.help=§6Отходы с слотами очереди.§r Предметы могут помещаться с любой стороны, и храниться \
+                                                  до тех пор, пока в очереди не останется свободного места. После этого самый старый стэк \
+                                                  будет сожжен. Подключите электричество (RF/FE) для увеличения скорости обработки. \
+                                                  Сохраняет инвентарь при перемещении.
 #-----------------------------------------------------------------------------------------------------------
-tile.engineersdecor.straight_pipe_valve.name=Straight fluid valve
-#tile.engineersdecor.straight_pipe_valve.help=§6Straight fluid pipe fragment.§r Conducts fluids only in one direction. \
-                                             Does not connect to the sides. Reduces flow rate. Sneak to place in reverse direction.
-tile.engineersdecor.straight_pipe_valve_redstone.name=Redstone controlled fluid valve
-#tile.engineersdecor.straight_pipe_valve_redstone.help=§6Straight fluid pipe fragment.§r Conducts fluids only in one direction. \
-                                                      Does not connect to the sides. Sneak to place in reverse direction. \
-                                                      Blocks if not redstone powered.
-tile.engineersdecor.straight_pipe_valve_redstone_analog.name=Redstone analog fluid valve
-#tile.engineersdecor.straight_pipe_valve_redstone_analog.help=§6Straight fluid pipe fragment.§r Conducts fluids only in one direction. \
-                                                      Does not connect to the sides. Sneak to place in reverse direction. \
-                                                      Blocks if not redstone powered, reduces the flow rate linear from power 1 to 14, \
-                                                      opens to maximum possible valve flow rate for power 15.
-tile.engineersdecor.passive_fluid_accumulator.name=Passive fluid accumulator
-#tile.engineersdecor.passive_fluid_accumulator.help=§6Vacuum suction based fluid collector.§r Has one output, all other sides are input. \
-                                                   Drains fluids from adjacent tanks when being drained from the output port by a pump.
+tile.engineersdecor.straight_pipe_valve.name=Жидкостный одноканальный клапан
+tile.engineersdecor.straight_pipe_valve.help=§6Фрагмент прямой трубы.§r проводит жидкость только в одном направлении. \
+                                             Не соединяется по бокам. Уменьшает пропускную способность. \
+                                             SHIFT для размещения в противоположном направлении.
+tile.engineersdecor.straight_pipe_valve_redstone.name=Редстоун-контролируемый жидкостный клапан
+tile.engineersdecor.straight_pipe_valve_redstone.help=§6Фрагмент прямой трубы.§r Проводит жидкости только в одном направлении. \
+                                                      Не соединяется по бокам. SHIFT - чтобы разместить в обратном направлении. \
+                                                      Блокирует поток, если присутствует сигнал красного камня.
+tile.engineersdecor.straight_pipe_valve_redstone_analog.name=Редстоун-аналоговый клапан для жидкости
+tile.engineersdecor.straight_pipe_valve_redstone_analog.help=§6Фрагмент прямой трубы.§r Проводит жидкости только в одном направлении. \
+                                                      Не соединяется по бокам. SHIFT - чтобы разместить в обратном направлении. \
+                                                      Не пропускает при отсутствии красного сигнала, уменьшает расход линейно с мощности 1 до 14, \
+                                                      открывается максимально-возможно при уровне красного сигнала 15.
+tile.engineersdecor.passive_fluid_accumulator.name=Пассивный жидкостный накопитель
+tile.engineersdecor.passive_fluid_accumulator.help=§6Вакуумный всасывающий жидкостный коллектор§r Имеет один выход, все остальные стороны - входные. \
+                                                   Сливает жидкости из соседних резервуаров при выкачивании жидкости из выходного порта.
 #-----------------------------------------------------------------------------------------------------------
-tile.engineersdecor.factory_dropper.name=Factory dropper
-#tile.engineersdecor.factory_dropper.help=§6Dropper suitable for advanced factory automation.§r Has twelve round-robin selected slots. \
-                                         Drop force, angle, stack size, and cool-down delay adjustable in the GUI. Three stack compare \
-                                         slots with logical AND or OR can be used as internal trigger source. Internal trigger can be \
-                                         AND'ed or OR'ed with the external redstone signal trigger. Trigger simulation buttons for testing. \
-                                         Pre-opens shutter door when internal trigger conditions are met. Drops all matching stacks \
-                                         simultaneously. Click on all elements in the GUI to see how it works.
+tile.engineersdecor.factory_dropper.name=Фабричный выбрасыватель
+tile.engineersdecor.factory_dropper.help=§6Выбрасыватель подходит для продвинутой автоматизации производства.§r Имеет двенадцать выборочных слотов. \
+                                         Сила броска, угол, размер стопки и задержка настраиваются в GUI. Три слота сравнения стека \
+                                         с логическим И или ИЛИ могут использоваться в качестве внутреннего источника запуска. \
+                                         Внутренний триггер может быть И или ИЛИ с внешним триггерным сигналом красного камня. \
+                                         Триггерные кнопки симуляции для тестирования. Предварительно открывает дверцу затвора, \
+                                         когда выполняются условия внутреннего запуска. Сбрасывает все соответствующие стеки одновременно. \
+                                         Нажмите на все элементы в GUI, чтобы увидеть, как это работает.
 #-----------------------------------------------------------------------------------------------------------
-tile.engineersdecor.sign_decor.name=Sign plate (Engineer's decor logo)
-#tile.engineersdecor.sign_decor.help=§6This should not be craftable or visible in JEI. Used for creative tab and screenshots.
-tile.engineersdecor.sign_hotwire.name=Sign "Caution hot wire"
-#tile.engineersdecor.sign_hotwire.help=§6Electrical hazard warning. Don't forget to place around HV, or you'll have a mark in the next audit.
-tile.engineersdecor.sign_mindstep.name=Sign "Mind the step"
-#tile.engineersdecor.sign_mindstep.help=§6Placable on walls (horizontally).
-tile.engineersdecor.sign_danger.name=Sign "Caution really dangerous there"
-#tile.engineersdecor.sign_danger.help=§6General danger warning.
-tile.engineersdecor.sign_defense.name=Sign "Caution Defense System Ahead"
-#tile.engineersdecor.sign_defense.help=§6Warning sign for turrets, Tesla Coils, and traps.
-tile.engineersdecor.sign_factoryarea.name=Sign "Factory Area"
-#tile.engineersdecor.sign_factoryarea.help=§6Marker sign for buildings or areas where the really big machines are.
+tile.engineersdecor.sign_decor.name=Табличка с надписью (Логотип Engineer's decor)
+tile.engineersdecor.sign_decor.help=§Это не должно быть крафтовым или видимым в JEI. Используется для творческой вкладки и скриншотов.
+tile.engineersdecor.sign_hotwire.name=Знак «Осторожно, под напряжением»
+tile.engineersdecor.sign_hotwire.help=§6Предупреждение об опасности поражения электрическим током. Не забудьте разместить вокруг HV, иначе у вас будет штраф при следующей проверке.
+tile.engineersdecor.sign_mindstep.name=Знак «Осторожно, там ступеньки!»
+tile.engineersdecor.sign_mindstep.help=§6Размещается на стенах (горизонтально)
+tile.engineersdecor.sign_danger.name=Знак «Осторожно, там опасность»
+tile.engineersdecor.sign_danger.help=§6Общее предупреждение об опасности.
+tile.engineersdecor.sign_defense.name=Знак «Осторожно, впереди система обороны»
+tile.engineersdecor.sign_defense.help=§6Предупреждающий знак для турелей, катушек Тесла и ловушек.
+tile.engineersdecor.sign_factoryarea.name=Знак «Заводская зона»
+tile.engineersdecor.sign_factoryarea.help=§6Знак для зданий или областей, где находятся действительно большие машины.
 #-----------------------------------------------------------------------------------------------------------
+<<<<<<< HEAD
 tile.engineersdecor.halfslab_rebar_concrete.name=Rebar Concrete Slice
 #tile.engineersdecor.halfslab_rebar_concrete.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
 tile.engineersdecor.halfslab_concrete.name=Concrete Slice
@@ -155,6 +158,24 @@ tile.engineersdecor.halfslab_sheetmetal_gold.name=Gold Sheet Metal Slice
 #tile.engineersdecor.halfslab_sheetmetal_gold.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
 tile.engineersdecor.halfslab_sheetmetal_aluminum.name=Aluminum Sheet Metal Slice
 #tile.engineersdecor.halfslab_sheetmetal_aluminum.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
+=======
+tile.engineersdecor.halfslab_rebar_concrete.name=Арматура для бетона
+tile.engineersdecor.halfslab_rebar_concrete.help=§6Вертикально наращиваемая часть.§rПравый/левый щелчок со стеком частей на верхней или нижней поверхности для добавления/удаления частей.
+tile.engineersdecor.halfslab_concrete.name=Бетонный срез
+tile.engineersdecor.halfslab_concrete.help=§6Вертикально наращиваемая часть.§rПравый/левый щелчок со стеком частей на верхней или нижней поверхности для добавления/удаления частей.
+tile.engineersdecor.halfslab_treated_wood.name=Часть обработанного дерева
+tile.engineersdecor.halfslab_treated_wood.help=§6Вертикально наращиваемая часть.§rПравый/левый щелчок со стеком частей на верхней или нижней поверхности для добавления/удаления частей.
+tile.engineersdecor.halfslab_sheetmetal_iron.name=Часть железного листового металла
+tile.engineersdecor.halfslab_sheetmetal_iron.help=§6Вертикально наращиваемая часть.§rПравый/левый щелчок со стеком частей на верхней или нижней поверхности для добавления/удаления частей.
+tile.engineersdecor.halfslab_sheetmetal_steel.name=Часть стального листового металла
+tile.engineersdecor.halfslab_sheetmetal_steel.help=§6Вертикально наращиваемая часть.§rПравый/левый щелчок со стеком частей на верхней или нижней поверхности для добавления/удаления частей.
+tile.engineersdecor.halfslab_sheetmetal_copper.name=Часть медного листового металла
+tile.engineersdecor.halfslab_sheetmetal_copper.help=§6Вертикально наращиваемая часть.§rПравый/левый щелчок со стеком частей на верхней или нижней поверхности для добавления/удаления частей.
+tile.engineersdecor.halfslab_sheetmetal_gold.name=Часть золотого листового металла
+tile.engineersdecor.halfslab_sheetmetal_gold.help=§6Вертикально наращиваемая часть.§rПравый/левый щелчок со стеком частей на верхней или нижней поверхности для добавления/удаления частей.
+tile.engineersdecor.halfslab_sheetmetal_aluminum.name=Часть алюминиевого листового металла
+tile.engineersdecor.halfslab_sheetmetal_aluminum.help=§6Вертикально наращиваемая часть.§rПравый/левый щелчок со стеком частей на верхней или нижней поверхности для добавления/удаления частей.
+>>>>>>> 2b610eab0d3f304ee203932b61d0071d8719063b
 #-----------------------------------------------------------------------------------------------------------
 # EOF
 #-----------------------------------------------------------------------------------------------------------
