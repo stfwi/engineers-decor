@@ -141,24 +141,6 @@ tile.engineersdecor.sign_defense.help=§6Предупреждающий знак
 tile.engineersdecor.sign_factoryarea.name=Знак «Заводская зона»
 tile.engineersdecor.sign_factoryarea.help=§6Знак для зданий или областей, где находятся действительно большие машины.
 #-----------------------------------------------------------------------------------------------------------
-<<<<<<< HEAD
-tile.engineersdecor.halfslab_rebar_concrete.name=Rebar Concrete Slice
-#tile.engineersdecor.halfslab_rebar_concrete.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
-tile.engineersdecor.halfslab_concrete.name=Concrete Slice
-#tile.engineersdecor.halfslab_concrete.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
-tile.engineersdecor.halfslab_treated_wood.name=Treated Wood Slice
-#tile.engineersdecor.halfslab_treated_wood.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
-tile.engineersdecor.halfslab_sheetmetal_iron.name=Iron Sheet Metal Slice
-#tile.engineersdecor.halfslab_sheetmetal_iron.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
-tile.engineersdecor.halfslab_sheetmetal_steel.name=Steel Sheet Metal Slice
-#tile.engineersdecor.halfslab_sheetmetal_steel.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
-tile.engineersdecor.halfslab_sheetmetal_copper.name=Copper Sheet Metal Slice
-#tile.engineersdecor.halfslab_sheetmetal_copper.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
-tile.engineersdecor.halfslab_sheetmetal_gold.name=Gold Sheet Metal Slice
-#tile.engineersdecor.halfslab_sheetmetal_gold.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
-tile.engineersdecor.halfslab_sheetmetal_aluminum.name=Aluminum Sheet Metal Slice
-#tile.engineersdecor.halfslab_sheetmetal_aluminum.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
-=======
 tile.engineersdecor.halfslab_rebar_concrete.name=Арматура для бетона
 tile.engineersdecor.halfslab_rebar_concrete.help=§6Вертикально наращиваемая часть.§rПравый/левый щелчок со стеком частей на верхней или нижней поверхности для добавления/удаления частей.
 tile.engineersdecor.halfslab_concrete.name=Бетонный срез
@@ -175,7 +157,6 @@ tile.engineersdecor.halfslab_sheetmetal_gold.name=Часть золотого л
 tile.engineersdecor.halfslab_sheetmetal_gold.help=§6Вертикально наращиваемая часть.§rПравый/левый щелчок со стеком частей на верхней или нижней поверхности для добавления/удаления частей.
 tile.engineersdecor.halfslab_sheetmetal_aluminum.name=Часть алюминиевого листового металла
 tile.engineersdecor.halfslab_sheetmetal_aluminum.help=§6Вертикально наращиваемая часть.§rПравый/левый щелчок со стеком частей на верхней или нижней поверхности для добавления/удаления частей.
->>>>>>> 2b610eab0d3f304ee203932b61d0071d8719063b
 #-----------------------------------------------------------------------------------------------------------
 # EOF
 #-----------------------------------------------------------------------------------------------------------

@@ -10,7 +10,9 @@ Mod sources for Minecraft version 1.13.2.
 ----
 ## Revision history
 
-    ~ v1.0.7-b4 [A]
+    ~ v1.0.7-b5 [A]
+
+    - v1.0.7-b4 [A] Added stained clinker brick block/stairs.
 
     - v1.0.7-b3 [V] Version assignment: All features of v1.0.7-b3-1.12.2 that can be ported
                     to 1.13.2 implemented/prepared, therefore version re-assigned.

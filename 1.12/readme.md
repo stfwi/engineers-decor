@@ -10,6 +10,8 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Revision history
 
+    ~ v1.0.9-b1 [U] Lang file ru_ru updated (PR#31, yaroslav4167).
+
                 -------------------------------------------------------------------
     - v1.0.8    [R] Release based on v1.0.8-b2. Release-to-release changes:
                     * Added factory area sign.
