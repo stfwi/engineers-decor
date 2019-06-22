@@ -145,6 +145,10 @@ More to come slowly but steadily.
   - Bug reports: Yes, please let me know. Drop a mail or better open an issue
     for the repository.
 
+  - Translations: Please translate the 1.12 lang files if possible (because the
+    1.13+ JSON language files are automatically generated from these `.lang`
+    files - saves me a bit of work).
+
   - Pull requests: Happily accepted. Please make sure that use the ***develop
     branch*** for pull requests. The master branch is for release versions only.
     I might merge the pull request locally if I'm ahead of the github repository,
@@ -154,7 +158,7 @@ More to come slowly but steadily.
     blocks under development to be registered as well.
 
 ----
-## Revision history
+## Version history
 
 Mod versions are tracked in the readme files for individual Minecraft versions, and
 of course in the commits of this repository. Beta and release versions that are
@@ -165,6 +169,8 @@ commits.
   - [1.12](1.12/readme.md)
 
   - [1.13](1.13/readme.md)
+
+  - [1.14](1.14/readme.md)
 
 ### Community references
 

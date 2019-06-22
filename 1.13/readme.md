@@ -8,9 +8,10 @@ Mod sources for Minecraft version 1.13.2.
 - Compiled mod distribution channel is curseforge: https://www.curseforge.com/minecraft/mc-mods/engineers-decor/files.
 
 ----
-## Revision history
+## Version history
 
-    ~ v1.0.7-b5 [A]
+    ~ v1.0.7-b5 [A] Added translation zh_cn (PR#33, XuyuEre)
+                [M] Updated textures.
 
     - v1.0.7-b4 [A] Added stained clinker brick block/stairs.
 

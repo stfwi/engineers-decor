@@ -90,28 +90,28 @@ public class ModBlocks
   public static final BlockDecorStraightPole THIN_STEEL_POLE = new BlockDecorStraightPole(
     "thin_steel_pole",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT,
-    Material.IRON, 1.0f, 15f, SoundType.METAL,
+    Material.IRON, 2.0f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(6,6,0, 10,10,16)
   );
 
   public static final BlockDecorStraightPole THIN_STEEL_POLE_HEAD = new BlockDecorStraightPole(
     "thin_steel_pole_head",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_IF_SAME,
-    Material.IRON, 1.0f, 15f, SoundType.METAL,
+    Material.IRON, 2.0f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(6,6,0, 10,10,16)
   );
 
   public static final BlockDecorStraightPole THICK_STEEL_POLE = new BlockDecorStraightPole(
     "thick_steel_pole",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT,
-    Material.IRON, 1.0f, 15f, SoundType.METAL,
+    Material.IRON, 2.0f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(5,5,0, 11,11,16)
   );
 
   public static final BlockDecorStraightPole THICK_STEEL_POLE_HEAD = new BlockDecorStraightPole(
     "thick_steel_pole_head",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_IF_SAME,
-    Material.IRON, 1.0f, 15f, SoundType.METAL,
+    Material.IRON, 2.0f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(5,5,0, 11,11,16)
   );
 
@@ -139,7 +139,7 @@ public class ModBlocks
   public static final BlockDecorDirected INSET_LIGHT_IRON = new BlockDecorDirected(
     "iron_inset_light",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT|(14<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
-    Material.IRON, 0.3f, 15f, SoundType.METAL,
+    Material.IRON, 0.5f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(5.2,5.2,15.7, 10.8,10.8,16.0)
   );
 
@@ -168,14 +168,14 @@ public class ModBlocks
     "small_lab_furnace",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|
     BlockDecor.CFG_ELECTRICAL,
-    Material.IRON, 0.35f, 15f, SoundType.METAL,
+    Material.IRON, 0.5f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(1,0,1, 15,15,16)
   );
 
   public static final BlockDecorFurnaceElectrical SMALL_ELECTRICAL_FURNACE = new BlockDecorFurnaceElectrical(
     "small_electrical_furnace",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_ELECTRICAL,
-    Material.IRON, 0.35f, 15f, SoundType.METAL,
+    Material.IRON, 0.5f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   );
 
@@ -189,7 +189,7 @@ public class ModBlocks
   public static final BlockDecorHorizontalSupport STEEL_DOUBLE_T_SUPPORT = new BlockDecorHorizontalSupport(
     "steel_double_t_support",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
-    Material.IRON, 0.5f, 15f, SoundType.METAL,
+    Material.IRON, 2.0f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(5,11,0, 11,16,16)
   );
 
@@ -197,7 +197,7 @@ public class ModBlocks
     "straight_pipe_valve",
     BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
     BlockDecor.CFG_CUTOUT,
-    Material.IRON, 0.35f, 15f, SoundType.METAL,
+    Material.IRON, 0.5f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
   );
 
@@ -205,7 +205,7 @@ public class ModBlocks
     "straight_pipe_valve_redstone",
     BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_REDSTONE_CONTROLLED,
-    Material.IRON, 0.35f, 15f, SoundType.METAL,
+    Material.IRON, 0.5f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
   );
 
@@ -213,7 +213,7 @@ public class ModBlocks
     "straight_pipe_valve_redstone_analog",
     BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_REDSTONE_CONTROLLED|BlockDecor.CFG_ANALOG,
-    Material.IRON, 0.35f, 15f, SoundType.METAL,
+    Material.IRON, 0.5f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
   );
 
@@ -221,7 +221,7 @@ public class ModBlocks
     "passive_fluid_accumulator",
     BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
     BlockDecor.CFG_CUTOUT,
-    Material.IRON, 0.35f, 15f, SoundType.METAL,
+    Material.IRON, 0.5f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   );
 
@@ -263,7 +263,7 @@ public class ModBlocks
   public static final BlockDecorDropper FACTORY_DROPPER = new BlockDecorDropper(
     "factory_dropper",
     BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_REDSTONE_CONTROLLED,
-    Material.IRON, 0.3f, 15f, SoundType.METAL,
+    Material.IRON, 0.5f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,15)
   );
 
@@ -282,37 +282,37 @@ public class ModBlocks
   public static final BlockDecorHalfSlab HALFSLAB_CONCRETE = new BlockDecorHalfSlab(
     "halfslab_concrete",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
-    Material.ROCK, 0.4f, 10f, SoundType.STONE
+    Material.ROCK, 1.0f, 10f, SoundType.STONE
   );
   public static final BlockDecorHalfSlab HALFSLAB_TREATEDWOOD = new BlockDecorHalfSlab(
     "halfslab_treated_wood",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
-    Material.WOOD, 0.4f, 4f, SoundType.WOOD
+    Material.WOOD, 0.6f, 4f, SoundType.WOOD
   );
   public static final BlockDecorHalfSlab HALFSLAB_SHEETMETALIRON = new BlockDecorHalfSlab(
     "halfslab_sheetmetal_iron",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
-    Material.IRON, 0.4f, 10f, SoundType.METAL
+    Material.IRON, 0.8f, 10f, SoundType.METAL
   );
   public static final BlockDecorHalfSlab HALFSLAB_SHEETMETALSTEEL = new BlockDecorHalfSlab(
     "halfslab_sheetmetal_steel",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
-    Material.IRON, 0.4f, 10f, SoundType.METAL
+    Material.IRON, 0.8f, 10f, SoundType.METAL
   );
   public static final BlockDecorHalfSlab HALFSLAB_SHEETMETALCOPPER = new BlockDecorHalfSlab(
     "halfslab_sheetmetal_copper",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
-    Material.IRON, 0.4f, 10f, SoundType.METAL
+    Material.IRON, 0.8f, 10f, SoundType.METAL
   );
   public static final BlockDecorHalfSlab HALFSLAB_SHEETMETALGOLD = new BlockDecorHalfSlab(
     "halfslab_sheetmetal_gold",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
-    Material.IRON, 0.4f, 10f, SoundType.METAL
+    Material.IRON, 0.6f, 10f, SoundType.METAL
   );
   public static final BlockDecorHalfSlab HALFSLAB_SHEETMETALALUMINIUM = new BlockDecorHalfSlab(
     "halfslab_sheetmetal_aluminum",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
-    Material.IRON, 0.4f, 10f, SoundType.METAL
+    Material.IRON, 0.6f, 10f, SoundType.METAL
   );
 
   //--------------------------------------------------------------------------------------------------------------------

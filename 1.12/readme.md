@@ -8,9 +8,10 @@ Mod sources for Minecraft version 1.12.2.
 - Compiled mod distribution channel is curseforge: https://www.curseforge.com/minecraft/mc-mods/engineers-decor/files.
 
 ----
-## Revision history
+## Version history
 
-    ~ v1.0.9-b1 [U] Lang file ru_ru updated (PR#31, yaroslav4167).
+    - v1.0.9-b1 [U] Lang file ru_ru updated (PR#31, yaroslav4167).
+                [M] Block hardness adaptions (issue #32).
 
                 -------------------------------------------------------------------
     - v1.0.8    [R] Release based on v1.0.8-b2. Release-to-release changes:
