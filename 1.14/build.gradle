@@ -35,7 +35,7 @@ archivesBaseName = "engineersdecor-${version_minecraft}"
 // }()
 
 minecraft {
-  mappings channel: 'snapshot', version: '20180921-1.13'
+  mappings channel: 'snapshot', version: "${version_fml_mappings}"
   // accessTransformer = file('build/resources/main/META-INF/accesstransformer.cfg')
   runs {
     client {
