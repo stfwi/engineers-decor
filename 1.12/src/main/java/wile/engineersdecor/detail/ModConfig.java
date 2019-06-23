@@ -162,10 +162,20 @@ public class ModConfig
     @Config.RequiresMcRestart
     public boolean without_factory_dropper = false;
 
+    @Config.Comment({"Disable horizontal half-block slab."})
+    @Config.Name("Without slabs")
+    @Config.RequiresMcRestart
+    public boolean without_slabs = false;
+
     @Config.Comment({"Disable stackable 1/8 block slices."})
     @Config.Name("Without slab slices")
     @Config.RequiresMcRestart
     public boolean without_halfslabs = false;
+
+    @Config.Comment({"Disable directly picking up layers from slabs and slab " +
+                     "slices by left clicking while looking up/down."})
+    @Config.Name("Without slab pickup")
+    public boolean without_direct_slab_pickup = false;
 
     @Config.Comment({"Disable poles of any material."})
     @Config.Name("Without poles")
@@ -385,6 +395,7 @@ public class ModConfig
     if(block instanceof BlockDecorPipeValve) return optout.without_valves;
     if(block instanceof BlockDecorHorizontalSupport) return optout.without_hsupports;
     // Type based evaluation where later filters may match, too
+    if(optout.without_slabs && (block instanceof BlockDecorSlab)) return true;
     if(optout.without_stairs && (block instanceof BlockDecorStairs)) return true;
     if(optout.without_walls && (block instanceof BlockDecorWall)) return true;
     if(optout.without_poles && (block instanceof BlockDecorStraightPole)) return true;

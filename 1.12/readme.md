@@ -10,6 +10,12 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    ~ v1.0.9-b2 [A] Added slabs for Clinker Brick, Slag Brick, Rebar Concrete,
+                    and Stained Clinker. Texture variations like the base blocks.
+                    Allow fast pick-up (see tooltip help or config).
+                [F] Fixed lab/electrical furnace initialisation issue (first item
+                    inserted was smelted directly).
+
     - v1.0.9-b1 [U] Lang file ru_ru updated (PR#31, yaroslav4167).
                 [M] Block hardness adaptions (issue #32).
 

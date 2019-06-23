@@ -1,0 +1,26 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "engineersdecor:slab/slab_s0_model",
+    "textures": { "all": "engineersdecor:blocks/glass/panzerglass_block_texture0" }
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "parts": {
+      "0" : { "model": "engineersdecor:slab/slab_s0_model" },
+      "1" : { "model": "engineersdecor:slab/slab_s1_model" },
+      "2" : { "model": "engineersdecor:slab/slab_s2_model" }
+    },
+    "tvariant": {
+      "0":{"textures":{"all": "engineersdecor:blocks/glass/panzerglass_block_texture0"}},
+      "1":{"textures":{"all": "engineersdecor:blocks/glass/panzerglass_block_texture1"}},
+      "2":{"textures":{"all": "engineersdecor:blocks/glass/panzerglass_block_texture2"}},
+      "3":{"textures":{"all": "engineersdecor:blocks/glass/panzerglass_block_texture3"}},
+      "4":{"textures":{"all": "engineersdecor:blocks/glass/panzerglass_block_texture0"}},
+      "5":{"textures":{"all": "engineersdecor:blocks/glass/panzerglass_block_texture1"}},
+      "6":{"textures":{"all": "engineersdecor:blocks/glass/panzerglass_block_texture2"}},
+      "7":{"textures":{"all": "engineersdecor:blocks/glass/panzerglass_block_texture3"}}
+    }
+  }
+}

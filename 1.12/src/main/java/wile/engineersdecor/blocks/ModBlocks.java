@@ -44,19 +44,25 @@ public class ModBlocks
   public static final BlockDecorFull CLINKER_BRICK_BLOCK = new BlockDecorFull("clinker_brick_block", 0, Material.ROCK, 2f, 15f, SoundType.STONE);
   public static final BlockDecorStairs CLINKER_BRICK_STAIRS = new BlockDecorStairs("clinker_brick_stairs", CLINKER_BRICK_BLOCK.getDefaultState());
   public static final BlockDecorWall CLINKER_BRICK_WALL = new BlockDecorWall("clinker_brick_wall", BlockDecor.CFG_DEFAULT, Material.ROCK, 2f, 20f, SoundType.STONE);
+  public static final BlockDecorSlab CLINKER_BRICK_SLAB = new BlockDecorSlab("clinker_brick_slab", BlockDecor.CFG_DEFAULT, Material.ROCK, 2f, 20f, SoundType.STONE);
 
   public static final BlockDecorFull CLINKER_BRICK_STAINED_BLOCK = new BlockDecorFull("clinker_brick_stained_block", 0, Material.ROCK, 2f, 15f, SoundType.STONE);
   public static final BlockDecorStairs CLINKER_BRICK_STAINED_STAIRS = new BlockDecorStairs("clinker_brick_stained_stairs", CLINKER_BRICK_STAINED_BLOCK.getDefaultState());
+  public static final BlockDecorSlab CLINKER_BRICK_STAINED_SLAB = new BlockDecorSlab("clinker_brick_stained_slab", BlockDecor.CFG_DEFAULT, Material.ROCK, 2f, 20f, SoundType.STONE);
 
   public static final BlockDecorFull SLAG_BRICK_BLOCK  = new BlockDecorFull("slag_brick_block", 0, Material.ROCK, 2f, 15f, SoundType.STONE);
   public static final BlockDecorStairs SLAG_BRICK_STAIRS = new BlockDecorStairs("slag_brick_stairs", SLAG_BRICK_BLOCK.getDefaultState());
   public static final BlockDecorWall SLAG_BRICK_WALL = new BlockDecorWall("slag_brick_wall", BlockDecor.CFG_DEFAULT, Material.ROCK, 2f, 15f, SoundType.STONE);
+  public static final BlockDecorSlab SLAG_BRICK_SLAB = new BlockDecorSlab("slag_brick_slab", BlockDecor.CFG_DEFAULT, Material.ROCK, 2f, 15f, SoundType.STONE);
 
   public static final BlockDecorFull REBAR_CONCRETE_BLOCK = new BlockDecorFull("rebar_concrete", 0, Material.ROCK, 5f, 2000f, SoundType.STONE);
   public static final BlockDecorStairs REBAR_CONCRETE_STAIRS = new BlockDecorStairs("rebar_concrete_stairs", REBAR_CONCRETE_BLOCK.getDefaultState());
   public static final BlockDecorWall REBAR_CONCRETE_WALL = new BlockDecorWall("rebar_concrete_wall", BlockDecor.CFG_DEFAULT, Material.ROCK, 5f, 2000f, SoundType.STONE);
+  public static final BlockDecorSlab REBAR_CONCRETE_SLAB = new BlockDecorSlab("rebar_concrete_slab", BlockDecor.CFG_DEFAULT, Material.ROCK, 5f, 2000f, SoundType.STONE);
+
   public static final BlockDecorFull REBAR_CONCRETE_TILE = new BlockDecorFull("rebar_concrete_tile", 0, Material.ROCK, 5f, 2000f, SoundType.STONE);
   public static final BlockDecorStairs REBAR_CONCRETE_TILE_STAIRS = new BlockDecorStairs("rebar_concrete_tile_stairs", REBAR_CONCRETE_TILE.getDefaultState());
+  public static final BlockDecorSlab REBAR_CONCRETE_TILE_SLAB = new BlockDecorSlab("rebar_concrete_tile_slab", BlockDecor.CFG_DEFAULT, Material.ROCK, 5f, 2000f, SoundType.STONE);
 
   public static final BlockDecorWall CONCRETE_WALL = new BlockDecorWall("concrete_wall", BlockDecor.CFG_DEFAULT, Material.ROCK, 5f, 20f, SoundType.STONE);
 
@@ -64,7 +70,9 @@ public class ModBlocks
   public static final BlockDecorLadder METAL_RUNG_STEPS = new BlockDecorLadder("metal_rung_steps", 0, Material.IRON, 0.5f, 20f, SoundType.METAL);
   public static final BlockDecorLadder TREATED_WOOD_LADDER = new BlockDecorLadder("treated_wood_ladder", 0, Material.WOOD, 0.5f, 10f, SoundType.WOOD);
 
-  public static final BlockDecorGlassBlock PANZERGLASS_BLOCK = new BlockDecorGlassBlock("panzerglass_block", 0, Material.GLASS, 0.8f, 2000f, SoundType.GLASS);
+  public static final BlockDecorGlassBlock PANZERGLASS_BLOCK = new BlockDecorGlassBlock("panzerglass_block", 0, Material.GLASS, 1f, 2000f, SoundType.GLASS);
+  public static final BlockDecorSlab PANZERGLASS_SLAB = new BlockDecorSlab("panzerglass_slab", BlockDecor.CFG_TRANSLUCENT, Material.GLASS, 1f, 2000f, SoundType.GLASS);
+
 
   public static final BlockDecorStraightPole TREATED_WOOD_POLE = new BlockDecorStraightPole(
     "treated_wood_pole",
@@ -361,17 +369,22 @@ public class ModBlocks
     STRAIGHT_CHECK_VALVE, STRAIGHT_REDSTONE_VALVE, STRAIGHT_REDSTONE_ANALOG_VALVE, STRAIGHT_PIPE_VALVE_TEI,
     PASSIVE_FLUID_ACCUMULATOR, PASSIVE_FLUID_ACCUMULATOR_TEI,
     CLINKER_BRICK_BLOCK,
+    CLINKER_BRICK_SLAB,
     CLINKER_BRICK_STAIRS,
     CLINKER_BRICK_WALL,
     CLINKER_BRICK_STAINED_BLOCK,
+    CLINKER_BRICK_STAINED_SLAB,
     CLINKER_BRICK_STAINED_STAIRS,
     SLAG_BRICK_BLOCK,
+    SLAG_BRICK_SLAB,
     SLAG_BRICK_STAIRS,
     SLAG_BRICK_WALL,
     REBAR_CONCRETE_BLOCK,
+    REBAR_CONCRETE_SLAB,
     REBAR_CONCRETE_STAIRS,
     REBAR_CONCRETE_WALL,
     REBAR_CONCRETE_TILE,
+    REBAR_CONCRETE_TILE_SLAB,
     REBAR_CONCRETE_TILE_STAIRS,
     CONCRETE_WALL,
     PANZERGLASS_BLOCK,
@@ -397,15 +410,11 @@ public class ModBlocks
 
   private static final Object dev_content[] = {
     SIGN_MINDSTEP,
+    PANZERGLASS_SLAB, // check if another class is needed due to is_side_visible
     // handling not sure yet ...
-    HALFSLAB_REBARCONCRETE,
-    HALFSLAB_CONCRETE,
-    HALFSLAB_TREATEDWOOD,
-    HALFSLAB_SHEETMETALIRON,
-    HALFSLAB_SHEETMETALSTEEL,
-    HALFSLAB_SHEETMETALCOPPER,
-    HALFSLAB_SHEETMETALGOLD,
-    HALFSLAB_SHEETMETALALUMINIUM,
+    HALFSLAB_REBARCONCRETE, HALFSLAB_CONCRETE, HALFSLAB_TREATEDWOOD,
+    HALFSLAB_SHEETMETALIRON, HALFSLAB_SHEETMETALSTEEL, HALFSLAB_SHEETMETALCOPPER,
+    HALFSLAB_SHEETMETALGOLD, HALFSLAB_SHEETMETALALUMINIUM,
   };
 
   //--------------------------------------------------------------------------------------------------------------------

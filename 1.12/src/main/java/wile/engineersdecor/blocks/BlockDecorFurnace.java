@@ -465,6 +465,7 @@ public class BlockDecorFurnace extends BlockDecorDirected
     private int proc_time_needed_;
     private int boost_energy_; // small, not saved in nbt.
     private boolean heater_inserted_ = false;
+    protected ItemStack current_smelting_input_stack_ = ItemStack.EMPTY;
     protected NonNullList<ItemStack> stacks_;
 
     public static void on_config(int speed_percent, int fuel_efficiency_percent, int boost_energy_per_tick)
@@ -482,10 +483,11 @@ public class BlockDecorFurnace extends BlockDecorDirected
     protected void reset()
     {
       stacks_ = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
+      current_smelting_input_stack_ = ItemStack.EMPTY;
       proc_time_elapsed_ = 0;
       proc_time_needed_ = 0;
       burntime_left_ = 0;
-      fuel_burntime_ = 0;
+      fuel_burntime_ = -1;
       fifo_timer_ = 0;
       tick_timer_ = 0;
     }
@@ -496,16 +498,17 @@ public class BlockDecorFurnace extends BlockDecorDirected
       ItemStackHelper.loadAllItems(compound, this.stacks_);
       while(this.stacks_.size() < NUM_OF_SLOTS) this.stacks_.add(ItemStack.EMPTY);
       burntime_left_ = compound.getInteger("BurnTime");
-      proc_time_elapsed_ = compound.getInteger("CookTime");
-      proc_time_needed_ = compound.getInteger("CookTimeTotal");
-      fuel_burntime_ = getItemBurnTime(stacks_.get(SMELTING_FUEL_SLOT_NO));
+      proc_time_needed_ = MathHelper.clamp(compound.getInteger("CookTimeTotal"), 10, 65535);
+      proc_time_elapsed_ = MathHelper.clamp(compound.getInteger("CookTime"), 0, proc_time_needed_);
+      fuel_burntime_ = compound.getInteger("FuelBurnTime");
     }
 
     protected void writenbt(NBTTagCompound compound)
     {
       compound.setInteger("BurnTime", MathHelper.clamp(burntime_left_,0 , MAX_BURNTIME));
       compound.setInteger("CookTime", MathHelper.clamp(proc_time_elapsed_, 0, MAX_BURNTIME));
-      compound.setInteger("CookTimeTotal", MathHelper.clamp(proc_time_needed_, 0, MAX_BURNTIME));
+      compound.setInteger("CookTimeTotal", MathHelper.clamp(proc_time_needed_, 10, MAX_BURNTIME));
+      compound.setInteger("FuelBurnTime", MathHelper.clamp(fuel_burntime_, 0, MAX_BURNTIME));
       ItemStackHelper.saveAllItems(compound, stacks_);
     }
 
@@ -688,8 +691,9 @@ public class BlockDecorFurnace extends BlockDecorDirected
 
     protected boolean canSmelt()
     {
-      if(stacks_.get(SMELTING_INPUT_SLOT_NO).isEmpty()) return false;
-      final ItemStack recipe_result_items = BRecipes.instance().getSmeltingResult(stacks_.get(SMELTING_INPUT_SLOT_NO));
+      final ItemStack in_stack = stacks_.get(SMELTING_INPUT_SLOT_NO);
+      if(in_stack.isEmpty()) return false;
+      final ItemStack recipe_result_items = BRecipes.instance().getSmeltingResult(in_stack);
       if(recipe_result_items.isEmpty()) return false;
       final ItemStack result_stack = stacks_.get(SMELTING_OUTPUT_SLOT_NO);
       if(result_stack.isEmpty()) return true;
@@ -807,6 +811,7 @@ public class BlockDecorFurnace extends BlockDecorDirected
       tick_timer_ = TICK_INTERVAL;
       final boolean was_burning = isBurning();
       if(was_burning) burntime_left_ -= TICK_INTERVAL;
+      if(fuel_burntime_ < 0) fuel_burntime_ = getItemBurnTime(stacks_.get(SMELTING_FUEL_SLOT_NO));
       if(burntime_left_ < 0) burntime_left_ = 0;
       if(world.isRemote) return;
       boolean dirty = false;
@@ -823,9 +828,16 @@ public class BlockDecorFurnace extends BlockDecorDirected
           || (stacks_.get(AUX_0_SLOT_NO).getItem()==ExtItems.IE_EXTERNAL_HEATER)
           || (stacks_.get(AUX_1_SLOT_NO).getItem()==ExtItems.IE_EXTERNAL_HEATER);
       }
-      ItemStack fuel = stacks_.get(SMELTING_FUEL_SLOT_NO);
-      if(isBurning() || (!fuel.isEmpty()) && (!(stacks_.get(SMELTING_INPUT_SLOT_NO)).isEmpty())) {
-        if(!isBurning() && canSmelt()) {
+      final ItemStack fuel = stacks_.get(SMELTING_FUEL_SLOT_NO);
+      final ItemStack last_inp_stack = current_smelting_input_stack_;
+      current_smelting_input_stack_ = stacks_.get(SMELTING_INPUT_SLOT_NO);
+      if(isBurning() || (!fuel.isEmpty()) && (!current_smelting_input_stack_.isEmpty())) {
+        if(!current_smelting_input_stack_.isItemEqual(last_inp_stack)) {
+          proc_time_elapsed_ = 0;
+          proc_time_needed_ = getCookTime(current_smelting_input_stack_);
+        }
+        final boolean can_smelt = canSmelt();
+        if(can_smelt && (burntime_left_ <= 0)) { // Refuel
           burntime_left_ = (int)MathHelper.clamp((proc_fuel_efficiency_ * getItemBurnTime(fuel)), 0, MAX_BURNTIME);
           fuel_burntime_ = (burntime_left_ * proc_speed_interval_) / VANILLA_FURNACE_SPEED_INTERVAL;
           if(isBurning()) {
@@ -837,17 +849,17 @@ public class BlockDecorFurnace extends BlockDecorDirected
             }
           }
         }
-        if(isBurning() && canSmelt()) {
+        if((burntime_left_ > 0) && can_smelt) { // Smelting process
           proc_time_elapsed_ += TICK_INTERVAL;
           if(heater_inserted_ && (boost_energy_ >= boost_energy_consumption)) { boost_energy_ = 0; proc_time_elapsed_ += TICK_INTERVAL; }
           if(proc_time_elapsed_ >= proc_time_needed_) {
             proc_time_elapsed_ = 0;
-            proc_time_needed_ = getCookTime(stacks_.get(SMELTING_INPUT_SLOT_NO));
+            proc_time_needed_ = getCookTime(current_smelting_input_stack_);
             smeltItem();
             dirty = true;
           }
         } else {
-          proc_time_elapsed_ = 0;
+          proc_time_elapsed_ = MathHelper.clamp(proc_time_elapsed_-2, 0, proc_time_needed_);
         }
       } else if(!isBurning() && (proc_time_elapsed_ > 0)) {
         proc_time_elapsed_ = MathHelper.clamp(proc_time_elapsed_-2, 0, proc_time_needed_);

@@ -8,7 +8,7 @@ itemGroup.tabengineersdecor=工程师的装饰
 engineersdecor.config.title=工程师的装饰配置
 engineersdecor.tooltip.hint.extended=§6[按§9SHIFT§r获取更多信息§6]§r
 engineersdecor.tooltip.hint.help=§6[按§9CTRL-SHIFT§r获取帮助§6]§r
-
+#engineersdecor.tooltip.slabpickup.help=§rFast pickup by left-clicking while looking up/down and holding this slab.
 #-----------------------------------------------------------------------------------------------------------
 # Stone/"ceramic material" based blocks
 #-----------------------------------------------------------------------------------------------------------
@@ -24,6 +24,19 @@ tile.engineersdecor.panzerglass_block.name=Panzer Glass Block
 #tile.engineersdecor.panzerglass_block.help=§6Reinforced glass block.§r Expensive, explosion-proof. Dark gray tint, faint structural lines visible, multi texture for seemless look.
 tile.engineersdecor.rebar_concrete_tile.name=Rebar Concrete Tile
 #tile.engineersdecor.rebar_concrete_tile.help=§6Steel reinforced concrete tile.§r Expensive but Creeper-proof like obsidian.
+#-----------------------------------------------------------------------------------------------------------
+tile.engineersdecor.clinker_brick_slab.name=Clinker Brick Slab
+#tile.engineersdecor.clinker_brick_slab.help=§6Slab made from a Clinker Block.§r\nLooks slightly darker and more color intensive than the vanilla brick.
+tile.engineersdecor.clinker_brick_stained_slab.name=Stained Clinker Brick Slab
+#tile.engineersdecor.clinker_brick_stained_slab.help=§6Slab made from a Stained Clinker Block.
+tile.engineersdecor.slag_brick_slab.name=Slag Brick Slab
+#tile.engineersdecor.slag_brick_slab.help=§6A gray-brown brick slab.
+tile.engineersdecor.rebar_concrete_slab.name=Rebar Concrete Slab
+#tile.engineersdecor.rebar_concrete_slab.help=§6Steel reinforced concrete slab.§r Expensive but Creeper-proof like obsidian.
+tile.engineersdecor.rebar_concrete_tile_slab.name=Rebar Concrete Tile Slab
+#tile.engineersdecor.rebar_concrete_tile_slab.help=§6Steel reinforced concrete tile slab.§r Expensive but Creeper-proof like obsidian.
+tile.engineersdecor.panzerglass_slab.name=Panzer Glass Slab
+#tile.engineersdecor.panzerglass_slab.help=§6Reinforced glass slab.§r Expensive, explosion-proof. Dark gray tint, faint structural lines visible.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.rebar_concrete_wall.name=钢筋混凝土墙
 tile.engineersdecor.rebar_concrete_wall.help=§6钢筋混凝土墙.§r 昂贵,但像黑曜石一样防苦力怕.
