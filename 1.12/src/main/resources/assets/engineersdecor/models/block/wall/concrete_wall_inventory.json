@@ -151,6 +151,16 @@
 		}
 	],
 	"display": {
+		"thirdperson_righthand": {
+			"rotation": [20, -9, 1],
+			"translation": [0.5, -1, -1.75],
+			"scale": [0.35, 0.35, 0.35]
+		},
+		"firstperson_righthand": {
+			"rotation": [14, 3, -5],
+			"translation": [1.25, 0, 0],
+			"scale": [0.35, 0.35, 0.35]
+		},
 		"gui": {
 			"rotation": [30, 135, 0],
 			"scale": [0.625, 0.625, 0.625]

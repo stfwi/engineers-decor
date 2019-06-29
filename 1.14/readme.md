@@ -10,8 +10,11 @@ Mod sources for Minecraft version 1.14.2.
 ----
 ## Version history
 
-    ~ v1.0.8-b2 [U] Updated to Forge BETA 1.14.2-26.0.55/20190621-1.14.2,
+    ~ v1.0.8-b3 [U]
+
+    - v1.0.8-b2 [U] Updated to Forge BETA 1.14.2-26.0.63/20190621-1.14.2,
                     code adapted to new mappings.
+                [M] Updated 1st/3rd person item model rotations/translations.
 
     - v1.0.8-b1 [V] Feature set of 1.12 ported.
                 [A] CTRL-SHIFT tooltips ported.

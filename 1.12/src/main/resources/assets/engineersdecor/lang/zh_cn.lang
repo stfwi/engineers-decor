@@ -143,6 +143,11 @@ tile.engineersdecor.factory_dropper.name=Factory Dropper
                                          AND'ed or OR'ed with the external redstone signal trigger. Trigger simulation buttons for testing. \
                                          Pre-opens shutter door when internal trigger conditions are met. Drops all matching stacks \
                                          simultaneously. Click on all elements in the GUI to see how it works.
+tile.engineersdecor.small_mineral_smelter.name=Small Mineral Melting Furnace
+#tile.engineersdecor.small_mineral_smelter.help=§6High temperature, high insulation electrical stone melting furnace.§r\n\
+                                               Heats up mineral blocks to magma blocks, and finally to lava. Due to the \
+                                               miniturized device size the process is rather inefficient - much time and \
+                                               energy is needed to liquefy a stone block.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.sign_decor.name=Sign Plate (Engineer's decor)
 #tile.engineersdecor.sign_decor.help=§6This should not be craftable or visible in JEI. Used for creative tab and screenshots.

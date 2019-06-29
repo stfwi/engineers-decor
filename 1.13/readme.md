@@ -10,8 +10,11 @@ Mod sources for Minecraft version 1.13.2.
 ----
 ## Version history
 
-    ~ v1.0.7-b5 [A] Added translation zh_cn (PR#33, XuyuEre)
+    ~ v1.0.7-b6 [A]
+
+    - v1.0.7-b5 [A] Added translation zh_cn (PR#33, XuyuEre)
                 [M] Updated textures.
+                [M] Updated 1st/3rd person item model rotations/translations.
 
     - v1.0.7-b4 [A] Added stained clinker brick block/stairs.
 

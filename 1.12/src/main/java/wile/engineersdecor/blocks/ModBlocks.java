@@ -205,7 +205,7 @@ public class ModBlocks
     "straight_pipe_valve",
     BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
     BlockDecor.CFG_CUTOUT,
-    Material.IRON, 0.5f, 15f, SoundType.METAL,
+    Material.IRON, 0.7f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
   );
 
@@ -213,7 +213,7 @@ public class ModBlocks
     "straight_pipe_valve_redstone",
     BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_REDSTONE_CONTROLLED,
-    Material.IRON, 0.5f, 15f, SoundType.METAL,
+    Material.IRON, 0.7f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
   );
 
@@ -221,7 +221,7 @@ public class ModBlocks
     "straight_pipe_valve_redstone_analog",
     BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_REDSTONE_CONTROLLED|BlockDecor.CFG_ANALOG,
-    Material.IRON, 0.5f, 15f, SoundType.METAL,
+    Material.IRON, 0.7f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
   );
 
@@ -229,8 +229,29 @@ public class ModBlocks
     "passive_fluid_accumulator",
     BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
     BlockDecor.CFG_CUTOUT,
-    Material.IRON, 0.5f, 15f, SoundType.METAL,
+    Material.IRON, 0.7f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+  );
+
+  public static final BlockDecorWasteIncinerator SMALL_WASTE_INCINERATOR = new BlockDecorWasteIncinerator(
+    "small_waste_incinerator",
+    BlockDecor.CFG_DEFAULT|BlockDecor.CFG_ELECTRICAL,
+    Material.IRON, 1f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+  );
+
+  public static final BlockDecorDropper FACTORY_DROPPER = new BlockDecorDropper(
+    "factory_dropper",
+    BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_REDSTONE_CONTROLLED,
+    Material.IRON, 1f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,15)
+  );
+
+  public static final BlockDecorMineralSmelter SMALL_MINERAL_SMELTER = new BlockDecorMineralSmelter(
+    "small_mineral_smelter",
+    BlockDecor.CFG_LOOK_PLACEMENT,
+    Material.IRON, 1f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(1.1,0,1.1, 14.9,16,14.9)
   );
 
   public static final BlockDecorDirected SIGN_HOTWIRE = new BlockDecorDirected(
@@ -259,20 +280,6 @@ public class ModBlocks
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
     Material.WOOD, 0.1f, 1f, SoundType.WOOD,
     ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
-  );
-
-  public static final BlockDecorWasteIncinerator SMALL_WASTE_INCINERATOR = new BlockDecorWasteIncinerator(
-    "small_waste_incinerator",
-    BlockDecor.CFG_DEFAULT|BlockDecor.CFG_ELECTRICAL,
-    Material.IRON, 0.3f, 15f, SoundType.METAL,
-    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
-  );
-
-  public static final BlockDecorDropper FACTORY_DROPPER = new BlockDecorDropper(
-    "factory_dropper",
-    BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_REDSTONE_CONTROLLED,
-    Material.IRON, 0.5f, 15f, SoundType.METAL,
-    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,15)
   );
 
   public static final BlockDecorDirected SIGN_FACTORY_AREA = new BlockDecorDirected(
@@ -356,6 +363,10 @@ public class ModBlocks
     BlockDecorDropper.BTileEntity.class, "te_factory_dropper"
   );
 
+  private static final TileEntityRegistrationData SMALL_MINERAL_SMELTER_TEI = new TileEntityRegistrationData(
+    BlockDecorMineralSmelter.BTileEntity.class, "te_small_mineral_smelter"
+  );
+
   //--------------------------------------------------------------------------------------------------------------------
   //-- Registration list
   //--------------------------------------------------------------------------------------------------------------------
@@ -406,15 +417,15 @@ public class ModBlocks
     THICK_STEEL_POLE_HEAD,
     STEEL_DOUBLE_T_SUPPORT,
     SIGN_HOTWIRE, SIGN_DANGER, SIGN_DEFENSE, SIGN_FACTORY_AREA, SIGN_MODLOGO,
-  };
-
-  private static final Object dev_content[] = {
-    SIGN_MINDSTEP,
-    PANZERGLASS_SLAB, // check if another class is needed due to is_side_visible
-    // handling not sure yet ...
     HALFSLAB_REBARCONCRETE, HALFSLAB_CONCRETE, HALFSLAB_TREATEDWOOD,
     HALFSLAB_SHEETMETALIRON, HALFSLAB_SHEETMETALSTEEL, HALFSLAB_SHEETMETALCOPPER,
     HALFSLAB_SHEETMETALGOLD, HALFSLAB_SHEETMETALALUMINIUM,
+  };
+
+  private static final Object dev_content[] = {
+    SMALL_MINERAL_SMELTER, SMALL_MINERAL_SMELTER_TEI,
+    PANZERGLASS_SLAB, // check if another class is needed due to is_side_visible
+    SIGN_MINDSTEP,
   };
 
   //--------------------------------------------------------------------------------------------------------------------

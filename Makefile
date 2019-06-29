@@ -33,7 +33,6 @@ update-json:
 
 sanatize:
 	@cd 1.12; make -s sanatize
-	@cd 1.12; make -s port-languages
 	@cd 1.13; make -s sanatize
 	@cd 1.14; make -s sanatize
 	@make -s update-json
@@ -43,6 +42,7 @@ compare:
 	@djs tasks.js compare-textures -v
 
 migrate-from-112:
+	@cd 1.12; make -s port-languages
 	@djs tasks.js migrate-textures -v
 
 # For reviewers: I am using a local repository for experimental changes,

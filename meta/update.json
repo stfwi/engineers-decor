@@ -45,6 +45,7 @@
     "1.0.0-b1": "[A] Initial structure.\n[A] Added clinker bricks and clinker brick stairs.\n[A] Added slag bricks and slag brick stairs.\n[A] Added metal rung ladder.\n[A] Added staggered metal steps ladder.\n[A] Added treated wood ladder.\n[A] Added treated wood pole.\n[A] Added treated wood table."
   },
   "1.13.2": {
+    "1.0.7-b5": "[A] Added translation zh_cn (PR#33, XuyuEre)\n[M] Updated textures.\n[M] Updated 1st/3rd person item model rotations/translations.",
     "1.0.7-b4": "[A] Added stained clinker brick block/stairs.",
     "1.0.7-b3": "[V] Version assignment: All features of v1.0.7-b3-1.12.2 that can be ported to 1.13.2 implemented/prepared, therefore version re-assigned.\n[A] Added \"Factory Area\" sign.\n[M] Sign background colors adapted.\n[M] EN lang file updated (PR#28, Voxelo).",
     "1.0.4-b6": "[A] Added Small Electrical Furnace.\n[A] Added Small Waste Incinerator.\n[A] Experimental: Added fluid check valve.\n[A] Experimental: Added fluid redstone controlled valve.\n[A] Experimental: Added fluid redstone analog valve.\n[A] Experimental: Added passive fluid accumulator.",
@@ -59,6 +60,7 @@
     "1.0.0-a1": "[A] Initial port to 1.13.2 with Forge beta."
   },
   "1.14.2": {
+    "1.0.8-b2": "[U] Updated to Forge BETA 1.14.2-26.0.63/20190621-1.14.2, code adapted to new mappings.\n[M] Updated 1st/3rd person item model rotations/translations.",
     "1.0.8-b1": "[V] Feature set of 1.12 ported.\n[A] CTRL-SHIFT tooltips ported.\n[A] Ported stained clinker block/stairs.\n[M] Updated textures.\n[I] Issue: Scoped recipe constants still not working.",
     "1.0.7-b5": "[U] Updated to Forge BETA 1.14.2-26.0.35/20190608-1.14.2.\n[A] Factory dropper functionality ported.\n[A] Small lab furnace functionality ported.\n[A] Small electrical lab furnace functionality ported.\n[A] Small waste incinerator functionality ported.\n[A] Fluid valves, Passive Fluid Accumulator ported.\n[I] Issue: Scoped recipe constants still not working.",
     "1.0.7-b4": "[U] Updated to Forge BETA 1.14.2-26.0.32/20190608-1.14.2.\n[A] Sitting on the stool ported.\n[A] Ladder climbing speed boost ported.\n[A] Crafting table functionality ported.\n[I] Issue: Scoped recipe constants not working yet with the current Forge version (or somehow changed).",
@@ -68,8 +70,8 @@
     "1.12.2-recommended": "1.0.8",
     "1.12.2-latest": "1.0.9-b2",
     "1.13.2-recommended": "",
-    "1.13.2-latest": "1.0.7-b4",
+    "1.13.2-latest": "1.0.7-b5",
     "1.14.2-recommended": "",
-    "1.14.2-latest": "1.0.8-b1"
+    "1.14.2-latest": "1.0.8-b2"
   }
 }

@@ -38,15 +38,21 @@ looking manufacturing contraptions. Current feature set:
   sides (e.g. with filtered hopper or whatever). Fits ideally into a conveyor belt
   line/lane. Consumption and efficiency tunable via config.
 
-- Rebar (steel) reinforced concrete: Expensive but creeper-proof. Crafted 3x3 from
-  four concrete blocks and five steel rods. Texture design oriented at the IE concrete,
-  slightly darker, eight (position dependent) random texture variations with rust
-  traces. Also creaftable in form of *stairs* and *walls*. Like the IE contrete *tiles*,
-  you can craft rebar concrete tiles with corresponding stairs. Reverse recipes
-  available for all blocks crafted from rebar concrete.
+- *Factory dropper*: Dropper with GUI configurable drop force, direction, stack size,
+  trigger cool-down delay, and trigger logic. Three trigger slots ("filter slots") can
+  be used as internal trigger. They emit an internal signal if their item is found in
+  in the dropper inventory (also at least the stack size of a trigger slot). Internal
+  triggers can be easily combined with the external redstone signal trigger using
+  logical *AND* or *OR* gates. If internal triggers match, the dropper will spit out
+  exactly the stacks in these slots. That allows to drop e.g. always nine lapis,
+  redstone, nuggets, etc on a conveyor to feed a compression metal press - instantly
+  and automatically after nine of these items have been inserted into the dropper.
 
-- Concrete wall: Solid concrete wall (not the vanilla wall design), crafted 3x3
-  from six IE concrete blocks (normal wall recipe).
+- *Small waste incinerator*: Buffered and delayed item disposal device. 16 fifo
+  slots are filled when new items are pushed in from any side. A GUI allows to
+  take out accidentally trashed items or put in items to get rid of. When the fifo
+  is full, the oldest stack will be disposed. The processing speed can be increased
+  by connecting electrical RF/FE power.
 
 - *Clinker bricks*: Slightly darker and more colorful version of the vanilla brick
   block. Eight position dependent texture variations are implemented to make the
@@ -60,6 +66,16 @@ looking manufacturing contraptions. Current feature set:
   from slag in the centre and any kind of bricks ("brick ingot") around. Has a higher
   explosion resistance than bricks. Also available as stairs and wall, also with
   reverse recipes.
+
+- Rebar (steel) reinforced concrete: Expensive but creeper-proof. Crafted 3x3 from
+  four concrete blocks and five steel rods. Texture design oriented at the IE concrete,
+  slightly darker, eight (position dependent) random texture variations with rust
+  traces. Also creaftable in form of *stairs* and *walls*. Like the IE contrete *tiles*,
+  you can craft rebar concrete tiles with corresponding stairs. Reverse recipes
+  available for all blocks crafted from rebar concrete.
+
+- Concrete wall: Solid concrete wall (not the vanilla wall design), crafted 3x3
+  from six IE concrete blocks (normal wall recipe).
 
 - *Treated wood ladder*: Crafted 3x3 with the known ladder pattern, items are
   treated wood sticks. Climbing is faster if looking up/down and not sneaking.
@@ -117,22 +133,10 @@ looking manufacturing contraptions. Current feature set:
 
 - *Industrial signs*: "Danger", "electrical hazard", etc.
 
-- *Small waste incinerator*: Buffered and delayed item disposal device. 16 fifo
-  slots are filled when new items are pushed in from any side. A GUI allows to
-  take out accidentally trashed items or put in items to get rid of. When the fifo
-  is full, the oldest stack will be disposed. The processing speed can be increased
-  by connecting electrical RF/FE power.
-
-- *Factory dropper*: Dropper with GUI configurable drop force, direction, stack size,
-  trigger cool-down delay, and trigger logic. Three trigger slots ("filter slots") can
-  be used as internal trigger. They emit an internal signal if their item is found in
-  in the dropper inventory (also at least the stack size of a trigger slot). Internal
-  triggers can be easily combined with the external redstone signal trigger using
-  logical *AND* or *OR* gates. If internal triggers match, the dropper will spit out
-  exactly the stacks in these slots. That allows to drop e.g. always nine lapis,
-  redstone, nuggets, etc on a conveyor to feed a compression metal press - instantly
-  and automatically after nine of these items have been inserted into the dropper.
-
+- *Slab slices*: Decorative stackable thin slabs made of of IE metal sheets,
+  concretes, treated wood. Useful e.g. for roofs or ramps. Left-clicking with
+  the same slab type in your hand while looking up/down removes slices again.
+  Crafted 3x3 from four slabs.
 
 More to come slowly but steadily.
 

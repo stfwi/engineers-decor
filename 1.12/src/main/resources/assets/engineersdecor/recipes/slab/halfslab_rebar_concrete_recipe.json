@@ -3,16 +3,16 @@
     {
       "type": "engineersdecor:grc",
       "result": "engineersdecor:halfslab_rebar_concrete",
-      "required": ["engineersdecor:rebar_concrete"]
+      "required": ["engineersdecor:rebar_concrete_slab"]
     }
   ],
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "S",
-    "S"
+    "SS",
+    "SS"
   ],
   "key": {
-    "S": { "item": "engineersdecor:rebar_concrete" }
+    "S": { "item": "engineersdecor:rebar_concrete_slab" }
   },
   "result": {
     "item": "engineersdecor:halfslab_rebar_concrete",

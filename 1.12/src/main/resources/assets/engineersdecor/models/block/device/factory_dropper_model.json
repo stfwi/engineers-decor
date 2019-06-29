@@ -94,7 +94,13 @@
 		}
 	],
 	"display": {
+		"thirdperson_righthand": {
+			"rotation": [85, 3, -10],
+			"translation": [1.75, -0.75, -2.25],
+			"scale": [0.35, 0.35, 0.35]
+		},
 		"ground": {
+			"translation": [0, -0.75, 0],
 			"scale": [0.2, 0.2, 0.2]
 		},
 		"gui": {

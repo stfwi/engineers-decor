@@ -1,13 +1,8 @@
 {
-  "parent": "block/cube",
+	"parent": "block/cube",
 	"textures": {
-    "particle": "engineersdecor:blocks/iestyle/steel_texture",
-		"o": "engineersdecor:blocks/iestyle/steel_texture"
-  },
-  "display": {
-		"gui":    { "rotation": [ 30, 225, 0 ], "scale": [0.625, 0.625, 0.625] },
-		"fixed":  { "scale": [0.5, 0.5, 0.5] },
-		"ground": {	"scale": [0.2, 0.2, 0.2] }
+		"o": "engineersdecor:blocks/iestyle/steel_texture",
+		"particle": "engineersdecor:blocks/iestyle/steel_texture"
 	},
 	"elements": [
 		{
@@ -154,5 +149,22 @@
 				"down": {"uv": [0, 0, 1.25, 1], "texture": "#o"}
 			}
 		}
-	]
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [16, -118, 0],
+			"translation": [2.75, -0.75, 0.75],
+			"scale": [0.36, 0.36, 0.36]
+		},
+		"ground": {
+			"scale": [0.2, 0.2, 0.2]
+		},
+		"gui": {
+			"rotation": [30, 225, 0],
+			"scale": [0.625, 0.625, 0.625]
+		},
+		"fixed": {
+			"scale": [0.5, 0.5, 0.5]
+		}
+	}
 }
