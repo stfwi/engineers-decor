@@ -2,6 +2,7 @@
 (function(){
   var c = {};
   c.mod_registry_name = function() { return "engineersdecor" }
+  c.local_assets_root = function() { return "src/main/resources/assets/" + c.mod_registry_name(); }
   c.reference_repository = function() { return "git@github.com:stfwi/engineers-decor.git"; }
   c.gradle_property_modversion = function() { return "version_engineersdecor"; }
   c.gradle_property_version_minecraft = function() { return "version_minecraft"; }

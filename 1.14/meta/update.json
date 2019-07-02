@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.14.2": {
+    "1.0.8-b3": "[A] Ported slabs and slab slices from 1.12.2.\n[A] IE independent (\"standalone\") recipes ported.",
     "1.0.8-b2": "[U] Updated to Forge BETA 1.14.2-26.0.63/20190621-1.14.2, code adapted to new mappings.\n[M] Updated 1st/3rd person item model rotations/translations.",
     "1.0.8-b1": "[V] Feature set of 1.12 ported.\n[A] CTRL-SHIFT tooltips ported.\n[A] Ported stained clinker block/stairs.\n[M] Updated textures.\n[I] Issue: Scoped recipe constants still not working.",
     "1.0.7-b5": "[U] Updated to Forge BETA 1.14.2-26.0.35/20190608-1.14.2.\n[A] Factory dropper functionality ported.\n[A] Small lab furnace functionality ported.\n[A] Small electrical lab furnace functionality ported.\n[A] Small waste incinerator functionality ported.\n[A] Fluid valves, Passive Fluid Accumulator ported.\n[I] Issue: Scoped recipe constants still not working.",
@@ -9,6 +10,6 @@
   },
   "promos": {
     "1.14.2-recommended": "",
-    "1.14.2-latest": "1.0.8-b2"
+    "1.14.2-latest": "1.0.8-b3"
   }
 }

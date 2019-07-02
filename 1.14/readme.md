@@ -10,7 +10,8 @@ Mod sources for Minecraft version 1.14.2.
 ----
 ## Version history
 
-    ~ v1.0.8-b3 [U]
+    - v1.0.8-b3 [A] Ported slabs and slab slices from 1.12.2.
+                [A] IE independent ("standalone") recipes ported.
 
     - v1.0.8-b2 [U] Updated to Forge BETA 1.14.2-26.0.63/20190621-1.14.2,
                     code adapted to new mappings.

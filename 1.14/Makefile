@@ -24,7 +24,7 @@ wildcardr=$(foreach d,$(wildcard $1*),$(call wildcardr,$d/,$2) $(filter $(subst 
 #
 # Targets
 #
-.PHONY: default mod init clean clean-all mrproper all run install sanatize dist-check dist start-server
+.PHONY: default mod init clean clean-all mrproper all run install sanatize dist-check dist start-server assets
 
 default: mod
 
@@ -76,3 +76,8 @@ dist: sanatize dist-check clean-all mod
 	@mkdir -p dist
 	@cp build/libs/$(MOD_JAR_PREFIX)* dist/
 	@djs tasks.js dist
+
+assets:
+	@echo "[1.14] Running asset generators ..."
+	@djs tasks.js create-slab-assets
+	@djs tasks.js create-half-slab-assets
