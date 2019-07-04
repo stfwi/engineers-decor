@@ -154,10 +154,28 @@ public class BlockDecorMineralSmelter extends BlockDecorDirectedHorizontal
     if(te.accepts_lava_container(stack)) {
       if(stack.isItemEqualIgnoreDurability(BTileEntity.BUCKET_STACK)) { // check how this works with item capabilities or so
         if(te.fluid_level() >= BTileEntity.MAX_BUCKET_EXTRACT_FLUID_LEVEL) {
-          te.reset_process();
-          player.setHeldItem(hand, BTileEntity.LAVA_BUCKET_STACK.copy());
-          world.playSound(null, pos, SoundEvents.ITEM_BUCKET_FILL_LAVA, SoundCategory.BLOCKS, 1f, 1f);
-          dirty = true;
+          if(stack.getCount() > 1) {
+            int target_stack_index = -1;
+            for(int i=0; i<player.inventory.getSizeInventory(); ++i) {
+              if(player.inventory.getStackInSlot(i).isEmpty()) {
+                target_stack_index = i;
+                break;
+              }
+            }
+            if(target_stack_index >= 0) {
+              te.reset_process();
+              stack.shrink(1);
+              player.setHeldItem(hand, stack);
+              player.inventory.setInventorySlotContents(target_stack_index, BTileEntity.LAVA_BUCKET_STACK.copy());
+              world.playSound(null, pos, SoundEvents.ITEM_BUCKET_FILL_LAVA, SoundCategory.BLOCKS, 1f, 1f);
+              dirty = true;
+            }
+          } else {
+            te.reset_process();
+            player.setHeldItem(hand, BTileEntity.LAVA_BUCKET_STACK.copy());
+            world.playSound(null, pos, SoundEvents.ITEM_BUCKET_FILL_LAVA, SoundCategory.BLOCKS, 1f, 1f);
+            dirty = true;
+          }
         }
       }
     } else if(stack.getItem() == Items.AIR) {

@@ -47,7 +47,7 @@ clean-all:
 	@$(GRADLE) clean cleanCache
 
 mrproper: clean-all
-	@rm -rf meta/*
+	@rm -f meta/*.*
 	@rm -rf run/
 	@rm -rf out/
 	@rm -f .project

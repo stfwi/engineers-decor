@@ -42,13 +42,14 @@ clean:
 
 clean-all:
 	@echo "[1.14] Cleaning using gradle ..."
+	@rm -rf mcmodsrepo
 	@rm -f dist/*
 	@rm -rf run/logs/
 	@rm -rf run/crash-reports/
 	@$(GRADLE) clean
 
 mrproper: clean-all
-	@rm -rf meta/*
+	@rm -f meta/*.*
 	@rm -rf run/
 	@rm -rf out/
 	@rm -f .project

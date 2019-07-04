@@ -1,7 +1,7 @@
 
-## Engineer's Decor (MC1.14.2)
+## Engineer's Decor (MC1.14.3)
 
-Mod sources for Minecraft version 1.14.2.
+Mod sources for Minecraft version 1.14.3.
 
 - Description, credits, and features: Please see the readme in the repository root.
 
@@ -9,6 +9,9 @@ Mod sources for Minecraft version 1.14.2.
 
 ----
 ## Version history
+
+    - v1.0.9-b1 [U] Updated to MC1.14.3, Forge 1.14.3-27.0.17/20190621-1.14.2.
+                [A] Added Small Mineral Smelter.
 
     - v1.0.8-b3 [A] Ported slabs and slab slices from 1.12.2.
                 [A] IE independent ("standalone") recipes ported.

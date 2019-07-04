@@ -13,20 +13,20 @@ tasks["update-json"] = function() {
   var update_jsons = {
     "1.12.2": JSON.parse(fs.readfile(root_dir + "/1.12/meta/update.json")),
     "1.13.2": JSON.parse(fs.readfile(root_dir + "/1.13/meta/update.json")),
-    "1.14.2": JSON.parse(fs.readfile(root_dir + "/1.14/meta/update.json"))
+    "1.14.3": JSON.parse(fs.readfile(root_dir + "/1.14/meta/update.json"))
   };
   var update_json = {
     homepage: "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
     "1.12.2": update_jsons["1.12.2"]["1.12.2"],
     "1.13.2": update_jsons["1.13.2"]["1.13.2"],
-    "1.14.2": update_jsons["1.14.2"]["1.14.2"],
+    "1.14.3": update_jsons["1.14.3"]["1.14.3"],
     promos: {
       "1.12.2-recommended": update_jsons["1.12.2"]["promos"]["1.12.2-recommended"],
       "1.12.2-latest": update_jsons["1.12.2"]["promos"]["1.12.2-latest"],
       "1.13.2-recommended": update_jsons["1.13.2"]["promos"]["1.13.2-recommended"],
       "1.13.2-latest": update_jsons["1.13.2"]["promos"]["1.13.2-latest"],
-      "1.14.2-recommended": update_jsons["1.14.2"]["promos"]["1.14.2-recommended"],
-      "1.14.2-latest": update_jsons["1.14.2"]["promos"]["1.14.2-latest"]
+      "1.14.3-recommended": update_jsons["1.14.3"]["promos"]["1.14.3-recommended"],
+      "1.14.3-latest": update_jsons["1.14.3"]["promos"]["1.14.3-latest"]
     }
   }
   fs.mkdir(root_dir + "/meta");

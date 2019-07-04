@@ -10,7 +10,7 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
-    ~ v1.0.9-b3 [A] Added missing recipes for slabs.
+    - v1.0.9-b3 [A] Added missing recipes for slabs.
                 [A] Added slab slices for IE sheet metals, treated wood,
                     and concretes (stackable "quater-slabs").
                 [M] Updated 1st/3rd person item model rotations/translations.
