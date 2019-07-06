@@ -137,6 +137,13 @@ public class ModBlocks
     ModAuxiliaries.getPixeledAABB(4.1,0,4.1, 11.8,8.8,11.8)
   );
 
+  public static final BlockDecor TREATED_WOOD_SIDE_TABLE = new BlockDecor(
+    "treated_wood_side_table",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
+    Material.WOOD, 1.0f, 15f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(2,0,2, 14,15.9,14)
+  );
+
   public static final BlockDecorCraftingTable TREATED_WOOD_CRAFTING_TABLE = new BlockDecorCraftingTable(
     "treated_wood_crafting_table",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
@@ -417,6 +424,7 @@ public class ModBlocks
     THICK_STEEL_POLE_HEAD,
     STEEL_DOUBLE_T_SUPPORT,
     SIGN_HOTWIRE, SIGN_DANGER, SIGN_DEFENSE, SIGN_FACTORY_AREA, SIGN_MODLOGO,
+    TREATED_WOOD_SIDE_TABLE,
     HALFSLAB_REBARCONCRETE, HALFSLAB_CONCRETE, HALFSLAB_TREATEDWOOD,
     HALFSLAB_SHEETMETALIRON, HALFSLAB_SHEETMETALSTEEL, HALFSLAB_SHEETMETALCOPPER,
     HALFSLAB_SHEETMETALGOLD, HALFSLAB_SHEETMETALALUMINIUM,

@@ -91,6 +91,8 @@ tile.engineersdecor.treated_wood_crafting_table.name=Treated Wood Crafting Table
                                                      Click up/down arrow buttons for crafting history selection, output slot for item placement, X-button \
                                                      to clear crafting grid and history. Shift-click stack: player-to-storage stack transfer when crafting \
                                                      grid empty, otherwise player-to-grid stack transfer. Automatically distributes the clicked stack.
+tile.engineersdecor.treated_wood_side_table.name=Treated Wood Side Table
+#tile.engineersdecor.treated_wood_side_table.help=§6Needed after the work's done.
 tile.engineersdecor.iron_inset_light.name=Inset Light
 #tile.engineersdecor.iron_inset_light.help=§6Small glowstone light source, sunk into the floor, ceiling or wall.§r\n\
                                           Useful to light up places where electrical light installations are problematic.\

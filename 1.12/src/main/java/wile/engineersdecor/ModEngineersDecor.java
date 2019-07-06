@@ -8,7 +8,6 @@
  */
 package wile.engineersdecor;
 
-import net.minecraft.item.crafting.IRecipe;
 import wile.engineersdecor.detail.*;
 import wile.engineersdecor.blocks.*;
 import wile.engineersdecor.items.*;
@@ -21,6 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Item;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.network.IGuiHandler;
@@ -78,6 +78,7 @@ public class ModEngineersDecor
     default void init(final FMLInitializationEvent e) {}
     default void postInit(final FMLPostInitializationEvent e) {}
     default World getWorlClientSide() { return null; }
+    default EntityPlayer getPlayerClientSide() { return null; }
   }
 
   //--------------------------------------------------------------------------------------------------------------------

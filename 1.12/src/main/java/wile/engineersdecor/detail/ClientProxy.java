@@ -8,8 +8,9 @@
  */
 package wile.engineersdecor.detail;
 
-import net.minecraft.world.World;
 import wile.engineersdecor.ModEngineersDecor;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -23,4 +24,9 @@ public class ClientProxy implements ModEngineersDecor.IProxy
   @Override
   public World getWorlClientSide()
   { return Minecraft.getMinecraft().world; }
+
+  @Override
+  public EntityPlayer getPlayerClientSide()
+  { return Minecraft.getMinecraft().player; }
+
 }

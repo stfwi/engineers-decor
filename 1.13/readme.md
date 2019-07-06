@@ -10,7 +10,8 @@ Mod sources for Minecraft version 1.13.2.
 ----
 ## Version history
 
-    ~ v1.0.7-b6 [A]
+    ~ v1.0.7-b6 [F] Fixed recipe collision of Metal Rung Ladder (issue #37,
+                    thx ProsperCraft for reporting).
 
     - v1.0.7-b5 [A] Added translation zh_cn (PR#33, XuyuEre)
                 [M] Updated textures.

@@ -14,12 +14,12 @@
   ],
   "key": {
     "S": {
-      "item": "#ingotIron",
+      "item": "#nuggetIron",
       "data": 0
     }
   },
   "result": {
     "item": "engineersdecor:metal_rung_ladder",
-    "count": 4
+    "count": 1
   }
 }

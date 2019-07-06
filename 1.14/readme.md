@@ -10,6 +10,13 @@ Mod sources for Minecraft version 1.14.3.
 ----
 ## Version history
 
+    - v1.0.9-b2 [U] Updated to Forge 1.14.3-27.0.25/20190621-1.14.2.
+                [F] Fixed recipe collision of Metal Rung Ladder (issue #37,
+                    thx ProsperCraft for reporting).
+                [F] Fixed opening crafting table, furni, dropper server crash
+                    issue #35 (thx ProsperCraft also here).
+                [F] Fixed missing pole/support item drops (issue #36, ProsperCraft).
+
     - v1.0.9-b1 [U] Updated to MC1.14.3, Forge 1.14.3-27.0.17/20190621-1.14.2.
                 [A] Added Small Mineral Smelter.
 

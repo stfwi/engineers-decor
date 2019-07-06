@@ -90,6 +90,8 @@ tile.engineersdecor.treated_wood_stool.name=Табурет из обработа
 tile.engineersdecor.treated_wood_stool.help=§6Крепкий деревянный табурет.§r Для использования в помещении и на улице.
 tile.engineersdecor.treated_wood_crafting_table.name=Верстак из обработанного дерева
 tile.engineersdecor.treated_wood_crafting_table.help=§6Прочный и устойчивый к погодным условиям. Восемь слотов для хранения. Хранит инвентарь.
+tile.engineersdecor.treated_wood_side_table.name=Treated Wood Side Table
+#tile.engineersdecor.treated_wood_side_table.help=§6Needed after the work's done.
 tile.engineersdecor.iron_inset_light.name=Встраиваемый осветитель
 tile.engineersdecor.iron_inset_light.help=§6Маленький источник света, интегрируемый в стены, пол или потолок.§r\n\
                                                Полезно для освещения мест, где проблематичны электрические осветительные установки.\
