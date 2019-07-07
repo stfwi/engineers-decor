@@ -10,6 +10,8 @@ Mod sources for Minecraft version 1.14.3.
 ----
 ## Version history
 
+    - v1.0.9-b3 [F] Additional item drop fixes when blocks are destroyed (issue #39).
+
     - v1.0.9-b2 [U] Updated to Forge 1.14.3-27.0.25/20190621-1.14.2.
                 [F] Fixed recipe collision of Metal Rung Ladder (issue #37,
                     thx ProsperCraft for reporting).

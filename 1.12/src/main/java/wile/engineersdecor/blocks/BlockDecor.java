@@ -1,5 +1,5 @@
 /*
- * @file BlockDecorFull.java
+ * @file BlockDecor.java
  * @author Stefan Wilhelm (wile)
  * @copyright (C) 2019 Stefan Wilhelm
  * @license MIT (see https://opensource.org/licenses/MIT)
@@ -13,7 +13,6 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraftforge.fml.common.Mod;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.detail.ModAuxiliaries;
 import net.minecraft.block.SoundType;
@@ -32,6 +31,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.entity.Entity;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
