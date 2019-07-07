@@ -1,36 +1,41 @@
 {
-  "parent": "block/block",
-  "textures": {
-    "particle": "engineersdecor:blocks/clinker_brick/clinker_brick_texture0",
-    "side"  : "engineersdecor:blocks/clinker_brick/clinker_brick_texture0"
-  },
+	"parent": "block/block",
+	"textures": {
+		"side": "engineersdecor:blocks/clinker_brick/clinker_brick_texture0",
+		"particle": "engineersdecor:blocks/clinker_brick/clinker_brick_texture0"
+	},
 	"elements": [
 		{
 			"from": [0, 0, 0],
 			"to": [16, 8, 16],
 			"faces": {
-				"north": {"uv": [0, 8, 16, 16], "texture": "#side", "cullface": "north"},
-				"east": {"uv": [0, 8, 16, 16], "texture": "#side", "cullface": "east"},
-				"south": {"uv": [0, 8, 16, 16], "texture": "#side", "cullface": "south"},
-				"west": {"uv": [0, 8, 16, 16], "texture": "#side", "cullface": "west"},
-				"up": {"uv": [0, 0, 16, 16], "texture": "#side"},
-				"down": {"uv": [0, 0, 16, 16], "texture": "#side", "cullface": "down"}
+				"north": {"texture": "#side", "cullface": "north"},
+				"east": {"texture": "#side", "cullface": "east"},
+				"south": {"texture": "#side", "cullface": "south"},
+				"west": {"texture": "#side", "cullface": "west"},
+				"up": {"texture": "#side"},
+				"down": {"texture": "#side", "cullface": "down"}
 			}
 		},
 		{
 			"from": [8, 8, 0],
 			"to": [16, 16, 16],
 			"faces": {
-				"north": {"uv": [0, 0, 8, 8], "texture": "#side", "cullface": "north"},
-				"east": {"uv": [0, 0, 16, 8], "texture": "#side", "cullface": "east"},
-				"south": {"uv": [8, 0, 16, 8], "texture": "#side", "cullface": "south"},
-				"west": {"uv": [0, 0, 16, 8], "texture": "#side"},
-				"up": {"uv": [8, 0, 16, 16], "texture": "#side", "cullface": "up"},
-				"down": {"uv": [8, 0, 16, 16], "texture": "#side", "cullface": "down"}
+				"north": {"texture": "#side", "cullface": "north"},
+				"east": {"texture": "#side", "cullface": "east"},
+				"south": {"texture": "#side", "cullface": "south"},
+				"west": {"texture": "#side"},
+				"up": {"texture": "#side", "cullface": "up"},
+				"down": {"texture": "#side", "cullface": "down"}
 			}
 		}
 	],
 	"display": {
+		"thirdperson_righthand": {
+			"rotation": [5, -71, -5],
+			"translation": [1, -0.5, -1.75],
+			"scale": [0.35, 0.35, 0.35]
+		},
 		"thirdperson_lefthand": {
 			"rotation": [75, -135, 0],
 			"translation": [0, 2.5, 0],

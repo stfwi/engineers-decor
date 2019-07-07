@@ -682,9 +682,15 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
         if(transferItems(FIFO_INPUT_0_SLOT_NO, SMELTING_INPUT_SLOT_NO, 64)) dirty = true;
         if(transferItems(FIFO_INPUT_1_SLOT_NO, FIFO_INPUT_0_SLOT_NO, 64)) { dirty = true; } else { shift_in = true; }
       }
-      if((!(stacks_.get(SMELTING_INPUT_SLOT_NO)).isEmpty()) && (energy_stored_ >= energy_consumption_)) {
+      final ItemStack last_inp_stack = current_smelting_input_stack_;
+      current_smelting_input_stack_ = stacks_.get(SMELTING_INPUT_SLOT_NO);
+      if((!current_smelting_input_stack_.isEmpty()) && (energy_stored_ >= energy_consumption_)) {
+        if(!current_smelting_input_stack_.isItemEqual(current_smelting_input_stack_)) {
+          proc_time_elapsed_ = 0;
+          proc_time_needed_ = getCookTime(current_smelting_input_stack_);
+        }
         final boolean can_smelt = canSmelt();
-        if((!can_smelt) && (BRecipes.instance().getSmeltingResult(stacks_.get(SMELTING_INPUT_SLOT_NO)).isEmpty())) {
+        if((!can_smelt) && (BRecipes.instance().getSmeltingResult(current_smelting_input_stack_).isEmpty())) {
           // bypass
           if(transferItems(SMELTING_INPUT_SLOT_NO, SMELTING_OUTPUT_SLOT_NO, 1)) dirty = true;
         } else {
@@ -697,7 +703,7 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
             proc_time_elapsed_ += (TICK_INTERVAL * proc_speed_percent_/100);
             if(proc_time_elapsed_ >= proc_time_needed_) {
               proc_time_elapsed_ = 0;
-              proc_time_needed_ = getCookTime(stacks_.get(SMELTING_INPUT_SLOT_NO));
+              proc_time_needed_ = getCookTime(current_smelting_input_stack_);
               smeltItem();
               dirty = true;
               shift_out = true;

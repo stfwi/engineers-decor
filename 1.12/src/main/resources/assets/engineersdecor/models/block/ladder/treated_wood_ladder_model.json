@@ -1,5 +1,4 @@
 {
-	"credit": "I made this with the Blockbench",
 	"parent": "block/cube",
 	"textures": {
 		"o": "engineersdecor:blocks/iestyle/treated_wood_rough_texture",
@@ -80,6 +79,11 @@
 		}
 	],
 	"display": {
+		"thirdperson_righthand": {
+			"rotation": [1, 67, 0],
+			"translation": [-1.75, -2.25, -2.5],
+			"scale": [0.4, 0.4, 0.4]
+		},
 		"ground": {
 			"scale": [0.2, 0.2, 0.2]
 		},

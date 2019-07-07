@@ -52,6 +52,15 @@
 		}
 	],
 	"display": {
+		"thirdperson_righthand": {
+			"rotation": [6, 17, 10],
+			"translation": [0, 0, -1],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"firstperson_righthand": {
+			"rotation": [17, 10, 0],
+			"scale": [0.5, 0.5, 0.5]
+		},
 		"ground": {
 			"scale": [0.2, 0.2, 0.2]
 		},

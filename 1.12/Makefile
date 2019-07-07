@@ -28,7 +28,7 @@ wildcardr=$(foreach d,$(wildcard $1*),$(call wildcardr,$d/,$2) $(filter $(subst 
 #
 # Targets
 #
-.PHONY: default mod init clean clean-all all run install sanatize dist-check dist start-server
+.PHONY: default mod init clean clean-all mrproper all run install sanatize dist-check dist start-server port-languages
 
 default: mod
 
@@ -46,7 +46,16 @@ clean:
 clean-all: clean
 	@echo "[1.12] Cleaning using gradle ..."
 	@rm -f dist/*
+	@rm -rf run/logs/
+	@rm -rf run/crash-reports/
 	@$(GRADLE) clean cleanCache
+
+mrproper: clean-all
+	@rm -f meta/*.*
+	@rm -rf run/
+	@rm -rf out/
+	@rm -f .project
+	@rm -f .classpath
 
 init:
 	@echo "[1.12] Initialising eclipse workspace using gradle ..."
@@ -90,3 +99,7 @@ dist: sanatize dist-check clean-all mod
 	@mkdir -p dist
 	@cp build/libs/$(MOD_JAR_PREFIX)* dist/
 	@djs tasks.js dist
+
+port-languages:
+	@echo "[1.12] Porting language files to 1.13/1.14 ..."
+	@djs tasks.js port-languages

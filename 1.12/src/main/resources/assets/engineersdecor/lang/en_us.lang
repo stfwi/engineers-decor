@@ -5,10 +5,9 @@
 #
 #-----------------------------------------------------------------------------------------------------------
 itemGroup.tabengineersdecor=Engineer's Decor
-engineersdecor.config.title=Engineer's Decor Config
 engineersdecor.tooltip.hint.extended=§6[§9SHIFT§r More Info§6]§r
 engineersdecor.tooltip.hint.help=§6[§9CTRL-SHIFT§r Help§6]§r
-
+engineersdecor.tooltip.slabpickup.help=§rFast pickup by left-clicking while looking up/down and holding this slab.
 #-----------------------------------------------------------------------------------------------------------
 # Stone/"ceramic material" based blocks
 #-----------------------------------------------------------------------------------------------------------
@@ -24,6 +23,19 @@ tile.engineersdecor.panzerglass_block.name=Panzer Glass Block
 tile.engineersdecor.panzerglass_block.help=§6Reinforced glass block.§r Expensive, explosion-proof. Dark gray tint, faint structural lines visible, multi texture for seemless look.
 tile.engineersdecor.rebar_concrete_tile.name=Rebar Concrete Tile
 tile.engineersdecor.rebar_concrete_tile.help=§6Steel reinforced concrete tile.§r Expensive but Creeper-proof like obsidian.
+#-----------------------------------------------------------------------------------------------------------
+tile.engineersdecor.clinker_brick_slab.name=Clinker Brick Slab
+tile.engineersdecor.clinker_brick_slab.help=§6Slab made from a Clinker Block.§r\nLooks slightly darker and more color intensive than the vanilla brick.
+tile.engineersdecor.clinker_brick_stained_slab.name=Stained Clinker Brick Slab
+tile.engineersdecor.clinker_brick_stained_slab.help=§6Slab made from a Stained Clinker Block.
+tile.engineersdecor.slag_brick_slab.name=Slag Brick Slab
+tile.engineersdecor.slag_brick_slab.help=§6A gray-brown brick slab.
+tile.engineersdecor.rebar_concrete_slab.name=Rebar Concrete Slab
+tile.engineersdecor.rebar_concrete_slab.help=§6Steel reinforced concrete slab.§r Expensive but Creeper-proof like obsidian.
+tile.engineersdecor.rebar_concrete_tile_slab.name=Rebar Concrete Tile Slab
+tile.engineersdecor.rebar_concrete_tile_slab.help=§6Steel reinforced concrete tile slab.§r Expensive but Creeper-proof like obsidian.
+tile.engineersdecor.panzerglass_slab.name=Panzer Glass Slab
+tile.engineersdecor.panzerglass_slab.help=§6Reinforced glass slab.§r Expensive, explosion-proof. Dark gray tint, faint structural lines visible.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.rebar_concrete_wall.name=Rebar Concrete Wall
 tile.engineersdecor.rebar_concrete_wall.help=§6Steel reinforced concrete wall.§r Expensive but Creeper-proof like obsidian.
@@ -80,6 +92,8 @@ tile.engineersdecor.treated_wood_crafting_table.help=§6Robust and weather-proof
                                                      Click up/down arrow buttons for crafting history selection, output slot for item placement, X-button \
                                                      to clear crafting grid and history. Shift-click stack: player-to-storage stack transfer when crafting \
                                                      grid empty, otherwise player-to-grid stack transfer. Automatically distributes the clicked stack.
+tile.engineersdecor.treated_wood_side_table.name=Treated Wood Side Table
+tile.engineersdecor.treated_wood_side_table.help=§6Needed after the work's done.
 tile.engineersdecor.iron_inset_light.name=Inset Light
 tile.engineersdecor.iron_inset_light.help=§6Small glowstone light source, sunk into the floor, ceiling or wall.§r\n\
                                           Useful to light up places where electrical light installations are problematic.\
@@ -132,6 +146,11 @@ tile.engineersdecor.factory_dropper.help=§6Dropper suitable for advanced factor
                                          AND'ed or OR'ed with the external redstone signal trigger. Trigger simulation buttons for testing. \
                                          Pre-opens shutter door when internal trigger conditions are met. Drops all matching stacks \
                                          simultaneously. Click on all elements in the GUI to see how it works.
+tile.engineersdecor.small_mineral_smelter.name=Small Mineral Melting Furnace
+tile.engineersdecor.small_mineral_smelter.help=§6High temperature, high insulation electrical stone melting furnace.§r\n\
+                                               Heats up mineral blocks to magma blocks, and finally to lava. Due to the \
+                                               miniturized device size the process is rather inefficient - much time and \
+                                               energy is needed to liquefy a stone block.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.sign_decor.name=Sign Plate (Engineer's decor)
 tile.engineersdecor.sign_decor.help=§6This should not be craftable or visible in JEI. Used for creative tab and screenshots.
@@ -162,6 +181,52 @@ tile.engineersdecor.halfslab_sheetmetal_gold.name=Gold Sheet Metal Slice
 tile.engineersdecor.halfslab_sheetmetal_gold.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
 tile.engineersdecor.halfslab_sheetmetal_aluminum.name=Aluminum Sheet Metal Slice
 tile.engineersdecor.halfslab_sheetmetal_aluminum.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
+
+#-----------------------------------------------------------------------------------------------------------
+engineersdecor.config.title=Engineer's Decor Config
+engineersdecor.config.pattern_excludes=Pattern excludes
+engineersdecor.config.pattern_includes=Pattern includes
+engineersdecor.config.without_clinker_bricks=Without clinker bricks
+engineersdecor.config.without_slag_bricks=Without slag bricks
+engineersdecor.config.without_rebar_concrete=Without rebar concrete
+engineersdecor.config.without_walls=Without walls
+engineersdecor.config.without_stairs=Without stairs
+engineersdecor.config.without_ie_concrete_wall=Without concrete wall
+engineersdecor.config.without_panzer_glass=Without panzer glass
+engineersdecor.config.without_crafting_table=Without crafting table
+engineersdecor.config.without_lab_furnace=Without lab furnace
+engineersdecor.config.without_electrical_furnace=Without electrical furnace
+engineersdecor.config.without_treated_wood_furniture=Without tr. wood furniture
+engineersdecor.config.without_windows=Without windows
+engineersdecor.config.without_light_sources=Without lights
+engineersdecor.config.without_ladders=Without ladders
+engineersdecor.config.without_chair_sitting=Without chair sitting
+engineersdecor.config.without_mob_chair_sitting=Without chair mob sitting
+engineersdecor.config.without_ladder_speed_boost=Without ladder speed boost
+engineersdecor.config.without_crafting_table_history=Without crafting table history
+engineersdecor.config.without_valves=Without valves
+engineersdecor.config.without_passive_fluid_accumulator=Without fluid accumulator
+engineersdecor.config.without_waste_incinerator=Without waste incinerator
+engineersdecor.config.without_sign_plates=Without signs
+engineersdecor.config.without_factory_dropper=Without factory dropper
+engineersdecor.config.without_slabs=Without slabs
+engineersdecor.config.without_halfslabs=Without slab slices
+engineersdecor.config.without_direct_slab_pickup=Without slab pickup
+engineersdecor.config.without_poles=Without poles
+engineersdecor.config.without_hsupports=Without h. supports
+engineersdecor.config.without_tooltips=Without tooltips
+engineersdecor.config.without_recipes=Without recipes
+engineersdecor.config.furnace_smelting_speed_percent=Furnace: Smelting speed %
+engineersdecor.config.furnace_fuel_efficiency_percent=Furnace: Fuel efficiency %
+engineersdecor.config.furnace_boost_energy_consumption=Furnace: Boost energy
+engineersdecor.config.chair_mob_sitting_probability_percent=Chairs: Sitting chance %
+engineersdecor.config.chair_mob_standup_probability_percent="Chairs: Stand up chance %"
+engineersdecor.config.with_crafting_quickmove_buttons=Crafting table: Move buttons
+engineersdecor.config.pipevalve_max_flowrate=Valves: Max flow rate
+engineersdecor.config.pipevalve_redstone_gain=Valves: Redstone slope
+engineersdecor.config.e_furnace_speed_percent=E-furnace: Smelting speed %
+engineersdecor.config.e_furnace_power_consumption=E-furnace: Power consumption
+
 #-----------------------------------------------------------------------------------------------------------
 # EOF
 #-----------------------------------------------------------------------------------------------------------

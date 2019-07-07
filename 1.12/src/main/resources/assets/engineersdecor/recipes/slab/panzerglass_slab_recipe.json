@@ -1,0 +1,21 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:panzerglass_slab",
+      "required": ["engineersdecor:panzerglass_block"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "BBB"
+  ],
+  "key": {
+    "B": { "item": "engineersdecor:panzerglass_block" }
+  },
+  "result": {
+    "item": "engineersdecor:panzerglass_slab",
+    "count": 6
+  }
+}

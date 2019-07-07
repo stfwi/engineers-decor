@@ -4,8 +4,8 @@
 		"light": "engineersdecor:blocks/light/lamp_glass_warm_square_texture",
 		"side": "engineersdecor:blocks/iestyle/steel_texture",
 		"particle": "engineersdecor:blocks/iestyle/steel_texture"
-  },
- 	"elements": [
+	},
+	"elements": [
 		{
 			"from": [6, 6, 0.125],
 			"to": [10, 10, 0.25],
@@ -110,20 +110,28 @@
 				"down": {"uv": [9, 15.625, 10, 16], "rotation": 180, "texture": "#side"}
 			}
 		}
-  ],
-  "display": {
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [-3, -60, 0],
+			"translation": [-5, 0, 2.25],
+			"scale": [0.7, 0.7, 0.7]
+		},
+		"firstperson_righthand": {
+			"rotation": [5, -52, 0],
+			"translation": [-3, -0.75, 1.25]
+		},
+		"ground": {
+			"translation": [0, 0, 6],
+			"scale": [0.7, 0.7, 0.7]
+		},
 		"gui": {
-			"rotation": [0, 180, 0],
-			"translation": [0, 0.5, 0]
+			"rotation": [16, 30, 0],
+			"translation": [3.75, -1.5, 0]
 		},
 		"fixed": {
 			"rotation": [0, 180, 0],
-			"translation": [0, 0, -7.3]
-		},
-		"ground": {
-			"rotation": [0, 0, 0],
-			"translation": [0, 0, 7],
-			"scale": [0.7, 0.7, 0.7]
+			"translation": [0, 0, -8.05]
 		}
 	}
 }

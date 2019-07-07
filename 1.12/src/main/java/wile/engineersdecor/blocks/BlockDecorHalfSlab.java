@@ -4,10 +4,13 @@
  * @copyright (C) 2019 Stefan Wilhelm
  * @license MIT (see https://opensource.org/licenses/MIT)
  *
- * Half slab characteristics class.
+ * Half slab ("slab slices") characteristics class. Actually
+ * it's now a quater slab, but who cares.
  */
 package wile.engineersdecor.blocks;
 
+import wile.engineersdecor.detail.ModAuxiliaries;
+import wile.engineersdecor.detail.ModConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -26,15 +29,17 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 
 
 public class BlockDecorHalfSlab extends BlockDecor
@@ -60,6 +65,16 @@ public class BlockDecorHalfSlab extends BlockDecor
 
   protected boolean is_cube(IBlockState state)
   { return state.getValue(PARTS) == 0x07; }
+
+  @Override
+  @SideOnly(Side.CLIENT)
+  public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag)
+  {
+    if(!ModAuxiliaries.Tooltip.addInformation(stack, world, tooltip, flag, true)) return;
+    if(!ModConfig.optout.without_direct_slab_pickup) {
+      ModAuxiliaries.Tooltip.addInformation("engineersdecor.tooltip.slabpickup", "engineersdecor.tooltip.slabpickup", tooltip, flag, true);
+    }
+  }
 
   @Override
   @SideOnly(Side.CLIENT)
@@ -167,7 +182,7 @@ public class BlockDecorHalfSlab extends BlockDecor
   @Override
   public void onBlockClicked(World world, BlockPos pos, EntityPlayer player)
   {
-    if(world.isRemote) return;
+    if((world.isRemote) || (ModConfig.optout.without_direct_slab_pickup)) return;
     final ItemStack stack = player.getHeldItemMainhand();
     if(stack.isEmpty() || (Block.getBlockFromItem(stack.getItem()) != this)) return;
     if(stack.getCount() >= stack.getMaxStackSize()) return;

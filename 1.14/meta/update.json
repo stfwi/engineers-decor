@@ -1,0 +1,19 @@
+{
+  "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
+  "1.14.3": {
+    "1.0.9-b4": "[E] Experimental: Config skel ported (!not all options have effect yet).\n[E] Experimental: JEI integration for opt-outs and crafting table ported (also addresses issue #38).",
+    "1.0.9-b3": "[F] Additional item drop fixes when blocks are destroyed (issue #39).",
+    "1.0.9-b2": "[U] Updated to Forge 1.14.3-27.0.25/20190621-1.14.2.\n[F] Fixed recipe collision of Metal Rung Ladder (issue #37, thx ProsperCraft for reporting).\n[F] Fixed opening crafting table, furni, dropper server crash issue #35 (thx ProsperCraft also here).\n[F] Fixed missing pole/support item drops (issue #36, ProsperCraft).",
+    "1.0.9-b1": "[U] Updated to MC1.14.3, Forge 1.14.3-27.0.17/20190621-1.14.2.\n[A] Added Small Mineral Smelter.",
+    "1.0.8-b3": "[A] Ported slabs and slab slices from 1.12.2.\n[A] IE independent (\"standalone\") recipes ported.",
+    "1.0.8-b2": "[U] Updated to Forge BETA 1.14.2-26.0.63/20190621-1.14.2, code adapted to new mappings.\n[M] Updated 1st/3rd person item model rotations/translations.",
+    "1.0.8-b1": "[V] Feature set of 1.12 ported.\n[A] CTRL-SHIFT tooltips ported.\n[A] Ported stained clinker block/stairs.\n[M] Updated textures.\n[I] Issue: Scoped recipe constants still not working.",
+    "1.0.7-b5": "[U] Updated to Forge BETA 1.14.2-26.0.35/20190608-1.14.2.\n[A] Factory dropper functionality ported.\n[A] Small lab furnace functionality ported.\n[A] Small electrical lab furnace functionality ported.\n[A] Small waste incinerator functionality ported.\n[A] Fluid valves, Passive Fluid Accumulator ported.\n[I] Issue: Scoped recipe constants still not working.",
+    "1.0.7-b4": "[U] Updated to Forge BETA 1.14.2-26.0.32/20190608-1.14.2.\n[A] Sitting on the stool ported.\n[A] Ladder climbing speed boost ported.\n[A] Crafting table functionality ported.\n[I] Issue: Scoped recipe constants not working yet with the current Forge version (or somehow changed).",
+    "1.0.7-b3": "[A] Initial 1.14.2 port of decorative blocks."
+  },
+  "promos": {
+    "1.14.3-recommended": "",
+    "1.14.3-latest": "1.0.9-b4"
+  }
+}

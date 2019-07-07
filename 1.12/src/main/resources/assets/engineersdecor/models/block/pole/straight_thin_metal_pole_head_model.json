@@ -108,6 +108,11 @@
 		}
 	],
 	"display": {
+		"thirdperson_righthand": {
+			"rotation": [18, 0, 3],
+			"translation": [0, -0.5, -0.75],
+			"scale": [0.5, 0.5, 0.5]
+		},
 		"ground": {
 			"scale": [0.2, 0.2, 0.2]
 		},

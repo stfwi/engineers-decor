@@ -28,6 +28,10 @@
     "name": "blockIron"
   },
   {
+    "ingredient": { "type": "forge:ore_dict", "ore": "blockSteel" },
+    "name": "blockSteel"
+  },
+  {
     "ingredient": { "type": "forge:ore_dict", "ore": "plateIron" },
     "name": "plateIron"
   },
@@ -106,6 +110,10 @@
   {
     "ingredient": { "type": "forge:ore_dict", "ore": "ingotBrickNether" },
     "name": "ingotBrickNether"
+  },
+  {
+    "ingredient": { "item": "minecraft:obsidian", "data": 0 },
+    "name": "blockObsidian"
   },
   {
     "ingredient": [
@@ -248,6 +256,20 @@
     ],
     "ingredient": { "item": "immersiveengineering:metal_device1", "data": 6 },
     "name": "itemFluidPipe"
+  },
+  {
+    "conditions": [
+      { "type": "minecraft:item_exists", "item": "immersiveengineering:metal_device1" }
+    ],
+    "ingredient": { "item": "immersiveengineering:metal_device1", "data": 1 },
+    "name": "itemExternalHeater"
+  },
+  {
+    "conditions": [
+      { "type": "minecraft:item_exists", "item": "immersiveengineering:metal_device0" }
+    ],
+    "ingredient": { "item": "immersiveengineering:metal_device0", "data": 4 },
+    "name": "itemSteelBarrel"
   },
   {
     "conditions": [

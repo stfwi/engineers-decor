@@ -1,5 +1,5 @@
 /*
- * @file BlockDecorFull.java
+ * @file BlockDecor.java
  * @author Stefan Wilhelm (wile)
  * @copyright (C) 2019 Stefan Wilhelm
  * @license MIT (see https://opensource.org/licenses/MIT)
@@ -30,6 +30,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.entity.Entity;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
@@ -58,9 +60,15 @@ public class BlockDecor extends Block
   public static final long CFG_ANALOG                     = 0x0000000000040000L; // Denotes if a component has analog behaviour
   public static final long CFG_HARD_IE_DEPENDENT          = 0x8000000000000000L; // Defines that this block abolutely needs IE to be installed.
 
-  protected final AxisAlignedBB aabb;
+  protected final AxisAlignedBB[] aabb;
+
+  public BlockDecor(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound)
+  { this(registryName, config, material, hardness, resistance, sound, (new AxisAlignedBB[]{FULL_BLOCK_AABB})); }
 
   public BlockDecor(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound, @Nullable AxisAlignedBB boundingbox)
+  { this(registryName, config, material, hardness, resistance, sound, (boundingbox==null) ? (new AxisAlignedBB[]{FULL_BLOCK_AABB}) : (new AxisAlignedBB[]{boundingbox})); }
+
+  public BlockDecor(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound, @Nonnull AxisAlignedBB[] boundingboxes)
   {
     super((material!=null) ? (material) : (Material.IRON));
     setCreativeTab(ModEngineersDecor.CREATIVE_TAB_ENGINEERSDECOR);
@@ -74,11 +82,8 @@ public class BlockDecor extends Block
     // @todo double check that instance variable
     // not sure here ... if((config & CFG_TRANSLUCENT) != 0) this.translucent = true;
     this.config = config;
-    this.aabb = (boundingbox==null) ? (FULL_BLOCK_AABB) : (boundingbox);
+    this.aabb = boundingboxes;
   }
-
-  public BlockDecor(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound)
-  { this(registryName, config, material, hardness, resistance, sound, null); }
 
   @Override
   @SideOnly(Side.CLIENT)
@@ -166,12 +171,19 @@ public class BlockDecor extends Block
   @Override
   @SuppressWarnings("deprecation")
   public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
-  { return aabb; }
+  { return aabb[0]; }
 
   @SideOnly(Side.CLIENT)
   @SuppressWarnings("deprecation")
-  public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos)
-  { return state.getBoundingBox(worldIn, pos).offset(pos); }
+  public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos)
+  { return state.getBoundingBox(world, pos).offset(pos); }
+
+  @SuppressWarnings("deprecation")
+  public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState)
+  {
+    addCollisionBoxToList(pos, entityBox, collidingBoxes, getBoundingBox(state, world, pos));
+    for(int i=1; i<aabb.length; ++i) addCollisionBoxToList(pos, entityBox, collidingBoxes, aabb[i]);
+  }
 
   @Override
   public boolean hasTileEntity(IBlockState state)

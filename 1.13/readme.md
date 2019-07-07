@@ -8,9 +8,16 @@ Mod sources for Minecraft version 1.13.2.
 - Compiled mod distribution channel is curseforge: https://www.curseforge.com/minecraft/mc-mods/engineers-decor/files.
 
 ----
-## Revision history
+## Version history
 
-    ~ v1.0.7-b4 [A]
+    ~ v1.0.7-b6 [F] Fixed recipe collision of Metal Rung Ladder (issue #37,
+                    thx ProsperCraft for reporting).
+
+    - v1.0.7-b5 [A] Added translation zh_cn (PR#33, XuyuEre)
+                [M] Updated textures.
+                [M] Updated 1st/3rd person item model rotations/translations.
+
+    - v1.0.7-b4 [A] Added stained clinker brick block/stairs.
 
     - v1.0.7-b3 [V] Version assignment: All features of v1.0.7-b3-1.12.2 that can be ported
                     to 1.13.2 implemented/prepared, therefore version re-assigned.

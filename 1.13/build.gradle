@@ -12,6 +12,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 //-----------------------------------------------------------------------------
 version = "${version_engineersdecor}"
@@ -75,5 +76,23 @@ jar {
       "Implementation-Vendor" :"wilechaote",
       "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
     ])
+  }
+}
+
+def reobfFile = file("$buildDir/reobfJar/output.jar")
+def reobfArtifact = artifacts.add('default', reobfFile) {
+  type 'jar'
+  builtBy 'reobfJar'
+}
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      artifact reobfArtifact
+    }
+  }
+  repositories {
+    maven {
+      url "file:///${project.projectDir}/mcmodsrepo"
+    }
   }
 }

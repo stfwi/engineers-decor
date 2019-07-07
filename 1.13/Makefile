@@ -24,7 +24,7 @@ wildcardr=$(foreach d,$(wildcard $1*),$(call wildcardr,$d/,$2) $(filter $(subst 
 #
 # Targets
 #
-.PHONY: default mod init clean clean-all all run install sanatize dist-check dist start-server
+.PHONY: default mod init clean clean-all mrproper all run install sanatize dist-check dist start-server
 
 default: mod
 
@@ -42,7 +42,16 @@ clean:
 clean-all:
 	@echo "[1.13] Cleaning using gradle ..."
 	@rm -f dist/*
+	@rm -rf run/logs/
+	@rm -rf run/crash-reports/
 	@$(GRADLE) clean cleanCache
+
+mrproper: clean-all
+	@rm -f meta/*.*
+	@rm -rf run/
+	@rm -rf out/
+	@rm -f .project
+	@rm -f .classpath
 
 init:
 	@echo "[1.13] Initialising eclipse workspace using gradle ..."

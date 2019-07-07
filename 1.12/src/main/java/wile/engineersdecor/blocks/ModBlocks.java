@@ -44,19 +44,25 @@ public class ModBlocks
   public static final BlockDecorFull CLINKER_BRICK_BLOCK = new BlockDecorFull("clinker_brick_block", 0, Material.ROCK, 2f, 15f, SoundType.STONE);
   public static final BlockDecorStairs CLINKER_BRICK_STAIRS = new BlockDecorStairs("clinker_brick_stairs", CLINKER_BRICK_BLOCK.getDefaultState());
   public static final BlockDecorWall CLINKER_BRICK_WALL = new BlockDecorWall("clinker_brick_wall", BlockDecor.CFG_DEFAULT, Material.ROCK, 2f, 20f, SoundType.STONE);
+  public static final BlockDecorSlab CLINKER_BRICK_SLAB = new BlockDecorSlab("clinker_brick_slab", BlockDecor.CFG_DEFAULT, Material.ROCK, 2f, 20f, SoundType.STONE);
 
   public static final BlockDecorFull CLINKER_BRICK_STAINED_BLOCK = new BlockDecorFull("clinker_brick_stained_block", 0, Material.ROCK, 2f, 15f, SoundType.STONE);
   public static final BlockDecorStairs CLINKER_BRICK_STAINED_STAIRS = new BlockDecorStairs("clinker_brick_stained_stairs", CLINKER_BRICK_STAINED_BLOCK.getDefaultState());
+  public static final BlockDecorSlab CLINKER_BRICK_STAINED_SLAB = new BlockDecorSlab("clinker_brick_stained_slab", BlockDecor.CFG_DEFAULT, Material.ROCK, 2f, 20f, SoundType.STONE);
 
   public static final BlockDecorFull SLAG_BRICK_BLOCK  = new BlockDecorFull("slag_brick_block", 0, Material.ROCK, 2f, 15f, SoundType.STONE);
   public static final BlockDecorStairs SLAG_BRICK_STAIRS = new BlockDecorStairs("slag_brick_stairs", SLAG_BRICK_BLOCK.getDefaultState());
   public static final BlockDecorWall SLAG_BRICK_WALL = new BlockDecorWall("slag_brick_wall", BlockDecor.CFG_DEFAULT, Material.ROCK, 2f, 15f, SoundType.STONE);
+  public static final BlockDecorSlab SLAG_BRICK_SLAB = new BlockDecorSlab("slag_brick_slab", BlockDecor.CFG_DEFAULT, Material.ROCK, 2f, 15f, SoundType.STONE);
 
   public static final BlockDecorFull REBAR_CONCRETE_BLOCK = new BlockDecorFull("rebar_concrete", 0, Material.ROCK, 5f, 2000f, SoundType.STONE);
   public static final BlockDecorStairs REBAR_CONCRETE_STAIRS = new BlockDecorStairs("rebar_concrete_stairs", REBAR_CONCRETE_BLOCK.getDefaultState());
   public static final BlockDecorWall REBAR_CONCRETE_WALL = new BlockDecorWall("rebar_concrete_wall", BlockDecor.CFG_DEFAULT, Material.ROCK, 5f, 2000f, SoundType.STONE);
+  public static final BlockDecorSlab REBAR_CONCRETE_SLAB = new BlockDecorSlab("rebar_concrete_slab", BlockDecor.CFG_DEFAULT, Material.ROCK, 5f, 2000f, SoundType.STONE);
+
   public static final BlockDecorFull REBAR_CONCRETE_TILE = new BlockDecorFull("rebar_concrete_tile", 0, Material.ROCK, 5f, 2000f, SoundType.STONE);
   public static final BlockDecorStairs REBAR_CONCRETE_TILE_STAIRS = new BlockDecorStairs("rebar_concrete_tile_stairs", REBAR_CONCRETE_TILE.getDefaultState());
+  public static final BlockDecorSlab REBAR_CONCRETE_TILE_SLAB = new BlockDecorSlab("rebar_concrete_tile_slab", BlockDecor.CFG_DEFAULT, Material.ROCK, 5f, 2000f, SoundType.STONE);
 
   public static final BlockDecorWall CONCRETE_WALL = new BlockDecorWall("concrete_wall", BlockDecor.CFG_DEFAULT, Material.ROCK, 5f, 20f, SoundType.STONE);
 
@@ -64,7 +70,9 @@ public class ModBlocks
   public static final BlockDecorLadder METAL_RUNG_STEPS = new BlockDecorLadder("metal_rung_steps", 0, Material.IRON, 0.5f, 20f, SoundType.METAL);
   public static final BlockDecorLadder TREATED_WOOD_LADDER = new BlockDecorLadder("treated_wood_ladder", 0, Material.WOOD, 0.5f, 10f, SoundType.WOOD);
 
-  public static final BlockDecorGlassBlock PANZERGLASS_BLOCK = new BlockDecorGlassBlock("panzerglass_block", 0, Material.GLASS, 0.8f, 2000f, SoundType.GLASS);
+  public static final BlockDecorGlassBlock PANZERGLASS_BLOCK = new BlockDecorGlassBlock("panzerglass_block", 0, Material.GLASS, 1f, 2000f, SoundType.GLASS);
+  public static final BlockDecorSlab PANZERGLASS_SLAB = new BlockDecorSlab("panzerglass_slab", BlockDecor.CFG_TRANSLUCENT, Material.GLASS, 1f, 2000f, SoundType.GLASS);
+
 
   public static final BlockDecorStraightPole TREATED_WOOD_POLE = new BlockDecorStraightPole(
     "treated_wood_pole",
@@ -90,28 +98,28 @@ public class ModBlocks
   public static final BlockDecorStraightPole THIN_STEEL_POLE = new BlockDecorStraightPole(
     "thin_steel_pole",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT,
-    Material.IRON, 1.0f, 15f, SoundType.METAL,
+    Material.IRON, 2.0f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(6,6,0, 10,10,16)
   );
 
   public static final BlockDecorStraightPole THIN_STEEL_POLE_HEAD = new BlockDecorStraightPole(
     "thin_steel_pole_head",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_IF_SAME,
-    Material.IRON, 1.0f, 15f, SoundType.METAL,
+    Material.IRON, 2.0f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(6,6,0, 10,10,16)
   );
 
   public static final BlockDecorStraightPole THICK_STEEL_POLE = new BlockDecorStraightPole(
     "thick_steel_pole",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT,
-    Material.IRON, 1.0f, 15f, SoundType.METAL,
+    Material.IRON, 2.0f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(5,5,0, 11,11,16)
   );
 
   public static final BlockDecorStraightPole THICK_STEEL_POLE_HEAD = new BlockDecorStraightPole(
     "thick_steel_pole_head",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_IF_SAME,
-    Material.IRON, 1.0f, 15f, SoundType.METAL,
+    Material.IRON, 2.0f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(5,5,0, 11,11,16)
   );
 
@@ -129,6 +137,13 @@ public class ModBlocks
     ModAuxiliaries.getPixeledAABB(4.1,0,4.1, 11.8,8.8,11.8)
   );
 
+  public static final BlockDecor TREATED_WOOD_SIDE_TABLE = new BlockDecor(
+    "treated_wood_side_table",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
+    Material.WOOD, 1.0f, 15f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(2,0,2, 14,15.9,14)
+  );
+
   public static final BlockDecorCraftingTable TREATED_WOOD_CRAFTING_TABLE = new BlockDecorCraftingTable(
     "treated_wood_crafting_table",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
@@ -139,7 +154,7 @@ public class ModBlocks
   public static final BlockDecorDirected INSET_LIGHT_IRON = new BlockDecorDirected(
     "iron_inset_light",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT|(14<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
-    Material.IRON, 0.3f, 15f, SoundType.METAL,
+    Material.IRON, 0.5f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(5.2,5.2,15.7, 10.8,10.8,16.0)
   );
 
@@ -168,14 +183,14 @@ public class ModBlocks
     "small_lab_furnace",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|
     BlockDecor.CFG_ELECTRICAL,
-    Material.IRON, 0.35f, 15f, SoundType.METAL,
+    Material.IRON, 0.5f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(1,0,1, 15,15,16)
   );
 
   public static final BlockDecorFurnaceElectrical SMALL_ELECTRICAL_FURNACE = new BlockDecorFurnaceElectrical(
     "small_electrical_furnace",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_ELECTRICAL,
-    Material.IRON, 0.35f, 15f, SoundType.METAL,
+    Material.IRON, 0.5f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   );
 
@@ -189,7 +204,7 @@ public class ModBlocks
   public static final BlockDecorHorizontalSupport STEEL_DOUBLE_T_SUPPORT = new BlockDecorHorizontalSupport(
     "steel_double_t_support",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
-    Material.IRON, 0.5f, 15f, SoundType.METAL,
+    Material.IRON, 2.0f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(5,11,0, 11,16,16)
   );
 
@@ -197,7 +212,7 @@ public class ModBlocks
     "straight_pipe_valve",
     BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
     BlockDecor.CFG_CUTOUT,
-    Material.IRON, 0.35f, 15f, SoundType.METAL,
+    Material.IRON, 0.7f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
   );
 
@@ -205,7 +220,7 @@ public class ModBlocks
     "straight_pipe_valve_redstone",
     BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_REDSTONE_CONTROLLED,
-    Material.IRON, 0.35f, 15f, SoundType.METAL,
+    Material.IRON, 0.7f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
   );
 
@@ -213,7 +228,7 @@ public class ModBlocks
     "straight_pipe_valve_redstone_analog",
     BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_REDSTONE_CONTROLLED|BlockDecor.CFG_ANALOG,
-    Material.IRON, 0.35f, 15f, SoundType.METAL,
+    Material.IRON, 0.7f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
   );
 
@@ -221,8 +236,29 @@ public class ModBlocks
     "passive_fluid_accumulator",
     BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
     BlockDecor.CFG_CUTOUT,
-    Material.IRON, 0.35f, 15f, SoundType.METAL,
+    Material.IRON, 0.7f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+  );
+
+  public static final BlockDecorWasteIncinerator SMALL_WASTE_INCINERATOR = new BlockDecorWasteIncinerator(
+    "small_waste_incinerator",
+    BlockDecor.CFG_DEFAULT|BlockDecor.CFG_ELECTRICAL,
+    Material.IRON, 1f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+  );
+
+  public static final BlockDecorDropper FACTORY_DROPPER = new BlockDecorDropper(
+    "factory_dropper",
+    BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_REDSTONE_CONTROLLED,
+    Material.IRON, 1f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,15)
+  );
+
+  public static final BlockDecorMineralSmelter SMALL_MINERAL_SMELTER = new BlockDecorMineralSmelter(
+    "small_mineral_smelter",
+    BlockDecor.CFG_LOOK_PLACEMENT,
+    Material.IRON, 1f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(1.1,0,1.1, 14.9,16,14.9)
   );
 
   public static final BlockDecorDirected SIGN_HOTWIRE = new BlockDecorDirected(
@@ -253,20 +289,6 @@ public class ModBlocks
     ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
   );
 
-  public static final BlockDecorWasteIncinerator SMALL_WASTE_INCINERATOR = new BlockDecorWasteIncinerator(
-    "small_waste_incinerator",
-    BlockDecor.CFG_DEFAULT|BlockDecor.CFG_ELECTRICAL,
-    Material.IRON, 0.3f, 15f, SoundType.METAL,
-    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
-  );
-
-  public static final BlockDecorDropper FACTORY_DROPPER = new BlockDecorDropper(
-    "factory_dropper",
-    BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_REDSTONE_CONTROLLED,
-    Material.IRON, 0.3f, 15f, SoundType.METAL,
-    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,15)
-  );
-
   public static final BlockDecorDirected SIGN_FACTORY_AREA = new BlockDecorDirected(
     "sign_factoryarea",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
@@ -282,37 +304,37 @@ public class ModBlocks
   public static final BlockDecorHalfSlab HALFSLAB_CONCRETE = new BlockDecorHalfSlab(
     "halfslab_concrete",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
-    Material.ROCK, 0.4f, 10f, SoundType.STONE
+    Material.ROCK, 1.0f, 10f, SoundType.STONE
   );
   public static final BlockDecorHalfSlab HALFSLAB_TREATEDWOOD = new BlockDecorHalfSlab(
     "halfslab_treated_wood",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
-    Material.WOOD, 0.4f, 4f, SoundType.WOOD
+    Material.WOOD, 0.6f, 4f, SoundType.WOOD
   );
   public static final BlockDecorHalfSlab HALFSLAB_SHEETMETALIRON = new BlockDecorHalfSlab(
     "halfslab_sheetmetal_iron",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
-    Material.IRON, 0.4f, 10f, SoundType.METAL
+    Material.IRON, 0.8f, 10f, SoundType.METAL
   );
   public static final BlockDecorHalfSlab HALFSLAB_SHEETMETALSTEEL = new BlockDecorHalfSlab(
     "halfslab_sheetmetal_steel",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
-    Material.IRON, 0.4f, 10f, SoundType.METAL
+    Material.IRON, 0.8f, 10f, SoundType.METAL
   );
   public static final BlockDecorHalfSlab HALFSLAB_SHEETMETALCOPPER = new BlockDecorHalfSlab(
     "halfslab_sheetmetal_copper",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
-    Material.IRON, 0.4f, 10f, SoundType.METAL
+    Material.IRON, 0.8f, 10f, SoundType.METAL
   );
   public static final BlockDecorHalfSlab HALFSLAB_SHEETMETALGOLD = new BlockDecorHalfSlab(
     "halfslab_sheetmetal_gold",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
-    Material.IRON, 0.4f, 10f, SoundType.METAL
+    Material.IRON, 0.6f, 10f, SoundType.METAL
   );
   public static final BlockDecorHalfSlab HALFSLAB_SHEETMETALALUMINIUM = new BlockDecorHalfSlab(
     "halfslab_sheetmetal_aluminum",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
-    Material.IRON, 0.4f, 10f, SoundType.METAL
+    Material.IRON, 0.6f, 10f, SoundType.METAL
   );
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -348,6 +370,10 @@ public class ModBlocks
     BlockDecorDropper.BTileEntity.class, "te_factory_dropper"
   );
 
+  private static final TileEntityRegistrationData SMALL_MINERAL_SMELTER_TEI = new TileEntityRegistrationData(
+    BlockDecorMineralSmelter.BTileEntity.class, "te_small_mineral_smelter"
+  );
+
   //--------------------------------------------------------------------------------------------------------------------
   //-- Registration list
   //--------------------------------------------------------------------------------------------------------------------
@@ -361,17 +387,22 @@ public class ModBlocks
     STRAIGHT_CHECK_VALVE, STRAIGHT_REDSTONE_VALVE, STRAIGHT_REDSTONE_ANALOG_VALVE, STRAIGHT_PIPE_VALVE_TEI,
     PASSIVE_FLUID_ACCUMULATOR, PASSIVE_FLUID_ACCUMULATOR_TEI,
     CLINKER_BRICK_BLOCK,
+    CLINKER_BRICK_SLAB,
     CLINKER_BRICK_STAIRS,
     CLINKER_BRICK_WALL,
     CLINKER_BRICK_STAINED_BLOCK,
+    CLINKER_BRICK_STAINED_SLAB,
     CLINKER_BRICK_STAINED_STAIRS,
     SLAG_BRICK_BLOCK,
+    SLAG_BRICK_SLAB,
     SLAG_BRICK_STAIRS,
     SLAG_BRICK_WALL,
     REBAR_CONCRETE_BLOCK,
+    REBAR_CONCRETE_SLAB,
     REBAR_CONCRETE_STAIRS,
     REBAR_CONCRETE_WALL,
     REBAR_CONCRETE_TILE,
+    REBAR_CONCRETE_TILE_SLAB,
     REBAR_CONCRETE_TILE_STAIRS,
     CONCRETE_WALL,
     PANZERGLASS_BLOCK,
@@ -393,19 +424,16 @@ public class ModBlocks
     THICK_STEEL_POLE_HEAD,
     STEEL_DOUBLE_T_SUPPORT,
     SIGN_HOTWIRE, SIGN_DANGER, SIGN_DEFENSE, SIGN_FACTORY_AREA, SIGN_MODLOGO,
+    TREATED_WOOD_SIDE_TABLE,
+    HALFSLAB_REBARCONCRETE, HALFSLAB_CONCRETE, HALFSLAB_TREATEDWOOD,
+    HALFSLAB_SHEETMETALIRON, HALFSLAB_SHEETMETALSTEEL, HALFSLAB_SHEETMETALCOPPER,
+    HALFSLAB_SHEETMETALGOLD, HALFSLAB_SHEETMETALALUMINIUM,
   };
 
   private static final Object dev_content[] = {
+    SMALL_MINERAL_SMELTER, SMALL_MINERAL_SMELTER_TEI,
+    PANZERGLASS_SLAB, // check if another class is needed due to is_side_visible
     SIGN_MINDSTEP,
-    // handling not sure yet ...
-    HALFSLAB_REBARCONCRETE,
-    HALFSLAB_CONCRETE,
-    HALFSLAB_TREATEDWOOD,
-    HALFSLAB_SHEETMETALIRON,
-    HALFSLAB_SHEETMETALSTEEL,
-    HALFSLAB_SHEETMETALCOPPER,
-    HALFSLAB_SHEETMETALGOLD,
-    HALFSLAB_SHEETMETALALUMINIUM,
   };
 
   //--------------------------------------------------------------------------------------------------------------------
