@@ -10,14 +10,8 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
-    ~ v1.0.10-b1 [I] Features WIP
-                 [A] Treated wood side table added.
-                 [F] Fixed recipe collision of Metal Rung Ladder (issue #37,
-                     thx ProsperCraft for reporting).
-
                  -------------------------------------------------------------------
-    ~ v1.0.9     [T] In release test.
-                 [R] Release based on v1.0.9-b3. Release-to-release changes:
+    - v1.0.9     [R] Release based on v1.0.9-b3. Release-to-release changes:
                      * Slabs for clinker, concrete, slag bricks.
                      * Slab slices for sheet metals, treated wood, and concretes.
                      * Language updates.

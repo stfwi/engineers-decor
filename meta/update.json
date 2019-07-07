@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.12.2": {
+    "1.0.9": "[R] Release based on v1.0.9-b3. Release-to-release changes: * Slabs for clinker, concrete, slag bricks. * Slab slices for sheet metals, treated wood, and concretes. * Language updates. * Block hardness adaptions. * 1st/3rd person item model fixes. * Furnace initialisation issue fixed.",
     "1.0.9-b3": "[A] Added missing recipes for slabs.\n[A] Added slab slices for IE sheet metals, treated wood, and concretes (stackable \"quater-slabs\").\n[M] Updated 1st/3rd person item model rotations/translations.\n[M] Hardness of valves and furni slightly increased.",
     "1.0.9-b2": "[A] Added slabs for Clinker Brick, Slag Brick, Rebar Concrete, and Stained Clinker. Texture variations like the base blocks. Allow fast pick-up (see tooltip help or config).\n[F] Fixed lab/electrical furnace initialisation issue (first item inserted was smelted directly).",
     "1.0.9-b1": "[U] Lang file ru_ru updated (PR#31, yaroslav4167).\n[M] Block hardness adaptions (issue #32).",
@@ -73,8 +74,8 @@
     "1.0.7-b3": "[A] Initial 1.14.2 port of decorative blocks."
   },
   "promos": {
-    "1.12.2-recommended": "1.0.8",
-    "1.12.2-latest": "1.0.9-b3",
+    "1.12.2-recommended": "1.0.9",
+    "1.12.2-latest": "1.0.9",
     "1.13.2-recommended": "",
     "1.13.2-latest": "1.0.7-b5",
     "1.14.3-recommended": "",
