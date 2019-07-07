@@ -61,6 +61,7 @@
     "1.0.0-a1": "[A] Initial port to 1.13.2 with Forge beta."
   },
   "1.14.3": {
+    "1.0.9-b4": "[E] Experimental: Config skel ported (!not all options have effect yet).\n[E] Experimental: JEI integration for opt-outs and crafting table ported (also addresses issue #38).",
     "1.0.9-b3": "[F] Additional item drop fixes when blocks are destroyed (issue #39).",
     "1.0.9-b2": "[U] Updated to Forge 1.14.3-27.0.25/20190621-1.14.2.\n[F] Fixed recipe collision of Metal Rung Ladder (issue #37, thx ProsperCraft for reporting).\n[F] Fixed opening crafting table, furni, dropper server crash issue #35 (thx ProsperCraft also here).\n[F] Fixed missing pole/support item drops (issue #36, ProsperCraft).",
     "1.0.9-b1": "[U] Updated to MC1.14.3, Forge 1.14.3-27.0.17/20190621-1.14.2.\n[A] Added Small Mineral Smelter.",
@@ -77,6 +78,6 @@
     "1.13.2-recommended": "",
     "1.13.2-latest": "1.0.7-b5",
     "1.14.3-recommended": "",
-    "1.14.3-latest": "1.0.9-b3"
+    "1.14.3-latest": "1.0.9-b4"
   }
 }

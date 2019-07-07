@@ -10,6 +10,10 @@ Mod sources for Minecraft version 1.14.3.
 ----
 ## Version history
 
+    - v1.0.9-b4 [E] Experimental: Config skel ported (!not all options have effect yet).
+                [E] Experimental: JEI integration for opt-outs and crafting table ported
+                    (also addresses issue #38).
+
     - v1.0.9-b3 [F] Additional item drop fixes when blocks are destroyed (issue #39).
 
     - v1.0.9-b2 [U] Updated to Forge 1.14.3-27.0.25/20190621-1.14.2.

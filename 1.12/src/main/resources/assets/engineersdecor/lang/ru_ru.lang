@@ -5,7 +5,6 @@
 #
 #-----------------------------------------------------------------------------------------------------------
 itemGroup.tabengineersdecor=Engineer's Decor
-engineersdecor.config.title=Engineer's Decor конфигурация
 engineersdecor.tooltip.hint.extended=§6[§9SHIFT§r Больше информации§6]§r
 engineersdecor.tooltip.hint.help=§6[§9CTRL-SHIFT§r Помощь§6]§r
 #engineersdecor.tooltip.slabpickup.help=§rFast pickup by left-clicking while looking up/down and holding this slab.
@@ -177,6 +176,52 @@ tile.engineersdecor.halfslab_sheetmetal_gold.name=Часть золотого л
 tile.engineersdecor.halfslab_sheetmetal_gold.help=§6Вертикально наращиваемая часть.§rПравый/левый щелчок со стеком частей на верхней или нижней поверхности для добавления/удаления частей.
 tile.engineersdecor.halfslab_sheetmetal_aluminum.name=Часть алюминиевого листового металла
 tile.engineersdecor.halfslab_sheetmetal_aluminum.help=§6Вертикально наращиваемая часть.§rПравый/левый щелчок со стеком частей на верхней или нижней поверхности для добавления/удаления частей.
+
+#-----------------------------------------------------------------------------------------------------------
+engineersdecor.config.title=Engineer's Decor конфигурация
+engineersdecor.config.pattern_excludes=Pattern excludes
+engineersdecor.config.pattern_includes=Pattern includes
+engineersdecor.config.without_clinker_bricks=Without clinker bricks
+engineersdecor.config.without_slag_bricks=Without slag bricks
+engineersdecor.config.without_rebar_concrete=Without rebar concrete
+engineersdecor.config.without_walls=Without walls
+engineersdecor.config.without_stairs=Without stairs
+engineersdecor.config.without_ie_concrete_wall=Without concrete wall
+engineersdecor.config.without_panzer_glass=Without panzer glass
+engineersdecor.config.without_crafting_table=Without crafting table
+engineersdecor.config.without_lab_furnace=Without lab furnace
+engineersdecor.config.without_electrical_furnace=Without electrical furnace
+engineersdecor.config.without_treated_wood_furniture=Without tr. wood furniture
+engineersdecor.config.without_windows=Without windows
+engineersdecor.config.without_light_sources=Without lights
+engineersdecor.config.without_ladders=Without ladders
+engineersdecor.config.without_chair_sitting=Without chair sitting
+engineersdecor.config.without_mob_chair_sitting=Without chair mob sitting
+engineersdecor.config.without_ladder_speed_boost=Without ladder speed boost
+engineersdecor.config.without_crafting_table_history=Without crafting table history
+engineersdecor.config.without_valves=Without valves
+engineersdecor.config.without_passive_fluid_accumulator=Without fluid accumulator
+engineersdecor.config.without_waste_incinerator=Without waste incinerator
+engineersdecor.config.without_sign_plates=Without signs
+engineersdecor.config.without_factory_dropper=Without factory dropper
+engineersdecor.config.without_slabs=Without slabs
+engineersdecor.config.without_halfslabs=Without slab slices
+engineersdecor.config.without_direct_slab_pickup=Without slab pickup
+engineersdecor.config.without_poles=Without poles
+engineersdecor.config.without_hsupports=Without h. supports
+engineersdecor.config.without_tooltips=Without tooltips
+engineersdecor.config.without_recipes=Without recipes
+engineersdecor.config.furnace_smelting_speed_percent=Furnace: Smelting speed %
+engineersdecor.config.furnace_fuel_efficiency_percent=Furnace: Fuel efficiency %
+engineersdecor.config.furnace_boost_energy_consumption=Furnace: Boost energy
+engineersdecor.config.chair_mob_sitting_probability_percent=Chairs: Sitting chance %
+engineersdecor.config.chair_mob_standup_probability_percent="Chairs: Stand up chance %"
+engineersdecor.config.with_crafting_quickmove_buttons=Crafting table: Move buttons
+engineersdecor.config.pipevalve_max_flowrate=Valves: Max flow rate
+engineersdecor.config.pipevalve_redstone_gain=Valves: Redstone slope
+engineersdecor.config.e_furnace_speed_percent=E-furnace: Smelting speed %
+engineersdecor.config.e_furnace_power_consumption=E-furnace: Power consumption
+
 #-----------------------------------------------------------------------------------------------------------
 # EOF
 #-----------------------------------------------------------------------------------------------------------

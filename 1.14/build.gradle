@@ -19,20 +19,25 @@ version = "${version_engineersdecor}"
 group = "wile.engineersdecor"
 archivesBaseName = "engineersdecor-${version_minecraft}"
 
-// def signing = { ->
-//   def sp = new Properties()
-//   if(file("signing.properties").exists()) file("signing.properties").withInputStream { sp.load(it) }
-//   return sp
-// }()
+def signing = { ->
+  def sp = new Properties()
+  if(file("signing.properties").exists()) file("signing.properties").withInputStream { sp.load(it) }
+  return sp
+}()
 
-// def git_version = { ->
-//   def stdout = new ByteArrayOutputStream()
-//   exec {
-//     commandLine 'git', 'log', '-1', '--format=%h'
-//     standardOutput = stdout
-//   }
-//   return stdout.toString().trim()
-// }()
+def git_version = { ->
+  def stdout = new ByteArrayOutputStream()
+  exec {
+    commandLine 'git', 'log', '-1', '--format=%h'
+    standardOutput = stdout
+  }
+  return stdout.toString().trim()
+}()
+
+repositories {
+  maven { name = "Progwml6 maven"; url = "https://dvs1.progwml6.com/files/maven/" } // JEI files
+  maven { name = "ModMaven"; url = "modmaven.k-4u.nl" } // JEI files, fallback
+}
 
 minecraft {
   mappings channel: 'snapshot', version: "${version_fml_mappings}"
@@ -63,6 +68,8 @@ minecraft {
 
 dependencies {
   minecraft "net.minecraftforge:forge:${version_forge_minecraft}"
+  compileOnly fg.deobf("mezz.jei:jei-${version_minecraft}:${version_jei}:api")
+  runtimeOnly fg.deobf("mezz.jei:jei-${version_minecraft}:${version_jei}")
 }
 
 jar {
@@ -80,19 +87,9 @@ jar {
 }
 
 def reobfFile = file("$buildDir/reobfJar/output.jar")
-def reobfArtifact = artifacts.add('default', reobfFile) {
-  type 'jar'
-  builtBy 'reobfJar'
-}
+def reobfArtifact = artifacts.add('default', reobfFile) { type 'jar'; builtBy 'reobfJar'; }
+
 publishing {
-  publications {
-    mavenJava(MavenPublication) {
-      artifact reobfArtifact
-    }
-  }
-  repositories {
-    maven {
-      url "file:///${project.projectDir}/mcmodsrepo"
-    }
-  }
+  publications { mavenJava(MavenPublication) { artifact reobfArtifact } }
+  repositories { maven { url "file:///${project.projectDir}/mcmodsrepo" } }
 }
