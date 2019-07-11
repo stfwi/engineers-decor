@@ -10,6 +10,12 @@ Mod sources for Minecraft version 1.14.3.
 ----
 ## Version history
 
+    - v1.0.9-b5 [A] Added missing recipes for slabs, stained clinker, half-slabs, valves.
+                [M] Standalone recipes adapted.
+                [F] Lang files: Fixed double newline escape.
+                [A] Implicit opt-out of hard IE dependent blocks ported (e.g. Concrete Wall).
+                [M] Basic mod config features, opt-outs and tweaks ported.
+
     - v1.0.9-b4 [E] Experimental: Config skel ported (!not all options have effect yet).
                 [E] Experimental: JEI integration for opt-outs and crafting table ported
                     (also addresses issue #38).

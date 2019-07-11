@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.14.3": {
+    "1.0.9-b5": "[A] Added missing recipes for slabs, stained clinker, half-slabs, valves.\n[M] Standalone recipes adapted.\n[F] Lang files: Fixed double newline escape.\n[A] Implicit opt-out of hard IE dependent blocks ported (e.g. Concrete Wall).\n[M] Basic mod config features, opt-outs and tweaks ported.",
     "1.0.9-b4": "[E] Experimental: Config skel ported (!not all options have effect yet).\n[E] Experimental: JEI integration for opt-outs and crafting table ported (also addresses issue #38).",
     "1.0.9-b3": "[F] Additional item drop fixes when blocks are destroyed (issue #39).",
     "1.0.9-b2": "[U] Updated to Forge 1.14.3-27.0.25/20190621-1.14.2.\n[F] Fixed recipe collision of Metal Rung Ladder (issue #37, thx ProsperCraft for reporting).\n[F] Fixed opening crafting table, furni, dropper server crash issue #35 (thx ProsperCraft also here).\n[F] Fixed missing pole/support item drops (issue #36, ProsperCraft).",
@@ -14,6 +15,6 @@
   },
   "promos": {
     "1.14.3-recommended": "",
-    "1.14.3-latest": "1.0.9-b4"
+    "1.14.3-latest": "1.0.9-b5"
   }
 }

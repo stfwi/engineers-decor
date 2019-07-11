@@ -81,7 +81,7 @@ tile.engineersdecor.thin_steel_pole_head.help=§6Steel part fitting as foot or h
 tile.engineersdecor.thick_steel_pole_head.name=Straight Thick Steel Pole Head/Foot
 tile.engineersdecor.thick_steel_pole_head.help=§6Steel part fitting as foot or head of the thick steel pole (6x6x16).
 tile.engineersdecor.steel_double_t_support.name=Steel Double T Support
-tile.engineersdecor.steel_double_t_support.help=§6Horizontal ceiling support bream fragment.
+tile.engineersdecor.steel_double_t_support.help=§6Horizontal ceiling support beam fragment.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.treated_wood_table.name=Treated Wood Table
 tile.engineersdecor.treated_wood_table.help=§6Robust four-legged wood table.§r Indoor and outdoor use.
@@ -155,7 +155,7 @@ tile.engineersdecor.small_mineral_smelter.help=§6High temperature, high insulat
 tile.engineersdecor.sign_decor.name=Sign Plate (Engineer's decor)
 tile.engineersdecor.sign_decor.help=§6This should not be craftable or visible in JEI. Used for creative tab and screenshots.
 tile.engineersdecor.sign_hotwire.name=Sign "Caution Hot Wire"
-tile.engineersdecor.sign_hotwire.help=§6Electrical hazard warning. Don't forget to place around HV, or you'll have a mark in the next audit.
+tile.engineersdecor.sign_hotwire.help=§6Electrical hazard warning. Don't forget to place around HV, or you will have a nonconformity in the next audit.
 tile.engineersdecor.sign_mindstep.name=Sign "Mind The Step"
 tile.engineersdecor.sign_mindstep.help=§6Placable on walls (horizontally).
 tile.engineersdecor.sign_danger.name=Sign "Caution Really Dangerous There"
@@ -163,7 +163,7 @@ tile.engineersdecor.sign_danger.help=§6General danger warning.
 tile.engineersdecor.sign_defense.name=Sign "Caution Defense System Ahead"
 tile.engineersdecor.sign_defense.help=§6Warning sign for turrets, Tesla Coils, and traps.
 tile.engineersdecor.sign_factoryarea.name=Sign "Factory Area"
-tile.engineersdecor.sign_factoryarea.help=§6Marker sign for buildings or areas where the really big machines are.
+tile.engineersdecor.sign_factoryarea.help=§6Marker sign for buildings or areas where the really big machines are located.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.halfslab_rebar_concrete.name=Rebar Concrete Slice
 tile.engineersdecor.halfslab_rebar_concrete.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
