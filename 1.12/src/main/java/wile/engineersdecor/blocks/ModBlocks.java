@@ -73,6 +73,86 @@ public class ModBlocks
   public static final BlockDecorGlassBlock PANZERGLASS_BLOCK = new BlockDecorGlassBlock("panzerglass_block", 0, Material.GLASS, 1f, 2000f, SoundType.GLASS);
   public static final BlockDecorSlab PANZERGLASS_SLAB = new BlockDecorSlab("panzerglass_slab", BlockDecor.CFG_TRANSLUCENT, Material.GLASS, 1f, 2000f, SoundType.GLASS);
 
+  //--------------------------------------------------------------------------------------------------------------------
+
+  public static final BlockDecorCraftingTable TREATED_WOOD_CRAFTING_TABLE = new BlockDecorCraftingTable(
+    "treated_wood_crafting_table",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+    Material.WOOD, 1.0f, 15f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(1,0,1, 15,15.9,15)
+  );
+
+  public static final BlockDecorFurnace SMALL_LAB_FURNACE = new BlockDecorFurnace(
+    "small_lab_furnace",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|
+      BlockDecor.CFG_ELECTRICAL,
+    Material.IRON, 0.5f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(1,0,1, 15,15,16)
+  );
+
+  public static final BlockDecorFurnaceElectrical SMALL_ELECTRICAL_FURNACE = new BlockDecorFurnaceElectrical(
+    "small_electrical_furnace",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_ELECTRICAL,
+    Material.IRON, 0.5f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+  );
+
+  public static final BlockDecorDropper FACTORY_DROPPER = new BlockDecorDropper(
+    "factory_dropper",
+    BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_REDSTONE_CONTROLLED,
+    Material.IRON, 1f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,15)
+  );
+
+  public static final BlockDecorWasteIncinerator SMALL_WASTE_INCINERATOR = new BlockDecorWasteIncinerator(
+    "small_waste_incinerator",
+    BlockDecor.CFG_DEFAULT|BlockDecor.CFG_ELECTRICAL,
+    Material.IRON, 1f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+  );
+
+  public static final BlockDecorMineralSmelter SMALL_MINERAL_SMELTER = new BlockDecorMineralSmelter(
+    "small_mineral_smelter",
+    BlockDecor.CFG_LOOK_PLACEMENT,
+    Material.IRON, 1f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(1.1,0,1.1, 14.9,16,14.9)
+  );
+
+  //--------------------------------------------------------------------------------------------------------------------
+
+  public static final BlockDecorPipeValve STRAIGHT_CHECK_VALVE = new BlockDecorPipeValve(
+    "straight_pipe_valve",
+    BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
+      BlockDecor.CFG_CUTOUT,
+    Material.IRON, 0.7f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
+  );
+
+  public static final BlockDecorPipeValve STRAIGHT_REDSTONE_VALVE = new BlockDecorPipeValve(
+    "straight_pipe_valve_redstone",
+    BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
+      BlockDecor.CFG_CUTOUT|BlockDecor.CFG_REDSTONE_CONTROLLED,
+    Material.IRON, 0.7f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
+  );
+
+  public static final BlockDecorPipeValve STRAIGHT_REDSTONE_ANALOG_VALVE = new BlockDecorPipeValve(
+    "straight_pipe_valve_redstone_analog",
+    BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
+      BlockDecor.CFG_CUTOUT|BlockDecor.CFG_REDSTONE_CONTROLLED|BlockDecor.CFG_ANALOG,
+    Material.IRON, 0.7f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
+  );
+
+  public static final BlockDecorPassiveFluidAccumulator PASSIVE_FLUID_ACCUMULATOR = new BlockDecorPassiveFluidAccumulator(
+    "passive_fluid_accumulator",
+    BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
+      BlockDecor.CFG_CUTOUT,
+    Material.IRON, 0.7f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+  );
+
+  //--------------------------------------------------------------------------------------------------------------------
 
   public static final BlockDecorStraightPole TREATED_WOOD_POLE = new BlockDecorStraightPole(
     "treated_wood_pole",
@@ -123,6 +203,15 @@ public class ModBlocks
     ModAuxiliaries.getPixeledAABB(5,5,0, 11,11,16)
   );
 
+  public static final BlockDecorHorizontalSupport STEEL_DOUBLE_T_SUPPORT = new BlockDecorHorizontalSupport(
+    "steel_double_t_support",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
+    Material.IRON, 2.0f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(5,11,0, 11,16,16)
+  );
+
+  //--------------------------------------------------------------------------------------------------------------------
+
   public static final BlockDecor TREATED_WOOD_TABLE = new BlockDecor(
     "treated_wood_table",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
@@ -144,11 +233,11 @@ public class ModBlocks
     ModAuxiliaries.getPixeledAABB(2,0,2, 14,15.9,14)
   );
 
-  public static final BlockDecorCraftingTable TREATED_WOOD_CRAFTING_TABLE = new BlockDecorCraftingTable(
-    "treated_wood_crafting_table",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
-    Material.WOOD, 1.0f, 15f, SoundType.WOOD,
-    ModAuxiliaries.getPixeledAABB(1,0,1, 15,15.9,15)
+  public static final BlockDecorDirected TREATED_WOOD_WINDOWSILL = new BlockDecorDirected(
+    "treated_wood_windowsill",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_FACING_PLACEMENT,
+    Material.WOOD, 1.0f, 10f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(0.5,15,10.5, 15.5,16,16)
   );
 
   public static final BlockDecorDirected INSET_LIGHT_IRON = new BlockDecorDirected(
@@ -158,12 +247,7 @@ public class ModBlocks
     ModAuxiliaries.getPixeledAABB(5.2,5.2,15.7, 10.8,10.8,16.0)
   );
 
-  public static final BlockDecorDirected TREATED_WOOD_WINDOWSILL = new BlockDecorDirected(
-    "treated_wood_windowsill",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_FACING_PLACEMENT,
-    Material.WOOD, 1.0f, 10f, SoundType.WOOD,
-    ModAuxiliaries.getPixeledAABB(0.5,15,10.5, 15.5,16,16)
-  );
+  //--------------------------------------------------------------------------------------------------------------------
 
   public static final BlockDecorWindow TREATED_WOOD_WINDOW = new BlockDecorWindow(
     "treated_wood_window",
@@ -179,86 +263,13 @@ public class ModBlocks
     ModAuxiliaries.getPixeledAABB(0,0,7.5, 16,16,8.5)
   );
 
-  public static final BlockDecorFurnace SMALL_LAB_FURNACE = new BlockDecorFurnace(
-    "small_lab_furnace",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|
-    BlockDecor.CFG_ELECTRICAL,
-    Material.IRON, 0.5f, 15f, SoundType.METAL,
-    ModAuxiliaries.getPixeledAABB(1,0,1, 15,15,16)
-  );
-
-  public static final BlockDecorFurnaceElectrical SMALL_ELECTRICAL_FURNACE = new BlockDecorFurnaceElectrical(
-    "small_electrical_furnace",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_ELECTRICAL,
-    Material.IRON, 0.5f, 15f, SoundType.METAL,
-    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
-  );
+  //--------------------------------------------------------------------------------------------------------------------
 
   public static final BlockDecorDirected SIGN_MODLOGO = new BlockDecorDirected(
     "sign_decor",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
     Material.WOOD, 0.1f, 1000f, SoundType.WOOD,
     ModAuxiliaries.getPixeledAABB(0,0,15.6, 16,16,16)
-  );
-
-  public static final BlockDecorHorizontalSupport STEEL_DOUBLE_T_SUPPORT = new BlockDecorHorizontalSupport(
-    "steel_double_t_support",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
-    Material.IRON, 2.0f, 15f, SoundType.METAL,
-    ModAuxiliaries.getPixeledAABB(5,11,0, 11,16,16)
-  );
-
-  public static final BlockDecorPipeValve STRAIGHT_CHECK_VALVE = new BlockDecorPipeValve(
-    "straight_pipe_valve",
-    BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
-    BlockDecor.CFG_CUTOUT,
-    Material.IRON, 0.7f, 15f, SoundType.METAL,
-    ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
-  );
-
-  public static final BlockDecorPipeValve STRAIGHT_REDSTONE_VALVE = new BlockDecorPipeValve(
-    "straight_pipe_valve_redstone",
-    BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_REDSTONE_CONTROLLED,
-    Material.IRON, 0.7f, 15f, SoundType.METAL,
-    ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
-  );
-
-  public static final BlockDecorPipeValve STRAIGHT_REDSTONE_ANALOG_VALVE = new BlockDecorPipeValve(
-    "straight_pipe_valve_redstone_analog",
-    BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_REDSTONE_CONTROLLED|BlockDecor.CFG_ANALOG,
-    Material.IRON, 0.7f, 15f, SoundType.METAL,
-    ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
-  );
-
-  public static final BlockDecorPassiveFluidAccumulator PASSIVE_FLUID_ACCUMULATOR = new BlockDecorPassiveFluidAccumulator(
-    "passive_fluid_accumulator",
-    BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
-    BlockDecor.CFG_CUTOUT,
-    Material.IRON, 0.7f, 15f, SoundType.METAL,
-    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
-  );
-
-  public static final BlockDecorWasteIncinerator SMALL_WASTE_INCINERATOR = new BlockDecorWasteIncinerator(
-    "small_waste_incinerator",
-    BlockDecor.CFG_DEFAULT|BlockDecor.CFG_ELECTRICAL,
-    Material.IRON, 1f, 15f, SoundType.METAL,
-    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
-  );
-
-  public static final BlockDecorDropper FACTORY_DROPPER = new BlockDecorDropper(
-    "factory_dropper",
-    BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_REDSTONE_CONTROLLED,
-    Material.IRON, 1f, 15f, SoundType.METAL,
-    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,15)
-  );
-
-  public static final BlockDecorMineralSmelter SMALL_MINERAL_SMELTER = new BlockDecorMineralSmelter(
-    "small_mineral_smelter",
-    BlockDecor.CFG_LOOK_PLACEMENT,
-    Material.IRON, 1f, 15f, SoundType.METAL,
-    ModAuxiliaries.getPixeledAABB(1.1,0,1.1, 14.9,16,14.9)
   );
 
   public static final BlockDecorDirected SIGN_HOTWIRE = new BlockDecorDirected(
@@ -295,6 +306,15 @@ public class ModBlocks
     Material.WOOD, 0.1f, 1f, SoundType.WOOD,
     ModAuxiliaries.getPixeledAABB(2,2,15.6, 15,15,16)
   );
+
+  public static final BlockDecorDirected SIGN_EXIT = new BlockDecorDirected(
+    "sign_exit",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+    Material.WOOD, 0.1f, 1f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(3,7,15.6, 13,13,16)
+  );
+
+  //--------------------------------------------------------------------------------------------------------------------
 
   public static final BlockDecorHalfSlab HALFSLAB_REBARCONCRETE = new BlockDecorHalfSlab(
     "halfslab_rebar_concrete",
@@ -423,7 +443,7 @@ public class ModBlocks
     THIN_STEEL_POLE_HEAD,
     THICK_STEEL_POLE_HEAD,
     STEEL_DOUBLE_T_SUPPORT,
-    SIGN_HOTWIRE, SIGN_DANGER, SIGN_DEFENSE, SIGN_FACTORY_AREA, SIGN_MODLOGO,
+    SIGN_HOTWIRE, SIGN_DANGER, SIGN_DEFENSE, SIGN_FACTORY_AREA, SIGN_EXIT, SIGN_MODLOGO,
     TREATED_WOOD_SIDE_TABLE,
     HALFSLAB_REBARCONCRETE, HALFSLAB_CONCRETE, HALFSLAB_TREATEDWOOD,
     HALFSLAB_SHEETMETALIRON, HALFSLAB_SHEETMETALSTEEL, HALFSLAB_SHEETMETALCOPPER,
