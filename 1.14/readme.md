@@ -10,6 +10,8 @@ Mod sources for Minecraft version 1.14.3.
 ----
 ## Version history
 
+    ~ v1.0.9-b8 [U] UPDATE TO 1.14.4. Forge 1.14.4-28.0.2/20190719-1.14.3.
+
     - v1.0.9-b7 [U] Updated to Forge 1.14.3-27.0.60/20190719-1.14.3.
                 [F] Disabled all early implemented fuild handling of valves
                     and the Fluid Accumulator to prevent world loading

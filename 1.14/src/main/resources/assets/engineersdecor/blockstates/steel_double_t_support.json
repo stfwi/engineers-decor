@@ -1,0 +1,19 @@
+{ "multipart": [
+    { "when": { "eastwest":"false" },
+              "apply": { "model": "engineersdecor:block/hsupport/steel_double_t_support_model", "y":  0 }
+  },{ "when": { "eastwest":"true" },
+              "apply": { "model": "engineersdecor:block/hsupport/steel_double_t_support_model", "y": 90 }
+  },{ "when": { "eastwest":"true", "rightbeam": "true" },
+              "apply": { "model": "engineersdecor:block/hsupport/steel_double_t_support_xconnect_model", "y": 90 }
+  },{ "when": { "eastwest":"true", "leftbeam": "true" },
+              "apply": { "model": "engineersdecor:block/hsupport/steel_double_t_support_xconnect_model", "y": -90 }
+  },{ "when": { "eastwest":"false", "rightbeam": "true" },
+              "apply": { "model": "engineersdecor:block/hsupport/steel_double_t_support_xconnect_model", "y": 0 }
+  },{ "when": { "eastwest":"false", "leftbeam": "true" },
+              "apply": { "model": "engineersdecor:block/hsupport/steel_double_t_support_xconnect_model", "y": 180 }
+  },{ "when": { "downconnect" : "1"  },
+              "apply": { "model": "engineersdecor:block/hsupport/steel_double_t_support_xconnect_thin_pole_model" }
+  },{ "when": { "downconnect" : "2"  },
+              "apply": { "model": "engineersdecor:block/hsupport/steel_double_t_support_xconnect_thin_pole_model" }
+  }
+]}

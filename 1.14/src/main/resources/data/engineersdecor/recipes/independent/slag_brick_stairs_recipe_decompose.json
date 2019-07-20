@@ -1,0 +1,23 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:slag_brick_block",
+      "required": ["engineersdecor:slag_brick_stairs"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SS",
+    "SS"
+  ],
+  "key": {
+    "S": {
+      "item": "engineersdecor:slag_brick_stairs"
+    }
+  },
+  "result": {
+    "item": "engineersdecor:slag_brick_block",
+    "count": 4
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "parent": "engineersdecor:block/sign/sign_triangular_model",
+  "textures": { "f": "engineersdecor:block/sign/sign_danger_texture" }
+}

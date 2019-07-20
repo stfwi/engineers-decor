@@ -1,0 +1,24 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:slag_brick_block",
+      "missing": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BAB",
+    "ASA",
+    "BAB"
+  ],
+  "key": {
+    "B": { "item": "minecraft:brick" },
+    "A": { "tag": "engineersdecor:brick_ingots" },
+    "S": { "item": "minecraft:nether_bricks" }
+  },
+  "result": {
+    "item": "engineersdecor:slag_brick_block",
+    "count": 4
+  }
+}

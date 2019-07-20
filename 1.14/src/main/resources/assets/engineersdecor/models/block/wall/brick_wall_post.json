@@ -1,0 +1,22 @@
+{
+	"textures": {
+		"postside": "engineersdecor:block/clinker_brick/clinker_brick_pole_side",
+		"top": "engineersdecor:block/clinker_brick/clinker_brick_top",
+		"particle": "engineersdecor:block/clinker_brick/clinker_brick_top"
+	},
+	"elements": [
+		{
+			"name": "Center post",
+			"from": [4, 0, 4],
+			"to": [12, 16, 12],
+			"faces": {
+				"north": {"texture": "#postside"},
+				"east": {"texture": "#postside"},
+				"south": {"texture": "#postside"},
+				"west": {"texture": "#postside"},
+				"up": {"texture": "#top", "cullface": "up"},
+				"down": {"texture": "#top"}
+			}
+		}
+	]
+}

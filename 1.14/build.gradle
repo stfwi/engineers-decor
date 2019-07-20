@@ -63,6 +63,17 @@ minecraft {
         }
       }
     }
+    data {
+      workingDirectory project.file('run')
+      property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+      property 'forge.logging.console.level', 'debug'
+      args '--mod', 'engineersdecor', '--all', '--output', file('src/generated/resources/')
+      mods {
+        engineersdecor {
+          source sourceSets.main
+        }
+      }
+    }
   }
 }
 
