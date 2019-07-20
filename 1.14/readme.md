@@ -10,6 +10,16 @@ Mod sources for Minecraft version 1.14.3.
 ----
 ## Version history
 
+    - v1.0.9-b7 [U] Updated to Forge 1.14.3-27.0.60/20190719-1.14.3.
+                [F] Disabled all early implemented fuild handling of valves
+                    and the Fluid Accumulator to prevent world loading
+                    hang-ups (issue #42, thx TheOhmegha for reporting).
+                    Will be re-enabled after fluid handling released in Forge.
+                [F] Fixed blockstate model locations for signs and crafting
+                    table (issue #43, thx ProsperCraft for the beta test).
+
+    - v1.0.9-b6 [U] Updated to Forge 1.14.3-27.0.50/20190621-1.14.2.
+
     - v1.0.9-b5 [A] Added missing recipes for slabs, stained clinker, half-slabs, valves.
                 [M] Standalone recipes adapted.
                 [F] Lang files: Fixed double newline escape.
