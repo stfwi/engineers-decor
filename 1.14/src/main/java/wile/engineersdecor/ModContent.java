@@ -539,7 +539,7 @@ public class ModContent
 
   public static final EntityType<? extends Entity> ET_CHAIR = EntityType.Builder
       .create(BlockDecorChair.EntityChair::new, EntityClassification.MISC)
-      .immuneToFire().size(1e-3f, 1e-3f)
+      .immuneToFire().size(1e-3f, 1e-3f).disableSerialization()
       .setShouldReceiveVelocityUpdates(false).setUpdateInterval(4)
       .setCustomClientFactory(BlockDecorChair.EntityChair::customClientFactory)
       .build(new ResourceLocation(ModEngineersDecor.MODID, "et_chair").toString())
