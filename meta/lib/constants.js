@@ -1,13 +1,15 @@
 "use strict";
 (function(){
   var c = {};
-  c.mod_registry_name = function() { return "engineersdecor" }
+  c.modid = "engineersdecor";
+  c.mod_registry_name = function() { return c.modid; }
   c.local_assets_root = function() { return "src/main/resources/assets/" + c.mod_registry_name(); }
   c.reference_repository = function() { return "git@github.com:stfwi/engineers-decor.git"; }
   c.gradle_property_modversion = function() { return "version_engineersdecor"; }
   c.gradle_property_version_minecraft = function() { return "version_minecraft"; }
   c.gradle_property_version_forge = function() { return "version_forge"; }
   c.project_download_inet_page = function() { return "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/"; }
+  c.options = {}; // don't freeze that
   c.languages = {
     "en_us": { code:"en_us", name:"English", region:"United States" },
     "de_de": { code:"de_de", name:"German", region:"Germany" },

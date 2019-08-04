@@ -10,25 +10,29 @@ var tasks = {};
 
 tasks["update-json"] = function() {
   const root_dir = fs.realpath(fs.dirname(sys.script));
-  var update_jsons = {
-    "1.12.2": JSON.parse(fs.readfile(root_dir + "/1.12/meta/update.json")),
-    "1.13.2": JSON.parse(fs.readfile(root_dir + "/1.13/meta/update.json")),
-    "1.14.4": JSON.parse(fs.readfile(root_dir + "/1.14/meta/update.json"))
-  };
-  var update_json = {
+  const update_json = {
     homepage: "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
-    "1.12.2": update_jsons["1.12.2"]["1.12.2"],
-    "1.13.2": update_jsons["1.13.2"]["1.13.2"],
-    "1.14.4": update_jsons["1.14.4"]["1.14.4"],
-    promos: {
-      "1.12.2-recommended": update_jsons["1.12.2"]["promos"]["1.12.2-recommended"],
-      "1.12.2-latest": update_jsons["1.12.2"]["promos"]["1.12.2-latest"],
-      "1.13.2-recommended": update_jsons["1.13.2"]["promos"]["1.13.2-recommended"],
-      "1.13.2-latest": update_jsons["1.13.2"]["promos"]["1.13.2-latest"],
-      "1.14.4-recommended": update_jsons["1.14.4"]["promos"]["1.14.4-recommended"],
-      "1.14.4-latest": update_jsons["1.14.4"]["promos"]["1.14.4-latest"]
+    promos: {}
+  };
+  var update_json_src = [];
+  fs.find(root_dir + "/1.12/meta/", "update*.json", function(path){ update_json_src.push(JSON.parse(fs.readfile(path))); });
+  fs.find(root_dir + "/1.13/meta/", "update*.json", function(path){ update_json_src.push(JSON.parse(fs.readfile(path))); });
+  fs.find(root_dir + "/1.14/meta/", "update*.json", function(path){ update_json_src.push(JSON.parse(fs.readfile(path))); });
+  for(var i in update_json_src) {
+    const version_update_json = update_json_src[i];
+    for(var key in version_update_json) {
+      if(key=="homepage") {
+        continue;
+      } else if(key=="promos") {
+        for(var prkey in version_update_json.promos) {
+          update_json.promos[prkey] = version_update_json.promos[prkey];
+        }
+      } else {
+        update_json[key] = version_update_json[key];
+      }
     }
   }
+  update_json_src = undefined;
   fs.mkdir(root_dir + "/meta");
   fs.writefile(root_dir + "/meta/update.json", JSON.stringify(update_json, null, 2));
 };

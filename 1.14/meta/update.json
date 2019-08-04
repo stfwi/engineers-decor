@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.14.4": {
+    "1.0.9-b9": "[U] Update to Forge 1.14.4-28.0.40/20190719-1.14.3 for Forge testing.",
     "1.0.9-b8": "[U] UPDATE TO 1.14.4. Forge 1.14.4-28.0.11/20190719-1.14.3.",
     "1.0.9-b7": "[U] Updated to Forge 1.14.3-27.0.60/20190719-1.14.3.\n[F] Disabled all early implemented fuild handling of valves and the Fluid Accumulator to prevent world loading hang-ups (issue #42, thx TheOhmegha for reporting). Will be re-enabled after fluid handling released in Forge.\n[F] Fixed blockstate model locations for signs and crafting table (issue #43, thx ProsperCraft for the beta test).",
     "1.0.9-b6": "[U] Updated to Forge 1.14.3-27.0.50/20190621-1.14.2.",
@@ -18,6 +19,6 @@
   },
   "promos": {
     "1.14.4-recommended": "",
-    "1.14.4-latest": "1.0.9-b8"
+    "1.14.4-latest": "1.0.9-b9"
   }
 }
