@@ -10,6 +10,9 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    - v1.0.10-b2 [A] Steel table added.
+                 [A] Steel floor grating added.
+
     - v1.0.10-b1 [A] Treated wood side table added.
                  [F] Fixed recipe collision of Metal Rung Ladder (issue #37,
                      thx ProsperCraft for reporting).

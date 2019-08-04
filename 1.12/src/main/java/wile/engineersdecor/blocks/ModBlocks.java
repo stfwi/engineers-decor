@@ -247,6 +247,20 @@ public class ModBlocks
     ModAuxiliaries.getPixeledAABB(5.2,5.2,15.7, 10.8,10.8,16.0)
   );
 
+  public static final BlockDecor STEEL_TABLE = new BlockDecor(
+    "steel_table",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
+    Material.IRON, 1.0f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,15.9,16)
+  );
+
+  public static final BlockDecorFloorGrating STEEL_FLOOR_GRATING = new BlockDecorFloorGrating(
+    "steel_floor_grating",
+    BlockDecor.CFG_CUTOUT,
+    Material.IRON, 1.0f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,14,0, 16,16,16)
+  );
+
   //--------------------------------------------------------------------------------------------------------------------
 
   public static final BlockDecorWindow TREATED_WOOD_WINDOW = new BlockDecorWindow(
@@ -431,6 +445,7 @@ public class ModBlocks
     TREATED_WOOD_LADDER,
     TREATED_WOOD_POLE,
     TREATED_WOOD_TABLE,
+    STEEL_TABLE,
     TREATED_WOOD_STOOL,
     TREATED_WOOD_WINDOW,
     STEEL_FRAMED_WINDOW,
@@ -443,6 +458,7 @@ public class ModBlocks
     THIN_STEEL_POLE_HEAD,
     THICK_STEEL_POLE_HEAD,
     STEEL_DOUBLE_T_SUPPORT,
+    STEEL_FLOOR_GRATING,
     SIGN_HOTWIRE, SIGN_DANGER, SIGN_DEFENSE, SIGN_FACTORY_AREA, SIGN_EXIT, SIGN_MODLOGO,
     TREATED_WOOD_SIDE_TABLE,
     HALFSLAB_REBARCONCRETE, HALFSLAB_CONCRETE, HALFSLAB_TREATEDWOOD,

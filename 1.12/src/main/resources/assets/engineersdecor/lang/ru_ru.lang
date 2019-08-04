@@ -85,6 +85,10 @@ tile.engineersdecor.steel_double_t_support.help=§6Фрагмент горизо
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.treated_wood_table.name=Стол из обработанного дерева
 tile.engineersdecor.treated_wood_table.help=§6Прочный деревянный стол с четырьмя ножками .§r Для использования в помещении и на улице.
+tile.engineersdecor.steel_table.name=Steel Table
+#tile.engineersdecor.steel_table.help=§6Robust four-legged steel table.
+tile.engineersdecor.steel_floor_grating.name=Steel Floor Grating
+#tile.engineersdecor.steel_floor_grating.help=§6Decorative steel floor covering.§r Top aligned.
 tile.engineersdecor.treated_wood_stool.name=Табурет из обработанного дерева
 tile.engineersdecor.treated_wood_stool.help=§6Крепкий деревянный табурет.§r Для использования в помещении и на улице.
 tile.engineersdecor.treated_wood_crafting_table.name=Верстак из обработанного дерева

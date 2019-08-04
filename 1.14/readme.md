@@ -10,6 +10,8 @@ Mod sources for Minecraft version 1.14.3.
 ----
 ## Version history
 
+    ~ v1.0.9-b10 [U]
+
     - v1.0.9-b9  [U] Update to Forge 1.14.4-28.0.40/20190719-1.14.3 for Forge
                      testing.
 

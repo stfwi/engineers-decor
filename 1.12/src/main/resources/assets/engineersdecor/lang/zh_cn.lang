@@ -83,6 +83,10 @@ tile.engineersdecor.steel_double_t_support.name=Steel Double T Support
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.treated_wood_table.name=经过处理的木桌
 tile.engineersdecor.treated_wood_table.help=§6坚固的四足木桌.
+tile.engineersdecor.steel_table.name=Steel Table
+#tile.engineersdecor.steel_table.help=§6Robust four-legged steel table.
+tile.engineersdecor.steel_floor_grating.name=Steel Floor Grating
+#tile.engineersdecor.steel_floor_grating.help=§6Decorative steel floor covering.§r Top aligned.
 tile.engineersdecor.treated_wood_stool.name=Treated Wood Stool
 #tile.engineersdecor.treated_wood_stool.help=§6Robust Wood Stool.§r Indoor and outdoor use.
 tile.engineersdecor.treated_wood_crafting_table.name=Treated Wood Crafting Table
