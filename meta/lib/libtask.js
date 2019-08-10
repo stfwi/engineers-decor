@@ -105,6 +105,24 @@
   }
 
   /**
+   * Returns an object containing the version data for MC, forge, the
+   * mod, and the combined mod version.
+   */
+  me.parsing.version_data = function() {
+    const properties = me.parsing.gradle_properties("gradle.properties");
+    const version_minecraft = properties[constants.gradle_property_version_minecraft()];
+    const version_forge = properties[constants.gradle_property_version_forge()];
+    const version_mod = properties[constants.gradle_property_modversion()];
+    const combined_version = version_minecraft + "-" + version_mod;
+    return {
+      minecraft: version_minecraft,
+      forge: version_forge,
+      mod: version_mod,
+      combined: combined_version
+    }
+  };
+
+  /**
    * Changes one tab to two spaces in files with the given extension
    * recursively found in the current working directory.
    * @returns {void}
@@ -202,14 +220,19 @@
       if(line.trim().indexOf(constants.gradle_property_modversion())!=0) return false;
       return line.replace(/^.*?=/,"").trim()
     }).trim();
+    const mcversion = fs.readfile("gradle.properties", function(line){
+      if(line.trim().indexOf("version_minecraft")!=0) return false;
+      return line.replace(/^.*?=/,"").trim()
+    }).trim();
     const git_remote = sys.shell("git remote -v").trim();
     const git_branch = sys.shell("git rev-parse --abbrev-ref HEAD").trim();
     const git_diff = sys.shell("git diff .").trim();
     var fails = [];
     if(modversion=="") fails.push("Could not determine '"+ constants.gradle_property_modversion() +"' from gradle properties.");
     if(!gittags.length) fails.push("Version not tagged.");
-    if(!gittags.filter(function(s){return s.indexOf(modversion.replace(/[-]/g,""))>=0}).length) fails.push("No tag version not found matching the gradle properties version.");
-    if(git_remote.replace(/[\s]/g,"").indexOf(constants.reference_repository() + "(push)") < 0) fails.push("Not the reference repository.");
+    const expected_commit_version = modversion.replace(/[-]/g,"") + "-mc" + mcversion;
+    if(!gittags.filter(function(s){return s.indexOf(expected_commit_version)>=0}).length) fails.push("No tag version on this commit matching the gradle properties version (should be v" + expected_commit_version + ").");
+    if(((!constants.options.without_ref_repository_check)) && (git_remote.replace(/[\s]/g,"").indexOf(constants.reference_repository() + "(push)") < 0)) fails.push("Not the reference repository.");
     if((git_branch != "develop") && (git_branch != "master")) {
       fails.push("No valid branch for dist. (branch:'"+git_branch+"')");
     } else if((git_branch == "develop") && (modversion.replace(/[^ab]/g,"")=="")) {
@@ -312,8 +335,10 @@
   stdtasks["version-html"] = function() {
     if(!fs.isdir("dist")) throw new Error("'dist' directory does not exist.");
     const hist = me.parsing.readme_history_section("readme.md");
+    const version = me.parsing.version_data().combined;
+    const modid = constants.modid;
     const html = "<pre>\n" + (hist.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;")) + "\n</pre>";
-    fs.writefile("dist/revision-history.html", html);
+    fs.writefile("dist/" + modid + "-" + version + ".html", html);
   };
   stdtasks["tabs-to-spaces"] = function() {
     me.sanatizing.tabs_to_spaces(['java','lang']);

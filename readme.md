@@ -144,7 +144,10 @@ More to come slowly but steadily.
 ### Mod pack integration, forking, back ports, bug reports, testing
 
   - Packs: If your mod pack ***is open source as well and has no installer***,
-    you don't need to ask and simply integrate this mod.
+    you don't need to ask and simply integrate this mod. The mod has an extensive
+    configuration allowing you to choose exactly which features you want, and
+    additional tweaks like furni power consumption, smelting speed etc, allow
+    to adapt the mod to the context it is used in.
 
   - Bug reports: Yes, please let me know. Drop a mail or better open an issue
     for the repository.

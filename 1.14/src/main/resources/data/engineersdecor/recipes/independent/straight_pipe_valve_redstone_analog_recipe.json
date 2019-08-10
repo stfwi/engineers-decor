@@ -1,0 +1,17 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:straight_pipe_valve_redstone_analog",
+      "required": ["engineersdecor:straight_pipe_valve_redstone"]
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    { "item": "engineersdecor:straight_pipe_valve_redstone" }
+  ],
+  "result": {
+    "item": "engineersdecor:straight_pipe_valve_redstone_analog",
+    "count": 1
+  }
+}

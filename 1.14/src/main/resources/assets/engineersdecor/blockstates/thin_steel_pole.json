@@ -1,0 +1,14 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "engineersdecor:block/pole/straight_thin_metal_pole_model",
+    "textures": {
+      "particle": "engineersdecor:block/pole/thin_steel_pole_side_texture",
+      "side": "engineersdecor:block/pole/thin_steel_pole_side_texture",
+      "top": "engineersdecor:block/pole/thin_steel_pole_top_texture"
+    }
+  },
+  "variants": {
+    "facing": { "north": {"y":180}, "south": {"y":0}, "west": {"y":90}, "east": {"y":270}, "up": {"x":90}, "down": {"x":270}}
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:clinker_brick_wall",
+      "required": ["engineersdecor:clinker_brick_block"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "CCC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "engineersdecor:clinker_brick_block"
+    }
+  },
+  "result": {
+    "item": "engineersdecor:clinker_brick_wall",
+    "count": 6
+  }
+}

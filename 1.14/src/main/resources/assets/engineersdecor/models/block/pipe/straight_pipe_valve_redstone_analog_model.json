@@ -1,0 +1,6 @@
+{
+	"parent": "engineersdecor:block/pipe/straight_pipe_valve_model",
+	"textures": {
+    "side" : "engineersdecor:block/pipe/straight_pipe_valve_side_redstone_analog_texture"
+	}
+}

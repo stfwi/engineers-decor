@@ -1,0 +1,23 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:clinker_brick_block"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BAB",
+    "ANA",
+    "BAB"
+  ],
+  "key": {
+    "B": { "item": "minecraft:brick" },
+    "A": { "tag" : "engineersdecor:brick_ingots" },
+    "N": { "item": "minecraft:bricks" }
+  },
+  "result": {
+    "item": "engineersdecor:clinker_brick_block",
+    "count": 4
+  }
+}

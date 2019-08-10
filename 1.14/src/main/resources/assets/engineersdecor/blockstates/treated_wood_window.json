@@ -1,0 +1,9 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "engineersdecor:block/furniture/treated_wood_window_model"
+  },
+  "variants": {
+    "facing": { "north": {"y":0}, "south": {"y":0}, "west": {"y":90}, "east": {"y":90}, "up": {"x":90}, "down": {"x":90} }
+  }
+}

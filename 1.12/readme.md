@@ -11,6 +11,23 @@ Mod sources for Minecraft version 1.12.2.
 ## Version history
 
                  -------------------------------------------------------------------
+    - v1.0.10    [R] Release based on v1.0.10-b2. Release-to-release changes:
+                     * Steel table added.
+                     * Steel floor grating added.
+                     * Treated wood side table added.
+                     * Exit Sign added.
+                     * Recipe fixes.
+                 -------------------------------------------------------------------
+
+    - v1.0.10-b2 [A] Steel table added.
+                 [A] Steel floor grating added.
+
+    - v1.0.10-b1 [A] Treated wood side table added.
+                 [F] Fixed recipe collision of Metal Rung Ladder (issue #37,
+                     thx ProsperCraft for reporting).
+                 [A] Added Exit Sign (texture design by J. Carver).
+
+                 -------------------------------------------------------------------
     - v1.0.9     [R] Release based on v1.0.9-b3. Release-to-release changes:
                      * Slabs for clinker, concrete, slag bricks.
                      * Slab slices for sheet metals, treated wood, and concretes.

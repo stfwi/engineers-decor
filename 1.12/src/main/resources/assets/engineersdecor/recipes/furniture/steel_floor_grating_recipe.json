@@ -1,0 +1,25 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:steel_floor_grating",
+      "required": ["engineersdecor:thin_steel_pole"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "S S",
+    " S ",
+    "S S"
+  ],
+  "key": {
+    "S": {
+      "item": "engineersdecor:thin_steel_pole",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:steel_floor_grating",
+    "count": 4
+  }
+}

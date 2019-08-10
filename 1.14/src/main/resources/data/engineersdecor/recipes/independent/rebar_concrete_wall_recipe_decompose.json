@@ -1,0 +1,23 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:rebar_concrete",
+      "required": ["engineersdecor:rebar_concrete_wall"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SS",
+    "SS"
+  ],
+  "key": {
+    "S": {
+      "item": "engineersdecor:rebar_concrete_wall"
+    }
+  },
+  "result": {
+    "item": "engineersdecor:rebar_concrete",
+    "count": 4
+  }
+}
