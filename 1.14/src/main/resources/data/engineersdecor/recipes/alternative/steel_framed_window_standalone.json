@@ -1,0 +1,23 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:steel_framed_window",
+      "missing": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WGW",
+    "GGG",
+    "WGW"
+  ],
+  "key": {
+    "W": { "item": "minecraft:iron_ingot" },
+    "G": { "tag": "engineersdecor:plain_glass_panes" }
+  },
+  "result": {
+    "item": "engineersdecor:steel_framed_window",
+    "count": 9
+  }
+}

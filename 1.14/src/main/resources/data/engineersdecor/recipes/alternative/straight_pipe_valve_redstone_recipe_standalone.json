@@ -1,0 +1,19 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:straight_pipe_valve",
+      "required": ["engineersdecor:straight_pipe_valve"],
+      "missing": ["immersiveengineering:redstone_connector"]
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    { "item": "engineersdecor:straight_pipe_valve" },
+    { "item": "minecraft:repeater" }
+  ],
+  "result": {
+    "item": "engineersdecor:straight_pipe_valve_redstone",
+    "count": 1
+  }
+}

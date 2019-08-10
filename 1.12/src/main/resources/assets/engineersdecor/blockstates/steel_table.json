@@ -1,0 +1,8 @@
+{
+  "forge_marker": 1,
+  "defaults": { "model": "engineersdecor:furniture/steel_table_model" },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:treated_wood_side_table",
+      "required": ["immersiveengineering:material", "engineersdecor:treated_wood_pole"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SSS",
+    " P ",
+    "PPP"
+  ],
+  "key": {
+    "S": {
+      "item": "#slabTreatedWood",
+      "data": 0
+    },
+    "P": {
+      "item": "engineersdecor:treated_wood_pole",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:treated_wood_side_table",
+    "count": 1
+  }
+}

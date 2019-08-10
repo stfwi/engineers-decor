@@ -1,0 +1,6 @@
+{
+	"parent": "engineersdecor:block/furnace/small_waste_incinerator_model",
+	"textures": {
+		"side": "engineersdecor:block/furnace/small_waste_incinerator_side"
+	}
+}

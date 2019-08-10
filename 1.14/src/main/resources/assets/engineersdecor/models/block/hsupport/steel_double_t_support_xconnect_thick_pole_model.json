@@ -1,0 +1,62 @@
+{
+	"parent": "block/cube",
+	"textures": {
+		"pside": "engineersdecor:block/pole/thick_steel_pole_side_texture",
+		"particle": "engineersdecor:block/pole/thick_steel_pole_side_texture",
+		"ptop": "engineersdecor:block/pole/thick_steel_pole_top_texture"
+	},
+	"elements": [
+		{
+			"from": [6, 0, 10],
+			"to": [10, 11, 11],
+			"faces": {
+				"north": {"uv": [6, 5, 10, 16], "texture": "#pside"},
+				"south": {"uv": [6, 5, 10, 16], "texture": "#pside"},
+				"down": {"uv": [6, 5, 10, 6], "texture": "#ptop"}
+			}
+		},
+		{
+			"from": [10, 0, 5],
+			"to": [11, 11, 11],
+			"faces": {
+				"north": {"uv": [5, 5, 6, 16], "texture": "#pside"},
+				"east": {"uv": [5, 5, 11, 16], "texture": "#pside"},
+				"south": {"uv": [10, 5, 11, 16], "texture": "#pside"},
+				"west": {"uv": [5, 5, 11, 16], "texture": "#pside"},
+				"down": {"uv": [10, 5, 11, 11], "texture": "#ptop"}
+			}
+		},
+		{
+			"from": [5, 0, 5],
+			"to": [6, 11, 11],
+			"faces": {
+				"north": {"uv": [10, 5, 11, 16], "texture": "#pside"},
+				"east": {"uv": [5, 5, 11, 16], "texture": "#pside"},
+				"south": {"uv": [5, 5, 6, 16], "texture": "#pside"},
+				"west": {"uv": [5, 5, 11, 16], "texture": "#pside"},
+				"down": {"uv": [5, 5, 6, 11], "texture": "#ptop"}
+			}
+		},
+		{
+			"from": [6, 0, 5],
+			"to": [10, 11, 6],
+			"faces": {
+				"north": {"uv": [6, 5, 10, 16], "texture": "#pside"},
+				"south": {"uv": [6, 5, 10, 16], "texture": "#pside"},
+				"down": {"uv": [6, 10, 10, 11], "texture": "#ptop"}
+			}
+		}
+	],
+	"display": {
+		"ground": {
+			"scale": [0.2, 0.2, 0.2]
+		},
+		"gui": {
+			"rotation": [30, 225, 0],
+			"scale": [0.625, 0.625, 0.625]
+		},
+		"fixed": {
+			"scale": [0.5, 0.5, 0.5]
+		}
+	}
+}

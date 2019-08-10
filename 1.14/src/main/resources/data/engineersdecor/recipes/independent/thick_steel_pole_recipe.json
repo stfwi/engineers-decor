@@ -1,0 +1,22 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:thick_steel_pole",
+      "required": ["engineersdecor:thin_steel_pole"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SS ",
+    "SS ",
+    "SS "
+  ],
+  "key": {
+    "S": { "item": "engineersdecor:thin_steel_pole" }
+  },
+  "result": {
+    "item": "engineersdecor:thick_steel_pole",
+    "count": 12
+  }
+}

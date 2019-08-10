@@ -1,0 +1,23 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:halfslab_clinker_brick",
+      "required": ["engineersdecor:clinker_brick_slab"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SS",
+    "SS"
+  ],
+  "key": {
+    "S": {
+      "item": "engineersdecor:clinker_brick_slab"
+    }
+  },
+  "result": {
+    "item": "engineersdecor:halfslab_clinker_brick",
+    "count": 16
+  }
+}

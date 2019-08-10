@@ -52,6 +52,7 @@
       if(kv.length!=2) throw new Error("Invalid line in '"+file_path+"': '"+lines[i]+"'");
       const key = kv[0].trim();
       const text = kv[1].trim();
+      text = text.replace("\\\\n", "\n").replace("\\n", "\n");
       if(key.length == 0) {
         throw new Error("Empty key in '"+file_path+"' line '" + lines[i] + "'");
       } else if(key.search("tile."+modid+".")==0) {

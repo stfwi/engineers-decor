@@ -1,6 +1,11 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
-  "1.14.3": {
+  "1.14.4": {
+    "1.0.9-b9": "[U] Update to Forge 1.14.4-28.0.40/20190719-1.14.3 for Forge testing.",
+    "1.0.9-b8": "[U] UPDATE TO 1.14.4. Forge 1.14.4-28.0.11/20190719-1.14.3.",
+    "1.0.9-b7": "[U] Updated to Forge 1.14.3-27.0.60/20190719-1.14.3.\n[F] Disabled all early implemented fuild handling of valves and the Fluid Accumulator to prevent world loading hang-ups (issue #42, thx TheOhmegha for reporting). Will be re-enabled after fluid handling released in Forge.\n[F] Fixed blockstate model locations for signs and crafting table (issue #43, thx ProsperCraft for the beta test).",
+    "1.0.9-b6": "[U] Updated to Forge 1.14.3-27.0.50/20190621-1.14.2.",
+    "1.0.9-b5": "[A] Added missing recipes for slabs, stained clinker, half-slabs, valves.\n[M] Standalone recipes adapted.\n[F] Lang files: Fixed double newline escape.\n[A] Implicit opt-out of hard IE dependent blocks ported (e.g. Concrete Wall).\n[M] Basic mod config features, opt-outs and tweaks ported.",
     "1.0.9-b4": "[E] Experimental: Config skel ported (!not all options have effect yet).\n[E] Experimental: JEI integration for opt-outs and crafting table ported (also addresses issue #38).",
     "1.0.9-b3": "[F] Additional item drop fixes when blocks are destroyed (issue #39).",
     "1.0.9-b2": "[U] Updated to Forge 1.14.3-27.0.25/20190621-1.14.2.\n[F] Fixed recipe collision of Metal Rung Ladder (issue #37, thx ProsperCraft for reporting).\n[F] Fixed opening crafting table, furni, dropper server crash issue #35 (thx ProsperCraft also here).\n[F] Fixed missing pole/support item drops (issue #36, ProsperCraft).",
@@ -13,7 +18,7 @@
     "1.0.7-b3": "[A] Initial 1.14.2 port of decorative blocks."
   },
   "promos": {
-    "1.14.3-recommended": "",
-    "1.14.3-latest": "1.0.9-b4"
+    "1.14.4-recommended": "",
+    "1.14.4-latest": "1.0.9-b9"
   }
 }
