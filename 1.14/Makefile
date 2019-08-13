@@ -82,3 +82,4 @@ assets:
 	@echo "[1.14] Running asset generators ..."
 	@djs tasks.js create-slab-assets
 	@djs tasks.js create-half-slab-assets
+	@djs tasks.js assets
