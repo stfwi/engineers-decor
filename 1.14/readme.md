@@ -10,6 +10,8 @@ Mod sources for Minecraft version 1.14.3.
 ----
 ## Version history
 
+    ~ v1.0.11-b2
+
     - v1.0.11-b1 [A] Added Steel Table
                  [A] Added Treated Wood Side Table
                  [A] Added Exit Sign

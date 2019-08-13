@@ -5,7 +5,6 @@ const constants = include("meta/lib/constants.js")();
 const libtask = include("meta/lib/libtask.js")(constants);
 const libassets = include("meta/lib/libassets.js")(constants);
 const modid = constants.mod_registry_name();
-const with_113 = false;
 var tasks = {};
 
 tasks["update-json"] = function() {
@@ -16,7 +15,6 @@ tasks["update-json"] = function() {
   };
   var update_json_src = [];
   fs.find(root_dir + "/1.12/meta/", "update*.json", function(path){ update_json_src.push(JSON.parse(fs.readfile(path))); });
-  fs.find(root_dir + "/1.13/meta/", "update*.json", function(path){ update_json_src.push(JSON.parse(fs.readfile(path))); });
   fs.find(root_dir + "/1.14/meta/", "update*.json", function(path){ update_json_src.push(JSON.parse(fs.readfile(path))); });
   for(var i in update_json_src) {
     const version_update_json = update_json_src[i];
@@ -58,7 +56,6 @@ tasks["sync-main-repository"] = function() {
   sys.shell("rm -rf documentation meta");
   sys.shell("rm -f .gitignore credits.md license Makefile readme.md tasks.js");
   cd_main("1.12"); sys.shell("rm -rf meta gradle src");
-  cd_main("1.13"); sys.shell("rm -rf meta gradle");
   cd_main("1.14"); sys.shell("rm -rf meta gradle src");
   cd_dev();
   sys.shell("cp -f .gitignore credits.md license Makefile readme.md tasks.js \"" + main_repo_local + "/\"")
@@ -67,11 +64,6 @@ tasks["sync-main-repository"] = function() {
     cd_dev("1.12");
     sys.shell("cp -f .gitignore build.gradle gradle.properties gradlew gradlew.bat Makefile readme.md tasks.js.* \"" + main_repo_local + "/1.12/\"")
     sys.shell("cp -r gradle meta src \"" + main_repo_local + "/1.12/\"")
-  }
-  {
-    cd_dev("1.13");
-    sys.shell("cp -f .gitignore build.gradle gradle.properties gradlew gradlew.bat Makefile readme.md tasks.js \"" + main_repo_local + "/1.13/\"")
-    sys.shell("cp -r gradle meta \"" + main_repo_local + "/1.13/\"")
   }
   {
     cd_dev("1.14");
@@ -120,7 +112,6 @@ tasks["compare-textures"] = function(args) {
     }
   }
   var ok = true;
-  if(with_113 && !compare("1.12", "1.13")) ok = false;
   if(!compare("1.12", "1.14")) ok = false;
   return ok;
 };
@@ -157,7 +148,6 @@ tasks["compare-blockstates"] = function(args) {
     }
   }
   var ok = true;
-  if(with_113 && !compare("1.12", "1.13")) ok = false;
   if(!compare("1.12", "1.14")) ok = false;
   return ok;
 };

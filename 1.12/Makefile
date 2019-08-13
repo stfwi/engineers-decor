@@ -101,5 +101,5 @@ dist: sanatize dist-check clean-all mod
 	@djs tasks.js dist
 
 port-languages:
-	@echo "[1.12] Porting language files to 1.13/1.14 ..."
+	@echo "[1.12] Porting language files to 1.14 ..."
 	@djs tasks.js port-languages

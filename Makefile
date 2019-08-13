@@ -14,17 +14,14 @@ dist: default
 
 clean:
 	-@cd 1.12; make -s clean
-	-@cd 1.13; make -s clean
 	-@cd 1.14; make -s clean
 
 clean-all:
 	-@cd 1.12; make -s clean-all
-	-@cd 1.13; make -s clean-all
 	-@cd 1.14; make -s clean-all
 
 mrproper:
 	-@cd 1.12; make -s mrproper
-	-@cd 1.13; make -s mrproper
 	-@cd 1.14; make -s mrproper
 
 update-json:
@@ -33,7 +30,6 @@ update-json:
 
 sanatize:
 	@cd 1.12; make -s sanatize
-	@cd 1.13; make -s sanatize
 	@cd 1.14; make -s sanatize
 	@make -s update-json
 
