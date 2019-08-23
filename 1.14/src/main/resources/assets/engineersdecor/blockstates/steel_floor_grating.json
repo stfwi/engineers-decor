@@ -1,0 +1,7 @@
+{
+  "forge_marker": 1,
+  "defaults": { "model": "engineersdecor:block/furniture/steel_floor_grating_model" },
+  "variants": {
+    "": [{}]
+  }
+}

@@ -251,7 +251,7 @@ public class ModBlocks
     "steel_table",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
     Material.IRON, 1.0f, 15f, SoundType.METAL,
-    ModAuxiliaries.getPixeledAABB(0,0,0, 16,15.9,16)
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   );
 
   public static final BlockDecorFloorGrating STEEL_FLOOR_GRATING = new BlockDecorFloorGrating(

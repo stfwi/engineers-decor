@@ -2,13 +2,12 @@
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "promos": {
     "1.12.2-recommended": "1.0.10",
-    "1.12.2-latest": "1.0.10",
-    "1.13.2-recommended": "",
-    "1.13.2-latest": "1.0.7-b5",
+    "1.12.2-latest": "1.0.11-b1",
     "1.14.4-recommended": "",
-    "1.14.4-latest": "1.0.9-b9"
+    "1.14.4-latest": "1.0.11-b1"
   },
   "1.12.2": {
+    "1.0.11-b1": "[M] Lang update ru-ru (Shellyoung, PR #45).\n[F] Fixed bounding box of the Steel Table.\n[M] Steel Floor Frating: Items fall through.",
     "1.0.10": "[R] Release based on v1.0.10-b2. Release-to-release changes: * Steel table added. * Steel floor grating added. * Treated wood side table added. * Exit Sign added. * Recipe fixes.",
     "1.0.10-b2": "[A] Steel table added.\n[A] Steel floor grating added.",
     "1.0.10-b1": "[A] Treated wood side table added.\n[F] Fixed recipe collision of Metal Rung Ladder (issue #37, thx ProsperCraft for reporting).\n[A] Added Exit Sign (texture design by J. Carver).",
@@ -57,22 +56,8 @@
     "1.0.0-b2": "[A] Added rebar concrete (steel reinforced, expensive, creeper-proof).",
     "1.0.0-b1": "[A] Initial structure.\n[A] Added clinker bricks and clinker brick stairs.\n[A] Added slag bricks and slag brick stairs.\n[A] Added metal rung ladder.\n[A] Added staggered metal steps ladder.\n[A] Added treated wood ladder.\n[A] Added treated wood pole.\n[A] Added treated wood table."
   },
-  "1.13.2": {
-    "1.0.7-b5": "[A] Added translation zh_cn (PR#33, XuyuEre)\n[M] Updated textures.\n[M] Updated 1st/3rd person item model rotations/translations.",
-    "1.0.7-b4": "[A] Added stained clinker brick block/stairs.",
-    "1.0.7-b3": "[V] Version assignment: All features of v1.0.7-b3-1.12.2 that can be ported to 1.13.2 implemented/prepared, therefore version re-assigned.\n[A] Added \"Factory Area\" sign.\n[M] Sign background colors adapted.\n[M] EN lang file updated (PR#28, Voxelo).",
-    "1.0.4-b6": "[A] Added Small Electrical Furnace.\n[A] Added Small Waste Incinerator.\n[A] Experimental: Added fluid check valve.\n[A] Experimental: Added fluid redstone controlled valve.\n[A] Experimental: Added fluid redstone analog valve.\n[A] Experimental: Added passive fluid accumulator.",
-    "1.0.4-b5": "[A] Added Factory Dropper.\n[A] Added \"Caution Defense System Ahead\" sign.",
-    "1.0.4-b4": "[U] Updated forge dependency: REQUIRES FORGE >= 1.13.2-25.0.214.\n[A] Added sign \"Electrical hazard\"/\"Caution hot wire\".\n[A] Added sign \"Caution dangerous there\" (skull/bones).\n[A] Added horizontal steel double-T support beam with pole connections.",
-    "1.0.4-b3": "[V] Version assignment: All features of v1.0.4-b3-1.12.2 that can be ported to 1.13.2 implemented/prepared, therefore version re-iterated.\n[A] Lab furnace ported to 1.13.\n[A] Treated wood crafting table: Added crafting table history/quick craft.\n[A] Treated wood stool: Sitting on the stool implemented.\n[A] Steel poles (thick/thin) with support heads/foots added.\n[E] Prepared position dependent texture variation for walls (clinker, slag, rebar concrete), missing one forge feature yet for completion.\n[E] Prepared multi-layer rendering for windows, needs forge feature implementation.",
-    "1.0.2-b3": "[A] Added treated wood window.\n[A] Added treated wood pole support.\n[A] Added treated wood pole head.\n[A] Added steel framed window.",
-    "1.0.2-b2": "[A] Added wall decomposition recipes.\n[A] Added slag brick wall.\n[M] Climbing/descending mod ladders is faster when looking up or down and not sneaking.\n[M] Panzer glass material definition changed.",
-    "1.0.2-b1": "[A] Added Treated wood crafting table.\n[A] Added decomposition recipes for stairs and tiles.\n[N] Note: All v1.0.2-b1-mc1.12.2 blocks are ported to 1.13.2 (alpha -^ beta version).\n[N] Note: Until IE is out for 1.13.2, the recipes are temporary with vanilla items.",
-    "1.0.0-a3": "[A] Added iron inset light.\n[A] Added rebar concrete tile.\n[A] Added rebar concrete tile stairs.\n[A] Added clinker brick wall.\n[A] Added treated wood stool.\n[A] Added treated window sill.",
-    "1.0.0-a2": "[A] Added panzer glass.",
-    "1.0.0-a1": "[A] Initial port to 1.13.2 with Forge beta."
-  },
   "1.14.4": {
+    "1.0.11-b1": "[A] Added Steel Table\n[A] Added Treated Wood Side Table\n[A] Added Exit Sign\n[A] Added Steel Floor Grating\n[M] Sign orientation fixed, only blocked vertical placement.",
     "1.0.9-b9": "[U] Update to Forge 1.14.4-28.0.40/20190719-1.14.3 for Forge testing.",
     "1.0.9-b8": "[U] UPDATE TO 1.14.4. Forge 1.14.4-28.0.11/20190719-1.14.3.",
     "1.0.9-b7": "[U] Updated to Forge 1.14.3-27.0.60/20190719-1.14.3.\n[F] Disabled all early implemented fuild handling of valves and the Fluid Accumulator to prevent world loading hang-ups (issue #42, thx TheOhmegha for reporting). Will be re-enabled after fluid handling released in Forge.\n[F] Fixed blockstate model locations for signs and crafting table (issue #43, thx ProsperCraft for the beta test).",

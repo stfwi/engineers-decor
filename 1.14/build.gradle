@@ -1,5 +1,5 @@
 // @file build.gradle
-// Engineer's decor mod gradle build relay (mc1.13.2)
+// Engineer's decor mod gradle build relay (mc1.14.4)
 buildscript {
   repositories {
     maven { url = 'https://files.minecraftforge.net/maven' }

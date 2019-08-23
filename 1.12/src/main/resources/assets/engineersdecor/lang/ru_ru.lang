@@ -7,7 +7,7 @@
 itemGroup.tabengineersdecor=Engineer's Decor
 engineersdecor.tooltip.hint.extended=§6[§9SHIFT§r Больше информации§6]§r
 engineersdecor.tooltip.hint.help=§6[§9CTRL-SHIFT§r Помощь§6]§r
-#engineersdecor.tooltip.slabpickup.help=§rБыстрое поднятие щелчком ЛКМ, смотря вверх/вниз с этой плитой в руках.
+engineersdecor.tooltip.slabpickup.help=§rБыстрое поднятие щелчком ЛКМ, смотря вверх/вниз с этой плитой в руках.
 #-----------------------------------------------------------------------------------------------------------
 # Stone/"ceramic material" based blocks
 #-----------------------------------------------------------------------------------------------------------
@@ -25,17 +25,17 @@ tile.engineersdecor.rebar_concrete_tile.name=Железобетонная пли
 tile.engineersdecor.rebar_concrete_tile.help=§6Стальная железобетонная плитка.§r Дорогая, но взрывоустойчивая, как обсидиан.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.clinker_brick_slab.name=Клинкерная плита
-#tile.engineersdecor.clinker_brick_slab.help=§6Плита из клинкерного блока.§r\nВыглядит темнее и интенсивнее, чем Кирпичный блок.
-tile.engineersdecor.clinker_brick_stained_slab.name=Плита из окрашенного клинкерного кирпича
-#tile.engineersdecor.clinker_brick_stained_slab.help=§6Плита из Окрашенного клинкерного блока.
+tile.engineersdecor.clinker_brick_slab.help=§6Плита из клинкерного блока.§r\nВыглядит темнее и интенсивнее, чем Кирпичный блок.
+tile.engineersdecor.clinker_brick_stained_slab.name=Плита из окраженного клинкерного кирпича
+tile.engineersdecor.clinker_brick_stained_slab.help=§6Плита из Окрашенного клинкерного блока.
 tile.engineersdecor.slag_brick_slab.name=Плита из шлакоблока
-#tile.engineersdecor.slag_brick_slab.help=§6Серо-коричневая кирпичная плита.
+tile.engineersdecor.slag_brick_slab.help=§6Серо-коричневая кирпичная плита.
 tile.engineersdecor.rebar_concrete_slab.name=Железобетонная плита
-#tile.engineersdecor.rebar_concrete_slab.help=§6Бетонная плита, усиленная сталью.§r Дорогая, но взрывоустойчивая, как обсидиан.
+tile.engineersdecor.rebar_concrete_slab.help=§6Бетонная плита, усиленная сталью.§r Дорогая, но взрывоустойчивая, как обсидиан.
 tile.engineersdecor.rebar_concrete_tile_slab.name=Железобетонная плитка
-#tile.engineersdecor.rebar_concrete_tile_slab.help=§6Бетонная плитка, усиленная сталью.§r Дорогая, но взрывоустойчивая, как обсидиан.
+tile.engineersdecor.rebar_concrete_tile_slab.help=§6Бетонная плитка, усиленная сталью.§r Дорогая, но взрывоустойчивая, как обсидиан.
 tile.engineersdecor.panzerglass_slab.name=Плита из бронированного стекла
-#tile.engineersdecor.panzerglass_slab.help=§6Усиленная стеклянная плита.§r Дорогая, взрывоустойчивая. Имеет тёмно-серый оттенок, слегка видны структурные линии.
+tile.engineersdecor.panzerglass_slab.help=§6Усиленная стеклянная плита.§r Дорогая, взрывоустойчивая. Имеет тёмно-серый оттенок, слегка видны структурные линии.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.rebar_concrete_wall.name=Железобетонная стена
 tile.engineersdecor.rebar_concrete_wall.help=§6Стальная железобетонная стена.§r Дорогая, но взрывоустойчивая, как обсидиан.
@@ -86,15 +86,15 @@ tile.engineersdecor.steel_double_t_support.help=§6Фрагмент горизо
 tile.engineersdecor.treated_wood_table.name=Стол из обработанного дерева
 tile.engineersdecor.treated_wood_table.help=§6Прочный деревянный стол с четырьмя ножками.§r Для использования в помещении и на улице.
 tile.engineersdecor.steel_table.name=Стальной стол
-#tile.engineersdecor.steel_table.help=§6Прочный стол с четырьмя ножками.
+tile.engineersdecor.steel_table.help=§6Прочный стол с четырьмя ножками.
 tile.engineersdecor.steel_floor_grating.name=Решётка стального пола
-#tile.engineersdecor.steel_floor_grating.help=§6Декоративное стальное напольное покрытие.§r Выровнен по верху.
+tile.engineersdecor.steel_floor_grating.help=§6Декоративное стальное напольное покрытие.§r Выровнен по верху.
 tile.engineersdecor.treated_wood_stool.name=Табурет из обработанного дерева
 tile.engineersdecor.treated_wood_stool.help=§6Крепкий деревянный табурет.§r Для использования в помещении и на улице.
 tile.engineersdecor.treated_wood_crafting_table.name=Верстак из обработанного дерева
 tile.engineersdecor.treated_wood_crafting_table.help=§6Прочный и устойчивый к погодным условиям. Восемь слотов для хранения. Хранит инвентарь.
 tile.engineersdecor.treated_wood_side_table.name=Treated Wood Side Table
-#tile.engineersdecor.treated_wood_side_table.help=§6Needed after the work's done.
+tile.engineersdecor.treated_wood_side_table.help=§6Needed after the work's done.
 tile.engineersdecor.iron_inset_light.name=Встраиваемый осветитель
 tile.engineersdecor.iron_inset_light.help=§6Маленький источник света, интегрируемый в стены, пол или потолок.§r\n\
                                                Полезно для освещения мест, где проблематичны электрические осветительные установки.\
@@ -162,9 +162,9 @@ tile.engineersdecor.sign_danger.help=§6Общее предупреждение 
 tile.engineersdecor.sign_defense.name=Знак «Осторожно, впереди система обороны»
 tile.engineersdecor.sign_defense.help=§6Предупреждающий знак для турелей, катушек Тесла и ловушек.
 tile.engineersdecor.sign_factoryarea.name=Знак «Заводская зона»
-tile.engineersdecor.sign_factoryarea.help=§6Знак для зданий или областей, где находятся большие машины.
+tile.engineersdecor.sign_factoryarea.help=§6Там дверь, пожалуйста...
 tile.engineersdecor.sign_exit.name=Знак «Выход»
-#tile.engineersdecor.sign_factoryarea.help=§6Там дверь, пожалуйста...
+#tile.engineersdecor.sign_factoryarea.help=§6There's the door, please ...
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.halfslab_rebar_concrete.name=Арматура для бетона
 tile.engineersdecor.halfslab_rebar_concrete.help=§6Вертикально наращиваемая часть.§rПравый/левый щелчок со стеком частей на верхней или нижней поверхности для добавления/удаления частей.
@@ -206,8 +206,8 @@ engineersdecor.config.without_mob_chair_sitting=Без стульев для с�
 engineersdecor.config.without_ladder_speed_boost=Без ускорения на лестницах
 engineersdecor.config.without_crafting_table_history=Без истории крафта в столе
 engineersdecor.config.without_valves=Без клапанов
-engineersdecor.config.without_waste_incinerator=Без сжигателя отходов
 engineersdecor.config.without_passive_fluid_accumulator=Без жидкостного накопителя
+engineersdecor.config.without_waste_incinerator=Без сжигателя отходов
 engineersdecor.config.without_sign_plates=Без знаков
 engineersdecor.config.without_factory_dropper=Без фабричного выбрасывателя
 engineersdecor.config.without_slabs=Без плит

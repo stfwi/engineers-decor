@@ -196,6 +196,12 @@ public class ModContent
     ModAuxiliaries.getPixeledAABB(4.1,0,4.1, 11.8,8.8,11.8)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "treated_wood_stool"));
 
+  public static final BlockDecor TREATED_WOOD_SIDE_TABLE = (BlockDecor)(new BlockDecor(
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD),
+    ModAuxiliaries.getPixeledAABB(2,0,2, 14,15.9,14)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "treated_wood_side_table"));
+
   public static final BlockDecorDirected TREATED_WOOD_WINDOWSILL = (BlockDecorDirected)(new BlockDecorDirected(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_FACING_PLACEMENT,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD),
@@ -207,6 +213,18 @@ public class ModContent
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).lightValue(15),
     ModAuxiliaries.getPixeledAABB(5.2,5.2,15.7, 10.8,10.8,16.0)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "iron_inset_light"));
+
+  public static final BlockDecor STEEL_TABLE = (BlockDecor)(new BlockDecor(
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD),
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "steel_table"));
+
+  public static final BlockDecor STEEL_FLOOR_GRATING = (BlockDecorFloorGrating)(new BlockDecorFloorGrating(
+    BlockDecor.CFG_CUTOUT,
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
+    ModAuxiliaries.getPixeledAABB(0,14,0, 16,16,16)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "steel_floor_grating"));
 
   // -------------------------------------------------------------------------------------------------------------------
 
@@ -275,34 +293,41 @@ public class ModContent
   // -------------------------------------------------------------------------------------------------------------------
 
   public static final BlockDecorDirected SIGN_MODLOGO = (BlockDecorDirected)(new BlockDecorDirected(
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_HORIZIONTAL,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1000f).sound(SoundType.WOOD).lightValue(1),
     ModAuxiliaries.getPixeledAABB(0,0,15.6, 16,16,16.0)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_decor"));
 
   public static final BlockDecorDirected SIGN_HOTWIRE = (BlockDecorDirected)(new BlockDecorDirected(
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_HORIZIONTAL,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1f).sound(SoundType.WOOD),
     ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_hotwire"));
 
   public static final BlockDecorDirected SIGN_DANGER = (BlockDecorDirected)(new BlockDecorDirected(
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_HORIZIONTAL,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1f).sound(SoundType.WOOD),
     ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_danger"));
 
   public static final BlockDecorDirected SIGN_DEFENSE = (BlockDecorDirected)(new BlockDecorDirected(
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_HORIZIONTAL,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1f).sound(SoundType.WOOD),
     ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_defense"));
 
   public static final BlockDecorDirected SIGN_FACTORY_AREA = (BlockDecorDirected)(new BlockDecorDirected(
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_HORIZIONTAL,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1f).sound(SoundType.WOOD),
     ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_factoryarea"));
+
+  public static final BlockDecorDirected SIGN_EXIT = (BlockDecorDirected)(new BlockDecorDirected(
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_HORIZIONTAL,
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1f).sound(SoundType.WOOD),
+    ModAuxiliaries.getPixeledAABB(3,7,15.6, 13,13,16)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_exit"));
+
 
   // -------------------------------------------------------------------------------------------------------------------
 
@@ -411,6 +436,7 @@ public class ModContent
   // -------------------------------------------------------------------------------------------------------------------
 
   private static final Block modBlocks[] = {
+    TREATED_WOOD_CRAFTING_TABLE,
     SMALL_LAB_FURNACE,
     FACTORY_DROPPER,
     SMALL_ELECTRICAL_FURNACE,
@@ -443,31 +469,34 @@ public class ModContent
     //HALFSLAB_SHEETMETALGOLD,
     //HALFSLAB_SHEETMETALALUMINIUM,
     CONCRETE_WALL,
+    PANZERGLASS_BLOCK,
+    PANZERGLASS_SLAB,
     METAL_RUNG_LADDER,
     METAL_RUNG_STEPS,
     TREATED_WOOD_LADDER,
-    TREATED_WOOD_POLE,
     TREATED_WOOD_TABLE,
-    PANZERGLASS_BLOCK,
-    PANZERGLASS_SLAB,
-    INSET_LIGHT_IRON,
     TREATED_WOOD_STOOL,
+    TREATED_WOOD_SIDE_TABLE,
     TREATED_WOOD_WINDOWSILL,
-    TREATED_WOOD_CRAFTING_TABLE,
-    STEEL_FRAMED_WINDOW,
     TREATED_WOOD_WINDOW,
+    STEEL_FRAMED_WINDOW,
+    STEEL_TABLE,
+    INSET_LIGHT_IRON,
+    STEEL_FLOOR_GRATING,
+    TREATED_WOOD_POLE,
     TREATED_WOOD_POLE_HEAD,
     TREATED_WOOD_POLE_SUPPORT,
-    SIGN_MODLOGO,
     THIN_STEEL_POLE,
     THIN_STEEL_POLE_HEAD,
     THICK_STEEL_POLE,
     THICK_STEEL_POLE_HEAD,
+    STEEL_DOUBLE_T_SUPPORT,
     SIGN_HOTWIRE,
     SIGN_DANGER,
-    STEEL_DOUBLE_T_SUPPORT,
     SIGN_DEFENSE,
-    SIGN_FACTORY_AREA
+    SIGN_FACTORY_AREA,
+    SIGN_EXIT,
+    SIGN_MODLOGO,
   };
 
   private static final Block devBlocks[] = {
