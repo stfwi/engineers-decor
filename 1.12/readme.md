@@ -10,7 +10,8 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
-    ~ v1.0.11-b2 [A]
+    - v1.0.11-b2 [F] Fixed Floor Grating issue, which could have caused a crash.
+                 [M] Lang update ru-ru (Shellyoung, PR #47).
 
     - v1.0.11-b1 [M] Lang update ru-ru (Shellyoung, PR #45).
                  [F] Fixed bounding box of the Steel Table.

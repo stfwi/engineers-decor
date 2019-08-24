@@ -55,7 +55,23 @@ public class BlockDecorFloorGrating extends BlockDecor
     if(!(entity instanceof EntityItem)) {
       entity.fall(fallDistance, 1.0F);
     } else {
-      entity.setVelocity(0,-0.2,0);
+      entity.motionX = 0;
+      entity.motionY = -0.1;
+      entity.motionZ = 0;
+      entity.setPositionAndUpdate(pos.getX()+0.5, entity.posY-0.3, pos.getZ()+0.5);
+    }
+  }
+
+  @Override
+  public void onLanded(World world, Entity entity)
+  {
+    if(!(entity instanceof EntityItem)) {
+      super.onLanded(world, entity);
+    } else {
+      entity.motionX = 0;
+      entity.motionY = -0.1;
+      entity.motionZ = 0;
+      entity.setPositionAndUpdate(entity.posX, entity.posY-0.3, entity.posZ);
     }
   }
 
@@ -63,12 +79,11 @@ public class BlockDecorFloorGrating extends BlockDecor
   public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity)
   {
     if(!(entity instanceof EntityItem)) return;
+    entity.motionX = 0;
+    entity.motionZ = 0;
     if((entity.posY-pos.getY()) > 0.7) {
       if(entity.motionY > -0.2) entity.motionY = -0.2;
-      entity.setVelocity(0,-0.1,0);
-      entity.setPositionAndUpdate(entity.posX, entity.posY-0.3, entity.posZ);
-    } else {
-      entity.setVelocity(0,entity.motionY,0);
+      entity.setPositionAndUpdate(pos.getX()+0.5, entity.posY-0.3, pos.getZ()+0.5);
     }
   }
 }

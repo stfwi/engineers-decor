@@ -119,10 +119,7 @@ public class BlockDecor extends Block implements IDecorBlock
 
   @Override
   public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, IFluidState fluid)
-  {
-    if(player.isCreative()) return true;
-    return dropBlock(state, world, pos, false);
-  }
+  { return dropBlock(state, world, pos, false); }
 
   @Override
   public void onExplosionDestroy(World world, BlockPos pos, Explosion explosion)
