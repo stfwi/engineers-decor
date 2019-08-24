@@ -10,7 +10,7 @@ Mod sources for Minecraft version 1.14.3.
 ----
 ## Version history
 
-    ~ v1.0.11-b2 [U] JEI dependency update 1.14.4:6.0.0.10.
+    - v1.0.11-b2 [U] JEI dependency update 1.14.4:6.0.0.10.
                  [F] Fixed creative ghost block issue (issue #48).
                  [M] Updated ru_ru lang file (Shellyoung, PR#47).
 

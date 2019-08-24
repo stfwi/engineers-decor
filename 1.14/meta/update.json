@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.14.4": {
+    "1.0.11-b2": "[U] JEI dependency update 1.14.4:6.0.0.10.\n[F] Fixed creative ghost block issue (issue #48).\n[M] Updated ru_ru lang file (Shellyoung, PR#47).",
     "1.0.11-b1": "[A] Added Steel Table\n[A] Added Treated Wood Side Table\n[A] Added Exit Sign\n[A] Added Steel Floor Grating\n[M] Sign orientation fixed, only blocked vertical placement.",
     "1.0.9-b9": "[U] Update to Forge 1.14.4-28.0.40/20190719-1.14.3 for Forge testing.",
     "1.0.9-b8": "[U] UPDATE TO 1.14.4. Forge 1.14.4-28.0.11/20190719-1.14.3.",
@@ -20,6 +21,6 @@
   },
   "promos": {
     "1.14.4-recommended": "",
-    "1.14.4-latest": "1.0.11-b1"
+    "1.14.4-latest": "1.0.11-b2"
   }
 }
