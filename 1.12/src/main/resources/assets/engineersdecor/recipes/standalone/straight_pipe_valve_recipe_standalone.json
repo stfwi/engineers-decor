@@ -1,0 +1,22 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:straight_pipe_valve",
+      "required": ["engineersdecor:thick_steel_pole"],
+      "missing": ["immersiveengineering:fluid_pipe", "immersiveengineering:mechanical_component"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PIP"
+  ],
+  "key": {
+    "P": { "item": "engineersdecor:thick_steel_pole", "data": 0 },
+    "I": { "item": "minecraft:iron_ingot", "data": 0 }
+  },
+  "result": {
+    "item": "engineersdecor:straight_pipe_valve",
+    "count": 1
+  }
+}

@@ -1,9 +1,9 @@
 {
 	"parent": "block/cube",
 	"textures": {
-		"s": "engineersdecor:blocks/furniture/steel_table_side_texture",
-		"particle": "engineersdecor:blocks/furniture/steel_table_side_texture",
-		"t": "engineersdecor:blocks/furniture/steel_table_top_texture"
+		"s": "engineersdecor:block/furniture/steel_table_side_texture",
+		"particle": "engineersdecor:block/furniture/steel_table_side_texture",
+		"t": "engineersdecor:block/furniture/steel_table_top_texture"
 	},
 	"elements": [
 		{

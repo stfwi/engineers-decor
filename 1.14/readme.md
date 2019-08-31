@@ -10,7 +10,15 @@ Mod sources for Minecraft version 1.14.3.
 ----
 ## Version history
 
-    ~ v1.0.9-b10 [U]
+    - v1.0.11-b2 [U] JEI dependency update 1.14.4:6.0.0.10.
+                 [F] Fixed creative ghost block issue (issue #48).
+                 [M] Updated ru_ru lang file (Shellyoung, PR#47).
+
+    - v1.0.11-b1 [A] Added Steel Table
+                 [A] Added Treated Wood Side Table
+                 [A] Added Exit Sign
+                 [A] Added Steel Floor Grating
+                 [M] Sign orientation fixed, only blocked vertical placement.
 
     - v1.0.9-b9  [U] Update to Forge 1.14.4-28.0.40/20190719-1.14.3 for Forge
                      testing.

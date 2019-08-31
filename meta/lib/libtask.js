@@ -324,7 +324,8 @@
   stdtasks["version-check"] = function(args) {
     var r = me.tasks.version_check(!args.join().search("--no-preversions")>=0);
     if(r.fails.length == 0) return;
-    for(var i in r.fails) r.fails[i] = "  - " + r.fails[i];
+    alert("Version check failed:");
+    for(var i in r.fails) alert("  - " + r.fails[i]);
     alert("Version data:");
     alert(" - version_mod       : '" + r.version_mod + "'");
     alert(" - combined_version  : '" + r.combined_version + "'");

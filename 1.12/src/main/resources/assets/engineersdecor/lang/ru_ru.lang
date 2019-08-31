@@ -7,68 +7,68 @@
 itemGroup.tabengineersdecor=Engineer's Decor
 engineersdecor.tooltip.hint.extended=§6[§9SHIFT§r Больше информации§6]§r
 engineersdecor.tooltip.hint.help=§6[§9CTRL-SHIFT§r Помощь§6]§r
-#engineersdecor.tooltip.slabpickup.help=§rFast pickup by left-clicking while looking up/down and holding this slab.
+engineersdecor.tooltip.slabpickup.help=§rБыстрое поднятие щелчком ЛКМ, смотря вверх/вниз с этой плитой в руках.
 #-----------------------------------------------------------------------------------------------------------
 # Stone/"ceramic material" based blocks
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.clinker_brick_block.name=Клинкерный кирпич
-tile.engineersdecor.clinker_brick_block.help=§6Кирпичный блок с вариациями текстуры, зависящими от положения.§r\nВыглядит немного темнее и интенсивнее, чем ванильный кирпичный блок.
+tile.engineersdecor.clinker_brick_block.help=§6Кирпичный блок с вариациями текстуры, зависящими от положения.§r\nВыглядит темнее и интенсивнее, чем Кирпичный блок.
 tile.engineersdecor.clinker_brick_stained_block.name=Грязный клинкерный кирпич
-tile.engineersdecor.clinker_brick_stained_block.help=§6Кирпичный блок с вариациями текстуры, зависящими от положения.§r\nВыглядит немного темнее и интенсивнее, чем ванильный кирпичный блок. Имеет более заметные следы грязи или пятен.
+tile.engineersdecor.clinker_brick_stained_block.help=§6Кирпичный блок с вариациями текстуры, зависящими от положения.§r\nВыглядит темнее и интенсивнее, чем Кирпичный блок. Имеет более заметные следы грязи или пятен.
 tile.engineersdecor.slag_brick_block.name=Шлакоблок
 tile.engineersdecor.slag_brick_block.help=§6Серо-коричневый кирпичный блок с зависимыми от положения вариациями текстуры.
 tile.engineersdecor.rebar_concrete.name=Железобетон
 tile.engineersdecor.rebar_concrete.help=§6Стальной железобетонный блок.§r Дорогой, но взрывоустойчивый, как обсидиан.
 tile.engineersdecor.panzerglass_block.name=Бронированное стекло
-tile.engineersdecor.panzerglass_block.help=§6Усиленный стеклоблок.§r Дорогой, взрывоустойчивый. Имеет темно-серый оттенок, видны слабые структурные линии, мульти текстура для бесшовного отображения.
+tile.engineersdecor.panzerglass_block.help=§6Усиленный стеклоблок.§r Дорогой, взрывоустойчивый. Имеет тёмно-серый оттенок, слегка видны структурные линии, мультитекстура для бесшовного отображения.
 tile.engineersdecor.rebar_concrete_tile.name=Железобетонная плита
 tile.engineersdecor.rebar_concrete_tile.help=§6Стальная железобетонная плитка.§r Дорогая, но взрывоустойчивая, как обсидиан.
 #-----------------------------------------------------------------------------------------------------------
-tile.engineersdecor.clinker_brick_slab.name=Clinker Brick Slab
-#tile.engineersdecor.clinker_brick_slab.help=§6Slab made from a Clinker Block.§r\nLooks slightly darker and more color intensive than the vanilla brick.
-tile.engineersdecor.clinker_brick_stained_slab.name=Stained Clinker Brick Slab
-#tile.engineersdecor.clinker_brick_stained_slab.help=§6Slab made from a Stained Clinker Block.
-tile.engineersdecor.slag_brick_slab.name=Slag Brick Slab
-#tile.engineersdecor.slag_brick_slab.help=§6A gray-brown brick slab.
-tile.engineersdecor.rebar_concrete_slab.name=Rebar Concrete Slab
-#tile.engineersdecor.rebar_concrete_slab.help=§6Steel reinforced concrete slab.§r Expensive but Creeper-proof like obsidian.
-tile.engineersdecor.rebar_concrete_tile_slab.name=Rebar Concrete Tile Slab
-#tile.engineersdecor.rebar_concrete_tile_slab.help=§6Steel reinforced concrete tile slab.§r Expensive but Creeper-proof like obsidian.
-tile.engineersdecor.panzerglass_slab.name=Panzer Glass Slab
-#tile.engineersdecor.panzerglass_slab.help=§6Reinforced glass slab.§r Expensive, explosion-proof. Dark gray tint, faint structural lines visible.
+tile.engineersdecor.clinker_brick_slab.name=Клинкерная плита
+tile.engineersdecor.clinker_brick_slab.help=§6Плита из клинкерного блока.§r\nВыглядит темнее и интенсивнее, чем Кирпичный блок.
+tile.engineersdecor.clinker_brick_stained_slab.name=Плита из окраженного клинкерного кирпича
+tile.engineersdecor.clinker_brick_stained_slab.help=§6Плита из Окрашенного клинкерного блока.
+tile.engineersdecor.slag_brick_slab.name=Плита из шлакоблока
+tile.engineersdecor.slag_brick_slab.help=§6Серо-коричневая кирпичная плита.
+tile.engineersdecor.rebar_concrete_slab.name=Железобетонная плита
+tile.engineersdecor.rebar_concrete_slab.help=§6Бетонная плита, усиленная сталью.§r Дорогая, но взрывоустойчивая, как обсидиан.
+tile.engineersdecor.rebar_concrete_tile_slab.name=Железобетонная плитка
+tile.engineersdecor.rebar_concrete_tile_slab.help=§6Бетонная плитка, усиленная сталью.§r Дорогая, но взрывоустойчивая, как обсидиан.
+tile.engineersdecor.panzerglass_slab.name=Плита из бронированного стекла
+tile.engineersdecor.panzerglass_slab.help=§6Усиленная стеклянная плита.§r Дорогая, взрывоустойчивая. Имеет тёмно-серый оттенок, слегка видны структурные линии.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.rebar_concrete_wall.name=Железобетонная стена
 tile.engineersdecor.rebar_concrete_wall.help=§6Стальная железобетонная стена.§r Дорогая, но взрывоустойчивая, как обсидиан.
 tile.engineersdecor.concrete_wall.name=Бетонная стена
-tile.engineersdecor.concrete_wall.help=§6Стена из твердого бетона.
+tile.engineersdecor.concrete_wall.help=§6Стена из твёрдого бетона.
 tile.engineersdecor.clinker_brick_wall.name=Клинкерная кирпичная стена
 tile.engineersdecor.clinker_brick_wall.help=§6Обыкновенная клинкерная кирпичная стена.
 tile.engineersdecor.slag_brick_wall.name=Кирпичная стена из шлакоблока
 tile.engineersdecor.slag_brick_wall.help=§6Обыкновенная стена из шлакоблока.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.metal_rung_ladder.name=Металлическая лестница
-tile.engineersdecor.metal_rung_ladder.help=§6Типичная промышленная настенная лестница, состоящая из горизонтальных металлических стержней.§r Смотри вверх / вниз, чтобы подняться быстрее.
+tile.engineersdecor.metal_rung_ladder.help=§6Типичная промышленная настенная лестница, состоящая из горизонтальных металлических стержней.§r Смотри вверх/вниз, чтобы подняться быстрее.
 tile.engineersdecor.metal_rung_steps.name=Настенные металлические ступеньки
-tile.engineersdecor.metal_rung_steps.help=§6Металлические ступеньки, крепятся к стене. Позволяют подыматься / спускаться.§r Смотри вверх / вниз, чтобы подняться быстрее.
+tile.engineersdecor.metal_rung_steps.help=§6Металлические ступеньки, крепятся к стене. Позволяют подниматься/спускаться.§r Смотри вверх/вниз, чтобы подняться быстрее.
 tile.engineersdecor.treated_wood_ladder.name=Лестница из обработанного дерева
-tile.engineersdecor.treated_wood_ladder.help=§6Погодоустойчивая деревянная лестница.§r Смотри вверх / вниз, чтобы подняться быстрее.
+tile.engineersdecor.treated_wood_ladder.help=§6Погодоустойчивая деревянная лестница.§r Смотри вверх/вниз, чтобы подняться быстрее.
 #-----------------------------------------------------------------------------------------------------------
-tile.engineersdecor.clinker_brick_stairs.name=Клинкерная кирпичная лестница
-tile.engineersdecor.clinker_brick_stairs.help=§6По цвету выглядит немного темнее и интенсивнее, чем ванильный кирпичный блок
-tile.engineersdecor.clinker_brick_stained_stairs.name=Грязная кирпичная лестница
-tile.engineersdecor.clinker_brick_stained_stairs.help=§6Выглядит немного темнее и интенсивнее, чем ванильный кирпичный блок. Имеет более заметные следы грязи или пятен.
-tile.engineersdecor.slag_brick_stairs.name=Клинкерная кирпичная лестница
-tile.engineersdecor.slag_brick_stairs.help=§6По цвету выглядит немного темнее и интенсивнее, чем ванильный кирпичный блок.
-tile.engineersdecor.rebar_concrete_stairs.name=Железобетонная лестница
-tile.engineersdecor.rebar_concrete_stairs.help=§6Железобетонная лестница.§r Дорогая, но взрывоустойчивая, как обсидиан.
-tile.engineersdecor.rebar_concrete_tile_stairs.name=Железобетонная лестница
-tile.engineersdecor.rebar_concrete_tile_stairs.help=§6Железобетонная лестница.§r Дорогая, но взрывоустойчивая, как обсидиан.
+tile.engineersdecor.clinker_brick_stairs.name=Клинкерные кирпичные ступеньки
+tile.engineersdecor.clinker_brick_stairs.help=§6По цвету выглядят немного темнее и интенсивнее, чем Кирпичный блок
+tile.engineersdecor.clinker_brick_stained_stairs.name=Грязные кирпичные ступеньки
+tile.engineersdecor.clinker_brick_stained_stairs.help=§6Выглядят немного темнее и интенсивнее, чем Кирпичный блок. Имеют более заметные следы грязи или пятен.
+tile.engineersdecor.slag_brick_stairs.name=Клинкерные кирпичные ступеньки
+tile.engineersdecor.slag_brick_stairs.help=§6По цвету выглядят немного темнее и интенсивнее, чем Кирпичный блок.
+tile.engineersdecor.rebar_concrete_stairs.name=Железобетонные ступеньки
+tile.engineersdecor.rebar_concrete_stairs.help=§6Железобетонные ступеньки.§r Дорогие, но взрывоустойчивые, как обсидиан.
+tile.engineersdecor.rebar_concrete_tile_stairs.name=Ступеньки из железобетонной плитки
+tile.engineersdecor.rebar_concrete_tile_stairs.help=§6Ступеньки из железобетонной плитки.§r Дорогие, но взрывоустойчивые, как обсидиан.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.treated_wood_pole.name=Прямой обработанный деревянный столб
 tile.engineersdecor.treated_wood_pole.help=§6Надёжный столб с диаметром, схожим с реле.§r\n\
-              Может быть полезен в качестве альтернативы электро-столбам, если требуется особая специальная длина, \
+              Может быть полезен в качестве альтернативы столбам для проводов, если требуется особая специальная длина, \
               или как опора для конструкций.
-tile.engineersdecor.treated_wood_pole_head.name=Прямой обработанный деревянный столб верхняя часть/основание
+tile.engineersdecor.treated_wood_pole_head.name=Прямой обработанный деревянный столб (верхняя часть/основание)
 tile.engineersdecor.treated_wood_pole_head.help=§6Деревянная часть, подходит как основание или наконечник прямых столбов.
 tile.engineersdecor.treated_wood_pole_support.name=Прямой обработанный деревянный столб
 tile.engineersdecor.treated_wood_pole_support.help=§6Усиленная деревянная опорная часть, подходит как основание или наконечник прямых столбов.
@@ -84,17 +84,17 @@ tile.engineersdecor.steel_double_t_support.name=Стальная двойная 
 tile.engineersdecor.steel_double_t_support.help=§6Фрагмент горизонтальной потолочной опорной балки.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.treated_wood_table.name=Стол из обработанного дерева
-tile.engineersdecor.treated_wood_table.help=§6Прочный деревянный стол с четырьмя ножками .§r Для использования в помещении и на улице.
-tile.engineersdecor.steel_table.name=Steel Table
-#tile.engineersdecor.steel_table.help=§6Robust four-legged steel table.
-tile.engineersdecor.steel_floor_grating.name=Steel Floor Grating
-#tile.engineersdecor.steel_floor_grating.help=§6Decorative steel floor covering.§r Top aligned.
+tile.engineersdecor.treated_wood_table.help=§6Прочный деревянный стол с четырьмя ножками.§r Для использования в помещении и на улице.
+tile.engineersdecor.steel_table.name=Стальной стол
+tile.engineersdecor.steel_table.help=§6Прочный стол с четырьмя ножками.
+tile.engineersdecor.steel_floor_grating.name=Решётка стального пола
+tile.engineersdecor.steel_floor_grating.help=§6Декоративное стальное напольное покрытие.§r Выровнен по верху.
 tile.engineersdecor.treated_wood_stool.name=Табурет из обработанного дерева
 tile.engineersdecor.treated_wood_stool.help=§6Крепкий деревянный табурет.§r Для использования в помещении и на улице.
 tile.engineersdecor.treated_wood_crafting_table.name=Верстак из обработанного дерева
 tile.engineersdecor.treated_wood_crafting_table.help=§6Прочный и устойчивый к погодным условиям. Восемь слотов для хранения. Хранит инвентарь.
 tile.engineersdecor.treated_wood_side_table.name=Treated Wood Side Table
-#tile.engineersdecor.treated_wood_side_table.help=§6Needed after the work's done.
+tile.engineersdecor.treated_wood_side_table.help=§6Needed after the work's done.
 tile.engineersdecor.iron_inset_light.name=Встраиваемый осветитель
 tile.engineersdecor.iron_inset_light.help=§6Маленький источник света, интегрируемый в стены, пол или потолок.§r\n\
                                                Полезно для освещения мест, где проблематичны электрические осветительные установки.\
@@ -107,39 +107,39 @@ tile.engineersdecor.steel_framed_window.name=Окно со стальной ра
 tile.engineersdecor.steel_framed_window.help=§6Стальной каркас окна с тройным остеклением. Хорошо изолирует. §r Не подключается к смежным блокам, таким как стеклянные панели.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.small_lab_furnace.name=Компактная лабораторная печь
-tile.engineersdecor.small_lab_furnace.help=§6Лабораторная печь в металлическом корпусе.§r Подача твёрдого топлива - сверху. Немного горячее чем каменная, поэтому быстрее. Два внутренних слота для ввода, выхода и топлива.
+tile.engineersdecor.small_lab_furnace.help=§6Лабораторная печь в металлическом корпусе.§r Подача твёрдого топлива сверху. Немного горячее, чем каменная, поэтому быстрее. Два внутренних слота для ввода, выхода и топлива.
 tile.engineersdecor.small_electrical_furnace.name=Компактная конвейерная электрическая печь
 tile.engineersdecor.small_electrical_furnace.help=§6Компактная конвейерная печь в металлическом корпусе.§r \
                                            Автоматически принимает предметы со стороны ввода и складывает в инвентарь со стороны вывода. \
-                                           Предметы могут быть импортированы/вытянуты со всех сторон с помощью воронок. Без проблем пропускает \
-                                           элементы, которые нельзя выплавить или приготовить. Чуть более энергоэффективная и быстра, \
-                                           чем утеплённая булыжная печь. Транспортировка работает стеками. Механизм требует немного энергии.
+                                           Предметы можно помещать/забирать со всех сторон с помощью воронок. Без проблем пропускает \
+                                           элементы, которые нельзя выплавить или приготовить. Чуть более энергоэффективная и быстрая, \
+                                           чем утеплённая булыжная печь. Транспортировка работает стеками. Механизм требует мало энергии.
 tile.engineersdecor.small_waste_incinerator.name=Компактный сжигатель отходов
-tile.engineersdecor.small_waste_incinerator.help=§6Отходы с слотами очереди.§r Предметы могут помещаться с любой стороны, и храниться \
-                                                  до тех пор, пока в очереди не останется свободного места. После этого самый старый стэк \
+tile.engineersdecor.small_waste_incinerator.help=§6Отходы с слотами для очереди.§r Предметы могут помещаться с любой стороны, и храниться \
+                                                  до тех пор, пока в очереди не останется свободного места. После этого самый старый стек \
                                                   будет сожжен. Подключите электричество (RF/FE) для увеличения скорости обработки. \
                                                   Сохраняет инвентарь при перемещении.
 #-----------------------------------------------------------------------------------------------------------
-tile.engineersdecor.straight_pipe_valve.name=Жидкостный одноканальный клапан
-tile.engineersdecor.straight_pipe_valve.help=§6Фрагмент прямой трубы.§r проводит жидкость только в одном направлении. \
+tile.engineersdecor.straight_pipe_valve.name=Одноканальный жидкостный клапан
+tile.engineersdecor.straight_pipe_valve.help=§6Фрагмент прямой трубы.§r Проводит жидкость только в одном направлении. \
                                              Не соединяется по бокам. Уменьшает пропускную способность. \
                                              SHIFT для размещения в противоположном направлении.
-tile.engineersdecor.straight_pipe_valve_redstone.name=Редстоун-контролируемый жидкостный клапан
+tile.engineersdecor.straight_pipe_valve_redstone.name=Краснокаменно-контролируемый жидкостный клапан
 tile.engineersdecor.straight_pipe_valve_redstone.help=§6Фрагмент прямой трубы.§r Проводит жидкости только в одном направлении. \
-                                                      Не соединяется по бокам. SHIFT - чтобы разместить в обратном направлении. \
+                                                      Не соединяется по бокам. SHIFT для размещения в обратном направлении. \
                                                       Блокирует поток, если присутствует сигнал красного камня.
-tile.engineersdecor.straight_pipe_valve_redstone_analog.name=Редстоун-аналоговый клапан для жидкости
+tile.engineersdecor.straight_pipe_valve_redstone_analog.name=Краснокаменно-аналоговый жидкостный клапан
 tile.engineersdecor.straight_pipe_valve_redstone_analog.help=§6Фрагмент прямой трубы.§r Проводит жидкости только в одном направлении. \
-                                                      Не соединяется по бокам. SHIFT - чтобы разместить в обратном направлении. \
-                                                      Не пропускает при отсутствии красного сигнала, уменьшает расход линейно с мощности 1 до 14, \
-                                                      открывается максимально-возможно при уровне красного сигнала 15.
+                                                      Не соединяется по бокам. SHIFT для размещения в обратном направлении. \
+                                                      Не пропускает при отсутствии сигнала красного камня, уменьшает расход линейно с мощности 1 до 14, \
+                                                      открывается максимально-возможно при уровне сигнала красного камня 15.
 tile.engineersdecor.passive_fluid_accumulator.name=Пассивный жидкостный накопитель
-tile.engineersdecor.passive_fluid_accumulator.help=§6Вакуумный всасывающий жидкостный коллектор§r Имеет один выход, все остальные стороны - входные. \
+tile.engineersdecor.passive_fluid_accumulator.help=§6Вакуумный всасывающий жидкостный коллектор.§r Имеет один выход, все остальные стороны входные. \
                                                    Сливает жидкости из соседних резервуаров при выкачивании жидкости из выходного порта.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.factory_dropper.name=Фабричный выбрасыватель
-tile.engineersdecor.factory_dropper.help=§6Выбрасыватель подходит для продвинутой автоматизации производства.§r Имеет двенадцать выборочных слотов. \
-                                         Сила броска, угол, размер стопки и задержка настраиваются в GUI. Три слота сравнения стека \
+tile.engineersdecor.factory_dropper.help=§6Выбрасыватель подходит для продвинутой автоматизации производства.§r Имеет 12 выборочных слотов. \
+                                         Сила броска, угол, размер стопки и задержка настраиваются в GUI. 3 слота сравнения стека \
                                          с логическим И или ИЛИ могут использоваться в качестве внутреннего источника запуска. \
                                          Внутренний триггер может быть И или ИЛИ с внешним триггерным сигналом красного камня. \
                                          Триггерные кнопки симуляции для тестирования. Предварительно открывает дверцу затвора, \
@@ -154,7 +154,7 @@ tile.engineersdecor.small_mineral_smelter.name=Small Mineral Melting Furnace
 tile.engineersdecor.sign_decor.name=Табличка с надписью (Логотип Engineer's decor)
 tile.engineersdecor.sign_decor.help=§Это не должно быть крафтовым или видимым в JEI. Используется для творческой вкладки и скриншотов.
 tile.engineersdecor.sign_hotwire.name=Знак «Осторожно, под напряжением»
-tile.engineersdecor.sign_hotwire.help=§6Предупреждение об опасности поражения электрическим током. Не забудьте разместить вокруг HV, иначе у вас будет штраф при следующей проверке.
+tile.engineersdecor.sign_hotwire.help=§6Предупреждение об опасности поражения электрическим током. Не забудьте разместить около высокого напряжения, иначе у вас будет штраф при следующей проверке.
 tile.engineersdecor.sign_mindstep.name=Знак «Осторожно, там ступеньки!»
 tile.engineersdecor.sign_mindstep.help=§6Размещается на стенах (горизонтально)
 tile.engineersdecor.sign_danger.name=Знак «Осторожно, там опасность»
@@ -162,8 +162,8 @@ tile.engineersdecor.sign_danger.help=§6Общее предупреждение 
 tile.engineersdecor.sign_defense.name=Знак «Осторожно, впереди система обороны»
 tile.engineersdecor.sign_defense.help=§6Предупреждающий знак для турелей, катушек Тесла и ловушек.
 tile.engineersdecor.sign_factoryarea.name=Знак «Заводская зона»
-tile.engineersdecor.sign_factoryarea.help=§6Знак для зданий или областей, где находятся действительно большие машины.
-tile.engineersdecor.sign_exit.name=Exit Sign
+tile.engineersdecor.sign_factoryarea.help=§6Там дверь, пожалуйста...
+tile.engineersdecor.sign_exit.name=Знак «Выход»
 #tile.engineersdecor.sign_factoryarea.help=§6There's the door, please ...
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.halfslab_rebar_concrete.name=Арматура для бетона
@@ -184,49 +184,49 @@ tile.engineersdecor.halfslab_sheetmetal_aluminum.name=Часть алюмини�
 tile.engineersdecor.halfslab_sheetmetal_aluminum.help=§6Вертикально наращиваемая часть.§rПравый/левый щелчок со стеком частей на верхней или нижней поверхности для добавления/удаления частей.
 
 #-----------------------------------------------------------------------------------------------------------
-engineersdecor.config.title=Engineer's Decor конфигурация
+engineersdecor.config.title=Конфигурация "Engineer's Decor"
 engineersdecor.config.pattern_excludes=Pattern excludes
 engineersdecor.config.pattern_includes=Pattern includes
-engineersdecor.config.without_clinker_bricks=Without clinker bricks
-engineersdecor.config.without_slag_bricks=Without slag bricks
-engineersdecor.config.without_rebar_concrete=Without rebar concrete
-engineersdecor.config.without_walls=Without walls
-engineersdecor.config.without_stairs=Without stairs
-engineersdecor.config.without_ie_concrete_wall=Without concrete wall
-engineersdecor.config.without_panzer_glass=Without panzer glass
-engineersdecor.config.without_crafting_table=Without crafting table
-engineersdecor.config.without_lab_furnace=Without lab furnace
-engineersdecor.config.without_electrical_furnace=Without electrical furnace
-engineersdecor.config.without_treated_wood_furniture=Without tr. wood furniture
-engineersdecor.config.without_windows=Without windows
-engineersdecor.config.without_light_sources=Without lights
-engineersdecor.config.without_ladders=Without ladders
-engineersdecor.config.without_chair_sitting=Without chair sitting
-engineersdecor.config.without_mob_chair_sitting=Without chair mob sitting
-engineersdecor.config.without_ladder_speed_boost=Without ladder speed boost
-engineersdecor.config.without_crafting_table_history=Without crafting table history
-engineersdecor.config.without_valves=Without valves
-engineersdecor.config.without_passive_fluid_accumulator=Without fluid accumulator
-engineersdecor.config.without_waste_incinerator=Without waste incinerator
-engineersdecor.config.without_sign_plates=Without signs
-engineersdecor.config.without_factory_dropper=Without factory dropper
-engineersdecor.config.without_slabs=Without slabs
-engineersdecor.config.without_halfslabs=Without slab slices
-engineersdecor.config.without_direct_slab_pickup=Without slab pickup
-engineersdecor.config.without_poles=Without poles
-engineersdecor.config.without_hsupports=Without h. supports
-engineersdecor.config.without_tooltips=Without tooltips
-engineersdecor.config.without_recipes=Without recipes
-engineersdecor.config.furnace_smelting_speed_percent=Furnace: Smelting speed %
-engineersdecor.config.furnace_fuel_efficiency_percent=Furnace: Fuel efficiency %
-engineersdecor.config.furnace_boost_energy_consumption=Furnace: Boost energy
-engineersdecor.config.chair_mob_sitting_probability_percent=Chairs: Sitting chance %
-engineersdecor.config.chair_mob_standup_probability_percent="Chairs: Stand up chance %"
-engineersdecor.config.with_crafting_quickmove_buttons=Crafting table: Move buttons
-engineersdecor.config.pipevalve_max_flowrate=Valves: Max flow rate
-engineersdecor.config.pipevalve_redstone_gain=Valves: Redstone slope
-engineersdecor.config.e_furnace_speed_percent=E-furnace: Smelting speed %
-engineersdecor.config.e_furnace_power_consumption=E-furnace: Power consumption
+engineersdecor.config.without_clinker_bricks=Без клинкерных кирпичей
+engineersdecor.config.without_slag_bricks=Без шлаковых кирпичей
+engineersdecor.config.without_rebar_concrete=Без железобетона
+engineersdecor.config.without_walls=Без стен
+engineersdecor.config.without_stairs=Без ступенек
+engineersdecor.config.without_ie_concrete_wall=Без бетонных стен
+engineersdecor.config.without_panzer_glass=Без бронированного стекла
+engineersdecor.config.without_crafting_table=Без верстака
+engineersdecor.config.without_lab_furnace=Без лабораторной печи
+engineersdecor.config.without_electrical_furnace=Без электрической печи
+engineersdecor.config.without_treated_wood_furniture=Без мебели из обр-ого дерева
+engineersdecor.config.without_windows=Без окон
+engineersdecor.config.without_light_sources=Без светильников
+engineersdecor.config.without_ladders=Без лестниц
+engineersdecor.config.without_chair_sitting=Без стульев для сидения
+engineersdecor.config.without_mob_chair_sitting=Без стульев для сидения для существ
+engineersdecor.config.without_ladder_speed_boost=Без ускорения на лестницах
+engineersdecor.config.without_crafting_table_history=Без истории крафта в столе
+engineersdecor.config.without_valves=Без клапанов
+engineersdecor.config.without_passive_fluid_accumulator=Без жидкостного накопителя
+engineersdecor.config.without_waste_incinerator=Без сжигателя отходов
+engineersdecor.config.without_sign_plates=Без знаков
+engineersdecor.config.without_factory_dropper=Без фабричного выбрасывателя
+engineersdecor.config.without_slabs=Без плит
+engineersdecor.config.without_halfslabs=Без частей плит
+engineersdecor.config.without_direct_slab_pickup=Без поднятия плит
+engineersdecor.config.without_poles=Без столбов
+engineersdecor.config.without_hsupports=Без опор
+engineersdecor.config.without_tooltips=Без подсказок
+engineersdecor.config.without_recipes=Без рецептов
+engineersdecor.config.furnace_smelting_speed_percent=Печь: скорость плавления %
+engineersdecor.config.furnace_fuel_efficiency_percent=Печь: Эффективность топлива %
+engineersdecor.config.furnace_boost_energy_consumption=Печь: Энергия ускорения
+engineersdecor.config.chair_mob_sitting_probability_percent=Стулья: Шанс сесть %
+engineersdecor.config.chair_mob_standup_probability_percent="Стулья: шанс встать %"
+engineersdecor.config.with_crafting_quickmove_buttons=Верстак из обр-ого дерева: движение кнопок
+engineersdecor.config.pipevalve_max_flowrate=Клапаны: максимальная скорость потока
+engineersdecor.config.pipevalve_redstone_gain=Клапаны: спад красного камня
+engineersdecor.config.e_furnace_speed_percent=Электропечь: скорость плавления %
+engineersdecor.config.e_furnace_power_consumption=Электропечь: потребление энергии
 
 #-----------------------------------------------------------------------------------------------------------
 # EOF

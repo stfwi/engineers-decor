@@ -1,6 +1,10 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.12.2": {
+    "1.0.11": "[R] Release based on v1.0.11-b3. Release-to-release changes: * Steel floor grating improvments. * Minor model box fixes. * Standalone recipes added. * Language updates.",
+    "1.0.11-b3": "[M] Added missing standalone recipes for pipe valves, passive fluid accumulator, and waste incinerator.",
+    "1.0.11-b2": "[F] Fixed Floor Grating issue, which could have caused a crash.\n[M] Lang update ru-ru (Shellyoung, PR #47).",
+    "1.0.11-b1": "[M] Lang update ru-ru (Shellyoung, PR #45).\n[F] Fixed bounding box of the Steel Table.\n[M] Steel Floor Frating: Items fall through.",
     "1.0.10": "[R] Release based on v1.0.10-b2. Release-to-release changes: * Steel table added. * Steel floor grating added. * Treated wood side table added. * Exit Sign added. * Recipe fixes.",
     "1.0.10-b2": "[A] Steel table added.\n[A] Steel floor grating added.",
     "1.0.10-b1": "[A] Treated wood side table added.\n[F] Fixed recipe collision of Metal Rung Ladder (issue #37, thx ProsperCraft for reporting).\n[A] Added Exit Sign (texture design by J. Carver).",
@@ -50,7 +54,7 @@
     "1.0.0-b1": "[A] Initial structure.\n[A] Added clinker bricks and clinker brick stairs.\n[A] Added slag bricks and slag brick stairs.\n[A] Added metal rung ladder.\n[A] Added staggered metal steps ladder.\n[A] Added treated wood ladder.\n[A] Added treated wood pole.\n[A] Added treated wood table."
   },
   "promos": {
-    "1.12.2-recommended": "1.0.10",
-    "1.12.2-latest": "1.0.10"
+    "1.12.2-recommended": "1.0.11",
+    "1.12.2-latest": "1.0.11"
   }
 }

@@ -175,8 +175,6 @@ commits.
 
   - [1.12](1.12/readme.md)
 
-  - [1.13](1.13/readme.md)
-
   - [1.14](1.14/readme.md)
 
 ### Community references
