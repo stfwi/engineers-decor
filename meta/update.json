@@ -1,12 +1,13 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "promos": {
-    "1.12.2-recommended": "1.0.10",
-    "1.12.2-latest": "1.0.11-b3",
+    "1.12.2-recommended": "1.0.11",
+    "1.12.2-latest": "1.0.11",
     "1.14.4-recommended": "",
     "1.14.4-latest": "1.0.11-b2"
   },
   "1.12.2": {
+    "1.0.11": "[R] Release based on v1.0.11-b3. Release-to-release changes: * Steel floor grating improvments. * Minor model box fixes. * Standalone recipes added. * Language updates.",
     "1.0.11-b3": "[M] Added missing standalone recipes for pipe valves, passive fluid accumulator, and waste incinerator.",
     "1.0.11-b2": "[F] Fixed Floor Grating issue, which could have caused a crash.\n[M] Lang update ru-ru (Shellyoung, PR #47).",
     "1.0.11-b1": "[M] Lang update ru-ru (Shellyoung, PR #45).\n[F] Fixed bounding box of the Steel Table.\n[M] Steel Floor Frating: Items fall through.",
