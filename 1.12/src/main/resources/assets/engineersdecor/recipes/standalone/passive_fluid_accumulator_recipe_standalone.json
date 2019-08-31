@@ -1,0 +1,24 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:passive_fluid_accumulator",
+      "required": ["engineersdecor:straight_pipe_valve"],
+      "missing": ["immersiveengineering:fluid_pipe", "immersiveengineering:mechanical_component"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SPS",
+    "P P",
+    "SPS"
+  ],
+  "key": {
+    "P": { "item": "engineersdecor:straight_pipe_valve", "data": 0 },
+    "S": { "item": "minecraft:iron_ingot", "data": 0 }
+  },
+  "result": {
+    "item": "engineersdecor:passive_fluid_accumulator",
+    "count": 1
+  }
+}

@@ -10,7 +10,8 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
-    ~ v1.0.11-b3  [M] [WIP]
+    - v1.0.11-b3  [M] Added missing standalone recipes for pipe valves, passive
+                      fluid accumulator, and waste incinerator.
 
     - v1.0.11-b2  [F] Fixed Floor Grating issue, which could have caused a crash.
                   [M] Lang update ru-ru (Shellyoung, PR #47).
