@@ -11,7 +11,6 @@ package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
-import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.world.IWorld;
 import net.minecraft.item.BlockItemUseContext;
@@ -22,19 +21,18 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
-import net.minecraftforge.fluids.FluidStack;
+//import net.minecraftforge.common.util.LazyOptional;
+//import net.minecraftforge.common.capabilities.ICapabilityProvider;
+//import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+//import net.minecraftforge.fluids.capability.IFluidHandler;
+//import net.minecraftforge.fluids.capability.IFluidTankProperties;
+//import net.minecraftforge.fluids.FluidStack;
 import javax.annotation.Nullable;
 
 

@@ -10,7 +10,6 @@
 package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.detail.ModAuxiliaries;
-import wile.engineersdecor.detail.ModConfig;
 import net.minecraft.block.*;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;

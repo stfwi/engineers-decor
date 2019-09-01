@@ -10,6 +10,8 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    ~ v1.0.12-b1  [M] Window submodels stripped (issue #19).
+
                   -------------------------------------------------------------------
     - v1.0.11     [R] Release based on v1.0.11-b3. Release-to-release changes:
                       * Steel floor grating improvments.

@@ -1,6 +1,5 @@
 {
 	"parent": "block/cube",
-	"ambientocclusion": false,
 	"textures": {
 		"frame": "engineersdecor:blocks/iestyle/treated_wood_rough_texture",
 		"particle": "engineersdecor:blocks/iestyle/treated_wood_rough_texture"

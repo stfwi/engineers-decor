@@ -1,7 +1,7 @@
 {
   "conditions": [
     {
-      "type": "engineersdecor:grc",
+      "type": "engineersdecor:optional",
       "result": "engineersdecor:passive_fluid_accumulator",
       "required": ["engineersdecor:straight_pipe_valve"],
       "missing": ["immersiveengineering:fluid_pipe", "immersiveengineering:mechanical_component"]

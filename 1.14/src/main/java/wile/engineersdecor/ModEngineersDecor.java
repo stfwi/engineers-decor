@@ -1,7 +1,7 @@
 package wile.engineersdecor;
 
 import wile.engineersdecor.detail.ModConfig;
-import wile.engineersdecor.detail.RecipeCondModSpecific;
+import wile.engineersdecor.detail.OptionalRecipeCondition;
 import wile.engineersdecor.detail.Networking;
 import wile.engineersdecor.blocks.*;
 import net.minecraft.client.Minecraft;
@@ -33,6 +33,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import wile.engineersdecor.detail.OptionalRecipeCondition.Serializer;
 
 import javax.annotation.Nullable;
 
@@ -64,7 +65,7 @@ public class ModEngineersDecor
   private void onSetup(final FMLCommonSetupEvent event)
   {
     LOGGER.info("Registering recipe condition processor ...");
-    CraftingHelper.register(new ResourceLocation(MODID, "grc"), new RecipeCondModSpecific());
+    CraftingHelper.register(Serializer.INSTANCE);
     Networking.init();
   }
 

@@ -1,14 +1,14 @@
 {
   "conditions": [
     {
-      "type": "engineersdecor:grc",
+      "type": "engineersdecor:optional",
       "result": "engineersdecor:sign_hotwire",
-      "required": ["engineersdecor:sign_factoryarea"]
+      "required": ["engineersdecor:sign_exit"]
     }
   ],
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    { "item": "engineersdecor:sign_factoryarea" }
+    { "item": "engineersdecor:sign_exit" }
   ],
   "result": {
     "item": "engineersdecor:sign_hotwire"

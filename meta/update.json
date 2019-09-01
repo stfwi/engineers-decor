@@ -4,7 +4,7 @@
     "1.12.2-recommended": "1.0.11",
     "1.12.2-latest": "1.0.11",
     "1.14.4-recommended": "",
-    "1.14.4-latest": "1.0.11-b2"
+    "1.14.4-latest": "1.0.11-b3"
   },
   "1.12.2": {
     "1.0.11": "[R] Release based on v1.0.11-b3. Release-to-release changes: * Steel floor grating improvments. * Minor model box fixes. * Standalone recipes added. * Language updates.",
@@ -60,6 +60,7 @@
     "1.0.0-b1": "[A] Initial structure.\n[A] Added clinker bricks and clinker brick stairs.\n[A] Added slag bricks and slag brick stairs.\n[A] Added metal rung ladder.\n[A] Added staggered metal steps ladder.\n[A] Added treated wood ladder.\n[A] Added treated wood pole.\n[A] Added treated wood table."
   },
   "1.14.4": {
+    "1.0.11-b3": "[U] Updated to Forge 1.14.4-28.0.81/20190719-1.14.3.\n[F] Adapted recipe condition to Forge version (issue #49).",
     "1.0.11-b2": "[U] JEI dependency update 1.14.4:6.0.0.10.\n[F] Fixed creative ghost block issue (issue #48).\n[M] Updated ru_ru lang file (Shellyoung, PR#47).",
     "1.0.11-b1": "[A] Added Steel Table\n[A] Added Treated Wood Side Table\n[A] Added Exit Sign\n[A] Added Steel Floor Grating\n[M] Sign orientation fixed, only blocked vertical placement.",
     "1.0.9-b9": "[U] Update to Forge 1.14.4-28.0.40/20190719-1.14.3 for Forge testing.",
