@@ -1,5 +1,6 @@
 {
-	"parent": "block/cube",
+  "parent": "block/cube",
+  "ambientocclusion": false,
 	"textures": {
 		"glass": "engineersdecor:blocks/glass/window_glass_texture"
 	},

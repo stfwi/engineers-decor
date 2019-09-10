@@ -367,6 +367,12 @@ public class ModContent
     ModAuxiliaries.getPixeledAABB(1.1,0,1.1, 14.9,16,14.9)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_mineral_smelter"));
 
+  public static final BlockDecorSolarPanel SMALL_SOLAR_PANEL = (BlockDecorSolarPanel)(new BlockDecorSolarPanel(
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_ELECTRICAL,
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,11.5,16)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_solar_panel"));
+
   public static final BlockDecorPipeValve STRAIGHT_CHECK_VALVE = (BlockDecorPipeValve)(new BlockDecorPipeValve(
     BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|BlockDecor.CFG_CUTOUT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
@@ -442,6 +448,7 @@ public class ModContent
     SMALL_ELECTRICAL_FURNACE,
     SMALL_WASTE_INCINERATOR,
     SMALL_MINERAL_SMELTER,
+    SMALL_SOLAR_PANEL,
     CLINKER_BRICK_BLOCK,
     CLINKER_BRICK_SLAB,
     CLINKER_BRICK_STAIRS,
@@ -550,6 +557,11 @@ public class ModContent
     .build(null)
     .setRegistryName(ModEngineersDecor.MODID, "te_small_mineral_smelter");
 
+  public static final TileEntityType<?> TET_SMALL_SOLAR_PANEL = TileEntityType.Builder
+    .create(BlockDecorSolarPanel.BTileEntity::new, SMALL_SOLAR_PANEL)
+    .build(null)
+    .setRegistryName(ModEngineersDecor.MODID, "te_small_solar_panel");
+
 
   private static final TileEntityType<?> tile_entity_types[] = {
     TET_TREATED_WOOD_CRAFTING_TABLE,
@@ -559,7 +571,8 @@ public class ModContent
     TET_WASTE_INCINERATOR,
     TET_STRAIGHT_PIPE_VALVE,
     TET_PASSIVE_FLUID_ACCUMULATOR,
-    TET_MINERAL_SMELTER
+    TET_MINERAL_SMELTER,
+    TET_SMALL_SOLAR_PANEL
   };
 
   //--------------------------------------------------------------------------------------------------------------------

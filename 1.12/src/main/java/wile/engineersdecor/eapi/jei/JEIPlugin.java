@@ -9,8 +9,8 @@
 package wile.engineersdecor.eapi.jei;
 
 import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.blocks.BlockDecorCraftingTable;
-import wile.engineersdecor.blocks.ModBlocks;
+import wile.engineersdecor.ModContent;
+import wile.engineersdecor.blocks.*;
 import wile.engineersdecor.detail.ModConfig;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -25,7 +25,7 @@ public class JEIPlugin implements mezz.jei.api.IModPlugin
   {
     // Block/item hiding
     try {
-      for(Block e:ModBlocks.getRegisteredBlocks()) {
+      for(Block e:ModContent.getRegisteredBlocks()) {
         if(ModConfig.isOptedOut(e)) {
           ItemStack stack = new ItemStack(Item.getItemFromBlock(e));
           if(stack != null) {

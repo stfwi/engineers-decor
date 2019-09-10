@@ -7,6 +7,8 @@ for the Engineer's factory, workshop, and home.
 
 ![](documentation/engineers-decor-v103-summary.png)
 
+[Screenshots in the documentation readme here](documentation/readme.md)
+
 ### Distribution file download
 
 Main distribution channel for this mod is CurseForge:
@@ -117,6 +119,13 @@ looking manufacturing contraptions. Current feature set:
   wall, or floor. Light level like a torch. Thin, hence not blocking the way.
   Allows illuminating places where electrical light installations are problematic.
 
+- *Industrial signs*: "Danger", "Electrical Hazard", "Exit", etc.
+
+- *Slab slices*: Decorative stackable thin slabs made of of IE metal sheets,
+  concretes, treated wood. Useful e.g. for roofs or ramps. Left-clicking with
+  the same slab type in your hand while looking up/down removes slices again.
+  Crafted 3x3 from four slabs.
+
 - *Fluid pipe check valve*: Check valve: IE fluid pipe styled straight valve that
   conducts fluids only in one direction. Crafted from 3x3 from three fluid pipes.
   Supports IE pressurized fluid transfer.
@@ -131,12 +140,18 @@ looking manufacturing contraptions. Current feature set:
   drip-in to allow pumps to detect that fluids can be drained. The accumulator
   has a vacuum suction delay.
 
-- *Industrial signs*: "Danger", "electrical hazard", etc.
+- *Small Solar Panel*: Produces a small amount of RF power, comparable to a
+  IE thermal peltier generator over one day cycle. No power at night, reduced
+  power when raining. The power curve during day time is non-linear. Useful
+  for electrical lighting of remote places.
 
-- *Slab slices*: Decorative stackable thin slabs made of of IE metal sheets,
-  concretes, treated wood. Useful e.g. for roofs or ramps. Left-clicking with
-  the same slab type in your hand while looking up/down removes slices again.
-  Crafted 3x3 from four slabs.
+- *Small Tree Cutter*: A slab sized device that chops a tree in front of it.
+  Needs by default about one minute, with RF power less than 10 seconds. Useful
+  to build a contraptive automated tree farm.
+
+- *Small Mineral Smelter*: Device that slowly converts most stones or sands to
+  magma blocks and finally to lava. Needs a lot of power. When the lava is cooled
+  down in the smelter by removing the RF power, obsidian is generated.
 
 More to come slowly but steadily.
 

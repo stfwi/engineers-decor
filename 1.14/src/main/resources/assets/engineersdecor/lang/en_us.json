@@ -151,6 +151,8 @@
  "block.engineersdecor.factory_dropper.help": "§6Dropper suitable for advanced factory automation.§r Has twelve round-robin selected slots. Drop force, angle, stack size, and cool-down delay adjustable in the GUI. Three stack compare slots with logical AND or OR can be used as internal trigger source. Internal trigger can be AND'ed or OR'ed with the external redstone signal trigger. Trigger simulation buttons for testing. Pre-opens shutter door when internal trigger conditions are met. Drops all matching stacks simultaneously. Click on all elements in the GUI to see how it works.",
  "block.engineersdecor.small_mineral_smelter": "Small Mineral Melting Furnace",
  "block.engineersdecor.small_mineral_smelter.help": "§6High temperature, high insulation electrical stone melting furnace.§r\n Heats up mineral blocks to magma blocks, and finally to lava. Due to the miniturized device size the process is rather inefficient - much time and energy is needed to liquefy a stone block.",
+ "block.engineersdecor.small_solar_panel": "Small Solar Panel",
+ "block.engineersdecor.small_solar_panel.help": "§6Produces a small amount of power when exposed to sunlight.§r\n Useful for charging LF capacitors in remote systems with low consumption. The internal charge pump circuit accumulates and frequently transfers RF. Production depends on day time and the weather.",
  "block.engineersdecor.sign_decor": "Sign Plate (Engineer's decor)",
  "block.engineersdecor.sign_decor.help": "§6This should not be craftable or visible in JEI. Used for creative tab and screenshots.",
  "block.engineersdecor.sign_hotwire": "Sign \"Caution Hot Wire\"",

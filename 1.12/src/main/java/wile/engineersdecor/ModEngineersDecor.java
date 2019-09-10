@@ -10,7 +10,6 @@ package wile.engineersdecor;
 
 import wile.engineersdecor.detail.*;
 import wile.engineersdecor.blocks.*;
-import wile.engineersdecor.items.*;
 import net.minecraft.world.World;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -124,11 +123,11 @@ public class ModEngineersDecor
   {
     @SubscribeEvent
     public static void registerBlocks(final RegistryEvent.Register<Block> event)
-    { ModBlocks.registerBlocks(event); }
+    { ModContent.registerBlocks(event); }
 
     @SubscribeEvent
     public static void registerItems(final RegistryEvent.Register<Item> event)
-    { ModBlocks.registerItemBlocks(event); ModItems.registerItems(event); }
+    { ModContent.registerItemBlocks(event); ModContent.registerItems(event); }
 
     @SubscribeEvent
     public static void registerRecipes(RegistryEvent.Register<IRecipe> event)
@@ -137,14 +136,14 @@ public class ModEngineersDecor
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public static void registerModels(final ModelRegistryEvent event)
-    { ModBlocks.initModels(); ModItems.initModels(); }
+    { ModContent.initModels(); }
   }
 
   public static final CreativeTabs CREATIVE_TAB_ENGINEERSDECOR = (new CreativeTabs("tabengineersdecor") {
     @Override
     @SideOnly(Side.CLIENT)
     public @Nonnull ItemStack createIcon()
-    { return new ItemStack(ModBlocks.SIGN_MODLOGO); }
+    { return new ItemStack(ModContent.SIGN_MODLOGO); }
   });
 
   //--------------------------------------------------------------------------------------------------------------------

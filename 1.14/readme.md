@@ -8,7 +8,17 @@ Mod sources for Minecraft version 1.14.3.
 - Compiled mod distribution channel is curseforge: https://www.curseforge.com/minecraft/mc-mods/engineers-decor/files.
 
 ----
+
 ## Version history
+
+    ~ v1.0.12-b2 [U] Updated to Forge 1.14.4-28.0.100/20190719-1.14.3.
+                 [A] Small Solar Panel added.
+                 [M] Items fall through the Steel Floor Grating like in 1.12.2 version.
+                 [M] Factory Dropper: Added pulse/continuous mode in GUI (issue #51,
+                     thx Aristine for the CR).
+
+    - v1.0.12-b1 [U] Updated to Forge 1.14.4-28.0.93/20190719-1.14.3.
+                 [M] Logo location fixed.
 
     - v1.0.11-b3 [U] Updated to Forge 1.14.4-28.0.81/20190719-1.14.3.
                  [F] Adapted recipe condition to Forge version (issue #49).

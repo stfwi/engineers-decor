@@ -36,6 +36,8 @@ tile.engineersdecor.rebar_concrete_tile_slab.name=Rebar Concrete Tile Slab
 #tile.engineersdecor.rebar_concrete_tile_slab.help=§6Steel reinforced concrete tile slab.§r Expensive but Creeper-proof like obsidian.
 tile.engineersdecor.panzerglass_slab.name=Panzer Glass Slab
 #tile.engineersdecor.panzerglass_slab.help=§6Reinforced glass slab.§r Expensive, explosion-proof. Dark gray tint, faint structural lines visible.
+tile.engineersdecor.treated_wood_floor.name=Treated Wood Floor
+#tile.engineersdecor.treated_wood_floor.help=§6Decorative floor tiles with texture variations.§r
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.rebar_concrete_wall.name=钢筋混凝土墙
 tile.engineersdecor.rebar_concrete_wall.help=§6钢筋混凝土墙.§r 昂贵,但像黑曜石一样防苦力怕.
@@ -153,6 +155,15 @@ tile.engineersdecor.small_mineral_smelter.name=Small Mineral Melting Furnace
                                                Heats up mineral blocks to magma blocks, and finally to lava. Due to the \
                                                miniturized device size the process is rather inefficient - much time and \
                                                energy is needed to liquefy a stone block.
+tile.engineersdecor.small_solar_panel.name=Small Solar Panel
+#tile.engineersdecor.small_solar_panel.help=§6Produces a small amount of power when exposed to sunlight.§r\n\
+                                           Useful for charging LF capacitors in remote systems with low consumption. The \
+                                           internal charge pump circuit accumulates and frequently transfers RF. Production \
+                                           depends on day time and the weather.
+tile.engineersdecor.small_tree_cutter.name=Small Tree Cutter
+#tile.engineersdecor.small_tree_cutter.help=§6Chops grown trees in front of it.§r\n\
+                                           Does not collect the lumbers. Deactivate with a redstone signal. \
+                                           Provide RF power to boost the cutting speed.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.sign_decor.name=Sign Plate (Engineer's decor)
 #tile.engineersdecor.sign_decor.help=§6This should not be craftable or visible in JEI. Used for creative tab and screenshots.

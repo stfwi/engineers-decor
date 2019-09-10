@@ -5,7 +5,6 @@ loaderVersion="[25,)"
 issueTrackerURL="https://github.com/stfwi/engineers-decor/issues/"
 
 [[mods]]
-
 modId="engineersdecor"
 version="${file.jarVersion}"
 displayName="Engineer's Decor"
@@ -14,12 +13,12 @@ authors="wilechaote"
 credits="BluSunrize, malte0811, et al., the Forge Smiths, the Modders of the World."
 updateJSONURL="https://raw.githubusercontent.com/stfwi/engineers-decor/develop/meta/update.json"
 displayURL="https://github.com/stfwi/engineers-decor/"
-logoFile="engineersdecor.png"   # Double check: A file name (in the root of the mod JAR) containing a logo for display
+logoFile="logo.png"
 
 [[dependencies.engineersdecor]]
   modId="forge"
   mandatory=true
-  versionRange="[25,)" #mandatory
+  versionRange="[28.0.81,)"
   ordering="NONE"
   side="BOTH"
 

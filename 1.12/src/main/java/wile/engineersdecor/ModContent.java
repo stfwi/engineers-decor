@@ -10,11 +10,11 @@
  * Note: Straight forward definition of different blocks/entities
  *       to make recipes, models and texture definitions easier.
  */
-package wile.engineersdecor.blocks;
+package wile.engineersdecor;
 
-import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.detail.ModAuxiliaries;
-import wile.engineersdecor.detail.ModConfig;
+import wile.engineersdecor.detail.*;
+import wile.engineersdecor.blocks.*;
+import wile.engineersdecor.items.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -35,7 +35,7 @@ import java.util.Collections;
 import javax.annotation.Nonnull;
 
 @SuppressWarnings("unused")
-public class ModBlocks
+public class ModContent
 {
   //--------------------------------------------------------------------------------------------------------------------
   //-- Blocks
@@ -73,6 +73,8 @@ public class ModBlocks
   public static final BlockDecorGlassBlock PANZERGLASS_BLOCK = new BlockDecorGlassBlock("panzerglass_block", 0, Material.GLASS, 1f, 2000f, SoundType.GLASS);
   public static final BlockDecorSlab PANZERGLASS_SLAB = new BlockDecorSlab("panzerglass_slab", BlockDecor.CFG_TRANSLUCENT, Material.GLASS, 1f, 2000f, SoundType.GLASS);
 
+  public static final BlockDecorFull TREATED_WOOD_FLOOR = new BlockDecorFull("treated_wood_floor", 0, Material.WOOD, 0.5f, 10f, SoundType.WOOD);
+
   //--------------------------------------------------------------------------------------------------------------------
 
   public static final BlockDecorCraftingTable TREATED_WOOD_CRAFTING_TABLE = new BlockDecorCraftingTable(
@@ -85,7 +87,7 @@ public class ModBlocks
   public static final BlockDecorFurnace SMALL_LAB_FURNACE = new BlockDecorFurnace(
     "small_lab_furnace",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|
-      BlockDecor.CFG_ELECTRICAL,
+    BlockDecor.CFG_ELECTRICAL,
     Material.IRON, 0.5f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(1,0,1, 15,15,16)
   );
@@ -118,12 +120,26 @@ public class ModBlocks
     ModAuxiliaries.getPixeledAABB(1.1,0,1.1, 14.9,16,14.9)
   );
 
+  public static final BlockDecorSolarPanel SMALL_SOLAR_PANEL = new BlockDecorSolarPanel(
+    "small_solar_panel",
+    BlockDecor.CFG_LOOK_PLACEMENT,
+    Material.IRON, 1f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,11.5,16)
+  );
+
+  public static final BlockDecorTreeCutter SMALL_TREE_CUTTER = new BlockDecorTreeCutter(
+    "small_tree_cutter",
+    BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
+    Material.IRON, 1f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,8,16)
+  );
+
   //--------------------------------------------------------------------------------------------------------------------
 
   public static final BlockDecorPipeValve STRAIGHT_CHECK_VALVE = new BlockDecorPipeValve(
     "straight_pipe_valve",
     BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
-      BlockDecor.CFG_CUTOUT,
+    BlockDecor.CFG_CUTOUT,
     Material.IRON, 0.7f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
   );
@@ -131,7 +147,7 @@ public class ModBlocks
   public static final BlockDecorPipeValve STRAIGHT_REDSTONE_VALVE = new BlockDecorPipeValve(
     "straight_pipe_valve_redstone",
     BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
-      BlockDecor.CFG_CUTOUT|BlockDecor.CFG_REDSTONE_CONTROLLED,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_REDSTONE_CONTROLLED,
     Material.IRON, 0.7f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
   );
@@ -139,7 +155,7 @@ public class ModBlocks
   public static final BlockDecorPipeValve STRAIGHT_REDSTONE_ANALOG_VALVE = new BlockDecorPipeValve(
     "straight_pipe_valve_redstone_analog",
     BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
-      BlockDecor.CFG_CUTOUT|BlockDecor.CFG_REDSTONE_CONTROLLED|BlockDecor.CFG_ANALOG,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_REDSTONE_CONTROLLED|BlockDecor.CFG_ANALOG,
     Material.IRON, 0.7f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
   );
@@ -147,7 +163,7 @@ public class ModBlocks
   public static final BlockDecorPassiveFluidAccumulator PASSIVE_FLUID_ACCUMULATOR = new BlockDecorPassiveFluidAccumulator(
     "passive_fluid_accumulator",
     BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
-      BlockDecor.CFG_CUTOUT,
+    BlockDecor.CFG_CUTOUT,
     Material.IRON, 0.7f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   );
@@ -408,8 +424,16 @@ public class ModBlocks
     BlockDecorMineralSmelter.BTileEntity.class, "te_small_mineral_smelter"
   );
 
+  private static final TileEntityRegistrationData SMALL_SOLAR_PANEL_TEI = new TileEntityRegistrationData(
+    BlockDecorSolarPanel.BTileEntity.class, "te_small_solar_panel"
+  );
+
+  private static final TileEntityRegistrationData SMALL_TREE_CUTTER_TEI = new TileEntityRegistrationData(
+    BlockDecorTreeCutter.BTileEntity.class, "te_small_tree_cutter"
+  );
+
   //--------------------------------------------------------------------------------------------------------------------
-  //-- Registration list
+  //-- Block registration list
   //--------------------------------------------------------------------------------------------------------------------
 
   private static final Object content[] = {
@@ -420,6 +444,7 @@ public class ModBlocks
     SMALL_WASTE_INCINERATOR, WASTE_INCINERATOR_TEI,
     STRAIGHT_CHECK_VALVE, STRAIGHT_REDSTONE_VALVE, STRAIGHT_REDSTONE_ANALOG_VALVE, STRAIGHT_PIPE_VALVE_TEI,
     PASSIVE_FLUID_ACCUMULATOR, PASSIVE_FLUID_ACCUMULATOR_TEI,
+    SMALL_MINERAL_SMELTER, SMALL_MINERAL_SMELTER_TEI,
     CLINKER_BRICK_BLOCK,
     CLINKER_BRICK_SLAB,
     CLINKER_BRICK_STAIRS,
@@ -467,10 +492,46 @@ public class ModBlocks
   };
 
   private static final Object dev_content[] = {
-    SMALL_MINERAL_SMELTER, SMALL_MINERAL_SMELTER_TEI,
-    PANZERGLASS_SLAB, // check if another class is needed due to is_side_visible
     SIGN_MINDSTEP,
+    PANZERGLASS_SLAB,                         // @todo: check if another class is needed due to is_side_visible
+    SMALL_SOLAR_PANEL,SMALL_SOLAR_PANEL_TEI,  // @todo: check power tuning <= Peltier generator
+    TREATED_WOOD_FLOOR,                       // @todo: check if textures need improvement
+    SMALL_TREE_CUTTER,SMALL_TREE_CUTTER_TEI,  // @todo: test
   };
+
+  //--------------------------------------------------------------------------------------------------------------------
+  //-- Items
+  //--------------------------------------------------------------------------------------------------------------------
+
+  private static final Item[] modItems = {
+  };
+
+  private static final ArrayList<Item> registeredItems = new ArrayList<>();
+
+  @Nonnull
+  public static List<Item> getRegisteredItems()
+  { return Collections.unmodifiableList(registeredItems); }
+
+  public static final void registerItems(RegistryEvent.Register<Item> event)
+  {
+    // Config based registry selection
+    int num_registrations_skipped = 0;
+    ArrayList<Item> allItems = new ArrayList<>();
+    Collections.addAll(allItems, modItems);
+    final boolean woor = ModConfig.isWithoutOptOutRegistration();
+    for(Item e:allItems) {
+      if((!woor) || (!ModConfig.isOptedOut(e))) {
+        registeredItems.add(e);
+      } else {
+        ++num_registrations_skipped;
+      }
+    }
+    for(Item e:registeredItems) event.getRegistry().register(e);
+    ModEngineersDecor.logger.info("Registered " + Integer.toString(registeredItems.size()) + " items.");
+    if(num_registrations_skipped > 0) {
+      ModEngineersDecor.logger.info("Skipped registration of " + num_registrations_skipped + " items.");
+    }
+  }
 
   //--------------------------------------------------------------------------------------------------------------------
   //-- Init
@@ -530,6 +591,9 @@ public class ModBlocks
   {
     for(Block e:registeredBlocks) {
       ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(e), 0, new ModelResourceLocation(e.getRegistryName(), "inventory"));
+    }
+    for(Item e:registeredItems) {
+      if(e instanceof ItemDecor) ((ItemDecor)e).initModel();
     }
   }
 

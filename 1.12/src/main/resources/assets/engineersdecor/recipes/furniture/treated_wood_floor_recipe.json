@@ -1,0 +1,24 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:treated_wood_floor",
+      "required": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SSS",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "item": "#slabTreatedWood",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:treated_wood_floor",
+    "count": 1
+  }
+}

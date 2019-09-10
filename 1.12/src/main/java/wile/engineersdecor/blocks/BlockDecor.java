@@ -37,6 +37,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
+
 public class BlockDecor extends Block
 {
 
@@ -77,9 +78,8 @@ public class BlockDecor extends Block
     setHardness((hardness > 0) ? hardness : 5.0f);
     setResistance((resistance > 0) ? resistance : 10.0f);
     setSoundType((sound==null) ? SoundType.STONE : sound);
-    setLightOpacity(0);
-    // @todo double check that instance variable
-    // not sure here ... if((config & CFG_TRANSLUCENT) != 0) this.translucent = true;
+    if(((config & (CFG_CUTOUT|CFG_TRANSLUCENT))!=0)) setLightOpacity(0);
+    if((config & CFG_TRANSLUCENT) != 0) this.translucent = true;
     this.config = config;
     this.aabb = boundingboxes;
   }
@@ -192,5 +192,4 @@ public class BlockDecor extends Block
   @SuppressWarnings("deprecation")
   public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos)
   {}
-
 }

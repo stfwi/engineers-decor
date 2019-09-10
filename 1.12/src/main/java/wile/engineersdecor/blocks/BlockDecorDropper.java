@@ -248,7 +248,7 @@ public class BlockDecorDropper extends BlockDecorDirected
         Networking.PacketTileNotify.sendToServer(te, nbt);
       } else if(isPointInRegion(162, 66, 7, 9, mouseX, mouseY)) {
         NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setInteger("manual_trigger", 1);
+        nbt.setInteger("drop_logic", container.fields_[5] ^ BTileEntity.DROPLOGIC_CONTINUOUS);
         Networking.PacketTileNotify.sendToServer(te, nbt);
       } else if(isPointInRegion(132, 66, 9, 9, mouseX, mouseY)) {
         NBTTagCompound nbt = new NBTTagCompound();
@@ -322,8 +322,10 @@ public class BlockDecorDropper extends BlockDecorDirected
       {
         int filter_gate_offset = ((container.fields_[5] & BTileEntity.DROPLOGIC_FILTER_ANDGATE) != 0) ? 11 : 0;
         int extern_gate_offset = ((container.fields_[5] & BTileEntity.DROPLOGIC_EXTERN_ANDGATE) != 0) ? 11 : 0;
+        int pulse_mode_offset  = ((container.fields_[5] & BTileEntity.DROPLOGIC_CONTINUOUS    ) != 0) ? 10 : 0;
         drawTexturedModalRect(x0+132, y0+66, 179+filter_gate_offset, 66, 9, 9);
         drawTexturedModalRect(x0+148, y0+66, 179+extern_gate_offset, 66, 9, 9);
+        drawTexturedModalRect(x0+162, y0+66, 200+pulse_mode_offset, 66, 9, 9);
       }
       // drop timer running indicator
       {
@@ -456,10 +458,11 @@ public class BlockDecorDropper extends BlockDecorDirected
     public static final int MAX_DROP_COUNT = 32;
     public static final int DROP_PERIOD_OFFSET = 10;
     ///
-    public static final int DROPLOGIC_FILTER_ANDGATE = 0x1;
-    public static final int DROPLOGIC_EXTERN_ANDGATE = 0x2;
-    public static final int DROPLOGIC_SILENT_DROP    = 0x4;
-    public static final int DROPLOGIC_SILENT_OPEN    = 0x8;
+    public static final int DROPLOGIC_FILTER_ANDGATE = 0x01;
+    public static final int DROPLOGIC_EXTERN_ANDGATE = 0x02;
+    public static final int DROPLOGIC_SILENT_DROP    = 0x04;
+    public static final int DROPLOGIC_SILENT_OPEN    = 0x08;
+    public static final int DROPLOGIC_CONTINUOUS     = 0x10;
     ///
     private int filter_matches_[] = new int[CTRL_SLOTS_SIZE];
     private int open_timer_ = 0;
@@ -799,8 +802,10 @@ public class BlockDecorDropper extends BlockDecorDirected
       if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
       boolean dirty = block_power_updated_;
-      boolean redstone_trigger = (block_power_signal_ && block_power_updated_);
+      final boolean continuous_mode = (drop_logic_ & DROPLOGIC_CONTINUOUS)!=0;
+      boolean redstone_trigger = (block_power_signal_ && ((block_power_updated_) || (continuous_mode)));
       boolean filter_trigger;
+      boolean filter_defined = false;
       boolean trigger;
       // Trigger logic
       {
@@ -808,9 +813,9 @@ public class BlockDecorDropper extends BlockDecorDirected
         for(int i=INPUT_SLOTS_FIRST; i<(INPUT_SLOTS_FIRST+INPUT_SLOTS_SIZE); ++i) {
           if(stacks_.get(i).getCount() >= drop_count_) { droppable_slot_found = true; break; }
         }
-        int filter_nset = 0;
         // From filters / inventory checks
         {
+          int filter_nset = 0;
           int last_filter_matches_[] = filter_matches_.clone();
           boolean slot_assigned = false;
           for(int ci=0; ci<CTRL_SLOTS_SIZE; ++ci) {
@@ -836,12 +841,13 @@ public class BlockDecorDropper extends BlockDecorDirected
             if(filter_matches_[i] > 1) ++nmatched;
             if(filter_matches_[i] != last_filter_matches_[i]) dirty = true;
           }
-          filter_trigger = ((filter_nset >0) && (nmatched > 0));
+          filter_defined = (filter_nset > 0);
+          filter_trigger = ((filter_nset > 0) && (nmatched > 0));
           if(((drop_logic_ & DROPLOGIC_FILTER_ANDGATE) != 0) && (nmatched != filter_nset)) filter_trigger = false;
         }
         // gates
         {
-          if(filter_nset > 0) {
+          if(filter_defined) {
             trigger = ((drop_logic_ & DROPLOGIC_EXTERN_ANDGATE) != 0) ? (filter_trigger && redstone_trigger) : (filter_trigger || redstone_trigger);
           } else {
             trigger = redstone_trigger;

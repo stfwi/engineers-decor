@@ -17,6 +17,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import wile.engineersdecor.blocks.*;
+import wile.engineersdecor.blocks.BlockDecorSolarPanel.BTileEntity;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -131,6 +132,7 @@ public class ModConfig
     public final ForgeConfigSpec.IntValue furnace_boost_energy_consumption;
     public final ForgeConfigSpec.IntValue e_furnace_speed_percent;
     public final ForgeConfigSpec.IntValue e_furnace_power_consumption;
+    public final ForgeConfigSpec.IntValue small_solar_panel_peak_production;
     public final ForgeConfigSpec.BooleanValue e_furnace_automatic_pulling;
     public final ForgeConfigSpec.DoubleValue chair_mob_sitting_probability_percent;
     public final ForgeConfigSpec.DoubleValue chair_mob_standup_probability_percent;
@@ -364,6 +366,14 @@ public class ModConfig
           .comment("Defines if the electrical furnace automatically pulls items from an inventory at the input side." +
             "The config value can be changed on-the-fly for tuning.")
           .define("e_furnace_automatic_pulling", false);
+        small_solar_panel_peak_production = builder
+          .translation(ModEngineersDecor.MODID + ".config.small_solar_panel_peak_production")
+          .comment("Defines the peak power production (at noon) of the Small Solar Panel. " +
+            "Note that the agerage power is much less, as no power is produced at all during the night, " +
+            "and the power curve is nonlinear rising/falling during the day. Bad weather conditions also " +
+            "decrease the production. The config value can be changed on-the-fly for tuning.")
+          .defineInRange("small_solar_panel_peak_production", BTileEntity.DEFAULT_PEAK_POWER, 10, 256);
+
         builder.pop();
       }
     }
@@ -471,6 +481,7 @@ public class ModConfig
     BlockDecorCraftingTable.on_config(COMMON.without_crafting_table_history.get(), false, COMMON.with_crafting_quickmove_buttons.get());
     BlockDecorPipeValve.on_config(COMMON.pipevalve_max_flowrate.get(), COMMON.pipevalve_redstone_gain.get());
     BlockDecorFurnaceElectrical.BTileEntity.on_config(COMMON.e_furnace_speed_percent.get(), COMMON.e_furnace_power_consumption.get(), COMMON.e_furnace_automatic_pulling.get());
+    BlockDecorSolarPanel.BTileEntity.on_config(COMMON.small_solar_panel_peak_production.get());
     without_crafting_table = isOptedOut(ModContent.TREATED_WOOD_CRAFTING_TABLE);
     immersiveengineering_installed = ModAuxiliaries.isModLoaded("immersiveengineering");
     {
