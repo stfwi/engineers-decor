@@ -10,6 +10,8 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    ~ v1.0.12-b2  [A] Lang files updated.
+
     - v1.0.12-b1  [A] Mineal Smelter non-experimental now.
                   [M] Window submodels stripped (reopened issue #19, thx overchoice).
                   [M] Opaque full block light opacity fixed (issue #50, thx Illomiurge).

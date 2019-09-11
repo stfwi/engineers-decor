@@ -11,7 +11,7 @@ Mod sources for Minecraft version 1.14.3.
 
 ## Version history
 
-    ~ v1.0.12-b2 [U] Updated to Forge 1.14.4-28.0.100/20190719-1.14.3.
+    - v1.0.12-b2 [U] Updated to Forge 1.14.4-28.0.105/20190719-1.14.3.
                  [A] Small Solar Panel added.
                  [M] Items fall through the Steel Floor Grating like in 1.12.2 version.
                  [M] Factory Dropper: Added pulse/continuous mode in GUI (issue #51,

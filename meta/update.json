@@ -4,7 +4,7 @@
     "1.12.2-recommended": "1.0.11",
     "1.12.2-latest": "1.0.12-b1",
     "1.14.4-recommended": "",
-    "1.14.4-latest": "1.0.12-b1"
+    "1.14.4-latest": "1.0.12-b2"
   },
   "1.12.2": {
     "1.0.12-b1": "[A] Mineal Smelter non-experimental now.\n[M] Window submodels stripped (reopened issue #19, thx overchoice).\n[M] Opaque full block light opacity fixed (issue #50, thx Illomiurge).\n[M] Factory Dropper: Added pulse/continuous mode in GUI (issue #51, thx Aristine for the CR).",
@@ -61,6 +61,7 @@
     "1.0.0-b1": "[A] Initial structure.\n[A] Added clinker bricks and clinker brick stairs.\n[A] Added slag bricks and slag brick stairs.\n[A] Added metal rung ladder.\n[A] Added staggered metal steps ladder.\n[A] Added treated wood ladder.\n[A] Added treated wood pole.\n[A] Added treated wood table."
   },
   "1.14.4": {
+    "1.0.12-b2": "[U] Updated to Forge 1.14.4-28.0.105/20190719-1.14.3.\n[A] Small Solar Panel added.\n[M] Items fall through the Steel Floor Grating like in 1.12.2 version.\n[M] Factory Dropper: Added pulse/continuous mode in GUI (issue #51, thx Aristine for the CR).",
     "1.0.12-b1": "[U] Updated to Forge 1.14.4-28.0.93/20190719-1.14.3.\n[M] Logo location fixed.",
     "1.0.11-b3": "[U] Updated to Forge 1.14.4-28.0.81/20190719-1.14.3.\n[F] Adapted recipe condition to Forge version (issue #49).",
     "1.0.11-b2": "[U] JEI dependency update 1.14.4:6.0.0.10.\n[F] Fixed creative ghost block issue (issue #48).\n[M] Updated ru_ru lang file (Shellyoung, PR#47).",

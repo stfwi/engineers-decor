@@ -22,6 +22,9 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -63,6 +66,10 @@ public class BlockDecorDropper extends BlockDecorDirected
   @OnlyIn(Dist.CLIENT)
   public BlockRenderLayer getRenderLayer()
   { return BlockRenderLayer.SOLID; }
+
+  @Override
+  public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext)
+  { return VoxelShapes.fullCube(); }
 
   @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
@@ -513,7 +520,7 @@ public class BlockDecorDropper extends BlockDecorDirected
       boolean dirty = block_power_updated_;
       boolean redstone_trigger = (block_power_signal_ && ((block_power_updated_) || (continuous_mode)));
       boolean filter_trigger;
-      boolean filter_defined = false;
+      boolean filter_defined;
       boolean trigger;
       // Trigger logic
       {
@@ -891,7 +898,7 @@ public class BlockDecorDropper extends BlockDecorDirected
       {
         int filter_gate_offset = ((container.field(5) & BTileEntity.DROPLOGIC_FILTER_ANDGATE) != 0) ? 11 : 0;
         int extern_gate_offset = ((container.field(5) & BTileEntity.DROPLOGIC_EXTERN_ANDGATE) != 0) ? 11 : 0;
-        int pulse_mode_offset  = ((container.fields_[5] & BTileEntity.DROPLOGIC_CONTINUOUS  ) != 0) ? 10 : 0;
+        int pulse_mode_offset  = ((container.field(5) & BTileEntity.DROPLOGIC_CONTINUOUS    ) != 0) ? 10 : 0;
         blit(x0+132, y0+66, 179+filter_gate_offset, 66, 9, 9);
         blit(x0+148, y0+66, 179+extern_gate_offset, 66, 9, 9);
         blit(x0+162, y0+66, 200+pulse_mode_offset, 66, 9, 9);

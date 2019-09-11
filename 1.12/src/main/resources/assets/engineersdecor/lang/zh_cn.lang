@@ -163,7 +163,7 @@ tile.engineersdecor.small_solar_panel.name=Small Solar Panel
 tile.engineersdecor.small_tree_cutter.name=Small Tree Cutter
 #tile.engineersdecor.small_tree_cutter.help=§6Chops grown trees in front of it.§r\n\
                                            Does not collect the lumbers. Deactivate with a redstone signal. \
-                                           Provide RF power to boost the cutting speed.
+                                           Provide RF power to boost the cutting speed (takes a long time without power).
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.sign_decor.name=Sign Plate (Engineer's decor)
 #tile.engineersdecor.sign_decor.help=§6This should not be craftable or visible in JEI. Used for creative tab and screenshots.
