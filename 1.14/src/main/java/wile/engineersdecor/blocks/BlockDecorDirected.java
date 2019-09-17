@@ -8,6 +8,7 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.block.IWaterLoggable;
 import wile.engineersdecor.detail.ModAuxiliaries;
 import net.minecraft.entity.EntityType;
 import net.minecraft.state.StateContainer;
@@ -77,7 +78,7 @@ public class BlockDecorDirected extends BlockDecor
 
   @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-  { builder.add(FACING); }
+  { super.fillStateContainer(builder); builder.add(FACING); }
 
   @Override
   @Nullable
@@ -98,7 +99,20 @@ public class BlockDecorDirected extends BlockDecor
     }
     if((config & CFG_OPPOSITE_PLACEMENT)!=0) facing = facing.getOpposite();
     if(((config & CFG_FLIP_PLACEMENT_SHIFTCLICK) != 0) && (context.getPlayer().isSneaking())) facing = facing.getOpposite();
-    return getDefaultState().with(FACING, facing);
+    return super.getStateForPlacement(context).with(FACING, facing);
+  }
+
+  /**
+   * Water loggable version of directed blocks.
+   */
+  public static class WaterLoggable extends BlockDecorDirected implements IWaterLoggable
+  {
+    public WaterLoggable(long config, Block.Properties properties, AxisAlignedBB aabb)
+    { super(config|CFG_WATERLOGGABLE, properties, aabb); }
+
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+    { super.fillStateContainer(builder); builder.add(WATERLOGGED); }
   }
 
 }

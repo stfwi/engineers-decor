@@ -32,9 +32,10 @@ public class OptionalRecipeCondition implements ICondition
   private final List<ResourceLocation> all_required;
   private final List<ResourceLocation> any_missing;
   private final @Nullable ResourceLocation result;
+  private final boolean experimental;
 
-  public OptionalRecipeCondition(ResourceLocation result, List<ResourceLocation> required, List<ResourceLocation> missing)
-  { all_required = required; any_missing = missing; this.result = result; }
+  public OptionalRecipeCondition(ResourceLocation result, List<ResourceLocation> required, List<ResourceLocation> missing, boolean isexperimental)
+  { all_required = required; any_missing = missing; this.result = result; experimental=isexperimental; }
 
   @Override
   public ResourceLocation getID()
@@ -49,12 +50,14 @@ public class OptionalRecipeCondition implements ICondition
     sb.delete(sb.length()-1, sb.length()).append("], any-missing: [");
     for(ResourceLocation e:any_missing) sb.append(e.toString()).append(",");
     sb.delete(sb.length()-1, sb.length()).append("]");
+    if(experimental) sb.append(" EXPERIMENTAL");
     return sb.toString();
   }
 
   @Override
   public boolean test()
   {
+    if((experimental) && (!ModConfig.withExperimental())) return false;
     final IForgeRegistry<Block> block_registry = ForgeRegistries.BLOCKS;
     final IForgeRegistry<Item> item_registry = ForgeRegistries.ITEMS;
     if(result != null) {
@@ -103,6 +106,7 @@ public class OptionalRecipeCondition implements ICondition
       List<ResourceLocation> required = new ArrayList<>();
       List<ResourceLocation> missing = new ArrayList<>();
       ResourceLocation result = null;
+      boolean experimental = false;
       if(json.has("result")) result = new ResourceLocation(json.get("result").getAsString());
       if(json.has("required")) {
         for(JsonElement e:JSONUtils.getJsonArray(json, "required")) required.add(new ResourceLocation(e.getAsString()));
@@ -110,7 +114,8 @@ public class OptionalRecipeCondition implements ICondition
       if(json.has("missing")) {
         for(JsonElement e:JSONUtils.getJsonArray(json, "missing")) missing.add(new ResourceLocation(e.getAsString()));
       }
-      return new OptionalRecipeCondition(result, required, missing);
+      if(json.has("experimental")) experimental = json.get("experimental").getAsBoolean();
+      return new OptionalRecipeCondition(result, required, missing, experimental);
     }
   }
 }

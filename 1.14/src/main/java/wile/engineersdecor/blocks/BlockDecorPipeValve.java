@@ -9,6 +9,7 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.block.IWaterLoggable;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import net.minecraft.state.BooleanProperty;
@@ -36,7 +37,7 @@ import net.minecraft.util.math.BlockPos;
 import javax.annotation.Nullable;
 
 
-public class BlockDecorPipeValve extends BlockDecorDirected
+public class BlockDecorPipeValve extends BlockDecorDirected implements IWaterLoggable
 {
   public static final BooleanProperty RS_CN_N = BooleanProperty.create("rs_n");
   public static final BooleanProperty RS_CN_S = BooleanProperty.create("rs_s");
@@ -53,7 +54,7 @@ public class BlockDecorPipeValve extends BlockDecorDirected
   }
 
   public BlockDecorPipeValve(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
-  { super(config, builder, unrotatedAABB); }
+  { super(config|CFG_WATERLOGGABLE, builder, unrotatedAABB); }
 
   private BlockState get_rsconnector_state(BlockState state, IWorld world, BlockPos pos, @Nullable BlockPos fromPos)
   {
@@ -88,7 +89,7 @@ public class BlockDecorPipeValve extends BlockDecorDirected
 
   @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-  { builder.add(FACING, RS_CN_N, RS_CN_S, RS_CN_E, RS_CN_W, RS_CN_U, RS_CN_D); }
+  { super.fillStateContainer(builder); builder.add(RS_CN_N, RS_CN_S, RS_CN_E, RS_CN_W, RS_CN_U, RS_CN_D, WATERLOGGED); }
 
   @Override
   @Nullable

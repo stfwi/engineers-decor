@@ -73,7 +73,7 @@ public class BlockDecorDropper extends BlockDecorDirected
 
   @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-  { builder.add(FACING, OPEN); }
+  { super.fillStateContainer(builder); builder.add(OPEN); }
 
   @Override
   @Nullable

@@ -37,6 +37,10 @@ public class RecipeCondModSpecific implements IConditionFactory
   public BooleanSupplier parse(JsonContext context, JsonObject json) {
     if(ModConfig.isWithoutRecipes()) return exclude();
     try {
+      final JsonPrimitive experimental = json.getAsJsonPrimitive("experimental");
+      if((experimental!=null) && (experimental.getAsBoolean())) {
+        if(!ModConfig.zmisc.with_experimental) return exclude();
+      }
       final IForgeRegistry<Block> block_registry = ForgeRegistries.BLOCKS;
       final IForgeRegistry<Item> item_registry = ForgeRegistries.ITEMS;
       final JsonArray items = json.getAsJsonArray("required");

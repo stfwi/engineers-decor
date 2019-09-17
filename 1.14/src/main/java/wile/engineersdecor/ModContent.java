@@ -12,6 +12,7 @@
  */
 package wile.engineersdecor;
 
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.apache.commons.lang3.ArrayUtils;
 import wile.engineersdecor.blocks.*;
 import wile.engineersdecor.detail.ModAuxiliaries;
@@ -32,6 +33,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.event.RegistryEvent;
+import wile.engineersdecor.detail.ModTesrs;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
@@ -40,12 +43,11 @@ import javax.annotation.Nonnull;
 @SuppressWarnings("unused")
 public class ModContent
 {
-
   //--------------------------------------------------------------------------------------------------------------------
   // Blocks
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static final BlockDecorFull CLINKER_BRICK_BLOCK = (BlockDecorFull)(new BlockDecorFull(
+  public static final BlockDecor CLINKER_BRICK_BLOCK = (BlockDecor)(new BlockDecor(
     BlockDecor.CFG_DEFAULT,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "clinker_brick_block"));
@@ -68,7 +70,7 @@ public class ModContent
 
   // -------------------------------------------------------------------------------------------------------------------
 
-  public static final BlockDecorFull CLINKER_BRICK_STAINED_BLOCK = (BlockDecorFull)(new BlockDecorFull(
+  public static final BlockDecor CLINKER_BRICK_STAINED_BLOCK = (BlockDecor)(new BlockDecor(
     BlockDecor.CFG_DEFAULT,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "clinker_brick_stained_block"));
@@ -86,7 +88,7 @@ public class ModContent
 
   // -------------------------------------------------------------------------------------------------------------------
 
-  public static final BlockDecorFull SLAG_BRICK_BLOCK = (BlockDecorFull)(new BlockDecorFull(
+  public static final BlockDecor SLAG_BRICK_BLOCK = (BlockDecor)(new BlockDecor(
     BlockDecor.CFG_DEFAULT,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "slag_brick_block"));
@@ -109,7 +111,7 @@ public class ModContent
 
   // -------------------------------------------------------------------------------------------------------------------
 
-  public static final BlockDecorFull REBAR_CONCRETE_BLOCK = (BlockDecorFull)(new BlockDecorFull(
+  public static final BlockDecor REBAR_CONCRETE_BLOCK = (BlockDecor)(new BlockDecor(
     BlockDecor.CFG_DEFAULT,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 2000f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "rebar_concrete"));
@@ -131,13 +133,13 @@ public class ModContent
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "rebar_concrete_wall"));
 
   public static final BlockDecorHalfSlab HALFSLAB_REBARCONCRETE = (BlockDecorHalfSlab)(new BlockDecorHalfSlab(
-    BlockDecor.CFG_DEFAULT,
+    BlockDecor.CFG_CUTOUT,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 2000f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "halfslab_rebar_concrete"));
 
   // -------------------------------------------------------------------------------------------------------------------
 
-  public static final BlockDecorFull REBAR_CONCRETE_TILE = (BlockDecorFull)(new BlockDecorFull(
+  public static final BlockDecor REBAR_CONCRETE_TILE = (BlockDecor)(new BlockDecor(
     BlockDecor.CFG_DEFAULT,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 2000f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "rebar_concrete_tile"));
@@ -184,7 +186,7 @@ public class ModContent
 
   // -------------------------------------------------------------------------------------------------------------------
 
-  public static final BlockDecor TREATED_WOOD_TABLE = (BlockDecor)(new BlockDecor(
+  public static final BlockDecor.WaterLoggable TREATED_WOOD_TABLE = (BlockDecor.WaterLoggable)(new BlockDecor.WaterLoggable(
     BlockDecor.CFG_CUTOUT,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD),
     ModAuxiliaries.getPixeledAABB(1,0,1, 15,15.9,15)
@@ -196,25 +198,25 @@ public class ModContent
     ModAuxiliaries.getPixeledAABB(4.1,0,4.1, 11.8,8.8,11.8)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "treated_wood_stool"));
 
-  public static final BlockDecor TREATED_WOOD_SIDE_TABLE = (BlockDecor)(new BlockDecor(
+  public static final BlockDecor.WaterLoggable TREATED_WOOD_SIDE_TABLE = (BlockDecor.WaterLoggable)(new BlockDecor.WaterLoggable(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD),
     ModAuxiliaries.getPixeledAABB(2,0,2, 14,15.9,14)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "treated_wood_side_table"));
 
-  public static final BlockDecorDirected TREATED_WOOD_WINDOWSILL = (BlockDecorDirected)(new BlockDecorDirected(
+  public static final BlockDecorDirected.WaterLoggable TREATED_WOOD_WINDOWSILL = (BlockDecorDirected.WaterLoggable)(new BlockDecorDirected.WaterLoggable(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_FACING_PLACEMENT,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD),
     ModAuxiliaries.getPixeledAABB(0.5,15,10.5, 15.5,16,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "treated_wood_windowsill"));
 
-  public static final BlockDecorDirected INSET_LIGHT_IRON = (BlockDecorDirected)(new BlockDecorDirected(
+  public static final BlockDecorDirected.WaterLoggable INSET_LIGHT_IRON = (BlockDecorDirected.WaterLoggable)(new BlockDecorDirected.WaterLoggable(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).lightValue(15),
     ModAuxiliaries.getPixeledAABB(5.2,5.2,15.7, 10.8,10.8,16.0)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "iron_inset_light"));
 
-  public static final BlockDecor STEEL_TABLE = (BlockDecor)(new BlockDecor(
+  public static final BlockDecor.WaterLoggable STEEL_TABLE = (BlockDecor.WaterLoggable)(new BlockDecor.WaterLoggable(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD),
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
@@ -292,42 +294,41 @@ public class ModContent
 
   // -------------------------------------------------------------------------------------------------------------------
 
-  public static final BlockDecorDirected SIGN_MODLOGO = (BlockDecorDirected)(new BlockDecorDirected(
+  public static final BlockDecorDirected.WaterLoggable SIGN_MODLOGO = (BlockDecorDirected.WaterLoggable)(new BlockDecorDirected.WaterLoggable(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_HORIZIONTAL,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1000f).sound(SoundType.WOOD).lightValue(1),
     ModAuxiliaries.getPixeledAABB(0,0,15.6, 16,16,16.0)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_decor"));
 
-  public static final BlockDecorDirected SIGN_HOTWIRE = (BlockDecorDirected)(new BlockDecorDirected(
+  public static final BlockDecorDirected.WaterLoggable SIGN_HOTWIRE = (BlockDecorDirected.WaterLoggable)(new BlockDecorDirected.WaterLoggable(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_HORIZIONTAL,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1f).sound(SoundType.WOOD),
     ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_hotwire"));
 
-  public static final BlockDecorDirected SIGN_DANGER = (BlockDecorDirected)(new BlockDecorDirected(
+  public static final BlockDecorDirected.WaterLoggable SIGN_DANGER = (BlockDecorDirected.WaterLoggable)(new BlockDecorDirected.WaterLoggable(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_HORIZIONTAL,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1f).sound(SoundType.WOOD),
     ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_danger"));
 
-  public static final BlockDecorDirected SIGN_DEFENSE = (BlockDecorDirected)(new BlockDecorDirected(
+  public static final BlockDecorDirected.WaterLoggable SIGN_DEFENSE = (BlockDecorDirected.WaterLoggable)(new BlockDecorDirected.WaterLoggable(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_HORIZIONTAL,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1f).sound(SoundType.WOOD),
     ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_defense"));
 
-  public static final BlockDecorDirected SIGN_FACTORY_AREA = (BlockDecorDirected)(new BlockDecorDirected(
+  public static final BlockDecorDirected.WaterLoggable SIGN_FACTORY_AREA = (BlockDecorDirected.WaterLoggable)(new BlockDecorDirected.WaterLoggable(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_HORIZIONTAL,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1f).sound(SoundType.WOOD),
     ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_factoryarea"));
 
-  public static final BlockDecorDirected SIGN_EXIT = (BlockDecorDirected)(new BlockDecorDirected(
+  public static final BlockDecorDirected.WaterLoggable SIGN_EXIT = (BlockDecorDirected.WaterLoggable)(new BlockDecorDirected.WaterLoggable(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_HORIZIONTAL,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1f).sound(SoundType.WOOD),
     ModAuxiliaries.getPixeledAABB(3,7,15.6, 13,13,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_exit"));
-
 
   // -------------------------------------------------------------------------------------------------------------------
 
@@ -410,32 +411,32 @@ public class ModContent
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "halfslab_concrete"));
 
   public static final BlockDecorHalfSlab HALFSLAB_TREATEDWOOD = (BlockDecorHalfSlab)(new BlockDecorHalfSlab(
-    BlockDecor.CFG_CUTOUT,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 4f).sound(SoundType.WOOD)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "halfslab_treated_wood"));
 
   public static final BlockDecorHalfSlab HALFSLAB_SHEETMETALIRON = (BlockDecorHalfSlab)(new BlockDecorHalfSlab(
-    BlockDecor.CFG_CUTOUT,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 10f).sound(SoundType.METAL)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "halfslab_sheetmetal_iron"));
 
   public static final BlockDecorHalfSlab HALFSLAB_SHEETMETALSTEEL = (BlockDecorHalfSlab)(new BlockDecorHalfSlab(
-    BlockDecor.CFG_CUTOUT,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 10f).sound(SoundType.METAL)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "halfslab_sheetmetal_steel"));
 
   public static final BlockDecorHalfSlab HALFSLAB_SHEETMETALCOPPER = (BlockDecorHalfSlab)(new BlockDecorHalfSlab(
-    BlockDecor.CFG_CUTOUT,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 10f).sound(SoundType.METAL)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "halfslab_sheetmetal_copper"));
 
   public static final BlockDecorHalfSlab HALFSLAB_SHEETMETALGOLD = (BlockDecorHalfSlab)(new BlockDecorHalfSlab(
-    BlockDecor.CFG_CUTOUT,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 10f).sound(SoundType.METAL)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "halfslab_sheetmetal_gold"));
 
   public static final BlockDecorHalfSlab HALFSLAB_SHEETMETALALUMINIUM = (BlockDecorHalfSlab)(new BlockDecorHalfSlab(
-    BlockDecor.CFG_CUTOUT,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 10f).sound(SoundType.METAL)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "halfslab_sheetmetal_aluminum"));
 
@@ -701,4 +702,9 @@ public class ModContent
     ScreenManager.registerFactory(CT_WASTE_INCINERATOR, BlockDecorWasteIncinerator.BGui::new);
   }
 
+  @OnlyIn(Dist.CLIENT)
+  public static final void registerTileEntityRenderers(final FMLClientSetupEvent event)
+  {
+    ClientRegistry.bindTileEntitySpecialRenderer(BlockDecorCraftingTable.BTileEntity.class, new ModTesrs.TesrDecorCraftingTable());
+  }
 }

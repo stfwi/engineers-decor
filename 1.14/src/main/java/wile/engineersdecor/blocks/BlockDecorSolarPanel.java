@@ -46,7 +46,7 @@ public class BlockDecorSolarPanel extends BlockDecor
   @Override
   @Nullable
   public BlockState getStateForPlacement(BlockItemUseContext context)
-  { return getDefaultState(); }
+  { return super.getStateForPlacement(context); }
 
   @Override
   public boolean hasTileEntity(BlockState state)

@@ -191,6 +191,10 @@ public class ModConfig
     @Config.Comment({"Disable CTRL-SHIFT item tooltip display."})
     @Config.Name("Without tooltips")
     public boolean without_tooltips = false;
+
+    @Config.Comment({"Disable all tile entity special renderers."})
+    @Config.Name("Without TESRs")
+    public boolean without_tesrs = false;
   }
 
   @Config.Comment({

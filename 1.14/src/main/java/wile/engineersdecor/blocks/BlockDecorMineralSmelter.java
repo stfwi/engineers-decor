@@ -70,7 +70,6 @@ public class BlockDecorMineralSmelter extends BlockDecorDirectedHorizontal
   public BlockState getStateForPlacement(BlockItemUseContext context)
   { return super.getStateForPlacement(context).with(PHASE, 0); }
 
-
   @Override
   @SuppressWarnings("deprecation")
   public boolean hasComparatorInputOverride(BlockState state)

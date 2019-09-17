@@ -72,11 +72,13 @@ dist-check:
 	@echo "[1.14] Running dist checks ..."
 	@djs tasks.js dist-check
 
-dist: sanatize dist-check clean-all init mod
+dist-files: clean-all init mod
 	@echo "[1.14] Distribution files ..."
 	@mkdir -p dist
 	@cp build/libs/$(MOD_JAR_PREFIX)* dist/
 	@djs tasks.js dist
+
+dist: sanatize dist-check dist-files
 
 assets:
 	@echo "[1.14] Running asset generators ..."

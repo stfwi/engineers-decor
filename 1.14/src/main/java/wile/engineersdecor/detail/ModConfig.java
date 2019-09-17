@@ -11,13 +11,12 @@ package wile.engineersdecor.detail;
 
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.blocks.*;
+import wile.engineersdecor.blocks.BlockDecorSolarPanel.BTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.apache.commons.lang3.tuple.Pair;
-import wile.engineersdecor.blocks.*;
-import wile.engineersdecor.blocks.BlockDecorSolarPanel.BTileEntity;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -44,14 +43,6 @@ public class ModConfig
     CLIENT_CONFIG_SPEC = client_.getRight();
     CLIENT = client_.getLeft();
   }
-
-  @SubscribeEvent
-  public static void onLoad(final net.minecraftforge.fml.config.ModConfig.Loading configEvent)
-  { apply(); ModEngineersDecor.logger().info("Loaded config file {}", configEvent.getConfig().getFileName()); }
-
-  @SubscribeEvent
-  public static void onFileChange(final net.minecraftforge.fml.config.ModConfig.ConfigReloading configEvent)
-  { ModEngineersDecor.logger().info("Config file changed {}", configEvent.getConfig().getFileName()); }
 
   //--------------------------------------------------------------------------------------------------------------------
 
@@ -465,6 +456,9 @@ public class ModConfig
     return false;
   }
 
+  public static boolean withExperimental()
+  { return with_experimental_features_; }
+
   //--------------------------------------------------------------------------------------------------------------------
   // Cache
   //--------------------------------------------------------------------------------------------------------------------
@@ -472,6 +466,7 @@ public class ModConfig
   private static final ArrayList<String> excludes_ = new ArrayList<String>();
   public static boolean without_crafting_table = false;
   public static boolean immersiveengineering_installed = false;
+  private static boolean with_experimental_features_ = false;
 
   public static final void apply()
   {
@@ -484,10 +479,14 @@ public class ModConfig
     BlockDecorSolarPanel.BTileEntity.on_config(COMMON.small_solar_panel_peak_production.get());
     without_crafting_table = isOptedOut(ModContent.TREATED_WOOD_CRAFTING_TABLE);
     immersiveengineering_installed = ModAuxiliaries.isModLoaded("immersiveengineering");
+    with_experimental_features_ = COMMON.with_experimental.get();
+    if(with_experimental_features_) {
+      ModEngineersDecor.logger().info("Config: EXPERIMENTAL FEATURES ENABLED.");
+    }
     {
       String inc = COMMON.pattern_includes.get().toLowerCase().replaceAll(ModEngineersDecor.MODID+":", "").replaceAll("[^*_,a-z0-9]", "");
       if(COMMON.pattern_includes.get() != inc) COMMON.pattern_includes.set(inc);
-      if(!inc.isEmpty()) ModEngineersDecor.logger().info("Pattern includes: '" + inc + "'");
+      if(!inc.isEmpty()) ModEngineersDecor.logger().info("Config pattern includes: '" + inc + "'");
       String[] incl = inc.split(",");
       includes_.clear();
       for(int i=0; i< incl.length; ++i) {
@@ -497,7 +496,7 @@ public class ModConfig
     }
     {
       String exc = COMMON.pattern_includes.get().toLowerCase().replaceAll(ModEngineersDecor.MODID+":", "").replaceAll("[^*_,a-z0-9]", "");
-      if(!exc.isEmpty()) ModEngineersDecor.logger().info("Pattern excludes: '" + exc + "'");
+      if(!exc.isEmpty()) ModEngineersDecor.logger().info("Config pattern excludes: '" + exc + "'");
       String[] excl = exc.split(",");
       excludes_.clear();
       for(int i=0; i< excl.length; ++i) {
@@ -505,8 +504,5 @@ public class ModConfig
         if(!excl[i].isEmpty()) excludes_.add(excl[i]);
       }
     }
-
-
   }
-
 }

@@ -22,10 +22,10 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 
-public class BlockDecorFloorGrating extends BlockDecor
+public class BlockDecorFloorGrating extends BlockDecor.WaterLoggable
 {
   public BlockDecorFloorGrating(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
-  { super(config, builder); }
+  { super(config|CFG_WATERLOGGABLE, builder); }
 
   @Override
   public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos)

@@ -10,7 +10,11 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
-    ~ v1.0.12-b2  [A] Lang files updated.
+    ~ v1.0.12-b2  [A] Crafting Table: Added recipe collision resolver,
+                      also applies to crafting history refabrication.
+                  [A] Crafting Table: Added rendering of placed items
+                      on the top surface of the table.
+                  [M] Lang files updated.
 
     - v1.0.12-b1  [A] Mineal Smelter non-experimental now.
                   [M] Window submodels stripped (reopened issue #19, thx overchoice).

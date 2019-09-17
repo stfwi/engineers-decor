@@ -1,7 +1,7 @@
 
-## Engineer's Decor (MC1.14.3)
+## Engineer's Decor (MC1.14.4)
 
-Mod sources for Minecraft version 1.14.3.
+Mod sources for Minecraft version 1.14.4.
 
 - Description, credits, and features: Please see the readme in the repository root.
 
@@ -10,6 +10,12 @@ Mod sources for Minecraft version 1.14.3.
 ----
 
 ## Version history
+
+    ~ v1.0.12-b3 [A] Crafting Table: Added recipe collision resolver,
+                     also applies to crafting history refabrication.
+                 [A] Crafting Table: Added rendering of placed items
+                     on the top surface of the table.
+                 [A] Waterlogging of non-full-blocks added.
 
     - v1.0.12-b2 [U] Updated to Forge 1.14.4-28.0.105/20190719-1.14.3.
                  [A] Small Solar Panel added.

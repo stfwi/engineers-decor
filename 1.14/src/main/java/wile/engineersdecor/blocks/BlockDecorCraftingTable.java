@@ -11,16 +11,10 @@ package wile.engineersdecor.blocks;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.detail.Networking;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.button.ImageButton;
 import net.minecraft.inventory.container.*;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.play.server.SSetSlotPacket;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.world.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -31,7 +25,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.ICraftingRecipe;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.inventory.*;
 import net.minecraft.nbt.CompoundNBT;
@@ -40,8 +38,12 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.button.ImageButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -51,9 +53,10 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.google.common.collect.ImmutableList;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
-public class BlockDecorCraftingTable extends BlockDecorDirected
+public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
 {
   public static boolean with_assist = true;
   public static boolean with_assist_direct_history_refab = false;
@@ -68,7 +71,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
   }
 
   public BlockDecorCraftingTable(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
-  { super(config, builder, unrotatedAABB); }
+  { super(config|CFG_WATERLOGGABLE, builder, unrotatedAABB); }
 
   @Override
   public boolean hasTileEntity(BlockState state)
@@ -168,20 +171,33 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
     // TileEntity ------------------------------------------------------------------------------
 
     @Override
-    public void read(CompoundNBT compound)
-    { super.read(compound); readnbt(compound); }
+    public void read(CompoundNBT nbt)
+    { super.read(nbt); readnbt(nbt); }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound)
-    { super.write(compound); writenbt(compound); return compound; }
+    public CompoundNBT write(CompoundNBT nbt)
+    { super.write(nbt); writenbt(nbt); return nbt; }
 
     @Override
     public CompoundNBT getUpdateTag()
     { CompoundNBT nbt = super.getUpdateTag(); writenbt(nbt); return nbt; }
 
     @Override
-    public void onLoad()
-    {}
+    @Nullable
+    public SUpdateTileEntityPacket getUpdatePacket()
+    { return new SUpdateTileEntityPacket(pos, 1, getUpdateTag()); }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) // on client
+    { super.read(pkt.getNbtCompound()); readnbt(pkt.getNbtCompound()); super.onDataPacket(net, pkt); }
+
+    @Override
+    public void handleUpdateTag(CompoundNBT tag) // on client
+    { read(tag); }
+
+    @OnlyIn(Dist.CLIENT)
+    public double getMaxRenderDistanceSquared()
+    { return 400; }
 
     // INameable ---------------------------------------------------------------------------
 
@@ -251,7 +267,13 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
 
     @Override
     public void closeInventory(PlayerEntity player)
-    { this.markDirty(); }
+    {
+      markDirty();
+      if(world instanceof World) {
+        BlockState state = world.getBlockState(pos);
+        world.notifyBlockUpdate(pos, state, state, 1|2);
+      }
+    }
 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack)
@@ -356,6 +378,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
     private final CraftingHistory history_;
     private final BInventoryCrafting matrix_;
     private final CraftResultInventory result_;
+    private boolean has_recipe_collision_;
 
     public BContainer(int cid, PlayerInventory pinv)
     { this(cid, pinv, new Inventory(BTileEntity.NUM_OF_SLOTS), IWorldPosCallable.DUMMY); }
@@ -423,15 +446,22 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
           //craft(windowId, world, player_, matrix_, result_);
           ServerPlayerEntity player = (ServerPlayerEntity) player_;
           ItemStack stack = ItemStack.EMPTY;
-          Optional<ICraftingRecipe> optional = world.getServer().getRecipeManager().getRecipe(IRecipeType.CRAFTING, matrix_, world);
-          if(optional.isPresent()) {
-            ICraftingRecipe icraftingrecipe = optional.get();
-            if(result_.canUseRecipe(world, player, icraftingrecipe)) {
-              stack = icraftingrecipe.getCraftingResult(matrix_);
+          List<ICraftingRecipe> recipes = world.getServer().getRecipeManager().getRecipes(IRecipeType.CRAFTING, matrix_, world);
+          has_recipe_collision_ = false;
+          if(recipes.size() > 0) {
+            ICraftingRecipe recipe = recipes.get(0);
+            IRecipe<?> currently_used = result_.getRecipeUsed();
+            has_recipe_collision_ = (recipes.size() > 1);
+            if((recipes.size() > 1) && (currently_used instanceof ICraftingRecipe) && (recipes.contains(currently_used))) {
+              recipe = (ICraftingRecipe)currently_used;
+            }
+            if(result_.canUseRecipe(world, player, recipe)) {
+              stack = recipe.getCraftingResult(matrix_);
             }
           }
           result_.setInventorySlotContents(0, stack);
           player.connection.sendPacket(new SSetSlotPacket(windowId, 0, stack));
+          syncProperties(player);
         } catch(Throwable exc) {
           ModEngineersDecor.logger().error("Recipe failed:", exc);
         }
@@ -491,6 +521,39 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
     }
 
     // private aux methods ---------------------------------------------------------------------
+
+    public boolean has_recipe_collision()
+    { return has_recipe_collision_; }
+
+    public void select_next_collision_recipe(IInventory inv)
+    {
+      wpc_.consume((world,pos)->{
+        if(world.isRemote) return;
+        try {
+          ServerPlayerEntity player = (ServerPlayerEntity) player_;
+          final List<ICraftingRecipe> matching_recipes = world.getServer().getRecipeManager().getRecipes(IRecipeType.CRAFTING, matrix_, world);
+          if(matching_recipes.size() < 2) return; // nothing to change
+          IRecipe<?> currently_used = result_.getRecipeUsed();
+          List<ICraftingRecipe> usable_recipes = matching_recipes.stream()
+            .filter((r)->result_.canUseRecipe(world,player,r))
+            .sorted((a,b)->Integer.compare(a.getId().hashCode(), b.getId().hashCode()))
+            .collect(Collectors.toList());
+          for(int i=0; i<usable_recipes.size(); ++i) {
+            if(usable_recipes.get(i) == currently_used) {
+              if(++i >= usable_recipes.size()) i=0;
+              currently_used = usable_recipes.get(i);
+              ItemStack stack = ((ICraftingRecipe)currently_used).getCraftingResult(matrix_);
+              result_.setInventorySlotContents(0, stack);
+              result_.setRecipeUsed(currently_used);
+              break;
+            }
+          }
+          onCraftMatrixChanged(inv);
+        } catch(Throwable exc) {
+          ModEngineersDecor.logger().error("Recipe failed:", exc);
+        }
+      });
+    }
 
     private boolean itemstack_recipe_match(ItemStack grid_stack, ItemStack history_stack)
     {
@@ -680,6 +743,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
     private EnumRefabPlacement place_refab_stacks(IInventory inventory, final int slot_begin, final int slot_end)
     {
       List<ItemStack> to_fill = crafting_slot_stacks_to_add();
+      if(history_.current_recipe() != null) result_.setRecipeUsed(history_.current_recipe());
       boolean slots_changed = false;
       boolean missing_item = false;
       int num_slots_placed = 0;
@@ -719,6 +783,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
     private EnumRefabPlacement distribute_stack(IInventory inventory, final int slotno)
     {
       List<ItemStack> to_refab = crafting_slot_stacks_to_add();
+      if(history_.current_recipe() != null) result_.setRecipeUsed(history_.current_recipe());
       ItemStack to_distribute = inventory.getStackInSlot(slotno).copy();
       if(to_distribute.isEmpty()) return EnumRefabPlacement.UNCHANGED;
       int matching_grid_stack_sizes[] = {-1,-1,-1,-1,-1,-1,-1,-1,-1};
@@ -796,9 +861,8 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
 
     public void onServerPacketReceived(int windowId, CompoundNBT nbt)
     {
-      if(nbt.contains("history")) {
-        history_.read(nbt.getCompound("history"));
-      }
+      if(nbt.contains("history"))  history_.read(nbt.getCompound("history"));
+      if(nbt.contains("hascollision")) has_recipe_collision_ = nbt.getBoolean("hascollision");
     }
 
     public void onClientPacketReceived(int windowId, PlayerEntity player, CompoundNBT nbt)
@@ -871,6 +935,9 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
               if(stat != EnumRefabPlacement.UNCHANGED) { player_inventory_changed = true; changed = true; }
             }
           } break;
+          case BGui.BUTTON_NEXT_COLLISION_RECIPE: {
+            select_next_collision_recipe(inventory_);
+          } break;
         }
       }
       if(changed) inventory_.markDirty();
@@ -895,6 +962,14 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
       }
       final CompoundNBT nbt = new CompoundNBT();
       nbt.put("history", hist_nbt);
+      nbt.putBoolean("hascollision", has_recipe_collision_);
+      Networking.PacketContainerSyncServerToClient.sendToPlayer(player, windowId, nbt);
+    }
+
+    private void syncProperties(PlayerEntity player)
+    {
+      final CompoundNBT nbt = new CompoundNBT();
+      nbt.putBoolean("hascollision", has_recipe_collision_);
       Networking.PacketContainerSyncServerToClient.sendToPlayer(player, windowId, nbt);
     }
   }
@@ -913,6 +988,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
     protected static final String BUTTON_TO_STORAGE = "to-storage";
     protected static final String BUTTON_FROM_PLAYER = "from-player";
     protected static final String BUTTON_TO_PLAYER = "to-player";
+    protected static final String BUTTON_NEXT_COLLISION_RECIPE = "next-recipe";
     protected static final String ACTION_PLACE_CURRENT_HISTORY_SEL = "place-refab";
     protected static final String ACTION_PLACE_SHIFTCLICKED_STACK = "place-stack";
     protected static final ResourceLocation BACKGROUND = new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/treated_wood_crafting_table.png");
@@ -936,6 +1012,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
         buttons.add(addButton(new ImageButton(x0+158,y0+44, 12,12, 194,44, 12, BACKGROUND, (bt)->action(BUTTON_NEXT))));
         buttons.add(addButton(new ImageButton(x0+158,y0+30, 12,12, 180,30, 12, BACKGROUND, (bt)->action(BUTTON_PREV))));
         buttons.add(addButton(new ImageButton(x0+158,y0+58, 12,12, 194,8,  12, BACKGROUND, (bt)->action(BUTTON_CLEAR_GRID))));
+        buttons.add(addButton(new ImageButton(x0+132,y0+18, 20,10, 183,95, 12, BACKGROUND, (bt)->action(BUTTON_NEXT_COLLISION_RECIPE))));
         if(with_assist_quickmove_buttons) {
           buttons.add(addButton(new ImageButton(x0+49, y0+34,  9,17, 219,34, 17, BACKGROUND, (bt)->action(BUTTON_FROM_STORAGE))));
           buttons.add(addButton(new ImageButton(x0+49, y0+52,  9,17, 208,16, 17, BACKGROUND, (bt)->action(BUTTON_TO_STORAGE))));
@@ -948,6 +1025,11 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
     @Override
     public void render(int mouseX, int mouseY, float partialTicks)
     {
+      if(with_assist) {
+        boolean is_collision = getContainer().has_recipe_collision();
+        buttons.get(3).visible = is_collision;
+        buttons.get(3).active = is_collision;
+      }
       renderBackground();
       super.render(mouseX, mouseY, partialTicks);
       renderHoveredToolTip(mouseX, mouseY);

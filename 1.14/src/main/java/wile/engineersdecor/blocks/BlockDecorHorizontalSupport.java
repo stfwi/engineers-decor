@@ -9,6 +9,7 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.block.IWaterLoggable;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.detail.ModAuxiliaries;
 import net.minecraft.entity.EntityType;
@@ -35,7 +36,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 
-public class BlockDecorHorizontalSupport extends BlockDecor
+public class BlockDecorHorizontalSupport extends BlockDecor implements IWaterLoggable
 {
   public static final BooleanProperty EASTWEST  = BooleanProperty.create("eastwest");
   public static final BooleanProperty LEFTBEAM  = BooleanProperty.create("leftbeam");
@@ -45,7 +46,7 @@ public class BlockDecorHorizontalSupport extends BlockDecor
 
   public BlockDecorHorizontalSupport(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
   {
-    super(config|CFG_HORIZIONTAL, builder);
+    super(config|CFG_HORIZIONTAL|CFG_WATERLOGGABLE, builder);
     AABBs = new ArrayList<VoxelShape>(Arrays.asList(
       // Effective bounding box
       VoxelShapes.create(ModAuxiliaries.getRotatedAABB(unrotatedAABB.grow(2.0/16, 0, 0), Direction.NORTH, true)),
@@ -80,12 +81,12 @@ public class BlockDecorHorizontalSupport extends BlockDecor
 
   @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-  { builder.add(EASTWEST, RIGHTBEAM, LEFTBEAM, DOWNCONNECT); }
+  { super.fillStateContainer(builder); builder.add(EASTWEST, RIGHTBEAM, LEFTBEAM, DOWNCONNECT, WATERLOGGED); }
 
   @Override
   @Nullable
   public BlockState getStateForPlacement(BlockItemUseContext context)
-  { return temp_block_update_until_better(getDefaultState().with(EASTWEST, context.getPlacementHorizontalFacing().getAxis()==Direction.Axis.X), context.getWorld(), context.getPos()); }
+  { return temp_block_update_until_better(super.getStateForPlacement(context).with(EASTWEST, context.getPlacementHorizontalFacing().getAxis()==Direction.Axis.X), context.getWorld(), context.getPos()); }
 
   private BlockState temp_block_update_until_better(BlockState state, IWorld world, BlockPos pos)
   {

@@ -51,7 +51,7 @@ public class BlockDecorSlab extends BlockDecor
   { return state.get(PARTS) >= 2; }
 
   public BlockDecorSlab(long config, Block.Properties builder)
-  { super(config, builder); }
+  { super(config|CFG_WATERLOGGABLE, builder); }
 
   @Override
   @OnlyIn(Dist.CLIENT)
@@ -87,7 +87,7 @@ public class BlockDecorSlab extends BlockDecor
 
   @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-  { builder.add(PARTS, TEXTURE_VARIANT); }
+  { super.fillStateContainer(builder); builder.add(PARTS, TEXTURE_VARIANT, WATERLOGGED); }
 
   @Override
   @Nullable
@@ -96,7 +96,7 @@ public class BlockDecorSlab extends BlockDecor
     final Direction facing = context.getFace();
     double y = context.getHitVec().getY();
     int rnd = MathHelper.clamp((int)(MathHelper.getPositionRandom(context.getPos()) % 4), 0, 3);
-    return getDefaultState().with(PARTS, ((facing==Direction.UP) || ((facing!=Direction.DOWN) && (y < 0.6))) ? 0 : 1).with(TEXTURE_VARIANT, rnd);
+    return super.getStateForPlacement(context).with(PARTS, ((facing==Direction.UP) || ((facing!=Direction.DOWN) && (y < 0.6))) ? 0 : 1).with(TEXTURE_VARIANT, rnd);
   }
 
   @Override

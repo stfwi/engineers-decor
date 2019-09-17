@@ -25,6 +25,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -594,6 +595,11 @@ public class ModContent
     }
     for(Item e:registeredItems) {
       if(e instanceof ItemDecor) ((ItemDecor)e).initModel();
+    }
+    if(!ModConfig.optout.without_tesrs) {
+      if(!ModConfig.isOptedOut(TREATED_WOOD_CRAFTING_TABLE)) {
+        ClientRegistry.bindTileEntitySpecialRenderer(BlockDecorCraftingTable.BTileEntity.class, new ModTesrs.TesrDecorCraftingTable());
+      }
     }
   }
 

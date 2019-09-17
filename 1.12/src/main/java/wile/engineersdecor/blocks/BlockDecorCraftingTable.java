@@ -9,24 +9,29 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.detail.Networking;
+import net.minecraft.world.World;
+import net.minecraft.world.Explosion;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.world.World;
-import net.minecraft.world.Explosion;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.init.Items;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -342,12 +347,13 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
     protected static final int BUTTON_NEXT = 0;
     protected static final int BUTTON_PREV = 1;
     protected static final int BUTTON_CLEAR_GRID = 2;
-    protected static final int BUTTON_FROM_STORAGE = 3;
-    protected static final int BUTTON_TO_STORAGE = 4;
-    protected static final int BUTTON_FROM_PLAYER = 5;
-    protected static final int BUTTON_TO_PLAYER = 6;
-    protected static final int ACTION_PLACE_CURRENT_HISTORY_SEL = 7;
-    protected static final int ACTION_PLACE_SHIFTCLICKED_STACK = 8;
+    protected static final int BUTTON_NEXT_COLLISION_RECIPE = 3;
+    protected static final int BUTTON_FROM_STORAGE = 4;
+    protected static final int BUTTON_TO_STORAGE = 5;
+    protected static final int BUTTON_FROM_PLAYER = 6;
+    protected static final int BUTTON_TO_PLAYER = 7;
+    protected static final int ACTION_PLACE_CURRENT_HISTORY_SEL = 8;
+    protected static final int ACTION_PLACE_SHIFTCLICKED_STACK = 9;
 
     protected static final ResourceLocation BACKGROUND = new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/treated_wood_crafting_table.png");
     protected final BTileEntity te;
@@ -369,6 +375,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
         buttons.add(addButton(new GuiButtonImage(BUTTON_NEXT,       x0+158,y0+44, 12,12, 194,44, 12, BACKGROUND)));
         buttons.add(addButton(new GuiButtonImage(BUTTON_PREV,       x0+158,y0+30, 12,12, 180,30, 12, BACKGROUND)));
         buttons.add(addButton(new GuiButtonImage(BUTTON_CLEAR_GRID, x0+158,y0+58, 12,12, 194,8,  12, BACKGROUND)));
+        buttons.add(addButton(new GuiButtonImage(BUTTON_NEXT_COLLISION_RECIPE, x0+132,y0+18, 20,10, 183,95, 12, BACKGROUND)));
         if(with_assist_quickmove_buttons) {
           buttons.add(addButton(new GuiButtonImage(BUTTON_FROM_STORAGE, x0+49, y0+34,  9,17, 219,34, 17, BACKGROUND)));
           buttons.add(addButton(new GuiButtonImage(BUTTON_TO_STORAGE,   x0+49, y0+52,  9,17, 208,16, 17, BACKGROUND)));
@@ -381,6 +388,10 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
+      if(with_assist) {
+        buttons.get(BUTTON_NEXT_COLLISION_RECIPE).visible = te.has_recipe_collision();
+        buttons.get(BUTTON_NEXT_COLLISION_RECIPE).enabled = te.has_recipe_collision();
+      }
       drawDefaultBackground();
       super.drawScreen(mouseX, mouseY, partialTicks);
       renderHoveredToolTip(mouseX, mouseY);
@@ -476,7 +487,8 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
         case BUTTON_TO_STORAGE:
         case BUTTON_FROM_PLAYER:
         case BUTTON_TO_PLAYER:
-        case ACTION_PLACE_CURRENT_HISTORY_SEL: {
+        case ACTION_PLACE_CURRENT_HISTORY_SEL:
+        case BUTTON_NEXT_COLLISION_RECIPE: {
           NBTTagCompound nbt = new NBTTagCompound();
           nbt.setInteger("action", button.id);
           Networking.PacketTileNotify.sendToServer(te, nbt);
@@ -615,8 +627,32 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
     @Override
     public void onCraftMatrixChanged(IInventory inv)
     {
+      if(world.isRemote) return;
       try {
-        slotChangedCraftingGrid(world, player, craftMatrix, craftResult);
+        InventoryCrafting grid = craftMatrix;
+        InventoryCraftResult result = craftResult;
+        EntityPlayerMP pl = (EntityPlayerMP)player;
+        ItemStack stack = ItemStack.EMPTY;
+        List<IRecipe> matching_recipes = new ArrayList<IRecipe>();
+        final IRecipe current_recipe = result.getRecipeUsed();
+        final ItemStack current_recipe_stack = result.getStackInSlot(0);
+        IRecipe current_recipe_matching = null;
+        for(IRecipe r:CraftingManager.REGISTRY) {
+          if((r==null) || (!r.matches(grid, world))) continue;
+          if((!r.isDynamic()) && (world.getGameRules().getBoolean("doLimitedCrafting")) && (!pl.getRecipeBook().isUnlocked(r))) continue;
+          matching_recipes.add(r);
+          ItemStack recipe_result_stack = r.getCraftingResult(grid);
+          if((r==current_recipe) || (recipe_result_stack.isItemEqual(current_recipe_stack))) current_recipe_matching = r;
+        }
+        te.has_recipe_collision_ = (matching_recipes.size() > 1);
+        if(matching_recipes.size() > 0) {
+          if(current_recipe_matching==null) current_recipe_matching = matching_recipes.get(0);
+          result.setRecipeUsed(current_recipe_matching);
+          stack = current_recipe_matching.getCraftingResult(grid);
+        }
+        result.setInventorySlotContents(0, stack);
+        pl.connection.sendPacket(new SPacketSetSlot(this.windowId, 0, stack));
+        te.syncProperties(player);
       } catch(Throwable exc) {
         ModEngineersDecor.logger.error("Recipe failed:", exc);
       }
@@ -676,6 +712,31 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
 
     public void setCraftingMatrixSlot(int slot_index, ItemStack stack)
     { craftMatrix.setInventorySlotContents(slot_index, stack.copy()); }
+
+    public void select_next_collision_recipe(IInventory inv, EntityPlayer player)
+    {
+      if(world.isRemote) return;
+      try {
+        EntityPlayerMP pl = (EntityPlayerMP) player;
+        List<IRecipe> matching_recipes = new ArrayList<IRecipe>();
+        final IRecipe current_recipe = craftResult.getRecipeUsed();
+        final ItemStack current_recipe_stack = craftResult.getStackInSlot(0);
+        int next_recipe_index = 0;
+        for(IRecipe r:CraftingManager.REGISTRY) {
+          if((r==null) || (!r.matches(craftMatrix, world))) continue;
+          if((!r.isDynamic()) && (world.getGameRules().getBoolean("doLimitedCrafting")) && (!pl.getRecipeBook().isUnlocked(r))) continue;
+          matching_recipes.add(r);
+          ItemStack recipe_result_stack = r.getCraftingResult(craftMatrix);
+          if((r==current_recipe) || (recipe_result_stack.isItemEqual(current_recipe_stack))) next_recipe_index = matching_recipes.size();
+        }
+        IRecipe next_recipe = matching_recipes.get((next_recipe_index >= matching_recipes.size()) ? 0 : next_recipe_index);
+        craftResult.setInventorySlotContents(0, next_recipe.getCraftingResult(craftMatrix));
+        craftResult.setRecipeUsed(next_recipe);
+        onCraftMatrixChanged(inv);
+      } catch(Throwable exc) {
+        ModEngineersDecor.logger.error("Recipe failed:", exc);
+      }
+    }
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -741,6 +802,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
     public static final int NUM_OF_SLOTS = NUM_OF_CRAFTING_SLOTS+NUM_OF_STORAGE_SLOTS;
     protected NonNullList<ItemStack> stacks;
     protected final CraftingHistory history = new CraftingHistory();
+    protected boolean has_recipe_collision_ = false;
 
     public BTileEntity()
     { stacks = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY); }
@@ -763,6 +825,9 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
     }
 
     // private aux methods ---------------------------------------------------------------------
+
+    private boolean has_recipe_collision()
+    { return has_recipe_collision_; }
 
     private boolean itemstack_recipe_match(ItemStack grid_stack, ItemStack history_stack)
     {
@@ -948,7 +1013,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
     }
 
     enum EnumRefabPlacement { UNCHANGED, INCOMPLETE, PLACED }
-    private EnumRefabPlacement place_refab_stacks(IInventory inventory, final int slot_begin, final int slot_end)
+    private EnumRefabPlacement place_refab_stacks(IInventory inventory, final int slot_begin, final int slot_end, @Nullable EntityPlayer player)
     {
       List<ItemStack> to_fill = crafting_slot_stacks_to_add();
       boolean slots_changed = false;
@@ -977,6 +1042,9 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
           }
           if(!slots_updated) break;
         }
+      }
+      if((history.current_recipe() != null) && (player!=null) && (player.openContainer instanceof BContainer)) {
+        ((BContainer)player.openContainer).craftResult.setRecipeUsed(history.current_recipe());
       }
       if(!slots_changed) {
         return EnumRefabPlacement.UNCHANGED;
@@ -1094,25 +1162,25 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
             if(clear_grid_to_player(player)) { te_changed = true; player_inventory_changed = true; }
           } break;
           case BGui.BUTTON_FROM_STORAGE: {
-            EnumRefabPlacement from_storage = place_refab_stacks(this, STORAGE_SLOTS_BEGIN, STORAGE_SLOTS_BEGIN + NUM_OF_STORAGE_SLOTS);
+            EnumRefabPlacement from_storage = place_refab_stacks(this, STORAGE_SLOTS_BEGIN, STORAGE_SLOTS_BEGIN + NUM_OF_STORAGE_SLOTS, player);
             if(from_storage != EnumRefabPlacement.UNCHANGED) te_changed = true;
           } break;
           case BGui.BUTTON_FROM_PLAYER: {
-            EnumRefabPlacement from_player_inv = place_refab_stacks(player.inventory, 9, 36);
+            EnumRefabPlacement from_player_inv = place_refab_stacks(player.inventory, 9, 36, player);
             if(from_player_inv != EnumRefabPlacement.UNCHANGED) { te_changed = true; player_inventory_changed = true; }
             if(from_player_inv != EnumRefabPlacement.PLACED) {
-              EnumRefabPlacement from_hotbar = place_refab_stacks(player.inventory, 0, 9);
+              EnumRefabPlacement from_hotbar = place_refab_stacks(player.inventory, 0, 9, player);
               if(from_hotbar != EnumRefabPlacement.UNCHANGED) { te_changed = true; player_inventory_changed = true; }
             }
           } break;
           case BGui.ACTION_PLACE_CURRENT_HISTORY_SEL: {
-            EnumRefabPlacement from_storage = place_refab_stacks(this, STORAGE_SLOTS_BEGIN, STORAGE_SLOTS_BEGIN + NUM_OF_STORAGE_SLOTS);
+            EnumRefabPlacement from_storage = place_refab_stacks(this, STORAGE_SLOTS_BEGIN, STORAGE_SLOTS_BEGIN + NUM_OF_STORAGE_SLOTS, player);
             if(from_storage != EnumRefabPlacement.UNCHANGED) te_changed = true;
             if(from_storage != EnumRefabPlacement.PLACED) {
-              EnumRefabPlacement from_player_inv = place_refab_stacks(player.inventory, 9, 36);
+              EnumRefabPlacement from_player_inv = place_refab_stacks(player.inventory, 9, 36, player);
               if(from_player_inv != EnumRefabPlacement.UNCHANGED) { te_changed = true; player_inventory_changed = true; }
               if(from_player_inv != EnumRefabPlacement.PLACED) {
-                EnumRefabPlacement from_hotbar = place_refab_stacks(player.inventory, 0, 9);
+                EnumRefabPlacement from_hotbar = place_refab_stacks(player.inventory, 0, 9, player);
                 if(from_hotbar != EnumRefabPlacement.UNCHANGED) { te_changed = true; player_inventory_changed = true; }
               }
             }
@@ -1132,6 +1200,11 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
               if(stat != EnumRefabPlacement.UNCHANGED) { player_inventory_changed = true; te_changed = true; }
             }
           } break;
+          case BGui.BUTTON_NEXT_COLLISION_RECIPE: {
+            if(player.openContainer instanceof BContainer) {
+              ((BContainer)player.openContainer).select_next_collision_recipe(this, player);
+            }
+          } break;
         }
       }
       if(te_changed) markDirty();
@@ -1146,6 +1219,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
     public void onServerPacketReceived(NBTTagCompound nbt)
     {
       if(nbt.hasKey("historydata")) history.read(nbt.getCompoundTag("historydata"));
+      if(nbt.hasKey("hascollision")) has_recipe_collision_ = nbt.getBoolean("hascollision");
     }
 
     private void syncHistory(EntityPlayer player)
@@ -1155,6 +1229,15 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
       history.write(history_nbt);
       NBTTagCompound rnbt = new NBTTagCompound();
       rnbt.setTag("historydata", history_nbt);
+      rnbt.setBoolean("hascollision", has_recipe_collision_);
+      Networking.PacketTileNotify.sendToPlayer(player, this, rnbt);
+    }
+
+    private void syncProperties(EntityPlayer player)
+    {
+      if(!with_assist) return;
+      NBTTagCompound rnbt = new NBTTagCompound();
+      rnbt.setBoolean("hascollision", has_recipe_collision_);
       Networking.PacketTileNotify.sendToPlayer(player, this, rnbt);
     }
 
@@ -1173,8 +1256,25 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
     { super.writeToNBT(nbt); writenbt(nbt); return nbt; }
 
     @Override
-    public NBTTagCompound getUpdateTag()
+    public NBTTagCompound getUpdateTag() // on server
     { NBTTagCompound nbt = new NBTTagCompound(); super.writeToNBT(nbt); writenbt(nbt); return nbt; }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) // on client
+    { super.readFromNBT(pkt.getNbtCompound()); readnbt(pkt.getNbtCompound()); super.onDataPacket(net, pkt); }
+
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() // on server
+    { return new SPacketUpdateTileEntity(pos, 1, getUpdateTag()); }
+
+    @Override
+    public void handleUpdateTag(NBTTagCompound tag) // on client
+    { readFromNBT(tag); }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public double getMaxRenderDistanceSquared()
+    { return 400; }
 
     // IWorldNamable ---------------------------------------------------------------------------
 
@@ -1256,7 +1356,6 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
     @Override
     public void clear()
     { stacks.clear(); }
-
   }
 
 }

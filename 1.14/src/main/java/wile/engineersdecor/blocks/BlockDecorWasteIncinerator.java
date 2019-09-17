@@ -71,7 +71,7 @@ public class BlockDecorWasteIncinerator extends BlockDecor
 
   @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-  { builder.add(LIT); }
+  { super.fillStateContainer(builder); builder.add(LIT); }
 
   @Override
   @Nullable
