@@ -13,7 +13,8 @@ Mod sources for Minecraft version 1.14.4.
 
     ~ v1.0.13-b1 [A]
 
-    - v1.0.12-b3 [A] Crafting Table: Added recipe collision resolver,
+    - v1.0.12-b3 [U] Updated to Forge 1.14.4-28.1.10/20190719-1.14.3.
+                 [A] Crafting Table: Added recipe collision resolver,
                      also applies to crafting history refabrication.
                  [A] Crafting Table: Added rendering of placed items
                      on the top surface of the table.

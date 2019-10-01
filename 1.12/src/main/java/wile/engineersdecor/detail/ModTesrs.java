@@ -11,16 +11,23 @@ package wile.engineersdecor.detail;
 
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.blocks.BlockDecorCraftingTable;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.init.Blocks;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import wile.engineersdecor.blocks.BlockDecorTest;
 
 public class ModTesrs
 {
@@ -82,4 +89,36 @@ public class ModTesrs
     }
   }
 
+  //--------------------------------------------------------------------------------------------------------------------
+
+  @SideOnly(Side.CLIENT)
+  public static class TesrDecorTest extends TileEntitySpecialRenderer<BlockDecorTest.BTileEntity>
+  {
+    @Override
+    public void render(final BlockDecorTest.BTileEntity te, double x, double y, double z, final float partialTicks, final int destroyStage, final float alpha)
+    {
+      renderBlockState(Blocks.SANDSTONE.getDefaultState(), te.getPos(), (new Vec3d(1,1,1)).scale(te.progress()), x,y,z);
+    }
+
+    public void renderBlockState(IBlockState state, BlockPos pos, Vec3d offset, double basex, double basey, double basez)
+    {
+      if(state.getMaterial() == Material.AIR) return;
+      BlockRendererDispatcher brd = Minecraft.getMinecraft().getBlockRendererDispatcher();
+      Tessellator tessellator = Tessellator.getInstance();
+      BufferBuilder bb = tessellator.getBuffer();
+      bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+      RenderHelper.disableStandardItemLighting();
+      GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+      GlStateManager.enableBlend();
+      GlStateManager.disableCull();
+      GlStateManager.shadeModel(Minecraft.isAmbientOcclusionEnabled() ? 7425 : 7424);
+      bb.begin(7, DefaultVertexFormats.BLOCK);
+      bb.setTranslation(basex-(double)pos.getX()+offset.x, basey-(double)pos.getY()+offset.y,basez-(double)pos.getZ()+offset.z);
+      final boolean checkSides=true;
+      brd.getBlockModelRenderer().renderModel(getWorld(), brd.getModelForState(state), state, pos, bb, checkSides);
+      bb.setTranslation(0.0, 0.0, 0.0);
+      tessellator.draw();
+      RenderHelper.enableStandardItemLighting();
+    }
+  }
 }

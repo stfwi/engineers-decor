@@ -10,6 +10,16 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+                  -------------------------------------------------------------------
+    - v1.0.12     [R] Release based on v1.0.12-b2. Release-to-release changes:
+                      * Crafting table: Recipe collision resolver added. Items are
+                        rendered on the table surface.
+                      * Small Mineral Smelter released.
+                      * Factory Dropper: Continuous dropping mode added.
+                      * Block opacity fixes, window model fixes.
+                      * Lang file updates.
+                  -------------------------------------------------------------------
+
     - v1.0.12-b2  [A] Crafting Table: Added recipe collision resolver,
                       also applies to crafting history refabrication.
                   [A] Crafting Table: Added rendering of placed items

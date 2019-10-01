@@ -196,7 +196,8 @@ tile.engineersdecor.halfslab_sheetmetal_gold.name=Gold Sheet Metal Slice
 #tile.engineersdecor.halfslab_sheetmetal_gold.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
 tile.engineersdecor.halfslab_sheetmetal_aluminum.name=Aluminum Sheet Metal Slice
 #tile.engineersdecor.halfslab_sheetmetal_aluminum.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
-
+tile.engineersdecor.testblock.name=ED Test Block (do NOT use)
+#tile.engineersdecor.testblock.help=§6Uncraftable mod testing block with changing experimental functionality. DO NOT USE, may even cause a crash in the worst case!!
 #-----------------------------------------------------------------------------------------------------------
 engineersdecor.config.title=工程师的装饰配置
 engineersdecor.config.pattern_excludes=Pattern excludes
@@ -241,7 +242,6 @@ engineersdecor.config.pipevalve_max_flowrate=Valves: Max flow rate
 engineersdecor.config.pipevalve_redstone_gain=Valves: Redstone slope
 engineersdecor.config.e_furnace_speed_percent=E-furnace: Smelting speed %
 engineersdecor.config.e_furnace_power_consumption=E-furnace: Power consumption
-
 #-----------------------------------------------------------------------------------------------------------
 # EOF
 #-----------------------------------------------------------------------------------------------------------

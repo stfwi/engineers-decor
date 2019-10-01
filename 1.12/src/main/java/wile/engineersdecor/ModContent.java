@@ -389,6 +389,15 @@ public class ModContent
   );
 
   //--------------------------------------------------------------------------------------------------------------------
+
+  public static final BlockDecorTest TEST_BLOCK = new BlockDecorTest(
+    "testblock",
+    BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
+    Material.IRON, 0.1f, 9000f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+  );
+
+  //--------------------------------------------------------------------------------------------------------------------
   //-- Tile entities
   //--------------------------------------------------------------------------------------------------------------------
 
@@ -431,6 +440,10 @@ public class ModContent
 
   private static final TileEntityRegistrationData SMALL_TREE_CUTTER_TEI = new TileEntityRegistrationData(
     BlockDecorTreeCutter.BTileEntity.class, "te_small_tree_cutter"
+  );
+
+  private static final TileEntityRegistrationData TEST_BLOCK_TEI = new TileEntityRegistrationData(
+    BlockDecorTest.BTileEntity.class, "te_testblock"
   );
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -495,9 +508,10 @@ public class ModContent
   private static final Object dev_content[] = {
     SIGN_MINDSTEP,
     PANZERGLASS_SLAB,                         // @todo: check if another class is needed due to is_side_visible
-    SMALL_SOLAR_PANEL,SMALL_SOLAR_PANEL_TEI,  // @todo: check power tuning <= Peltier generator
     TREATED_WOOD_FLOOR,                       // @todo: check if textures need improvement
-    SMALL_TREE_CUTTER,SMALL_TREE_CUTTER_TEI,  // @todo: test
+    SMALL_SOLAR_PANEL,SMALL_SOLAR_PANEL_TEI,
+    SMALL_TREE_CUTTER,SMALL_TREE_CUTTER_TEI,
+    TEST_BLOCK,TEST_BLOCK_TEI
   };
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -599,6 +613,9 @@ public class ModContent
     if(!ModConfig.optout.without_tesrs) {
       if(!ModConfig.isOptedOut(TREATED_WOOD_CRAFTING_TABLE)) {
         ClientRegistry.bindTileEntitySpecialRenderer(BlockDecorCraftingTable.BTileEntity.class, new ModTesrs.TesrDecorCraftingTable());
+      }
+      if(!ModConfig.isOptedOut(TEST_BLOCK)) {
+        ClientRegistry.bindTileEntitySpecialRenderer(BlockDecorTest.BTileEntity.class, new ModTesrs.TesrDecorTest());
       }
     }
   }
