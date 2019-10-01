@@ -9,6 +9,7 @@
  */
 package wile.engineersdecor.detail;
 
+import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.blocks.*;
 import net.minecraftforge.common.config.Config;
@@ -190,6 +191,10 @@ public class ModConfig
     @Config.Comment({"Disable CTRL-SHIFT item tooltip display."})
     @Config.Name("Without tooltips")
     public boolean without_tooltips = false;
+
+    @Config.Comment({"Disable all tile entity special renderers."})
+    @Config.Name("Without TESRs")
+    public boolean without_tesrs = false;
   }
 
   @Config.Comment({
@@ -320,6 +325,17 @@ public class ModConfig
     @Config.Name("E-furnace: Power consumption")
     @Config.RangeInt(min=10, max=256)
     public int e_furnace_power_consumption = BlockDecorFurnaceElectrical.BTileEntity.DEFAULT_ENERGY_CONSUMPTION;
+
+    @Config.Comment({
+      "Defines the peak power production (at noon) of the Small Solar Panel. " +
+      "Note that the agerage power is much less, as no power is produced at all during the night, " +
+      "and the power curve is nonlinear rising/falling during the day. Bad weather conditions also " +
+      "decrease the production. " +
+      "The config value can be changed on-the-fly for tuning."
+    })
+    @Config.Name("Solar panel: Peak power")
+    @Config.RangeInt(min=5, max=128)
+    public int solar_panel_peak_power = BlockDecorSolarPanel.BTileEntity.DEFAULT_PEAK_POWER;
   }
 
   @SuppressWarnings("unused")
@@ -340,7 +356,7 @@ public class ModConfig
 
   @SuppressWarnings("unused")
   public static final void onPostInit(FMLPostInitializationEvent event)
-  { for(Block e:ModBlocks.getRegisteredBlocks()) ModConfig.isOptedOut(e, true); }
+  { for(Block e: ModContent.getRegisteredBlocks()) ModConfig.isOptedOut(e, true); }
 
   private static final ArrayList<String> includes_ = new ArrayList<String>();
   private static final ArrayList<String> excludes_ = new ArrayList<String>();
@@ -360,7 +376,7 @@ public class ModConfig
   public static final boolean isOptedOut(final @Nullable Block block, boolean with_log_details)
   {
     if((block == null) || (optout==null)) return true;
-    if(block == ModBlocks.SIGN_MODLOGO) return true;
+    if(block == ModContent.SIGN_MODLOGO) return true;
     if((!zmisc.with_experimental) && (block instanceof ModAuxiliaries.IExperimentalFeature)) return true;
     final String rn = block.getRegistryName().getPath();
     // Force-include/exclude pattern matching
@@ -432,6 +448,7 @@ public class ModConfig
     BlockDecorCraftingTable.on_config(optout.without_crafting_table_history, false, tweaks.with_crafting_quickmove_buttons);
     BlockDecorPipeValve.on_config(tweaks.pipevalve_max_flowrate, tweaks.pipevalve_redstone_slope);
     BlockDecorFurnaceElectrical.BTileEntity.on_config(tweaks.e_furnace_speed_percent, tweaks.e_furnace_power_consumption);
+    BlockDecorSolarPanel.BTileEntity.on_config(tweaks.solar_panel_peak_power);
     {
       optout.includes = optout.includes.toLowerCase().replaceAll(ModEngineersDecor.MODID+":", "").replaceAll("[^*_,a-z0-9]", "");
       if(!optout.includes.isEmpty()) ModEngineersDecor.logger.info("Pattern includes: '" + optout.includes + "'");

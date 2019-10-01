@@ -11,6 +11,28 @@ Mod sources for Minecraft version 1.12.2.
 ## Version history
 
                   -------------------------------------------------------------------
+    - v1.0.12     [R] Release based on v1.0.12-b2. Release-to-release changes:
+                      * Crafting table: Recipe collision resolver added. Items are
+                        rendered on the table surface.
+                      * Small Mineral Smelter released.
+                      * Factory Dropper: Continuous dropping mode added.
+                      * Block opacity fixes, window model fixes.
+                      * Lang file updates.
+                  -------------------------------------------------------------------
+
+    - v1.0.12-b2  [A] Crafting Table: Added recipe collision resolver,
+                      also applies to crafting history refabrication.
+                  [A] Crafting Table: Added rendering of placed items
+                      on the top surface of the table.
+                  [M] Lang files updated.
+
+    - v1.0.12-b1  [A] Mineal Smelter non-experimental now.
+                  [M] Window submodels stripped (reopened issue #19, thx overchoice).
+                  [M] Opaque full block light opacity fixed (issue #50, thx Illomiurge).
+                  [M] Factory Dropper: Added pulse/continuous mode in GUI (issue #51,
+                      thx Aristine for the CR).
+
+                  -------------------------------------------------------------------
     - v1.0.11     [R] Release based on v1.0.11-b3. Release-to-release changes:
                       * Steel floor grating improvments.
                       * Minor model box fixes.
@@ -26,7 +48,7 @@ Mod sources for Minecraft version 1.12.2.
 
     - v1.0.11-b1  [M] Lang update ru-ru (Shellyoung, PR #45).
                   [F] Fixed bounding box of the Steel Table.
-                  [M] Steel Floor Frating: Items fall through.
+                  [M] Steel Floor Grating: Items fall through.
 
                   -------------------------------------------------------------------
     - v1.0.10     [R] Release based on v1.0.10-b2. Release-to-release changes:

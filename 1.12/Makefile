@@ -28,7 +28,7 @@ wildcardr=$(foreach d,$(wildcard $1*),$(call wildcardr,$d/,$2) $(filter $(subst 
 #
 # Targets
 #
-.PHONY: default mod init clean clean-all mrproper all run install sanatize dist-check dist start-server port-languages
+.PHONY: default mod init clean clean-all mrproper all run install sanatize dist-check dist dist-files start-server port-languages
 
 default: mod
 
@@ -94,11 +94,13 @@ dist-check:
 	@echo "[1.12] Running dist checks ..."
 	@djs tasks.js dist-check
 
-dist: sanatize dist-check clean-all mod
+dist-files: clean-all init mod
 	@echo "[1.12] Distribution files ..."
 	@mkdir -p dist
 	@cp build/libs/$(MOD_JAR_PREFIX)* dist/
 	@djs tasks.js dist
+
+dist: sanatize dist-check dist-files
 
 port-languages:
 	@echo "[1.12] Porting language files to 1.14 ..."

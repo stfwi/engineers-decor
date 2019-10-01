@@ -1,0 +1,21 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "experimental": true
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DDD",
+    " D ",
+    " D "
+  ],
+  "key": {
+    "D": { "item": "minecraft:diorite" }
+  },
+  "result": {
+    "item": "minecraft:stone",
+    "count": 1
+  }
+}

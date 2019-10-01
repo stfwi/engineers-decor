@@ -1,6 +1,10 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.14.4": {
+    "1.0.12-b3": "[U] Updated to Forge 1.14.4-28.1.10/20190719-1.14.3.\n[A] Crafting Table: Added recipe collision resolver, also applies to crafting history refabrication.\n[A] Crafting Table: Added rendering of placed items on the top surface of the table.\n[A] Waterlogging of non-full-blocks added.",
+    "1.0.12-b2": "[U] Updated to Forge 1.14.4-28.0.105/20190719-1.14.3.\n[A] Small Solar Panel added.\n[M] Items fall through the Steel Floor Grating like in 1.12.2 version.\n[M] Factory Dropper: Added pulse/continuous mode in GUI (issue #51, thx Aristine for the CR).",
+    "1.0.12-b1": "[U] Updated to Forge 1.14.4-28.0.93/20190719-1.14.3.\n[M] Logo location fixed.",
+    "1.0.11-b3": "[U] Updated to Forge 1.14.4-28.0.81/20190719-1.14.3.\n[F] Adapted recipe condition to Forge version (issue #49).",
     "1.0.11-b2": "[U] JEI dependency update 1.14.4:6.0.0.10.\n[F] Fixed creative ghost block issue (issue #48).\n[M] Updated ru_ru lang file (Shellyoung, PR#47).",
     "1.0.11-b1": "[A] Added Steel Table\n[A] Added Treated Wood Side Table\n[A] Added Exit Sign\n[A] Added Steel Floor Grating\n[M] Sign orientation fixed, only blocked vertical placement.",
     "1.0.9-b9": "[U] Update to Forge 1.14.4-28.0.40/20190719-1.14.3 for Forge testing.",
@@ -21,6 +25,6 @@
   },
   "promos": {
     "1.14.4-recommended": "",
-    "1.14.4-latest": "1.0.11-b2"
+    "1.14.4-latest": "1.0.12-b3"
   }
 }

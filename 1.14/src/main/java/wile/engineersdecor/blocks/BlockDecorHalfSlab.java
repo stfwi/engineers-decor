@@ -10,7 +10,6 @@
 package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.detail.ModAuxiliaries;
-import wile.engineersdecor.detail.ModConfig;
 import net.minecraft.block.*;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -39,7 +38,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class BlockDecorHalfSlab extends BlockDecor
+public class BlockDecorHalfSlab extends BlockDecor implements IWaterLoggable
 {
   public static final IntegerProperty PARTS = IntegerProperty.create("parts", 0, 14);
 
@@ -62,12 +61,10 @@ public class BlockDecorHalfSlab extends BlockDecor
     VoxelShapes.create(new AxisAlignedBB(0,0,0,1,1,1)) // <- with 4bit fill
   };
 
-  protected static final int num_slabs_contained_in_parts_[] = {
-    1,2,3,4,5,6,7,8,7,6,5,4,3,2,1  ,0x1 // <- with 4bit fill
-  };
+  protected static final int num_slabs_contained_in_parts_[] = { 1,2,3,4,5,6,7,8,7,6,5,4,3,2,1 ,0x1 }; // <- with 4bit fill
 
   public BlockDecorHalfSlab(long config, Block.Properties builder)
-  { super(config, builder); }
+  { super(config|CFG_WATERLOGGABLE, builder); }
 
   protected boolean is_cube(BlockState state)
   { return state.get(PARTS) == 0x07; }
@@ -106,7 +103,7 @@ public class BlockDecorHalfSlab extends BlockDecor
 
   @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-  { builder.add(PARTS); }
+  { super.fillStateContainer(builder); builder.add(PARTS, WATERLOGGED); }
 
   @Override
   @Nullable
@@ -114,7 +111,7 @@ public class BlockDecorHalfSlab extends BlockDecor
   {
     final Direction facing = context.getFace();
     double y = context.getHitVec().getY();
-    return getDefaultState().with(PARTS, ((facing==Direction.UP) || ((facing!=Direction.DOWN) && (y < 0.6))) ? 0 : 14);
+    return super.getStateForPlacement(context).with(PARTS, ((facing==Direction.UP) || ((facing!=Direction.DOWN) && (y < 0.6))) ? 0 : 14);
   }
 
   @Override

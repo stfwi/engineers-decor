@@ -1,16 +1,15 @@
 package wile.engineersdecor;
 
 import wile.engineersdecor.detail.ModConfig;
-import wile.engineersdecor.detail.RecipeCondModSpecific;
 import wile.engineersdecor.detail.Networking;
 import wile.engineersdecor.blocks.*;
+import wile.engineersdecor.detail.OptionalRecipeCondition.Serializer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -64,12 +63,12 @@ public class ModEngineersDecor
   private void onSetup(final FMLCommonSetupEvent event)
   {
     LOGGER.info("Registering recipe condition processor ...");
-    CraftingHelper.register(new ResourceLocation(MODID, "grc"), new RecipeCondModSpecific());
+    CraftingHelper.register(Serializer.INSTANCE);
     Networking.init();
   }
 
   private void onClientSetup(final FMLClientSetupEvent event)
-  { ModContent.registerContainerGuis(event); }
+  { ModContent.registerContainerGuis(event); ModContent.registerTileEntityRenderers(event); }
 
   private void onSendImc(final InterModEnqueueEvent event)
   {}
@@ -77,12 +76,8 @@ public class ModEngineersDecor
   private void onRecvImc(final InterModProcessEvent event)
   {}
 
-  @SubscribeEvent
-  public void onServerStarting(FMLServerStartingEvent event)
-  {}
-
   @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
-  public static class RegistryEvents
+  public static class ForgeEvents
   {
     @SubscribeEvent
     public static void onBlocksRegistry(final RegistryEvent.Register<Block> event)
@@ -103,6 +98,32 @@ public class ModEngineersDecor
     @SubscribeEvent
     public static void onRegisterContainerTypes(final RegistryEvent.Register<ContainerType<?>> event)
     { ModContent.registerContainers(event); }
+
+    // @SubscribeEvent
+    public static void onServerStarting(FMLServerStartingEvent event)
+    {}
+
+    // @SubscribeEvent
+    public static void onConfigLoad(net.minecraftforge.fml.config.ModConfig.Loading configEvent)
+    {
+      try {
+        ModEngineersDecor.logger().info("Loaded config file {}", configEvent.getConfig().getFileName());
+        ModConfig.apply();
+      } catch(Throwable e) {
+        ModEngineersDecor.logger().error("Failed to load config: " + e.getMessage());
+      }
+    }
+
+    @SubscribeEvent
+    public static void onConfigFileChange(net.minecraftforge.fml.config.ModConfig.ConfigReloading configEvent)
+    {
+      try {
+        ModEngineersDecor.logger().info("Config file changed {}", configEvent.getConfig().getFileName());
+        ModConfig.apply();
+      } catch(Throwable e) {
+        ModEngineersDecor.logger().error("Failed to load changed config: " + e.getMessage());
+      }
+    }
   }
 
   //

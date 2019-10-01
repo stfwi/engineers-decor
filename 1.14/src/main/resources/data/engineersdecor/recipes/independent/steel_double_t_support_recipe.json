@@ -1,7 +1,7 @@
 {
   "conditions": [
     {
-      "type": "engineersdecor:grc",
+      "type": "engineersdecor:optional",
       "result": "engineersdecor:steel_double_t_support",
       "required": ["engineersdecor:thin_steel_pole"]
     }

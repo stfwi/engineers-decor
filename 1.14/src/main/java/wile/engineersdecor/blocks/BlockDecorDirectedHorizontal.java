@@ -10,6 +10,7 @@
 package wile.engineersdecor.blocks;
 
 import net.minecraft.block.HorizontalBlock;
+import net.minecraft.block.IWaterLoggable;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.entity.EntityType;
@@ -80,7 +81,7 @@ public class BlockDecorDirectedHorizontal extends BlockDecor
 
   @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-  { builder.add(HORIZONTAL_FACING); }
+  { super.fillStateContainer(builder); builder.add(HORIZONTAL_FACING); }
 
   @Override
   @Nullable
@@ -96,7 +97,7 @@ public class BlockDecorDirectedHorizontal extends BlockDecor
     }
     if((config & CFG_OPPOSITE_PLACEMENT)!=0) facing = facing.getOpposite();
     if(((config & CFG_FLIP_PLACEMENT_SHIFTCLICK) != 0) && (context.getPlayer().isSneaking())) facing = facing.getOpposite();
-    return getDefaultState().with(HORIZONTAL_FACING, facing);
+    return super.getStateForPlacement(context).with(HORIZONTAL_FACING, facing);
   }
 
   @Override
@@ -108,5 +109,18 @@ public class BlockDecorDirectedHorizontal extends BlockDecor
   @SuppressWarnings("deprecation")
   public BlockState mirror(BlockState state, Mirror mirrorIn)
   { return state.rotate(mirrorIn.toRotation(state.get(HORIZONTAL_FACING))); }
+
+  /**
+   * Water loggable version of directed blocks.
+   */
+  public static class WaterLoggable extends BlockDecorDirectedHorizontal implements IWaterLoggable
+  {
+    public WaterLoggable(long config, Block.Properties properties, AxisAlignedBB aabb)
+    { super(config|CFG_WATERLOGGABLE, properties, aabb); }
+
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+    { super.fillStateContainer(builder); builder.add(WATERLOGGED); }
+  }
 
 }

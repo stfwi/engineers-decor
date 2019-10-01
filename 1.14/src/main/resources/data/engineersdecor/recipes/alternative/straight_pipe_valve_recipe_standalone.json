@@ -1,7 +1,7 @@
 {
   "conditions": [
     {
-      "type": "engineersdecor:grc",
+      "type": "engineersdecor:optional",
       "result": "engineersdecor:straight_pipe_valve",
       "required": ["engineersdecor:thick_steel_pole"],
       "missing": ["immersiveengineering:fluid_pipe", "immersiveengineering:mechanical_component"]

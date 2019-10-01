@@ -15,6 +15,7 @@ import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import wile.engineersdecor.ModContent;
 import wile.engineersdecor.detail.ModAuxiliaries;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.material.Material;
@@ -108,9 +109,9 @@ public class BlockDecorHorizontalSupport extends BlockDecor
       final EnumFacing dfacing = dstate.getValue(BlockDecorStraightPole.FACING);
       final BlockDecorStraightPole pole = (BlockDecorStraightPole)dstate.getBlock();
       if((dfacing.getAxis() == EnumFacing.Axis.Y)) {
-        if((pole==ModBlocks.THICK_STEEL_POLE) || ((pole==ModBlocks.THICK_STEEL_POLE_HEAD) && (dfacing==EnumFacing.UP))) {
+        if((pole==ModContent.THICK_STEEL_POLE) || ((pole==ModContent.THICK_STEEL_POLE_HEAD) && (dfacing==EnumFacing.UP))) {
           down_connector = 2;
-        } else if((pole==ModBlocks.THIN_STEEL_POLE) || ((pole==ModBlocks.THIN_STEEL_POLE_HEAD) && (dfacing==EnumFacing.UP))) {
+        } else if((pole==ModContent.THIN_STEEL_POLE) || ((pole==ModContent.THIN_STEEL_POLE_HEAD) && (dfacing==EnumFacing.UP))) {
           down_connector = 1;
         }
       }

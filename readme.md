@@ -7,6 +7,8 @@ for the Engineer's factory, workshop, and home.
 
 ![](documentation/engineers-decor-v103-summary.png)
 
+[Screenshots in the documentation readme here](documentation/readme.md)
+
 ### Distribution file download
 
 Main distribution channel for this mod is CurseForge:
@@ -20,123 +22,134 @@ Main distribution channel for this mod is CurseForge:
 The mod has its focus decorative blocks and devices helping you to build nice
 looking manufacturing contraptions. Current feature set:
 
-- *Treated wood crafting table*: 3x3 crafting table with IE style GUI and a model
+- *Treated Wood Crafting Table*: 3x3 crafting table with IE style GUI and a model
   fitting better in the engineer's workshop. Keeps its inventory, has eight additional
-  storage slots on the left side of the crafting grid. Crafted 2x2 with three
-  treated wood planks and one vanilla crafting table.
+  storage slots on the left side of the crafting grid. Crafting history for fast
+  refabrication of previous recipes. Providesa a recipe collision resolver (selection
+  button for ambiguous recipes). Quick-move buttons (opt-in) to from/to storage or
+  player inventory. Smart shift-click placement (balanced placing of items in the
+  crafting grid). Shows the placed items on the top of the table.
 
-- *Small laboratory furnace*: Solid fuel consuming, updraught. Slightly hotter and
+- *Small Laboratory Furnace*: Solid fuel consuming, updraught. Slightly hotter and
   better isolated than a cobblestone furnace, therefore more efficient. Has internal
   hopper FiFos for input, output, and fuel (two stacks each). Two auxilliary slots
-  (storage tray). Keeps inventory when relocated. Crafted with one cobblestone
-  furnace, one hopper, and seven metal plates.
+  (storage tray). Keeps inventory when relocated. Can be boosted with RF power when
+  a IE heater is placed in the furnace.
 
-- *Small electrical furnace*: Pass-through electrical furnace. Can pull items out
-  input side inventories, inserts items into inventories at the output side. Internal
-  fifo slots. Automatically bypasses items that cannot be cooked or smelted. Electrical
-  RF/FE power can be applied on all sides. Items can be inserted or drawn from all
-  sides (e.g. with filtered hopper or whatever). Fits ideally into a conveyor belt
-  line/lane. Consumption and efficiency tunable via config.
+- *Small Electrical Furnace*: Pass-through electrical furnace. Can pull items out of
+  inventories at the input side, inserts items into inventories at the output side.
+  Internal fifo slots. Automatically bypasses items that cannot be cooked or smelted.
+  Electrical RF/FE power can be applied on all sides. Items can be inserted or drawn
+  from all sides (e.g. with filtered hopper or whatever). Fits ideally into a conveyor
+  belt line/lane. Consumption and efficiency tunable via config.
 
-- *Factory dropper*: Dropper with GUI configurable drop force, direction, stack size,
+- *Factory Dropper*: Dropper with GUI configurable drop force, direction, stack size,
   trigger cool-down delay, and trigger logic. Three trigger slots ("filter slots") can
   be used as internal trigger. They emit an internal signal if their item is found in
   in the dropper inventory (also at least the stack size of a trigger slot). Internal
   triggers can be easily combined with the external redstone signal trigger using
   logical *AND* or *OR* gates. If internal triggers match, the dropper will spit out
-  exactly the stacks in these slots. That allows to drop e.g. always nine lapis,
-  redstone, nuggets, etc on a conveyor to feed a compression metal press - instantly
+  exactly the stacks in these slots. That allows to drop e.g. always nine Lapis,
+  Redstone, nuggets, etc on a conveyor to feed a compression metal press - instantly
   and automatically after nine of these items have been inserted into the dropper.
+  Provides redstone pulse mode (drop like a vanilla dropper) or continuous mode
+  (continue dropping as long as the redstone signal is on).
 
-- *Small waste incinerator*: Buffered and delayed item disposal device. 16 fifo
+- *Small Waste Incinerator*: Buffered and delayed item disposal device. 16 fifo
   slots are filled when new items are pushed in from any side. A GUI allows to
   take out accidentally trashed items or put in items to get rid of. When the fifo
   is full, the oldest stack will be disposed. The processing speed can be increased
   by connecting electrical RF/FE power.
 
-- *Clinker bricks*: Slightly darker and more colorful version of the vanilla brick
+- *Clinker Bricks*: Slightly darker and more colorful version of the vanilla brick
   block. Eight position dependent texture variations are implemented to make the
   wall look more "alive". Crafted 3x3 with a brick block in the centre and any
   combination of bricks and nether bricks around (actually, anything where the
-  ore dictionary says it's a "brick ingot"). Higher explosion resistance than the
-  vanilla bricks. Also available as stairs and wall, crafted as usual. There
-  is a reverse recipe to get three clinker brick blocks back from stairs or walls.
+  ore dictionary says it's a "brick ingot" - useful for bigger industrial buildings
+  where clay is a rare resource). Higher explosion resistance than the vanilla
+  bricks. Also available as stairs and wall, crafted as usual. There is a reverse
+  recipe to get three clinker brick blocks back from stairs or walls. There are
+  also *Stained Clinker Bricks* (crafted Dirt and Clinkers), which can be mixed
+  in Clinker walls for more variations.
 
-- *Slag bricks*: Gray-brownish brick, also eight texture variations. Crafted 3x3
+- *Slag Bricks*: Gray-brownish brick, also eight texture variations. Crafted 3x3
   from slag in the centre and any kind of bricks ("brick ingot") around. Has a higher
   explosion resistance than bricks. Also available as stairs and wall, also with
   reverse recipes.
 
-- Rebar (steel) reinforced concrete: Expensive but creeper-proof. Crafted 3x3 from
-  four concrete blocks and five steel rods. Texture design oriented at the IE concrete,
-  slightly darker, eight (position dependent) random texture variations with rust
-  traces. Also creaftable in form of *stairs* and *walls*. Like the IE contrete *tiles*,
-  you can craft rebar concrete tiles with corresponding stairs. Reverse recipes
-  available for all blocks crafted from rebar concrete.
+- *Rebar Concrete*: Steel reinforced concrete. Expensive, creeper-proof.
+  Texture design oriented at the IE concrete, slightly darker, eight (position
+  dependent) random texture variations with rust traces. Also creaftable in form
+  of *stairs* and *walls*. Like the IE contrete *tiles*, you can craft rebar
+  concrete tiles with corresponding stairs. Reverse recipes available for all
+  blocks crafted from rebar concrete.
 
-- Concrete wall: Solid concrete wall (not the vanilla wall design), crafted 3x3
-  from six IE concrete blocks (normal wall recipe).
+- *Concrete Wall*: Solid concrete wall (not the vanilla wall design).
 
-- *Treated wood ladder*: Crafted 3x3 with the known ladder pattern, items are
-  treated wood sticks. Climbing is faster if looking up/down and not sneaking.
+- *Treated Wood Ladder*: Stylish ladder, climbing is faster if looking up/down and not
+  sneaking (but not OP-fast).
 
-- *Metal rung ladder*: Industrial wall-fixed ladder with horizontal bent rods.
-  Crafted 3x3 with five iron or steel rods in a "U" pattern. Climbing is faster
-  if looking up/down and not sneaking.
+- *Metal Rung Ladder*: Industrial wall-fixed ladder with horizontal bent rods. Climbing
+  is faster if looking up/down and not sneaking.
 
-- *Staggered metal steps*: Industrial wall-fixed sparse ladder with steps in a
-  zip pattern. Crafted 3x3 with six iron or steel rods in a zip pattern. Climbing
-  is faster when looking up/down and not sneaking.
+- *Staggered Metal Steps*: Industrial wall-fixed sparse ladder with steps in a zip pattern.
+  Climbing is faster when looking up/down and not sneaking.
 
-- *Panzer glass*: Reinforced, dark gray tinted glass block. Explosion-proof.
-  Faint structural lines are visible, multiple texture variations for seemless
-  look. Crafted 3x3 with four metal rods, four glass blocks, and one diamond.
+- *Panzer Glass*: Reinforced, dark gray tinted glass block. Explosion-proof. Faint
+  structural lines are visible, multiple texture variations for seemless look.
 
-- *Treated wood table*: Four leg table made out of treated wood. Crafted 3x3
-  with three treated wood slabs and four treated wood poles. Guess the pattern.
+- *Treated Wood Table*: Four leg table made out of treated wood.
 
-- *Treated wood stool*: Simple small stool fitting to the table. Crafted 3x3
-  with three treated wood slabs and one treated wood pole.
+- *Treated Wood Stool*: Simple small stool fitting to the table. You can sit on it, and
+  also mobs will occationally do that (only mobs which actually can sit).
 
-- *Treated wood pole*: Pole fragment that can be placed in all directions. It
-  does intentionally not connect to posts, fences, etc - just a straigt pole.
-  Can be used e.g. for structural support or wire relay post, where the height
-  of the IE wire posts does not match.
+- *Treated Wood Pole*: Pole fragment that can be placed in all directions. It does
+  intentionally not connect to posts, fences, etc - just a straigt pole. Can be used e.g.
+  for structural support or wire relay post, where the height of the IE wire posts does
+  not match.
 
-- *Thin and thick steel support poles*: Hollow steel pole fragments, can be
-  placed in all directions. Also with head/food end components. Thin poles crafted
-  3x3 from three steel ingots (output 12), thick poles crafted 3x3 from six thin
-  steel poles.
+- *Thin and thick Steel Support Poles*: Hollow steel pole fragments, can be placed in all
+  directions. Also with head/food end components.
 
-- *Double-T steel support*: Horizontal top-aligned support beam, placed in the
-  direction you look. Auto connects to adjacent beams if facing towards them. Auto
-  connects to steel poles underneath. Crafted 3x3 from thin steel poles in a T-shape
-  (output: 6 beams).
+- *Double-T Steel Support*: Horizontal top-aligned support beam, placed in the direction
+  you look. Auto connects to adjacent beams if facing towards them. Auto connects to steel
+  poles underneath. Note: When sneaking you can pass underneath it, not all mobs sneak.
 
-- *Inset spot light*: Small metal framed glowstone based light source for ceiling,
-  wall, or floor. Light level like a torch. Thin, hence not blocking the way.
-  Allows illuminating places where electrical light installations are problematic.
+- *Inset Spot Light*: Small metal framed glowstone based light source for ceiling, wall,
+  or floor. Light level like a torch. Thin, hence not blocking the way. Allows illuminating
+  places where electrical light installations are problematic.
 
-- *Fluid pipe check valve*: Check valve: IE fluid pipe styled straight valve that
-  conducts fluids only in one direction. Crafted from 3x3 from three fluid pipes.
-  Supports IE pressurized fluid transfer.
+- *Industrial Signs*: "Danger", "Electrical Hazard", "Exit", etc. Makes a factory looking
+  more alive.
 
-- *Redstone controlled valves*: Conduct only in one direction, on-off
-  variant (open on redstone power) and analog variant (closed at power 0, linear
-  flow slope, fully open at power 15). Support IE pressurized fluid transfer.
+- *Slab Slices*: Decorative stackable thin slabs made of of IE metal sheets, concretes,
+  treated wood. Useful e.g. for roofs or ramps. Left-clicking with the same slab type in
+  your hand while looking up/down removes slices again.
 
-- *Passive fluid accumulator*: Block with one output and five input sides, that
-  draws fluids out of adjacent tanks when a pump drains fluid from the output port.
-  Implicit round-robin balanced drain from adjacent blocks. Random initial fluid
-  drip-in to allow pumps to detect that fluids can be drained. The accumulator
-  has a vacuum suction delay.
+- *Fluid Pipe Check Valve*: IE fluid pipe styled straight valve that conducts fluids only
+  in one direction. Crafted from 3x3 from three fluid pipes. Supports IE pressurized fluid
+  transfer.
 
-- *Industrial signs*: "Danger", "electrical hazard", etc.
+- *Redstone Controlled Valves*: Conduct only in one direction, on-off variant (open on redstone
+  power) and analog variant (closed at power 0, linear flow slope, fully open at power 15).
+  Support IE pressurized fluid transfer.
 
-- *Slab slices*: Decorative stackable thin slabs made of of IE metal sheets,
-  concretes, treated wood. Useful e.g. for roofs or ramps. Left-clicking with
-  the same slab type in your hand while looking up/down removes slices again.
-  Crafted 3x3 from four slabs.
+- *Passive Fluid Accumulator*: Block with one output and five input sides, that draws fluids
+  out of adjacent tanks when a pump drains fluid from the output port. Implicit round-robin
+  balanced drain from adjacent blocks. Random initial fluid drip-in to allow pumps to detect
+  that fluids can be drained. The accumulator has a vacuum suction delay.
+
+- *Small Solar Panel*: Produces a small amount of RF power, comparable to a IE thermal
+  peltier generator over one day cycle. No power at night, reduced power when raining. The
+  power curve during day time is non-linear. Useful for electrical lighting of remote places.
+
+- *Small Tree Cutter*: A slab sized device that chops a tree in front of it. Needs by default
+  about one minute, with RF power less than 10 seconds. Useful to build a contraptive automated
+  tree farm.
+
+- *Small Mineral Smelter*: Device that slowly converts most stones or sands to magma blocks and
+  finally to lava. Needs a lot of power. When the lava is cooled down in the smelter by removing
+  the RF power, obsidian is generated.
 
 More to come slowly but steadily.
 

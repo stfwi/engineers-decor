@@ -22,6 +22,9 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -65,8 +68,12 @@ public class BlockDecorDropper extends BlockDecorDirected
   { return BlockRenderLayer.SOLID; }
 
   @Override
+  public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext)
+  { return VoxelShapes.fullCube(); }
+
+  @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-  { builder.add(FACING, OPEN); }
+  { super.fillStateContainer(builder); builder.add(OPEN); }
 
   @Override
   @Nullable
@@ -170,10 +177,11 @@ public class BlockDecorDropper extends BlockDecorDirected
     public static final int MAX_DROP_COUNT = 32;
     public static final int DROP_PERIOD_OFFSET = 10;
     ///
-    public static final int DROPLOGIC_FILTER_ANDGATE = 0x1;
-    public static final int DROPLOGIC_EXTERN_ANDGATE = 0x2;
-    public static final int DROPLOGIC_SILENT_DROP    = 0x4;
-    public static final int DROPLOGIC_SILENT_OPEN    = 0x8;
+    public static final int DROPLOGIC_FILTER_ANDGATE = 0x01;
+    public static final int DROPLOGIC_EXTERN_ANDGATE = 0x02;
+    public static final int DROPLOGIC_SILENT_DROP    = 0x04;
+    public static final int DROPLOGIC_SILENT_OPEN    = 0x08;
+    public static final int DROPLOGIC_CONTINUOUS     = 0x10;
     ///
     private int filter_matches_[] = new int[CTRL_SLOTS_SIZE];
     private int open_timer_ = 0;
@@ -508,9 +516,11 @@ public class BlockDecorDropper extends BlockDecorDirected
       if((drop_timer_ > 0) && ((--drop_timer_) == 0)) markDirty();
       if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
+      final boolean continuous_mode = (drop_logic_ & DROPLOGIC_CONTINUOUS)!=0;
       boolean dirty = block_power_updated_;
-      boolean redstone_trigger = (block_power_signal_ && block_power_updated_);
+      boolean redstone_trigger = (block_power_signal_ && ((block_power_updated_) || (continuous_mode)));
       boolean filter_trigger;
+      boolean filter_defined;
       boolean trigger;
       // Trigger logic
       {
@@ -518,9 +528,9 @@ public class BlockDecorDropper extends BlockDecorDirected
         for(int i=INPUT_SLOTS_FIRST; i<(INPUT_SLOTS_FIRST+INPUT_SLOTS_SIZE); ++i) {
           if(stacks_.get(i).getCount() >= drop_count_) { droppable_slot_found = true; break; }
         }
-        int filter_nset = 0;
         // From filters / inventory checks
         {
+          int filter_nset = 0;
           int last_filter_matches_[] = filter_matches_.clone();
           boolean slot_assigned = false;
           for(int ci=0; ci<CTRL_SLOTS_SIZE; ++ci) {
@@ -546,12 +556,13 @@ public class BlockDecorDropper extends BlockDecorDirected
             if(filter_matches_[i] > 1) ++nmatched;
             if(filter_matches_[i] != last_filter_matches_[i]) dirty = true;
           }
-          filter_trigger = ((filter_nset >0) && (nmatched > 0));
+          filter_defined = (filter_nset > 0);
+          filter_trigger = ((filter_nset > 0) && (nmatched > 0));
           if(((drop_logic_ & DROPLOGIC_FILTER_ANDGATE) != 0) && (nmatched != filter_nset)) filter_trigger = false;
         }
         // gates
         {
-          if(filter_nset > 0) {
+          if(filter_defined) {
             trigger = ((drop_logic_ & DROPLOGIC_EXTERN_ANDGATE) != 0) ? (filter_trigger && redstone_trigger) : (filter_trigger || redstone_trigger);
           } else {
             trigger = redstone_trigger;
@@ -818,7 +829,7 @@ public class BlockDecorDropper extends BlockDecorDirected
       } else if(isPointInRegion(114, 51, 9, 9, mouseX, mouseY)) {
         container.onGuiAction("manual_rstrigger", 1);
       } else if(isPointInRegion(162, 66, 7, 9, mouseX, mouseY)) {
-        container.onGuiAction("manual_trigger", 1);
+        container.onGuiAction("drop_logic", container.field(5) ^ BTileEntity.DROPLOGIC_CONTINUOUS);
       } else if(isPointInRegion(132, 66, 9, 9, mouseX, mouseY)) {
         container.onGuiAction("drop_logic", container.field(5) ^ BTileEntity.DROPLOGIC_FILTER_ANDGATE);
       } else if(isPointInRegion(148, 66, 9, 9, mouseX, mouseY)) {
@@ -887,8 +898,10 @@ public class BlockDecorDropper extends BlockDecorDirected
       {
         int filter_gate_offset = ((container.field(5) & BTileEntity.DROPLOGIC_FILTER_ANDGATE) != 0) ? 11 : 0;
         int extern_gate_offset = ((container.field(5) & BTileEntity.DROPLOGIC_EXTERN_ANDGATE) != 0) ? 11 : 0;
+        int pulse_mode_offset  = ((container.field(5) & BTileEntity.DROPLOGIC_CONTINUOUS    ) != 0) ? 10 : 0;
         blit(x0+132, y0+66, 179+filter_gate_offset, 66, 9, 9);
         blit(x0+148, y0+66, 179+extern_gate_offset, 66, 9, 9);
+        blit(x0+162, y0+66, 200+pulse_mode_offset, 66, 9, 9);
       }
       // drop timer running indicator
       {

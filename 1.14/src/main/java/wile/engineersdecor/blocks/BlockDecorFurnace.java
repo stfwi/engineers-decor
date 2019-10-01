@@ -84,7 +84,7 @@ public class BlockDecorFurnace extends BlockDecorDirected
   @Override
   @Nullable
   public BlockState getStateForPlacement(BlockItemUseContext context)
-  { return getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite()).with(LIT, false); }
+  { return super.getStateForPlacement(context).with(FACING, context.getPlacementHorizontalFacing().getOpposite()).with(LIT, false); }
 
   @Override
   @SuppressWarnings("deprecation")

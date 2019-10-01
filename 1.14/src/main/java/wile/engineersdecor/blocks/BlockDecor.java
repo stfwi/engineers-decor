@@ -12,10 +12,16 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.block.IWaterLoggable;
+import net.minecraft.state.StateContainer;
 import wile.engineersdecor.detail.ModAuxiliaries;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -26,6 +32,7 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.storage.loot.LootContext;
@@ -54,18 +61,20 @@ public class BlockDecor extends Block implements IDecorBlock
   public static final long CFG_REDSTONE_CONTROLLED        = 0x0000000000020000L; // Denotes if a component has somehow a redstone control input
   public static final long CFG_ANALOG                     = 0x0000000000040000L; // Denotes if a component has analog behaviour
   public static final long CFG_HARD_IE_DEPENDENT          = 0x8000000000000000L; // The block is implicitly opt'ed out if IE is not installed
+  public static final long CFG_WATERLOGGABLE              = 0x4000000000000000L; // The derived block extends IWaterLoggable
 
+  public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
   public final long config;
   public final VoxelShape vshape;
 
-  public BlockDecor(long config, Block.Properties properties)
-  { this(config, properties, ModAuxiliaries.getPixeledAABB(0, 0, 0, 16, 16,16 )); }
+  public BlockDecor(long conf, Block.Properties properties)
+  { this(conf, properties, ModAuxiliaries.getPixeledAABB(0, 0, 0, 16, 16,16 )); }
 
-  public BlockDecor(long config, Block.Properties properties, AxisAlignedBB aabb)
-  { super(properties); this.config = config; this.vshape = VoxelShapes.create(aabb); }
+  public BlockDecor(long conf, Block.Properties properties, AxisAlignedBB aabb)
+  { super(properties); config = conf; vshape = VoxelShapes.create(aabb); }
 
-  public BlockDecor(long config, Block.Properties properties, VoxelShape voxel_shape)
-  { super(properties); this.config = config; this.vshape = voxel_shape; }
+  public BlockDecor(long conf, Block.Properties properties, VoxelShape voxel_shape)
+  { super(properties); config = conf; vshape = voxel_shape; }
 
   @Override
   @OnlyIn(Dist.CLIENT)
@@ -86,6 +95,18 @@ public class BlockDecor extends Block implements IDecorBlock
   @SuppressWarnings("deprecation")
   public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos,  ISelectionContext selectionContext)
   { return vshape; }
+
+  @Override
+  @Nullable
+  public BlockState getStateForPlacement(BlockItemUseContext context)
+  {
+    BlockState state = super.getStateForPlacement(context);
+    if((config & CFG_WATERLOGGABLE)!=0) {
+      IFluidState fs = context.getWorld().getFluidState(context.getPos());
+      state = state.with(WATERLOGGED,fs.getFluid()==Fluids.WATER);
+    }
+    return state;
+  }
 
   @Override
   public boolean canSpawnInBlock()
@@ -129,5 +150,53 @@ public class BlockDecor extends Block implements IDecorBlock
   @SuppressWarnings("deprecation")
   public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
   { return Collections.singletonList(ItemStack.EMPTY); } // { return Collections.singletonList(new ItemStack(this.asItem())); } //
+
+  @Override
+  public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos)
+  {
+    if((config & CFG_WATERLOGGABLE)!=0) {
+      if(state.get(WATERLOGGED)) return false;
+    }
+    return super.propagatesSkylightDown(state, reader, pos);
+  }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  public IFluidState getFluidState(BlockState state)
+  {
+    if((config & CFG_WATERLOGGABLE)!=0) {
+      return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
+    }
+    return super.getFluidState(state);
+  }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos pos, BlockPos facingPos)
+  {
+    if((config & CFG_WATERLOGGABLE)!=0) {
+      if(state.get(WATERLOGGED)) world.getPendingFluidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+    }
+    return state;
+  }
+
+  /**
+   * Water loggable version of the basic block.
+   */
+  public static class WaterLoggable extends BlockDecor implements IWaterLoggable
+  {
+    public WaterLoggable(long config, Block.Properties properties)
+    { super(config|CFG_WATERLOGGABLE, properties); }
+
+    public WaterLoggable(long config, Block.Properties properties, AxisAlignedBB aabb)
+    { super(config|CFG_WATERLOGGABLE, properties, aabb); }
+
+    public WaterLoggable(long config, Block.Properties properties, VoxelShape voxel_shape)
+    { super(config|CFG_WATERLOGGABLE, properties, voxel_shape);  }
+
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+    { super.fillStateContainer(builder); builder.add(WATERLOGGED); }
+  }
 
 }

@@ -1,0 +1,38 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:small_mineral_smelter",
+      "required": ["engineersdecor:panzerglass_block"],
+      "missing": ["immersiveengineering:metal_device1"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SOS",
+    "GBO",
+    "SOS"
+  ],
+  "key": {
+    "G": {
+      "item": "engineersdecor:panzerglass_block",
+      "data": 0
+    },
+    "S": {
+      "item": "#ingotIron",
+      "data": 0
+    },
+    "B": {
+      "item": "#anyLavaItem",
+      "data": 0
+    },
+    "O": {
+      "item": "#blockObsidian",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:small_mineral_smelter",
+    "count": 1
+  }
+}

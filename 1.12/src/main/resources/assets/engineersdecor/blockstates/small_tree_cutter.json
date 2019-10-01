@@ -1,0 +1,12 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "engineersdecor:device/small_tree_cutter_model"
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "facing": { "north": {"y":0}, "south": {"y":180}, "west": {"y":-90}, "east": {"y":90}, "up":{}, "down":{} },
+    "active": { "true":{ "model": "engineersdecor:device/small_tree_cutter_model_active" }, "false":{}}
+  }
+}

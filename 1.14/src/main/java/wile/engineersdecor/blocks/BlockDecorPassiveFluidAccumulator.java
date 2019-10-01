@@ -15,7 +15,6 @@ package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.detail.ModAuxiliaries;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -23,23 +22,20 @@ import net.minecraft.util.Hand;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
+//import net.minecraftforge.common.util.LazyOptional;
+//import net.minecraftforge.common.capabilities.ICapabilityProvider;
+//import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+//import net.minecraftforge.fluids.capability.IFluidHandler;
+//import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected
@@ -97,7 +93,7 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected
 
     public void send_device_stats(PlayerEntity player)
     {
-      int t_vol = (tank_==null) ? 0 : (tank_.amount);
+      int t_vol = (tank_==null) ? 0 : (tank_.getAmount());
       ModAuxiliaries.playerChatMessage(player,"" + t_vol + "mB");
     }
 

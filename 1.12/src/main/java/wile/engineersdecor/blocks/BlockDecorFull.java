@@ -54,4 +54,8 @@ public class BlockDecorFull extends BlockDecor
   public boolean isNormalCube(IBlockState state)
   { return true; }
 
+  @Override
+  public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos)
+  { return (int)((config & CFG_LIGHT_VALUE_MASK) >> CFG_LIGHT_VALUE_SHIFT); }
+
 }

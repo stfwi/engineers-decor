@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Random;
 
 
-public class BlockDecorChair extends BlockDecorDirected
+public class BlockDecorChair extends BlockDecorDirected.WaterLoggable
 {
   private static boolean sitting_enabled = true;
   private static double sitting_probability = 0.1;
