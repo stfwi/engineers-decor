@@ -10,6 +10,9 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    - v1.0.13-b1  [A] Small Solar Panel added.
+                  [A] Small Tree Cutter added.
+
                   -------------------------------------------------------------------
     - v1.0.12     [R] Release based on v1.0.12-b2. Release-to-release changes:
                       * Crafting table: Recipe collision resolver added. Items are

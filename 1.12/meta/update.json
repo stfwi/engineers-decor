@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.12.2": {
+    "1.0.13-b1": "[A] Small Solar Panel added.\n[A] Small Tree Cutter added.",
     "1.0.12": "[R] Release based on v1.0.12-b2. Release-to-release changes: * Crafting table: Recipe collision resolver added. Items are rendered on the table surface. * Small Mineral Smelter released. * Factory Dropper: Continuous dropping mode added. * Block opacity fixes, window model fixes. * Lang file updates.",
     "1.0.12-b2": "[A] Crafting Table: Added recipe collision resolver, also applies to crafting history refabrication.\n[A] Crafting Table: Added rendering of placed items on the top surface of the table.\n[M] Lang files updated.",
     "1.0.12-b1": "[A] Mineal Smelter non-experimental now.\n[M] Window submodels stripped (reopened issue #19, thx overchoice).\n[M] Opaque full block light opacity fixed (issue #50, thx Illomiurge).\n[M] Factory Dropper: Added pulse/continuous mode in GUI (issue #51, thx Aristine for the CR).",
@@ -58,6 +59,6 @@
   },
   "promos": {
     "1.12.2-recommended": "1.0.12",
-    "1.12.2-latest": "1.0.12"
+    "1.12.2-latest": "1.0.13-b1"
   }
 }
