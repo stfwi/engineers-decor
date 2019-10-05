@@ -140,16 +140,16 @@ public class BlockDecor extends Block implements IDecorBlock
 
   @Override
   public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, IFluidState fluid)
-  { return dropBlock(state, world, pos, false); }
+  { return hasDynamicDropList() ? dropBlock(state, world, pos, false) : super.removedByPlayer(state, world,pos , player, willHarvest, fluid); }
 
   @Override
   public void onExplosionDestroy(World world, BlockPos pos, Explosion explosion)
-  { dropBlock(world.getBlockState(pos), world, pos, false); }
+  { if(hasDynamicDropList()) dropBlock(world.getBlockState(pos), world, pos, true); }
 
   @Override
   @SuppressWarnings("deprecation")
   public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
-  { return Collections.singletonList(ItemStack.EMPTY); } // { return Collections.singletonList(new ItemStack(this.asItem())); } //
+  { return hasDynamicDropList() ? Collections.singletonList(ItemStack.EMPTY) : super.getDrops(state, builder); }
 
   @Override
   public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos)

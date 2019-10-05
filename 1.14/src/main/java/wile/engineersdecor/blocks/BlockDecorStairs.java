@@ -53,11 +53,4 @@ public class BlockDecorStairs extends StairsBlock implements IDecorBlock
   public PushReaction getPushReaction(BlockState state)
   { return PushReaction.NORMAL; }
 
-  @Override
-  public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, IFluidState fluid)
-  { return BlockDecor.dropBlock(state, world, pos, false); }
-
-  @Override
-  public void onExplosionDestroy(World world, BlockPos pos, Explosion explosion)
-  { BlockDecor.dropBlock(world.getBlockState(pos), world, pos, true); }
 }

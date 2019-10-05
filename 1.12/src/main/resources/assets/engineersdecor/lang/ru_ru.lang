@@ -105,8 +105,12 @@ tile.engineersdecor.treated_wood_window.name=Обработанное дерев
 tile.engineersdecor.treated_wood_window.help=§6Деревянный каркас окна с тройным остеклением. Ну и шумоизоляция.
 tile.engineersdecor.treated_wood_windowsill.name=Обработанный деревянный подоконник
 tile.engineersdecor.treated_wood_windowsill.help=§6Простое оформление окон.
+tile.engineersdecor.treated_wood_broad_windowsill.name=Broad Treated Wood Window Sill
+#tile.engineersdecor.treated_wood_broad_windowsill.help=§6Simple window decoration.
 tile.engineersdecor.steel_framed_window.name=Окно со стальной рамой
 tile.engineersdecor.steel_framed_window.help=§6Стальной каркас окна с тройным остеклением. Хорошо изолирует. §r Не подключается к смежным блокам, таким как стеклянные панели.
+tile.engineersdecor.steel_mesh_fence.name=Steel Mesh Fence
+#tile.engineersdecor.steel_mesh_fence.help=§6Industrial style fence.§r\nDoes not connect do regular fences.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.small_lab_furnace.name=Компактная лабораторная печь
 tile.engineersdecor.small_lab_furnace.help=§6Лабораторная печь в металлическом корпусе.§r Подача твёрдого топлива сверху. Немного горячее, чем каменная, поэтому быстрее. Два внутренних слота для ввода, выхода и топлива.

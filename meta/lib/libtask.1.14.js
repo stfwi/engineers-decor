@@ -342,6 +342,31 @@
     me.tasks.map_regnames_lang_file_keys();
   };
 
+  me.stdtasks["datagen"] = function() {
+    sys.exec("gradlew.bat", ["--no-daemon", "runData"]);
+    // double check and really only copy json files.
+    const dst = fs.realpath("src/main/resources/data/" + constants.modid);
+    const src = fs.realpath("src/generated/resources/data/" + constants.modid);
+    if(!dst || !src) throw "Source or destination directory not found.";
+    const src_files = fs.find(src, "*.json");
+    const upath = function(s) { return s.replace(/[\\]/g,"/").replace(/^[\/]/,""); } // for correct display on win32
+    if(src_files===undefined) return 1;
+    for(var i in src_files) {
+      const srcfile = src_files[i];
+      const dstfile = srcfile.replace(src, dst);
+      const dstdir = fs.dirname(dstfile);
+      if(!fs.isdir(dstdir)) fs.mkdir(dstdir);
+      if(!fs.isfile(dstfile)) {
+        print("[copy] ", upath(srcfile.replace(src,"")));
+        fs.copy(srcfile, dstdir);
+      } else if(sys.hash.sha1(srcfile,true) != sys.hash.sha1(dstfile,true)) {
+        print("[edit] ", upath(srcfile.replace(src,"")));
+        fs.unlink(dstfile);
+        fs.copy(srcfile, dstdir);
+      }
+    }
+  };
+
   Object.freeze(me);
   Object.freeze(me.tasks);
   Object.freeze(me.parsing);

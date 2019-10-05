@@ -210,6 +210,12 @@ public class ModContent
     ModAuxiliaries.getPixeledAABB(0.5,15,10.5, 15.5,16,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "treated_wood_windowsill"));
 
+  public static final BlockDecorDirected.WaterLoggable TREATED_WOOD_BROAD_WINDOWSILL = (BlockDecorDirected.WaterLoggable)(new BlockDecorDirected.WaterLoggable(
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_FACING_PLACEMENT,
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD),
+    ModAuxiliaries.getPixeledAABB(0,14.5,4, 16,16,16)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "treated_wood_broad_windowsill"));
+
   public static final BlockDecorDirected.WaterLoggable INSET_LIGHT_IRON = (BlockDecorDirected.WaterLoggable)(new BlockDecorDirected.WaterLoggable(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).lightValue(15),
@@ -442,6 +448,13 @@ public class ModContent
 
   // -------------------------------------------------------------------------------------------------------------------
 
+  public static final BlockDecorFence STEEL_MESH_FENCE = (BlockDecorFence)(new BlockDecorFence(
+    BlockDecor.CFG_CUTOUT,
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "steel_mesh_fence"));
+
+  // -------------------------------------------------------------------------------------------------------------------
+
   private static final Block modBlocks[] = {
     TREATED_WOOD_CRAFTING_TABLE,
     SMALL_LAB_FURNACE,
@@ -486,11 +499,13 @@ public class ModContent
     TREATED_WOOD_STOOL,
     TREATED_WOOD_SIDE_TABLE,
     TREATED_WOOD_WINDOWSILL,
+    TREATED_WOOD_BROAD_WINDOWSILL,
     TREATED_WOOD_WINDOW,
     STEEL_FRAMED_WINDOW,
     STEEL_TABLE,
     INSET_LIGHT_IRON,
     STEEL_FLOOR_GRATING,
+    STEEL_MESH_FENCE,
     TREATED_WOOD_POLE,
     TREATED_WOOD_POLE_HEAD,
     TREATED_WOOD_POLE_SUPPORT,
@@ -631,6 +646,14 @@ public class ModContent
 
   private static ArrayList<Block> registeredBlocks = new ArrayList<>();
 
+  public static ArrayList<Block> allBlocks()
+  {
+    ArrayList<Block> blocks = new ArrayList<>();
+    Collections.addAll(blocks, modBlocks);
+    Collections.addAll(blocks, devBlocks);
+    return blocks;
+  }
+
   public static boolean isExperimentalBlock(Block block)
   { return ArrayUtils.contains(devBlocks, block); }
 
@@ -640,17 +663,13 @@ public class ModContent
 
   public static final void registerBlocks(final RegistryEvent.Register<Block> event)
   {
-    ArrayList<Block> allBlocks = new ArrayList<>();
-    Collections.addAll(allBlocks, modBlocks);
     if(ModAuxiliaries.isModLoaded("immersiveengineering")) ModAuxiliaries.logInfo("Immersive Engineering also installed ...");
-    // @todo: config not available yet, other registration control for experimental features needed.
-    Collections.addAll(allBlocks, devBlocks);
-    registeredBlocks.addAll(allBlocks);
+    registeredBlocks.addAll(allBlocks());
     for(Block e:registeredBlocks) event.getRegistry().register(e);
     ModAuxiliaries.logInfo("Registered " + Integer.toString(registeredBlocks.size()) + " blocks.");
   }
 
-  public static final void registerItemBlocks(final RegistryEvent.Register<Item> event)
+  public static final void registerBlockItems(final RegistryEvent.Register<Item> event)
   {
     int n = 0;
     for(Block e:registeredBlocks) {

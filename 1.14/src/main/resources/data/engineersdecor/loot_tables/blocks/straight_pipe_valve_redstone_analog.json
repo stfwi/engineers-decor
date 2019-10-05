@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "name": "straight_pipe_valve_redstone_analog_dlt",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "minecraft:copy_nbt",
+              "source": "block_entity",
+              "ops": []
+            }
+          ],
+          "name": "engineersdecor:straight_pipe_valve_redstone_analog"
+        }
+      ]
+    }
+  ]
+}

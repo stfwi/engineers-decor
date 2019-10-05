@@ -95,11 +95,4 @@ public class BlockDecorLadder extends LadderBlock implements IDecorBlock
     player.setMotionMultiplier(state, new Vec3d(0.2, (lvy>0)?(3):(6), 0.2));
   }
 
-  @Override
-  public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, IFluidState fluid)
-  { return BlockDecor.dropBlock(state, world, pos, false); }
-
-  @Override
-  public void onExplosionDestroy(World world, BlockPos pos, Explosion explosion)
-  { BlockDecor.dropBlock(world.getBlockState(pos), world, pos, true); }
 }

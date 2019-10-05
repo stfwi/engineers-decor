@@ -4,6 +4,7 @@ import wile.engineersdecor.detail.ModConfig;
 import wile.engineersdecor.detail.Networking;
 import wile.engineersdecor.blocks.*;
 import wile.engineersdecor.detail.OptionalRecipeCondition.Serializer;
+import wile.engineersdecor.datagen.ModLootTables;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,10 +23,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
+import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.api.distmarker.Dist;
@@ -85,7 +83,7 @@ public class ModEngineersDecor
 
     @SubscribeEvent
     public static void onItemRegistry(final RegistryEvent.Register<Item> event)
-    { ModContent.registerItemBlocks(event); }
+    { ModContent.registerBlockItems(event); }
 
     @SubscribeEvent
     public static void onTileEntityRegistry(final RegistryEvent.Register<TileEntityType<?>> event)
@@ -124,6 +122,13 @@ public class ModEngineersDecor
         ModEngineersDecor.logger().error("Failed to load changed config: " + e.getMessage());
       }
     }
+
+    @SubscribeEvent
+    public static void onDataGeneration(GatherDataEvent event)
+    {
+      event.getGenerator().addProvider(new ModLootTables(event.getGenerator()));
+    }
+
   }
 
   //

@@ -16,8 +16,11 @@ import java.util.Collections;
 import java.util.List;
 
 
-interface IDecorBlock
+public interface IDecorBlock
 {
+
+  default boolean hasDynamicDropList()
+  { return false; }
 
   default List<ItemStack> dropList(BlockState state, World world, BlockPos pos, boolean explosion)
   { return Collections.singletonList((!world.isRemote()) ? (new ItemStack(state.getBlock().asItem())) : (ItemStack.EMPTY)); }

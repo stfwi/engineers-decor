@@ -10,8 +10,13 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
-    - v1.0.13-b1  [A] Small Solar Panel added.
-                  [A] Small Tree Cutter added.
+    - v1.0.13-b2  [A] Added Steel Mesh Fence.
+                  [A] Added Broad Window Sill.
+                  [A] Small Tree Cutter can chop Dynamic Trees,
+                      chops at tree trunk radius 7 or higher.
+
+    - v1.0.13-b1  [A] Added Small Solar Panel.
+                  [A] Added Small Tree Cutter.
 
                   -------------------------------------------------------------------
     - v1.0.12     [R] Release based on v1.0.12-b2. Release-to-release changes:

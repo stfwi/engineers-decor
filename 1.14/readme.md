@@ -11,7 +11,11 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
-    ~ v1.0.13-b1 [A]
+    ~ v1.0.13-b3 [U] Updated to Forge 1.14.4-28.1.31/20190719-1.14.3.
+                 [M] Switched to integrated loot table generation.
+
+    - v1.0.13-b2 [A] Added Steel Mesh Fence.
+                 [A] Added Broad Window Sill.
 
     - v1.0.12-b3 [U] Updated to Forge 1.14.4-28.1.10/20190719-1.14.3.
                  [A] Crafting Table: Added recipe collision resolver,

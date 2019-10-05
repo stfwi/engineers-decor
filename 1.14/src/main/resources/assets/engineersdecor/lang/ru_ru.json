@@ -73,6 +73,7 @@
  "block.engineersdecor.rebar_concrete_tile_slab.help": "§6Бетонная плитка, усиленная сталью.§r Дорогая, но взрывоустойчивая, как обсидиан.",
  "block.engineersdecor.panzerglass_slab": "Плита из бронированного стекла",
  "block.engineersdecor.panzerglass_slab.help": "§6Усиленная стеклянная плита.§r Дорогая, взрывоустойчивая. Имеет тёмно-серый оттенок, слегка видны структурные линии.",
+ "block.engineersdecor.treated_wood_floor": "Treated Wood Floor",
  "block.engineersdecor.rebar_concrete_wall": "Железобетонная стена",
  "block.engineersdecor.rebar_concrete_wall.help": "§6Стальная железобетонная стена.§r Дорогая, но взрывоустойчивая, как обсидиан.",
  "block.engineersdecor.concrete_wall": "Бетонная стена",
@@ -131,8 +132,10 @@
  "block.engineersdecor.treated_wood_window.help": "§6Деревянный каркас окна с тройным остеклением. Ну и шумоизоляция.",
  "block.engineersdecor.treated_wood_windowsill": "Обработанный деревянный подоконник",
  "block.engineersdecor.treated_wood_windowsill.help": "§6Простое оформление окон.",
+ "block.engineersdecor.treated_wood_broad_windowsill": "Broad Treated Wood Window Sill",
  "block.engineersdecor.steel_framed_window": "Окно со стальной рамой",
  "block.engineersdecor.steel_framed_window.help": "§6Стальной каркас окна с тройным остеклением. Хорошо изолирует. §r Не подключается к смежным блокам, таким как стеклянные панели.",
+ "block.engineersdecor.steel_mesh_fence": "Steel Mesh Fence",
  "block.engineersdecor.small_lab_furnace": "Компактная лабораторная печь",
  "block.engineersdecor.small_lab_furnace.help": "§6Лабораторная печь в металлическом корпусе.§r Подача твёрдого топлива сверху. Немного горячее, чем каменная, поэтому быстрее. Два внутренних слота для ввода, выхода и топлива.",
  "block.engineersdecor.small_electrical_furnace": "Компактная конвейерная электрическая печь",
@@ -151,6 +154,7 @@
  "block.engineersdecor.factory_dropper.help": "§6Выбрасыватель подходит для продвинутой автоматизации производства.§r Имеет 12 выборочных слотов. Сила броска, угол, размер стопки и задержка настраиваются в GUI. 3 слота сравнения стека с логическим И или ИЛИ могут использоваться в качестве внутреннего источника запуска. Внутренний триггер может быть И или ИЛИ с внешним триггерным сигналом красного камня. Триггерные кнопки симуляции для тестирования. Предварительно открывает дверцу затвора, когда выполняются условия внутреннего запуска. Сбрасывает все соответствующие стеки одновременно. Нажмите на все элементы в GUI, чтобы увидеть, как это работает.",
  "block.engineersdecor.small_mineral_smelter": "Small Mineral Melting Furnace",
  "block.engineersdecor.small_solar_panel": "Small Solar Panel",
+ "block.engineersdecor.small_tree_cutter": "Small Tree Cutter",
  "block.engineersdecor.sign_decor": "Табличка с надписью (Логотип Engineer's decor)",
  "block.engineersdecor.sign_decor.help": "§Это не должно быть крафтовым или видимым в JEI. Используется для творческой вкладки и скриншотов.",
  "block.engineersdecor.sign_hotwire": "Знак «Осторожно, под напряжением»",
@@ -179,5 +183,6 @@
  "block.engineersdecor.halfslab_sheetmetal_gold": "Часть золотого листового металла",
  "block.engineersdecor.halfslab_sheetmetal_gold.help": "§6Вертикально наращиваемая часть.§rПравый/левый щелчок со стеком частей на верхней или нижней поверхности для добавления/удаления частей.",
  "block.engineersdecor.halfslab_sheetmetal_aluminum": "Часть алюминиевого листового металла",
- "block.engineersdecor.halfslab_sheetmetal_aluminum.help": "§6Вертикально наращиваемая часть.§rПравый/левый щелчок со стеком частей на верхней или нижней поверхности для добавления/удаления частей."
+ "block.engineersdecor.halfslab_sheetmetal_aluminum.help": "§6Вертикально наращиваемая часть.§rПравый/левый щелчок со стеком частей на верхней или нижней поверхности для добавления/удаления частей.",
+ "block.engineersdecor.testblock": "ED Test Block (do NOT use)"
 }

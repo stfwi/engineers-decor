@@ -8,24 +8,99 @@
  */
 package wile.engineersdecor.detail;
 
-import com.google.common.collect.ImmutableList;
+import wile.engineersdecor.ModEngineersDecor;
+import net.minecraft.init.Blocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockVine;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
-
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import com.google.common.collect.ImmutableList;
 import java.util.*;
+
 
 public class TreeCutting
 {
+  private static org.apache.logging.log4j.Logger LOGGER = ModEngineersDecor.logger;
+
+  private static class Compat
+  {
+    enum ChoppingMethod { None, RootBlockBreaking }
+    private static final HashMap<IBlockState, ChoppingMethod> choppable_states = new HashMap<IBlockState, ChoppingMethod>();
+    public static long num_breaking_exceptions = 0;
+
+    static void reload()
+    {
+      try {
+        choppable_states.clear();
+        if(ModAuxiliaries.isModLoaded("dynamictrees")) {
+          ForgeRegistries.BLOCKS.getKeys().forEach((regname)->{
+            if("dynamictrees".equals(regname.getNamespace())) {
+              if(!regname.getPath().contains("branch")) return;
+              try {
+                Block block = ForgeRegistries.BLOCKS.getValue(regname);
+                IBlockState state = block.getDefaultState();
+                for(IProperty<?> vaprop: state.getProperties().keySet()) {
+                  if(!("radius".equals(vaprop.getName())) || (vaprop.getValueClass() != Integer.class)) continue;
+                  @SuppressWarnings("unchecked")
+                  IProperty<Integer> prop = (IProperty<Integer>)vaprop;
+                  Integer max = ((Collection<Integer>)prop.getAllowedValues()).stream().max(Integer::compare).orElse(0);
+                  if(max<7) continue;
+                  for(int r=7; r<=max; ++r) choppable_states.put(state.withProperty(prop, r), ChoppingMethod.RootBlockBreaking);
+                }
+              } catch(Throwable e) {
+                LOGGER.warn("Failed to register chopping for " + regname.toString());
+                return;
+              }
+            }
+          });
+        }
+        LOGGER.info("Dynamic Trees chopping compat: " + choppable_states.size() + " choppable states found.");
+      } catch(Throwable e) {
+        choppable_states.clear();
+        LOGGER.warn("Failed to determine choppings for dynamic trees compat, skipping that:" + e);
+      }
+    }
+
+    private static boolean canChop(IBlockState state)
+    { return choppable_states.containsKey(state); }
+
+    private static int chop(World world, IBlockState state, BlockPos pos, int max_blocks_to_break, boolean without_target_block)
+    {
+      final int default_expense = 5;
+      switch(choppable_states.getOrDefault(state, ChoppingMethod.None)) {
+        case None:
+          return 0;
+        case RootBlockBreaking: {
+          if(num_breaking_exceptions < 16) {
+            try {
+              world.setBlockState(pos, Blocks.AIR.getDefaultState(), 1);
+              state.getBlock().breakBlock(world, pos, state);
+            } catch(Throwable e) {
+              if(++num_breaking_exceptions == 1) LOGGER.warn("Tree Chopper: There was an exception while trying to break a tree trunk ("+state.getBlock().getRegistryName()+"): " + e);
+              if(num_breaking_exceptions == 16) LOGGER.warn("Tree Chopper: There were 16 exceptions in total trying to chop modded trees. Feature has been disabled.");
+            }
+          }
+          return 5;
+        }
+        default:
+          return 0;
+      }
+    }
+  }
+
   private static final List<Vec3i> hoffsets = ImmutableList.of(
     new Vec3i( 1,0, 0), new Vec3i( 1,0, 1), new Vec3i( 0,0, 1),
     new Vec3i(-1,0, 1), new Vec3i(-1,0, 0), new Vec3i(-1,0,-1),
     new Vec3i( 0,0,-1), new Vec3i( 1,0,-1)
   );
+
+  public static void reload()
+  { Compat.reload(); }
 
   private static List<BlockPos> findBlocksAround(final World world, final BlockPos centerPos, final IBlockState leaf_type_state, final Set<BlockPos> checked, int recursion_left)
   {
@@ -47,13 +122,14 @@ public class TreeCutting
   }
 
   public static boolean canChop(IBlockState state)
-  { return BlockCategories.isLog(state); }
+  { return BlockCategories.isLog(state) || Compat.canChop(state); }
 
   /**
    * Chops a tree, returns the damage that the cutting tool shall take
    */
   public static int chopTree(World world, IBlockState broken_state, BlockPos startPos, int max_blocks_to_break, boolean without_target_block)
   {
+    if((Compat.canChop(broken_state))) return Compat.chop(world, broken_state, startPos, max_blocks_to_break, without_target_block);
     if(!BlockCategories.isLog(broken_state)) return 0;
     final long ymin = startPos.getY();
     final long max_leaf_distance = 6;

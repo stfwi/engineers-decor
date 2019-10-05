@@ -24,18 +24,23 @@ wildcardr=$(foreach d,$(wildcard $1*),$(call wildcardr,$d/,$2) $(filter $(subst 
 #
 # Targets
 #
-.PHONY: default mod init clean clean-all mrproper all run install sanatize dist-check dist start-server assets
+.PHONY: default mod data init clean clean-all mrproper all run install sanatize dist-check dist start-server assets
 
 default: mod
 
 all: clean clean-all mod | install
 
-mod:
+mod: data
 	@echo "[1.14] Building mod using gradle ..."
 	@$(GRADLE) build $(GRADLE_OPTS)
 
+data:
+	@echo "[1.14] Running data generators ..."
+	@djs tasks.js datagen
+
 clean:
 	@echo "[1.14] Cleaning ..."
+	@rm -rf src/generated
 	@rm -rf mcmodsrepo
 	@rm -f build/libs/*
 	@$(GRADLE) clean

@@ -13,9 +13,8 @@ tasks["sync-languages"] = function() {
   liblang.sync_languages();
 };
 
-tasks["assets"] = function() {
-  libtask114.stdtasks["assets"]();
-};
+tasks["assets"] = libtask114.stdtasks["assets"];
+tasks["datagen"] = libtask114.stdtasks["datagen"];
 
 tasks["create-slab-assets"] = function() {
   const libassets = include("../meta/lib/libassets.js")(constants);
