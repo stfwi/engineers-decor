@@ -5,247 +5,247 @@
 #
 #-----------------------------------------------------------------------------------------------------------
 itemGroup.tabengineersdecor=工程师的装饰
-engineersdecor.tooltip.hint.extended=§6[§9SHIFT§r 查看更多信息§6]§r
-engineersdecor.tooltip.hint.help=§6[§9CTRL-SHIFT§r 查看帮助§6]§r
-engineersdecor.tooltip.slabpickup.help=§r手持同类台阶往上/下看时单击该台阶可无需破坏快速拾起。
+engineersdecor.tooltip.hint.extended=§6[按§9SHIFT§r获取更多信息§6]§r
+engineersdecor.tooltip.hint.help=§6[按§9CTRL-SHIFT§r获取帮助§6]§r
+#engineersdecor.tooltip.slabpickup.help=§rFast pickup by left-clicking while looking up/down and holding this slab.
 #-----------------------------------------------------------------------------------------------------------
 # Stone/"ceramic material" based blocks
 #-----------------------------------------------------------------------------------------------------------
-tile.engineersdecor.clinker_brick_block.name=过烧砖块
-tile.engineersdecor.clinker_brick_block.help=§6一种放在不同位置贴图有不同变化的砖块。§r\n比原版砖看起来颜色更深，色度也更高。
-tile.engineersdecor.clinker_brick_stained_block.name=污渍过烧砖块
-tile.engineersdecor.clinker_brick_stained_block.help=§6一种放在不同位置贴图有不同变化的砖块。§r\n比原版砖看起来颜色更深，色度也更高。有更多可见的污垢或污迹。
-tile.engineersdecor.slag_brick_block.name=炉渣砖块
-tile.engineersdecor.slag_brick_block.help=§6一种放在不同位置贴图有不同变化的灰棕色砖块。
+tile.engineersdecor.clinker_brick_block.name=熟料砖
+tile.engineersdecor.clinker_brick_block.help=§6具有位置相关纹理变化的砖块.§r\n看起来比原版砖块稍暗,颜色更浓.
+tile.engineersdecor.clinker_brick_stained_block.name=Stained Clinker Brick Block
+#tile.engineersdecor.clinker_brick_stained_block.help=§6A brick block with position dependent texture variations.§r\nLooks slightly darker and more color intensive than the vanilla brick block. Has more visible traces of grime or stain.
+tile.engineersdecor.slag_brick_block.name=炉渣砖
+tile.engineersdecor.slag_brick_block.help=§6灰褐色砖块,具有位置相关的纹理变化.
 tile.engineersdecor.rebar_concrete.name=钢筋混凝土
-tile.engineersdecor.rebar_concrete.help=§6钢强化的混凝土。§r昂贵但像黑曜石一样防爬行者爆炸。
-tile.engineersdecor.panzerglass_block.name=装甲玻璃块
-tile.engineersdecor.panzerglass_block.help=§6强化的玻璃方块。§r昂贵，防爆。深灰色调，有隐约可见的结构线和多种纹理，外观无光泽。
-tile.engineersdecor.rebar_concrete_tile.name=钢筋混凝土砖
-tile.engineersdecor.rebar_concrete_tile.help=§6钢强化的混凝土砖。§r昂贵但像黑曜石一样防爬行者爆炸。
+tile.engineersdecor.rebar_concrete.help=§6钢筋混凝土砌块.§r 昂贵,但像黑曜石一样防苦力怕.
+tile.engineersdecor.panzerglass_block.name=Panzer Glass Block
+#tile.engineersdecor.panzerglass_block.help=§6Reinforced glass block.§r Expensive, explosion-proof. Dark gray tint, faint structural lines visible, multi texture for seemless look.
+tile.engineersdecor.rebar_concrete_tile.name=Rebar Concrete Tile
+#tile.engineersdecor.rebar_concrete_tile.help=§6Steel reinforced concrete tile.§r Expensive but Creeper-proof like obsidian.
 #-----------------------------------------------------------------------------------------------------------
-tile.engineersdecor.clinker_brick_slab.name=过烧砖台阶
-tile.engineersdecor.clinker_brick_slab.help=§6过烧砖块制造的台阶。§r\n比原版砖看起来颜色更深，色度也更高。
-tile.engineersdecor.clinker_brick_stained_slab.name=污渍过烧砖台阶
-tile.engineersdecor.clinker_brick_stained_slab.help=§6污渍过烧砖块制造的台阶。
-tile.engineersdecor.slag_brick_slab.name=炉渣砖台阶
-tile.engineersdecor.slag_brick_slab.help=§6一种灰棕色砖块台阶。
-tile.engineersdecor.rebar_concrete_slab.name=钢筋混凝土台阶
-tile.engineersdecor.rebar_concrete_slab.help=§6钢强化的混凝土台阶。§r昂贵但像黑曜石一样防爬行者爆炸。
-tile.engineersdecor.rebar_concrete_tile_slab.name=钢筋混凝土砖台阶
-tile.engineersdecor.rebar_concrete_tile_slab.help=§6钢强化的混凝土砖台阶。§r昂贵但像黑曜石一样防爬行者爆炸。
-tile.engineersdecor.panzerglass_slab.name=装甲玻璃台阶
-tile.engineersdecor.panzerglass_slab.help=§6强化的玻璃台阶。§r昂贵，防爆。深灰色调，有隐约可见的结构线和多种纹理。
-tile.engineersdecor.treated_wood_floor.name=防腐木地板
-tile.engineersdecor.treated_wood_floor.help=§6装饰性地板砖，有可变的贴图。§r
+tile.engineersdecor.clinker_brick_slab.name=Clinker Brick Slab
+#tile.engineersdecor.clinker_brick_slab.help=§6Slab made from a Clinker Block.§r\nLooks slightly darker and more color intensive than the vanilla brick.
+tile.engineersdecor.clinker_brick_stained_slab.name=Stained Clinker Brick Slab
+#tile.engineersdecor.clinker_brick_stained_slab.help=§6Slab made from a Stained Clinker Block.
+tile.engineersdecor.slag_brick_slab.name=Slag Brick Slab
+#tile.engineersdecor.slag_brick_slab.help=§6A gray-brown brick slab.
+tile.engineersdecor.rebar_concrete_slab.name=Rebar Concrete Slab
+#tile.engineersdecor.rebar_concrete_slab.help=§6Steel reinforced concrete slab.§r Expensive but Creeper-proof like obsidian.
+tile.engineersdecor.rebar_concrete_tile_slab.name=Rebar Concrete Tile Slab
+#tile.engineersdecor.rebar_concrete_tile_slab.help=§6Steel reinforced concrete tile slab.§r Expensive but Creeper-proof like obsidian.
+tile.engineersdecor.panzerglass_slab.name=Panzer Glass Slab
+#tile.engineersdecor.panzerglass_slab.help=§6Reinforced glass slab.§r Expensive, explosion-proof. Dark gray tint, faint structural lines visible.
+tile.engineersdecor.treated_wood_floor.name=Treated Wood Floor
+#tile.engineersdecor.treated_wood_floor.help=§6Decorative floor tiles with texture variations.§r
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.rebar_concrete_wall.name=钢筋混凝土墙
-tile.engineersdecor.rebar_concrete_wall.help=§6钢强化的混凝土墙。§r 昂贵但像黑曜石一样防爬行者爆炸。
-tile.engineersdecor.concrete_wall.name=混凝土墙
-tile.engineersdecor.concrete_wall.help=§6用坚固混凝土制造的墙。
-tile.engineersdecor.clinker_brick_wall.name=过烧砖墙
-tile.engineersdecor.clinker_brick_wall.help=§6简单的过烧砖墙。
-tile.engineersdecor.slag_brick_wall.name=炉渣砖墙
-tile.engineersdecor.slag_brick_wall.help=§6简单的炉渣砖墙。
+tile.engineersdecor.rebar_concrete_wall.help=§6钢筋混凝土墙.§r 昂贵,但像黑曜石一样防苦力怕.
+tile.engineersdecor.concrete_wall.name=水泥墙
+tile.engineersdecor.concrete_wall.help=§6墙由坚固的混凝土制成.
+tile.engineersdecor.clinker_brick_wall.name=Clinker Brick Wall
+#tile.engineersdecor.clinker_brick_wall.help=§6Simplistic Clinker Brick Wall.
+tile.engineersdecor.slag_brick_wall.name=Slag Brick Wall
+#tile.engineersdecor.slag_brick_wall.help=§6Simplistic Slag Brick Wall.
 #-----------------------------------------------------------------------------------------------------------
-tile.engineersdecor.metal_rung_ladder.name=金属蹬梯子
-tile.engineersdecor.metal_rung_ladder.help=§6典型的工业墙梯，由水平的金属杆蹬组成。§r往上/下看会爬得更快。
-tile.engineersdecor.metal_rung_steps.name=交错金属台阶
-tile.engineersdecor.metal_rung_steps.help=§6贴在墙上的交错金属杆蹬，能够爬上或爬下。§r往上/下看会爬得更快。
-tile.engineersdecor.treated_wood_ladder.name=防腐木梯
-tile.engineersdecor.treated_wood_ladder.help=§6防风雨的木梯。§r往上/下看会爬得更快。
+tile.engineersdecor.metal_rung_ladder.name=金属环梯
+tile.engineersdecor.metal_rung_ladder.help=§6典型的工业墙梯,包括水平金属杆横档.
+tile.engineersdecor.metal_rung_steps.name=交错的金属台阶
+tile.engineersdecor.metal_rung_steps.help=§6贴在墙上的交错的杆横档,允许爬上,爬下等等.
+tile.engineersdecor.treated_wood_ladder.name=经过处理的木梯
+tile.engineersdecor.treated_wood_ladder.help=§6防风雨的木梯.
 #-----------------------------------------------------------------------------------------------------------
-tile.engineersdecor.clinker_brick_stairs.name=过烧砖楼梯
-tile.engineersdecor.clinker_brick_stairs.help=§6比原版砖看起来颜色更深，色度也更高。
-tile.engineersdecor.clinker_brick_stained_stairs.name=污渍过烧砖楼梯
-tile.engineersdecor.clinker_brick_stained_stairs.help=§6比原版砖看起来颜色更深，色度也更高。有更多可见的污垢或污迹。
+tile.engineersdecor.clinker_brick_stairs.name=熟料砖楼梯
+tile.engineersdecor.clinker_brick_stairs.help=§6看起来比原版砖块稍暗,颜色更浓.
+tile.engineersdecor.clinker_brick_stained_stairs.name=Stained Clinker Brick Stairs
+#tile.engineersdecor.clinker_brick_stained_stairs.help=§6Looks slightly darker and more color intensive than the vanilla brick block. Has more visible traces of grime or stain.
 tile.engineersdecor.slag_brick_stairs.name=炉渣砖楼梯
-tile.engineersdecor.slag_brick_stairs.help=§6一种灰棕色砖块楼梯。
+tile.engineersdecor.slag_brick_stairs.help=§6灰褐色砖块楼梯.
 tile.engineersdecor.rebar_concrete_stairs.name=钢筋混凝土楼梯
-tile.engineersdecor.rebar_concrete_stairs.help=§6钢强化的混凝土楼梯。§r昂贵但像黑曜石一样防爬行者爆炸。
-tile.engineersdecor.rebar_concrete_tile_stairs.name=钢筋混凝土砖楼梯
-tile.engineersdecor.rebar_concrete_tile_stairs.help=§6钢强化的混凝土砖楼梯。§r昂贵但像黑曜石一样防爬行者爆炸。
+tile.engineersdecor.rebar_concrete_stairs.help=§6钢筋混凝土楼梯.§r 昂贵,但像黑曜石一样防苦力怕.
+tile.engineersdecor.rebar_concrete_tile_stairs.name=Rebar Concrete Tile Stairs
+#tile.engineersdecor.rebar_concrete_tile_stairs.help=§6Steel reinforced concrete tile stairs.§r Expensive but Creeper-proof like obsidian.
 #-----------------------------------------------------------------------------------------------------------
-tile.engineersdecor.treated_wood_pole.name=直防腐木杆
-tile.engineersdecor.treated_wood_pole.help=§6直杆的一段，有着继电器的直径。§r\n\
-              在需要特殊长度电线杆的时候很有用，\
-              也可以作为结构的柱子。
-tile.engineersdecor.treated_wood_pole_head.name=直防腐木杆头/尾
-tile.engineersdecor.treated_wood_pole_head.help=§6木制部件，适合作为直杆的头或尾。
-tile.engineersdecor.treated_wood_pole_support.name=直防腐木杆支撑
-tile.engineersdecor.treated_wood_pole_support.help=§6重型木制支撑部件，适合作为直杆的头或尾。
-tile.engineersdecor.thick_steel_pole.name=直粗钢杆
-tile.engineersdecor.thick_steel_pole.help=§6一段直空心杆(6x6x16)，适合用于结构支撑。
-tile.engineersdecor.thin_steel_pole.name=直细钢杆
-tile.engineersdecor.thin_steel_pole.help=§6一段直空心杆(4x4x16)，适合用于结构支撑。
-tile.engineersdecor.thin_steel_pole_head.name=直细钢杆头/尾
-tile.engineersdecor.thin_steel_pole_head.help=§6钢制部件，适合作为细钢杆(4x4x16)的头或尾。
-tile.engineersdecor.thick_steel_pole_head.name=直粗钢杆头/尾
-tile.engineersdecor.thick_steel_pole_head.help=§6钢制部件，适合作为粗钢杆(6x6x16)的头或尾。
-tile.engineersdecor.steel_double_t_support.name=钢制双T型支架
-tile.engineersdecor.steel_double_t_support.help=§6一段水平吊顶支撑梁。
+tile.engineersdecor.treated_wood_pole.name=直立处理木杆
+tile.engineersdecor.treated_wood_pole.help=§6具有导线继电器直径的直极片段.§r\n如果需要特殊的特殊长度,或作为结构的支撑,可以作为线柱的替代品.
+tile.engineersdecor.treated_wood_pole_head.name=Straight Treated Wood Pole Head/Foot
+#tile.engineersdecor.treated_wood_pole_head.help=§6Wooden part fitting as foot or head of straight poles.
+tile.engineersdecor.treated_wood_pole_support.name=Straight Treated Wood Pole Support
+#tile.engineersdecor.treated_wood_pole_support.help=§6Heavy duty wooden support part fitting as foot or head of straight poles.
+tile.engineersdecor.thick_steel_pole.name=Straight Thick Steel Pole
+#tile.engineersdecor.thick_steel_pole.help=§6Straight hollow pole fragment (6x6x16) for structural support purposes.
+tile.engineersdecor.thin_steel_pole.name=Straight Thin Steel Pole
+#tile.engineersdecor.thin_steel_pole.help=§6Straight hollow pole fragment (4x4x16) for structural support purposes.
+tile.engineersdecor.thin_steel_pole_head.name=Straight Thin Steel Pole head/foot
+#tile.engineersdecor.thin_steel_pole_head.help=§6Steel part fitting as foot or head of the thin steel pole (4x4x16).
+tile.engineersdecor.thick_steel_pole_head.name=Straight Thick Steel Pole Head/Foot
+#tile.engineersdecor.thick_steel_pole_head.help=§6Steel part fitting as foot or head of the thick steel pole (6x6x16).
+tile.engineersdecor.steel_double_t_support.name=Steel Double T Support
+#tile.engineersdecor.steel_double_t_support.help=§6Horizontal ceiling support beam fragment.
 #-----------------------------------------------------------------------------------------------------------
-tile.engineersdecor.treated_wood_table.name=防腐木桌
-tile.engineersdecor.treated_wood_table.help=§6结实的四脚木桌。§r适用于室内和室外使用。 
-tile.engineersdecor.steel_table.name=钢桌
-tile.engineersdecor.steel_table.help=§6结实的四脚钢桌。
-tile.engineersdecor.steel_floor_grating.name=钢地板格栅
-tile.engineersdecor.steel_floor_grating.help=§6装饰用钢制地板盖。§r顶端对齐。掉落物会穿过。
-tile.engineersdecor.treated_wood_stool.name=防腐木凳
-tile.engineersdecor.treated_wood_stool.help=§6坚固的木凳。§r适用于室内和室外使用。 
-tile.engineersdecor.treated_wood_crafting_table.name=防腐木合成台
-tile.engineersdecor.treated_wood_crafting_table.help=§6坚固，防风防雨。§r内含八个存储格，破坏后保留内容物，没有原版合成书。\n\
-                                                     单击上/下箭头按钮可选择合成历史，单击输出格自动放置物品，单击X按钮\
-                                                     清除合成栏和历史。Shift单击一叠物品：合成格空时转移到存储格，\
-                                                     非空时到合成栏。会自动分配转移的物品。
-tile.engineersdecor.treated_wood_side_table.name=防腐木茶几
-tile.engineersdecor.treated_wood_side_table.help=§6干完活后需要喝杯茶。
-tile.engineersdecor.iron_inset_light.name=嵌入灯
-tile.engineersdecor.iron_inset_light.help=§6小型荧石光源，能嵌入地板、天花板或墙里。§r\n\
-                                          用于照亮电力光源难以安装的地方。\
-                                          亮度与火把一样。
-tile.engineersdecor.treated_wood_window.name=防腐木窗
-tile.engineersdecor.treated_wood_window.help=§6木框三层玻璃窗。绝缘良好。§r不像玻璃板一样连接到相邻方块。
-tile.engineersdecor.treated_wood_windowsill.name=防腐木窗台
-tile.engineersdecor.treated_wood_windowsill.help=§6简单的窗户装饰。
-tile.engineersdecor.treated_wood_broad_windowsill.name=宽防腐木窗台
-tile.engineersdecor.treated_wood_broad_windowsill.help=§6简单的窗户装饰。
-tile.engineersdecor.steel_framed_window.name=钢框窗
-tile.engineersdecor.steel_framed_window.help=§6钢框三层玻璃窗。绝缘良好。§r不像玻璃板一样连接到相邻方块。
-tile.engineersdecor.steel_mesh_fence.name=钢丝栅栏
-tile.engineersdecor.steel_mesh_fence.help=§6工业式栅栏。§r\n不与普通栅栏连接。
+tile.engineersdecor.treated_wood_table.name=经过处理的木桌
+tile.engineersdecor.treated_wood_table.help=§6坚固的四足木桌.
+tile.engineersdecor.steel_table.name=Steel Table
+#tile.engineersdecor.steel_table.help=§6Robust four-legged steel table.
+tile.engineersdecor.steel_floor_grating.name=Steel Floor Grating
+#tile.engineersdecor.steel_floor_grating.help=§6Decorative steel floor covering.§r Top aligned. Items fall through.
+tile.engineersdecor.treated_wood_stool.name=Treated Wood Stool
+#tile.engineersdecor.treated_wood_stool.help=§6Robust Wood Stool.§r Indoor and outdoor use.
+tile.engineersdecor.treated_wood_crafting_table.name=Treated Wood Crafting Table
+#tile.engineersdecor.treated_wood_crafting_table.help=§6Robust and weather-proof.§r Eight storage slots, keeps inventory, no vanilla recipe book.\n\
+                                                     Click up/down arrow buttons for crafting history selection, output slot for item placement, X-button \
+                                                     to clear crafting grid and history. Shift-click stack: player-to-storage stack transfer when crafting \
+                                                     grid empty, otherwise player-to-grid stack transfer. Automatically distributes the clicked stack.
+tile.engineersdecor.treated_wood_side_table.name=Treated Wood Side Table
+#tile.engineersdecor.treated_wood_side_table.help=§6Needed after the work's done.
+tile.engineersdecor.iron_inset_light.name=Inset Light
+#tile.engineersdecor.iron_inset_light.help=§6Small glowstone light source, sunk into the floor, ceiling or wall.§r\n\
+                                          Useful to light up places where electrical light installations are problematic.\
+                                          Light level like a torch.
+tile.engineersdecor.treated_wood_window.name=Treated Wood Window
+#tile.engineersdecor.treated_wood_window.help=§6Wood framed triple glazed window. Well insulating.§r Does not connect to adjacent blocks like glass panes.
+tile.engineersdecor.treated_wood_windowsill.name=Treated Wood Window Sill
+#tile.engineersdecor.treated_wood_windowsill.help=§6Simple window decoration.
+tile.engineersdecor.treated_wood_broad_windowsill.name=Broad Treated Wood Window Sill
+#tile.engineersdecor.treated_wood_broad_windowsill.help=§6Simple window decoration.
+tile.engineersdecor.steel_framed_window.name=Steel Framed Window
+#tile.engineersdecor.steel_framed_window.help=§6Steel framed triple glazed window. Well insulating. §r Does not connect to adjacent blocks like glass panes.
+tile.engineersdecor.steel_mesh_fence.name=Steel Mesh Fence
+#tile.engineersdecor.steel_mesh_fence.help=§6Industrial style fence.§r\nDoes not connect do regular fences.
 #-----------------------------------------------------------------------------------------------------------
-tile.engineersdecor.small_lab_furnace.name=小型实验室炉
-tile.engineersdecor.small_lab_furnace.help=§6小型金属壳实验室窑。§r消耗固体燃料，向上排气。\
-                                           比圆石炉稍微热一点，隔热性也更好，因此效率更高。 \
-                                           有两个用于储存的辅助格。两个堆叠的内部漏斗对输入、输出和燃料进行队列管理。\
-                                           在辅助格放置一个外置加热器并通入电力可以加快熔炼速度。
-tile.engineersdecor.small_electrical_furnace.name=小型电炉
-tile.engineersdecor.small_electrical_furnace.help=§6小型金属封装穿过式熔炉。§r \
-                                           自动从输入端获取物品并在输出端物品栏放置物品。\
-                                           物品能从所有面使用漏斗插入或提取。无法熔炼或烹饪的物品会直接送到出口。\
-                                           比加热的圆石炉有稍微高的能效比和更快。\
-                                           先进先出和自动输出一次移动一组物品。自动输出需要一点能量。
-tile.engineersdecor.small_waste_incinerator.name=小型垃圾焚烧炉
-tile.engineersdecor.small_waste_incinerator.help=§6有内部先进先出队列的垃圾桶。§r物品可以从任何一面插入，而且\
-                                                  直到队列满都会保留。一旦超过队列上限，最老的物品会被焚毁。\
-                                                  通入RF/FE会增加处理速度。破坏时保留内部未销毁的物品。
+tile.engineersdecor.small_lab_furnace.name=Small Laboratory Furnace
+#tile.engineersdecor.small_lab_furnace.help=§6Small metal cased lab kiln.§r Solid fuel consuming, updraught. \
+                                           Slightly hotter and better isolated than a cobblestone furnace, therefore more efficient. \
+                                           Two auxiliary slots e.g. for storage. Two stack internal hopper fifos for input, output, \
+                                           and fuel. Place an external heater into a aux slot and connect power for electrical \
+                                           smelting speed boost.
+tile.engineersdecor.small_electrical_furnace.name=Small Electrical Furnace
+#tile.engineersdecor.small_electrical_furnace.help=§6Small metal cased pass-through furnace.§r \
+                                           Automatically draws items from the input side and puts items into the inventory at the output side. \
+                                           Items can be inserted or drawn from all sides using hoppers. Implicitly bypasses items that cannot be \
+                                           smelted or cooked to the output. Slightly more energy efficient and faster than a heated cobblestone \
+                                           furnace. Fifos and feeders transfer whole stacks. Feeders require a bit of power.
+tile.engineersdecor.small_waste_incinerator.name=Small Waste Incinerator
+#tile.engineersdecor.small_waste_incinerator.help=§6Trash with internal fifo slots.§r Items can be inserted on all sides, and are kept until \
+                                                  there is no space left in the fifo. After that the oldest stack will be incinerated. Apply \
+                                                  electrical RF/FE power to increase the processing speed. Keeps its inventory when being \
+                                                  relocated.
 #-----------------------------------------------------------------------------------------------------------
-tile.engineersdecor.straight_pipe_valve.name=输液管止回阀
-tile.engineersdecor.straight_pipe_valve.help=§6一段直输液管。§r单向传递流体。\
-                                             侧面不会与管道连接。会减少流速。潜行能反方向放置。
-tile.engineersdecor.straight_pipe_valve_redstone.name=红石控制流体阀
-tile.engineersdecor.straight_pipe_valve_redstone.help=§6一段直输液管。§r单向传递流体。\
-                                                      侧面不会与管道连接。会减少流速。潜行能反方向放置。\
-                                                      没有红石信号时断流。
-tile.engineersdecor.straight_pipe_valve_redstone_analog.name=红石模拟流体阀
-tile.engineersdecor.straight_pipe_valve_redstone_analog.help=§6一段直输液管。§r单向传递流体。\
-                                                      侧面不会与管道连接。会减少流速。潜行能反方向放置。\
-                                                      没有红石信号时断流，流速与红石信号强度从1到14线性增长，\
-                                                      15时流速上限达到最大。
-tile.engineersdecor.passive_fluid_accumulator.name=被动流体累积器。
-tile.engineersdecor.passive_fluid_accumulator.help=§6基于真空吸力的流体收集器。§r有一个输出面，其他面都是输入。\
-                                                   当从输出面被泵抽取时，从输入面邻接储罐抽取液体。
+tile.engineersdecor.straight_pipe_valve.name=Fluid Pipe Check Valve
+#tile.engineersdecor.straight_pipe_valve.help=§6Straight fluid pipe fragment.§r Conducts fluids only in one direction. \
+                                             Does not connect to the sides. Reduces flow rate. Sneak to place in reverse direction.
+tile.engineersdecor.straight_pipe_valve_redstone.name=Redstone Controlled Fluid Valve
+#tile.engineersdecor.straight_pipe_valve_redstone.help=§6Straight fluid pipe fragment.§r Conducts fluids only in one direction. \
+                                                      Does not connect to the sides. Sneak to place in reverse direction. \
+                                                      Blocks if not redstone powered.
+tile.engineersdecor.straight_pipe_valve_redstone_analog.name=Redstone Analog Fluid Valve
+#tile.engineersdecor.straight_pipe_valve_redstone_analog.help=§6Straight fluid pipe fragment.§r Conducts fluids only in one direction. \
+                                                      Does not connect to the sides. Sneak to place in reverse direction. \
+                                                      Blocks if not redstone powered, reduces the flow rate linear from power 1 to 14, \
+                                                      opens to maximum possible valve flow rate for power 15.
+tile.engineersdecor.passive_fluid_accumulator.name=Passive Fluid Accumulator
+#tile.engineersdecor.passive_fluid_accumulator.help=§6Vacuum suction based fluid collector.§r Has one output, all other sides are input. \
+                                                   Drains fluids from adjacent tanks when being drained from the output port by a pump.
 #-----------------------------------------------------------------------------------------------------------
-tile.engineersdecor.factory_dropper.name=工厂掉落器
-tile.engineersdecor.factory_dropper.help=§6适用于高级工厂自动化的掉落器。§r有十二个轮询选择的储物格。\
-                                         掉落的力度、角度、一叠数量和冷却延时可在GUI调节。三个\
-                                         内部比较槽带有逻辑与或逻辑或功能，可用作内部触发源。内部触发\
-                                         还能和外部红石信号触发再进行逻辑与或逻辑或。触发模拟按钮仅作测试用途。\
-                                         当内部触发条件满足时，预先打开卷帘门。所有符合条件的物品\
-                                         会同时掉落。点击GUI的各处来了解如何运作。
-tile.engineersdecor.small_mineral_smelter.name=小型矿物熔炼炉
-tile.engineersdecor.small_mineral_smelter.help=§6高温、高绝缘电熔石炉。§r\n\
-                                               把矿物块加热成岩浆块，最后变成熔岩。由于\
-                                               小型化的设备大小，该过程效率不高，需要大量时间和能源\
-                                               来液化一块石头。
-tile.engineersdecor.small_solar_panel.name=小型太阳能板
-tile.engineersdecor.small_solar_panel.help=§6暴露在阳光下时产生少量能量。§r\n\
-                                           用于低消耗地在远程系统给低压电容器充电。\
-                                           内部电荷泵电路积累并频繁输出RF。产出取决于时间\
-                                           和天气。
-tile.engineersdecor.small_tree_cutter.name=小型砍树机
-tile.engineersdecor.small_tree_cutter.help=§6砍倒正前方的树。§r\n\
-                                           不收集木材。通入红石信号停用。\
-                                           提供RF来加快砍树速度。（没有的话会很慢。）
+tile.engineersdecor.factory_dropper.name=Factory Dropper
+#tile.engineersdecor.factory_dropper.help=§6Dropper suitable for advanced factory automation.§r Has twelve round-robin selected slots. \
+                                         Drop force, angle, stack size, and cool-down delay adjustable in the GUI. Three stack compare \
+                                         slots with logical AND or OR can be used as internal trigger source. Internal trigger can be \
+                                         AND'ed or OR'ed with the external redstone signal trigger. Trigger simulation buttons for testing. \
+                                         Pre-opens shutter door when internal trigger conditions are met. Drops all matching stacks \
+                                         simultaneously. Click on all elements in the GUI to see how it works.
+tile.engineersdecor.small_mineral_smelter.name=Small Mineral Melting Furnace
+#tile.engineersdecor.small_mineral_smelter.help=§6High temperature, high insulation electrical stone melting furnace.§r\n\
+                                               Heats up mineral blocks to magma blocks, and finally to lava. Due to the \
+                                               miniturized device size the process is rather inefficient - much time and \
+                                               energy is needed to liquefy a stone block.
+tile.engineersdecor.small_solar_panel.name=Small Solar Panel
+#tile.engineersdecor.small_solar_panel.help=§6Produces a small amount of power when exposed to sunlight.§r\n\
+                                           Useful for charging LF capacitors in remote systems with low consumption. The \
+                                           internal charge pump circuit accumulates and frequently transfers RF. Production \
+                                           depends on day time and the weather.
+tile.engineersdecor.small_tree_cutter.name=Small Tree Cutter
+#tile.engineersdecor.small_tree_cutter.help=§6Chops grown trees in front of it.§r\n\
+                                           Does not collect the lumbers. Deactivate with a redstone signal. \
+                                           Provide RF power to boost the cutting speed (takes a long time without power).
 #-----------------------------------------------------------------------------------------------------------
-tile.engineersdecor.sign_decor.name=标志板（工程师的装饰）
-tile.engineersdecor.sign_decor.help=§6这不应该可合成或在JEI看到。用于创造模式的物品栏标签和截屏。
-tile.engineersdecor.sign_hotwire.name=指示牌 "小心电线"
-tile.engineersdecor.sign_hotwire.help=§6电气危害警告。不要忘记在高压线周围放置，否则下次审计时你会发现不合格。
-tile.engineersdecor.sign_mindstep.name=指示牌 "小心脚滑"
-tile.engineersdecor.sign_mindstep.help=§6能（水平）放在墙上。
-tile.engineersdecor.sign_danger.name=指示牌 "小心危险"
-tile.engineersdecor.sign_danger.help=§6通用危险警告。
-tile.engineersdecor.sign_defense.name=指示牌 "小心防御系统"
-tile.engineersdecor.sign_defense.help=§6用于警告炮塔、特斯拉线圈和陷阱。
-tile.engineersdecor.sign_factoryarea.name=指示牌 "工厂区域"
-tile.engineersdecor.sign_factoryarea.help=§6用于指示真的很大的机器所在的建筑和区域。
-tile.engineersdecor.sign_exit.name=出口指示牌
-tile.engineersdecor.sign_factoryarea.help=§6门在那，请……
+tile.engineersdecor.sign_decor.name=Sign Plate (Engineer's decor)
+#tile.engineersdecor.sign_decor.help=§6This should not be craftable or visible in JEI. Used for creative tab and screenshots.
+tile.engineersdecor.sign_hotwire.name=Sign "Caution Hot Wire"
+#tile.engineersdecor.sign_hotwire.help=§6Electrical hazard warning. Don't forget to place around HV, or you will have a nonconformity in the next audit.
+tile.engineersdecor.sign_mindstep.name=Sign "Mind The Step"
+#tile.engineersdecor.sign_mindstep.help=§6Placable on walls (horizontally).
+tile.engineersdecor.sign_danger.name=Sign "Caution Really Dangerous There"
+#tile.engineersdecor.sign_danger.help=§6General danger warning.
+tile.engineersdecor.sign_defense.name=Sign "Caution Defense System Ahead"
+#tile.engineersdecor.sign_defense.help=§6Warning sign for turrets, Tesla Coils, and traps.
+tile.engineersdecor.sign_factoryarea.name=Sign "Factory Area"
+#tile.engineersdecor.sign_factoryarea.help=§6Marker sign for buildings or areas where the really big machines are located.
+tile.engineersdecor.sign_exit.name=Exit Sign
+#tile.engineersdecor.sign_factoryarea.help=§6There's the door, please ...
 #-----------------------------------------------------------------------------------------------------------
-tile.engineersdecor.halfslab_rebar_concrete.name=强化混凝土切片
-tile.engineersdecor.halfslab_rebar_concrete.help=§6可垂直堆叠的切片。§r手持切片右/左击切片堆叠的顶端或底部来添加/移除切片。
-tile.engineersdecor.halfslab_concrete.name=混凝土切片
-tile.engineersdecor.halfslab_concrete.help=§6可垂直堆叠的切片。§r手持切片右/左击切片堆叠的顶端或底部来添加/移除切片。
-tile.engineersdecor.halfslab_treated_wood.name=防腐木切片
-tile.engineersdecor.halfslab_treated_wood.help=§6可垂直堆叠的切片。§r手持切片右/左击切片堆叠的顶端或底部来添加/移除切片。
-tile.engineersdecor.halfslab_sheetmetal_iron.name=铁板金属块切片
-tile.engineersdecor.halfslab_sheetmetal_iron.help=§6可垂直堆叠的切片。§r手持切片右/左击切片堆叠的顶端或底部来添加/移除切片。
-tile.engineersdecor.halfslab_sheetmetal_steel.name=钢板金属块切片
-tile.engineersdecor.halfslab_sheetmetal_steel.help=§6可垂直堆叠的切片。§r手持切片右/左击切片堆叠的顶端或底部来添加/移除切片。
-tile.engineersdecor.halfslab_sheetmetal_copper.name=铜板金属块切片
-tile.engineersdecor.halfslab_sheetmetal_copper.help=§6可垂直堆叠的切片。§r手持切片右/左击切片堆叠的顶端或底部来添加/移除切片。
-tile.engineersdecor.halfslab_sheetmetal_gold.name=金板金属块切片
-tile.engineersdecor.halfslab_sheetmetal_gold.help=§6可垂直堆叠的切片。§r手持切片右/左击切片堆叠的顶端或底部来添加/移除切片。
-tile.engineersdecor.halfslab_sheetmetal_aluminum.name=铝板金属块切片
-tile.engineersdecor.halfslab_sheetmetal_aluminum.help=§6可垂直堆叠的切片。§r手持切片右/左击切片堆叠的顶端或底部来添加/移除切片。
-tile.engineersdecor.testblock.name=ED测试方块（不要使用）(do NOT use)
-tile.engineersdecor.testblock.help=§6不可合成的测试方块，有着经常变动的测试功能，不要使用，最坏可能会游戏崩溃！！
+tile.engineersdecor.halfslab_rebar_concrete.name=Rebar Concrete Slice
+#tile.engineersdecor.halfslab_rebar_concrete.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
+tile.engineersdecor.halfslab_concrete.name=Concrete Slice
+#tile.engineersdecor.halfslab_concrete.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
+tile.engineersdecor.halfslab_treated_wood.name=Treated Wood Slice
+#tile.engineersdecor.halfslab_treated_wood.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
+tile.engineersdecor.halfslab_sheetmetal_iron.name=Iron Sheet Metal Slice
+#tile.engineersdecor.halfslab_sheetmetal_iron.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
+tile.engineersdecor.halfslab_sheetmetal_steel.name=Steel Sheet Metal Slice
+#tile.engineersdecor.halfslab_sheetmetal_steel.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
+tile.engineersdecor.halfslab_sheetmetal_copper.name=Copper Sheet Metal Slice
+#tile.engineersdecor.halfslab_sheetmetal_copper.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
+tile.engineersdecor.halfslab_sheetmetal_gold.name=Gold Sheet Metal Slice
+#tile.engineersdecor.halfslab_sheetmetal_gold.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
+tile.engineersdecor.halfslab_sheetmetal_aluminum.name=Aluminum Sheet Metal Slice
+#tile.engineersdecor.halfslab_sheetmetal_aluminum.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
+tile.engineersdecor.testblock.name=ED Test Block (do NOT use)
+#tile.engineersdecor.testblock.help=§6Uncraftable mod testing block with changing experimental functionality. DO NOT USE, may even cause a crash in the worst case!!
 #-----------------------------------------------------------------------------------------------------------
 engineersdecor.config.title=工程师的装饰配置
-engineersdecor.config.pattern_excludes=模式不包括
-engineersdecor.config.pattern_includes=模式包括
-engineersdecor.config.without_clinker_bricks=不要过烧砖
-engineersdecor.config.without_slag_bricks=不要炉渣砖
-engineersdecor.config.without_rebar_concrete=不要强化混凝土
-engineersdecor.config.without_walls=不要墙
-engineersdecor.config.without_stairs=不要楼梯
-engineersdecor.config.without_ie_concrete_wall=不要混凝土墙
-engineersdecor.config.without_panzer_glass=不要装甲玻璃
-engineersdecor.config.without_crafting_table=不要合成台
-engineersdecor.config.without_lab_furnace=不要实验室炉
-engineersdecor.config.without_electrical_furnace=不要电炉
-engineersdecor.config.without_treated_wood_furniture=不要防腐木家具
-engineersdecor.config.without_windows=不要窗户
-engineersdecor.config.without_light_sources=不要灯
-engineersdecor.config.without_ladders=不要梯子
-engineersdecor.config.without_chair_sitting=椅子不能坐
-engineersdecor.config.without_mob_chair_sitting=椅子不能给其他生物坐
-engineersdecor.config.without_ladder_speed_boost=不要爬梯加速
-engineersdecor.config.without_crafting_table_history=不要合成台历史
-engineersdecor.config.without_valves=不要阀门
-engineersdecor.config.without_passive_fluid_accumulator=不要流体积累器
-engineersdecor.config.without_waste_incinerator=不要焚烧炉
-engineersdecor.config.without_sign_plates=不要标志牌
-engineersdecor.config.without_factory_dropper=不要工厂掉落器
-engineersdecor.config.without_slabs=不要台阶
-engineersdecor.config.without_halfslabs=不要台阶切片
-engineersdecor.config.without_direct_slab_pickup=不要快速捡起台阶
-engineersdecor.config.without_poles=不要杆
-engineersdecor.config.without_hsupports=不要支撑
-engineersdecor.config.without_tooltips=不要工具提示
-engineersdecor.config.without_recipes=不要配方
-engineersdecor.config.furnace_smelting_speed_percent=熔炉：熔炼速度 %
-engineersdecor.config.furnace_fuel_efficiency_percent=熔炉：燃料效率 %
-engineersdecor.config.furnace_boost_energy_consumption=熔炉：能量加速
-engineersdecor.config.chair_mob_sitting_probability_percent=椅子：坐下机率 %
-engineersdecor.config.chair_mob_standup_probability_percent="椅子：站起机率 %"
-engineersdecor.config.with_crafting_quickmove_buttons=合成台：移动按钮
-engineersdecor.config.pipevalve_max_flowrate=阀门：最大流速
-engineersdecor.config.pipevalve_redstone_gain=阀门：红石斜率
-engineersdecor.config.e_furnace_speed_percent=电炉：熔炉速度 %
-engineersdecor.config.e_furnace_power_consumption=电炉：能量消耗
+engineersdecor.config.pattern_excludes=Pattern excludes
+engineersdecor.config.pattern_includes=Pattern includes
+engineersdecor.config.without_clinker_bricks=Without clinker bricks
+engineersdecor.config.without_slag_bricks=Without slag bricks
+engineersdecor.config.without_rebar_concrete=Without rebar concrete
+engineersdecor.config.without_walls=Without walls
+engineersdecor.config.without_stairs=Without stairs
+engineersdecor.config.without_ie_concrete_wall=Without concrete wall
+engineersdecor.config.without_panzer_glass=Without panzer glass
+engineersdecor.config.without_crafting_table=Without crafting table
+engineersdecor.config.without_lab_furnace=Without lab furnace
+engineersdecor.config.without_electrical_furnace=Without electrical furnace
+engineersdecor.config.without_treated_wood_furniture=Without tr. wood furniture
+engineersdecor.config.without_windows=Without windows
+engineersdecor.config.without_light_sources=Without lights
+engineersdecor.config.without_ladders=Without ladders
+engineersdecor.config.without_chair_sitting=Without chair sitting
+engineersdecor.config.without_mob_chair_sitting=Without chair mob sitting
+engineersdecor.config.without_ladder_speed_boost=Without ladder speed boost
+engineersdecor.config.without_crafting_table_history=Without crafting table history
+engineersdecor.config.without_valves=Without valves
+engineersdecor.config.without_passive_fluid_accumulator=Without fluid accumulator
+engineersdecor.config.without_waste_incinerator=Without waste incinerator
+engineersdecor.config.without_sign_plates=Without signs
+engineersdecor.config.without_factory_dropper=Without factory dropper
+engineersdecor.config.without_slabs=Without slabs
+engineersdecor.config.without_halfslabs=Without slab slices
+engineersdecor.config.without_direct_slab_pickup=Without slab pickup
+engineersdecor.config.without_poles=Without poles
+engineersdecor.config.without_hsupports=Without h. supports
+engineersdecor.config.without_tooltips=Without tooltips
+engineersdecor.config.without_recipes=Without recipes
+engineersdecor.config.furnace_smelting_speed_percent=Furnace: Smelting speed %
+engineersdecor.config.furnace_fuel_efficiency_percent=Furnace: Fuel efficiency %
+engineersdecor.config.furnace_boost_energy_consumption=Furnace: Boost energy
+engineersdecor.config.chair_mob_sitting_probability_percent=Chairs: Sitting chance %
+engineersdecor.config.chair_mob_standup_probability_percent="Chairs: Stand up chance %"
+engineersdecor.config.with_crafting_quickmove_buttons=Crafting table: Move buttons
+engineersdecor.config.pipevalve_max_flowrate=Valves: Max flow rate
+engineersdecor.config.pipevalve_redstone_gain=Valves: Redstone slope
+engineersdecor.config.e_furnace_speed_percent=E-furnace: Smelting speed %
+engineersdecor.config.e_furnace_power_consumption=E-furnace: Power consumption
 #-----------------------------------------------------------------------------------------------------------
 # EOF
 #-----------------------------------------------------------------------------------------------------------

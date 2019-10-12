@@ -10,6 +10,14 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+                  -------------------------------------------------------------------
+    - v1.0.13     [R] Release based on v1.0.13-b2. Release-to-release changes:
+                      * Small Tree Cutter device added.
+                      * Small Solar Panel added.
+                      * Steel Mesh Fence added.
+                      * Broad Window Sill added.
+                  -------------------------------------------------------------------
+
     - v1.0.13-b2  [A] Added Steel Mesh Fence.
                   [A] Added Broad Window Sill.
                   [A] Small Tree Cutter can chop Dynamic Trees,
