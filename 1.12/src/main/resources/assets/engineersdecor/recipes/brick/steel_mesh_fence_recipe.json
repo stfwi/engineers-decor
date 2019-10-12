@@ -1,0 +1,28 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:steel_mesh_fence",
+      "required": ["engineersdecor:thin_steel_pole"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PNP",
+    "PNP"
+  ],
+  "key": {
+    "P": {
+      "item": "engineersdecor:thin_steel_pole",
+      "data": 0
+    },
+    "N": {
+      "item": "minecraft:iron_nugget",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:steel_mesh_fence",
+    "count": 6
+  }
+}

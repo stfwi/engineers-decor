@@ -63,6 +63,7 @@
  "block.engineersdecor.rebar_concrete_slab": "Rebar Concrete Slab",
  "block.engineersdecor.rebar_concrete_tile_slab": "Rebar Concrete Tile Slab",
  "block.engineersdecor.panzerglass_slab": "Panzer Glass Slab",
+ "block.engineersdecor.treated_wood_floor": "Treated Wood Floor",
  "block.engineersdecor.rebar_concrete_wall": "钢筋混凝土墙",
  "block.engineersdecor.rebar_concrete_wall.help": "§6钢筋混凝土墙.§r 昂贵,但像黑曜石一样防苦力怕.",
  "block.engineersdecor.concrete_wall": "水泥墙",
@@ -102,7 +103,9 @@
  "block.engineersdecor.iron_inset_light": "Inset Light",
  "block.engineersdecor.treated_wood_window": "Treated Wood Window",
  "block.engineersdecor.treated_wood_windowsill": "Treated Wood Window Sill",
+ "block.engineersdecor.treated_wood_broad_windowsill": "Broad Treated Wood Window Sill",
  "block.engineersdecor.steel_framed_window": "Steel Framed Window",
+ "block.engineersdecor.steel_mesh_fence": "Steel Mesh Fence",
  "block.engineersdecor.small_lab_furnace": "Small Laboratory Furnace",
  "block.engineersdecor.small_electrical_furnace": "Small Electrical Furnace",
  "block.engineersdecor.small_waste_incinerator": "Small Waste Incinerator",
@@ -113,6 +116,7 @@
  "block.engineersdecor.factory_dropper": "Factory Dropper",
  "block.engineersdecor.small_mineral_smelter": "Small Mineral Melting Furnace",
  "block.engineersdecor.small_solar_panel": "Small Solar Panel",
+ "block.engineersdecor.small_tree_cutter": "Small Tree Cutter",
  "block.engineersdecor.sign_decor": "Sign Plate (Engineer's decor)",
  "block.engineersdecor.sign_hotwire": "Sign \"Caution Hot Wire\"",
  "block.engineersdecor.sign_mindstep": "Sign \"Mind The Step\"",
@@ -127,5 +131,6 @@
  "block.engineersdecor.halfslab_sheetmetal_steel": "Steel Sheet Metal Slice",
  "block.engineersdecor.halfslab_sheetmetal_copper": "Copper Sheet Metal Slice",
  "block.engineersdecor.halfslab_sheetmetal_gold": "Gold Sheet Metal Slice",
- "block.engineersdecor.halfslab_sheetmetal_aluminum": "Aluminum Sheet Metal Slice"
+ "block.engineersdecor.halfslab_sheetmetal_aluminum": "Aluminum Sheet Metal Slice",
+ "block.engineersdecor.testblock": "ED Test Block (do NOT use)"
 }

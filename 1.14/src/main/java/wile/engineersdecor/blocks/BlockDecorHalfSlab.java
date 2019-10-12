@@ -125,6 +125,10 @@ public class BlockDecorHalfSlab extends BlockDecor implements IWaterLoggable
   { return state; }
 
   @Override
+  public boolean hasDynamicDropList()
+  { return true; }
+
+  @Override
   public List<ItemStack> dropList(BlockState state, World world, BlockPos pos, boolean explosion)
   { return new ArrayList<ItemStack>(Collections.singletonList(new ItemStack(this.asItem(), num_slabs_contained_in_parts_[state.get(PARTS) & 0xf]))); }
 

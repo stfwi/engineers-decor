@@ -9,6 +9,7 @@
 package wile.engineersdecor.detail;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.fml.common.Loader;
 import wile.engineersdecor.ModEngineersDecor;
 import net.minecraft.world.World;
 import net.minecraft.item.ItemStack;
@@ -153,6 +154,9 @@ public class ModAuxiliaries
     String s = message.trim();
     if(!s.isEmpty()) player.sendMessage(new TextComponentTranslation(s));
   }
+
+  public static boolean isModLoaded(String id)
+  { return Loader.isModLoaded(id); }
 
   @SuppressWarnings("unused")
   public interface IExperimentalFeature{}

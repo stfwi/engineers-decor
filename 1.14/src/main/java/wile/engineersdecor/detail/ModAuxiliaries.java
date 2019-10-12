@@ -34,6 +34,8 @@ import java.util.regex.Pattern;
 
 public class ModAuxiliaries
 {
+  public static final String MODID = ModEngineersDecor.MODID;
+
   /**
    * Text localisation wrapper, implicitly prepends `ModEngineersDecor.MODID` to the
    * translation keys. Forces formatting argument, nullable if no special formatting shall be applied..

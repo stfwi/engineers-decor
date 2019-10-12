@@ -24,3 +24,4 @@
 ![](engineers-decor-small-mineral-smelter-vanilla-automated.png)
 ![](engineers-decor-small-solar-panel.png)
 ![](engineers-decor-small-tree-cutter.png)
+![](engineers-decor-mesh-fence.png)

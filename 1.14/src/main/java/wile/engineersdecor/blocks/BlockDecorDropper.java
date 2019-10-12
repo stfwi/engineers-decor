@@ -114,6 +114,10 @@ public class BlockDecorDropper extends BlockDecorDirected
   }
 
   @Override
+  public boolean hasDynamicDropList()
+  { return true; }
+
+  @Override
   public List<ItemStack> dropList(BlockState state, World world, BlockPos pos, boolean explosion)
   {
     final List<ItemStack> stacks = new ArrayList<ItemStack>();

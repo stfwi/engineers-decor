@@ -26,7 +26,6 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -229,6 +228,13 @@ public class ModContent
 
   //--------------------------------------------------------------------------------------------------------------------
 
+  public static final BlockDecorFence STEEL_MESH_FENCE = new BlockDecorFence(
+    "steel_mesh_fence",
+    BlockDecor.CFG_DEFAULT, Material.IRON, 2f, 15f, SoundType.METAL
+  );
+
+  //--------------------------------------------------------------------------------------------------------------------
+
   public static final BlockDecor TREATED_WOOD_TABLE = new BlockDecor(
     "treated_wood_table",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
@@ -250,11 +256,18 @@ public class ModContent
     ModAuxiliaries.getPixeledAABB(2,0,2, 14,15.9,14)
   );
 
-  public static final BlockDecorDirected TREATED_WOOD_WINDOWSILL = new BlockDecorDirected(
+  public static final BlockDecorWindowSill TREATED_WOOD_WINDOWSILL = new BlockDecorWindowSill(
     "treated_wood_windowsill",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_FACING_PLACEMENT,
     Material.WOOD, 1.0f, 10f, SoundType.WOOD,
     ModAuxiliaries.getPixeledAABB(0.5,15,10.5, 15.5,16,16)
+  );
+
+  public static final BlockDecorWindowSill TREATED_WOOD_BROAD_WINDOWSILL = new BlockDecorWindowSill(
+    "treated_wood_broad_windowsill",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_FACING_PLACEMENT,
+    Material.WOOD, 1.0f, 10f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(0,14.5,4, 16,16,16)
   );
 
   public static final BlockDecorDirected INSET_LIGHT_IRON = new BlockDecorDirected(
@@ -459,6 +472,8 @@ public class ModContent
     STRAIGHT_CHECK_VALVE, STRAIGHT_REDSTONE_VALVE, STRAIGHT_REDSTONE_ANALOG_VALVE, STRAIGHT_PIPE_VALVE_TEI,
     PASSIVE_FLUID_ACCUMULATOR, PASSIVE_FLUID_ACCUMULATOR_TEI,
     SMALL_MINERAL_SMELTER, SMALL_MINERAL_SMELTER_TEI,
+    SMALL_SOLAR_PANEL,SMALL_SOLAR_PANEL_TEI,
+    SMALL_TREE_CUTTER,SMALL_TREE_CUTTER_TEI,
     CLINKER_BRICK_BLOCK,
     CLINKER_BRICK_SLAB,
     CLINKER_BRICK_STAIRS,
@@ -489,6 +504,7 @@ public class ModContent
     TREATED_WOOD_WINDOW,
     STEEL_FRAMED_WINDOW,
     TREATED_WOOD_WINDOWSILL,
+    TREATED_WOOD_BROAD_WINDOWSILL,
     INSET_LIGHT_IRON,
     TREATED_WOOD_POLE_SUPPORT,
     TREATED_WOOD_POLE_HEAD,
@@ -498,6 +514,7 @@ public class ModContent
     THICK_STEEL_POLE_HEAD,
     STEEL_DOUBLE_T_SUPPORT,
     STEEL_FLOOR_GRATING,
+    STEEL_MESH_FENCE,
     SIGN_HOTWIRE, SIGN_DANGER, SIGN_DEFENSE, SIGN_FACTORY_AREA, SIGN_EXIT, SIGN_MODLOGO,
     TREATED_WOOD_SIDE_TABLE,
     HALFSLAB_REBARCONCRETE, HALFSLAB_CONCRETE, HALFSLAB_TREATEDWOOD,
@@ -509,8 +526,6 @@ public class ModContent
     SIGN_MINDSTEP,
     PANZERGLASS_SLAB,                         // @todo: check if another class is needed due to is_side_visible
     TREATED_WOOD_FLOOR,                       // @todo: check if textures need improvement
-    SMALL_SOLAR_PANEL,SMALL_SOLAR_PANEL_TEI,
-    SMALL_TREE_CUTTER,SMALL_TREE_CUTTER_TEI,
     TEST_BLOCK,TEST_BLOCK_TEI
   };
 
@@ -563,7 +578,7 @@ public class ModContent
   public static final void registerBlocks(RegistryEvent.Register<Block> event)
   {
     // Config based registry selection
-    final boolean ie_installed = Loader.isModLoaded("immersiveengineering");
+    final boolean ie_installed = ModAuxiliaries.isModLoaded("immersiveengineering");
     int num_block_registrations_skipped = 0;
     int num_block_registrations_skipped_noie = 0;
     final boolean woor = ModConfig.isWithoutOptOutRegistration();

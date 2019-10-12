@@ -8,11 +8,11 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.world.*;
 import wile.engineersdecor.detail.ModAuxiliaries;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.IFluidState;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.state.StateContainer;
@@ -28,8 +28,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
@@ -69,13 +67,26 @@ public class BlockDecorWall extends WallBlock implements IDecorBlock
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
   { super.fillStateContainer(builder); builder.add(TEXTURE_VARIANT); }
 
-  private boolean attachesTo(BlockState facingState, IWorld world, BlockPos facingPos, Direction side)
+  private boolean attachesTo(BlockState facingState, IWorldReader world, BlockPos facingPos, Direction side)
   {
     final Block block = facingState.getBlock();
     if((block instanceof FenceGateBlock) || (block instanceof WallBlock)) return true;
-    // return this.func_220113_a(facingState, Block.func_220056_d(facingState, world, facingPos, side), side);
-    // @todo: CHANGE HERE WHEN DEOBF METHOD IS AVAILABLE
-    return false;
+    final BlockState oppositeState = world.getBlockState(facingPos.offset(side, 2));
+    if(!(oppositeState.getBlock() instanceof BlockDecorWall)) return false;
+    return facingState.isNormalCube(world, facingPos) && hasSolidSide(facingState, world, facingPos, side);
+  }
+
+  public BlockState getStateForPlacement(BlockItemUseContext context)
+  {
+    IWorldReader world = context.getWorld();
+    BlockPos pos = context.getPos();
+    IFluidState fs = context.getWorld().getFluidState(context.getPos());
+    boolean n = attachesTo(world.getBlockState(pos.north()), world, pos.north(), Direction.SOUTH);
+    boolean e = attachesTo(world.getBlockState(pos.east()), world, pos.east(), Direction.WEST);
+    boolean s = attachesTo(world.getBlockState(pos.south()), world, pos.south(), Direction.NORTH);
+    boolean w = attachesTo(world.getBlockState(pos.west()), world, pos.west(), Direction.EAST);
+    boolean not_straight = (!n || !s || e || w) && (n  || s || !e || !w);
+    return getDefaultState().with(UP, not_straight).with(NORTH, n).with(EAST, e).with(SOUTH, s).with(WEST, w).with(WATERLOGGED, fs.getFluid() == Fluids.WATER);
   }
 
   @Override
@@ -105,11 +116,4 @@ public class BlockDecorWall extends WallBlock implements IDecorBlock
   public PushReaction getPushReaction(BlockState state)
   { return PushReaction.NORMAL; }
 
-  @Override
-  public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, IFluidState fluid)
-  { return BlockDecor.dropBlock(state, world, pos, false); }
-
-  @Override
-  public void onExplosionDestroy(World world, BlockPos pos, Explosion explosion)
-  { BlockDecor.dropBlock(world.getBlockState(pos), world, pos, true); }
 }
