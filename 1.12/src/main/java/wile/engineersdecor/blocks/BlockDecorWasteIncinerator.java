@@ -681,18 +681,12 @@ public class BlockDecorWasteIncinerator extends BlockDecor
         int max_shift_slot_no = BURN_SLOT_NO-1;
         for(int i=1; i<BURN_SLOT_NO-1; ++i) { if(stacks_.get(i).isEmpty()) { max_shift_slot_no=i; break; } }
         if(max_shift_slot_no < (BURN_SLOT_NO-1)) {
+          shiftStacks(0, max_shift_slot_no);
           // re-stack
-          boolean stacked = false;
           for(int i=1; i<=max_shift_slot_no; ++i) {
-            if(transferItems(i-1, i, getInventoryStackLimit())) {
-              dirty = true;
-              stacked = true;
-              break;
-            }
+            if(transferItems(i-1, i, getInventoryStackLimit())) break;
           }
-          if(!stacked) {
-            shiftStacks(0, max_shift_slot_no);
-          }
+          dirty = true;
         } else if(!is_processing) {
           shiftStacks(0, BURN_SLOT_NO);
           dirty = true;

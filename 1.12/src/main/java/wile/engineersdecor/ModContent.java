@@ -106,6 +106,13 @@ public class ModContent
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,15)
   );
 
+  public static final BlockDecorHopper FACTORY_HOPPER = new BlockDecorHopper(
+    "factory_hopper",
+    BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_REDSTONE_CONTROLLED,
+    Material.IRON, 1f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(2,2,2, 14,14,14)
+  );
+
   public static final BlockDecorWasteIncinerator SMALL_WASTE_INCINERATOR = new BlockDecorWasteIncinerator(
     "small_waste_incinerator",
     BlockDecor.CFG_DEFAULT|BlockDecor.CFG_ELECTRICAL,
@@ -442,19 +449,18 @@ public class ModContent
   private static final TileEntityRegistrationData FACTORY_DROPPER_TEI = new TileEntityRegistrationData(
     BlockDecorDropper.BTileEntity.class, "te_factory_dropper"
   );
-
+  private static final TileEntityRegistrationData FACTORY_HOPPER_TEI = new TileEntityRegistrationData(
+    BlockDecorHopper.BTileEntity.class, "te_factory_hopper"
+  );
   private static final TileEntityRegistrationData SMALL_MINERAL_SMELTER_TEI = new TileEntityRegistrationData(
     BlockDecorMineralSmelter.BTileEntity.class, "te_small_mineral_smelter"
   );
-
   private static final TileEntityRegistrationData SMALL_SOLAR_PANEL_TEI = new TileEntityRegistrationData(
     BlockDecorSolarPanel.BTileEntity.class, "te_small_solar_panel"
   );
-
   private static final TileEntityRegistrationData SMALL_TREE_CUTTER_TEI = new TileEntityRegistrationData(
     BlockDecorTreeCutter.BTileEntity.class, "te_small_tree_cutter"
   );
-
   private static final TileEntityRegistrationData TEST_BLOCK_TEI = new TileEntityRegistrationData(
     BlockDecorTest.BTileEntity.class, "te_testblock"
   );
@@ -526,6 +532,7 @@ public class ModContent
     SIGN_MINDSTEP,
     PANZERGLASS_SLAB,                         // @todo: check if another class is needed due to is_side_visible
     TREATED_WOOD_FLOOR,                       // @todo: check if textures need improvement
+    FACTORY_HOPPER,FACTORY_HOPPER_TEI,
     TEST_BLOCK,TEST_BLOCK_TEI
   };
 

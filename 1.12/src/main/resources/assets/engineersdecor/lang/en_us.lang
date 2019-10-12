@@ -156,6 +156,8 @@ tile.engineersdecor.factory_dropper.help=§6Dropper suitable for advanced factor
                                          AND'ed or OR'ed with the external redstone signal trigger. Trigger simulation buttons for testing. \
                                          Pre-opens shutter door when internal trigger conditions are met. Drops all matching stacks \
                                          simultaneously. Click on all elements in the GUI to see how it works.
+tile.engineersdecor.factory_hopper.name=Factory Hopper
+tile.engineersdecor.factory_hopper.help=§6Hopper suitable for advanced factory automation.§r
 tile.engineersdecor.small_mineral_smelter.name=Small Mineral Melting Furnace
 tile.engineersdecor.small_mineral_smelter.help=§6High temperature, high insulation electrical stone melting furnace.§r\n\
                                                Heats up mineral blocks to magma blocks, and finally to lava. Due to the \
@@ -184,7 +186,7 @@ tile.engineersdecor.sign_defense.help=§6Warning sign for turrets, Tesla Coils, 
 tile.engineersdecor.sign_factoryarea.name=Sign "Factory Area"
 tile.engineersdecor.sign_factoryarea.help=§6Marker sign for buildings or areas where the really big machines are located.
 tile.engineersdecor.sign_exit.name=Exit Sign
-tile.engineersdecor.sign_factoryarea.help=§6There's the door, please ...
+tile.engineersdecor.sign_exit.help=§6There's the door, please ...
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.halfslab_rebar_concrete.name=Rebar Concrete Slice
 tile.engineersdecor.halfslab_rebar_concrete.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.

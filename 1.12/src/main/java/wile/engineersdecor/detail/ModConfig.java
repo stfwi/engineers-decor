@@ -163,6 +163,11 @@ public class ModConfig
     @Config.RequiresMcRestart
     public boolean without_factory_dropper = false;
 
+    @Config.Comment({"Disable the factory hopper."})
+    @Config.Name("Without factory hopper")
+    @Config.RequiresMcRestart
+    public boolean without_factory_hopper = false;
+
     @Config.Comment({"Disable horizontal half-block slab."})
     @Config.Name("Without slabs")
     @Config.RequiresMcRestart
@@ -405,6 +410,7 @@ public class ModConfig
     if(block instanceof BlockDecorPassiveFluidAccumulator) return optout.without_passive_fluid_accumulator;
     if(block instanceof BlockDecorWasteIncinerator) return optout.without_waste_incinerator;
     if(block instanceof BlockDecorDropper) return optout.without_factory_dropper;
+    if(block instanceof BlockDecorHopper) return optout.without_factory_hopper;
     if(block instanceof BlockDecorHalfSlab) return optout.without_halfslabs;
     if(block instanceof BlockDecorLadder) return optout.without_ladders;
     if(block instanceof BlockDecorWindow) return optout.without_windows;

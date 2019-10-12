@@ -8,6 +8,7 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraftforge.common.ForgeHooks;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.detail.ExtItems;
@@ -671,9 +672,8 @@ public class BlockDecorFurnace extends BlockDecorDirected
     public static int getFuelBurntime(World world, ItemStack stack)
     {
       if(stack.isEmpty()) return 0;
-      Item item = stack.getItem();
-      int t = stack.getBurnTime();
-      return net.minecraftforge.event.ForgeEventFactory.getItemBurnTime(stack, (t>=0) ? t : AbstractFurnaceTileEntity.getBurnTimes().getOrDefault(item, 0));
+      int t = ForgeHooks.getBurnTime(stack);
+      return (t<0) ? 0 : t;
     }
 
     public static boolean isFuel(World world, ItemStack stack)

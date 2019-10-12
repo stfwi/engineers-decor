@@ -4,15 +4,15 @@
  * @copyright (C) 2019 Stefan Wilhelm
  * @license MIT (see https://opensource.org/licenses/MIT)
  *
- * Dropper factory automation suitable.
+ * Dropper, factory automation suitable.
  */
 package wile.engineersdecor.blocks;
 
+import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.detail.Networking;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
-import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.detail.Networking;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.Block;
