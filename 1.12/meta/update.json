@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.12.2": {
+    "1.0.14-b1": "[A] Factory Hopper added (configurable hopper and item collector).\n[M] Small Waste Incinerator Fifo shifting improved.\n[M] Lang file zh_cn updated (scikirbypoke, PR#53).\n[F] Fixed conditional recipe constant for redstone pipe valve (thx @albert_ac).",
     "1.0.13": "[R] Release based on v1.0.13-b2. Release-to-release changes: * Small Tree Cutter device added. * Small Solar Panel added. * Steel Mesh Fence added. * Broad Window Sill added.",
     "1.0.13-b2": "[A] Added Steel Mesh Fence.\n[A] Added Broad Window Sill.\n[A] Small Tree Cutter can chop Dynamic Trees, chops at tree trunk radius 7 or higher.",
     "1.0.13-b1": "[A] Added Small Solar Panel.\n[A] Added Small Tree Cutter.",
@@ -61,6 +62,6 @@
   },
   "promos": {
     "1.12.2-recommended": "1.0.13",
-    "1.12.2-latest": "1.0.13"
+    "1.12.2-latest": "1.0.14-b1"
   }
 }

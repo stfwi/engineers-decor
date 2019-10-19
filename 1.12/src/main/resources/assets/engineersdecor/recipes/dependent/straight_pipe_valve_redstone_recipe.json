@@ -3,15 +3,15 @@
     {
       "type": "engineersdecor:grc",
       "result": "engineersdecor:straight_pipe_valve_redstone",
-      "required": ["engineersdecor:straight_pipe_valve"]
+      "required": ["engineersdecor:straight_pipe_valve", "immersiveengineering:connector"]
     }
   ],
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    { "item": "engineersdecor:straight_pipe_valve" },
+    { "item": "engineersdecor:straight_pipe_valve", "data": 0 },
     { "item": "#anyDirectedRedstoneConnector" }
   ],
   "result": {
-    "item": "engineersdecor:straight_pipe_valve_redstone"
+    "item": "engineersdecor:straight_pipe_valve_redstone", "data": 0
   }
 }

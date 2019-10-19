@@ -798,7 +798,7 @@ public class BlockDecorHopper extends BlockDecorDirected
         collection_volume = (new AxisAlignedBB(pos.up())).grow(0.1+collection_range_, 0.6, 0.1+collection_range_);
       } else {
         rpos = pos.add(0.5, -1.5,0.5);
-        collection_volume = (new AxisAlignedBB(pos.down())).grow(0.1+collection_range_, 0.7, 0.1+collection_range_);
+        collection_volume = (new AxisAlignedBB(pos.down(2))).grow(0.1+collection_range_, 1, 0.1+collection_range_);
       }
       final List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, collection_volume);
       if(items.size() <= 0) return false;
