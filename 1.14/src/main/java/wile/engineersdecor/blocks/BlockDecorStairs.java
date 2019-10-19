@@ -9,10 +9,6 @@
 package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.detail.ModAuxiliaries;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.IFluidState;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.*;
@@ -32,6 +28,9 @@ import java.util.List;
 public class BlockDecorStairs extends StairsBlock implements IDecorBlock
 {
   public BlockDecorStairs(long config, BlockState state, Block.Properties properties)
+  { super(()->state, properties); }
+
+  public BlockDecorStairs(long config, java.util.function.Supplier<BlockState> state, Block.Properties properties)
   { super(state, properties); }
 
   @Override

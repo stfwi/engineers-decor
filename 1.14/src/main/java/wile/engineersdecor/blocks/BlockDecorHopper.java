@@ -505,12 +505,7 @@ public class BlockDecorHopper extends BlockDecorDirected
         stacks_.set(current_slot_index_, current_stack);
       }
       if(!insert_stack.isEmpty()) current_slot_index_ = next_slot(current_slot_index_);
-      if(num_inserted == 0) {
-        delay_timer_ += transfer_period_ * 2;
-        return false;
-      } else {
-        return true;
-      }
+      return (num_inserted > 0);
     }
 
     private boolean try_item_handler_extract(final IItemHandler ih)
@@ -559,19 +554,20 @@ public class BlockDecorHopper extends BlockDecorDirected
     {
       AxisAlignedBB collection_volume;
       Vec3d rpos;
-      if(facing==EnumFacing.UP)  {
+      if(facing==Direction.UP)  {
         rpos = new Vec3d(0.5+pos.getX(),1.5+pos.getY(),0.5+pos.getZ());
-        collection_volume = (new AxisAlignedBB(pos.up())).grow(0.1+collection_range_, 0.5, 0.1+collection_range_);
+        collection_volume = (new AxisAlignedBB(pos.up())).grow(0.1+collection_range_, 0.6, 0.1+collection_range_);
       } else {
         rpos = new Vec3d(0.5+pos.getX(),-1.5+pos.getY(),0.5+pos.getZ());
-        collection_volume = (new AxisAlignedBB(pos.down())).grow(0.1+collection_range_, 0.5, 0.1+collection_range_);
+        collection_volume = (new AxisAlignedBB(pos.down(2))).grow(0.1+collection_range_, 1, 0.1+collection_range_);
       }
       final List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, collection_volume);
       if(items.size() <= 0) return false;
       final int max_to_collect = 3;
       int n_collected = 0;
       for(ItemEntity ie:items) {
-        if((!ie.onGround) || (ie.cannotPickup() && ie.getDistanceSq(rpos)>=0.7)) continue;
+        boolean is_direct_collection_tange = ie.getDistanceSq(rpos)<0.7;
+        if(!is_direct_collection_tange && (ie.cannotPickup() || (!ie.onGround))) continue;
         ItemStack stack = ie.getItem();
         int n_accepted = try_insert_into_hopper(stack);
         if(n_accepted <= 0) continue;
@@ -580,7 +576,7 @@ public class BlockDecorHopper extends BlockDecorDirected
         } else {
           stack.shrink(n_accepted);
         }
-        if(++n_collected >= max_to_collect) break;
+        if((!is_direct_collection_tange) && (++n_collected >= max_to_collect)) break;
       }
       return (n_collected > 0);
     }

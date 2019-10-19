@@ -23,6 +23,7 @@
 /dev
 /dist
 /tmp
+tmp
 bin
 build
 desktop.ini
