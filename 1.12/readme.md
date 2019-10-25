@@ -11,6 +11,19 @@ Mod sources for Minecraft version 1.12.2.
 ## Version history
 
                   -------------------------------------------------------------------
+    - v1.0.14     [R] Release based on v1.0.14-b1. Release-to-release changes:
+                      * Factory Hopper added.
+                      * Small Waste Incinerator improved.
+                      * Lang updates.
+                      * Recipe fixes.
+                  -------------------------------------------------------------------
+
+    - v1.0.14-b1  [A] Factory Hopper added (configurable hopper and item collector).
+                  [M] Small Waste Incinerator Fifo shifting improved.
+                  [M] Lang file zh_cn updated (scikirbypoke, PR#53).
+                  [F] Fixed conditional recipe constant for redstone pipe valve (thx @albert_ac).
+
+                  -------------------------------------------------------------------
     - v1.0.13     [R] Release based on v1.0.13-b2. Release-to-release changes:
                       * Small Tree Cutter device added.
                       * Small Solar Panel added.

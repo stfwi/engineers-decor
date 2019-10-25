@@ -1,12 +1,14 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "promos": {
-    "1.12.2-recommended": "1.0.13",
-    "1.12.2-latest": "1.0.13",
+    "1.12.2-recommended": "1.0.14",
+    "1.12.2-latest": "1.0.14",
     "1.14.4-recommended": "",
-    "1.14.4-latest": "1.0.13-b2"
+    "1.14.4-latest": "1.0.14-b1"
   },
   "1.12.2": {
+    "1.0.14": "[R] Release based on v1.0.14-b1. Release-to-release changes: * Factory Hopper added. * Small Waste Incinerator improved. * Lang updates. * Recipe fixes.",
+    "1.0.14-b1": "[A] Factory Hopper added (configurable hopper and item collector).\n[M] Small Waste Incinerator Fifo shifting improved.\n[M] Lang file zh_cn updated (scikirbypoke, PR#53).\n[F] Fixed conditional recipe constant for redstone pipe valve (thx @albert_ac).",
     "1.0.13": "[R] Release based on v1.0.13-b2. Release-to-release changes: * Small Tree Cutter device added. * Small Solar Panel added. * Steel Mesh Fence added. * Broad Window Sill added.",
     "1.0.13-b2": "[A] Added Steel Mesh Fence.\n[A] Added Broad Window Sill.\n[A] Small Tree Cutter can chop Dynamic Trees, chops at tree trunk radius 7 or higher.",
     "1.0.13-b1": "[A] Added Small Solar Panel.\n[A] Added Small Tree Cutter.",
@@ -66,6 +68,7 @@
     "1.0.0-b1": "[A] Initial structure.\n[A] Added clinker bricks and clinker brick stairs.\n[A] Added slag bricks and slag brick stairs.\n[A] Added metal rung ladder.\n[A] Added staggered metal steps ladder.\n[A] Added treated wood ladder.\n[A] Added treated wood pole.\n[A] Added treated wood table."
   },
   "1.14.4": {
+    "1.0.14-b1": "[U] Updated to Forge 1.14.4-28.1.40/20190719-1.14.3.\n[A] Factory Hopper added (configurable hopper and item collector).\n[M] Switched to integrated loot table generation.\n[M] Lang file zh_cn updated (scikirbypoke, PR#53).",
     "1.0.13-b2": "[A] Added Steel Mesh Fence.\n[A] Added Broad Window Sill.",
     "1.0.12-b3": "[U] Updated to Forge 1.14.4-28.1.10/20190719-1.14.3.\n[A] Crafting Table: Added recipe collision resolver, also applies to crafting history refabrication.\n[A] Crafting Table: Added rendering of placed items on the top surface of the table.\n[A] Waterlogging of non-full-blocks added.",
     "1.0.12-b2": "[U] Updated to Forge 1.14.4-28.0.105/20190719-1.14.3.\n[A] Small Solar Panel added.\n[M] Items fall through the Steel Floor Grating like in 1.12.2 version.\n[M] Factory Dropper: Added pulse/continuous mode in GUI (issue #51, thx Aristine for the CR).",

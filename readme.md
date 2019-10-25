@@ -55,6 +55,18 @@ looking manufacturing contraptions. Current feature set:
   Provides redstone pulse mode (drop like a vanilla dropper) or continuous mode
   (continue dropping as long as the redstone signal is on).
 
+- *Factory Hopper*: Hopper with configurable stack transfer size (1 to 32), transfer
+  delay, and collection range (default like hopper, area max 9x9). Can also be placed
+  upwards. Has 24 slots, keeps its inventory when being broken and relocated. Tries
+  to insert smartly, so that existing stacks in the target inventory are filled up first
+  before empty slots are used. The redstone signal polarity can be inverted to enable
+  the hopper instead of blocking it, and the reaction to redstone signal can be selected
+  between "continuous" (like the vanilla hopper) or "pulsed" (means "edge detection",
+  insertion like a dispenser or dropper). Default behaviour when placing is vanilla
+  hopper behaviour. Note that, when collecting items, it waits until the items are
+  allowed to be picked up and on the ground. This prevents that the hopper snatches
+  blocks that you break when building before you can pick them up yourself.
+
 - *Small Waste Incinerator*: Buffered and delayed item disposal device. 16 fifo
   slots are filled when new items are pushed in from any side. A GUI allows to
   take out accidentally trashed items or put in items to get rid of. When the fifo
@@ -86,19 +98,16 @@ looking manufacturing contraptions. Current feature set:
 
 - *Concrete Wall*: Solid concrete wall (not the vanilla wall design).
 
-- *Treated Wood Ladder*: Stylish ladder, climbing is faster if looking up/down and not
-  sneaking (but not OP-fast).
-
-- *Metal Rung Ladder*: Industrial wall-fixed ladder with horizontal bent rods. Climbing
-  is faster if looking up/down and not sneaking.
-
-- *Staggered Metal Steps*: Industrial wall-fixed sparse ladder with steps in a zip pattern.
-  Climbing is faster when looking up/down and not sneaking.
+- *Ladders*: *Metal Rung Ladder*: Industrial wall-fixed ladder with horizontal bent
+  rods. Climbing is faster if looking up/down and not sneaking. *Staggered Metal Steps*:
+  Industrial wall-fixed sparse ladder with steps in a zip pattern. *Treated Wood Ladder*:
+  Stylish wood ladder, also with faster climbing.
 
 - *Panzer Glass*: Reinforced, dark gray tinted glass block. Explosion-proof. Faint
   structural lines are visible, multiple texture variations for seemless look.
 
-- *Treated Wood Table*: Four leg table made out of treated wood.
+- *Tables*: *Treated Wood Table*: Four leg table made out of treated wood. *Steel table*:
+  Metal table known from industrial assembly lines or Clean Rooms.
 
 - *Treated Wood Stool*: Simple small stool fitting to the table. You can sit on it, and
   also mobs will occationally do that (only mobs which actually can sit).
@@ -145,7 +154,7 @@ looking manufacturing contraptions. Current feature set:
 
 - *Small Tree Cutter*: A slab sized device that chops a tree in front of it. Needs by default
   about one minute, with RF power less than 10 seconds. Useful to build a contraptive automated
-  tree farm.
+  tree farm. Also chops trees of the *Dynamic Trees* mod.
 
 - *Small Mineral Smelter*: Device that slowly converts most stones or sands to magma blocks and
   finally to lava. Needs a lot of power. When the lava is cooled down in the smelter by removing

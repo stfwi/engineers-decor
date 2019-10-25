@@ -1,0 +1,33 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:factory_hopper",
+      "required": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WWW",
+    "WDW",
+    "WPW"
+  ],
+  "key": {
+    "D": {
+      "item": "#anyHopper",
+      "data": 0
+    },
+    "P": {
+      "item": "#plateIron",
+      "data": 0
+    },
+    "W": {
+      "item": "#plankTreatedWood",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:factory_hopper",
+    "count": 1
+  }
+}

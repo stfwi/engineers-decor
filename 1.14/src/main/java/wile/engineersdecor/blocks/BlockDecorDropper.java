@@ -164,6 +164,21 @@ public class BlockDecorDropper extends BlockDecorDirected
     ((BTileEntity)te).block_updated();
   }
 
+  @Override
+  @SuppressWarnings("deprecation")
+  public boolean canProvidePower(BlockState state)
+  { return true; }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
+  { return 0; }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  public int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
+  { return 0; }
+
   //--------------------------------------------------------------------------------------------------------------------
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------

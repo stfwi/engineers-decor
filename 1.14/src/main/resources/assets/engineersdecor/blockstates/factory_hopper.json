@@ -1,0 +1,16 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "engineersdecor:block/device/factory_hopper_model"
+  },
+  "variants": {
+    "facing": {
+      "north":{"y":0},
+      "south":{"y":180},
+      "west":{"y":270},
+      "east":{"y":90},
+      "up": { "model": "engineersdecor:block/device/factory_hopper_model_up" },
+      "down": { "model": "engineersdecor:block/device/factory_hopper_model_down" }
+    }
+  }
+}

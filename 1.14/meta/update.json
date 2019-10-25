@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.14.4": {
+    "1.0.14-b1": "[U] Updated to Forge 1.14.4-28.1.40/20190719-1.14.3.\n[A] Factory Hopper added (configurable hopper and item collector).\n[M] Switched to integrated loot table generation.\n[M] Lang file zh_cn updated (scikirbypoke, PR#53).",
     "1.0.13-b2": "[A] Added Steel Mesh Fence.\n[A] Added Broad Window Sill.",
     "1.0.12-b3": "[U] Updated to Forge 1.14.4-28.1.10/20190719-1.14.3.\n[A] Crafting Table: Added recipe collision resolver, also applies to crafting history refabrication.\n[A] Crafting Table: Added rendering of placed items on the top surface of the table.\n[A] Waterlogging of non-full-blocks added.",
     "1.0.12-b2": "[U] Updated to Forge 1.14.4-28.0.105/20190719-1.14.3.\n[A] Small Solar Panel added.\n[M] Items fall through the Steel Floor Grating like in 1.12.2 version.\n[M] Factory Dropper: Added pulse/continuous mode in GUI (issue #51, thx Aristine for the CR).",
@@ -26,6 +27,6 @@
   },
   "promos": {
     "1.14.4-recommended": "",
-    "1.14.4-latest": "1.0.13-b2"
+    "1.14.4-latest": "1.0.14-b1"
   }
 }

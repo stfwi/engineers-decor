@@ -362,6 +362,12 @@ public class ModContent
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,15)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "factory_dropper"));
 
+  public static final BlockDecorHopper FACTORY_HOPPER = (BlockDecorHopper)(new BlockDecorHopper(
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_REDSTONE_CONTROLLED,
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "factory_hopper"));
+
   public static final BlockDecorWasteIncinerator SMALL_WASTE_INCINERATOR = (BlockDecorWasteIncinerator)(new BlockDecorWasteIncinerator(
     BlockDecor.CFG_DEFAULT|BlockDecor.CFG_ELECTRICAL,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
@@ -459,6 +465,7 @@ public class ModContent
     TREATED_WOOD_CRAFTING_TABLE,
     SMALL_LAB_FURNACE,
     FACTORY_DROPPER,
+    FACTORY_HOPPER,
     SMALL_ELECTRICAL_FURNACE,
     SMALL_WASTE_INCINERATOR,
     SMALL_MINERAL_SMELTER,
@@ -553,6 +560,11 @@ public class ModContent
     .build(null)
     .setRegistryName(ModEngineersDecor.MODID, "te_factory_dropper");
 
+  public static final TileEntityType<?> TET_FACTORY_HOPPER = TileEntityType.Builder
+    .create(BlockDecorHopper.BTileEntity::new, FACTORY_HOPPER)
+    .build(null)
+    .setRegistryName(ModEngineersDecor.MODID, "te_factory_hopper");
+
   public static final TileEntityType<?> TET_WASTE_INCINERATOR = TileEntityType.Builder
     .create(BlockDecorWasteIncinerator.BTileEntity::new, SMALL_WASTE_INCINERATOR)
     .build(null)
@@ -583,6 +595,7 @@ public class ModContent
     TET_TREATED_WOOD_CRAFTING_TABLE,
     TET_SMALL_LAB_FURNACE,
     TET_FACTORY_DROPPER,
+    TET_FACTORY_HOPPER,
     TET_SMALL_ELECTRICAL_FURNACE,
     TET_WASTE_INCINERATOR,
     TET_STRAIGHT_PIPE_VALVE,
@@ -614,6 +627,7 @@ public class ModContent
 
   public static final ContainerType<BlockDecorCraftingTable.BContainer> CT_TREATED_WOOD_CRAFTING_TABLE;
   public static final ContainerType<BlockDecorDropper.BContainer> CT_FACTORY_DROPPER;
+  public static final ContainerType<BlockDecorHopper.BContainer> CT_FACTORY_HOPPER;
   public static final ContainerType<BlockDecorFurnace.BContainer> CT_SMALL_LAB_FURNACE;
   public static final ContainerType<BlockDecorFurnaceElectrical.BContainer> CT_SMALL_ELECTRICAL_FURNACE;
   public static final ContainerType<BlockDecorWasteIncinerator.BContainer> CT_WASTE_INCINERATOR;
@@ -623,6 +637,8 @@ public class ModContent
     CT_TREATED_WOOD_CRAFTING_TABLE.setRegistryName(ModEngineersDecor.MODID,"ct_treated_wood_crafting_table");
     CT_FACTORY_DROPPER = (new ContainerType<BlockDecorDropper.BContainer>(BlockDecorDropper.BContainer::new));
     CT_FACTORY_DROPPER.setRegistryName(ModEngineersDecor.MODID,"ct_factory_dropper");
+    CT_FACTORY_HOPPER = (new ContainerType<BlockDecorHopper.BContainer>(BlockDecorHopper.BContainer::new));
+    CT_FACTORY_HOPPER.setRegistryName(ModEngineersDecor.MODID,"ct_factory_hopper");
     CT_SMALL_LAB_FURNACE = (new ContainerType<BlockDecorFurnace.BContainer>(BlockDecorFurnace.BContainer::new));
     CT_SMALL_LAB_FURNACE.setRegistryName(ModEngineersDecor.MODID,"ct_small_lab_furnace");
     CT_SMALL_ELECTRICAL_FURNACE = (new ContainerType<BlockDecorFurnaceElectrical.BContainer>(BlockDecorFurnaceElectrical.BContainer::new));
@@ -635,6 +651,7 @@ public class ModContent
   private static final ContainerType<?> container_types[] = {
     CT_TREATED_WOOD_CRAFTING_TABLE,
     CT_FACTORY_DROPPER,
+    CT_FACTORY_HOPPER,
     CT_SMALL_LAB_FURNACE,
     CT_SMALL_ELECTRICAL_FURNACE,
     CT_WASTE_INCINERATOR
@@ -716,6 +733,7 @@ public class ModContent
   {
     ScreenManager.registerFactory(CT_TREATED_WOOD_CRAFTING_TABLE, BlockDecorCraftingTable.BGui::new);
     ScreenManager.registerFactory(CT_FACTORY_DROPPER, BlockDecorDropper.BGui::new);
+    ScreenManager.registerFactory(CT_FACTORY_HOPPER, BlockDecorHopper.BGui::new);
     ScreenManager.registerFactory(CT_SMALL_LAB_FURNACE, BlockDecorFurnace.BGui::new);
     ScreenManager.registerFactory(CT_SMALL_ELECTRICAL_FURNACE, BlockDecorFurnaceElectrical.BGui::new);
     ScreenManager.registerFactory(CT_WASTE_INCINERATOR, BlockDecorWasteIncinerator.BGui::new);

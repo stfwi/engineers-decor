@@ -8,7 +8,7 @@
   ],
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    { "item": "engineersdecor:straight_pipe_valve_redstone_analog" }
+    { "item": "engineersdecor:straight_pipe_valve_redstone_analog", "data": 0 }
   ],
   "result": {
     "item": "engineersdecor:straight_pipe_valve_redstone"
