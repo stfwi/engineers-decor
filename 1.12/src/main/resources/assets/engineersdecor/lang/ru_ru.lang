@@ -101,6 +101,9 @@ tile.engineersdecor.iron_inset_light.name=Встраиваемый освети�
 tile.engineersdecor.iron_inset_light.help=§6Маленький источник света, интегрируемый в стены, пол или потолок.§r\n\
                                                Полезно для освещения мест, где проблематичны электрические осветительные установки.\
                                                Уровень света - как факел.
+tile.engineersdecor.iron_floor_edge_light.name=Inset Floor Edge Light
+#tile.engineersdecor.iron_floor_edge_light.help=§6Small glowstone light source, placed at the edge of a floor block.§r\n\
+                                          Useful to light up places where electrical light installations are problematic.
 tile.engineersdecor.treated_wood_window.name=Обработанное деревянное окно
 tile.engineersdecor.treated_wood_window.help=§6Деревянный каркас окна с тройным остеклением. Ну и шумоизоляция.
 tile.engineersdecor.treated_wood_windowsill.name=Обработанный деревянный подоконник

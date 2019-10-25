@@ -12,27 +12,58 @@
  */
 package wile.engineersdecor;
 
-import wile.engineersdecor.detail.*;
-import wile.engineersdecor.blocks.*;
-import wile.engineersdecor.items.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collections;
-import javax.annotation.Nonnull;
+import wile.engineersdecor.blocks.BlockDecor;
+import wile.engineersdecor.blocks.BlockDecorChair;
+import wile.engineersdecor.blocks.BlockDecorCraftingTable;
+import wile.engineersdecor.blocks.BlockDecorDirected;
+import wile.engineersdecor.blocks.BlockDecorDropper;
+import wile.engineersdecor.blocks.BlockDecorFence;
+import wile.engineersdecor.blocks.BlockDecorFloorGrating;
+import wile.engineersdecor.blocks.BlockDecorFull;
+import wile.engineersdecor.blocks.BlockDecorFurnace;
+import wile.engineersdecor.blocks.BlockDecorFurnaceElectrical;
+import wile.engineersdecor.blocks.BlockDecorGlassBlock;
+import wile.engineersdecor.blocks.BlockDecorHalfSlab;
+import wile.engineersdecor.blocks.BlockDecorHopper;
+import wile.engineersdecor.blocks.BlockDecorHorizontalSupport;
+import wile.engineersdecor.blocks.BlockDecorLadder;
+import wile.engineersdecor.blocks.BlockDecorMineralSmelter;
+import wile.engineersdecor.blocks.BlockDecorPassiveFluidAccumulator;
+import wile.engineersdecor.blocks.BlockDecorPipeValve;
+import wile.engineersdecor.blocks.BlockDecorSlab;
+import wile.engineersdecor.blocks.BlockDecorSolarPanel;
+import wile.engineersdecor.blocks.BlockDecorStairs;
+import wile.engineersdecor.blocks.BlockDecorStraightPole;
+import wile.engineersdecor.blocks.BlockDecorTest;
+import wile.engineersdecor.blocks.BlockDecorTreeCutter;
+import wile.engineersdecor.blocks.BlockDecorWall;
+import wile.engineersdecor.blocks.BlockDecorWasteIncinerator;
+import wile.engineersdecor.blocks.BlockDecorWindow;
+import wile.engineersdecor.blocks.BlockDecorWindowSill;
+import wile.engineersdecor.detail.ModAuxiliaries;
+import wile.engineersdecor.detail.ModConfig;
+import wile.engineersdecor.detail.ModTesrs;
+import wile.engineersdecor.items.ItemDecor;
 
 @SuppressWarnings("unused")
 public class ModContent
@@ -279,9 +310,16 @@ public class ModContent
 
   public static final BlockDecorDirected INSET_LIGHT_IRON = new BlockDecorDirected(
     "iron_inset_light",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT|(14<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT|(15<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
     Material.IRON, 0.5f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(5.2,5.2,15.7, 10.8,10.8,16.0)
+  );
+
+  public static final BlockDecorDirected FLOOR_EDGE_LIGHT_IRON = new BlockDecorDirected(
+    "iron_floor_edge_light",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_HORIZIONTAL|(15<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
+    Material.IRON, 0.5f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(5,0,0, 11,2,1)
   );
 
   public static final BlockDecor STEEL_TABLE = new BlockDecor(
@@ -533,7 +571,8 @@ public class ModContent
     SIGN_MINDSTEP,
     PANZERGLASS_SLAB,                         // @todo: check if another class is needed due to is_side_visible
     TREATED_WOOD_FLOOR,                       // @todo: check if textures need improvement
-    TEST_BLOCK,TEST_BLOCK_TEI
+    TEST_BLOCK,TEST_BLOCK_TEI,
+    FLOOR_EDGE_LIGHT_IRON
   };
 
   //--------------------------------------------------------------------------------------------------------------------

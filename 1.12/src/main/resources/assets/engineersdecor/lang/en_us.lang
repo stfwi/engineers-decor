@@ -102,8 +102,10 @@ tile.engineersdecor.treated_wood_side_table.name=Treated Wood Side Table
 tile.engineersdecor.treated_wood_side_table.help=§6Needed after the work's done.
 tile.engineersdecor.iron_inset_light.name=Inset Light
 tile.engineersdecor.iron_inset_light.help=§6Small glowstone light source, sunk into the floor, ceiling or wall.§r\n\
-                                          Useful to light up places where electrical light installations are problematic.\
-                                          Light level like a torch.
+                                          Useful to light up places where electrical light installations are problematic.
+tile.engineersdecor.iron_floor_edge_light.name=Inset Floor Edge Light
+tile.engineersdecor.iron_floor_edge_light.help=§6Small glowstone light source, placed at the edge of a floor block.§r\n\
+                                          Useful to light up places where electrical light installations are problematic.
 tile.engineersdecor.treated_wood_window.name=Treated Wood Window
 tile.engineersdecor.treated_wood_window.help=§6Wood framed triple glazed window. Well insulating.§r Does not connect to adjacent blocks like glass panes.
 tile.engineersdecor.treated_wood_windowsill.name=Treated Wood Window Sill
