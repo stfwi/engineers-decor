@@ -1,6 +1,6 @@
 {
   "forge_marker": 1,
-  "defaults": { "model": "engineersdecor:block/light/inset_light_model" },
+  "defaults": { "model": "engineersdecor:block/light/floor_edge_light_model" },
   "variants": {
     "facing": { "north":{"y":0}, "south":{"y":180}, "west":{"y":270}, "east":{"y":90}, "up": {"x":-90}, "down": {"x":90} }
   }

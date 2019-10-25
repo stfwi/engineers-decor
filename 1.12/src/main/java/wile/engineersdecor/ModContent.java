@@ -551,6 +551,7 @@ public class ModContent
     TREATED_WOOD_WINDOWSILL,
     TREATED_WOOD_BROAD_WINDOWSILL,
     INSET_LIGHT_IRON,
+    FLOOR_EDGE_LIGHT_IRON,
     TREATED_WOOD_POLE_SUPPORT,
     TREATED_WOOD_POLE_HEAD,
     THIN_STEEL_POLE,
@@ -571,8 +572,7 @@ public class ModContent
     SIGN_MINDSTEP,
     PANZERGLASS_SLAB,                         // @todo: check if another class is needed due to is_side_visible
     TREATED_WOOD_FLOOR,                       // @todo: check if textures need improvement
-    TEST_BLOCK,TEST_BLOCK_TEI,
-    FLOOR_EDGE_LIGHT_IRON
+    TEST_BLOCK,TEST_BLOCK_TEI
   };
 
   //--------------------------------------------------------------------------------------------------------------------
