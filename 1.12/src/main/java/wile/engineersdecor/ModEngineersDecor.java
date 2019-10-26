@@ -159,6 +159,7 @@ public class ModEngineersDecor
     public static final int GUIID_SMALL_WASTE_INCINERATOR = 213104;
     public static final int GUIID_FACTORY_DROPPER = 213105;
     public static final int GUIID_FACTORY_HOPPER = 213106;
+    public static final int GUIID_FACTORY_PLACER = 213107;
 
     @Override
     public Object getServerGuiElement(final int guiid, final EntityPlayer player, final World world, int x, int y, int z)
@@ -172,6 +173,7 @@ public class ModEngineersDecor
         case GUIID_SMALL_WASTE_INCINERATOR: return BlockDecorWasteIncinerator.getServerGuiElement(player, world, pos, te);
         case GUIID_FACTORY_DROPPER: return BlockDecorDropper.getServerGuiElement(player, world, pos, te);
         case GUIID_FACTORY_HOPPER: return BlockDecorHopper.getServerGuiElement(player, world, pos, te);
+        case GUIID_FACTORY_PLACER: return BlockDecorPlacer.getServerGuiElement(player, world, pos, te);
       }
       return null;
     }
@@ -189,6 +191,7 @@ public class ModEngineersDecor
         case GUIID_SMALL_WASTE_INCINERATOR: return BlockDecorWasteIncinerator.getClientGuiElement(player, world, pos, te);
         case GUIID_FACTORY_DROPPER: return BlockDecorDropper.getClientGuiElement(player, world, pos, te);
         case GUIID_FACTORY_HOPPER: return BlockDecorHopper.getClientGuiElement(player, world, pos, te);
+        case GUIID_FACTORY_PLACER: return BlockDecorPlacer.getClientGuiElement(player, world, pos, te);
       }
       return null;
     }

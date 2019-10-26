@@ -11,7 +11,8 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
-    ~ v1.0.15-b1 [U] Updated to Forge1.14.4-28.1.61/20190719-1.14.3.
+    - v1.0.15-b1 [A] Added Floor Edge Light.
+                 [U] Updated to Forge1.14.4-28.1.68/20190719-1.14.3.
 
     - v1.0.14-b1 [U] Updated to Forge 1.14.4-28.1.40/20190719-1.14.3.
                  [A] Factory Hopper added (configurable hopper and item collector).

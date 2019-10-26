@@ -155,7 +155,13 @@ tile.engineersdecor.factory_dropper.help=§6Выбрасыватель подх�
                                          когда выполняются условия внутреннего запуска. Сбрасывает все соответствующие стеки одновременно. \
                                          Нажмите на все элементы в GUI, чтобы увидеть, как это работает.
 tile.engineersdecor.factory_hopper.name=Factory Hopper
-#tile.engineersdecor.factory_hopper.help=§6Hopper suitable for advanced factory automation.§r
+#tile.engineersdecor.factory_hopper.help=§6Hopper suitable for advanced factory automation.§r Can transfer half-stacks, max collection range 9x9.\n\
+                                        GUI Slider controls: Collection range (0 to 4), insertion delay (0.5s to 10s), insertion stack size (1 to 32).\n\
+                                        GUI Redstone controls: Not inverted / inverted (default), pulse mode / continuous mode (default).
+tile.engineersdecor.factory_placer.name=Factory Block Placer
+#tile.engineersdecor.factory_placer.help=§6Allows placing blocks and planting crops or trees.§r\n\
+                                        GUI Redstone controls: Not inverted / inverted (default), pulse mode / continuous mode (default).\n\
+                                        Also supports spike planing from underneath the soil. Spits out items that it cannot place or plant.
 tile.engineersdecor.small_mineral_smelter.name=Small Mineral Melting Furnace
 #tile.engineersdecor.small_mineral_smelter.help=§6High temperature, high insulation electrical stone melting furnace.§r\n\
                                                Heats up mineral blocks to magma blocks, and finally to lava. Due to the \

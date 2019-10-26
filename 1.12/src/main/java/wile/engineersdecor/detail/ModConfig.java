@@ -168,6 +168,11 @@ public class ModConfig
     @Config.RequiresMcRestart
     public boolean without_factory_hopper = false;
 
+    @Config.Comment({"Disable the Factory Block Placer."})
+    @Config.Name("Without factory placer")
+    @Config.RequiresMcRestart
+    public boolean without_factory_placer = false;
+
     @Config.Comment({"Disable horizontal half-block slab."})
     @Config.Name("Without slabs")
     @Config.RequiresMcRestart
@@ -411,6 +416,7 @@ public class ModConfig
     if(block instanceof BlockDecorWasteIncinerator) return optout.without_waste_incinerator;
     if(block instanceof BlockDecorDropper) return optout.without_factory_dropper;
     if(block instanceof BlockDecorHopper) return optout.without_factory_hopper;
+    if(block instanceof BlockDecorPlacer) return optout.without_factory_placer;
     if(block instanceof BlockDecorHalfSlab) return optout.without_halfslabs;
     if(block instanceof BlockDecorLadder) return optout.without_ladders;
     if(block instanceof BlockDecorWindow) return optout.without_windows;

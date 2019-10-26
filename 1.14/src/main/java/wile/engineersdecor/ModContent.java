@@ -222,6 +222,12 @@ public class ModContent
     ModAuxiliaries.getPixeledAABB(5.2,5.2,15.7, 10.8,10.8,16.0)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "iron_inset_light"));
 
+  public static final BlockDecorDirected.WaterLoggable FLOOR_EDGE_LIGHT_IRON = (BlockDecorDirected.WaterLoggable)(new BlockDecorDirected.WaterLoggable(
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_HORIZIONTAL,
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).lightValue(15),
+    ModAuxiliaries.getPixeledAABB(5,0,0, 11,2,1)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "iron_floor_edge_light"));
+
   public static final BlockDecor.WaterLoggable STEEL_TABLE = (BlockDecor.WaterLoggable)(new BlockDecor.WaterLoggable(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD),
@@ -511,6 +517,7 @@ public class ModContent
     STEEL_FRAMED_WINDOW,
     STEEL_TABLE,
     INSET_LIGHT_IRON,
+    FLOOR_EDGE_LIGHT_IRON,
     STEEL_FLOOR_GRATING,
     STEEL_MESH_FENCE,
     TREATED_WOOD_POLE,
