@@ -8,81 +8,72 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.item.BlockItemUseContext;
+import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.detail.TreeCutting;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.*;
-import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import wile.engineersdecor.detail.TreeCutting;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
 
 public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
 {
-  public static final PropertyBool ACTIVE = PropertyBool.create("active");
+  public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
-  public BlockDecorTreeCutter(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound, @Nonnull AxisAlignedBB unrotatedAABB)
-  {
-    super(registryName, config, material, hardness, resistance, sound, unrotatedAABB);
-    setLightOpacity(0);
-  }
+  public BlockDecorTreeCutter(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
+  { super(config, builder, unrotatedAABB); }
 
   @Override
-  protected BlockStateContainer createBlockState()
-  { return new BlockStateContainer(this, FACING, ACTIVE); }
+  protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+  { super.fillStateContainer(builder); builder.add(ACTIVE); }
 
   @Override
-  public IBlockState getStateFromMeta(int meta)
-  { return getDefaultState().withProperty(FACING, EnumFacing.byHorizontalIndex(meta & 0x3)).withProperty(ACTIVE, (meta & 0x4)!=0); }
+  @Nullable
+  public BlockState getStateForPlacement(BlockItemUseContext context)
+  { return super.getStateForPlacement(context).with(ACTIVE, false); }
 
   @Override
-  public int getMetaFromState(IBlockState state)
-  { return (state.getValue(FACING).getHorizontalIndex() & 0x3) | (state.getValue(ACTIVE) ? 4 : 0); }
-
-  @Override
-  public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
-  { return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand).withProperty(ACTIVE, false); }
-
-  @Override
-  public boolean hasTileEntity(IBlockState state)
+  public boolean hasTileEntity(BlockState state)
   { return true; }
 
   @Override
   @Nullable
-  public TileEntity createTileEntity(World world, IBlockState state)
-  { return new BlockDecorTreeCutter.BTileEntity(); }
+  public TileEntity createTileEntity(BlockState state, IBlockReader world)
+  { return new BTileEntity(); }
 
-  @Override
-  @SideOnly(Side.CLIENT)
-  public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random rnd)
+  @OnlyIn(Dist.CLIENT)
+  public void animateTick(BlockState state, World world, BlockPos pos, Random rnd)
   {
-    if((state.getBlock()!=this) || (!state.getValue(ACTIVE))) return;
+    if((state.getBlock()!=this) || (!state.get(ACTIVE))) return;
     final double rv = rnd.nextDouble();
     if(rv > 0.8) return;
     final double x=0.5+pos.getX(), y=0.5+pos.getY(), z=0.5+pos.getZ();
     final double xc=0.52, xr=rnd.nextDouble()*0.4-0.2, yr=(y-0.3+rnd.nextDouble()*0.2);
-    switch(state.getValue(FACING)) {
-      case WEST:  world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x-xc, yr, z+xr, 0.0, 0.0, 0.0); break;
-      case EAST:  world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x+xc, yr, z+xr, 0.0, 0.0, 0.0); break;
-      case NORTH: world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x+xr, yr, z-xc, 0.0, 0.0, 0.0); break;
-      default:    world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x+xr, yr, z+xc, 0.0, 0.0, 0.0); break;
+    switch(state.get(HORIZONTAL_FACING)) {
+      case WEST:  world.addParticle(ParticleTypes.SMOKE, x-xc, yr, z+xr, 0.0, 0.0, 0.0); break;
+      case EAST:  world.addParticle(ParticleTypes.SMOKE, x+xc, yr, z+xr, 0.0, 0.0, 0.0); break;
+      case NORTH: world.addParticle(ParticleTypes.SMOKE, x+xr, yr, z-xc, 0.0, 0.0, 0.0); break;
+      default:    world.addParticle(ParticleTypes.SMOKE, x+xr, yr, z+xc, 0.0, 0.0, 0.0); break;
     }
   }
 
@@ -90,7 +81,7 @@ public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class BTileEntity extends TileEntity implements ITickable, IEnergyStorage
+  public static class BTileEntity extends TileEntity implements ITickableTileEntity, IEnergyStorage
   {
     public static final int IDLE_TICK_INTERVAL = 40;
     public static final int TICK_INTERVAL = 5;
@@ -107,19 +98,18 @@ public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
     public static void on_config(int boost_energy_per_tick)
     {
       boost_energy_consumption = TICK_INTERVAL * MathHelper.clamp(boost_energy_per_tick, 16, 512);
-      ModEngineersDecor.logger.info("Config tree cutter: Boost energy consumption:" + boost_energy_consumption + "rf/t");
+      ModEngineersDecor.logger().info("Config tree cutter: Boost energy consumption:" + boost_energy_consumption + "rf/t");
     }
 
     public BTileEntity()
-    {}
+    { super(ModContent.TET_SMALL_TREE_CUTTER); }
 
-    // TileEntity ------------------------------------------------------------------------------
-
-    @Override
-    public boolean shouldRefresh(World world, BlockPos pos, IBlockState os, IBlockState ns)
-    { return (os.getBlock() != ns.getBlock()) || (!(ns.getBlock() instanceof BlockDecorTreeCutter)); }
+    public BTileEntity(TileEntityType<?> te_type)
+    { super(te_type); }
 
     // IEnergyStorage ----------------------------------------------------------------------------
+
+    protected LazyOptional<IEnergyStorage> energy_handler_ = LazyOptional.of(() -> (IEnergyStorage)this);
 
     @Override
     public boolean canExtract()
@@ -152,29 +142,24 @@ public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
     // Capability export ----------------------------------------------------------------------------
 
     @Override
-    public boolean hasCapability(Capability<?> cap, EnumFacing facing)
-    { return ((cap==CapabilityEnergy.ENERGY)) || super.hasCapability(cap, facing); }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    @Nullable
-    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+    public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
-      if(capability == CapabilityEnergy.ENERGY) {
-        return (T)this;
-      } else {
-        return super.getCapability(capability, facing);
+      if(!this.removed && (facing != null)) {
+        if(capability== CapabilityEnergy.ENERGY) {
+          return energy_handler_.cast();
+        }
       }
+      return super.getCapability(capability, facing);
     }
 
     // ITickable ------------------------------------------------------------------------------------
 
     @Override
-    public void update()
+    public void tick()
     {
       if(--tick_timer_ > 0) return;
       if(world.isRemote) {
-        if(!world.getBlockState(pos).getValue(ACTIVE)) {
+        if(!world.getBlockState(pos).get(ACTIVE)) {
           tick_timer_ = TICK_INTERVAL;
         } else {
           tick_timer_ = 1;
@@ -182,11 +167,11 @@ public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
         }
       } else {
         tick_timer_ = TICK_INTERVAL;
-        final IBlockState device_state = world.getBlockState(pos);
-        final BlockPos tree_pos = pos.offset(device_state.getValue(FACING));
-        final IBlockState tree_state = world.getBlockState(tree_pos);
+        final BlockState device_state = world.getBlockState(pos);
+        final BlockPos tree_pos = pos.offset(device_state.get(HORIZONTAL_FACING));
+        final BlockState tree_state = world.getBlockState(tree_pos);
         if(!TreeCutting.canChop(tree_state) || (world.isBlockPowered(pos))) {
-          if(device_state.getValue(ACTIVE)) world.setBlockState(pos, device_state.withProperty(ACTIVE, false), 1|2);
+          if(device_state.get(ACTIVE)) world.setBlockState(pos, device_state.with(ACTIVE, false), 1|2);
           proc_time_elapsed_ = 0;
           tick_timer_ = IDLE_TICK_INTERVAL;
           return;
@@ -200,8 +185,8 @@ public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
           world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.BLOCK_WOOD_BREAK, SoundCategory.BLOCKS, 1.0f, 1.0f);
           active = false;
         }
-        if(device_state.getValue(ACTIVE) != active) {
-          world.setBlockState(pos, device_state.withProperty(ACTIVE, active), 1|2);
+        if(device_state.get(ACTIVE) != active) {
+          world.setBlockState(pos, device_state.with(ACTIVE, active), 1|2);
         }
       }
     }

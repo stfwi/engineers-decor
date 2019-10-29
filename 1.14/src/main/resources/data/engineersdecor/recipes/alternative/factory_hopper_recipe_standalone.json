@@ -1,0 +1,24 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:factory_hopper",
+      "missing": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WWW",
+    "WHW",
+    "WPW"
+  ],
+  "key": {
+    "H": { "item": "minecraft:hopper" },
+    "P": { "item": "minecraft:iron_ingot" },
+    "W": { "tag": "minecraft:planks" }
+  },
+  "result": {
+    "item": "engineersdecor:factory_hopper",
+    "count": 1
+  }
+}

@@ -11,6 +11,10 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
+    - v1.0.15-b2 [!] Forge version requirement set to 1.14.4-28.1.68 or higher.
+                 [A] Added Factory Block Placer and Planter.
+                 [A] Added Small Tree Cutter.
+
     - v1.0.15-b1 [A] Added Floor Edge Light.
                  [U] Updated to Forge1.14.4-28.1.68/20190719-1.14.3.
 

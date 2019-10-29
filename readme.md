@@ -67,6 +67,11 @@ looking manufacturing contraptions. Current feature set:
   allowed to be picked up and on the ground. This prevents that the hopper snatches
   blocks that you break when building before you can pick them up yourself.
 
+- *Factory Block Placer*: Places blocks or plants crops/saplings in front of it.
+  Supports spike planting, means it can plant e.g. from underneath the soil block.
+  Automatically spits out items that it cannot plant or place. Can be redstone
+  controlled similar to the Factory Hopper (invertible, pulse/continuous mode).
+
 - *Small Waste Incinerator*: Buffered and delayed item disposal device. 16 fifo
   slots are filled when new items are pushed in from any side. A GUI allows to
   take out accidentally trashed items or put in items to get rid of. When the fifo

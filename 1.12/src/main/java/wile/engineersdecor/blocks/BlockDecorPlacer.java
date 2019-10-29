@@ -8,15 +8,10 @@
  */
 package wile.engineersdecor.blocks;
 
-
-
-
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.detail.Networking;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
-
-
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;

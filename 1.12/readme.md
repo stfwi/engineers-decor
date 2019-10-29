@@ -10,6 +10,8 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    ~ v1.0.15-b2  [A]
+
     - v1.0.15-b1  [A] Added Floor Edge Light.
                   [A] Added Factory Block Placer and Planter.
 

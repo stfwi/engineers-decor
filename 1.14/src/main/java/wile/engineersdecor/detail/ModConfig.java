@@ -109,6 +109,7 @@ public class ModConfig
     public final ForgeConfigSpec.BooleanValue without_waste_incinerator;
     public final ForgeConfigSpec.BooleanValue without_sign_plates;
     public final ForgeConfigSpec.BooleanValue without_factory_dropper;
+    public final ForgeConfigSpec.BooleanValue without_factory_placer;
     public final ForgeConfigSpec.BooleanValue without_slabs;
     public final ForgeConfigSpec.BooleanValue without_halfslabs;
     public final ForgeConfigSpec.BooleanValue without_direct_slab_pickup;
@@ -247,6 +248,10 @@ public class ModConfig
           .translation(ModEngineersDecor.MODID + ".config.without_factory_dropper")
           .comment("Disable the factory dropper.")
           .define("without_factory_dropper", false);
+        without_factory_placer = builder
+          .translation(ModEngineersDecor.MODID + ".config.without_factory_placer")
+          .comment("Disable the factory placer.")
+          .define("without_factory_placer", false);
         without_slabs = builder
           .translation(ModEngineersDecor.MODID + ".config.without_slabs")
           .comment("Disable horizontal half-block slab.")
@@ -419,6 +424,7 @@ public class ModConfig
       if(block instanceof BlockDecorPassiveFluidAccumulator) return COMMON.without_passive_fluid_accumulator.get();
       if(block instanceof BlockDecorWasteIncinerator) return COMMON.without_waste_incinerator.get();
       if(block instanceof BlockDecorDropper) return COMMON.without_factory_dropper.get();
+      if(block instanceof BlockDecorPlacer) return COMMON.without_factory_placer.get();
       if(block instanceof BlockDecorHalfSlab) return COMMON.without_halfslabs.get();
       if(block instanceof BlockDecorLadder) return COMMON.without_ladders.get();
       if(block instanceof BlockDecorWindow) return COMMON.without_windows.get();
