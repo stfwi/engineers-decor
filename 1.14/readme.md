@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
+    - v1.0.15-b3 [A] Added Small Block Breaker.
+                 [M] Mineral Smelter fluid handler/transfer added.
+
     - v1.0.15-b2 [!] Forge version requirement set to 1.14.4-28.1.68 or higher.
                  [A] Added Factory Block Placer and Planter.
                  [A] Added Small Tree Cutter.

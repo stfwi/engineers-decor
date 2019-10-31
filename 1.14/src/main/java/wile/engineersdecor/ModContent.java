@@ -374,6 +374,12 @@ public class ModContent
     ModAuxiliaries.getPixeledAABB(2,2,2, 14,14,14)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "factory_placer"));
 
+  public static final BlockDecorBreaker SMALL_BLOCK_BREAKER = (BlockDecorBreaker)(new BlockDecorBreaker(
+    BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,12,16)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_block_breaker"));
+
   public static final BlockDecorHopper FACTORY_HOPPER = (BlockDecorHopper)(new BlockDecorHopper(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_REDSTONE_CONTROLLED,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
@@ -482,14 +488,15 @@ public class ModContent
   private static final Block modBlocks[] = {
     TREATED_WOOD_CRAFTING_TABLE,
     SMALL_LAB_FURNACE,
+    SMALL_ELECTRICAL_FURNACE,
+    FACTORY_HOPPER,
     FACTORY_DROPPER,
     FACTORY_PLACER,
-    FACTORY_HOPPER,
-    SMALL_ELECTRICAL_FURNACE,
-    SMALL_WASTE_INCINERATOR,
-    SMALL_MINERAL_SMELTER,
+    SMALL_BLOCK_BREAKER,
     SMALL_TREE_CUTTER,
     SMALL_SOLAR_PANEL,
+    SMALL_WASTE_INCINERATOR,
+    SMALL_MINERAL_SMELTER,
     CLINKER_BRICK_BLOCK,
     CLINKER_BRICK_SLAB,
     CLINKER_BRICK_STAIRS,
@@ -586,6 +593,11 @@ public class ModContent
     .build(null)
     .setRegistryName(ModEngineersDecor.MODID, "te_factory_placer");
 
+  public static final TileEntityType<?> TET_SMALL_BLOCK_BREAKER = TileEntityType.Builder
+    .create(BlockDecorBreaker.BTileEntity::new, SMALL_BLOCK_BREAKER)
+    .build(null)
+    .setRegistryName(ModEngineersDecor.MODID, "te_small_block_breaker");
+
   public static final TileEntityType<?> TET_FACTORY_HOPPER = TileEntityType.Builder
     .create(BlockDecorHopper.BTileEntity::new, FACTORY_HOPPER)
     .build(null)
@@ -625,16 +637,17 @@ public class ModContent
   private static final TileEntityType<?> tile_entity_types[] = {
     TET_TREATED_WOOD_CRAFTING_TABLE,
     TET_SMALL_LAB_FURNACE,
+    TET_SMALL_ELECTRICAL_FURNACE,
+    TET_FACTORY_HOPPER,
     TET_FACTORY_DROPPER,
     TET_FACTORY_PLACER,
-    TET_FACTORY_HOPPER,
-    TET_SMALL_ELECTRICAL_FURNACE,
+    TET_SMALL_BLOCK_BREAKER,
+    TET_SMALL_TREE_CUTTER,
     TET_WASTE_INCINERATOR,
-    TET_STRAIGHT_PIPE_VALVE,
-    TET_PASSIVE_FLUID_ACCUMULATOR,
     TET_MINERAL_SMELTER,
     TET_SMALL_SOLAR_PANEL,
-    TET_SMALL_TREE_CUTTER
+    TET_STRAIGHT_PIPE_VALVE,
+    TET_PASSIVE_FLUID_ACCUMULATOR,
   };
 
   //--------------------------------------------------------------------------------------------------------------------

@@ -39,7 +39,7 @@ public class TreeCutting
         choppable_states.clear();
         if(ModAuxiliaries.isModLoaded("dynamictrees")) {
           ForgeRegistries.BLOCKS.getKeys().forEach((regname)->{
-            if("dynamictrees".equals(regname.getNamespace())) {
+            //if("dynamictrees".equals(regname.getNamespace())) { ... let's see if that also work with dyntrees compat mods
               if(!regname.getPath().contains("branch")) return;
               try {
                 Block block = ForgeRegistries.BLOCKS.getValue(regname);
@@ -56,7 +56,7 @@ public class TreeCutting
                 LOGGER.warn("Failed to register chopping for " + regname.toString());
                 return;
               }
-            }
+            //}
           });
         }
         LOGGER.info("Dynamic Trees chopping compat: " + choppable_states.size() + " choppable states found.");

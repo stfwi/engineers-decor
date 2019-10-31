@@ -165,6 +165,11 @@ tile.engineersdecor.factory_placer.name=Factory Block Placer
 #tile.engineersdecor.factory_placer.help=§6Allows placing blocks and planting crops or trees.§r\n\
                                         GUI Redstone controls: Not inverted / inverted (default), pulse mode / continuous mode (default).\n\
                                         Also supports spike planing from underneath the soil. Spits out items that it cannot place or plant.
+tile.engineersdecor.small_block_breaker.name=Factory Block Breaker
+#tile.engineersdecor.small_block_breaker.help=§6Breaks blocks in front of it.§r\n\
+                                        Can be disabled by applying a redstone signal. \
+                                        The time needed to destroy a block depends on the hardness of that block. \
+                                        Provide RF/FE power to speed up the breaking process (massively).
 tile.engineersdecor.small_mineral_smelter.name=小型矿物熔炼炉
 tile.engineersdecor.small_mineral_smelter.help=§6高温、高绝缘电熔石炉。§r\n\
                                                把矿物块加热成岩浆块，最后变成熔岩。由于\

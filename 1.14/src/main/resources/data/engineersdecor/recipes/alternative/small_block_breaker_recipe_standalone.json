@@ -2,7 +2,7 @@
   "conditions": [
     {
       "type": "engineersdecor:optional",
-      "result": "engineersdecor:small_tree_cutter",
+      "result": "engineersdecor:small_block_breaker",
       "missing": ["immersiveengineering:metal_device1"]
     }
   ],
@@ -20,14 +20,14 @@
       "item": "minecraft:iron_ingot"
     },
     "A": {
-      "item": "minecraft:iron_axe"
+      "item": "minecraft:iron_pickaxe"
     },
     "R": {
       "item": "minecraft:redstone_block"
     }
   },
   "result": {
-    "item": "engineersdecor:small_tree_cutter",
+    "item": "engineersdecor:small_block_breaker",
     "count": 1
   }
 }

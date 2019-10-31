@@ -155,6 +155,7 @@
  "block.engineersdecor.factory_dropper.help": "§6Выбрасыватель подходит для продвинутой автоматизации производства.§r Имеет 12 выборочных слотов. Сила броска, угол, размер стопки и задержка настраиваются в GUI. 3 слота сравнения стека с логическим И или ИЛИ могут использоваться в качестве внутреннего источника запуска. Внутренний триггер может быть И или ИЛИ с внешним триггерным сигналом красного камня. Триггерные кнопки симуляции для тестирования. Предварительно открывает дверцу затвора, когда выполняются условия внутреннего запуска. Сбрасывает все соответствующие стеки одновременно. Нажмите на все элементы в GUI, чтобы увидеть, как это работает.",
  "block.engineersdecor.factory_hopper": "Factory Hopper",
  "block.engineersdecor.factory_placer": "Factory Block Placer",
+ "block.engineersdecor.small_block_breaker": "Factory Block Breaker",
  "block.engineersdecor.small_mineral_smelter": "Small Mineral Melting Furnace",
  "block.engineersdecor.small_solar_panel": "Small Solar Panel",
  "block.engineersdecor.small_tree_cutter": "Small Tree Cutter",

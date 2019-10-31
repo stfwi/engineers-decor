@@ -900,7 +900,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
       // first iteration: fillup existing stacks
       for(int i = slot_begin; i < slot_end; ++i) {
         final ItemStack stack = inventory.getStackInSlot(i);
-        if((stack.isEmpty()) || (!stack.isItemEqual(mvstack))) continue;
+        if((stack.isEmpty()) || (!isItemExactlyEqual(stack,mvstack))) continue;
         int nmax = stack.getMaxStackSize() - stack.getCount();
         if(mvstack.getCount() <= nmax) {
           stack.setCount(stack.getCount()+mvstack.getCount());
@@ -936,6 +936,24 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
       return mvstack;
     }
 
+    private boolean isItemExactlyEqual(ItemStack stack1, ItemStack stack2)
+    {
+      if(!stack1.isItemEqual(stack2)) return false;
+      if(stack1.hasTagCompound()) {
+        final NBTTagCompound nbt = stack1.getTagCompound();
+        int n = stack1.getTagCompound().getSize();
+        if((n > 0) && stack1.getItem().isDamageable() && (stack1.getTagCompound().hasKey("Damage"))) --n;
+        if(n > 0) return false;
+      }
+      if(stack2.hasTagCompound()) {
+        final NBTTagCompound nbt = stack2.getTagCompound();
+        int n = stack2.getTagCompound().getSize();
+        if((n > 0) && stack2.getItem().isDamageable() && (stack2.getTagCompound().hasKey("Damage"))) --n;
+        if(n > 0) return false;
+      }
+      return true;
+    }
+
     /**
      * Moves as much items from the slots in range [first_slot, last_slot] of the inventory into a new stack.
      * Implicitly shrinks the inventory stacks and the `request_stack`.
@@ -950,16 +968,10 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
         int smallest_stack_index = -1;
         for(int i = slot_begin; i < slot_end; ++i) {
           final ItemStack stack = inventory.getStackInSlot(i);
-          if((!stack.isEmpty()) && (stack.isItemEqual(request_stack))) {
+          if((!stack.isEmpty()) && (isItemExactlyEqual(stack, request_stack))) {
             // Never automatically place stuff with nbt (except a few allowed like "Damage"),
             // as this could be a full crate, a valuable tool item, etc. For these recipes
             // the user has to place this item manually.
-            if(stack.hasTagCompound()) {
-              final NBTTagCompound nbt = stack.getTagCompound();
-              int n = stack.getTagCompound().getSize();
-              if((n > 0) && (stack.getTagCompound().hasKey("Damage"))) --n;
-              if(n > 0) continue;
-            }
             fetched_stack = stack.copy(); // copy exact stack with nbt and tool damage, otherwise we have an automagical repair of items.
             fetched_stack.setCount(0);
             int n = stack.getCount();
@@ -1067,12 +1079,12 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
       for(int i=0; i<9; ++i) {
         final ItemStack grid_stack = getStackInSlot(i + CRAFTING_SLOTS_BEGIN);
         final ItemStack refab_stack = to_refab.isEmpty() ? ItemStack.EMPTY : to_refab.get(i).copy();
-        if((!grid_stack.isEmpty()) && (grid_stack.isItemEqual(to_distribute))) {
+        if((!grid_stack.isEmpty()) && (isItemExactlyEqual(grid_stack, to_distribute))) {
           matching_grid_stack_sizes[i] = grid_stack.getCount();
           total_num_missing_stacks += grid_stack.getMaxStackSize()-grid_stack.getCount();
           if(max_matching_stack_size < matching_grid_stack_sizes[i]) max_matching_stack_size = matching_grid_stack_sizes[i];
           if(min_matching_stack_size > matching_grid_stack_sizes[i]) min_matching_stack_size = matching_grid_stack_sizes[i];
-        } else if((!refab_stack.isEmpty()) && (refab_stack.isItemEqual(to_distribute))) {
+        } else if((!refab_stack.isEmpty()) && (isItemExactlyEqual(refab_stack,to_distribute))) {
           matching_grid_stack_sizes[i] = 0;
           total_num_missing_stacks += grid_stack.getMaxStackSize();
           if(max_matching_stack_size < matching_grid_stack_sizes[i]) max_matching_stack_size = matching_grid_stack_sizes[i];

@@ -152,6 +152,13 @@ public class ModContent
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,8,16)
   );
 
+  public static final BlockDecorBreaker SMALL_BLOCK_BREAKER = new BlockDecorBreaker(
+    "small_block_breaker",
+    BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
+    Material.IRON, 1f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,12,16)
+  );
+
   //--------------------------------------------------------------------------------------------------------------------
 
   public static final BlockDecorPipeValve STRAIGHT_CHECK_VALVE = new BlockDecorPipeValve(
@@ -482,6 +489,9 @@ public class ModContent
   private static final TileEntityRegistrationData SMALL_TREE_CUTTER_TEI = new TileEntityRegistrationData(
     BlockDecorTreeCutter.BTileEntity.class, "te_small_tree_cutter"
   );
+  private static final TileEntityRegistrationData SMALL_BLOCK_BREAKER_TEI = new TileEntityRegistrationData(
+    BlockDecorBreaker.BTileEntity.class, "te_small_block_breaker"
+  );
   private static final TileEntityRegistrationData TEST_BLOCK_TEI = new TileEntityRegistrationData(
     BlockDecorTest.BTileEntity.class, "te_testblock"
   );
@@ -497,12 +507,13 @@ public class ModContent
     FACTORY_HOPPER,FACTORY_HOPPER_TEI,
     FACTORY_DROPPER, FACTORY_DROPPER_TEI,
     FACTORY_PLACER, FACTORY_PLACER_TEI,
+    SMALL_BLOCK_BREAKER,SMALL_BLOCK_BREAKER_TEI,
+    SMALL_TREE_CUTTER,SMALL_TREE_CUTTER_TEI,
     SMALL_WASTE_INCINERATOR, WASTE_INCINERATOR_TEI,
+    SMALL_SOLAR_PANEL,SMALL_SOLAR_PANEL_TEI,
+    SMALL_MINERAL_SMELTER, SMALL_MINERAL_SMELTER_TEI,
     STRAIGHT_CHECK_VALVE, STRAIGHT_REDSTONE_VALVE, STRAIGHT_REDSTONE_ANALOG_VALVE, STRAIGHT_PIPE_VALVE_TEI,
     PASSIVE_FLUID_ACCUMULATOR, PASSIVE_FLUID_ACCUMULATOR_TEI,
-    SMALL_MINERAL_SMELTER, SMALL_MINERAL_SMELTER_TEI,
-    SMALL_SOLAR_PANEL,SMALL_SOLAR_PANEL_TEI,
-    SMALL_TREE_CUTTER,SMALL_TREE_CUTTER_TEI,
     CLINKER_BRICK_BLOCK,
     CLINKER_BRICK_SLAB,
     CLINKER_BRICK_STAIRS,

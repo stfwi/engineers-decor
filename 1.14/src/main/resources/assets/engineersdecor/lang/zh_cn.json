@@ -158,6 +158,7 @@
  "block.engineersdecor.factory_dropper.help": "§6适用于高级工厂自动化的掉落器。§r有十二个轮询选择的储物格。 掉落的力度、角度、一叠数量和冷却延时可在GUI调节。三个 内部比较槽带有逻辑与或逻辑或功能，可用作内部触发源。内部触发 还能和外部红石信号触发再进行逻辑与或逻辑或。触发模拟按钮仅作测试用途。 当内部触发条件满足时，预先打开卷帘门。所有符合条件的物品 会同时掉落。点击GUI的各处来了解如何运作。",
  "block.engineersdecor.factory_hopper": "Factory Hopper",
  "block.engineersdecor.factory_placer": "Factory Block Placer",
+ "block.engineersdecor.small_block_breaker": "Factory Block Breaker",
  "block.engineersdecor.small_mineral_smelter": "小型矿物熔炼炉",
  "block.engineersdecor.small_mineral_smelter.help": "§6高温、高绝缘电熔石炉。§r\n 把矿物块加热成岩浆块，最后变成熔岩。由于 小型化的设备大小，该过程效率不高，需要大量时间和能源 来液化一块石头。",
  "block.engineersdecor.small_solar_panel": "小型太阳能板",

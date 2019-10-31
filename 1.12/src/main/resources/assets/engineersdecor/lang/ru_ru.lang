@@ -162,11 +162,19 @@ tile.engineersdecor.factory_placer.name=Factory Block Placer
 #tile.engineersdecor.factory_placer.help=§6Allows placing blocks and planting crops or trees.§r\n\
                                         GUI Redstone controls: Not inverted / inverted (default), pulse mode / continuous mode (default).\n\
                                         Also supports spike planing from underneath the soil. Spits out items that it cannot place or plant.
+tile.engineersdecor.small_block_breaker.name=Factory Block Breaker
+#tile.engineersdecor.small_block_breaker.help=§6Breaks blocks in front of it.§r\n\
+                                        Can be disabled by applying a redstone signal. \
+                                        The time needed to destroy a block depends on the hardness of that block. \
+                                        Provide RF/FE power to speed up the breaking process (massively).
 tile.engineersdecor.small_mineral_smelter.name=Small Mineral Melting Furnace
 #tile.engineersdecor.small_mineral_smelter.help=§6High temperature, high insulation electrical stone melting furnace.§r\n\
-                                               Heats up mineral blocks to magma blocks, and finally to lava. Due to the \
-                                               miniturized device size the process is rather inefficient - much time and \
-                                               energy is needed to liquefy a stone block.
+                                               Heats up mineral blocks to magma blocks, and finally to lava. Click with a \
+                                               mineral block (stone, cobble, etc) or use item insertion to place a block in \
+                                               the melter. Use bucket or fluid extraction to retrieve the lava. When cooling \
+                                               down lava, obsidian is generated. Remove the RF power or apply a redstone \
+                                               signal to disable the furnace. For automation, use a redstone comparator to \
+                                               see in which melting phase the mineral is a moment.
 tile.engineersdecor.small_solar_panel.name=Small Solar Panel
 #tile.engineersdecor.small_solar_panel.help=§6Produces a small amount of power when exposed to sunlight.§r\n\
                                            Useful for charging LF capacitors in remote systems with low consumption. The \
