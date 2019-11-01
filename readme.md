@@ -72,6 +72,10 @@ looking manufacturing contraptions. Current feature set:
   Automatically spits out items that it cannot plant or place. Can be redstone
   controlled similar to the Factory Hopper (invertible, pulse/continuous mode).
 
+- *Small Block Braker*: Breaks blocks in front of it. Can be disabled by applying a
+  redstone signal. The time needed to destroy a block depends on the hardness of
+  that block. Provide RF/FE power to speed up the breaking process (massively).
+
 - *Small Waste Incinerator*: Buffered and delayed item disposal device. 16 fifo
   slots are filled when new items are pushed in from any side. A GUI allows to
   take out accidentally trashed items or put in items to get rid of. When the fifo
@@ -80,17 +84,16 @@ looking manufacturing contraptions. Current feature set:
 
 - *Clinker Bricks*: Slightly darker and more colorful version of the vanilla brick
   block. Eight position dependent texture variations are implemented to make the
-  wall look more "alive". Crafted 3x3 with a brick block in the centre and any
-  combination of bricks and nether bricks around (actually, anything where the
-  ore dictionary says it's a "brick ingot" - useful for bigger industrial buildings
-  where clay is a rare resource). Higher explosion resistance than the vanilla
-  bricks. Also available as stairs and wall, crafted as usual. There is a reverse
-  recipe to get three clinker brick blocks back from stairs or walls. There are
-  also *Stained Clinker Bricks* (crafted Dirt and Clinkers), which can be mixed
-  in Clinker walls for more variations.
+  wall look more "alive". Slightly higher crafting yield than making vanilla bricks.
+  The recipe also allows to craft clinkers from a combination of bricks and nether
+  bricks (actually, anything where the ore dictionary says it's a "brick ingot" -
+  useful for bigger industrial buildings where clay is a rare resource). Higher
+  explosion resistance than the vanilla bricks. Also available as stairs and wall.
+  There is a reverse recipe to get three clinker brick blocks back from stairs or
+  walls. There are also *Stained Clinker Bricks*, which can be mixed in Clinker walls
+  for more variations.
 
-- *Slag Bricks*: Gray-brownish brick, also eight texture variations. Crafted 3x3
-  from slag in the centre and any kind of bricks ("brick ingot") around. Has a higher
+- *Slag Bricks*: Gray-brownish brick, also eight texture variations. Has a higher
   explosion resistance than bricks. Also available as stairs and wall, also with
   reverse recipes.
 
