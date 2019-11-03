@@ -168,6 +168,11 @@ looking manufacturing contraptions. Current feature set:
   finally to lava. Needs a lot of power. When the lava is cooled down in the smelter by removing
   the RF power, obsidian is generated.
 
+- *Fluid Collection Funnel*: Collects fluids above it. Has an internal tank with three buckets
+  capacity. Traces flowing fluids to nearby source blocks. The fluid can be obtained with fluid
+  transfer systems or a bucket. Fills only tanks below (gravity). Compatible with vanilla
+  infinite-water-source creation.
+
 More to come slowly but steadily.
 
 ----

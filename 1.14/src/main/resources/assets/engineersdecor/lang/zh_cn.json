@@ -154,6 +154,7 @@
  "block.engineersdecor.straight_pipe_valve_redstone_analog.help": "§6一段直输液管。§r单向传递流体。 侧面不会与管道连接。会减少流速。潜行能反方向放置。 没有红石信号时断流，流速与红石信号强度从1到14线性增长， 15时流速上限达到最大。",
  "block.engineersdecor.passive_fluid_accumulator": "被动流体累积器。",
  "block.engineersdecor.passive_fluid_accumulator.help": "§6基于真空吸力的流体收集器。§r有一个输出面，其他面都是输入。 当从输出面被泵抽取时，从输入面邻接储罐抽取液体。",
+ "block.engineersdecor.small_fluid_funnel": "Small Fluid Collection Funnel",
  "block.engineersdecor.factory_dropper": "工厂掉落器",
  "block.engineersdecor.factory_dropper.help": "§6适用于高级工厂自动化的掉落器。§r有十二个轮询选择的储物格。 掉落的力度、角度、一叠数量和冷却延时可在GUI调节。三个 内部比较槽带有逻辑与或逻辑或功能，可用作内部触发源。内部触发 还能和外部红石信号触发再进行逻辑与或逻辑或。触发模拟按钮仅作测试用途。 当内部触发条件满足时，预先打开卷帘门。所有符合条件的物品 会同时掉落。点击GUI的各处来了解如何运作。",
  "block.engineersdecor.factory_hopper": "Factory Hopper",

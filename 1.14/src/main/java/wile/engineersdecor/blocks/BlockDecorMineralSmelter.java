@@ -484,7 +484,7 @@ public class BlockDecorMineralSmelter extends BlockDecorDirectedHorizontal
       @Override
       public FluidStack drain(FluidStack resource, FluidAction action)
       {
-        if(!resource.isFluidEqual(lava) || (te.fluid_level() <= 0)) return FluidStack.EMPTY;
+        if(!resource.isFluidEqual(lava) || (te.fluid_level() <= 0)) return FluidStack.EMPTY.copy();
         FluidStack stack = new FluidStack(lava, te.fluid_level());
         if(action == FluidAction.EXECUTE) te.fluid_level_drain(te.fluid_level());
         return stack;
@@ -493,7 +493,7 @@ public class BlockDecorMineralSmelter extends BlockDecorDirectedHorizontal
       @Override
       public FluidStack drain(int maxDrain, FluidAction action)
       {
-        if(te.fluid_level() <= 0) return FluidStack.EMPTY;
+        if(te.fluid_level() <= 0) return FluidStack.EMPTY.copy();
         maxDrain = (action==FluidAction.EXECUTE) ? (te.fluid_level_drain(maxDrain)) : (Math.min(maxDrain, te.fluid_level()));
         return new FluidStack(lava, maxDrain);
       }

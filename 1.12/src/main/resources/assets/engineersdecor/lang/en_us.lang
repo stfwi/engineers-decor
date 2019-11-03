@@ -150,6 +150,11 @@ tile.engineersdecor.straight_pipe_valve_redstone_analog.help=§6Straight fluid p
 tile.engineersdecor.passive_fluid_accumulator.name=Passive Fluid Accumulator
 tile.engineersdecor.passive_fluid_accumulator.help=§6Vacuum suction based fluid collector.§r Has one output, all other sides are input. \
                                                    Drains fluids from adjacent tanks when being drained from the output port by a pump.
+tile.engineersdecor.small_fluid_funnel.name=Small Fluid Collection Funnel
+tile.engineersdecor.small_fluid_funnel.help=§6Collects fluids above it.§r Has an internal tank with three buckets capacity. Traces \
+                                            flowing fluids to nearby source blocks. The fluid can be obtained with fluid transfer systems \
+                                            or a bucket. Fills only tanks below (gravity transfer). Compatible with vanilla \
+                                            infinite-water-source creation.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.factory_dropper.name=Factory Dropper
 tile.engineersdecor.factory_dropper.help=§6Dropper suitable for advanced factory automation.§r Has twelve round-robin selected slots. \

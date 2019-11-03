@@ -124,7 +124,7 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected
     public boolean shouldRefresh(World world, BlockPos pos, IBlockState os, IBlockState ns)
     {
       block_changed();
-      return (os.getBlock() != ns.getBlock()) || (!(ns.getBlock() instanceof BlockDecorPipeValve));
+      return (os.getBlock() != ns.getBlock()) || (!(ns.getBlock() instanceof BlockDecorPassiveFluidAccumulator));
     }
 
     @Override

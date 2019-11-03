@@ -15,21 +15,23 @@ package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.detail.ModAuxiliaries;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Hand;
+import net.minecraft.world.World;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -67,7 +69,6 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected
   @SuppressWarnings("deprecation")
   public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean unused)
   {
-    // @todo double check if this is actually needed
     TileEntity te = world.getTileEntity(pos);
     if(te instanceof BlockDecorPipeValve.BTileEntity) ((BTileEntity)te).block_changed();
   }
@@ -76,7 +77,7 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class BTileEntity extends TileEntity // implements ITickableTileEntity, IFluidHandler, IFluidTankProperties, ICapabilityProvider
+  public static class BTileEntity extends TileEntity implements ITickableTileEntity, ICapabilityProvider
   {
     protected static int tick_idle_interval = 20; // ca 1000ms, simulates suction delay and saves CPU when not drained.
     protected static int max_flowrate = 1000;
@@ -99,7 +100,30 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected
     public void block_changed()
     { initialized_ = false; tick_timer_ = MathHelper.clamp(tick_timer_ , 0, tick_idle_interval); }
 
-    // Output flow handler ---------------------------------------------------------------------
+    // TileEntity ------------------------------------------------------------------------------
+
+    public BTileEntity()
+    { this(ModContent.TET_PASSIVE_FLUID_ACCUMULATOR); }
+
+    public BTileEntity(TileEntityType<?> te_type)
+    { super(te_type); }
+
+    @Override
+    public void read(CompoundNBT nbt)
+    {
+      super.read(nbt);
+      tank_ = (!nbt.contains("tank")) ? (FluidStack.EMPTY.copy()) : (FluidStack.loadFluidStackFromNBT(nbt.getCompound("tank")));
+    }
+
+    @Override
+    public CompoundNBT write(CompoundNBT nbt)
+    {
+      super.write(nbt);
+      if(!tank_.isEmpty()) nbt.put("tank", tank_.writeToNBT(new CompoundNBT()));
+      return nbt;
+    }
+
+    // Input flow handler ---------------------------------------------------------------------
 
     private static class InputFillHandler implements IFluidHandler
     {
@@ -114,7 +138,7 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected
       @Override public FluidStack drain(int maxDrain, FluidAction action) { return FluidStack.EMPTY.copy(); }
     }
 
-    // Input flow handler ---------------------------------------------------------------------
+    // Output flow handler ---------------------------------------------------------------------
 
     private static class OutputFlowHandler implements IFluidHandler
     {
@@ -146,29 +170,6 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected
         te.total_volume_drained_ += res.getAmount();
         return res;
       }
-    }
-
-    // TileEntity ------------------------------------------------------------------------------
-
-    public BTileEntity()
-    { this(ModContent.TET_PASSIVE_FLUID_ACCUMULATOR); }
-
-    public BTileEntity(TileEntityType<?> te_type)
-    { super(te_type); }
-
-    @Override
-    public void read(CompoundNBT nbt)
-    {
-      super.read(nbt);
-      tank_ = (!nbt.contains("tank")) ? (FluidStack.EMPTY.copy()) : (FluidStack.loadFluidStackFromNBT(nbt.getCompound("tank")));
-    }
-
-    @Override
-    public CompoundNBT write(CompoundNBT nbt)
-    {
-      super.write(nbt);
-      if(!tank_.isEmpty()) nbt.put("tank", tank_.writeToNBT(new CompoundNBT()));
-      return nbt;
     }
 
     // ICapabilityProvider --------------------------------------------------------------------

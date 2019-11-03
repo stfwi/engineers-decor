@@ -434,6 +434,12 @@ public class ModContent
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "passive_fluid_accumulator"));
 
+  public static final BlockDecorFluidFunnel SMALL_FLUID_FUNNEL = (BlockDecorFluidFunnel)(new BlockDecorFluidFunnel(
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_REDSTONE_CONTROLLED,
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_fluid_funnel"));
+
   // -------------------------------------------------------------------------------------------------------------------
 
   public static final BlockDecorWall CONCRETE_WALL = (BlockDecorWall)(new BlockDecorWall(
@@ -497,6 +503,11 @@ public class ModContent
     SMALL_SOLAR_PANEL,
     SMALL_WASTE_INCINERATOR,
     SMALL_MINERAL_SMELTER,
+    STRAIGHT_CHECK_VALVE,
+    STRAIGHT_REDSTONE_VALVE,
+    STRAIGHT_REDSTONE_ANALOG_VALVE,
+    PASSIVE_FLUID_ACCUMULATOR,
+    SMALL_FLUID_FUNNEL,
     CLINKER_BRICK_BLOCK,
     CLINKER_BRICK_SLAB,
     CLINKER_BRICK_STAIRS,
@@ -558,10 +569,6 @@ public class ModContent
   };
 
   private static final Block devBlocks[] = {
-    STRAIGHT_CHECK_VALVE,
-    STRAIGHT_REDSTONE_VALVE,
-    STRAIGHT_REDSTONE_ANALOG_VALVE,
-    PASSIVE_FLUID_ACCUMULATOR,
   };
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -618,6 +625,11 @@ public class ModContent
     .build(null)
     .setRegistryName(ModEngineersDecor.MODID, "te_passive_fluid_accumulator");
 
+  public static final TileEntityType<?> TET_SMALL_FLUID_FUNNEL = TileEntityType.Builder
+    .create(BlockDecorFluidFunnel.BTileEntity::new, SMALL_FLUID_FUNNEL)
+    .build(null)
+    .setRegistryName(ModEngineersDecor.MODID, "te_small_fluid_funnel");
+
   public static final TileEntityType<?> TET_MINERAL_SMELTER = TileEntityType.Builder
     .create(BlockDecorMineralSmelter.BTileEntity::new, SMALL_MINERAL_SMELTER)
     .build(null)
@@ -648,6 +660,7 @@ public class ModContent
     TET_SMALL_SOLAR_PANEL,
     TET_STRAIGHT_PIPE_VALVE,
     TET_PASSIVE_FLUID_ACCUMULATOR,
+    TET_SMALL_FLUID_FUNNEL,
   };
 
   //--------------------------------------------------------------------------------------------------------------------

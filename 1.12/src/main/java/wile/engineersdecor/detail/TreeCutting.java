@@ -26,6 +26,9 @@ import java.util.*;
 public class TreeCutting
 {
   private static org.apache.logging.log4j.Logger LOGGER = ModEngineersDecor.logger;
+  private static int max_log_tracing_steps = 128;
+  private static int max_cutting_height = 128;
+  private static int max_cutting_radius = 12;
 
   private static class Compat
   {
@@ -39,27 +42,28 @@ public class TreeCutting
         choppable_states.clear();
         if(ModAuxiliaries.isModLoaded("dynamictrees")) {
           ForgeRegistries.BLOCKS.getKeys().forEach((regname)->{
-            //if("dynamictrees".equals(regname.getNamespace())) { ... let's see if that also work with dyntrees compat mods
-              if(!regname.getPath().contains("branch")) return;
-              try {
-                Block block = ForgeRegistries.BLOCKS.getValue(regname);
-                IBlockState state = block.getDefaultState();
-                for(IProperty<?> vaprop: state.getProperties().keySet()) {
-                  if(!("radius".equals(vaprop.getName())) || (vaprop.getValueClass() != Integer.class)) continue;
-                  @SuppressWarnings("unchecked")
-                  IProperty<Integer> prop = (IProperty<Integer>)vaprop;
-                  Integer max = ((Collection<Integer>)prop.getAllowedValues()).stream().max(Integer::compare).orElse(0);
-                  if(max<7) continue;
-                  for(int r=7; r<=max; ++r) choppable_states.put(state.withProperty(prop, r), ChoppingMethod.RootBlockBreaking);
-                }
-              } catch(Throwable e) {
-                LOGGER.warn("Failed to register chopping for " + regname.toString());
-                return;
+            if(!regname.getPath().contains("branch")) return;
+            try {
+              Block block = ForgeRegistries.BLOCKS.getValue(regname);
+              IBlockState state = block.getDefaultState();
+              for(IProperty<?> vaprop: state.getProperties().keySet()) {
+                if(!("radius".equals(vaprop.getName())) || (vaprop.getValueClass() != Integer.class)) continue;
+                @SuppressWarnings("unchecked")
+                IProperty<Integer> prop = (IProperty<Integer>)vaprop;
+                Integer max = ((Collection<Integer>)prop.getAllowedValues()).stream().max(Integer::compare).orElse(0);
+                if(max<7) continue;
+                for(int r=7; r<=max; ++r) choppable_states.put(state.withProperty(prop, r), ChoppingMethod.RootBlockBreaking);
               }
-            //}
+            } catch(Throwable e) {
+              LOGGER.warn("Failed to register chopping for " + regname.toString());
+              return;
+            }
           });
         }
         LOGGER.info("Dynamic Trees chopping compat: " + choppable_states.size() + " choppable states found.");
+        if(ModConfig.zmisc.with_experimental) {
+          for(IBlockState b:choppable_states.keySet()) ModEngineersDecor.logger.info(" - dynamic tree state: " + b);
+        }
       } catch(Throwable e) {
         choppable_states.clear();
         LOGGER.warn("Failed to determine choppings for dynamic trees compat, skipping that:" + e);
@@ -100,7 +104,13 @@ public class TreeCutting
   );
 
   public static void reload()
-  { Compat.reload(); }
+  {
+    Compat.reload();
+    // later config, now keep IJ from suggesting that a private variable should be used.
+    max_log_tracing_steps = 128;
+    max_cutting_height = 128;
+    max_cutting_radius = 12;
+  }
 
   private static List<BlockPos> findBlocksAround(final World world, final BlockPos centerPos, final IBlockState leaf_type_state, final Set<BlockPos> checked, int recursion_left)
   {
@@ -119,6 +129,17 @@ public class TreeCutting
       }
     }
     return to_decay;
+  }
+
+  private static boolean too_far(BlockPos start, BlockPos pos)
+  {
+    int dy = pos.getY()-start.getY();
+    if((dy < 0) || (dy>max_cutting_height)) return true;
+    final int dx = Math.abs(pos.getX()-start.getX());
+    final int dz = Math.abs(pos.getZ()-start.getZ());
+    if(dy > max_cutting_radius) dy = max_cutting_radius;
+    if((dx >= dy+3) || (dz >= dy+3)) return true;
+    return false;
   }
 
   public static boolean canChop(IBlockState state)
@@ -144,11 +165,13 @@ public class TreeCutting
       LinkedList<BlockPos> upqueue = new LinkedList<BlockPos>();
       queue.add(startPos);
       int cutlevel = 0;
-      int steps_left = 64;
+      int steps_left = max_log_tracing_steps;
+      IBlockState tracked_leaves_state = null;
       while(!queue.isEmpty() && (--steps_left >= 0)) {
         final BlockPos pos = queue.removeFirst();
         // Vertical search
         final BlockPos uppos = pos.up();
+        if(too_far(startPos, uppos)) { checked.add(uppos); continue; }
         final IBlockState upstate = world.getBlockState(uppos);
         if(!checked.contains(uppos)) {
           checked.add(uppos);
@@ -156,11 +179,18 @@ public class TreeCutting
             // Up is log
             upqueue.add(uppos);
             to_break.add(uppos);
-            steps_left = 64;
+            steps_left = max_log_tracing_steps;
           } else {
             boolean isleaf = BlockCategories.isLeaves(upstate);
             if(isleaf || world.isAirBlock(uppos) || (upstate.getBlock() instanceof BlockVine)) {
-              if(isleaf) to_decay.add(uppos);
+              if(isleaf) {
+                if(tracked_leaves_state==null) {
+                  tracked_leaves_state=upstate;
+                  to_decay.add(uppos);
+                } else if(BlockCategories.isSameLeaves(upstate, tracked_leaves_state)) {
+                  to_decay.add(uppos);
+                }
+              }
               // Up is air, check adjacent for diagonal up (e.g. Accacia)
               for(Vec3i v:hoffsets) {
                 final BlockPos p = uppos.add(v);
@@ -172,7 +202,9 @@ public class TreeCutting
                   queue.add(p);
                   to_break.add(p);
                 } else if(BlockCategories.isLeaves(st)) {
-                  to_decay.add(p);
+                  if((tracked_leaves_state==null) || (BlockCategories.isSameLeaves(st, tracked_leaves_state))) {
+                    to_decay.add(p);
+                  }
                 }
               }
             }
@@ -183,14 +215,15 @@ public class TreeCutting
           final BlockPos p = pos.add(v);
           if(checked.contains(p)) continue;
           checked.add(p);
-          if(p.distanceSq(new BlockPos(startPos.getX(), p.getY(), startPos.getZ())) > (3+cutlevel*cutlevel)) continue;
           final IBlockState st = world.getBlockState(p);
           final Block bl = st.getBlock();
           if(BlockCategories.isSameLog(st, broken_state)) {
             queue.add(p);
             to_break.add(p);
           } else if(BlockCategories.isLeaves(st)) {
-            to_decay.add(p);
+            if((tracked_leaves_state==null) || (BlockCategories.isSameLeaves(st, tracked_leaves_state))) {
+              to_decay.add(p);
+            }
           }
         }
         if(queue.isEmpty() && (!upqueue.isEmpty())) {

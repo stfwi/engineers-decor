@@ -116,6 +116,7 @@ public class ModEngineersDecor
     if(RecipeCondModSpecific.num_skipped > 0) logger.info("Excluded " + RecipeCondModSpecific.num_skipped + " recipes due to config opt-out.");
     if(ModConfig.zmisc.with_experimental) logger.info("Included experimental features due to mod config.");
     ExtItems.onPostInit();
+    BlockCategories.reload();
     TreeCutting.reload();
   }
 

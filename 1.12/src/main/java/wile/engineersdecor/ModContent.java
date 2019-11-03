@@ -193,6 +193,13 @@ public class ModContent
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   );
 
+  public static final BlockDecorFluidFunnel SMALL_FLUID_FUNNEL = new BlockDecorFluidFunnel(
+    "small_fluid_funnel",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_ELECTRICAL|BlockDecor.CFG_REDSTONE_CONTROLLED,
+    Material.IRON, 1f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+  );
+
   //--------------------------------------------------------------------------------------------------------------------
 
   public static final BlockDecorStraightPole TREATED_WOOD_POLE = new BlockDecorStraightPole(
@@ -468,6 +475,9 @@ public class ModContent
   private static final TileEntityRegistrationData PASSIVE_FLUID_ACCUMULATOR_TEI = new TileEntityRegistrationData(
     BlockDecorPassiveFluidAccumulator.BTileEntity.class, "te_passive_fluid_accumulator"
   );
+  private static final TileEntityRegistrationData SMALL_FLUID_FUNNEL_TEI = new TileEntityRegistrationData(
+    BlockDecorFluidFunnel.BTileEntity.class, "te_small_fluid_funnel"
+  );
   private static final TileEntityRegistrationData WASTE_INCINERATOR_TEI = new TileEntityRegistrationData(
     BlockDecorWasteIncinerator.BTileEntity.class, "te_small_waste_incinerator"
   );
@@ -568,6 +578,7 @@ public class ModContent
     PANZERGLASS_SLAB,                         // @todo: check if another class is needed due to is_side_visible
     TREATED_WOOD_FLOOR,                       // @todo: check if textures need improvement
     TEST_BLOCK,TEST_BLOCK_TEI,
+    SMALL_FLUID_FUNNEL,SMALL_FLUID_FUNNEL_TEI
   };
 
   //--------------------------------------------------------------------------------------------------------------------

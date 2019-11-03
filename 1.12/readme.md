@@ -10,6 +10,15 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+                  -------------------------------------------------------------------
+    - v1.0.15     [R] Release based on v1.0.15-b2. Release-to-release changes:
+                      * Added Small Block Breaker
+                      * Small Tree Cutter fixes and compatability improved.
+                      * Crafting table compat fixes.
+                  -------------------------------------------------------------------
+                  [M] Small Tree Cutter log detection bug fixed (issue #59).
+                  [M] Small Tree Cutter supports Menril chopping (issue #54).
+
     - v1.0.15-b2  [A] Added Small Block Breaker
                   [M] Crafting Table: Allowing NBT "Damage" mismatch only
                       items that are declared damagable (issue #56).

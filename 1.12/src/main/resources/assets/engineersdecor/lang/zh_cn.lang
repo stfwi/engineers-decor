@@ -149,6 +149,11 @@ tile.engineersdecor.straight_pipe_valve_redstone_analog.help=§6一段直输液�
 tile.engineersdecor.passive_fluid_accumulator.name=被动流体累积器。
 tile.engineersdecor.passive_fluid_accumulator.help=§6基于真空吸力的流体收集器。§r有一个输出面，其他面都是输入。\
                                                    当从输出面被泵抽取时，从输入面邻接储罐抽取液体。
+tile.engineersdecor.small_fluid_funnel.name=Small Fluid Collection Funnel
+#tile.engineersdecor.small_fluid_funnel.help=§6Collects fluids above it.§r Has an internal tank with three buckets capacity. Traces \
+                                            flowing fluids to nearby source blocks. The fluid can be obtained with fluid transfer systems \
+                                            or a bucket. Fills only tanks below (gravity transfer). Compatible with vanilla \
+                                            infinite-water-source creation.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.factory_dropper.name=工厂掉落器
 tile.engineersdecor.factory_dropper.help=§6适用于高级工厂自动化的掉落器。§r有十二个轮询选择的储物格。\
