@@ -1,0 +1,33 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:factory_placer",
+      "missing": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WWW",
+    "WDP",
+    "WWW"
+  ],
+  "key": {
+    "D": {
+      "item": "minecraft:dispenser",
+      "data": 0
+    },
+    "P": {
+      "item": "#ingotIron",
+      "data": 0
+    },
+    "W": {
+      "item": "#plankWood",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:factory_placer",
+    "count": 1
+  }
+}

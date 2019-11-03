@@ -10,7 +10,24 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
-    ~ v1.0.15-b1  [A] Added Floor Edge Light.
+                  -------------------------------------------------------------------
+    - v1.0.15     [R] Release based on v1.0.15-b2. Release-to-release changes:
+                      * Added Small Block Breaker
+                      * Small Tree Cutter fixes and compatability improved.
+                      * Crafting table compat fixes.
+                  -------------------------------------------------------------------
+                  [M] Small Tree Cutter log detection bug fixed (issue #59).
+                  [M] Small Tree Cutter supports Menril chopping (issue #54).
+
+    - v1.0.15-b2  [A] Added Small Block Breaker
+                  [M] Crafting Table: Allowing NBT "Damage" mismatch only
+                      items that are declared damagable (issue #56).
+                  [M] Tree Cutter: Loosened the strict mod namespace
+                      requirement for Dynamic Trees log detection (issue #52)
+                      to enable checking DT compat mod log blocks.
+
+    - v1.0.15-b1  [A] Added Floor Edge Light.
+                  [A] Added Factory Block Placer and Planter.
 
                   -------------------------------------------------------------------
     - v1.0.14     [R] Release based on v1.0.14-b1. Release-to-release changes:

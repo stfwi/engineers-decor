@@ -1,0 +1,10 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "engineersdecor:block/device/small_block_breaker_model"
+  },
+  "variants": {
+    "facing": { "north":{"y":0}, "south":{"y":180}, "west":{"y":270}, "east":{"y":90} },
+    "active": { "true":{ "model": "engineersdecor:block/device/small_block_breaker_model_active" }, "false":{}}
+  }
+}

@@ -368,6 +368,18 @@ public class ModContent
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,15)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "factory_dropper"));
 
+  public static final BlockDecorPlacer FACTORY_PLACER = (BlockDecorPlacer)(new BlockDecorPlacer(
+    BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|BlockDecor.CFG_REDSTONE_CONTROLLED,
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
+    ModAuxiliaries.getPixeledAABB(2,2,2, 14,14,14)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "factory_placer"));
+
+  public static final BlockDecorBreaker SMALL_BLOCK_BREAKER = (BlockDecorBreaker)(new BlockDecorBreaker(
+    BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,12,16)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_block_breaker"));
+
   public static final BlockDecorHopper FACTORY_HOPPER = (BlockDecorHopper)(new BlockDecorHopper(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_REDSTONE_CONTROLLED,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
@@ -392,6 +404,12 @@ public class ModContent
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,11.5,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_solar_panel"));
 
+  public static final BlockDecorTreeCutter SMALL_TREE_CUTTER = (BlockDecorTreeCutter)(new BlockDecorTreeCutter(
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,8,16)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_tree_cutter"));
+
   public static final BlockDecorPipeValve STRAIGHT_CHECK_VALVE = (BlockDecorPipeValve)(new BlockDecorPipeValve(
     BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|BlockDecor.CFG_CUTOUT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
@@ -415,6 +433,12 @@ public class ModContent
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "passive_fluid_accumulator"));
+
+  public static final BlockDecorFluidFunnel SMALL_FLUID_FUNNEL = (BlockDecorFluidFunnel)(new BlockDecorFluidFunnel(
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_REDSTONE_CONTROLLED,
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_fluid_funnel"));
 
   // -------------------------------------------------------------------------------------------------------------------
 
@@ -470,12 +494,20 @@ public class ModContent
   private static final Block modBlocks[] = {
     TREATED_WOOD_CRAFTING_TABLE,
     SMALL_LAB_FURNACE,
-    FACTORY_DROPPER,
-    FACTORY_HOPPER,
     SMALL_ELECTRICAL_FURNACE,
+    FACTORY_HOPPER,
+    FACTORY_DROPPER,
+    FACTORY_PLACER,
+    SMALL_BLOCK_BREAKER,
+    SMALL_TREE_CUTTER,
+    SMALL_SOLAR_PANEL,
     SMALL_WASTE_INCINERATOR,
     SMALL_MINERAL_SMELTER,
-    SMALL_SOLAR_PANEL,
+    STRAIGHT_CHECK_VALVE,
+    STRAIGHT_REDSTONE_VALVE,
+    STRAIGHT_REDSTONE_ANALOG_VALVE,
+    PASSIVE_FLUID_ACCUMULATOR,
+    SMALL_FLUID_FUNNEL,
     CLINKER_BRICK_BLOCK,
     CLINKER_BRICK_SLAB,
     CLINKER_BRICK_STAIRS,
@@ -537,10 +569,6 @@ public class ModContent
   };
 
   private static final Block devBlocks[] = {
-    STRAIGHT_CHECK_VALVE,
-    STRAIGHT_REDSTONE_VALVE,
-    STRAIGHT_REDSTONE_ANALOG_VALVE,
-    PASSIVE_FLUID_ACCUMULATOR,
   };
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -567,6 +595,16 @@ public class ModContent
     .build(null)
     .setRegistryName(ModEngineersDecor.MODID, "te_factory_dropper");
 
+  public static final TileEntityType<?> TET_FACTORY_PLACER = TileEntityType.Builder
+    .create(BlockDecorPlacer.BTileEntity::new, FACTORY_PLACER)
+    .build(null)
+    .setRegistryName(ModEngineersDecor.MODID, "te_factory_placer");
+
+  public static final TileEntityType<?> TET_SMALL_BLOCK_BREAKER = TileEntityType.Builder
+    .create(BlockDecorBreaker.BTileEntity::new, SMALL_BLOCK_BREAKER)
+    .build(null)
+    .setRegistryName(ModEngineersDecor.MODID, "te_small_block_breaker");
+
   public static final TileEntityType<?> TET_FACTORY_HOPPER = TileEntityType.Builder
     .create(BlockDecorHopper.BTileEntity::new, FACTORY_HOPPER)
     .build(null)
@@ -587,6 +625,11 @@ public class ModContent
     .build(null)
     .setRegistryName(ModEngineersDecor.MODID, "te_passive_fluid_accumulator");
 
+  public static final TileEntityType<?> TET_SMALL_FLUID_FUNNEL = TileEntityType.Builder
+    .create(BlockDecorFluidFunnel.BTileEntity::new, SMALL_FLUID_FUNNEL)
+    .build(null)
+    .setRegistryName(ModEngineersDecor.MODID, "te_small_fluid_funnel");
+
   public static final TileEntityType<?> TET_MINERAL_SMELTER = TileEntityType.Builder
     .create(BlockDecorMineralSmelter.BTileEntity::new, SMALL_MINERAL_SMELTER)
     .build(null)
@@ -597,18 +640,27 @@ public class ModContent
     .build(null)
     .setRegistryName(ModEngineersDecor.MODID, "te_small_solar_panel");
 
+  public static final TileEntityType<?> TET_SMALL_TREE_CUTTER = TileEntityType.Builder
+    .create(BlockDecorTreeCutter.BTileEntity::new, SMALL_TREE_CUTTER)
+    .build(null)
+    .setRegistryName(ModEngineersDecor.MODID, "te_small_tree_cutter");
+
 
   private static final TileEntityType<?> tile_entity_types[] = {
     TET_TREATED_WOOD_CRAFTING_TABLE,
     TET_SMALL_LAB_FURNACE,
-    TET_FACTORY_DROPPER,
-    TET_FACTORY_HOPPER,
     TET_SMALL_ELECTRICAL_FURNACE,
+    TET_FACTORY_HOPPER,
+    TET_FACTORY_DROPPER,
+    TET_FACTORY_PLACER,
+    TET_SMALL_BLOCK_BREAKER,
+    TET_SMALL_TREE_CUTTER,
     TET_WASTE_INCINERATOR,
+    TET_MINERAL_SMELTER,
+    TET_SMALL_SOLAR_PANEL,
     TET_STRAIGHT_PIPE_VALVE,
     TET_PASSIVE_FLUID_ACCUMULATOR,
-    TET_MINERAL_SMELTER,
-    TET_SMALL_SOLAR_PANEL
+    TET_SMALL_FLUID_FUNNEL,
   };
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -634,6 +686,7 @@ public class ModContent
 
   public static final ContainerType<BlockDecorCraftingTable.BContainer> CT_TREATED_WOOD_CRAFTING_TABLE;
   public static final ContainerType<BlockDecorDropper.BContainer> CT_FACTORY_DROPPER;
+  public static final ContainerType<BlockDecorPlacer.BContainer> CT_FACTORY_PLACER;
   public static final ContainerType<BlockDecorHopper.BContainer> CT_FACTORY_HOPPER;
   public static final ContainerType<BlockDecorFurnace.BContainer> CT_SMALL_LAB_FURNACE;
   public static final ContainerType<BlockDecorFurnaceElectrical.BContainer> CT_SMALL_ELECTRICAL_FURNACE;
@@ -644,6 +697,8 @@ public class ModContent
     CT_TREATED_WOOD_CRAFTING_TABLE.setRegistryName(ModEngineersDecor.MODID,"ct_treated_wood_crafting_table");
     CT_FACTORY_DROPPER = (new ContainerType<BlockDecorDropper.BContainer>(BlockDecorDropper.BContainer::new));
     CT_FACTORY_DROPPER.setRegistryName(ModEngineersDecor.MODID,"ct_factory_dropper");
+    CT_FACTORY_PLACER = (new ContainerType<BlockDecorPlacer.BContainer>(BlockDecorPlacer.BContainer::new));
+    CT_FACTORY_PLACER.setRegistryName(ModEngineersDecor.MODID,"ct_factory_placer");
     CT_FACTORY_HOPPER = (new ContainerType<BlockDecorHopper.BContainer>(BlockDecorHopper.BContainer::new));
     CT_FACTORY_HOPPER.setRegistryName(ModEngineersDecor.MODID,"ct_factory_hopper");
     CT_SMALL_LAB_FURNACE = (new ContainerType<BlockDecorFurnace.BContainer>(BlockDecorFurnace.BContainer::new));
@@ -658,6 +713,7 @@ public class ModContent
   private static final ContainerType<?> container_types[] = {
     CT_TREATED_WOOD_CRAFTING_TABLE,
     CT_FACTORY_DROPPER,
+    CT_FACTORY_PLACER,
     CT_FACTORY_HOPPER,
     CT_SMALL_LAB_FURNACE,
     CT_SMALL_ELECTRICAL_FURNACE,
@@ -740,6 +796,7 @@ public class ModContent
   {
     ScreenManager.registerFactory(CT_TREATED_WOOD_CRAFTING_TABLE, BlockDecorCraftingTable.BGui::new);
     ScreenManager.registerFactory(CT_FACTORY_DROPPER, BlockDecorDropper.BGui::new);
+    ScreenManager.registerFactory(CT_FACTORY_PLACER, BlockDecorPlacer.BGui::new);
     ScreenManager.registerFactory(CT_FACTORY_HOPPER, BlockDecorHopper.BGui::new);
     ScreenManager.registerFactory(CT_SMALL_LAB_FURNACE, BlockDecorFurnace.BGui::new);
     ScreenManager.registerFactory(CT_SMALL_ELECTRICAL_FURNACE, BlockDecorFurnaceElectrical.BGui::new);

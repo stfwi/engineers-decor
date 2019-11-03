@@ -1,10 +1,10 @@
 /*
- * @file BlockFurnace.java
+ * @file BlockDecorTreeCutter.java
  * @author Stefan Wilhelm (wile)
  * @copyright (C) 2019 Stefan Wilhelm
  * @license MIT (see https://opensource.org/licenses/MIT)
  *
- * ED Lab furnace.
+ * Small Tree Cutter
  */
 package wile.engineersdecor.blocks;
 

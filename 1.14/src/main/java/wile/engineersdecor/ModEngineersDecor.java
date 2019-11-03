@@ -40,6 +40,7 @@ public class ModEngineersDecor
   public static final String MODID = "engineersdecor";
   public static final int VERSION_DATAFIXER = 0;
   private static final Logger LOGGER = LogManager.getLogger();
+  private static boolean config_loaded = false;
 
   public ModEngineersDecor()
   {
@@ -63,6 +64,16 @@ public class ModEngineersDecor
     LOGGER.info("Registering recipe condition processor ...");
     CraftingHelper.register(Serializer.INSTANCE);
     Networking.init();
+    if(config_loaded) {
+      try {
+        logger().info("Applying loaded config file.");
+        ModConfig.apply();
+      } catch(Throwable e) {
+        logger().error("Failed to apply config: " + e.getMessage());
+      }
+    } else {
+      logger().info("Cannot apply config, load event was not casted yet.");
+    }
   }
 
   private void onClientSetup(final FMLClientSetupEvent event)
@@ -101,16 +112,9 @@ public class ModEngineersDecor
     public static void onServerStarting(FMLServerStartingEvent event)
     {}
 
-    // @SubscribeEvent
+    @SubscribeEvent
     public static void onConfigLoad(net.minecraftforge.fml.config.ModConfig.Loading configEvent)
-    {
-      try {
-        ModEngineersDecor.logger().info("Loaded config file {}", configEvent.getConfig().getFileName());
-        ModConfig.apply();
-      } catch(Throwable e) {
-        ModEngineersDecor.logger().error("Failed to load config: " + e.getMessage());
-      }
-    }
+    { config_loaded = true; }
 
     @SubscribeEvent
     public static void onConfigFileChange(net.minecraftforge.fml.config.ModConfig.ConfigReloading configEvent)
@@ -128,7 +132,6 @@ public class ModEngineersDecor
     {
       event.getGenerator().addProvider(new ModLootTables(event.getGenerator()));
     }
-
   }
 
   //

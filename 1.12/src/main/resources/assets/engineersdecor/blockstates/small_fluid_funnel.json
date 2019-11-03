@@ -1,0 +1,14 @@
+{
+  "forge_marker": 1,
+  "defaults": { "model": "engineersdecor:device/small_fluid_funnel_model_s0" },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "level": {
+      "0":{},
+      "1":{"model": "engineersdecor:device/small_fluid_funnel_model_s1"},
+      "2":{"model": "engineersdecor:device/small_fluid_funnel_model_s2"},
+      "3":{"model": "engineersdecor:device/small_fluid_funnel_model_s3"}
+    }
+  }
+}

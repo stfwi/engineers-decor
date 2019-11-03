@@ -149,6 +149,11 @@ tile.engineersdecor.straight_pipe_valve_redstone_analog.help=§6一段直输液�
 tile.engineersdecor.passive_fluid_accumulator.name=被动流体累积器。
 tile.engineersdecor.passive_fluid_accumulator.help=§6基于真空吸力的流体收集器。§r有一个输出面，其他面都是输入。\
                                                    当从输出面被泵抽取时，从输入面邻接储罐抽取液体。
+tile.engineersdecor.small_fluid_funnel.name=Small Fluid Collection Funnel
+#tile.engineersdecor.small_fluid_funnel.help=§6Collects fluids above it.§r Has an internal tank with three buckets capacity. Traces \
+                                            flowing fluids to nearby source blocks. The fluid can be obtained with fluid transfer systems \
+                                            or a bucket. Fills only tanks below (gravity transfer). Compatible with vanilla \
+                                            infinite-water-source creation.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.factory_dropper.name=工厂掉落器
 tile.engineersdecor.factory_dropper.help=§6适用于高级工厂自动化的掉落器。§r有十二个轮询选择的储物格。\
@@ -158,7 +163,18 @@ tile.engineersdecor.factory_dropper.help=§6适用于高级工厂自动化的掉
                                          当内部触发条件满足时，预先打开卷帘门。所有符合条件的物品\
                                          会同时掉落。点击GUI的各处来了解如何运作。
 tile.engineersdecor.factory_hopper.name=Factory Hopper
-#tile.engineersdecor.factory_hopper.help=§6Hopper suitable for advanced factory automation.§r
+#tile.engineersdecor.factory_hopper.help=§6Hopper suitable for advanced factory automation.§r Can transfer half-stacks, max collection range 9x9.\n\
+                                        GUI Slider controls: Collection range (0 to 4), insertion delay (0.5s to 10s), insertion stack size (1 to 32).\n\
+                                        GUI Redstone controls: Not inverted / inverted (default), pulse mode / continuous mode (default).
+tile.engineersdecor.factory_placer.name=Factory Block Placer
+#tile.engineersdecor.factory_placer.help=§6Allows placing blocks and planting crops or trees.§r\n\
+                                        GUI Redstone controls: Not inverted / inverted (default), pulse mode / continuous mode (default).\n\
+                                        Also supports spike planing from underneath the soil. Spits out items that it cannot place or plant.
+tile.engineersdecor.small_block_breaker.name=Factory Block Breaker
+#tile.engineersdecor.small_block_breaker.help=§6Breaks blocks in front of it.§r\n\
+                                        Can be disabled by applying a redstone signal. \
+                                        The time needed to destroy a block depends on the hardness of that block. \
+                                        Provide RF/FE power to speed up the breaking process (massively).
 tile.engineersdecor.small_mineral_smelter.name=小型矿物熔炼炉
 tile.engineersdecor.small_mineral_smelter.help=§6高温、高绝缘电熔石炉。§r\n\
                                                把矿物块加热成岩浆块，最后变成熔岩。由于\

@@ -26,13 +26,13 @@ public class BlockCategories
 {
   private static Set<Block> logs_ = new HashSet<Block>();
   private static Set<Block> leaves_ = new HashSet<Block>();
+  private static Set<Block> variant_logs_ = new HashSet<Block>(); // logs that are not checked for log equivalence
 
   public static final Set<Block> logs()
   { return logs_; } // wrap in case immutable needed one time.
 
   public static final Set<Block> leaves()
   { return leaves_; }
-
 
   public static boolean isLog(IBlockState state)
   {
@@ -48,23 +48,27 @@ public class BlockCategories
   }
 
   public static final boolean isSameLeaves(IBlockState a, IBlockState b)
-  { return (a.getBlock() == b.getBlock()); }
+  {
+    if(!isLeaves(a)) return false;
+    final Block block = a.getBlock();
+    if(block != b.getBlock()) return false;
+    if(block instanceof BlockNewLeaf) return a.getValue(BlockNewLeaf.VARIANT) == b.getValue(BlockNewLeaf.VARIANT);
+    if(block instanceof BlockOldLeaf) return a.getValue(BlockOldLeaf.VARIANT) == b.getValue(BlockOldLeaf.VARIANT);
+    return true;
+  }
 
   public static final boolean isSameLog(IBlockState a, IBlockState b)
   {
-    // very strange  ...
-    if(a.getBlock()!=b.getBlock()) {
-      return false;
-    } else if(a.getBlock() instanceof BlockNewLog) {
-      return a.getValue(BlockNewLog.VARIANT) == b.getValue(BlockNewLog.VARIANT);
-    } else if(a.getBlock() instanceof BlockOldLog) {
-      return a.getValue(BlockOldLog.VARIANT) == b.getValue(BlockOldLog.VARIANT);
-    } else {
-      // Uagh, that hurts the heart of performance ...
-      final IProperty<?> prop = a.getPropertyKeys().stream().filter( (IProperty<?> p) -> (p.getName().contains("variant") || p.getName().contains("type"))).findFirst().orElse(null);
-      if(prop==null) return false;
-      return a.getValue(prop).equals(b.getValue(prop));
-    }
+    if((!isLog(a)) || (!isLog(b))) return false;
+    if(variant_logs_.contains(a.getBlock()) || (variant_logs_.contains(b.getBlock()))) return true;
+    if(a.getBlock()!=b.getBlock()) return false;
+    if(a.getBlock() instanceof BlockNewLog) return a.getValue(BlockNewLog.VARIANT) == b.getValue(BlockNewLog.VARIANT);
+    if(a.getBlock() instanceof BlockOldLog) return a.getValue(BlockOldLog.VARIANT)==b.getValue(BlockOldLog.VARIANT);
+    // Uagh, that hurts the heart of performance ...
+    final IProperty<?> prop = a.getPropertyKeys().stream().filter( (IProperty<?> p) -> (p.getName().contains("variant") || p.getName().contains("type"))).findFirst().orElse(null);
+    if(prop!=null) return a.getValue(prop).equals(b.getValue(prop));
+    // All other: We have to assume that there are no variants for this block, and the block type denotes the log type unambiguously.
+    return true;
   }
 
   public static final void reload()
@@ -77,11 +81,17 @@ public class BlockCategories
         for(ItemStack stack : stacks) {
           final Item item = stack.getItem();
           if(!(item instanceof ItemBlock)) continue;
-          logs.add(((ItemBlock)item).getBlock());
+          Block block = ((ItemBlock)item).getBlock();
+          logs.add(block);
+          // @todo: make this configurable
+          if(block.getRegistryName().getPath().contains("menril")) variant_logs_.add(block);
         }
       }
       logs_ = logs;
       ModEngineersDecor.logger.info("Found "+logs.size()+" types of 'choppable' log.");
+      if(ModConfig.zmisc.with_experimental) {
+        for(Block b:logs_) ModEngineersDecor.logger.info(" - choppable log: " + b.getRegistryName());
+      }
     }
     {
       HashSet<Block> leaves = new HashSet<Block>();
@@ -96,6 +106,9 @@ public class BlockCategories
       }
       leaves_ = leaves;
       ModEngineersDecor.logger.info("Found "+leaves.size()+" types of leaves.");
+      if(ModConfig.zmisc.with_experimental) {
+        for(Block b:leaves_) ModEngineersDecor.logger.info(" - choppable leaf: " + b.getRegistryName());
+      }
     }
   }
 }

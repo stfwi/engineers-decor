@@ -145,6 +145,11 @@ tile.engineersdecor.straight_pipe_valve_redstone_analog.help=§6Фрагмент
 tile.engineersdecor.passive_fluid_accumulator.name=Пассивный жидкостный накопитель
 tile.engineersdecor.passive_fluid_accumulator.help=§6Вакуумный всасывающий жидкостный коллектор.§r Имеет один выход, все остальные стороны входные. \
                                                    Сливает жидкости из соседних резервуаров при выкачивании жидкости из выходного порта.
+tile.engineersdecor.small_fluid_funnel.name=Small Fluid Collection Funnel
+#tile.engineersdecor.small_fluid_funnel.help=§6Collects fluids above it.§r Has an internal tank with three buckets capacity. Traces \
+                                            flowing fluids to nearby source blocks. The fluid can be obtained with fluid transfer systems \
+                                            or a bucket. Fills only tanks below (gravity transfer). Compatible with vanilla \
+                                            infinite-water-source creation.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.factory_dropper.name=Фабричный выбрасыватель
 tile.engineersdecor.factory_dropper.help=§6Выбрасыватель подходит для продвинутой автоматизации производства.§r Имеет 12 выборочных слотов. \
@@ -155,12 +160,26 @@ tile.engineersdecor.factory_dropper.help=§6Выбрасыватель подх�
                                          когда выполняются условия внутреннего запуска. Сбрасывает все соответствующие стеки одновременно. \
                                          Нажмите на все элементы в GUI, чтобы увидеть, как это работает.
 tile.engineersdecor.factory_hopper.name=Factory Hopper
-#tile.engineersdecor.factory_hopper.help=§6Hopper suitable for advanced factory automation.§r
+#tile.engineersdecor.factory_hopper.help=§6Hopper suitable for advanced factory automation.§r Can transfer half-stacks, max collection range 9x9.\n\
+                                        GUI Slider controls: Collection range (0 to 4), insertion delay (0.5s to 10s), insertion stack size (1 to 32).\n\
+                                        GUI Redstone controls: Not inverted / inverted (default), pulse mode / continuous mode (default).
+tile.engineersdecor.factory_placer.name=Factory Block Placer
+#tile.engineersdecor.factory_placer.help=§6Allows placing blocks and planting crops or trees.§r\n\
+                                        GUI Redstone controls: Not inverted / inverted (default), pulse mode / continuous mode (default).\n\
+                                        Also supports spike planing from underneath the soil. Spits out items that it cannot place or plant.
+tile.engineersdecor.small_block_breaker.name=Factory Block Breaker
+#tile.engineersdecor.small_block_breaker.help=§6Breaks blocks in front of it.§r\n\
+                                        Can be disabled by applying a redstone signal. \
+                                        The time needed to destroy a block depends on the hardness of that block. \
+                                        Provide RF/FE power to speed up the breaking process (massively).
 tile.engineersdecor.small_mineral_smelter.name=Small Mineral Melting Furnace
 #tile.engineersdecor.small_mineral_smelter.help=§6High temperature, high insulation electrical stone melting furnace.§r\n\
-                                               Heats up mineral blocks to magma blocks, and finally to lava. Due to the \
-                                               miniturized device size the process is rather inefficient - much time and \
-                                               energy is needed to liquefy a stone block.
+                                               Heats up mineral blocks to magma blocks, and finally to lava. Click with a \
+                                               mineral block (stone, cobble, etc) or use item insertion to place a block in \
+                                               the melter. Use bucket or fluid extraction to retrieve the lava. When cooling \
+                                               down lava, obsidian is generated. Remove the RF power or apply a redstone \
+                                               signal to disable the furnace. For automation, use a redstone comparator to \
+                                               see in which melting phase the mineral is a moment.
 tile.engineersdecor.small_solar_panel.name=Small Solar Panel
 #tile.engineersdecor.small_solar_panel.help=§6Produces a small amount of power when exposed to sunlight.§r\n\
                                            Useful for charging LF capacitors in remote systems with low consumption. The \

@@ -11,7 +11,6 @@ package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
-//import wile.engineersdecor.detail.ModConfig;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -40,10 +39,8 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-//import net.minecraftforge.fluids.FluidStack;
-//import net.minecraftforge.fluids.capability.IFluidHandler;
-//import net.minecraftforge.fluids.capability.IFluidTankProperties;
-//import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.api.distmarker.Dist;
@@ -146,7 +143,7 @@ public class BlockDecorMineralSmelter extends BlockDecorDirectedHorizontal
           }
         }
       }
-    } else if(stack.getItem() == Items.AIR) {
+    } else if(stack.isEmpty()) {
       final ItemStack istack = te.getStackInSlot(1).copy();
       if(te.phase() > BTileEntity.PHASE_WARMUP) player.setFire(1);
       if(!istack.isEmpty()) {
@@ -468,46 +465,39 @@ public class BlockDecorMineralSmelter extends BlockDecorDirectedHorizontal
 
     // IFluidHandler  --------------------------------------------------------------------------------
 
-//    private LazyOptional<IFluidHandler> fluid_handler_ = LazyOptional.of(() -> (IFluidHandler)new BFluidHandler(this));
-//
-//    // @todo: REPLACE lava=null with whatever will work
-//    private static class BFluidHandler implements IFluidHandler, IFluidTankProperties
-//    {
-//      private final FluidStack lava;
-//      private final BTileEntity te;
-//      private final IFluidTankProperties[] props_ = {this};
-//      BFluidHandler(BTileEntity te) {
-//        this.te = te;
-//        //lava = new FluidStack(ForgeRegistries.FLUIDS.getValue(new ResourceLocation("minecraft:lava")), 1);
-//        // lava = new FluidStack(Blocks.LAVA.getFluidState(Blocks.LAVA.getDefaultState()).getFluid(), 1);
-//        // lava = new FluidStack(Fluids.EMPTY, 1);
-//        //new net.minecraftforge.fluids.FluidStack(net.minecraft.fluid.Fluids.LAVA, 1);
-//lava=null;
-//      }
-//      @Override @Nullable public FluidStack getContents() { return new FluidStack(lava, te.fluid_level()); }
-//      @Override public IFluidTankProperties[] getTankProperties() { return props_; }
-//      @Override public int fill(FluidStack resource, boolean doFill) { return 0; }
-//      @Override public int getCapacity() { return 1000; }
-//      @Override public boolean canFill() { return false; }
-//      @Override public boolean canDrain() { return true; }
-//      @Override public boolean canFillFluidType(FluidStack fluidStack) { return false; }
-//      @Override public boolean canDrainFluidType(FluidStack fluidStack) { return fluidStack.isFluidEqual(lava); }
-//
-//      @Override @Nullable public FluidStack drain(FluidStack resource, boolean doDrain)
-//      {
-//        if((te.fluid_level() <= 0) || (!resource.isFluidEqual(lava))) return null;
-//        FluidStack fs = getContents();
-//        if(doDrain) te.fluid_level_drain(fs.amount);
-//        return fs;
-//      }
-//
-//      @Override @Nullable public FluidStack drain(int maxDrain, boolean doDrain)
-//      {
-//        if(te.fluid_level() <= 0) return null;
-//        maxDrain = (doDrain) ? (te.fluid_level_drain(maxDrain)) : (Math.min(maxDrain, te.fluid_level()));
-//        return new FluidStack(lava, maxDrain);
-//      }
-//    }
+    private LazyOptional<IFluidHandler> fluid_handler_ = LazyOptional.of(() -> (IFluidHandler)new BFluidHandler(this));
+
+    private static class BFluidHandler implements IFluidHandler
+    {
+      private final FluidStack lava;
+      private final BTileEntity te;
+
+      BFluidHandler(BTileEntity te)
+      { this.te = te; lava = new net.minecraftforge.fluids.FluidStack(net.minecraft.fluid.Fluids.LAVA, 1); }
+
+      @Override public int getTanks() { return 1; }
+      @Override public FluidStack getFluidInTank(int tank) { return new FluidStack(lava, te.fluid_level()); }
+      @Override public int getTankCapacity(int tank) { return 1000; }
+      @Override public boolean isFluidValid(int tank, @Nonnull FluidStack stack) { return (tank==0) && (stack.isFluidEqual(lava)); }
+      @Override public int fill(FluidStack resource, FluidAction action)  { return 0; }
+
+      @Override
+      public FluidStack drain(FluidStack resource, FluidAction action)
+      {
+        if(!resource.isFluidEqual(lava) || (te.fluid_level() <= 0)) return FluidStack.EMPTY.copy();
+        FluidStack stack = new FluidStack(lava, te.fluid_level());
+        if(action == FluidAction.EXECUTE) te.fluid_level_drain(te.fluid_level());
+        return stack;
+      }
+
+      @Override
+      public FluidStack drain(int maxDrain, FluidAction action)
+      {
+        if(te.fluid_level() <= 0) return FluidStack.EMPTY.copy();
+        maxDrain = (action==FluidAction.EXECUTE) ? (te.fluid_level_drain(maxDrain)) : (Math.min(maxDrain, te.fluid_level()));
+        return new FluidStack(lava, maxDrain);
+      }
+    }
 
     // IEnergyStorage ----------------------------------------------------------------------------
 

@@ -1,0 +1,41 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:small_block_breaker",
+      "required": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "PAO",
+    "CRC"
+  ],
+  "key": {
+    "O": {
+      "item": "minecraft:observer",
+      "data": 0
+    },
+    "P": {
+      "item": "#plateAnyFerroMetal",
+      "data": 0
+    },
+    "A": {
+      "item": "minecraft:iron_pickaxe",
+      "data": 0
+    },
+    "R": {
+      "item": "minecraft:redstone_block",
+      "data": 0
+    },
+    "C": {
+      "item": "#anyMechanicalComponent",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:small_block_breaker",
+    "count": 1
+  }
+}

@@ -9,9 +9,10 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.block.IWaterLoggable;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
+import net.minecraft.block.IWaterLoggable;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.world.IWorld;
 import net.minecraft.item.BlockItemUseContext;
@@ -28,12 +29,12 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-//import net.minecraftforge.common.util.LazyOptional;
-//import net.minecraftforge.common.capabilities.ICapabilityProvider;
-//import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-//import net.minecraftforge.fluids.capability.IFluidHandler;
-//import net.minecraftforge.fluids.capability.IFluidTankProperties;
-//import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 
@@ -141,7 +142,7 @@ public class BlockDecorPipeValve extends BlockDecorDirected implements IWaterLog
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class BTileEntity extends TileEntity // implements IFluidHandler, IFluidTankProperties, ICapabilityProvider, IFluidPipe
+  public static class BTileEntity extends TileEntity implements ICapabilityProvider //, IFluidPipe
   {
     protected static int fluid_maxflow_mb = 1000;
     protected static int redstone_flow_slope_mb = 1000/15;
@@ -178,164 +179,132 @@ public class BlockDecorPipeValve extends BlockDecorDirected implements IWaterLog
     }
 
     // TileEntity ------------------------------------------------------------------------------
-//
-//    @Override
-//    public void onLoad()
-//    {
-//      if(!hasWorld()) return;
-//      final BlockState state = world.getBlockState(pos);
-//      if((!(state.getBlock() instanceof BlockDecorPipeValve))) return;
-//      block_reconfigure(state.get(FACING), block_config_);
-//      world.notifyNeighborsOfStateChange(pos, state.getBlock());
-//    }
-//
-//    @Override
-//    public void read(CompoundNBT nbt)
-//    {
-//      super.read(nbt);
-//      int i = nbt.getInt("facing");
-//      if((i>=0) || (i<6)) block_facing_ = Direction.byIndex(i);
-//      block_config_ = nbt.getLong("conf");
-//    }
-//
-//    @Override
-//    public CompoundNBT write(CompoundNBT nbt)
-//    {
-//      super.write(nbt);
-//      nbt.putInt("facing", block_facing_.getIndex());
-//      nbt.putLong("conf", block_config_);
-//      return nbt;
-//    }
-//
-//    // ICapabilityProvider --------------------------------------------------------------------
-//
-//    private static final BackFlowHandler back_flow_handler_singleton_ = new BackFlowHandler();
-//    private LazyOptional<IFluidHandler> back_flow_handler_ = LazyOptional.of(() -> (IFluidHandler)back_flow_handler_singleton_);
-//    private LazyOptional<IFluidHandler> fluid_handler_ = LazyOptional.of(() -> (IFluidHandler)this);
-//
-//    @Override
-//    public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
-//    {
-//      if(!this.removed && (facing != null)) {
-//        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-//          if(facing == block_facing_) return fluid_handler_.cast();
-//          if(facing == block_facing_.getOpposite()) return back_flow_handler_.cast();
-//        }
-//      }
-//      return super.getCapability(capability, facing);
-//    }
-//
-//    // IFluidHandler/IFluidTankProperties ---------------------------------------------------------------
-//
-//    @Nullable
-//    private IFluidHandler forward_fluid_handler()
-//    {
-//      final TileEntity te = world.getTileEntity(pos.offset(block_facing_));
-//      if(te == null) return null;
-//      return te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, block_facing_.getOpposite()).orElse(null);
-//    }
-//
-//    @Override
-//    public int fill(FluidStack resource, boolean doFill)
-//    {
-//      if((filling_) || (!filling_enabled_)) return 0;
-//      if((block_config_ & CFG_REDSTONE_CONTROLLED) != 0) {
-//        int rs = world.getRedstonePowerFromNeighbors(pos);
-//        if(rs <= 0) return 0;
-//        if(((block_config_ & CFG_ANALOG) != 0) && (rs < 15)) resource.amount = MathHelper.clamp(rs * redstone_flow_slope_mb, 1, resource.amount);
-//      }
-//      FluidStack res = resource.copy();
-//      if(res.amount > fluid_maxflow_mb) res.amount = fluid_maxflow_mb;
-//      final IFluidHandler fh = forward_fluid_handler();
-//      if(fh==null) return 0;
-//      filling_ = true; // in case someone does not check the cap, but just "forwards back" what is beeing filled right now.
-//      if(res.amount > 50) {
-//        final TileEntity te = world.getTileEntity(pos.offset(block_facing_));
-//        if(te instanceof IFluidPipe) {
-//          // forward pressureized tag
-//          if(res.tag == null) res.tag = new CompoundNBT();
-//          res.tag.putBoolean("pressurized", true);
-//        }
-//      }
-//      int n_filled = forward_fluid_handler().fill(res, doFill);
-//      filling_ = false;
-//      return n_filled;
-//    }
-//
-//    @Override
-//    @Nullable
-//    public FluidStack drain(FluidStack resource, boolean doDrain)
-//    { return null; }
-//
-//    @Override
-//    @Nullable
-//    public FluidStack drain(int maxDrain, boolean doDrain)
-//    { return null; }
-//
-//    @Override
-//    public IFluidTankProperties[] getTankProperties()
-//    { return fluid_props_; }
-//
-//    // IFluidTankProperties --
-//
-//    @Override
-//    @Nullable
-//    public FluidStack getContents()
-//    { return null; }
-//
-//    public int getCapacity()
-//    { return 1000; }
-//
-//    @Override
-//    public boolean canFill()
-//    { return true; }
-//
-//    @Override
-//    public boolean canDrain()
-//    { return false; }
-//
-//    @Override
-//    public boolean canFillFluidType(FluidStack fluidStack)
-//    { return true; }
-//
-//    @Override
-//    public boolean canDrainFluidType(FluidStack fluidStack)
-//    { return false; }
-//
-//    // Back flow prevention handler --
-//
-//    private static class BackFlowHandler implements IFluidHandler, IFluidTankProperties
-//    {
-//      private final IFluidTankProperties[] props_ = {this};
-//      @Override public IFluidTankProperties[] getTankProperties() { return props_; }
-//      @Override public int fill(FluidStack resource, boolean doFill) { return 0; }
-//      @Override @Nullable public FluidStack drain(FluidStack resource, boolean doDrain) { return null; }
-//      @Override @Nullable public FluidStack drain(int maxDrain, boolean doDrain) { return null; }
-//      @Override @Nullable public FluidStack getContents() { return null; }
-//      @Override public int getCapacity() { return 0; }
-//      @Override public boolean canFill() { return false; }
-//      @Override public boolean canDrain() { return false; }
-//      @Override public boolean canFillFluidType(FluidStack fluidStack) { return false; }
-//      @Override public boolean canDrainFluidType(FluidStack fluidStack) { return false; }
-//    }
-//
-//    // IFluidPipe
-//
-//    @Override
-//    public boolean hasOutputConnection(Direction side)
-//    { return (side == block_facing_); }
-//
-//    @Override
-//    public boolean canOutputPressurized(boolean consumePower)
-//    {
-//      if(getlocked_ || (!filling_enabled_)) return false;
-//      final TileEntity te = world.getTileEntity(pos.offset(block_facing_));
-//      if(!(te instanceof IFluidPipe)) return false;
-//      getlocked_ = true; // not sure if IE explicitly pre-detects loops, so let's lock recurion here, too.
-//      boolean r = ((IFluidPipe)te).canOutputPressurized(consumePower);
-//      getlocked_ = false;
-//      return r;
-//    }
+
+    @Override
+    public void onLoad()
+    {
+      if(!hasWorld()) return;
+      final BlockState state = world.getBlockState(pos);
+      if((!(state.getBlock() instanceof BlockDecorPipeValve))) return;
+      block_reconfigure(state.get(FACING), block_config_);
+      world.notifyNeighborsOfStateChange(pos, state.getBlock());
+    }
+
+    @Override
+    public void read(CompoundNBT nbt)
+    {
+      super.read(nbt);
+      int i = nbt.getInt("facing");
+      if((i>=0) || (i<6)) block_facing_ = Direction.byIndex(i);
+      block_config_ = nbt.getLong("conf");
+    }
+
+    @Override
+    public CompoundNBT write(CompoundNBT nbt)
+    {
+      super.write(nbt);
+      nbt.putInt("facing", block_facing_.getIndex());
+      nbt.putLong("conf", block_config_);
+      return nbt;
+    }
+
+    // ICapabilityProvider --------------------------------------------------------------------
+
+    private LazyOptional<IFluidHandler> back_flow_handler_ = LazyOptional.of(() -> (IFluidHandler)new BackFlowHandler());
+    private LazyOptional<IFluidHandler> fluid_handler_ = LazyOptional.of(() -> (IFluidHandler)new MainFlowHandler(this));
+
+    @Override
+    public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
+    {
+      if(!this.removed && (facing != null)) {
+        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+          if(facing == block_facing_) return fluid_handler_.cast();
+          if(facing == block_facing_.getOpposite()) return back_flow_handler_.cast();
+        }
+      }
+      return super.getCapability(capability, facing);
+    }
+
+    // IFluidHandlers
+
+    @Nullable
+    private IFluidHandler forward_fluid_handler()
+    {
+      final TileEntity te = world.getTileEntity(pos.offset(block_facing_));
+      if(te == null) return null;
+      return te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, block_facing_.getOpposite()).orElse(null);
+    }
+
+    // Forward flow handler --
+
+    private static class MainFlowHandler implements IFluidHandler
+    {
+      private  BTileEntity te;
+      public MainFlowHandler(BTileEntity te)  { this.te = te; }
+      @Override public int getTanks() { return 0; }
+      @Override public FluidStack getFluidInTank(int tank) { return FluidStack.EMPTY; }
+      @Override public int getTankCapacity(int tank) { return fluid_maxflow_mb; }
+      @Override public FluidStack drain(FluidStack resource, FluidAction action) { return FluidStack.EMPTY.copy(); }
+      @Override public FluidStack drain(int maxDrain, FluidAction action) { return FluidStack.EMPTY.copy(); }
+      @Override public boolean isFluidValid(int tank, @Nonnull FluidStack stack) { return true; }
+
+      @Override public int fill(FluidStack resource, FluidAction action)
+      {
+        if((te.filling_) || (!te.filling_enabled_)) return 0;
+        if((te.block_config_ & CFG_REDSTONE_CONTROLLED) != 0) {
+          int rs = te.world.getRedstonePowerFromNeighbors(te.pos);
+          if(rs <= 0) return 0;
+          if(((te.block_config_ & CFG_ANALOG) != 0) && (rs < 15)) resource.setAmount(MathHelper.clamp(rs * redstone_flow_slope_mb, 1, resource.getAmount()));
+        }
+        FluidStack res = resource.copy();
+        if(res.getAmount() > fluid_maxflow_mb) res.setAmount(fluid_maxflow_mb);
+        final IFluidHandler fh = te.forward_fluid_handler();
+        if(fh==null) return 0;
+        te.filling_ = true; // in case someone does not check the cap, but just "forwards back" what is beeing filled right now.
+        //if(res.amount > 50) {
+          //final TileEntity te = te.world.getTileEntity(te.pos.offset(te.block_facing_));
+          //if(te instanceof IFluidPipe) {
+          //  // forward pressureized tag
+          //  if(res.tag == null) res.tag = new CompoundNBT();
+          //  res.tag.putBoolean("pressurized", true);
+          //}
+        //}
+        int n_filled = fh.fill(res, action);
+        te.filling_ = false;
+        return n_filled;
+      }
+    }
+
+    // Back flow prevention handler --
+
+    private static class BackFlowHandler implements IFluidHandler
+    {
+      @Override public int getTanks() { return 0; }
+      @Override public FluidStack getFluidInTank(int tank) { return FluidStack.EMPTY; }
+      @Override public int getTankCapacity(int tank) { return 0; }
+      @Override public boolean isFluidValid(int tank, @Nonnull FluidStack stack) { return false; }
+      @Override public int fill(FluidStack resource, FluidAction action) { return 0; }
+      @Override public FluidStack drain(FluidStack resource, FluidAction action) { return FluidStack.EMPTY.copy(); }
+      @Override public FluidStack drain(int maxDrain, FluidAction action) { return FluidStack.EMPTY.copy(); }
+    }
+
+    // IFluidPipe
+
+    //    @Override
+    //    public boolean hasOutputConnection(Direction side)
+    //    { return (side == block_facing_); }
+    //
+    //    @Override
+    //    public boolean canOutputPressurized(boolean consumePower)
+    //    {
+    //      if(getlocked_ || (!filling_enabled_)) return false;
+    //      final TileEntity te = world.getTileEntity(pos.offset(block_facing_));
+    //      if(!(te instanceof IFluidPipe)) return false;
+    //      getlocked_ = true; // not sure if IE explicitly pre-detects loops, so let's lock recurion here, too.
+    //      boolean r = ((IFluidPipe)te).canOutputPressurized(consumePower);
+    //      getlocked_ = false;
+    //      return r;
+    //    }
 
   }
 }

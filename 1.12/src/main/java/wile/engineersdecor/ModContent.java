@@ -32,34 +32,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import wile.engineersdecor.blocks.BlockDecor;
-import wile.engineersdecor.blocks.BlockDecorChair;
-import wile.engineersdecor.blocks.BlockDecorCraftingTable;
-import wile.engineersdecor.blocks.BlockDecorDirected;
-import wile.engineersdecor.blocks.BlockDecorDropper;
-import wile.engineersdecor.blocks.BlockDecorFence;
-import wile.engineersdecor.blocks.BlockDecorFloorGrating;
-import wile.engineersdecor.blocks.BlockDecorFull;
-import wile.engineersdecor.blocks.BlockDecorFurnace;
-import wile.engineersdecor.blocks.BlockDecorFurnaceElectrical;
-import wile.engineersdecor.blocks.BlockDecorGlassBlock;
-import wile.engineersdecor.blocks.BlockDecorHalfSlab;
-import wile.engineersdecor.blocks.BlockDecorHopper;
-import wile.engineersdecor.blocks.BlockDecorHorizontalSupport;
-import wile.engineersdecor.blocks.BlockDecorLadder;
-import wile.engineersdecor.blocks.BlockDecorMineralSmelter;
-import wile.engineersdecor.blocks.BlockDecorPassiveFluidAccumulator;
-import wile.engineersdecor.blocks.BlockDecorPipeValve;
-import wile.engineersdecor.blocks.BlockDecorSlab;
-import wile.engineersdecor.blocks.BlockDecorSolarPanel;
-import wile.engineersdecor.blocks.BlockDecorStairs;
-import wile.engineersdecor.blocks.BlockDecorStraightPole;
-import wile.engineersdecor.blocks.BlockDecorTest;
-import wile.engineersdecor.blocks.BlockDecorTreeCutter;
-import wile.engineersdecor.blocks.BlockDecorWall;
-import wile.engineersdecor.blocks.BlockDecorWasteIncinerator;
-import wile.engineersdecor.blocks.BlockDecorWindow;
-import wile.engineersdecor.blocks.BlockDecorWindowSill;
+import wile.engineersdecor.blocks.*;
 import wile.engineersdecor.detail.ModAuxiliaries;
 import wile.engineersdecor.detail.ModConfig;
 import wile.engineersdecor.detail.ModTesrs;
@@ -144,6 +117,13 @@ public class ModContent
     ModAuxiliaries.getPixeledAABB(2,2,2, 14,14,14)
   );
 
+  public static final BlockDecorPlacer FACTORY_PLACER = new BlockDecorPlacer(
+    "factory_placer",
+    BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|BlockDecor.CFG_REDSTONE_CONTROLLED,
+    Material.IRON, 1f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(2,2,2, 14,14,14)
+  );
+
   public static final BlockDecorWasteIncinerator SMALL_WASTE_INCINERATOR = new BlockDecorWasteIncinerator(
     "small_waste_incinerator",
     BlockDecor.CFG_DEFAULT|BlockDecor.CFG_ELECTRICAL,
@@ -170,6 +150,13 @@ public class ModContent
     BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
     Material.IRON, 1f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,8,16)
+  );
+
+  public static final BlockDecorBreaker SMALL_BLOCK_BREAKER = new BlockDecorBreaker(
+    "small_block_breaker",
+    BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
+    Material.IRON, 1f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,12,16)
   );
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -203,6 +190,13 @@ public class ModContent
     BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|
     BlockDecor.CFG_CUTOUT,
     Material.IRON, 0.7f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+  );
+
+  public static final BlockDecorFluidFunnel SMALL_FLUID_FUNNEL = new BlockDecorFluidFunnel(
+    "small_fluid_funnel",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_ELECTRICAL|BlockDecor.CFG_REDSTONE_CONTROLLED,
+    Material.IRON, 1f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   );
 
@@ -481,6 +475,9 @@ public class ModContent
   private static final TileEntityRegistrationData PASSIVE_FLUID_ACCUMULATOR_TEI = new TileEntityRegistrationData(
     BlockDecorPassiveFluidAccumulator.BTileEntity.class, "te_passive_fluid_accumulator"
   );
+  private static final TileEntityRegistrationData SMALL_FLUID_FUNNEL_TEI = new TileEntityRegistrationData(
+    BlockDecorFluidFunnel.BTileEntity.class, "te_small_fluid_funnel"
+  );
   private static final TileEntityRegistrationData WASTE_INCINERATOR_TEI = new TileEntityRegistrationData(
     BlockDecorWasteIncinerator.BTileEntity.class, "te_small_waste_incinerator"
   );
@@ -490,6 +487,9 @@ public class ModContent
   private static final TileEntityRegistrationData FACTORY_HOPPER_TEI = new TileEntityRegistrationData(
     BlockDecorHopper.BTileEntity.class, "te_factory_hopper"
   );
+  private static final TileEntityRegistrationData FACTORY_PLACER_TEI = new TileEntityRegistrationData(
+    BlockDecorPlacer.BTileEntity.class, "te_factory_placer"
+  );
   private static final TileEntityRegistrationData SMALL_MINERAL_SMELTER_TEI = new TileEntityRegistrationData(
     BlockDecorMineralSmelter.BTileEntity.class, "te_small_mineral_smelter"
   );
@@ -498,6 +498,9 @@ public class ModContent
   );
   private static final TileEntityRegistrationData SMALL_TREE_CUTTER_TEI = new TileEntityRegistrationData(
     BlockDecorTreeCutter.BTileEntity.class, "te_small_tree_cutter"
+  );
+  private static final TileEntityRegistrationData SMALL_BLOCK_BREAKER_TEI = new TileEntityRegistrationData(
+    BlockDecorBreaker.BTileEntity.class, "te_small_block_breaker"
   );
   private static final TileEntityRegistrationData TEST_BLOCK_TEI = new TileEntityRegistrationData(
     BlockDecorTest.BTileEntity.class, "te_testblock"
@@ -513,12 +516,14 @@ public class ModContent
     SMALL_ELECTRICAL_FURNACE, SMALL_ELECTRICAL_FURNACE_TEI,
     FACTORY_HOPPER,FACTORY_HOPPER_TEI,
     FACTORY_DROPPER, FACTORY_DROPPER_TEI,
+    FACTORY_PLACER, FACTORY_PLACER_TEI,
+    SMALL_BLOCK_BREAKER,SMALL_BLOCK_BREAKER_TEI,
+    SMALL_TREE_CUTTER,SMALL_TREE_CUTTER_TEI,
     SMALL_WASTE_INCINERATOR, WASTE_INCINERATOR_TEI,
+    SMALL_SOLAR_PANEL,SMALL_SOLAR_PANEL_TEI,
+    SMALL_MINERAL_SMELTER, SMALL_MINERAL_SMELTER_TEI,
     STRAIGHT_CHECK_VALVE, STRAIGHT_REDSTONE_VALVE, STRAIGHT_REDSTONE_ANALOG_VALVE, STRAIGHT_PIPE_VALVE_TEI,
     PASSIVE_FLUID_ACCUMULATOR, PASSIVE_FLUID_ACCUMULATOR_TEI,
-    SMALL_MINERAL_SMELTER, SMALL_MINERAL_SMELTER_TEI,
-    SMALL_SOLAR_PANEL,SMALL_SOLAR_PANEL_TEI,
-    SMALL_TREE_CUTTER,SMALL_TREE_CUTTER_TEI,
     CLINKER_BRICK_BLOCK,
     CLINKER_BRICK_SLAB,
     CLINKER_BRICK_STAIRS,
@@ -572,7 +577,8 @@ public class ModContent
     SIGN_MINDSTEP,
     PANZERGLASS_SLAB,                         // @todo: check if another class is needed due to is_side_visible
     TREATED_WOOD_FLOOR,                       // @todo: check if textures need improvement
-    TEST_BLOCK,TEST_BLOCK_TEI
+    TEST_BLOCK,TEST_BLOCK_TEI,
+    SMALL_FLUID_FUNNEL,SMALL_FLUID_FUNNEL_TEI
   };
 
   //--------------------------------------------------------------------------------------------------------------------
