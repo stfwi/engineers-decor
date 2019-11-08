@@ -523,6 +523,7 @@ public class ModContent
     SMALL_SOLAR_PANEL,SMALL_SOLAR_PANEL_TEI,
     SMALL_MINERAL_SMELTER, SMALL_MINERAL_SMELTER_TEI,
     STRAIGHT_CHECK_VALVE, STRAIGHT_REDSTONE_VALVE, STRAIGHT_REDSTONE_ANALOG_VALVE, STRAIGHT_PIPE_VALVE_TEI,
+    SMALL_FLUID_FUNNEL,SMALL_FLUID_FUNNEL_TEI,
     PASSIVE_FLUID_ACCUMULATOR, PASSIVE_FLUID_ACCUMULATOR_TEI,
     CLINKER_BRICK_BLOCK,
     CLINKER_BRICK_SLAB,
@@ -578,7 +579,6 @@ public class ModContent
     PANZERGLASS_SLAB,                         // @todo: check if another class is needed due to is_side_visible
     TREATED_WOOD_FLOOR,                       // @todo: check if textures need improvement
     TEST_BLOCK,TEST_BLOCK_TEI,
-    SMALL_FLUID_FUNNEL,SMALL_FLUID_FUNNEL_TEI
   };
 
   //--------------------------------------------------------------------------------------------------------------------

@@ -20,6 +20,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
@@ -51,6 +52,14 @@ public class ModConfig
     @Config.Name("Pattern includes")
     @Config.RequiresMcRestart
     public String includes = "";
+
+    @Config.Comment({"Disable CTRL-SHIFT item tooltip display."})
+    @Config.Name("Without tooltips")
+    public boolean without_tooltips = false;
+
+    @Config.Comment({"Disable all tile entity special renderers."})
+    @Config.Name("Without TESRs")
+    public boolean without_tesrs = false;
 
     @Config.Comment({"Disable clinker bricks and derived blocks."})
     @Config.Name("Without clinker bricks")
@@ -87,20 +96,10 @@ public class ModConfig
     @Config.RequiresMcRestart
     public boolean without_panzer_glass = false;
 
-    @Config.Comment({"Disable treated wood crafting table."})
-    @Config.Name("Without crafting table")
+    @Config.Comment({"Disable ladders"})
+    @Config.Name("Without ladders")
     @Config.RequiresMcRestart
-    public boolean without_crafting_table = false;
-
-    @Config.Comment({"Disable small lab furnace."})
-    @Config.Name("Without lab furnace")
-    @Config.RequiresMcRestart
-    public boolean without_lab_furnace = false;
-
-    @Config.Comment({"Disable small electrical pass-through furnace."})
-    @Config.Name("Without electrical furnace")
-    @Config.RequiresMcRestart
-    public boolean without_electrical_furnace = false;
+    public boolean without_ladders = false;
 
     @Config.Comment({"Disable treated wood table, stool, windowsill, etc."})
     @Config.Name("Without tr. wood furniture")
@@ -117,26 +116,50 @@ public class ModConfig
     @Config.RequiresMcRestart
     public boolean without_light_sources = false;
 
-    @Config.Comment({"Disable ladders"})
-    @Config.Name("Without ladders")
+    @Config.Comment({"Disable horizontal half-block slab."})
+    @Config.Name("Without slabs")
     @Config.RequiresMcRestart
-    public boolean without_ladders = false;
+    public boolean without_slabs = false;
 
-    @Config.Comment({"Disable possibility to sit on stools and chairs."})
-    @Config.Name("Without chair sitting")
-    public boolean without_chair_sitting = false;
+    @Config.Comment({"Disable stackable 1/8 block slices."})
+    @Config.Name("Without slab slices")
+    @Config.RequiresMcRestart
+    public boolean without_halfslabs = false;
 
-    @Config.Comment({"Disable that mobs will sit on chairs and stools."})
-    @Config.Name("Without chair mob sitting")
-    public boolean without_mob_chair_sitting = false;
+    @Config.Comment({"Disable poles of any material."})
+    @Config.Name("Without poles")
+    @Config.RequiresMcRestart
+    public boolean without_poles = false;
 
-    @Config.Comment({"Disable the speed boost of ladders in this mod."})
-    @Config.Name("Without ladder speed boost")
-    public boolean without_ladder_speed_boost = false;
+    @Config.Comment({"Disable horizontal supports like the double-T support."})
+    @Config.Name("Without h. supports")
+    @Config.RequiresMcRestart
+    public boolean without_hsupports = false;
 
-    @Config.Comment({"Disable history refabrication feature of the treated wood crafting table."})
-    @Config.Name("Without crafting table history")
-    public boolean without_crafting_table_history = false;
+    @Config.Comment({"Disable decorative sign plates (caution, hazards, etc)."})
+    @Config.Name("Without signs")
+    @Config.RequiresMcRestart
+    public boolean without_sign_plates = false;
+
+    @Config.Comment({"Disable the Floor Grating."})
+    @Config.Name("Without floor gratings")
+    @Config.RequiresMcRestart
+    public boolean without_floor_grating = false;
+
+    @Config.Comment({"Disable treated wood crafting table."})
+    @Config.Name("Without crafting table")
+    @Config.RequiresMcRestart
+    public boolean without_crafting_table = false;
+
+    @Config.Comment({"Disable small lab furnace."})
+    @Config.Name("Without lab furnace")
+    @Config.RequiresMcRestart
+    public boolean without_lab_furnace = false;
+
+    @Config.Comment({"Disable small electrical pass-through furnace."})
+    @Config.Name("Without electrical furnace")
+    @Config.RequiresMcRestart
+    public boolean without_electrical_furnace = false;
 
     @Config.Comment({"Disable check valve, and redstone controlled valves."})
     @Config.Name("Without valves")
@@ -153,11 +176,6 @@ public class ModConfig
     @Config.RequiresMcRestart
     public boolean without_waste_incinerator = false;
 
-    @Config.Comment({"Disable decorative sign plates (caution, hazards, etc)."})
-    @Config.Name("Without signs")
-    @Config.RequiresMcRestart
-    public boolean without_sign_plates = false;
-
     @Config.Comment({"Disable the factory dropper."})
     @Config.Name("Without factory dropper")
     @Config.RequiresMcRestart
@@ -169,42 +187,49 @@ public class ModConfig
     public boolean without_factory_hopper = false;
 
     @Config.Comment({"Disable the Factory Block Placer."})
-    @Config.Name("Without factory placer")
+    @Config.Name("Without block placer")
     @Config.RequiresMcRestart
     public boolean without_factory_placer = false;
 
-    @Config.Comment({"Disable horizontal half-block slab."})
-    @Config.Name("Without slabs")
+    @Config.Comment({"Disable the Small Block Breaker."})
+    @Config.Name("Without block breaker")
     @Config.RequiresMcRestart
-    public boolean without_slabs = false;
+    public boolean without_block_breaker = false;
 
-    @Config.Comment({"Disable stackable 1/8 block slices."})
-    @Config.Name("Without slab slices")
+    @Config.Comment({"Disable the Small Solar Panel."})
+    @Config.Name("Without solar panel")
     @Config.RequiresMcRestart
-    public boolean without_halfslabs = false;
+    public boolean without_solar_panel = false;
 
-    @Config.Comment({"Disable directly picking up layers from slabs and slab " +
-                     "slices by left clicking while looking up/down."})
+    @Config.Comment({"Disable the Small Fluid Collection Funnel."})
+    @Config.Name("Without fluid collector")
+    @Config.RequiresMcRestart
+    public boolean without_fluid_funnel = false;
+
+    @Config.Comment({"Disable the Small Mineral Smelter."})
+    @Config.Name("Without mineral smelter")
+    @Config.RequiresMcRestart
+    public boolean without_mineral_smelter = false;
+
+    @Config.Comment({"Disable directly picking up layers from slabs and slab slices by left clicking while looking up/down."})
     @Config.Name("Without slab pickup")
     public boolean without_direct_slab_pickup = false;
 
-    @Config.Comment({"Disable poles of any material."})
-    @Config.Name("Without poles")
-    @Config.RequiresMcRestart
-    public boolean without_poles = false;
+    @Config.Comment({"Disable possibility to sit on stools and chairs."})
+    @Config.Name("Without chair sitting")
+    public boolean without_chair_sitting = false;
 
-    @Config.Comment({"Disable horizontal supports like the double-T support."})
-    @Config.Name("Without h. supports")
-    @Config.RequiresMcRestart
-    public boolean without_hsupports = false;
+    @Config.Comment({"Disable that mobs will sit on chairs and stools."})
+    @Config.Name("Without chair mob sitting")
+    public boolean without_mob_chair_sitting = false;
 
-    @Config.Comment({"Disable CTRL-SHIFT item tooltip display."})
-    @Config.Name("Without tooltips")
-    public boolean without_tooltips = false;
+    @Config.Comment({"Disable the speed boost of ladders in this mod."})
+    @Config.Name("Without ladder speed boost")
+    public boolean without_ladder_speed_boost = false;
 
-    @Config.Comment({"Disable all tile entity special renderers."})
-    @Config.Name("Without TESRs")
-    public boolean without_tesrs = false;
+    @Config.Comment({"Disable history refabrication feature of the treated wood crafting table."})
+    @Config.Name("Without crafting table history")
+    public boolean without_crafting_table_history = false;
   }
 
   @Config.Comment({
@@ -346,6 +371,51 @@ public class ModConfig
     @Config.Name("Solar panel: Peak power")
     @Config.RangeInt(min=5, max=128)
     public int solar_panel_peak_power = BlockDecorSolarPanel.BTileEntity.DEFAULT_PEAK_POWER;
+
+    @Config.Comment({
+      "Defines how much RF power the Small Block Breaker requires to magnificently increase the processing speed. " +
+      "The config value can be changed on-the-fly for tuning."
+    })
+    @Config.Name("Block Breaker: Power consumption")
+    @Config.RangeInt(min=16, max=512)
+    public int block_breaker_power_consumption = BlockDecorBreaker.BTileEntity.DEFAULT_BOOST_ENERGY;
+
+    @Config.Comment({
+      "Defines how much time the Small Block Breaker needs per block hardness, " +
+      "means: 'reluctance' * hardness + min_time, you change the 'reluctance' here." +
+      "The unit is ticks/hardness. " +
+      "The config value can be changed on-the-fly for tuning."
+    })
+    @Config.Name("Block Breaker: Breaking reluctance")
+    @Config.RangeInt(min=5, max=50)
+    public int block_breaker_reluctance = BlockDecorBreaker.BTileEntity.DEFAULT_BREAKING_RELUCTANCE;
+
+    @Config.Comment({
+      "Defines how much time the Small Block Breaker needs at least, better said it's an offset: " +
+      "'reluctance' * hardness + min_time, you change the 'min_time' here, value " +
+      "in ticks." +
+      "The config value can be changed on-the-fly for tuning."
+    })
+    @Config.Name("Block Breaker: Min breaking time")
+    @Config.RangeInt(min=10, max=100)
+    public int block_breaker_min_breaking_time = BlockDecorBreaker.BTileEntity.DEFAULT_MIN_BREAKING_TIME;
+
+    @Config.Comment({
+      "Defines how much RF power the Small Tree Cutter requires to magnificently increase the processing speed. " +
+      "The config value can be changed on-the-fly for tuning."
+    })
+    @Config.Name("Tree Cutter: Power consumption")
+    @Config.RangeInt(min=16, max=512)
+    public int tree_cuttter_energy_consumption = BlockDecorTreeCutter.BTileEntity.DEFAULT_BOOST_ENERGY;
+
+    @Config.Comment({
+      "Defines how much time the Small Tree Cutter needs to cut a tree without RF power. " +
+      "The value is in seconds. With energy it is 6 times faster. " +
+      "The config value can be changed on-the-fly for tuning."
+    })
+    @Config.Name("Tree Cutter: Cutting time")
+    @Config.RangeInt(min=10, max=240)
+    public int tree_cuttter_cutting_time_needed = BlockDecorTreeCutter.BTileEntity.DEFAULT_CUTTING_TIME_NEEDED;
   }
 
   @SuppressWarnings("unused")
@@ -409,6 +479,11 @@ public class ModConfig
       excludes_.clear();
     }
     // Early non-opt out type based evaluation
+    if(block instanceof BlockDecorHalfSlab) return optout.without_halfslabs;
+    if(block instanceof BlockDecorLadder) return optout.without_ladders;
+    if(block instanceof BlockDecorWindow) return optout.without_windows;
+    if(block instanceof BlockDecorHorizontalSupport) return optout.without_hsupports;
+    if(block instanceof BlockDecorFloorGrating) return optout.without_floor_grating;
     if(block instanceof BlockDecorCraftingTable) return optout.without_crafting_table;
     if(block instanceof BlockDecorFurnaceElectrical) return optout.without_electrical_furnace;
     if((block instanceof BlockDecorFurnace) && (!(block instanceof BlockDecorFurnaceElectrical))) return optout.without_lab_furnace;
@@ -417,11 +492,12 @@ public class ModConfig
     if(block instanceof BlockDecorDropper) return optout.without_factory_dropper;
     if(block instanceof BlockDecorHopper) return optout.without_factory_hopper;
     if(block instanceof BlockDecorPlacer) return optout.without_factory_placer;
-    if(block instanceof BlockDecorHalfSlab) return optout.without_halfslabs;
-    if(block instanceof BlockDecorLadder) return optout.without_ladders;
-    if(block instanceof BlockDecorWindow) return optout.without_windows;
+    if(block instanceof BlockDecorBreaker) return optout.without_block_breaker;
+    if(block instanceof BlockDecorSolarPanel) return optout.without_solar_panel;
+    if(block instanceof BlockDecorFluidFunnel) return optout.without_fluid_funnel;
+    if(block instanceof BlockDecorMineralSmelter) return optout.without_mineral_smelter;
     if(block instanceof BlockDecorPipeValve) return optout.without_valves;
-    if(block instanceof BlockDecorHorizontalSupport) return optout.without_hsupports;
+
     // Type based evaluation where later filters may match, too
     if(optout.without_slabs && (block instanceof BlockDecorSlab)) return true;
     if(optout.without_stairs && (block instanceof BlockDecorStairs)) return true;
@@ -461,6 +537,8 @@ public class ModConfig
     BlockDecorPipeValve.on_config(tweaks.pipevalve_max_flowrate, tweaks.pipevalve_redstone_slope);
     BlockDecorFurnaceElectrical.BTileEntity.on_config(tweaks.e_furnace_speed_percent, tweaks.e_furnace_power_consumption);
     BlockDecorSolarPanel.BTileEntity.on_config(tweaks.solar_panel_peak_power);
+    BlockDecorBreaker.BTileEntity.on_config(tweaks.block_breaker_power_consumption, tweaks.block_breaker_reluctance, tweaks.block_breaker_min_breaking_time, false);
+    BlockDecorTreeCutter.BTileEntity.on_config(tweaks.tree_cuttter_energy_consumption, tweaks.tree_cuttter_cutting_time_needed, false);
     {
       optout.includes = optout.includes.toLowerCase().replaceAll(ModEngineersDecor.MODID+":", "").replaceAll("[^*_,a-z0-9]", "");
       if(!optout.includes.isEmpty()) ModEngineersDecor.logger.info("Pattern includes: '" + optout.includes + "'");

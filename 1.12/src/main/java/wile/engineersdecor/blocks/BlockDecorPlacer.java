@@ -24,6 +24,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.item.*;
@@ -343,10 +344,12 @@ public class BlockDecorPlacer extends BlockDecorDirected
     ///
     public static final int LOGIC_INVERTED   = 0x01;
     public static final int LOGIC_CONTINUOUS = 0x02;
+    public static final int DEFAULT_LOGIC    = LOGIC_INVERTED|LOGIC_CONTINUOUS;
+
     ///
     private boolean block_power_signal_ = false;
     private boolean block_power_updated_ = false;
-    private int logic_ = LOGIC_INVERTED|LOGIC_CONTINUOUS;
+    private int logic_ = DEFAULT_LOGIC;
     private int current_slot_index_ = 0;
     private int tick_timer_ = 0;
     protected NonNullList<ItemStack> stacks_;
@@ -375,15 +378,16 @@ public class BlockDecorPlacer extends BlockDecorDirected
       while(stacks_.size() < NUM_OF_SLOTS) stacks_.add(ItemStack.EMPTY);
       block_power_signal_ = nbt.getBoolean("powered");
       current_slot_index_ = nbt.getInteger("act_slot_index");
-      logic_ = nbt.getInteger("logic");
+      logic_ = nbt.hasKey("logic") ? nbt.getInteger("logic") : DEFAULT_LOGIC;
     }
 
     protected void writenbt(NBTTagCompound nbt, boolean update_packet)
     {
-      ItemStackHelper.saveAllItems(nbt, stacks_);
-      nbt.setBoolean("powered", block_power_signal_);
-      nbt.setInteger("act_slot_index", current_slot_index_);
-      nbt.setInteger("logic", logic_);
+      boolean stacks_not_empty = stacks_.stream().anyMatch(s->!s.isEmpty());
+      if(stacks_not_empty) ItemStackHelper.saveAllItems(nbt, stacks_);
+      if(block_power_signal_) nbt.setBoolean("powered", block_power_signal_);
+      if(stacks_not_empty) nbt.setInteger("act_slot_index", current_slot_index_);
+      if(logic_ != DEFAULT_LOGIC) nbt.setInteger("logic", logic_);
     }
 
     public void block_updated()
@@ -571,11 +575,8 @@ public class BlockDecorPlacer extends BlockDecorDirected
 
     private boolean spit_out(EnumFacing facing)
     {
-      ItemStack stack = stacks_.get(current_slot_index_);
-      ItemStack drop = stack.copy();
-      stack.shrink(1);
-      stacks_.set(current_slot_index_, stack);
-      drop.setCount(1);
+      ItemStack drop = stacks_.get(current_slot_index_).copy();
+      stacks_.set(current_slot_index_, ItemStack.EMPTY);
       for(int i=0; i<8; ++i) {
         BlockPos p = pos.offset(facing, i);
         if(!world.isAirBlock(p)) continue;
@@ -584,6 +585,63 @@ public class BlockDecorPlacer extends BlockDecorDirected
         break;
       }
       return true;
+    }
+
+    private static boolean place_item(ItemStack stack, EntityPlayer placer, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    {
+      if((stack.isEmpty()) || (!(stack.getItem() instanceof ItemBlock))) return false;
+      ItemBlock item = (ItemBlock)(stack.getItem());
+      Block block = world.getBlockState(pos).getBlock();
+      if(!block.isReplaceable(world, pos)) pos = pos.offset(facing);
+      if(!world.mayPlace(item.getBlock(), pos, true, facing, (Entity)null)) return false;
+      int meta = item.getMetadata(stack.getMetadata());
+      final IBlockState state = item.getBlock().getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand);
+      if(!item.placeBlockAt(stack, placer, world, pos, facing, hitX, hitY, hitZ, state)) return false;
+      final IBlockState soundstate = world.getBlockState(pos);
+      final SoundType stype = soundstate.getBlock().getSoundType(soundstate, world, pos, placer);
+      world.playSound(placer, pos, stype.getPlaceSound(), SoundCategory.BLOCKS, (stype.getVolume()+1f)/8, stype.getPitch()*1.1f);
+      return true;
+    }
+
+    private boolean try_plant(BlockPos pos, final EnumFacing facing, final ItemStack stack, final Block block)
+    {
+      Item item = stack.getItem();
+      if(world.isAirBlock(pos)) {
+        // plant here, block below has to be valid soil.
+        final IBlockState soilstate = world.getBlockState(pos.down());
+        if(!soilstate.getBlock().canSustainPlant(soilstate, world, pos.down(), EnumFacing.UP, (IPlantable)block)) {
+          // Not the right soil for this plant.
+          return spit_out(facing);
+        }
+      } else {
+        // adjacent block is the soil, plant above if the soil is valid.
+        final IBlockState soilstate = world.getBlockState(pos);
+        if(soilstate.getBlock() == block) {
+          // The plant is already planted from the case above, it's not the assumed soil but the planted plant.
+          return false;
+        } else if(!world.isAirBlock(pos.up())) {
+          // If this is the soil an air block is needed above, if that is blocked we can't plant.
+          return false;
+        } else if(!soilstate.getBlock().canSustainPlant(soilstate, world, pos, EnumFacing.UP, (IPlantable)block)) {
+          // Would be space above, but it's not the right soil for the plant.
+          return spit_out(facing);
+        } else {
+          // Ok, plant above.
+          pos = pos.up();
+        }
+      }
+      try {
+        //println("PLANT " + stack + "  --> " + block + " at " + pos.subtract(getPos()) + "( item=" + item + ")");
+        final FakePlayer placer = net.minecraftforge.common.util.FakePlayerFactory.getMinecraft((net.minecraft.world.WorldServer)world);
+        if((placer==null) || (!place_item(stack, placer, world, pos, EnumHand.MAIN_HAND, EnumFacing.DOWN, 0.5f, 0f, 0.5f))) return spit_out(facing);
+        stack.shrink(1);
+        stacks_.set(current_slot_index_, stack);
+        return true;
+      } catch(Throwable e) {
+        ModEngineersDecor.logger.error("Exception while trying to plant " + e);
+        world.setBlockToAir(pos);
+        return spit_out(facing);
+      }
     }
 
     private boolean try_place(EnumFacing facing)
@@ -599,81 +657,37 @@ public class BlockDecorPlacer extends BlockDecorDirected
         current_slot_index_ = next_slot(current_slot_index_);
       }
       if(current_stack.isEmpty()) { current_slot_index_ = 0; return false; }
-      boolean no_space = false;
       final Item item = current_stack.getItem();
-      Block block = (item instanceof IPlantable) ? (((IPlantable)item).getPlant(world, pos).getBlock()) : Block.getBlockFromItem(item);
-      if(block == Blocks.AIR) {
-        if(item != null) {
-          return spit_out(facing); // Item not accepted
-        } else {
-          // try next slot
-        }
-      } else if(block instanceof IPlantable) {
-        if(world.isAirBlock(placement_pos)) {
-          // plant here, block below has to be valid soil.
-          IBlockState soilstate = world.getBlockState(placement_pos.down());
-          if(!soilstate.getBlock().canSustainPlant(soilstate, world, pos, EnumFacing.UP, (IPlantable)block)) {
-            block = Blocks.AIR;
-          }
-        } else {
-          // adjacent block is the soil, plant above if the soil is valid.
-          IBlockState soilstate = world.getBlockState(placement_pos);
-          if(soilstate.getBlock() == block) {
-            // The plant is already planted from the case above.
-            block = Blocks.AIR;
-            no_space = true;
-          } else if(!world.isAirBlock(placement_pos.up())) {
-            // If this is the soil an air block is needed above, if that is blocked we can't plant.
-            block = Blocks.AIR;
-            no_space = true;
-          } else if(!soilstate.getBlock().canSustainPlant(soilstate, world, pos, EnumFacing.UP, (IPlantable)block)) {
-            // Would be space above, but it's not the right soil for the plant.
-            block = Blocks.AIR;
-          } else {
-            // Ok, plant above.
-            placement_pos = placement_pos.up();
-          }
-        }
-      } else if(!world.getBlockState(placement_pos).getBlock().isReplaceable(world, placement_pos)) {
-        block = Blocks.AIR;
-        no_space = true;
+      final Block block = Block.getBlockFromItem(item);
+      if(block == Blocks.AIR) return (item!=null) && spit_out(facing); // Item not accepted
+      if(world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(placement_pos)).size() > 0) {
+        return false;
       }
-      // System.out.println("PLACE " + current_stack + "  --> " + block + " at " + placement_pos.subtract(pos) + "( item=" + item + ")");
-      if(block != Blocks.AIR) {
-        try {
-          final FakePlayer placer = net.minecraftforge.common.util.FakePlayerFactory.getMinecraft((net.minecraft.world.WorldServer)world);
-          final IBlockState placement_state = (placer==null) ? (block.getDefaultState()) : (block.getStateForPlacement(world, placement_pos, EnumFacing.DOWN,0.5f,0.5f,0f, 0, placer, EnumHand.MAIN_HAND));
-          if(placement_state == null) {
-            return spit_out(facing);
-          } else if(item instanceof ItemBlock) {
+      if((block instanceof IPlantable) || (item instanceof IPlantable)) try_plant(placement_pos, facing, current_stack, block);
+
+      if(world.getBlockState(placement_pos).getBlock().isReplaceable(world, placement_pos)) {
+        if(item instanceof ItemBlock) {
+          try {
+            final FakePlayer placer = net.minecraftforge.common.util.FakePlayerFactory.getMinecraft((net.minecraft.world.WorldServer)world);
+            //println("PLACE ITEMBLOCK" + current_stack + "  --> " + block + " at " + placement_pos.subtract(pos) + "( item=" + item + ")");
             ItemStack placement_stack = current_stack.copy();
             placement_stack.setCount(1);
-            ((ItemBlock)item).placeBlockAt(placement_stack, placer, world, placement_pos, EnumFacing.DOWN, 0.5f,0.5f,0f, placement_state);
-            SoundType stype = block.getSoundType(placement_state, world, pos, null);
-            if(stype != null) world.playSound(null, placement_pos, stype.getPlaceSound(), SoundCategory.BLOCKS, stype.getVolume()*0.6f, stype.getPitch());
-          } else {
-            if(world.setBlockState(placement_pos, placement_state, 1|2|8)) {
-              SoundType stype = block.getSoundType(placement_state, world, pos, null);
-              if(stype != null) world.playSound(null, placement_pos, stype.getPlaceSound(), SoundCategory.BLOCKS, stype.getVolume()*0.6f, stype.getPitch());
-            }
+            if((placer==null) || (!place_item(placement_stack, placer, world, placement_pos, EnumHand.MAIN_HAND, EnumFacing.DOWN, 0.6f, 0f, 0.5f))) return spit_out(facing);
+            current_stack.shrink(1);
+            stacks_.set(current_slot_index_, current_stack);
+            return true;
+          } catch(Throwable e) {
+            // The block really needs a player or other issues happened during placement.
+            // A hard crash should not be fired here, instead spit out the item to indicated that this
+            // block is not compatible.
+            ModEngineersDecor.logger.error("Exception while trying to place " + e);
+            world.setBlockToAir(placement_pos);
+            return spit_out(facing);
           }
-          current_stack.shrink(1);
-          stacks_.set(current_slot_index_, current_stack);
-          return true;
-        } catch(Throwable e) {
-          // The block really needs a player or other issues happened during placement.
-          // A hard crash should not be fired here, instead spit out the item to indicated that this
-          // block is not compatible.
-          System.out.println("Exception while trying to place " + e);
-          world.setBlockToAir(placement_pos);
+        } else {
+          // No idea if this is a particulary good idea, as getBlockFromITem
+          //println("SPIT NON ITEMBLOCK" + current_stack + "  --> " + block + " at " + placement_pos.subtract(pos) + "( item=" + item + ")");
           return spit_out(facing);
-        }
-      }
-      if((!no_space) && (!current_stack.isEmpty())) {
-        // There is space, but the current plant cannot be planted there, so try next.
-        for(int i=0; i<NUM_OF_SLOTS; ++i) {
-          current_slot_index_ = next_slot(current_slot_index_);
-          if(!stacks_.get(current_slot_index_).isEmpty()) break;
         }
       }
       return false;

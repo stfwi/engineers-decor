@@ -10,6 +10,12 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    - v1.0.16-b1  [A] Added Fluid Collection Funnel.
+                  [A] Added config opt-outs for Breaker, Placer, Fluid Funnel, Mineral Smelter.
+                  [A] Added configs tweaks for Small Block Breaker and Small Tree Cutter (cffr#185).
+                  [F] Fixed Block Placer discarding item metadata/variants while placing (issue #60).
+                  [F] Fixed Block Breaker duping empty shulker boxes, model updated.
+
                   -------------------------------------------------------------------
     - v1.0.15     [R] Release based on v1.0.15-b2. Release-to-release changes:
                       * Added Small Block Breaker

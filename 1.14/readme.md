@@ -11,7 +11,10 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
-    ~ v1.0.15-b4 [A] Added Fluid Collection Funnel.
+    ~ v1.0.16-b2 [F] Fixed Small Block Breaker active model updated.
+
+    - v1.0.16-b1 [U] Updated to Forge 1.14.4-28.1.79/20190719-1.14.3.
+                 [A] Added Fluid Collection Funnel.
 
     - v1.0.15-b3 [A] Added Small Block Breaker.
                  [M] Mineral Smelter fluid handler/transfer added.
@@ -21,7 +24,7 @@ Mod sources for Minecraft version 1.14.4.
                  [A] Added Small Tree Cutter.
 
     - v1.0.15-b1 [A] Added Floor Edge Light.
-                 [U] Updated to Forge1.14.4-28.1.68/20190719-1.14.3.
+                 [U] Updated to Forge 1.14.4-28.1.68/20190719-1.14.3.
 
     - v1.0.14-b1 [U] Updated to Forge 1.14.4-28.1.40/20190719-1.14.3.
                  [A] Factory Hopper added (configurable hopper and item collector).

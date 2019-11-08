@@ -138,7 +138,7 @@ public class TreeCutting
     final int dx = Math.abs(pos.getX()-start.getX());
     final int dz = Math.abs(pos.getZ()-start.getZ());
     if(dy > max_cutting_radius) dy = max_cutting_radius;
-    if((dx >= dy+3) || (dz >= dy+3)) return true;
+    if((dx >= dy+4) || (dz >= dy+4)) return true;
     return false;
   }
 
@@ -152,60 +152,61 @@ public class TreeCutting
   {
     if((Compat.canChop(broken_state))) return Compat.chop(world, broken_state, startPos, max_blocks_to_break, without_target_block);
     if(!BlockCategories.isLog(broken_state)) return 0;
-    final long ymin = startPos.getY();
-    final long max_leaf_distance = 6;
     Set<BlockPos> checked = new HashSet<BlockPos>();
     ArrayList<BlockPos> to_break = new ArrayList<BlockPos>();
     ArrayList<BlockPos> to_decay = new ArrayList<BlockPos>();
-    checked.add(startPos);
-    // Initial simple layer-up search of same logs. This forms the base corpus, and only leaves and
-    // leaf-enclosed logs attached to this corpus may be broken/decayed.
     {
       LinkedList<BlockPos> queue = new LinkedList<BlockPos>();
-      LinkedList<BlockPos> upqueue = new LinkedList<BlockPos>();
       queue.add(startPos);
-      int cutlevel = 0;
       int steps_left = max_log_tracing_steps;
       IBlockState tracked_leaves_state = null;
-      while(!queue.isEmpty() && (--steps_left >= 0)) {
+      while(!queue.isEmpty() && (--steps_left >= 0) && (to_break.size()<max_blocks_to_break)) {
         final BlockPos pos = queue.removeFirst();
+        if(checked.contains(pos)) continue;
+        checked.add(pos);
+        if(too_far(startPos, pos)) continue;
         // Vertical search
         final BlockPos uppos = pos.up();
-        if(too_far(startPos, uppos)) { checked.add(uppos); continue; }
         final IBlockState upstate = world.getBlockState(uppos);
-        if(!checked.contains(uppos)) {
-          checked.add(uppos);
-          if(BlockCategories.isSameLog(upstate, broken_state)) {
-            // Up is log
-            upqueue.add(uppos);
-            to_break.add(uppos);
-            steps_left = max_log_tracing_steps;
-          } else {
-            boolean isleaf = BlockCategories.isLeaves(upstate);
-            if(isleaf || world.isAirBlock(uppos) || (upstate.getBlock() instanceof BlockVine)) {
-              if(isleaf) {
-                if(tracked_leaves_state==null) {
-                  tracked_leaves_state=upstate;
-                  to_decay.add(uppos);
-                } else if(BlockCategories.isSameLeaves(upstate, tracked_leaves_state)) {
-                  to_decay.add(uppos);
-                }
+        if(BlockCategories.isSameLog(upstate, broken_state)) {
+          queue.add(uppos);
+          to_break.add(uppos);
+          steps_left = max_log_tracing_steps;
+        } else {
+          boolean isleaf = BlockCategories.isLeaves(upstate);
+          if(isleaf || world.isAirBlock(uppos) || (upstate.getBlock() instanceof BlockVine)) {
+            if(isleaf) {
+              if(tracked_leaves_state==null) {
+                tracked_leaves_state=upstate;
+                to_decay.add(uppos);
+                queue.add(uppos);
+              } else if(BlockCategories.isSameLeaves(upstate, tracked_leaves_state)) {
+                to_decay.add(uppos);
+                queue.add(uppos);
+              } else {
+                checked.add(uppos); // no block of interest
               }
-              // Up is air, check adjacent for diagonal up (e.g. Accacia)
-              for(Vec3i v:hoffsets) {
-                final BlockPos p = uppos.add(v);
-                if(checked.contains(p)) continue;
-                checked.add(p);
-                final IBlockState st = world.getBlockState(p);
-                final Block bl = st.getBlock();
-                if(BlockCategories.isSameLog(st, broken_state)) {
-                  queue.add(p);
-                  to_break.add(p);
-                } else if(BlockCategories.isLeaves(st)) {
-                  if((tracked_leaves_state==null) || (BlockCategories.isSameLeaves(st, tracked_leaves_state))) {
-                    to_decay.add(p);
-                  }
+            } else {
+              checked.add(uppos);
+            }
+            // Up is air, check adjacent for diagonal up (e.g. Accacia)
+            for(Vec3i v:hoffsets) {
+              final BlockPos p = uppos.add(v);
+              final IBlockState st = world.getBlockState(p);
+              if(BlockCategories.isSameLog(st, broken_state)) {
+                queue.add(p);
+                to_break.add(p);
+              } else if(BlockCategories.isLeaves(st)) {
+                if(tracked_leaves_state==null) {
+                  tracked_leaves_state=st;
+                  to_decay.add(p);
+                } else if(BlockCategories.isSameLeaves(st, tracked_leaves_state)) {
+                  to_decay.add(p);
+                } else {
+                  checked.add(uppos);
                 }
+              } else {
+                checked.add(uppos);
               }
             }
           }
@@ -214,63 +215,63 @@ public class TreeCutting
         for(Vec3i v:hoffsets) {
           final BlockPos p = pos.add(v);
           if(checked.contains(p)) continue;
-          checked.add(p);
           final IBlockState st = world.getBlockState(p);
-          final Block bl = st.getBlock();
           if(BlockCategories.isSameLog(st, broken_state)) {
             queue.add(p);
             to_break.add(p);
           } else if(BlockCategories.isLeaves(st)) {
             if((tracked_leaves_state==null) || (BlockCategories.isSameLeaves(st, tracked_leaves_state))) {
               to_decay.add(p);
+            } else {
+              checked.add(p);
             }
+          } else {
+            checked.add(p);
           }
         }
-        if(queue.isEmpty() && (!upqueue.isEmpty())) {
-          queue = upqueue;
-          upqueue = new LinkedList<BlockPos>();
-          ++cutlevel;
+      }
+    }
+    // Determine lose logs between the leafs
+    {
+      for(BlockPos pos:to_decay) {
+        int distance = 2;
+        to_break.addAll(findBlocksAround(world, pos, broken_state, checked, distance));
+      }
+      if(!to_decay.isEmpty()) {
+        final IBlockState leaf_type_state = world.getBlockState(to_decay.get(0));
+        final ArrayList<BlockPos> leafs = to_decay;
+        to_decay = new ArrayList<BlockPos>();
+        for(BlockPos pos:leafs) {
+          int dist = 3;
+          to_decay.add(pos);
+          to_decay.addAll(findBlocksAround(world, pos, leaf_type_state, checked, dist));
         }
       }
     }
+    // Break blocks
     {
-      // Determine lose logs between the leafs
+      if(without_target_block) {
+        checked.remove(startPos);
+      } else {
+        to_break.add(startPos);
+      }
+      int num_broken = 0;
+      Collections.reverse(to_break);
+      for(BlockPos pos:to_break) {
+        if(++num_broken > max_blocks_to_break) break;
+        IBlockState state = world.getBlockState(pos);
+        world.setBlockToAir(pos);
+        state.getBlock().dropBlockAsItem(world, pos, state, 0);
+      }
       for(BlockPos pos:to_decay) {
-        int dist = 1;
-        to_break.addAll(findBlocksAround(world, pos, broken_state, checked, dist));
+        if(++num_broken > max_blocks_to_break) break;
+        IBlockState state = world.getBlockState(pos);
+        world.setBlockToAir(pos);
+        state.getBlock().dropBlockAsItem(world, pos, state, 0);
       }
     }
-    if(!to_decay.isEmpty()) {
-      final IBlockState leaf_type_state = world.getBlockState(to_decay.get(0));
-      final ArrayList<BlockPos> leafs = to_decay;
-      to_decay = new ArrayList<BlockPos>();
-      for(BlockPos pos:leafs) {
-        int dist = 2;
-        to_decay.add(pos);
-        to_decay.addAll(findBlocksAround(world, pos, leaf_type_state, checked, dist));
-      }
-    }
-    if(without_target_block) {
-      checked.remove(startPos);
-    } else {
-      to_break.add(startPos);
-    }
-    int num_broken = 0;
-    Collections.reverse(to_break);
-    for(BlockPos pos:to_break) {
-      if(++num_broken > max_blocks_to_break) break;
-      IBlockState state = world.getBlockState(pos);
-      world.setBlockToAir(pos);
-      state.getBlock().dropBlockAsItem(world, pos, state, 0);
-    }
-    for(BlockPos pos:to_decay) {
-      if(++num_broken > max_blocks_to_break) break;
-      IBlockState state = world.getBlockState(pos);
-      world.setBlockToAir(pos);
-      state.getBlock().dropBlockAsItem(world, pos, state, 0);
-    }
+    // And the bill.
     {
-      // And now the bill.
       return MathHelper.clamp(((to_break.size()*6/5)+(to_decay.size()/10)-1), 1, 65535);
     }
   }

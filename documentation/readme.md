@@ -25,3 +25,6 @@
 ![](engineers-decor-small-solar-panel.png)
 ![](engineers-decor-small-tree-cutter.png)
 ![](engineers-decor-mesh-fence.png)
+![](engineers-decor-factory-block-placer.png)
+![](engineers-decor-small-block-breaker.png)
+![](engineers-decor-small-fluid-collection-funnel.png)
