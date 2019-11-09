@@ -1,0 +1,24 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:gas_concrete",
+      "required": ["engineersdecor:gas_concrete_wall"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WW",
+    "WW"
+  ],
+  "key": {
+    "W": {
+      "item": "engineersdecor:gas_concrete_wall",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:gas_concrete",
+    "count": 4
+  }
+}

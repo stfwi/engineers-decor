@@ -70,6 +70,11 @@ public class ModContent
 
   public static final BlockDecorWall CONCRETE_WALL = new BlockDecorWall("concrete_wall", BlockDecor.CFG_DEFAULT, Material.ROCK, 5f, 20f, SoundType.STONE);
 
+  public static final BlockDecorFull GAS_CONCRETE_BLOCK = new BlockDecorFull("gas_concrete", 0, Material.ROCK, 1.5f, 10f, SoundType.STONE);
+  public static final BlockDecorStairs GAS_CONCRETE_STAIRS = new BlockDecorStairs("gas_concrete_stairs", REBAR_CONCRETE_BLOCK.getDefaultState());
+  public static final BlockDecorWall GAS_CONCRETE_WALL = new BlockDecorWall("gas_concrete_wall", BlockDecor.CFG_DEFAULT, Material.ROCK, 1.5f, 10f, SoundType.STONE);
+  public static final BlockDecorSlab GAS_CONCRETE_SLAB = new BlockDecorSlab("gas_concrete_slab", BlockDecor.CFG_DEFAULT, Material.ROCK, 1.5f, 10f, SoundType.STONE);
+
   public static final BlockDecorLadder METAL_RUNG_LADDER = new BlockDecorLadder("metal_rung_ladder", 0, Material.IRON, 0.5f, 20f, SoundType.METAL);
   public static final BlockDecorLadder METAL_RUNG_STEPS = new BlockDecorLadder("metal_rung_steps", 0, Material.IRON, 0.5f, 20f, SoundType.METAL);
   public static final BlockDecorLadder TREATED_WOOD_LADDER = new BlockDecorLadder("treated_wood_ladder", 0, Material.WOOD, 0.5f, 10f, SoundType.WOOD);
@@ -409,6 +414,11 @@ public class ModContent
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
     Material.ROCK, 1.0f, 10f, SoundType.STONE
   );
+  public static final BlockDecorHalfSlab HALFSLAB_GAS_CONCRETE = new BlockDecorHalfSlab(
+    "halfslab_gas_concrete",
+    BlockDecor.CFG_CUTOUT,
+    Material.ROCK, 1.5f, 10f, SoundType.STONE
+  );
   public static final BlockDecorHalfSlab HALFSLAB_TREATEDWOOD = new BlockDecorHalfSlab(
     "halfslab_treated_wood",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
@@ -543,6 +553,10 @@ public class ModContent
     REBAR_CONCRETE_TILE,
     REBAR_CONCRETE_TILE_SLAB,
     REBAR_CONCRETE_TILE_STAIRS,
+    GAS_CONCRETE_BLOCK,
+    GAS_CONCRETE_SLAB,
+    GAS_CONCRETE_STAIRS,
+    GAS_CONCRETE_WALL,
     CONCRETE_WALL,
     PANZERGLASS_BLOCK,
     METAL_RUNG_LADDER,
@@ -569,7 +583,7 @@ public class ModContent
     STEEL_MESH_FENCE,
     SIGN_HOTWIRE, SIGN_DANGER, SIGN_DEFENSE, SIGN_FACTORY_AREA, SIGN_EXIT, SIGN_MODLOGO,
     TREATED_WOOD_SIDE_TABLE,
-    HALFSLAB_REBARCONCRETE, HALFSLAB_CONCRETE, HALFSLAB_TREATEDWOOD,
+    HALFSLAB_REBARCONCRETE, HALFSLAB_CONCRETE, HALFSLAB_GAS_CONCRETE, HALFSLAB_TREATEDWOOD,
     HALFSLAB_SHEETMETALIRON, HALFSLAB_SHEETMETALSTEEL, HALFSLAB_SHEETMETALCOPPER,
     HALFSLAB_SHEETMETALGOLD, HALFSLAB_SHEETMETALALUMINIUM,
   };

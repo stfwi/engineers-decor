@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.14.4": {
+    "1.0.16-b2": "[A] Added Gas Concrete (including wall, stairs, slab, and slab slice).\n[F] Fixed Small Block Breaker active model.\n[F] Fixed item-on-ground display glitch (issue #61, thx Federsavo for the hint).\n[F] Added two missing recipes.",
     "1.0.16-b1": "[U] Updated to Forge 1.14.4-28.1.79/20190719-1.14.3.\n[A] Added Fluid Collection Funnel.",
     "1.0.15-b3": "[A] Added Small Block Breaker.\n[M] Mineral Smelter fluid handler/transfer added.",
     "1.0.15-b2": "[!] Forge version requirement set to 1.14.4-28.1.68 or higher.\n[A] Added Factory Block Placer and Planter.\n[A] Added Small Tree Cutter.",
@@ -31,6 +32,6 @@
   },
   "promos": {
     "1.14.4-recommended": "",
-    "1.14.4-latest": "1.0.16-b1"
+    "1.14.4-latest": "1.0.16-b2"
   }
 }

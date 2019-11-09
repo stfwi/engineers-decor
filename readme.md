@@ -97,6 +97,8 @@ looking manufacturing contraptions. Current feature set:
   explosion resistance than bricks. Also available as stairs and wall, also with
   reverse recipes.
 
+- *Concrete Wall*: Solid concrete wall (not the vanilla wall design).
+
 - *Rebar Concrete*: Steel reinforced concrete. Expensive, creeper-proof.
   Texture design oriented at the IE concrete, slightly darker, eight (position
   dependent) random texture variations with rust traces. Also creaftable in form
@@ -104,7 +106,9 @@ looking manufacturing contraptions. Current feature set:
   concrete tiles with corresponding stairs. Reverse recipes available for all
   blocks crafted from rebar concrete.
 
-- *Concrete Wall*: Solid concrete wall (not the vanilla wall design).
+- *Gas Concrete*: Decorative concrete with high production yield and low hardness.
+  Random texture variations. Also as *stairs*, *wall*, *slab*, and *slab slice*,
+  reverse recipes available.
 
 - *Ladders*: *Metal Rung Ladder*: Industrial wall-fixed ladder with horizontal bent
   rods. Climbing is faster if looking up/down and not sneaking. *Staggered Metal Steps*:

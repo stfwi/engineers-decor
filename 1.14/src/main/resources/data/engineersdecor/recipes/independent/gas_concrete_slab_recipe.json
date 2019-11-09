@@ -1,0 +1,24 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:gas_concrete_slab",
+      "required": ["engineersdecor:gas_concrete"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "   ",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "engineersdecor:gas_concrete"
+    }
+  },
+  "result": {
+    "item": "engineersdecor:gas_concrete_slab",
+    "count": 6
+  }
+}

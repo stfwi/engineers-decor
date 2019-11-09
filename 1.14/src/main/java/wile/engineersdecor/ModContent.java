@@ -139,6 +139,34 @@ public class ModContent
 
   // -------------------------------------------------------------------------------------------------------------------
 
+  public static final BlockDecor GAS_CONCRETE_BLOCK = (BlockDecor)(new BlockDecor(
+    BlockDecor.CFG_DEFAULT,
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5f, 10f).sound(SoundType.STONE)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "gas_concrete"));
+
+  public static final BlockDecorSlab GAS_CONCRETE_SLAB = (BlockDecorSlab)(new BlockDecorSlab(
+    BlockDecor.CFG_DEFAULT,
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5f, 10f).sound(SoundType.STONE)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "gas_concrete_slab"));
+
+  public static final BlockDecorStairs GAS_CONCRETE_STAIRS = (BlockDecorStairs)(new BlockDecorStairs(
+    BlockDecor.CFG_DEFAULT,
+    REBAR_CONCRETE_BLOCK.getDefaultState(),
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5f, 10f).sound(SoundType.STONE)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "gas_concrete_stairs"));
+
+  public static final BlockDecorWall GAS_CONCRETE_WALL = (BlockDecorWall)(new BlockDecorWall(
+    BlockDecor.CFG_DEFAULT,
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5f, 10f).sound(SoundType.STONE)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "gas_concrete_wall"));
+
+  public static final BlockDecorHalfSlab HALFSLAB_GASCONCRETE = (BlockDecorHalfSlab)(new BlockDecorHalfSlab(
+    BlockDecor.CFG_CUTOUT,
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5f, 10f).sound(SoundType.STONE)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "halfslab_gas_concrete"));
+
+  // -------------------------------------------------------------------------------------------------------------------
+
   public static final BlockDecor REBAR_CONCRETE_TILE = (BlockDecor)(new BlockDecor(
     BlockDecor.CFG_DEFAULT,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 2000f).sound(SoundType.STONE)
@@ -526,7 +554,12 @@ public class ModContent
     REBAR_CONCRETE_TILE,
     REBAR_CONCRETE_TILE_SLAB,
     REBAR_CONCRETE_TILE_STAIRS,
+    GAS_CONCRETE_BLOCK,
+    GAS_CONCRETE_SLAB,
+    GAS_CONCRETE_STAIRS,
+    GAS_CONCRETE_WALL,
     HALFSLAB_REBARCONCRETE,
+    HALFSLAB_GASCONCRETE,
     HALFSLAB_CONCRETE,
     //HALFSLAB_TREATEDWOOD,
     //HALFSLAB_SHEETMETALIRON

@@ -10,6 +10,9 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    ~ v1.0.16-b2  [A] Added Gas Concrete (including slab, wall, stairs, and slab slice).
+                  [F] Fixed item-on-ground display glitch (issue #61, thx Federsavo for the hint).
+
     - v1.0.16-b1  [A] Added Fluid Collection Funnel.
                   [A] Added config opt-outs for Breaker, Placer, Fluid Funnel, Mineral Smelter.
                   [A] Added configs tweaks for Small Block Breaker and Small Tree Cutter (cffr#185).
