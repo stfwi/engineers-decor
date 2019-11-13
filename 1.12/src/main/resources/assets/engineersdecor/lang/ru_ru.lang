@@ -9,7 +9,8 @@ engineersdecor.tooltip.hint.extended=§6[§9SHIFT§r Больше информа
 engineersdecor.tooltip.hint.help=§6[§9CTRL-SHIFT§r Помощь§6]§r
 engineersdecor.tooltip.slabpickup.help=§rБыстрое поднятие щелчком ЛКМ, смотря вверх/вниз с этой плитой в руках.
 #-----------------------------------------------------------------------------------------------------------
-# Stone/"ceramic material" based blocks
+engineersdecor.tooltip.requires_rf_power=Requires RF power.
+engineersdecor.tooltip.massive_speed_boost_with_rf_power=Apply RF power to magnificently increase the speed.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.clinker_brick_block.name=Клинкерный кирпич
 tile.engineersdecor.clinker_brick_block.help=§6Кирпичный блок с вариациями текстуры, зависящими от положения.§r\nВыглядит темнее и интенсивнее, чем Кирпичный блок.
@@ -179,7 +180,8 @@ tile.engineersdecor.small_block_breaker.name=Factory Block Breaker
 #tile.engineersdecor.small_block_breaker.help=§6Breaks blocks in front of it.§r\n\
                                         Can be disabled by applying a redstone signal. \
                                         The time needed to destroy a block depends on the hardness of that block. \
-                                        Provide RF/FE power to speed up the breaking process (massively).
+                                        ${!block_breaker_requires_power?engineersdecor.tooltip.massive_speed_boost_with_rf_power}\
+                                        ${block_breaker_requires_power?engineersdecor.tooltip.requires_rf_power}
 tile.engineersdecor.small_mineral_smelter.name=Small Mineral Melting Furnace
 #tile.engineersdecor.small_mineral_smelter.help=§6High temperature, high insulation electrical stone melting furnace.§r\n\
                                                Heats up mineral blocks to magma blocks, and finally to lava. Click with a \
@@ -196,7 +198,11 @@ tile.engineersdecor.small_solar_panel.name=Small Solar Panel
 tile.engineersdecor.small_tree_cutter.name=Small Tree Cutter
 #tile.engineersdecor.small_tree_cutter.help=§6Chops grown trees in front of it.§r\n\
                                            Does not collect the lumbers. Deactivate with a redstone signal. \
-                                           Provide RF power to boost the cutting speed (takes a long time without power).
+                                           ${!tree_cuttter_requires_power?engineersdecor.tooltip.massive_speed_boost_with_rf_power}\
+                                           ${tree_cuttter_requires_power?engineersdecor.tooltip.requires_rf_power}
+tile.engineersdecor.small_milking_machine.name=Small Milking Machine
+#tile.engineersdecor.small_milking_machine.help=§6Frequently attracts and milks cows.§r\n\
+                                           Has an internal fluid tank. Does not feed the animals. Use buckets to retrieve the milk.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.sign_decor.name=Табличка с надписью (Логотип Engineer's decor)
 tile.engineersdecor.sign_decor.help=§Это не должно быть крафтовым или видимым в JEI. Используется для творческой вкладки и скриншотов.

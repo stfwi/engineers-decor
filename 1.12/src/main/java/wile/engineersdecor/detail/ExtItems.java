@@ -16,6 +16,9 @@ public class ExtItems
   @GameRegistry.ObjectHolder("immersiveengineering:metal_device1")
   public static final Item IE_EXTERNAL_HEATER = null;
 
+  @GameRegistry.ObjectHolder("bottledmilk:milk_bottle_drinkable")
+  public static final Item BOTTLED_MILK_BOTTLE_DRINKLABLE = null;
+
   public static final void onPostInit()
   {}
 }

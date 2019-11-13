@@ -12,7 +12,7 @@ package wile.engineersdecor.detail;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.blocks.*;
-import wile.engineersdecor.blocks.BlockDecorSolarPanel.BTileEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -49,6 +49,7 @@ public class ModConfig
   public static class ClientConfig
   {
     public final ForgeConfigSpec.BooleanValue without_tooltips;
+    public final ForgeConfigSpec.BooleanValue without_ters;
 
     ClientConfig(ForgeConfigSpec.Builder builder)
     {
@@ -62,6 +63,10 @@ public class ModConfig
           .translation(ModEngineersDecor.MODID + ".config.without_tooltips")
           .comment("Disable CTRL-SHIFT item tooltip display.")
           .define("without_tooltips", false);
+        without_ters = builder
+          .translation(ModEngineersDecor.MODID + ".config.without_ters")
+          .comment("Disable all TERs (tile entity renderers).")
+          .define("without_ters", false);
       }
       builder.pop();
     }
@@ -93,29 +98,35 @@ public class ModConfig
     public final ForgeConfigSpec.BooleanValue without_stairs;
     public final ForgeConfigSpec.BooleanValue without_ie_concrete_wall;
     public final ForgeConfigSpec.BooleanValue without_panzer_glass;
-    public final ForgeConfigSpec.BooleanValue without_crafting_table;
-    public final ForgeConfigSpec.BooleanValue without_lab_furnace;
-    public final ForgeConfigSpec.BooleanValue without_electrical_furnace;
+    public final ForgeConfigSpec.BooleanValue without_ladders;
     public final ForgeConfigSpec.BooleanValue without_treated_wood_furniture;
     public final ForgeConfigSpec.BooleanValue without_windows;
     public final ForgeConfigSpec.BooleanValue without_light_sources;
-    public final ForgeConfigSpec.BooleanValue without_ladders;
+    public final ForgeConfigSpec.BooleanValue without_slabs;
+    public final ForgeConfigSpec.BooleanValue without_halfslabs;
+    public final ForgeConfigSpec.BooleanValue without_poles;
+    public final ForgeConfigSpec.BooleanValue without_hsupports;
+    public final ForgeConfigSpec.BooleanValue without_sign_plates;
+    public final ForgeConfigSpec.BooleanValue without_floor_grating;
+    public final ForgeConfigSpec.BooleanValue without_crafting_table;
+    public final ForgeConfigSpec.BooleanValue without_lab_furnace;
+    public final ForgeConfigSpec.BooleanValue without_electrical_furnace;
+    public final ForgeConfigSpec.BooleanValue without_valves;
+    public final ForgeConfigSpec.BooleanValue without_passive_fluid_accumulator;
+    public final ForgeConfigSpec.BooleanValue without_waste_incinerator;
+    public final ForgeConfigSpec.BooleanValue without_factory_dropper;
+    public final ForgeConfigSpec.BooleanValue without_factory_hopper;
+    public final ForgeConfigSpec.BooleanValue without_factory_placer;
+    public final ForgeConfigSpec.BooleanValue without_block_breaker;
+    public final ForgeConfigSpec.BooleanValue without_solar_panel;
+    public final ForgeConfigSpec.BooleanValue without_fluid_funnel;
+    public final ForgeConfigSpec.BooleanValue without_mineral_smelter;
     public final ForgeConfigSpec.BooleanValue without_chair_sitting;
     public final ForgeConfigSpec.BooleanValue without_mob_chair_sitting;
     public final ForgeConfigSpec.BooleanValue without_ladder_speed_boost;
     public final ForgeConfigSpec.BooleanValue without_crafting_table_history;
-    public final ForgeConfigSpec.BooleanValue without_valves;
-    public final ForgeConfigSpec.BooleanValue without_passive_fluid_accumulator;
-    public final ForgeConfigSpec.BooleanValue without_waste_incinerator;
-    public final ForgeConfigSpec.BooleanValue without_sign_plates;
-    public final ForgeConfigSpec.BooleanValue without_factory_dropper;
-    public final ForgeConfigSpec.BooleanValue without_factory_placer;
-    public final ForgeConfigSpec.BooleanValue without_factory_breaker;
-    public final ForgeConfigSpec.BooleanValue without_slabs;
-    public final ForgeConfigSpec.BooleanValue without_halfslabs;
     public final ForgeConfigSpec.BooleanValue without_direct_slab_pickup;
-    public final ForgeConfigSpec.BooleanValue without_poles;
-    public final ForgeConfigSpec.BooleanValue without_hsupports;
+
     // Misc
     public final ForgeConfigSpec.BooleanValue with_experimental;
     public final ForgeConfigSpec.BooleanValue without_recipes;
@@ -132,6 +143,13 @@ public class ModConfig
     public final ForgeConfigSpec.BooleanValue with_crafting_quickmove_buttons;
     public final ForgeConfigSpec.IntValue pipevalve_max_flowrate;
     public final ForgeConfigSpec.IntValue pipevalve_redstone_gain;
+    public final ForgeConfigSpec.IntValue block_breaker_power_consumption;
+    public final ForgeConfigSpec.IntValue block_breaker_reluctance;
+    public final ForgeConfigSpec.IntValue block_breaker_min_breaking_time;
+    public final ForgeConfigSpec.BooleanValue block_breaker_requires_power;
+    public final ForgeConfigSpec.IntValue tree_cuttter_energy_consumption;
+    public final ForgeConfigSpec.IntValue tree_cuttter_cutting_time_needed;
+    public final ForgeConfigSpec.BooleanValue tree_cuttter_requires_power;
 
     CommonConfig(ForgeConfigSpec.Builder builder)
     {
@@ -245,18 +263,38 @@ public class ModConfig
           .translation(ModEngineersDecor.MODID + ".config.without_sign_plates")
           .comment("Disable decorative sign plates (caution, hazards, etc).")
           .define("without_sign_plates", false);
+        without_floor_grating = builder
+          .translation(ModEngineersDecor.MODID + ".config.without_floor_grating")
+          .comment("Disable floor gratings.")
+          .define("without_floor_grating", false);
         without_factory_dropper = builder
           .translation(ModEngineersDecor.MODID + ".config.without_factory_dropper")
           .comment("Disable the factory dropper.")
           .define("without_factory_dropper", false);
+        without_factory_hopper = builder
+          .translation(ModEngineersDecor.MODID + ".config.without_factory_hopper")
+          .comment("Disable the factory hopper.")
+          .define("without_factory_hopper", false);
         without_factory_placer = builder
           .translation(ModEngineersDecor.MODID + ".config.without_factory_placer")
           .comment("Disable the factory placer.")
           .define("without_factory_placer", false);
-        without_factory_breaker = builder
-          .translation(ModEngineersDecor.MODID + ".config.without_factory_breaker")
+        without_block_breaker = builder
+          .translation(ModEngineersDecor.MODID + ".config.without_block_breaker")
           .comment("Disable the small block breaker.")
-          .define("without_factory_breaker", false);
+          .define("without_block_breaker", false);
+        without_solar_panel = builder
+          .translation(ModEngineersDecor.MODID + ".config.without_solar_panel")
+          .comment("Disable the small solar panel.")
+          .define("without_solar_panel", false);
+        without_fluid_funnel = builder
+          .translation(ModEngineersDecor.MODID + ".config.without_fluid_funnel")
+          .comment("Disable the small fluid collection funnel.")
+          .define("without_fluid_funnel", false);
+        without_mineral_smelter = builder
+          .translation(ModEngineersDecor.MODID + ".config.without_mineral_smelter")
+          .comment("Disable the small mineral smelter.")
+          .define("without_mineral_smelter", false);
         without_slabs = builder
           .translation(ModEngineersDecor.MODID + ".config.without_slabs")
           .comment("Disable horizontal half-block slab.")
@@ -373,8 +411,43 @@ public class ModConfig
             "Note that the agerage power is much less, as no power is produced at all during the night, " +
             "and the power curve is nonlinear rising/falling during the day. Bad weather conditions also " +
             "decrease the production. The config value can be changed on-the-fly for tuning.")
-          .defineInRange("small_solar_panel_peak_production", BTileEntity.DEFAULT_PEAK_POWER, 10, 256);
-
+          .defineInRange("small_solar_panel_peak_production", BlockDecorSolarPanel.BTileEntity.DEFAULT_PEAK_POWER, 10, 256);
+        block_breaker_power_consumption = builder
+          .translation(ModEngineersDecor.MODID + ".config.block_breaker_power_consumption")
+          .comment("Defines how much RF power the Small Block Breaker requires to magnificently increase the processing speed. " +
+            "The config value can be changed on-the-fly for tuning.")
+          .defineInRange("block_breaker_power_consumption", BlockDecorBreaker.BTileEntity.DEFAULT_BOOST_ENERGY, 16, 512);
+        block_breaker_reluctance = builder
+          .translation(ModEngineersDecor.MODID + ".config.block_breaker_reluctance")
+          .comment("Defines how much time the Small Block Breaker needs per block hardness, " +
+            "means: 'reluctance' * hardness + min_time, you change the 'reluctance' here." +
+            "The unit is ticks/hardness. " + "The config value can be changed on-the-fly for tuning.")
+          .defineInRange("block_breaker_reluctance", BlockDecorBreaker.BTileEntity.DEFAULT_BREAKING_RELUCTANCE, 5, 50);
+        block_breaker_min_breaking_time = builder
+          .translation(ModEngineersDecor.MODID + ".config.block_breaker_min_breaking_time")
+          .comment("Defines how much time the Small Block Breaker needs at least, better said it's an offset: " +
+            "'reluctance' * hardness + min_time, you change the 'min_time' here, value " +
+            "in ticks." + "The config value can be changed on-the-fly for tuning.")
+          .defineInRange("block_breaker_min_breaking_time", BlockDecorBreaker.BTileEntity.DEFAULT_MIN_BREAKING_TIME, 10, 100);
+        block_breaker_requires_power = builder
+          .translation(ModEngineersDecor.MODID + ".config.block_breaker_requires_power")
+          .comment("Defines if the Small Block Breaker does not work without RF power.")
+          .define("block_breaker_requires_power", false);
+        tree_cuttter_energy_consumption = builder
+          .translation(ModEngineersDecor.MODID + ".config.tree_cuttter_energy_consumption")
+          .comment("Defines how much RF power the Small Tree Cutter requires to magnificently increase the processing speed. " +
+            "The config value can be changed on-the-fly for tuning.")
+          .defineInRange("tree_cuttter_energy_consumption", BlockDecorTreeCutter.BTileEntity.DEFAULT_BOOST_ENERGY, 16, 512);
+        tree_cuttter_cutting_time_needed = builder
+          .translation(ModEngineersDecor.MODID + ".config.tree_cuttter_cutting_time_needed")
+          .comment("Defines how much time the Small Tree Cutter needs to cut a tree without RF power. " +
+            "The value is in seconds. With energy it is 6 times faster. " +
+            "The config value can be changed on-the-fly for tuning.")
+          .defineInRange("tree_cuttter_cutting_time_needed", BlockDecorTreeCutter.BTileEntity.DEFAULT_CUTTING_TIME_NEEDED, 10, 240);
+        tree_cuttter_requires_power = builder
+          .translation(ModEngineersDecor.MODID + ".config.tree_cuttter_requires_power")
+          .comment("Defines if the Small Tree Cutter does not work without RF power.")
+          .define("tree_cuttter_requires_power", false);
         builder.pop();
       }
     }
@@ -430,12 +503,17 @@ public class ModConfig
       if(block instanceof BlockDecorWasteIncinerator) return COMMON.without_waste_incinerator.get();
       if(block instanceof BlockDecorDropper) return COMMON.without_factory_dropper.get();
       if(block instanceof BlockDecorPlacer) return COMMON.without_factory_placer.get();
-      if(block instanceof BlockDecorBreaker) return COMMON.without_factory_breaker.get();
+      if(block instanceof BlockDecorBreaker) return COMMON.without_block_breaker.get();
       if(block instanceof BlockDecorHalfSlab) return COMMON.without_halfslabs.get();
       if(block instanceof BlockDecorLadder) return COMMON.without_ladders.get();
       if(block instanceof BlockDecorWindow) return COMMON.without_windows.get();
       if(block instanceof BlockDecorPipeValve) return COMMON.without_valves.get();
       if(block instanceof BlockDecorHorizontalSupport) return COMMON.without_hsupports.get();
+      if(block instanceof BlockDecorFloorGrating) return COMMON.without_floor_grating.get();
+      if(block instanceof BlockDecorHopper) return COMMON.without_factory_hopper.get();
+      if(block instanceof BlockDecorFluidFunnel) return COMMON.without_fluid_funnel.get();
+      if(block instanceof BlockDecorSolarPanel) return COMMON.without_solar_panel.get();
+      if(block instanceof BlockDecorMineralSmelter) return COMMON.without_mineral_smelter.get();
       // Type based evaluation where later filters may match, too
       if(COMMON.without_slabs.get() && (block instanceof BlockDecorSlab)) return true;
       if(COMMON.without_stairs.get() && (block instanceof BlockDecorStairs)) return true;
@@ -476,9 +554,13 @@ public class ModConfig
   //--------------------------------------------------------------------------------------------------------------------
   private static final ArrayList<String> includes_ = new ArrayList<String>();
   private static final ArrayList<String> excludes_ = new ArrayList<String>();
+  private static final CompoundNBT server_config_ = new CompoundNBT();
   public static boolean without_crafting_table = false;
   public static boolean immersiveengineering_installed = false;
   private static boolean with_experimental_features_ = false;
+
+  public static final CompoundNBT getServerConfig() // config that may be synchronized from server to client via net pkg.
+  { return server_config_; }
 
   public static final void apply()
   {
@@ -489,6 +571,8 @@ public class ModConfig
     BlockDecorPipeValve.on_config(COMMON.pipevalve_max_flowrate.get(), COMMON.pipevalve_redstone_gain.get());
     BlockDecorFurnaceElectrical.BTileEntity.on_config(COMMON.e_furnace_speed_percent.get(), COMMON.e_furnace_power_consumption.get(), COMMON.e_furnace_automatic_pulling.get());
     BlockDecorSolarPanel.BTileEntity.on_config(COMMON.small_solar_panel_peak_production.get());
+    BlockDecorBreaker.BTileEntity.on_config(COMMON.block_breaker_power_consumption.get(), COMMON.block_breaker_reluctance.get(), COMMON.block_breaker_min_breaking_time.get(), COMMON.block_breaker_requires_power.get());
+    BlockDecorTreeCutter.BTileEntity.on_config(COMMON.tree_cuttter_energy_consumption.get(), COMMON.tree_cuttter_cutting_time_needed.get(), COMMON.tree_cuttter_requires_power.get());
     without_crafting_table = isOptedOut(ModContent.TREATED_WOOD_CRAFTING_TABLE);
     immersiveengineering_installed = ModAuxiliaries.isModLoaded("immersiveengineering");
     with_experimental_features_ = COMMON.with_experimental.get();
@@ -515,6 +599,11 @@ public class ModConfig
         excl[i] = excl[i].replaceAll("[*]", ".*?");
         if(!excl[i].isEmpty()) excludes_.add(excl[i]);
       }
+    }
+    {
+      // Check if the config is already synchronized or has to be synchronised.
+      server_config_.putBoolean("tree_cuttter_requires_power", COMMON.tree_cuttter_requires_power.get());
+      server_config_.putBoolean("block_breaker_requires_power", COMMON.block_breaker_requires_power.get());
     }
   }
 }

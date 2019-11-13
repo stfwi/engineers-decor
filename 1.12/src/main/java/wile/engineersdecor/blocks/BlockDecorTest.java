@@ -8,20 +8,25 @@
  */
 package wile.engineersdecor.blocks;
 
+
+
 import wile.engineersdecor.detail.ModAuxiliaries;
+import net.minecraft.world.World;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.SoundType;
+import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.SoundType;
 import net.minecraft.util.math.AxisAlignedBB;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
+import java.util.UUID;
 
 
 public class BlockDecorTest extends BlockDecorDirected implements ModAuxiliaries.IExperimentalFeature
@@ -54,9 +59,8 @@ public class BlockDecorTest extends BlockDecorDirected implements ModAuxiliaries
 
   public static class BTileEntity extends TileEntity implements ITickable
   {
-    public static double increment = 0.008;
-    private double progress_ = 0;
-    private double incr_ = increment;
+    private static int tick_interval_ = 40;
+    private int tick_timer_ = 0;
 
     public BTileEntity()
     {}
@@ -65,29 +69,45 @@ public class BlockDecorTest extends BlockDecorDirected implements ModAuxiliaries
     public boolean shouldRefresh(World world, BlockPos pos, IBlockState os, IBlockState ns)
     { return (os.getBlock() != ns.getBlock()) || (!(ns.getBlock() instanceof BlockDecorTest)); }
 
+    //------------------------------------------------------------------------------------------------------------------
+
+    public static double increment = 0.008;
+    private boolean TESR_TEST = false;
+    private double progress_ = -1;
+    private double incr_ = increment;
+    public double progress() { return progress_; }
+    private void tesr_basic_test(boolean reset)
+    {
+      if(!TESR_TEST || !world.isRemote) return;
+      if(reset) {
+        progress_ = 0; incr_ = increment;
+      } else {
+        progress_ += incr_;
+        if(progress_ < 0) {
+          incr_ = increment;
+          progress_ = 0;
+        } else if(progress_ > 1.0) {
+          progress_ = 1.0;
+          incr_ = -increment;
+        }
+      }
+    }
 
 
-    public double progress()
-    { return progress_; }
+    //------------------------------------------------------------------------------------------------------------------
 
     public boolean clicked(EntityPlayer player, boolean lclicked)
     {
-      progress_ = 0;
-      incr_ = increment;
+      tesr_basic_test(true);
       return true;
     }
 
     @Override
     public void update()
     {
-      progress_ += incr_;
-      if(progress_ < 0) {
-        incr_ = increment;
-        progress_ = 0;
-      } else if(progress_ > 1.0) {
-        progress_ = 1.0;
-        incr_ = -increment;
-      }
+      tesr_basic_test(false);
+      if(++tick_timer_ < tick_interval_) return;
+      tick_timer_ = tick_interval_;
     }
   }
 }

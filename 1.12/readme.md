@@ -10,8 +10,11 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
-    ~ v1.0.16-b2  [A] Added Gas Concrete (including slab, wall, stairs, and slab slice).
+    - v1.0.16-b2  [A] Added Gas Concrete (including slab, wall, stairs, and slab slice).
+                  [A] Added explicit RF-power-required option for Small Block Breaker and Small Tree Cutter (issue #63).
+                  [M] Increased clinker brick recipe yield to 8 for the master builders needs.
                   [F] Fixed item-on-ground display glitch (issue #61, thx Federsavo for the hint).
+                  [F] Fixed sign bounding boxes (issue #62, thx angela/themartin).
 
     - v1.0.16-b1  [A] Added Fluid Collection Funnel.
                   [A] Added config opt-outs for Breaker, Placer, Fluid Funnel, Mineral Smelter.

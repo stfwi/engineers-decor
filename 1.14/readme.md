@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
+    - v1.0.16-b3 [A] Config options (opt-outs and tweaks) added.
+                 [M] Increased clinker brick recipe yield to 8 for the builders needs.
+
     - v1.0.16-b2 [A] Added Gas Concrete (including wall, stairs, slab, and slab slice).
                  [F] Fixed Small Block Breaker active model.
                  [F] Fixed item-on-ground display glitch (issue #61, thx Federsavo for the hint).

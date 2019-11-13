@@ -1,0 +1,13 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "engineersdecor:device/small_milking_machine_model"
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "facing": { "north": {"y":0}, "south": {"y":180}, "west": {"y":-90}, "east": {"y":90} },
+    "filled": { "false":{}, "true":{} },
+    "active": { "false":{}, "true":{ "model": "engineersdecor:device/small_milking_machine_model_active" } }
+  }
+}

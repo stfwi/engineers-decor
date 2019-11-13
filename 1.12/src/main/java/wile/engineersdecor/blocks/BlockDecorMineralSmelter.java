@@ -9,9 +9,8 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.world.IBlockAccess;
 import wile.engineersdecor.ModEngineersDecor;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.Block;
@@ -19,6 +18,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.world.World;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.Explosion;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.EntityLivingBase;

@@ -143,6 +143,13 @@ public class ModContent
     ModAuxiliaries.getPixeledAABB(1.1,0,1.1, 14.9,16,14.9)
   );
 
+  public static final BlockDecorMilker SMALL_MILKING_MACHINE = new BlockDecorMilker(
+    "small_milking_machine",
+    BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_CUTOUT|BlockDecor.CFG_ELECTRICAL,
+    Material.IRON, 1f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,13)
+  );
+
   public static final BlockDecorSolarPanel SMALL_SOLAR_PANEL = new BlockDecorSolarPanel(
     "small_solar_panel",
     BlockDecor.CFG_LOOK_PLACEMENT,
@@ -355,51 +362,51 @@ public class ModContent
 
   public static final BlockDecorDirected SIGN_MODLOGO = new BlockDecorDirected(
     "sign_decor",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
     Material.WOOD, 0.1f, 1000f, SoundType.WOOD,
-    ModAuxiliaries.getPixeledAABB(0,0,15.6, 16,16,16)
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,0.5)
   );
 
   public static final BlockDecorDirected SIGN_HOTWIRE = new BlockDecorDirected(
     "sign_hotwire",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
     Material.WOOD, 0.1f, 1f, SoundType.WOOD,
-    ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
+    ModAuxiliaries.getPixeledAABB(2,2,0, 14,14,0.5)
   );
 
   public static final BlockDecorDirected SIGN_MINDSTEP = new BlockDecorDirected(
     "sign_mindstep",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
     Material.WOOD, 0.1f, 1f, SoundType.WOOD,
-    ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,0.5)
   );
 
   public static final BlockDecorDirected SIGN_DANGER = new BlockDecorDirected(
     "sign_danger",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
     Material.WOOD, 0.1f, 1f, SoundType.WOOD,
-    ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
+    ModAuxiliaries.getPixeledAABB(2,2,0, 14,14,0.5)
   );
 
   public static final BlockDecorDirected SIGN_DEFENSE = new BlockDecorDirected(
     "sign_defense",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
     Material.WOOD, 0.1f, 1f, SoundType.WOOD,
-    ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,0.5)
   );
 
   public static final BlockDecorDirected SIGN_FACTORY_AREA = new BlockDecorDirected(
     "sign_factoryarea",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Material.WOOD, 0.1f, 1f, SoundType.WOOD,
-    ModAuxiliaries.getPixeledAABB(2,2,15.6, 15,15,16)
+    ModAuxiliaries.getPixeledAABB(1,1,0, 15,15,0.5)
   );
 
   public static final BlockDecorDirected SIGN_EXIT = new BlockDecorDirected(
     "sign_exit",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Material.WOOD, 0.1f, 1f, SoundType.WOOD,
-    ModAuxiliaries.getPixeledAABB(3,7,15.6, 13,13,16)
+    ModAuxiliaries.getPixeledAABB(3,7,0, 13,13,0.5)
   );
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -503,6 +510,9 @@ public class ModContent
   private static final TileEntityRegistrationData SMALL_MINERAL_SMELTER_TEI = new TileEntityRegistrationData(
     BlockDecorMineralSmelter.BTileEntity.class, "te_small_mineral_smelter"
   );
+  private static final TileEntityRegistrationData SMALL_MILKING_MACHINE_TEI = new TileEntityRegistrationData(
+    BlockDecorMilker.BTileEntity.class, "te_small_milking_machine"
+  );
   private static final TileEntityRegistrationData SMALL_SOLAR_PANEL_TEI = new TileEntityRegistrationData(
     BlockDecorSolarPanel.BTileEntity.class, "te_small_solar_panel"
   );
@@ -593,6 +603,7 @@ public class ModContent
     PANZERGLASS_SLAB,                         // @todo: check if another class is needed due to is_side_visible
     TREATED_WOOD_FLOOR,                       // @todo: check if textures need improvement
     TEST_BLOCK,TEST_BLOCK_TEI,
+    SMALL_MILKING_MACHINE,SMALL_MILKING_MACHINE_TEI
   };
 
   //--------------------------------------------------------------------------------------------------------------------

@@ -9,7 +9,8 @@ engineersdecor.tooltip.hint.extended=§6[§9SHIFT§r 查看更多信息§6]§r
 engineersdecor.tooltip.hint.help=§6[§9CTRL-SHIFT§r 查看帮助§6]§r
 engineersdecor.tooltip.slabpickup.help=§r手持同类台阶往上/下看时单击该台阶可无需破坏快速拾起。
 #-----------------------------------------------------------------------------------------------------------
-# Stone/"ceramic material" based blocks
+engineersdecor.tooltip.requires_rf_power=Requires RF power.
+engineersdecor.tooltip.massive_speed_boost_with_rf_power=Apply RF power to magnificently increase the speed.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.clinker_brick_block.name=过烧砖块
 tile.engineersdecor.clinker_brick_block.help=§6一种放在不同位置贴图有不同变化的砖块。§r\n比原版砖看起来颜色更深，色度也更高。
@@ -182,7 +183,8 @@ tile.engineersdecor.small_block_breaker.name=Factory Block Breaker
 #tile.engineersdecor.small_block_breaker.help=§6Breaks blocks in front of it.§r\n\
                                         Can be disabled by applying a redstone signal. \
                                         The time needed to destroy a block depends on the hardness of that block. \
-                                        Provide RF/FE power to speed up the breaking process (massively).
+                                        ${!block_breaker_requires_power?engineersdecor.tooltip.massive_speed_boost_with_rf_power}\
+                                        ${block_breaker_requires_power?engineersdecor.tooltip.requires_rf_power}
 tile.engineersdecor.small_mineral_smelter.name=小型矿物熔炼炉
 tile.engineersdecor.small_mineral_smelter.help=§6高温、高绝缘电熔石炉。§r\n\
                                                把矿物块加热成岩浆块，最后变成熔岩。由于\
@@ -197,6 +199,9 @@ tile.engineersdecor.small_tree_cutter.name=小型砍树机
 tile.engineersdecor.small_tree_cutter.help=§6砍倒正前方的树。§r\n\
                                            不收集木材。通入红石信号停用。\
                                            提供RF来加快砍树速度。（没有的话会很慢。）
+tile.engineersdecor.small_milking_machine.name=Small Milking Machine
+#tile.engineersdecor.small_milking_machine.help=§6Frequently attracts and milks cows.§r\n\
+                                           Has an internal fluid tank. Does not feed the animals. Use buckets to retrieve the milk.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.sign_decor.name=标志板（工程师的装饰）
 tile.engineersdecor.sign_decor.help=§6这不应该可合成或在JEI看到。用于创造模式的物品栏标签和截屏。

@@ -12,10 +12,11 @@ package wile.engineersdecor.detail;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.blocks.*;
-import net.minecraftforge.common.config.Config;
-import net.minecraftforge.common.config.ConfigManager;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraftforge.common.config.Config;
+import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -211,6 +212,11 @@ public class ModConfig
     @Config.RequiresMcRestart
     public boolean without_mineral_smelter = false;
 
+    @Config.Comment({"Disable the Small Mikling Machine."})
+    @Config.Name("Without milking machine")
+    @Config.RequiresMcRestart
+    public boolean without_milker = false;
+
     @Config.Comment({"Disable directly picking up layers from slabs and slab slices by left clicking while looking up/down."})
     @Config.Name("Without slab pickup")
     public boolean without_direct_slab_pickup = false;
@@ -401,6 +407,12 @@ public class ModConfig
     public int block_breaker_min_breaking_time = BlockDecorBreaker.BTileEntity.DEFAULT_MIN_BREAKING_TIME;
 
     @Config.Comment({
+      "Defines if the Small Block Breaker does not work without RF power."
+    })
+    @Config.Name("Block Breaker: Power required")
+    public boolean block_breaker_requires_power = false;
+
+    @Config.Comment({
       "Defines how much RF power the Small Tree Cutter requires to magnificently increase the processing speed. " +
       "The config value can be changed on-the-fly for tuning."
     })
@@ -416,6 +428,12 @@ public class ModConfig
     @Config.Name("Tree Cutter: Cutting time")
     @Config.RangeInt(min=10, max=240)
     public int tree_cuttter_cutting_time_needed = BlockDecorTreeCutter.BTileEntity.DEFAULT_CUTTING_TIME_NEEDED;
+
+    @Config.Comment({
+      "Defines if the Small Tree Cutter does not work without RF power."
+    })
+    @Config.Name("Tree Cutter: Power required")
+    public boolean tree_cuttter_requires_power = false;
   }
 
   @SuppressWarnings("unused")
@@ -440,6 +458,10 @@ public class ModConfig
 
   private static final ArrayList<String> includes_ = new ArrayList<String>();
   private static final ArrayList<String> excludes_ = new ArrayList<String>();
+  private static final NBTTagCompound server_config_ = new NBTTagCompound();
+
+  public static final NBTTagCompound getServerConfig() // config that may be synchronized from server to client via net pkg.
+  { return server_config_; }
 
   public static final boolean isWithoutOptOutRegistration()
   { return (zmisc!=null) && (zmisc.without_optout_registration); }
@@ -496,6 +518,7 @@ public class ModConfig
     if(block instanceof BlockDecorSolarPanel) return optout.without_solar_panel;
     if(block instanceof BlockDecorFluidFunnel) return optout.without_fluid_funnel;
     if(block instanceof BlockDecorMineralSmelter) return optout.without_mineral_smelter;
+    if(block instanceof BlockDecorMilker) return optout.without_milker;
     if(block instanceof BlockDecorPipeValve) return optout.without_valves;
 
     // Type based evaluation where later filters may match, too
@@ -537,8 +560,8 @@ public class ModConfig
     BlockDecorPipeValve.on_config(tweaks.pipevalve_max_flowrate, tweaks.pipevalve_redstone_slope);
     BlockDecorFurnaceElectrical.BTileEntity.on_config(tweaks.e_furnace_speed_percent, tweaks.e_furnace_power_consumption);
     BlockDecorSolarPanel.BTileEntity.on_config(tweaks.solar_panel_peak_power);
-    BlockDecorBreaker.BTileEntity.on_config(tweaks.block_breaker_power_consumption, tweaks.block_breaker_reluctance, tweaks.block_breaker_min_breaking_time, false);
-    BlockDecorTreeCutter.BTileEntity.on_config(tweaks.tree_cuttter_energy_consumption, tweaks.tree_cuttter_cutting_time_needed, false);
+    BlockDecorBreaker.BTileEntity.on_config(tweaks.block_breaker_power_consumption, tweaks.block_breaker_reluctance, tweaks.block_breaker_min_breaking_time, tweaks.block_breaker_requires_power);
+    BlockDecorTreeCutter.BTileEntity.on_config(tweaks.tree_cuttter_energy_consumption, tweaks.tree_cuttter_cutting_time_needed, tweaks.tree_cuttter_requires_power);
     {
       optout.includes = optout.includes.toLowerCase().replaceAll(ModEngineersDecor.MODID+":", "").replaceAll("[^*_,a-z0-9]", "");
       if(!optout.includes.isEmpty()) ModEngineersDecor.logger.info("Pattern includes: '" + optout.includes + "'");
@@ -558,6 +581,11 @@ public class ModConfig
         excl[i] = excl[i].replaceAll("[*]", ".*?");
         if(!excl[i].isEmpty()) excludes_.add(excl[i]);
       }
+    }
+    {
+      // Check if the config is already synchronized or has to be synchronised.
+      server_config_.setBoolean("tree_cuttter_requires_power", tweaks.tree_cuttter_requires_power);
+      server_config_.setBoolean("block_breaker_requires_power", tweaks.block_breaker_requires_power);
     }
   }
 

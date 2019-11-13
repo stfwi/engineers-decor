@@ -61,10 +61,27 @@ public class ModAuxiliaries
     final String ft = tr.getFormattedText();
     if(ft.contains("${")) {
       // Non-recursive, non-argument lang file entry cross referencing.
-      Pattern pt = Pattern.compile("\\$\\{([\\w\\.]+)\\}");
+      Pattern pt = Pattern.compile("\\$\\{([^}]+)\\}");
       Matcher mt = pt.matcher(ft);
       StringBuffer sb = new StringBuffer();
-      while(mt.find()) mt.appendReplacement(sb, (new TranslationTextComponent(mt.group(1))).getFormattedText().trim());
+      while(mt.find()) {
+        String m = mt.group(1);
+        if(m.contains("?")) {
+          String[] kv = m.split("\\?", 2);
+          String key = kv[0].trim();
+          boolean not = key.startsWith("!");
+          if(not) key = key.replaceFirst("!", "");
+          m = kv[1].trim();
+          if(!ModConfig.getServerConfig().contains(key)) {
+            m = "";
+          } else {
+            boolean r = ModConfig.getServerConfig().getBoolean(key);
+            if(not) r = !r;
+            if(!r) m = "";
+          }
+        }
+        mt.appendReplacement(sb, (new TranslationTextComponent(m)).getFormattedText().trim());
+      }
       mt.appendTail(sb);
       return sb.toString();
     } else {
