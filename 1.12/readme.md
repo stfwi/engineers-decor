@@ -10,6 +10,8 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    ~ v1.0.16-b4
+
     - v1.0.16-b3  [M] Increased slag brick recipe yield to 8.
                   [A] Small Block Placer can plant Cocoa.
                   [F] Fixed Small Block Placer seed detection issue (issue #64, thx Federsavo).

@@ -11,7 +11,7 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
-    ~ v1.0.16-b4 [U] Updated to Forge 1.14.4-28.1.90/20190719-1.14.3.
+    - v1.0.16-b4 [U] Updated to Forge 1.14.4-28.1.90/20190719-1.14.3.
                  [M] Increased slag brick recipe yield to 8.
                  [M] Parent specs in model files adapted.
 
