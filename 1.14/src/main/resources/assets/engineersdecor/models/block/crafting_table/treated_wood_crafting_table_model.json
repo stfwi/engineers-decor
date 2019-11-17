@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube",
+	"parent": "block/block",
 	"textures": {
 		"side": "engineersdecor:block/crafting_table/treated_wood_crafting_table_side",
 		"top": "engineersdecor:block/crafting_table/treated_wood_crafting_table_top",

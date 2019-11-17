@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube",
+	"parent": "block/block",
 	"textures": {
 		"top": "engineersdecor:block/device/factory_placer_top",
 		"bottom": "engineersdecor:block/device/factory_placer_bottom",

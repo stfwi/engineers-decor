@@ -1,0 +1,23 @@
+{
+  "variants": {
+    "active=false,facing=north,filled=false": { "model": "engineersdecor:block/device/small_milking_machine_model", "y":   0 },
+    "active=false,facing=south,filled=false": { "model": "engineersdecor:block/device/small_milking_machine_model", "y": 180 },
+    "active=false,facing=west,filled=false":  { "model": "engineersdecor:block/device/small_milking_machine_model", "y": 270 },
+    "active=false,facing=east,filled=false":  { "model": "engineersdecor:block/device/small_milking_machine_model", "y":  90 },
+
+    "active=true,facing=north,filled=false":  { "model": "engineersdecor:block/device/small_milking_machine_model_active", "y":   0 },
+    "active=true,facing=south,filled=false":  { "model": "engineersdecor:block/device/small_milking_machine_model_active", "y": 180 },
+    "active=true,facing=west,filled=false":   { "model": "engineersdecor:block/device/small_milking_machine_model_active", "y": 270 },
+    "active=true,facing=east,filled=false":   { "model": "engineersdecor:block/device/small_milking_machine_model_active", "y":  90 },
+
+    "active=false,facing=north,filled=true": { "model": "engineersdecor:block/device/small_milking_machine_model_filled", "y":   0 },
+    "active=false,facing=south,filled=true": { "model": "engineersdecor:block/device/small_milking_machine_model_filled", "y": 180 },
+    "active=false,facing=west,filled=true":  { "model": "engineersdecor:block/device/small_milking_machine_model_filled", "y": 270 },
+    "active=false,facing=east,filled=true":  { "model": "engineersdecor:block/device/small_milking_machine_model_filled", "y":  90 },
+
+    "active=true,facing=north,filled=true":  { "model": "engineersdecor:block/device/small_milking_machine_model_filled_active", "y":   0 },
+    "active=true,facing=south,filled=true":  { "model": "engineersdecor:block/device/small_milking_machine_model_filled_active", "y": 180 },
+    "active=true,facing=west,filled=true":   { "model": "engineersdecor:block/device/small_milking_machine_model_filled_active", "y": 270 },
+    "active=true,facing=east,filled=true":   { "model": "engineersdecor:block/device/small_milking_machine_model_filled_active", "y":  90 }
+  }
+}

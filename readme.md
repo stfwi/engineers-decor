@@ -177,6 +177,15 @@ looking manufacturing contraptions. Current feature set:
   transfer systems or a bucket. Fills only tanks below (gravity). Compatible with vanilla
   infinite-water-source creation.
 
+- *Small Milking Machine*: Cows don't dislike being groomed and therefore occasionally stroll to
+  this device, which in turn draws a bucket of milk. The milk is stored in an internal tank and
+  can be retrieved directly with a bucket. For automating, the machine can interact with inventories
+  at the back and below it. It preferrs pulling empty vessels from the back and putting the filled
+  containers below, but if there is only one inventory, then it puts the filled containers back into
+  that inventory. Also supports fluid transfer to adjacent tanks (if milk exists as fluid in the
+  game), and is also compatible with the "Bottled Milk" mod (fills vanilla empty bottles).
+
+
 More to come slowly but steadily.
 
 ----

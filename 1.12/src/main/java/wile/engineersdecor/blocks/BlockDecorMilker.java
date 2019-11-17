@@ -8,9 +8,6 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.block.BlockChest;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.tileentity.TileEntityChest;
 import wile.engineersdecor.ModEngineersDecor;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.init.SoundEvents;
@@ -31,10 +28,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.init.Items;
 import net.minecraft.item.*;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.*;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -42,6 +39,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.FluidStack;
@@ -49,18 +47,21 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import wile.engineersdecor.detail.ExtItems;
+import wile.engineersdecor.detail.ItemHandling;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
+import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class BlockDecorMilker extends BlockDecorDirectedHorizontal
 {
   public static final PropertyBool FILLED = PropertyBool.create("filled");
   public static final PropertyBool ACTIVE = PropertyBool.create("active");
-
 
   public BlockDecorMilker(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound, @Nonnull AxisAlignedBB unrotatedAABB)
   {
@@ -144,15 +145,15 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
     BTileEntity te = getTe(world, pos);
     if(te==null) return true;
     final ItemStack in_stack = player.getHeldItem(hand);
-    final ItemStack out_stack = te.milk_filled_container_item(in_stack);
+    final ItemStack out_stack = BTileEntity.milk_filled_container_item(in_stack);
     if(out_stack.isEmpty()) return FluidUtil.interactWithFluidHandler(player, hand, te.fluid_handler());
     boolean drained = false;
     IItemHandler player_inventory = new PlayerMainInvWrapper(player.inventory);
-    if(te.fluid_level() >= 1000) {
+    if(te.fluid_level() >= BTileEntity.BUCKET_SIZE) {
       final ItemStack insert_stack = out_stack.copy();
       ItemStack remainder = ItemHandlerHelper.insertItemStacked(player_inventory, insert_stack, false);
       if(remainder.getCount() < insert_stack.getCount()) {
-        te.drain(1000);
+        te.drain(BTileEntity.BUCKET_SIZE);
         in_stack.shrink(1);
         drained = true;
         if(remainder.getCount() > 0) {
@@ -180,18 +181,20 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
 
   public static class BTileEntity extends TileEntity implements ITickable, ICapabilityProvider, IEnergyStorage
   {
+    public static final int BUCKET_SIZE = 1000;
     public static final int TICK_INTERVAL = 80;
-    public static final int PROCESSING_TICK_INTERVAL = 10;
-    public static final int TANK_CAPACITY = 12000;
+    public static final int PROCESSING_TICK_INTERVAL = 20;
+    public static final int TANK_CAPACITY = BUCKET_SIZE * 12;
     public static final int MAX_MILKING_TANK_LEVEL = TANK_CAPACITY-500;
+    public static final int FILLED_INDICATION_THRESHOLD = BUCKET_SIZE;
     public static final int MAX_ENERGY_BUFFER = 16000;
     public static final int MAX_ENERGY_TRANSFER = 512;
-    public static final int DEFAULT_ENERGY_CONSUMPTION = 16;
+    public static final int DEFAULT_ENERGY_CONSUMPTION = 0;
     private static final EnumFacing FLUID_TRANSFER_DIRECTRIONS[] = {EnumFacing.DOWN,EnumFacing.EAST,EnumFacing.SOUTH,EnumFacing.WEST,EnumFacing.NORTH};
-    private static final ItemStack BUCKET_STACK = new ItemStack(Items.BUCKET);
     private enum MilkingState { IDLE, PICKED, COMING, POSITIONING, MILKING, LEAVING, WAITING }
 
     private static FluidStack milk_fluid_ = new FluidStack(FluidRegistry.WATER, 0);
+    private static HashMap<ItemStack, ItemStack> milk_containers_ = new HashMap<>();
     private static int energy_consumption = DEFAULT_ENERGY_CONSUMPTION;
     private int tick_timer_;
     private int energy_stored_;
@@ -202,10 +205,22 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
     private int state_timer_ = 0;
     private BlockPos tracked_cow_original_position_ = null;
 
-    public static void on_config(int energy_consumption_per_tick, int heatup_per_second)
+    public static void on_config(int energy_consumption_per_tick)
     {
-      energy_consumption = MathHelper.clamp(energy_consumption_per_tick, 0, 4096);
-      ModEngineersDecor.logger.info("Config milker energy consumption:" + energy_consumption + "rf/t");
+      energy_consumption = MathHelper.clamp(energy_consumption_per_tick, 0, 128);
+      {
+        Fluid milk = FluidRegistry.getFluid("milk");
+        if(milk != null) milk_fluid_ = new FluidStack(milk, BUCKET_SIZE);
+      }
+      {
+        milk_containers_.put(new ItemStack(Items.BUCKET), new ItemStack(Items.MILK_BUCKET));
+        if(ExtItems.BOTTLED_MILK_BOTTLE_DRINKLABLE!=null) milk_containers_.put(new ItemStack(Items.GLASS_BOTTLE), new ItemStack(ExtItems.BOTTLED_MILK_BOTTLE_DRINKLABLE));
+      }
+      ModEngineersDecor.logger.info(
+        "Config milker energy consumption:" + energy_consumption + "rf/t"
+          + ((milk_fluid_==null)?"":" [milk fluid available]")
+          + ((ExtItems.BOTTLED_MILK_BOTTLE_DRINKLABLE==null)?"":" [bottledmilk mod available]")
+      );
     }
 
     public BTileEntity()
@@ -250,7 +265,7 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
     { return MathHelper.clamp(tank_level_, 0, TANK_CAPACITY); }
 
     private void drain(int amount)
-    { tank_level_ = MathHelper.clamp(tank_level_-1000, 0, TANK_CAPACITY); markDirty(); }
+    { tank_level_ = MathHelper.clamp(tank_level_-BUCKET_SIZE, 0, TANK_CAPACITY); markDirty(); }
 
     // TileEntity ------------------------------------------------------------------------------
 
@@ -356,41 +371,39 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
     // ITickable ------------------------------------------------------------------------------------
 
     private void log(String s)
-    {} // may be enabled with config
+    {} // may be enabled with config, for dev was println
 
-    private ItemStack milk_filled_container_item(ItemStack stack)
-    {
-      // Returns out stack for input stack size == 1 (convert one item of the stack).
-      if(stack.isItemEqualIgnoreDurability(BTileEntity.BUCKET_STACK)) return new ItemStack(Items.MILK_BUCKET);
-      if((ExtItems.BOTTLED_MILK_BOTTLE_DRINKLABLE!=null) && stack.getItem().equals(Items.GLASS_BOTTLE)) return new ItemStack(ExtItems.BOTTLED_MILK_BOTTLE_DRINKLABLE);
-      return ItemStack.EMPTY;
-    }
+    private static ItemStack milk_filled_container_item(ItemStack stack)
+    { return milk_containers_.entrySet().stream().filter(e->e.getKey().isItemEqual(stack)).map(Map.Entry::getValue).findFirst().orElse(ItemStack.EMPTY); }
 
     private void fill_adjacent_inventory_item_containers(EnumFacing block_facing)
     {
-      // Check inventory existence, back to down if possible, otherwise sort back into same inventory.
-      IInventory src, dst;
-      {
-        TileEntity te_src = world.getTileEntity(pos.offset(block_facing));
-        TileEntity te_dst = world.getTileEntity(pos.down());
-        if(!(te_src instanceof IInventory)) te_src = null;
-        if(!(te_dst instanceof IInventory)) te_dst = null;
-        if((te_src==null)) te_src = te_dst;
-        if((te_dst==null)) te_dst = te_src;
-        if((te_src==null) || (te_dst==null)) return;
-        src = (IInventory)te_src;
-        dst = (IInventory)te_dst;
+      // Check inventory existence, back to down is preferred, otherwise sort back into same inventory.
+      IItemHandler src = ItemHandling.itemhandler(world, pos.offset(block_facing), block_facing.getOpposite());
+      IItemHandler dst = ItemHandling.itemhandler(world, pos.down(), EnumFacing.UP);
+      if(src==null) { src = dst; } else if(dst==null) { dst = src; }
+      if((src==null) || (dst==null)) return;
+      while((tank_level_ >= BUCKET_SIZE)) {
+        boolean inserted = false;
+        for(Entry<ItemStack,ItemStack> e:milk_containers_.entrySet()) {
+          if(ItemHandling.extract(src, e.getKey(), 1, true).isEmpty()) continue;
+          if(!ItemHandling.insert(dst, e.getValue().copy(), false).isEmpty()) continue;
+          ItemHandling.extract(src, e.getKey(), 1, false);
+          tank_level_ -= BUCKET_SIZE;
+          inserted = true;
+        }
+        if(!inserted) break;
       }
-
-      /// @todo --> hier weitermachen
     }
 
     private boolean milking_process()
     {
       if((tracked_cow_ == null) && (fluid_level() >= MAX_MILKING_TANK_LEVEL)) return false; // nothing to do
+      final EnumFacing facing = world.getBlockState(getPos()).getValue(FACING).getOpposite();
       EntityCow cow = null;
       {
-        final List<EntityCow> cows = world.getEntitiesWithinAABB(EntityCow.class, new AxisAlignedBB(pos).grow(16, 3, 16),
+        AxisAlignedBB aabb = new AxisAlignedBB(pos.offset(facing, 3)).grow(4, 2, 4);
+        final List<EntityCow> cows = world.getEntitiesWithinAABB(EntityCow.class, aabb,
           e->(((tracked_cow_==null) && (!e.isChild() && !e.isInLove()))||(e.getPersistentID().equals(tracked_cow_)))
         );
         if(cows.size() == 1) {
@@ -403,42 +416,43 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
       if((cow == null) || (cow.isDead) || ((tracked_cow_ != null) && (!tracked_cow_.equals(cow.getPersistentID())))) { tracked_cow_ = null; cow = null; }
       if(tracked_cow_ == null) state_ = MilkingState.IDLE;
       if(cow == null) return false; // retry next cycle
-      final EnumFacing facing = world.getBlockState(getPos()).getValue(FACING).getOpposite();
       tick_timer_ = PROCESSING_TICK_INTERVAL;
       state_timer_ -= PROCESSING_TICK_INTERVAL;
       if(state_timer_ > 0) return false;
-      switch(state_) {
+      switch(state_) { // Let's do this the old school FSA sequencing way ...
         case IDLE: {
-          final List<EntityLivingBase> blocking_entities = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(pos).grow(1, 2, 1));
-          if(blocking_entities.size() > 0) return false; // an entity is blocking the way
+          final List<EntityLivingBase> blocking_entities = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(pos.offset(facing)).grow(0.5, 0.5, 0.5));
+          if(blocking_entities.size() > 0) { tick_timer_ = TICK_INTERVAL; return false; } // an entity is blocking the way
           if(cow.getLeashed() || cow.isChild() || cow.isInLove() || (!cow.onGround) || cow.isBeingRidden() || cow.isSprinting()) return false;
           tracked_cow_ = cow.getPersistentID();
           state_ = MilkingState.PICKED;
           state_timeout_ = 200;
           tracked_cow_original_position_ = cow.getPosition();
           log("Idle: Picked cow" + tracked_cow_);
-          return true;
+          return false;
         }
         case PICKED: {
-          if(cow.hasPath()) return true;
+          if(cow.hasPath()) return false;
           BlockPos p = getPos().offset(facing).offset(facing.rotateY());
           if(!cow.getNavigator().tryMoveToXYZ(p.getX(), p.getY(), p.getZ(),1.0)) {
             log("Picked: No path");
             tracked_cow_ = null;
+            tick_timer_ = TICK_INTERVAL;
             return false;
           }
           state_ = MilkingState.COMING;
           state_timeout_ = 300; // 15s should be enough
           log("Picked: coming");
-          return true;
+          return false;
         }
         case COMING: {
           BlockPos p = getPos().offset(facing).offset(facing.rotateY());
           if(cow.getPosition().distanceSq(p) > 1) {
-            if(cow.hasPath()) return true;
+            if(cow.hasPath()) return false;
             if(!cow.getNavigator().tryMoveToXYZ(p.getX(), p.getY(), p.getZ(),1.0)) {
               log("Coming: lost path");
               tracked_cow_ = null;
+              tick_timer_ = TICK_INTERVAL;
               return false;
             } else {
               state_timeout_ -= 100;
@@ -448,22 +462,24 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
             if(!cow.getNavigator().tryMoveToXYZ(next_p.getX(), next_p.getY(), next_p.getZ(), 1.0)) {
               log("Coming: No path");
               tracked_cow_ = null;
+              tick_timer_ = TICK_INTERVAL;
               return false;
             }
             log("Coming: position reached");
             state_ = MilkingState.POSITIONING;
             state_timeout_ = 100; // 5s
           }
-          return true;
+          return false;
         }
         case POSITIONING: {
           BlockPos p = getPos().offset(facing);
-          if(cow.getPosition().distanceSq(p) > 0) {
-            if(cow.hasPath()) return true;
+          if(p.distanceSqToCenter(cow.posX, cow.posY, cow.posZ) > 0.45) {
+            if(cow.hasPath()) return false;
             if(!cow.getNavigator().tryMoveToXYZ(p.getX(), p.getY(), p.getZ(), 1.0)) {
               log("Positioning: lost path");
+              tick_timer_ = TICK_INTERVAL;
             } else {
-              state_timeout_ -= 200;
+              state_timeout_ -= 25;
             }
             tracked_cow_ = null;
             return false;
@@ -475,10 +491,10 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
           state_ = MilkingState.MILKING;
           state_timer_ = 30;
           log("Positioning: start milking");
-          return true;
+          return false;
         }
         case MILKING: {
-          tank_level_ = MathHelper.clamp(tank_level_+1000, 0, TANK_CAPACITY);
+          tank_level_ = MathHelper.clamp(tank_level_+BUCKET_SIZE, 0, TANK_CAPACITY);
           state_timeout_ = 600;
           state_ = MilkingState.LEAVING;
           state_timer_ = 20;
@@ -493,15 +509,18 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
           cow.getNavigator().tryMoveToXYZ(p.getX(), p.getY(), p.getZ(), 1.0);
           state_timeout_ = 600;
           state_timer_ = 500;
+          tick_timer_ = TICK_INTERVAL;
           state_ = MilkingState.WAITING;
           log("Leaving: process done");
           return true;
         }
         case WAITING: {
+          tick_timer_ = TICK_INTERVAL;
           return true; // wait for the timeout to kick in until starting with the next.
         }
-        default:
+        default: {
           tracked_cow_ = null;
+        }
       }
       return (tracked_cow_ != null);
     }
@@ -513,16 +532,20 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
       tick_timer_ = TICK_INTERVAL;
       final IBlockState block_state = world.getBlockState(pos);
       boolean dirty = false;
+      if(energy_consumption > 0) {
+        if(energy_stored_ <= 0) return;
+        energy_stored_ = MathHelper.clamp(energy_stored_-energy_consumption, 0, MAX_ENERGY_BUFFER);
+      }
       // Track and milk cows
       if(milking_process()) dirty = true;
       // Fluid transfer
-      if((milk_fluid_.amount > 0) && (fluid_level() >= 1000)) {
+      if((milk_fluid_.amount > 0) && (fluid_level() >= BUCKET_SIZE)) {
         for(EnumFacing facing: FLUID_TRANSFER_DIRECTRIONS) {
           IFluidHandler fh = FluidUtil.getFluidHandler(world, pos.offset(facing), facing.getOpposite());
           if(fh == null) continue;
           FluidStack fs = milk_fluid_.copy();
-          fs.amount = 1000;
-          int nfilled = MathHelper.clamp(fh.fill(fs, true), 0, 1000);
+          fs.amount = BUCKET_SIZE;
+          int nfilled = MathHelper.clamp(fh.fill(fs, true), 0, BUCKET_SIZE);
           if(nfilled <= 0) continue;
           tank_level_ -= nfilled;
           if(tank_level_ < 0) tank_level_ = 0;
@@ -531,11 +554,11 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
         }
       }
       // Adjacent inventory update, only done just after milking to prevent waste of server cpu.
-      if(dirty && (fluid_level() >= 1000)) {
+      if(dirty && (fluid_level() >= BUCKET_SIZE)) {
         fill_adjacent_inventory_item_containers(block_state.getValue(FACING));
       }
       // State update
-      IBlockState new_state = block_state.withProperty(FILLED, fluid_level()>0).withProperty(ACTIVE, state_==MilkingState.MILKING);
+      IBlockState new_state = block_state.withProperty(FILLED, fluid_level()>=FILLED_INDICATION_THRESHOLD).withProperty(ACTIVE, state_==MilkingState.MILKING);
       if(block_state != new_state) world.setBlockState(pos, new_state,1|2|16);
       if(dirty) markDirty();
     }

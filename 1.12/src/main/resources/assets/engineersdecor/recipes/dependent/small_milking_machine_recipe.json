@@ -10,7 +10,7 @@
   "pattern": [
     "PPP",
     "PAO",
-    "CRC"
+    "CBC"
   ],
   "key": {
     "O": {
@@ -25,8 +25,8 @@
       "item": "minecraft:milk_bucket",
       "data": 0
     },
-    "R": {
-      "item": "minecraft:redstone_block",
+    "B": {
+      "item": "#itemSteelBarrel",
       "data": 0
     },
     "C": {

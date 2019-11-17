@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube",
+	"parent": "block/block",
 	"textures": {
 		"2": "engineersdecor:block/device/tree_cutter_side",
 		"3": "engineersdecor:block/device/tree_cutter_top",

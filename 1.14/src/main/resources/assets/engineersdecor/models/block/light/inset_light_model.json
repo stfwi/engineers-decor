@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube",
+	"parent": "block/block",
 	"textures": {
 		"light": "engineersdecor:block/light/lamp_glass_warm_square_texture",
 		"side": "engineersdecor:block/iestyle/steel_texture",

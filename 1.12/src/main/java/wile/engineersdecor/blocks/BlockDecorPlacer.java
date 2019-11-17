@@ -11,10 +11,10 @@ package wile.engineersdecor.blocks;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.detail.Networking;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.world.IBlockAccess;
-import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.block.state.BlockFaceShape;
@@ -46,6 +46,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 
 public class BlockDecorPlacer extends BlockDecorDirected
@@ -339,13 +341,14 @@ public class BlockDecorPlacer extends BlockDecorDirected
 
   public static class BTileEntity extends TileEntity implements ITickable, ISidedInventory, Networking.IPacketReceiver
   {
+    @FunctionalInterface private interface SpecialPlacementFunction{ EnumActionResult apply(ItemStack stack, World world, BlockPos pos);}
     public static final int TICK_INTERVAL = 40;
     public static final int NUM_OF_SLOTS = 18;
     ///
     public static final int LOGIC_INVERTED   = 0x01;
     public static final int LOGIC_CONTINUOUS = 0x02;
     public static final int DEFAULT_LOGIC    = LOGIC_INVERTED|LOGIC_CONTINUOUS;
-
+    public static HashMap<ItemStack, SpecialPlacementFunction> special_placement_conversions = new HashMap<>();
     ///
     private boolean block_power_signal_ = false;
     private boolean block_power_updated_ = false;
@@ -354,9 +357,21 @@ public class BlockDecorPlacer extends BlockDecorDirected
     private int tick_timer_ = 0;
     protected NonNullList<ItemStack> stacks_;
 
-    public static void on_config(int cooldown_ticks)
+    public static void on_config()
     {
-      // ModEngineersDecor.logger.info("Config factory placer:");
+      special_placement_conversions.put(new ItemStack(Items.DYE, 1, 3), (stack,world,pos)->{ // cocoa
+        if(world.getBlockState(pos).getBlock() instanceof BlockCocoa) return EnumActionResult.PASS;
+        if(!Blocks.COCOA.canPlaceBlockAt(world, pos)) return EnumActionResult.FAIL;
+        for(EnumFacing facing:EnumFacing.HORIZONTALS) {
+          IBlockState st = world.getBlockState(pos.offset(facing));
+          if(!(st.getBlock() instanceof BlockLog)) continue;
+          if(st.getBlock().getMetaFromState(st) != 3) continue;
+          IBlockState state = Blocks.COCOA.getDefaultState().withProperty(BlockCocoa.FACING, facing);
+          return world.setBlockState(pos, state, 1|2) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
+        }
+        return EnumActionResult.FAIL;
+      });
+      ModEngineersDecor.logger.info("Config placer: " + special_placement_conversions.size() + " special placement handling entries.");
     }
 
     public BTileEntity()
@@ -589,29 +604,47 @@ public class BlockDecorPlacer extends BlockDecorDirected
 
     private static boolean place_item(ItemStack stack, EntityPlayer placer, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
-      if((stack.isEmpty()) || (!(stack.getItem() instanceof ItemBlock))) return false;
-      ItemBlock item = (ItemBlock)(stack.getItem());
+      final Item place_item = stack.getItem();
+      Block place_block = (place_item instanceof IPlantable) ? (((IPlantable)place_item).getPlant(world, pos)).getBlock() : Block.getBlockFromItem(place_item);
+      if(((place_block==Blocks.AIR) || (place_block==null)) && ((place_item instanceof ItemBlockSpecial) && (((ItemBlockSpecial)place_item).getBlock()!=null))) place_block = ((ItemBlockSpecial)place_item).getBlock(); // Covers e.g. REEDS
+      if((place_block==null) || (place_block==Blocks.AIR)) return false;
       Block block = world.getBlockState(pos).getBlock();
       if(!block.isReplaceable(world, pos)) pos = pos.offset(facing);
-      if(!world.mayPlace(item.getBlock(), pos, true, facing, (Entity)null)) return false;
-      int meta = item.getMetadata(stack.getMetadata());
-      final IBlockState state = item.getBlock().getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand);
-      if(!item.placeBlockAt(stack, placer, world, pos, facing, hitX, hitY, hitZ, state)) return false;
+      if(!world.mayPlace(place_block, pos, true, facing, (Entity)null)) return false;
+      if(place_item instanceof ItemBlock) {
+        ItemBlock item = (ItemBlock)place_item;
+        int meta = item.getMetadata(stack.getMetadata());
+        final IBlockState state = item.getBlock().getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand);
+        if(!item.placeBlockAt(stack, placer, world, pos, facing, hitX, hitY, hitZ, state)) return false;
+      } else if(place_item instanceof IPlantable) {
+        IPlantable item = (IPlantable)place_item;
+        final IBlockState state = item.getPlant(world, pos);
+        if(!world.setBlockState(pos, state, 1|2)) return false;
+      } else {
+        final IBlockState state = place_block.getDefaultState();
+        if(!world.setBlockState(pos, state, 1|2)) return false;
+      }
       final IBlockState soundstate = world.getBlockState(pos);
       final SoundType stype = soundstate.getBlock().getSoundType(soundstate, world, pos, placer);
       world.playSound(placer, pos, stype.getPlaceSound(), SoundCategory.BLOCKS, (stype.getVolume()+1f)/8, stype.getPitch()*1.1f);
       return true;
     }
 
-    private boolean try_plant(BlockPos pos, final EnumFacing facing, final ItemStack stack, final Block block)
+    private boolean try_plant(BlockPos pos, final EnumFacing facing, final ItemStack stack, final Block plant_block)
     {
-      Item item = stack.getItem();
+      final Item item = stack.getItem();
+      if((!(item instanceof ItemBlock)) && (!(item instanceof IPlantable)) && (!(plant_block instanceof IPlantable))) return spit_out(facing);
+      Block block = (plant_block instanceof IPlantable) ? plant_block : ((item instanceof IPlantable) ? (((IPlantable)item).getPlant(world, pos)).getBlock() : Block.getBlockFromItem(item));
+      if(item instanceof IPlantable) {
+        IBlockState st = ((IPlantable)item).getPlant(world, pos); // prefer block from getPlant
+        if(st!=null) block = st.getBlock();
+      }
       if(world.isAirBlock(pos)) {
         // plant here, block below has to be valid soil.
         final IBlockState soilstate = world.getBlockState(pos.down());
-        if(!soilstate.getBlock().canSustainPlant(soilstate, world, pos.down(), EnumFacing.UP, (IPlantable)block)) {
+        if((block instanceof IPlantable) && (!soilstate.getBlock().canSustainPlant(soilstate, world, pos.down(), EnumFacing.UP, (IPlantable)block))) {
           // Not the right soil for this plant.
-          return spit_out(facing);
+          return false;
         }
       } else {
         // adjacent block is the soil, plant above if the soil is valid.
@@ -622,9 +655,9 @@ public class BlockDecorPlacer extends BlockDecorDirected
         } else if(!world.isAirBlock(pos.up())) {
           // If this is the soil an air block is needed above, if that is blocked we can't plant.
           return false;
-        } else if(!soilstate.getBlock().canSustainPlant(soilstate, world, pos, EnumFacing.UP, (IPlantable)block)) {
+        } else if((block instanceof IPlantable) && (!soilstate.getBlock().canSustainPlant(soilstate, world, pos, EnumFacing.UP, (IPlantable)block))) {
           // Would be space above, but it's not the right soil for the plant.
-          return spit_out(facing);
+          return false;
         } else {
           // Ok, plant above.
           pos = pos.up();
@@ -658,39 +691,54 @@ public class BlockDecorPlacer extends BlockDecorDirected
       }
       if(current_stack.isEmpty()) { current_slot_index_ = 0; return false; }
       final Item item = current_stack.getItem();
-      final Block block = Block.getBlockFromItem(item);
-      if(block == Blocks.AIR) return (item!=null) && spit_out(facing); // Item not accepted
-      if(world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(placement_pos)).size() > 0) {
-        return false;
-      }
-      if((block instanceof IPlantable) || (item instanceof IPlantable)) try_plant(placement_pos, facing, current_stack, block);
-
-      if(world.getBlockState(placement_pos).getBlock().isReplaceable(world, placement_pos)) {
-        if(item instanceof ItemBlock) {
-          try {
-            final FakePlayer placer = net.minecraftforge.common.util.FakePlayerFactory.getMinecraft((net.minecraft.world.WorldServer)world);
-            //println("PLACE ITEMBLOCK" + current_stack + "  --> " + block + " at " + placement_pos.subtract(pos) + "( item=" + item + ")");
-            ItemStack placement_stack = current_stack.copy();
-            placement_stack.setCount(1);
-            if((placer==null) || (!place_item(placement_stack, placer, world, placement_pos, EnumHand.MAIN_HAND, EnumFacing.DOWN, 0.6f, 0f, 0.5f))) return spit_out(facing);
-            current_stack.shrink(1);
-            stacks_.set(current_slot_index_, current_stack);
-            return true;
-          } catch(Throwable e) {
-            // The block really needs a player or other issues happened during placement.
-            // A hard crash should not be fired here, instead spit out the item to indicated that this
-            // block is not compatible.
-            ModEngineersDecor.logger.error("Exception while trying to place " + e);
-            world.setBlockToAir(placement_pos);
-            return spit_out(facing);
+      Block block = Block.getBlockFromItem(item);
+      if(((block==Blocks.AIR) || (block==null)) && ((item instanceof ItemBlockSpecial) && (((ItemBlockSpecial)item).getBlock()!=null))) block = ((ItemBlockSpecial)item).getBlock(); // e.g. reeds
+      if(item == null) return false;
+      if((item instanceof IPlantable) || (block instanceof IPlantable)) return try_plant(placement_pos, facing, current_stack, block);
+      if(block == Blocks.AIR) {
+        // Check special stuff that is not detected otherwise (like coco, which is technically dye)
+        try {
+          for(Entry<ItemStack,SpecialPlacementFunction> e:special_placement_conversions.entrySet()) {
+            if(e.getKey().isItemEqual(current_stack)) {
+              ItemStack placement_stack = current_stack.copy();
+              placement_stack.setCount(1);
+              switch(e.getValue().apply(current_stack, world, placement_pos)) {
+                case PASS:
+                  return false;
+                case SUCCESS:
+                  current_stack.shrink(1);
+                  stacks_.set(current_slot_index_, current_stack);
+                  return true;
+                default:
+                  return false;
+              }
+            }
           }
-        } else {
-          // No idea if this is a particulary good idea, as getBlockFromITem
-          //println("SPIT NON ITEMBLOCK" + current_stack + "  --> " + block + " at " + placement_pos.subtract(pos) + "( item=" + item + ")");
-          return spit_out(facing);
+        } catch(Throwable e) {
+          ModEngineersDecor.logger.error("Exception while trying to place " + e);
+          world.setBlockToAir(placement_pos);
         }
+        return spit_out(facing);
       }
-      return false;
+      if(world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(placement_pos)).size() > 0) return false;
+      if(!world.getBlockState(placement_pos).getBlock().isReplaceable(world, placement_pos)) return false;
+      try {
+        final FakePlayer placer = net.minecraftforge.common.util.FakePlayerFactory.getMinecraft((net.minecraft.world.WorldServer)world);
+        //println("PLACE ITEMBLOCK" + current_stack + "  --> " + block + " at " + placement_pos.subtract(pos) + "( item=" + item + ")");
+        ItemStack placement_stack = current_stack.copy();
+        placement_stack.setCount(1);
+        if((placer==null) || (!place_item(placement_stack, placer, world, placement_pos, EnumHand.MAIN_HAND, EnumFacing.DOWN, 0.6f, 0f, 0.5f))) return false;
+        current_stack.shrink(1);
+        stacks_.set(current_slot_index_, current_stack);
+      } catch(Throwable e) {
+        // The block really needs a player or other issues happened during placement.
+        // A hard crash should not be fired here, instead spit out the item to indicated that this
+        // block is not compatible.
+        ModEngineersDecor.logger.error("Exception while trying to place " + e);
+        world.setBlockToAir(placement_pos);
+        return spit_out(facing);
+      }
+      return true;
     }
 
     @Override
@@ -715,7 +763,13 @@ public class BlockDecorPlacer extends BlockDecorDirected
         if(block_power_updated_) dirty = true;
       }
       // Placing
-      if(trigger && try_place(placer_facing)) dirty = true;
+      if(trigger) {
+         if(try_place(placer_facing)) {
+           dirty = true;
+         } else {
+           current_slot_index_ = next_slot(current_slot_index_);
+         }
+      }
       if(dirty) markDirty();
       if(trigger && (tick_timer_ > TICK_INTERVAL)) tick_timer_ = TICK_INTERVAL;
     }

@@ -182,7 +182,7 @@
  "block.engineersdecor.small_tree_cutter": "Small Tree Cutter",
  "block.engineersdecor.small_tree_cutter.help": "§6Chops grown trees in front of it.§r\n Does not collect the lumbers. Deactivate with a redstone signal. ${!tree_cuttter_requires_power?engineersdecor.tooltip.massive_speed_boost_with_rf_power} ${tree_cuttter_requires_power?engineersdecor.tooltip.requires_rf_power}",
  "block.engineersdecor.small_milking_machine": "Small Milking Machine",
- "block.engineersdecor.small_milking_machine.help": "§6Frequently attracts and milks cows.§r\n Has an internal fluid tank. Does not feed the animals. Use buckets to retrieve the milk.",
+ "block.engineersdecor.small_milking_machine.help": "§6Occasionally grooms and milks cows.§r\n Has an internal fluid tank. Does not feed the animals. Use buckets to retrieve the milk. Pulls/stores milk container items from/to inventories at the back or bottom (preferrs extracting from the back and inserting below, but can also put filled vessels back into the same inventory). Supports fluid output to tanks or pipes below (only if milk exists as fluid). Care that it's not too crowdy in the cow pen, only happy animals stroll by voluntarily.",
  "block.engineersdecor.sign_decor": "Sign Plate (Engineer's decor)",
  "block.engineersdecor.sign_decor.help": "§6This should not be craftable or visible in JEI. Used for creative tab and screenshots.",
  "block.engineersdecor.sign_hotwire": "Sign \"Caution Hot Wire\"",

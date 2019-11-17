@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube",
+	"parent": "block/block",
 	"textures": {
 		"s": "engineersdecor:block/iestyle/treated_wood_rough_texture",
 		"particle": "engineersdecor:block/iestyle/treated_wood_rough_texture",

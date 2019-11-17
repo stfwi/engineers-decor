@@ -10,6 +10,14 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    - v1.0.16-b3  [M] Increased slag brick recipe yield to 8.
+                  [A] Small Block Placer can plant Cocoa.
+                  [F] Fixed Small Block Placer seed detection issue (issue #64, thx Federsavo).
+                  [F] Fixed incorrectly enabled alternative recipes for fluid accumulator and check valve
+                      when IE is installed.
+                  [M] Slightly nerfed the Small Solar Panel default peak power output (does not affect
+                      existing configurations).
+
     - v1.0.16-b2  [A] Added Gas Concrete (including slab, wall, stairs, and slab slice).
                   [A] Added explicit RF-power-required option for Small Block Breaker and Small Tree Cutter (issue #63).
                   [M] Increased clinker brick recipe yield to 8 for the master builders needs.

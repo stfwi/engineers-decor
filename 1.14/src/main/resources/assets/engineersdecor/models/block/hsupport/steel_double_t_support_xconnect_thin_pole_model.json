@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube",
+	"parent": "block/block",
 	"textures": {
 		"pside": "engineersdecor:block/pole/thin_steel_pole_side_texture",
 		"particle": "engineersdecor:block/pole/thin_steel_pole_side_texture",

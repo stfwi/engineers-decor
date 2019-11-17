@@ -12,8 +12,7 @@
  */
 package wile.engineersdecor;
 
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import org.apache.commons.lang3.ArrayUtils;
+
 import wile.engineersdecor.blocks.*;
 import wile.engineersdecor.detail.ModAuxiliaries;
 import net.minecraft.client.gui.ScreenManager;
@@ -29,12 +28,13 @@ import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.BlockItem;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.event.RegistryEvent;
-import wile.engineersdecor.detail.ModTesrs;
 
+import org.apache.commons.lang3.ArrayUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
@@ -432,6 +432,12 @@ public class ModContent
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,11.5,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_solar_panel"));
 
+  public static final BlockDecorMilker SMALL_MILKING_MACHINE = (BlockDecorMilker)(new BlockDecorMilker(
+    BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_CUTOUT|BlockDecor.CFG_ELECTRICAL,
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,13)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_milking_machine"));
+
   public static final BlockDecorTreeCutter SMALL_TREE_CUTTER = (BlockDecorTreeCutter)(new BlockDecorTreeCutter(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
@@ -602,6 +608,7 @@ public class ModContent
   };
 
   private static final Block devBlocks[] = {
+    SMALL_MILKING_MACHINE
   };
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -673,6 +680,11 @@ public class ModContent
     .build(null)
     .setRegistryName(ModEngineersDecor.MODID, "te_small_solar_panel");
 
+  public static final TileEntityType<?> TET_SMALL_MILKING_MACHINE = TileEntityType.Builder
+    .create(BlockDecorMilker.BTileEntity::new, SMALL_MILKING_MACHINE)
+    .build(null)
+    .setRegistryName(ModEngineersDecor.MODID, "te_small_milking_machine");
+
   public static final TileEntityType<?> TET_SMALL_TREE_CUTTER = TileEntityType.Builder
     .create(BlockDecorTreeCutter.BTileEntity::new, SMALL_TREE_CUTTER)
     .build(null)
@@ -691,6 +703,7 @@ public class ModContent
     TET_WASTE_INCINERATOR,
     TET_MINERAL_SMELTER,
     TET_SMALL_SOLAR_PANEL,
+    TET_SMALL_MILKING_MACHINE,
     TET_STRAIGHT_PIPE_VALVE,
     TET_PASSIVE_FLUID_ACCUMULATOR,
     TET_SMALL_FLUID_FUNNEL,
@@ -839,6 +852,6 @@ public class ModContent
   @OnlyIn(Dist.CLIENT)
   public static final void registerTileEntityRenderers(final FMLClientSetupEvent event)
   {
-    ClientRegistry.bindTileEntitySpecialRenderer(BlockDecorCraftingTable.BTileEntity.class, new ModTesrs.TesrDecorCraftingTable());
+    ClientRegistry.bindTileEntitySpecialRenderer(BlockDecorCraftingTable.BTileEntity.class, new wile.engineersdecor.detail.ModTesrs.TesrDecorCraftingTable());
   }
 }

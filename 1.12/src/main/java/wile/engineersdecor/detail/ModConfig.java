@@ -21,6 +21,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import wile.engineersdecor.blocks.BlockDecorMilker.BTileEntity;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -434,6 +435,16 @@ public class ModConfig
     })
     @Config.Name("Tree Cutter: Power required")
     public boolean tree_cuttter_requires_power = false;
+
+    @Config.Comment({
+      "Defines how much RF power the milking machine needs to work. Note this is a permanent " +
+      "standby consumption (not only when the machine does something). If zero, the machine " +
+      "does not need power at all to function." +
+      "The config value can be changed on-the-fly for tuning."
+    })
+    @Config.Name("Milker: Power consumption")
+    @Config.RangeInt(min=0, max=128)
+    public int milker_energy_consumption = BTileEntity.DEFAULT_ENERGY_CONSUMPTION;
   }
 
   @SuppressWarnings("unused")
@@ -450,11 +461,14 @@ public class ModConfig
 
   @SuppressWarnings("unused")
   public static final void onPreInit()
-  { apply(); }
+  { startup_apply(); }
 
   @SuppressWarnings("unused")
   public static final void onPostInit(FMLPostInitializationEvent event)
-  { for(Block e: ModContent.getRegisteredBlocks()) ModConfig.isOptedOut(e, true); }
+  {
+    for(Block e: ModContent.getRegisteredBlocks()) ModConfig.isOptedOut(e, true);
+    apply();
+  }
 
   private static final ArrayList<String> includes_ = new ArrayList<String>();
   private static final ArrayList<String> excludes_ = new ArrayList<String>();
@@ -549,19 +563,10 @@ public class ModConfig
     return false;
   }
 
-  public static final void apply()
+  public static final void startup_apply()
   {
-    BlockDecorFurnace.BTileEntity.on_config(tweaks.furnace_smelting_speed_percent, tweaks.furnace_fuel_efficiency_percent, tweaks.furnace_boost_energy_consumption);
     ModRecipes.furnaceRecipeOverrideReset();
     if(tweaks.furnace_smelts_nuggets) ModRecipes.furnaceRecipeOverrideSmeltsOresToNuggets();
-    BlockDecorChair.on_config(optout.without_chair_sitting, optout.without_mob_chair_sitting, tweaks.chair_mob_sitting_probability_percent, tweaks.chair_mob_standup_probability_percent);
-    BlockDecorLadder.on_config(optout.without_ladder_speed_boost);
-    BlockDecorCraftingTable.on_config(optout.without_crafting_table_history, false, tweaks.with_crafting_quickmove_buttons);
-    BlockDecorPipeValve.on_config(tweaks.pipevalve_max_flowrate, tweaks.pipevalve_redstone_slope);
-    BlockDecorFurnaceElectrical.BTileEntity.on_config(tweaks.e_furnace_speed_percent, tweaks.e_furnace_power_consumption);
-    BlockDecorSolarPanel.BTileEntity.on_config(tweaks.solar_panel_peak_power);
-    BlockDecorBreaker.BTileEntity.on_config(tweaks.block_breaker_power_consumption, tweaks.block_breaker_reluctance, tweaks.block_breaker_min_breaking_time, tweaks.block_breaker_requires_power);
-    BlockDecorTreeCutter.BTileEntity.on_config(tweaks.tree_cuttter_energy_consumption, tweaks.tree_cuttter_cutting_time_needed, tweaks.tree_cuttter_requires_power);
     {
       optout.includes = optout.includes.toLowerCase().replaceAll(ModEngineersDecor.MODID+":", "").replaceAll("[^*_,a-z0-9]", "");
       if(!optout.includes.isEmpty()) ModEngineersDecor.logger.info("Pattern includes: '" + optout.includes + "'");
@@ -582,6 +587,21 @@ public class ModConfig
         if(!excl[i].isEmpty()) excludes_.add(excl[i]);
       }
     }
+  }
+
+  public static final void apply()
+  {
+    BlockDecorFurnace.BTileEntity.on_config(tweaks.furnace_smelting_speed_percent, tweaks.furnace_fuel_efficiency_percent, tweaks.furnace_boost_energy_consumption);
+    BlockDecorChair.on_config(optout.without_chair_sitting, optout.without_mob_chair_sitting, tweaks.chair_mob_sitting_probability_percent, tweaks.chair_mob_standup_probability_percent);
+    BlockDecorLadder.on_config(optout.without_ladder_speed_boost);
+    BlockDecorCraftingTable.on_config(optout.without_crafting_table_history, false, tweaks.with_crafting_quickmove_buttons);
+    BlockDecorPipeValve.on_config(tweaks.pipevalve_max_flowrate, tweaks.pipevalve_redstone_slope);
+    BlockDecorFurnaceElectrical.BTileEntity.on_config(tweaks.e_furnace_speed_percent, tweaks.e_furnace_power_consumption);
+    BlockDecorSolarPanel.BTileEntity.on_config(tweaks.solar_panel_peak_power);
+    BlockDecorBreaker.BTileEntity.on_config(tweaks.block_breaker_power_consumption, tweaks.block_breaker_reluctance, tweaks.block_breaker_min_breaking_time, tweaks.block_breaker_requires_power);
+    BlockDecorTreeCutter.BTileEntity.on_config(tweaks.tree_cuttter_energy_consumption, tweaks.tree_cuttter_cutting_time_needed, tweaks.tree_cuttter_requires_power);
+    BlockDecorMilker.BTileEntity.on_config(tweaks.milker_energy_consumption);
+    BlockDecorPlacer.BTileEntity.on_config();
     {
       // Check if the config is already synchronized or has to be synchronised.
       server_config_.setBoolean("tree_cuttter_requires_power", tweaks.tree_cuttter_requires_power);

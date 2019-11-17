@@ -200,8 +200,12 @@ tile.engineersdecor.small_tree_cutter.help=§6砍倒正前方的树。§r\n\
                                            不收集木材。通入红石信号停用。\
                                            提供RF来加快砍树速度。（没有的话会很慢。）
 tile.engineersdecor.small_milking_machine.name=Small Milking Machine
-#tile.engineersdecor.small_milking_machine.help=§6Frequently attracts and milks cows.§r\n\
-                                           Has an internal fluid tank. Does not feed the animals. Use buckets to retrieve the milk.
+#tile.engineersdecor.small_milking_machine.help=§6Occasionally grooms and milks cows.§r\n\
+                                           Has an internal fluid tank. Does not feed the animals. Use buckets to retrieve the milk. \
+                                           Pulls/stores milk container items from/to inventories at the back or bottom (preferrs \
+                                           extracting from the back and inserting below, but can also put filled vessels back into the \
+                                           same inventory). Supports fluid output to tanks or pipes below (only if milk exists as fluid). \
+                                           Care that it's not too crowdy in the cow pen, only happy animals stroll by voluntarily.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.sign_decor.name=标志板（工程师的装饰）
 tile.engineersdecor.sign_decor.help=§6这不应该可合成或在JEI看到。用于创造模式的物品栏标签和截屏。

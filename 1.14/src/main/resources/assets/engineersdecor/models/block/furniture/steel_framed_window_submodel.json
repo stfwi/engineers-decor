@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube",
+	"parent": "block/block",
 	"ambientocclusion": false,
 	"textures": {
 		"frame": "engineersdecor:block/iestyle/steel_texture",

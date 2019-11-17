@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube",
+	"parent": "block/block",
 	"textures": {
 		"handles": "engineersdecor:block/furnace/small_lab_furnace_handles",
 		"particle": "engineersdecor:block/furnace/small_lab_furnace_handles",

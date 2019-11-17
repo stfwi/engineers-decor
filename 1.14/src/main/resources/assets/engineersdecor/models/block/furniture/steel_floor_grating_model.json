@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube",
+	"parent": "block/block",
 	"textures": {
 		"s": "engineersdecor:block/furniture/steel_table_side_texture",
 		"particle": "engineersdecor:block/furniture/steel_table_side_texture",

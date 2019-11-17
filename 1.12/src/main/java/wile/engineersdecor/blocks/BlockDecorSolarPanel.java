@@ -99,7 +99,7 @@ public class BlockDecorSolarPanel extends BlockDecor
 
   public static class BTileEntity extends TileEntity implements ITickable
   {
-    public static final int DEFAULT_PEAK_POWER = 45;
+    public static final int DEFAULT_PEAK_POWER = 32;
     public static final int TICK_INTERVAL = 8;
     public static final int ACCUMULATION_INTERVAL = 4;
     private static final EnumFacing transfer_directions_[] = {EnumFacing.DOWN, EnumFacing.EAST, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.NORTH };

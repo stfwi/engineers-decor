@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube",
+	"parent": "block/block",
 	"textures": {
 		"shutter": "engineersdecor:block/device/factory_dropper_shutter",
 		"top": "engineersdecor:block/device/factory_dropper_top",

@@ -4,7 +4,7 @@
       "type": "engineersdecor:grc",
       "result": "engineersdecor:passive_fluid_accumulator",
       "required": ["engineersdecor:straight_pipe_valve"],
-      "missing": ["immersiveengineering:fluid_pipe", "immersiveengineering:mechanical_component"]
+      "missing": ["immersiveengineering:material"]
     }
   ],
   "type": "minecraft:crafting_shaped",

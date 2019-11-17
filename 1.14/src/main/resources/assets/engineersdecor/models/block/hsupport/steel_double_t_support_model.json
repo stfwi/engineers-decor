@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube",
+	"parent": "block/block",
 	"textures": {
 		"end": "engineersdecor:block/hsupport/steel_double_t_support_end_texture",
 		"particle": "engineersdecor:block/hsupport/steel_double_t_support_end_texture",

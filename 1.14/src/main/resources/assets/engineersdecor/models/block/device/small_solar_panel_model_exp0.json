@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube",
+	"parent": "block/block",
 	"textures": {
 		"2": "engineersdecor:block/device/small_solar_panel_side",
 		"m": "engineersdecor:block/device/small_solar_panel_parts",

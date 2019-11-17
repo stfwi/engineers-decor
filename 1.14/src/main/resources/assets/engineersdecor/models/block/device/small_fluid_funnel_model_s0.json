@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube",
+	"parent": "block/block",
 	"textures": {
 		"top": "engineersdecor:block/device/small_fluid_funnel_top",
 		"bottom": "engineersdecor:block/device/small_fluid_funnel_bottom",

@@ -17,6 +17,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
+import wile.engineersdecor.blocks.BlockDecorMilker.BTileEntity;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -121,6 +122,7 @@ public class ModConfig
     public final ForgeConfigSpec.BooleanValue without_solar_panel;
     public final ForgeConfigSpec.BooleanValue without_fluid_funnel;
     public final ForgeConfigSpec.BooleanValue without_mineral_smelter;
+    public final ForgeConfigSpec.BooleanValue without_milking_machine;
     public final ForgeConfigSpec.BooleanValue without_chair_sitting;
     public final ForgeConfigSpec.BooleanValue without_mob_chair_sitting;
     public final ForgeConfigSpec.BooleanValue without_ladder_speed_boost;
@@ -150,6 +152,7 @@ public class ModConfig
     public final ForgeConfigSpec.IntValue tree_cuttter_energy_consumption;
     public final ForgeConfigSpec.IntValue tree_cuttter_cutting_time_needed;
     public final ForgeConfigSpec.BooleanValue tree_cuttter_requires_power;
+    public final ForgeConfigSpec.IntValue milking_machine_energy_consumption;
 
     CommonConfig(ForgeConfigSpec.Builder builder)
     {
@@ -295,6 +298,10 @@ public class ModConfig
           .translation(ModEngineersDecor.MODID + ".config.without_mineral_smelter")
           .comment("Disable the small mineral smelter.")
           .define("without_mineral_smelter", false);
+        without_milking_machine = builder
+          .translation(ModEngineersDecor.MODID + ".config.without_milking_machine")
+          .comment("Disable the small milking machine.")
+          .define("without_milking_machine", false);
         without_slabs = builder
           .translation(ModEngineersDecor.MODID + ".config.without_slabs")
           .comment("Disable horizontal half-block slab.")
@@ -448,6 +455,13 @@ public class ModConfig
           .translation(ModEngineersDecor.MODID + ".config.tree_cuttter_requires_power")
           .comment("Defines if the Small Tree Cutter does not work without RF power.")
           .define("tree_cuttter_requires_power", false);
+        milking_machine_energy_consumption = builder
+          .translation(ModEngineersDecor.MODID + ".config.milking_machine_energy_consumption")
+          .comment("Defines how much time the Small Milking Machine needs work. " +
+            "Note this is a permanent standby power, not only when the device does something. " +
+            "Use zero to disable energy dependency and energy handling of the machine. " +
+            "The config value can be changed on-the-fly for tuning.")
+          .defineInRange("milking_machine_energy_consumption", BTileEntity.DEFAULT_ENERGY_CONSUMPTION, 0, 128);
         builder.pop();
       }
     }
@@ -514,6 +528,7 @@ public class ModConfig
       if(block instanceof BlockDecorFluidFunnel) return COMMON.without_fluid_funnel.get();
       if(block instanceof BlockDecorSolarPanel) return COMMON.without_solar_panel.get();
       if(block instanceof BlockDecorMineralSmelter) return COMMON.without_mineral_smelter.get();
+      if(block instanceof BlockDecorMilker) return COMMON.without_milking_machine.get();
       // Type based evaluation where later filters may match, too
       if(COMMON.without_slabs.get() && (block instanceof BlockDecorSlab)) return true;
       if(COMMON.without_stairs.get() && (block instanceof BlockDecorStairs)) return true;
@@ -573,6 +588,7 @@ public class ModConfig
     BlockDecorSolarPanel.BTileEntity.on_config(COMMON.small_solar_panel_peak_production.get());
     BlockDecorBreaker.BTileEntity.on_config(COMMON.block_breaker_power_consumption.get(), COMMON.block_breaker_reluctance.get(), COMMON.block_breaker_min_breaking_time.get(), COMMON.block_breaker_requires_power.get());
     BlockDecorTreeCutter.BTileEntity.on_config(COMMON.tree_cuttter_energy_consumption.get(), COMMON.tree_cuttter_cutting_time_needed.get(), COMMON.tree_cuttter_requires_power.get());
+    BlockDecorMilker.BTileEntity.on_config(COMMON.milking_machine_energy_consumption.get());
     without_crafting_table = isOptedOut(ModContent.TREATED_WOOD_CRAFTING_TABLE);
     immersiveengineering_installed = ModAuxiliaries.isModLoaded("immersiveengineering");
     with_experimental_features_ = COMMON.with_experimental.get();
