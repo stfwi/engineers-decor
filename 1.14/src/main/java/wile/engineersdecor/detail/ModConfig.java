@@ -17,7 +17,6 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
-import wile.engineersdecor.blocks.BlockDecorMilker.BTileEntity;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -461,7 +460,7 @@ public class ModConfig
             "Note this is a permanent standby power, not only when the device does something. " +
             "Use zero to disable energy dependency and energy handling of the machine. " +
             "The config value can be changed on-the-fly for tuning.")
-          .defineInRange("milking_machine_energy_consumption", BTileEntity.DEFAULT_ENERGY_CONSUMPTION, 0, 128);
+          .defineInRange("milking_machine_energy_consumption", BlockDecorMilker.BTileEntity.DEFAULT_ENERGY_CONSUMPTION, 0, 128);
         builder.pop();
       }
     }
@@ -564,6 +563,9 @@ public class ModConfig
   public static boolean withExperimental()
   { return with_experimental_features_; }
 
+  public static boolean withoutRecipes()
+  { return without_recipes_; }
+
   //--------------------------------------------------------------------------------------------------------------------
   // Cache
   //--------------------------------------------------------------------------------------------------------------------
@@ -573,6 +575,7 @@ public class ModConfig
   public static boolean without_crafting_table = false;
   public static boolean immersiveengineering_installed = false;
   private static boolean with_experimental_features_ = false;
+  private static boolean without_recipes_ = false;
 
   public static final CompoundNBT getServerConfig() // config that may be synchronized from server to client via net pkg.
   { return server_config_; }
@@ -592,6 +595,7 @@ public class ModConfig
     without_crafting_table = isOptedOut(ModContent.TREATED_WOOD_CRAFTING_TABLE);
     immersiveengineering_installed = ModAuxiliaries.isModLoaded("immersiveengineering");
     with_experimental_features_ = COMMON.with_experimental.get();
+    without_recipes_ = COMMON.without_recipes.get();
     if(with_experimental_features_) {
       ModEngineersDecor.logger().info("Config: EXPERIMENTAL FEATURES ENABLED.");
     }

@@ -599,7 +599,7 @@ public class ModContent
   };
 
   private static final Object dev_content[] = {
-    SIGN_MINDSTEP,
+    SIGN_MINDSTEP,                            // @todo: somehow make this sign look good.
     PANZERGLASS_SLAB,                         // @todo: check if another class is needed due to is_side_visible
     TREATED_WOOD_FLOOR,                       // @todo: check if textures need improvement
     TEST_BLOCK,TEST_BLOCK_TEI,
