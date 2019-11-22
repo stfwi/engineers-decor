@@ -32,6 +32,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import wile.engineersdecor.detail.ModConfig;
+
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,9 +76,7 @@ public class BlockDecorHalfSlab extends BlockDecor implements IWaterLoggable
   public void addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
   {
     if(!ModAuxiliaries.Tooltip.addInformation(stack, world, tooltip, flag, true)) return;
-    //  if(!ModConfig.optout.without_direct_slab_pickup) {
-      ModAuxiliaries.Tooltip.addInformation("engineersdecor.tooltip.slabpickup", "engineersdecor.tooltip.slabpickup", tooltip, flag, true);
-    //  }
+    if(!ModConfig.without_direct_slab_pickup) ModAuxiliaries.Tooltip.addInformation("engineersdecor.tooltip.slabpickup", "engineersdecor.tooltip.slabpickup", tooltip, flag, true);
   }
 
   @Override
@@ -162,7 +162,7 @@ public class BlockDecorHalfSlab extends BlockDecor implements IWaterLoggable
   @SuppressWarnings("deprecation")
   public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player)
   {
-    if((world.isRemote) ) return; // || (ModConfig.optout.without_direct_slab_pickup)
+    if((world.isRemote) || (ModConfig.without_direct_slab_pickup)) return;
     final ItemStack stack = player.getHeldItemMainhand();
     if(stack.isEmpty() || (Block.getBlockFromItem(stack.getItem()) != this)) return;
     if(stack.getCount() >= stack.getMaxStackSize()) return;

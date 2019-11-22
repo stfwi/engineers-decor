@@ -127,7 +127,7 @@ public class ModConfig
     public final ForgeConfigSpec.BooleanValue without_ladder_speed_boost;
     public final ForgeConfigSpec.BooleanValue without_crafting_table_history;
     public final ForgeConfigSpec.BooleanValue without_direct_slab_pickup;
-
+    public final ForgeConfigSpec.BooleanValue with_creative_mode_device_drops;
     // Misc
     public final ForgeConfigSpec.BooleanValue with_experimental;
     public final ForgeConfigSpec.BooleanValue without_recipes;
@@ -309,11 +309,6 @@ public class ModConfig
           .translation(ModEngineersDecor.MODID + ".config.without_halfslabs")
           .comment("Disable stackable 1/8 block slices.")
           .define("without_halfslabs", false);
-        without_direct_slab_pickup = builder
-          .translation(ModEngineersDecor.MODID + ".config.without_direct_slab_pickup")
-          .comment("Disable directly picking up layers from slabs and slab " +
-            " slices by left clicking while looking up/down.")
-          .define("without_direct_slab_pickup", false);
         without_poles = builder
           .translation(ModEngineersDecor.MODID + ".config.without_poles")
           .comment("Disable poles of any material.")
@@ -336,6 +331,16 @@ public class ModConfig
           .translation(ModEngineersDecor.MODID + ".config.with_experimental")
           .comment("Enables experimental features. Use at own risk.")
           .define("with_experimental", false);
+        without_direct_slab_pickup = builder
+          .translation(ModEngineersDecor.MODID + ".config.without_direct_slab_pickup")
+          .comment("Disable directly picking up layers from slabs and slab " +
+            " slices by left clicking while looking up/down.")
+          .define("without_direct_slab_pickup", false);
+        with_creative_mode_device_drops = builder
+          .translation(ModEngineersDecor.MODID + ".config.with_creative_mode_device_drops")
+          .comment("Enable that devices are dropped as item also in creative mode, allowing " +
+            " to relocate them with contents and settings.")
+          .define("with_creative_mode_device_drops", false);
         builder.pop();
       }
       // --- TWEAKS -------------------------------------------------------------
@@ -574,6 +579,8 @@ public class ModConfig
   private static final CompoundNBT server_config_ = new CompoundNBT();
   public static boolean without_crafting_table = false;
   public static boolean immersiveengineering_installed = false;
+  public static boolean without_direct_slab_pickup = false;
+  public static boolean with_creative_mode_device_drops = false;
   private static boolean with_experimental_features_ = false;
   private static boolean without_recipes_ = false;
 
@@ -596,6 +603,7 @@ public class ModConfig
     immersiveengineering_installed = ModAuxiliaries.isModLoaded("immersiveengineering");
     with_experimental_features_ = COMMON.with_experimental.get();
     without_recipes_ = COMMON.without_recipes.get();
+    without_direct_slab_pickup = COMMON.without_direct_slab_pickup.get();
     if(with_experimental_features_) {
       ModEngineersDecor.logger().info("Config: EXPERIMENTAL FEATURES ENABLED.");
     }

@@ -28,13 +28,15 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import wile.engineersdecor.detail.ModConfig;
+
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 
-public class BlockDecorSlab extends BlockDecor
+public class BlockDecorSlab extends BlockDecor implements IWaterLoggable
 {
   public static final IntegerProperty PARTS = IntegerProperty.create("parts", 0, 2);
   public static final IntegerProperty TEXTURE_VARIANT = IntegerProperty.create("tvariant", 0, 3);
@@ -63,10 +65,14 @@ public class BlockDecorSlab extends BlockDecor
   public void addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
   {
     if(!ModAuxiliaries.Tooltip.addInformation(stack, world, tooltip, flag, true)) return;
-    //  if(!ModConfig.optout.without_direct_slab_pickup) {
-    ModAuxiliaries.Tooltip.addInformation("engineersdecor.tooltip.slabpickup", "engineersdecor.tooltip.slabpickup", tooltip, flag, true);
-    //  }
+    if(!ModConfig.without_direct_slab_pickup) ModAuxiliaries.Tooltip.addInformation("engineersdecor.tooltip.slabpickup", "engineersdecor.tooltip.slabpickup", tooltip, flag, true);
   }
+
+  @Override
+  @OnlyIn(Dist.CLIENT)
+  @SuppressWarnings("deprecation")
+  public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side)
+  { return (adjacentBlockState==state) ? true : super.isSideInvisible(state, adjacentBlockState, side); }
 
   @Override
   public boolean canSpawnInBlock()
@@ -144,7 +150,7 @@ public class BlockDecorSlab extends BlockDecor
   @SuppressWarnings("deprecation")
   public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player)
   {
-    if((world.isRemote)) return; // || (ModConfig.optout.without_direct_slab_pickup)
+    if((world.isRemote) || (ModConfig.without_direct_slab_pickup)) return;
     final ItemStack stack = player.getHeldItemMainhand();
     if(stack.isEmpty() || (Block.getBlockFromItem(stack.getItem()) != this)) return;
     if(stack.getCount() >= stack.getMaxStackSize()) return;

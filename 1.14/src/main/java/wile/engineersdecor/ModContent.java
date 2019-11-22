@@ -186,8 +186,8 @@ public class ModContent
   // -------------------------------------------------------------------------------------------------------------------
 
   public static final BlockDecorGlassBlock PANZERGLASS_BLOCK = (BlockDecorGlassBlock)(new BlockDecorGlassBlock(
-    BlockDecor.CFG_DEFAULT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(5f, 2000f).sound(SoundType.METAL)
+    BlockDecor.CFG_TRANSLUCENT,
+    Block.Properties.create(Material.GLASS, MaterialColor.AIR).hardnessAndResistance(5f, 2000f).sound(SoundType.METAL)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "panzerglass_block"));
 
   public static final BlockDecorSlab PANZERGLASS_SLAB = (BlockDecorSlab)(new BlockDecorSlab(

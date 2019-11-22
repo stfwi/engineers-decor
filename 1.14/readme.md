@@ -11,6 +11,10 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
+    - v1.0.16-b6 [A] Made slab slice left-click pickup optional (default enabled).
+                 [A] Added config option for device drops in creative mode (addresses #67),
+                 [F] Fixed Panzer Glass Block submerged display (issue #68, thx WenXin20).
+
     - v1.0.16-b5 [F] Fixed recipe condition bug (issue #65, thx Nachtflame for the report,
                      and gigaherz & killjoy for the help).
 
