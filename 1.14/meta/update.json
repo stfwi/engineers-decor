@@ -1,9 +1,15 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.14.4": {
+    "1.0.16-b6": "[A] Made slab slice left-click pickup optional (default enabled).\n[A] Added config option for device drops in creative mode (addresses #67),\n[F] Fixed Panzer Glass Block submerged display (issue #68, thx WenXin20).",
+    "1.0.16-b5": "[F] Fixed recipe condition bug (issue #65, thx Nachtflame for the report, and gigaherz & killjoy for the help).",
+    "1.0.16-b4": "[U] Updated to Forge 1.14.4-28.1.90/20190719-1.14.3.\n[M] Increased slag brick recipe yield to 8.\n[M] Parent specs in model files adapted.",
+    "1.0.16-b3": "[A] Config options (opt-outs and tweaks) added.\n[M] Increased clinker brick recipe yield to 8 for the builders needs.",
+    "1.0.16-b2": "[A] Added Gas Concrete (including wall, stairs, slab, and slab slice).\n[F] Fixed Small Block Breaker active model.\n[F] Fixed item-on-ground display glitch (issue #61, thx Federsavo for the hint).\n[F] Added two missing recipes.",
+    "1.0.16-b1": "[U] Updated to Forge 1.14.4-28.1.79/20190719-1.14.3.\n[A] Added Fluid Collection Funnel.",
     "1.0.15-b3": "[A] Added Small Block Breaker.\n[M] Mineral Smelter fluid handler/transfer added.",
     "1.0.15-b2": "[!] Forge version requirement set to 1.14.4-28.1.68 or higher.\n[A] Added Factory Block Placer and Planter.\n[A] Added Small Tree Cutter.",
-    "1.0.15-b1": "[A] Added Floor Edge Light.\n[U] Updated to Forge1.14.4-28.1.68/20190719-1.14.3.",
+    "1.0.15-b1": "[A] Added Floor Edge Light.\n[U] Updated to Forge 1.14.4-28.1.68/20190719-1.14.3.",
     "1.0.14-b1": "[U] Updated to Forge 1.14.4-28.1.40/20190719-1.14.3.\n[A] Factory Hopper added (configurable hopper and item collector).\n[M] Switched to integrated loot table generation.\n[M] Lang file zh_cn updated (scikirbypoke, PR#53).",
     "1.0.13-b2": "[A] Added Steel Mesh Fence.\n[A] Added Broad Window Sill.",
     "1.0.12-b3": "[U] Updated to Forge 1.14.4-28.1.10/20190719-1.14.3.\n[A] Crafting Table: Added recipe collision resolver, also applies to crafting history refabrication.\n[A] Crafting Table: Added rendering of placed items on the top surface of the table.\n[A] Waterlogging of non-full-blocks added.",
@@ -30,6 +36,6 @@
   },
   "promos": {
     "1.14.4-recommended": "",
-    "1.14.4-latest": "1.0.15-b3"
+    "1.14.4-latest": "1.0.16-b6"
   }
 }

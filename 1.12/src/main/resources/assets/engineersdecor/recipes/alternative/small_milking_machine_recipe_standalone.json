@@ -1,0 +1,37 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:small_milking_machine",
+      "missing": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "PAO",
+    "PRP"
+  ],
+  "key": {
+    "O": {
+      "item": "minecraft:observer",
+      "data": 0
+    },
+    "P": {
+      "item": "#ingotIron",
+      "data": 0
+    },
+    "A": {
+      "item": "minecraft:milk_bucket",
+      "data": 0
+    },
+    "R": {
+      "item": "minecraft:redstone_block",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:small_milking_machine",
+    "count": 1
+  }
+}

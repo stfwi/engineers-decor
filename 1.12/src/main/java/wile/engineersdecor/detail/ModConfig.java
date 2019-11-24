@@ -12,14 +12,17 @@ package wile.engineersdecor.detail;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.blocks.*;
-import net.minecraftforge.common.config.Config;
-import net.minecraftforge.common.config.ConfigManager;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraftforge.common.config.Config;
+import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import wile.engineersdecor.blocks.BlockDecorMilker.BTileEntity;
+
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
@@ -51,6 +54,14 @@ public class ModConfig
     @Config.Name("Pattern includes")
     @Config.RequiresMcRestart
     public String includes = "";
+
+    @Config.Comment({"Disable CTRL-SHIFT item tooltip display."})
+    @Config.Name("Without tooltips")
+    public boolean without_tooltips = false;
+
+    @Config.Comment({"Disable all tile entity special renderers."})
+    @Config.Name("Without TESRs")
+    public boolean without_tesrs = false;
 
     @Config.Comment({"Disable clinker bricks and derived blocks."})
     @Config.Name("Without clinker bricks")
@@ -87,20 +98,10 @@ public class ModConfig
     @Config.RequiresMcRestart
     public boolean without_panzer_glass = false;
 
-    @Config.Comment({"Disable treated wood crafting table."})
-    @Config.Name("Without crafting table")
+    @Config.Comment({"Disable ladders"})
+    @Config.Name("Without ladders")
     @Config.RequiresMcRestart
-    public boolean without_crafting_table = false;
-
-    @Config.Comment({"Disable small lab furnace."})
-    @Config.Name("Without lab furnace")
-    @Config.RequiresMcRestart
-    public boolean without_lab_furnace = false;
-
-    @Config.Comment({"Disable small electrical pass-through furnace."})
-    @Config.Name("Without electrical furnace")
-    @Config.RequiresMcRestart
-    public boolean without_electrical_furnace = false;
+    public boolean without_ladders = false;
 
     @Config.Comment({"Disable treated wood table, stool, windowsill, etc."})
     @Config.Name("Without tr. wood furniture")
@@ -117,26 +118,50 @@ public class ModConfig
     @Config.RequiresMcRestart
     public boolean without_light_sources = false;
 
-    @Config.Comment({"Disable ladders"})
-    @Config.Name("Without ladders")
+    @Config.Comment({"Disable horizontal half-block slab."})
+    @Config.Name("Without slabs")
     @Config.RequiresMcRestart
-    public boolean without_ladders = false;
+    public boolean without_slabs = false;
 
-    @Config.Comment({"Disable possibility to sit on stools and chairs."})
-    @Config.Name("Without chair sitting")
-    public boolean without_chair_sitting = false;
+    @Config.Comment({"Disable stackable 1/8 block slices."})
+    @Config.Name("Without slab slices")
+    @Config.RequiresMcRestart
+    public boolean without_halfslabs = false;
 
-    @Config.Comment({"Disable that mobs will sit on chairs and stools."})
-    @Config.Name("Without chair mob sitting")
-    public boolean without_mob_chair_sitting = false;
+    @Config.Comment({"Disable poles of any material."})
+    @Config.Name("Without poles")
+    @Config.RequiresMcRestart
+    public boolean without_poles = false;
 
-    @Config.Comment({"Disable the speed boost of ladders in this mod."})
-    @Config.Name("Without ladder speed boost")
-    public boolean without_ladder_speed_boost = false;
+    @Config.Comment({"Disable horizontal supports like the double-T support."})
+    @Config.Name("Without h. supports")
+    @Config.RequiresMcRestart
+    public boolean without_hsupports = false;
 
-    @Config.Comment({"Disable history refabrication feature of the treated wood crafting table."})
-    @Config.Name("Without crafting table history")
-    public boolean without_crafting_table_history = false;
+    @Config.Comment({"Disable decorative sign plates (caution, hazards, etc)."})
+    @Config.Name("Without signs")
+    @Config.RequiresMcRestart
+    public boolean without_sign_plates = false;
+
+    @Config.Comment({"Disable the Floor Grating."})
+    @Config.Name("Without floor gratings")
+    @Config.RequiresMcRestart
+    public boolean without_floor_grating = false;
+
+    @Config.Comment({"Disable treated wood crafting table."})
+    @Config.Name("Without crafting table")
+    @Config.RequiresMcRestart
+    public boolean without_crafting_table = false;
+
+    @Config.Comment({"Disable small lab furnace."})
+    @Config.Name("Without lab furnace")
+    @Config.RequiresMcRestart
+    public boolean without_lab_furnace = false;
+
+    @Config.Comment({"Disable small electrical pass-through furnace."})
+    @Config.Name("Without electrical furnace")
+    @Config.RequiresMcRestart
+    public boolean without_electrical_furnace = false;
 
     @Config.Comment({"Disable check valve, and redstone controlled valves."})
     @Config.Name("Without valves")
@@ -153,11 +178,6 @@ public class ModConfig
     @Config.RequiresMcRestart
     public boolean without_waste_incinerator = false;
 
-    @Config.Comment({"Disable decorative sign plates (caution, hazards, etc)."})
-    @Config.Name("Without signs")
-    @Config.RequiresMcRestart
-    public boolean without_sign_plates = false;
-
     @Config.Comment({"Disable the factory dropper."})
     @Config.Name("Without factory dropper")
     @Config.RequiresMcRestart
@@ -169,42 +189,54 @@ public class ModConfig
     public boolean without_factory_hopper = false;
 
     @Config.Comment({"Disable the Factory Block Placer."})
-    @Config.Name("Without factory placer")
+    @Config.Name("Without block placer")
     @Config.RequiresMcRestart
     public boolean without_factory_placer = false;
 
-    @Config.Comment({"Disable horizontal half-block slab."})
-    @Config.Name("Without slabs")
+    @Config.Comment({"Disable the Small Block Breaker."})
+    @Config.Name("Without block breaker")
     @Config.RequiresMcRestart
-    public boolean without_slabs = false;
+    public boolean without_block_breaker = false;
 
-    @Config.Comment({"Disable stackable 1/8 block slices."})
-    @Config.Name("Without slab slices")
+    @Config.Comment({"Disable the Small Solar Panel."})
+    @Config.Name("Without solar panel")
     @Config.RequiresMcRestart
-    public boolean without_halfslabs = false;
+    public boolean without_solar_panel = false;
 
-    @Config.Comment({"Disable directly picking up layers from slabs and slab " +
-                     "slices by left clicking while looking up/down."})
+    @Config.Comment({"Disable the Small Fluid Collection Funnel."})
+    @Config.Name("Without fluid collector")
+    @Config.RequiresMcRestart
+    public boolean without_fluid_funnel = false;
+
+    @Config.Comment({"Disable the Small Mineral Smelter."})
+    @Config.Name("Without mineral smelter")
+    @Config.RequiresMcRestart
+    public boolean without_mineral_smelter = false;
+
+    @Config.Comment({"Disable the Small Mikling Machine."})
+    @Config.Name("Without milking machine")
+    @Config.RequiresMcRestart
+    public boolean without_milker = false;
+
+    @Config.Comment({"Disable directly picking up layers from slabs and slab slices by left clicking while looking up/down."})
     @Config.Name("Without slab pickup")
     public boolean without_direct_slab_pickup = false;
 
-    @Config.Comment({"Disable poles of any material."})
-    @Config.Name("Without poles")
-    @Config.RequiresMcRestart
-    public boolean without_poles = false;
+    @Config.Comment({"Disable possibility to sit on stools and chairs."})
+    @Config.Name("Without chair sitting")
+    public boolean without_chair_sitting = false;
 
-    @Config.Comment({"Disable horizontal supports like the double-T support."})
-    @Config.Name("Without h. supports")
-    @Config.RequiresMcRestart
-    public boolean without_hsupports = false;
+    @Config.Comment({"Disable that mobs will sit on chairs and stools."})
+    @Config.Name("Without chair mob sitting")
+    public boolean without_mob_chair_sitting = false;
 
-    @Config.Comment({"Disable CTRL-SHIFT item tooltip display."})
-    @Config.Name("Without tooltips")
-    public boolean without_tooltips = false;
+    @Config.Comment({"Disable the speed boost of ladders in this mod."})
+    @Config.Name("Without ladder speed boost")
+    public boolean without_ladder_speed_boost = false;
 
-    @Config.Comment({"Disable all tile entity special renderers."})
-    @Config.Name("Without TESRs")
-    public boolean without_tesrs = false;
+    @Config.Comment({"Disable history refabrication feature of the treated wood crafting table."})
+    @Config.Name("Without crafting table history")
+    public boolean without_crafting_table_history = false;
   }
 
   @Config.Comment({
@@ -346,6 +378,73 @@ public class ModConfig
     @Config.Name("Solar panel: Peak power")
     @Config.RangeInt(min=5, max=128)
     public int solar_panel_peak_power = BlockDecorSolarPanel.BTileEntity.DEFAULT_PEAK_POWER;
+
+    @Config.Comment({
+      "Defines how much RF power the Small Block Breaker requires to magnificently increase the processing speed. " +
+      "The config value can be changed on-the-fly for tuning."
+    })
+    @Config.Name("Block Breaker: Power consumption")
+    @Config.RangeInt(min=16, max=512)
+    public int block_breaker_power_consumption = BlockDecorBreaker.BTileEntity.DEFAULT_BOOST_ENERGY;
+
+    @Config.Comment({
+      "Defines how much time the Small Block Breaker needs per block hardness, " +
+      "means: 'reluctance' * hardness + min_time, you change the 'reluctance' here." +
+      "The unit is ticks/hardness. " +
+      "The config value can be changed on-the-fly for tuning."
+    })
+    @Config.Name("Block Breaker: Breaking reluctance")
+    @Config.RangeInt(min=5, max=50)
+    public int block_breaker_reluctance = BlockDecorBreaker.BTileEntity.DEFAULT_BREAKING_RELUCTANCE;
+
+    @Config.Comment({
+      "Defines how much time the Small Block Breaker needs at least, better said it's an offset: " +
+      "'reluctance' * hardness + min_time, you change the 'min_time' here, value " +
+      "in ticks." +
+      "The config value can be changed on-the-fly for tuning."
+    })
+    @Config.Name("Block Breaker: Min breaking time")
+    @Config.RangeInt(min=10, max=100)
+    public int block_breaker_min_breaking_time = BlockDecorBreaker.BTileEntity.DEFAULT_MIN_BREAKING_TIME;
+
+    @Config.Comment({
+      "Defines if the Small Block Breaker does not work without RF power."
+    })
+    @Config.Name("Block Breaker: Power required")
+    public boolean block_breaker_requires_power = false;
+
+    @Config.Comment({
+      "Defines how much RF power the Small Tree Cutter requires to magnificently increase the processing speed. " +
+      "The config value can be changed on-the-fly for tuning."
+    })
+    @Config.Name("Tree Cutter: Power consumption")
+    @Config.RangeInt(min=16, max=512)
+    public int tree_cuttter_energy_consumption = BlockDecorTreeCutter.BTileEntity.DEFAULT_BOOST_ENERGY;
+
+    @Config.Comment({
+      "Defines how much time the Small Tree Cutter needs to cut a tree without RF power. " +
+      "The value is in seconds. With energy it is 6 times faster. " +
+      "The config value can be changed on-the-fly for tuning."
+    })
+    @Config.Name("Tree Cutter: Cutting time")
+    @Config.RangeInt(min=10, max=240)
+    public int tree_cuttter_cutting_time_needed = BlockDecorTreeCutter.BTileEntity.DEFAULT_CUTTING_TIME_NEEDED;
+
+    @Config.Comment({
+      "Defines if the Small Tree Cutter does not work without RF power."
+    })
+    @Config.Name("Tree Cutter: Power required")
+    public boolean tree_cuttter_requires_power = false;
+
+    @Config.Comment({
+      "Defines how much RF power the milking machine needs to work. Note this is a permanent " +
+      "standby consumption (not only when the machine does something). If zero, the machine " +
+      "does not need power at all to function." +
+      "The config value can be changed on-the-fly for tuning."
+    })
+    @Config.Name("Milker: Power consumption")
+    @Config.RangeInt(min=0, max=128)
+    public int milker_energy_consumption = BTileEntity.DEFAULT_ENERGY_CONSUMPTION;
   }
 
   @SuppressWarnings("unused")
@@ -362,14 +461,21 @@ public class ModConfig
 
   @SuppressWarnings("unused")
   public static final void onPreInit()
-  { apply(); }
+  { startup_apply(); }
 
   @SuppressWarnings("unused")
   public static final void onPostInit(FMLPostInitializationEvent event)
-  { for(Block e: ModContent.getRegisteredBlocks()) ModConfig.isOptedOut(e, true); }
+  {
+    for(Block e: ModContent.getRegisteredBlocks()) ModConfig.isOptedOut(e, true);
+    apply();
+  }
 
   private static final ArrayList<String> includes_ = new ArrayList<String>();
   private static final ArrayList<String> excludes_ = new ArrayList<String>();
+  private static final NBTTagCompound server_config_ = new NBTTagCompound();
+
+  public static final NBTTagCompound getServerConfig() // config that may be synchronized from server to client via net pkg.
+  { return server_config_; }
 
   public static final boolean isWithoutOptOutRegistration()
   { return (zmisc!=null) && (zmisc.without_optout_registration); }
@@ -409,6 +515,11 @@ public class ModConfig
       excludes_.clear();
     }
     // Early non-opt out type based evaluation
+    if(block instanceof BlockDecorHalfSlab) return optout.without_halfslabs;
+    if(block instanceof BlockDecorLadder) return optout.without_ladders;
+    if(block instanceof BlockDecorWindow) return optout.without_windows;
+    if(block instanceof BlockDecorHorizontalSupport) return optout.without_hsupports;
+    if(block instanceof BlockDecorFloorGrating) return optout.without_floor_grating;
     if(block instanceof BlockDecorCraftingTable) return optout.without_crafting_table;
     if(block instanceof BlockDecorFurnaceElectrical) return optout.without_electrical_furnace;
     if((block instanceof BlockDecorFurnace) && (!(block instanceof BlockDecorFurnaceElectrical))) return optout.without_lab_furnace;
@@ -417,11 +528,13 @@ public class ModConfig
     if(block instanceof BlockDecorDropper) return optout.without_factory_dropper;
     if(block instanceof BlockDecorHopper) return optout.without_factory_hopper;
     if(block instanceof BlockDecorPlacer) return optout.without_factory_placer;
-    if(block instanceof BlockDecorHalfSlab) return optout.without_halfslabs;
-    if(block instanceof BlockDecorLadder) return optout.without_ladders;
-    if(block instanceof BlockDecorWindow) return optout.without_windows;
+    if(block instanceof BlockDecorBreaker) return optout.without_block_breaker;
+    if(block instanceof BlockDecorSolarPanel) return optout.without_solar_panel;
+    if(block instanceof BlockDecorFluidFunnel) return optout.without_fluid_funnel;
+    if(block instanceof BlockDecorMineralSmelter) return optout.without_mineral_smelter;
+    if(block instanceof BlockDecorMilker) return optout.without_milker;
     if(block instanceof BlockDecorPipeValve) return optout.without_valves;
-    if(block instanceof BlockDecorHorizontalSupport) return optout.without_hsupports;
+
     // Type based evaluation where later filters may match, too
     if(optout.without_slabs && (block instanceof BlockDecorSlab)) return true;
     if(optout.without_stairs && (block instanceof BlockDecorStairs)) return true;
@@ -450,17 +563,10 @@ public class ModConfig
     return false;
   }
 
-  public static final void apply()
+  public static final void startup_apply()
   {
-    BlockDecorFurnace.BTileEntity.on_config(tweaks.furnace_smelting_speed_percent, tweaks.furnace_fuel_efficiency_percent, tweaks.furnace_boost_energy_consumption);
     ModRecipes.furnaceRecipeOverrideReset();
     if(tweaks.furnace_smelts_nuggets) ModRecipes.furnaceRecipeOverrideSmeltsOresToNuggets();
-    BlockDecorChair.on_config(optout.without_chair_sitting, optout.without_mob_chair_sitting, tweaks.chair_mob_sitting_probability_percent, tweaks.chair_mob_standup_probability_percent);
-    BlockDecorLadder.on_config(optout.without_ladder_speed_boost);
-    BlockDecorCraftingTable.on_config(optout.without_crafting_table_history, false, tweaks.with_crafting_quickmove_buttons);
-    BlockDecorPipeValve.on_config(tweaks.pipevalve_max_flowrate, tweaks.pipevalve_redstone_slope);
-    BlockDecorFurnaceElectrical.BTileEntity.on_config(tweaks.e_furnace_speed_percent, tweaks.e_furnace_power_consumption);
-    BlockDecorSolarPanel.BTileEntity.on_config(tweaks.solar_panel_peak_power);
     {
       optout.includes = optout.includes.toLowerCase().replaceAll(ModEngineersDecor.MODID+":", "").replaceAll("[^*_,a-z0-9]", "");
       if(!optout.includes.isEmpty()) ModEngineersDecor.logger.info("Pattern includes: '" + optout.includes + "'");
@@ -480,6 +586,26 @@ public class ModConfig
         excl[i] = excl[i].replaceAll("[*]", ".*?");
         if(!excl[i].isEmpty()) excludes_.add(excl[i]);
       }
+    }
+  }
+
+  public static final void apply()
+  {
+    BlockDecorFurnace.BTileEntity.on_config(tweaks.furnace_smelting_speed_percent, tweaks.furnace_fuel_efficiency_percent, tweaks.furnace_boost_energy_consumption);
+    BlockDecorChair.on_config(optout.without_chair_sitting, optout.without_mob_chair_sitting, tweaks.chair_mob_sitting_probability_percent, tweaks.chair_mob_standup_probability_percent);
+    BlockDecorLadder.on_config(optout.without_ladder_speed_boost);
+    BlockDecorCraftingTable.on_config(optout.without_crafting_table_history, false, tweaks.with_crafting_quickmove_buttons);
+    BlockDecorPipeValve.on_config(tweaks.pipevalve_max_flowrate, tweaks.pipevalve_redstone_slope);
+    BlockDecorFurnaceElectrical.BTileEntity.on_config(tweaks.e_furnace_speed_percent, tweaks.e_furnace_power_consumption);
+    BlockDecorSolarPanel.BTileEntity.on_config(tweaks.solar_panel_peak_power);
+    BlockDecorBreaker.BTileEntity.on_config(tweaks.block_breaker_power_consumption, tweaks.block_breaker_reluctance, tweaks.block_breaker_min_breaking_time, tweaks.block_breaker_requires_power);
+    BlockDecorTreeCutter.BTileEntity.on_config(tweaks.tree_cuttter_energy_consumption, tweaks.tree_cuttter_cutting_time_needed, tweaks.tree_cuttter_requires_power);
+    BlockDecorMilker.BTileEntity.on_config(tweaks.milker_energy_consumption);
+    BlockDecorPlacer.BTileEntity.on_config();
+    {
+      // Check if the config is already synchronized or has to be synchronised.
+      server_config_.setBoolean("tree_cuttter_requires_power", tweaks.tree_cuttter_requires_power);
+      server_config_.setBoolean("block_breaker_requires_power", tweaks.block_breaker_requires_power);
     }
   }
 

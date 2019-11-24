@@ -97,6 +97,7 @@ public class ModTesrs
     @Override
     public void render(final BlockDecorTest.BTileEntity te, double x, double y, double z, final float partialTicks, final int destroyStage, final float alpha)
     {
+      if(te.progress() < 0) return;
       renderBlockState(Blocks.SANDSTONE.getDefaultState(), te.getPos(), (new Vec3d(1,1,1)).scale(te.progress()), x,y,z);
     }
 

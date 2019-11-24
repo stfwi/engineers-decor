@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube",
+	"parent": "block/block",
 	"textures": {
 		"shutter": "engineersdecor:block/device/factory_dropper_shutter",
 		"top": "engineersdecor:block/device/factory_dropper_top",
@@ -95,6 +95,7 @@
 	],
 	"display": {
 		"ground": {
+      "translation": [0, 1.75, 0],
 			"scale": [0.2, 0.2, 0.2]
 		},
 		"gui": {

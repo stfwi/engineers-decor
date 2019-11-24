@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube",
+	"parent": "block/block",
 	"textures": {
 		"side": "engineersdecor:block/pole/treated_wood_pole_side_texture",
 		"particle": "engineersdecor:block/pole/treated_wood_pole_side_texture",
@@ -53,7 +53,8 @@
 			"scale": [0.35, 0.35, 0.35]
 		},
 		"ground": {
-			"rotation": [90, 0, 0],
+      "rotation": [90, 0, 0],
+      "translation": [0, 1.75, 0],
 			"scale": [0.2, 0.2, 0.2]
 		},
 		"gui": {

@@ -11,6 +11,37 @@ Mod sources for Minecraft version 1.12.2.
 ## Version history
 
                   -------------------------------------------------------------------
+    - v1.0.16     [R] Release based on v1.0.16-b3. Release-to-release changes:
+                      * Added Gas Concrete blocks/walls/stairs/slabs/slab slices.
+                      * Added Fluid Collection Funnel
+                      * Crafting yield for Clinker/Slag bricks increased.
+                      * Block Placer improvements (cocoa planting) and fixes.
+                      * Block breaker compat improvements and fixes.
+                      * Recipe compat auto detection fixes.
+                      * Feature opt-out and tweak config options for mod packs improved.
+                  -------------------------------------------------------------------
+
+    - v1.0.16-b3  [M] Increased slag brick recipe yield to 8.
+                  [A] Small Block Placer can plant Cocoa.
+                  [F] Fixed Small Block Placer seed detection issue (issue #64, thx Federsavo).
+                  [F] Fixed incorrectly enabled alternative recipes for fluid accumulator and check valve
+                      when IE is installed.
+                  [M] Slightly nerfed the Small Solar Panel default peak power output (does not affect
+                      existing configurations).
+
+    - v1.0.16-b2  [A] Added Gas Concrete (including slab, wall, stairs, and slab slice).
+                  [A] Added explicit RF-power-required option for Small Block Breaker and Small Tree Cutter (issue #63).
+                  [M] Increased clinker brick recipe yield to 8 for the master builders needs.
+                  [F] Fixed item-on-ground display glitch (issue #61, thx Federsavo for the hint).
+                  [F] Fixed sign bounding boxes (issue #62, thx angela/themartin).
+
+    - v1.0.16-b1  [A] Added Fluid Collection Funnel.
+                  [A] Added config opt-outs for Breaker, Placer, Fluid Funnel, Mineral Smelter.
+                  [A] Added configs tweaks for Small Block Breaker and Small Tree Cutter (cffr#185).
+                  [F] Fixed Block Placer discarding item metadata/variants while placing (issue #60).
+                  [F] Fixed Block Breaker duping empty shulker boxes, model updated.
+
+                  -------------------------------------------------------------------
     - v1.0.15     [R] Release based on v1.0.15-b2. Release-to-release changes:
                       * Added Small Block Breaker
                       * Small Tree Cutter fixes and compatability improved.

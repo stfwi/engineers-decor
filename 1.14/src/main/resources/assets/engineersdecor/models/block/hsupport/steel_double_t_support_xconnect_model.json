@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube",
+	"parent": "block/block",
 	"textures": {
 		"end": "engineersdecor:block/hsupport/steel_double_t_support_end_texture",
 		"particle": "engineersdecor:block/hsupport/steel_double_t_support_end_texture",
@@ -50,6 +50,7 @@
 	],
 	"display": {
 		"ground": {
+      "translation": [0, 1.75, 0],
 			"scale": [0.2, 0.2, 0.2]
 		},
 		"gui": {

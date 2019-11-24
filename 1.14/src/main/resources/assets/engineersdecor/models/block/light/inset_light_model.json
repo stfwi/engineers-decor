@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube",
+	"parent": "block/block",
 	"textures": {
 		"light": "engineersdecor:block/light/lamp_glass_warm_square_texture",
 		"side": "engineersdecor:block/iestyle/steel_texture",
@@ -122,7 +122,7 @@
 			"translation": [-3, -0.75, 1.25]
 		},
 		"ground": {
-			"translation": [0, 0, 6],
+			"translation": [0, 1.5, 6],
 			"scale": [0.7, 0.7, 0.7]
 		},
 		"gui": {

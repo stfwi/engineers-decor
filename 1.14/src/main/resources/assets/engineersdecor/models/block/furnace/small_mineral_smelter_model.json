@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube",
+	"parent": "block/block",
 	"textures": {
 		"front": "engineersdecor:block/furnace/small_mineral_smelter_front_s0",
 		"top": "engineersdecor:block/furnace/small_mineral_smelter_top",
@@ -93,6 +93,7 @@
 	],
 	"display": {
 		"ground": {
+      "translation": [0, 1.75, 0],
 			"scale": [0.2, 0.2, 0.2]
 		},
 		"gui": {

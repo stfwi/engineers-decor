@@ -1,0 +1,28 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:gas_concrete",
+      "missing": ["immersiveengineering:stone_decoration"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SC",
+    "CS"
+  ],
+  "key": {
+    "C": {
+      "item": "#blockConcreteMc",
+      "data": 0
+    },
+    "S": {
+      "item": "#sand",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:gas_concrete",
+    "count": 4
+  }
+}

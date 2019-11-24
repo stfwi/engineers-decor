@@ -1,15 +1,10 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "engineersdecor:block/pole/straight_thick_metal_pole_head_model",
-    "x":-90,
-    "textures": {
-      "particle": "engineersdecor:block/pole/thick_steel_pole_side_texture",
-      "side": "engineersdecor:block/pole/thick_steel_pole_side_texture",
-      "top": "engineersdecor:block/pole/thick_steel_pole_top_texture"
-    }
-  },
   "variants": {
-    "facing": { "north":{"y":0}, "south":{"y":180}, "west":{"y":270}, "east":{"y":90}, "up": {"x":-90}, "down": {"x":90} }
+    "facing=north": { "model": "engineersdecor:block/pole/thick_steel_pole_head_model"          },
+    "facing=south": { "model": "engineersdecor:block/pole/thick_steel_pole_head_model", "y":180 },
+    "facing=west":  { "model": "engineersdecor:block/pole/thick_steel_pole_head_model", "y":270 },
+    "facing=east":  { "model": "engineersdecor:block/pole/thick_steel_pole_head_model", "y":90  },
+    "facing=up":    { "model": "engineersdecor:block/pole/thick_steel_pole_head_model", "x":270 },
+    "facing=down":  { "model": "engineersdecor:block/pole/thick_steel_pole_head_model", "x":90  }
   }
 }

@@ -96,18 +96,22 @@ public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
     public static final int TICK_INTERVAL = 5;
     public static final int BOOST_FACTOR = 6;
     public static final int DEFAULT_BOOST_ENERGY = 64;
-    public static final int DEFAULT_CUTTING_TIME_NEEDED = 20 * 60; // 60 secs, so that people don't come to the bright idea to carry one with them.
+    public static final int DEFAULT_CUTTING_TIME_NEEDED = 60; // 60 secs, so that people don't come to the bright idea to carry one with them.
     private static int boost_energy_consumption = DEFAULT_BOOST_ENERGY;
-    private static int cutting_time_needed = DEFAULT_CUTTING_TIME_NEEDED;
+    private static int cutting_time_needed = 20 * DEFAULT_CUTTING_TIME_NEEDED;
+    private static boolean requires_power = false;
 
     private int tick_timer_;
+    private int active_timer_;
     private int proc_time_elapsed_; // small, not saved in nbt.
     private int boost_energy_;      // small, not saved in nbt.
 
-    public static void on_config(int boost_energy_per_tick)
+    public static void on_config(int boost_energy_per_tick, int cutting_time_seconds, boolean power_required)
     {
       boost_energy_consumption = TICK_INTERVAL * MathHelper.clamp(boost_energy_per_tick, 16, 512);
-      ModEngineersDecor.logger.info("Config tree cutter: Boost energy consumption:" + boost_energy_consumption + "rf/t");
+      cutting_time_needed = 20 * MathHelper.clamp(cutting_time_seconds, 10, 240);
+      requires_power = power_required;
+      ModEngineersDecor.logger.info("Config tree cutter: Boost energy consumption:" + boost_energy_consumption + "rf/t" + (requires_power?" (power required for operation) ":"") + ", cutting time " + cutting_time_needed + "t." );
     }
 
     public BTileEntity()
@@ -188,15 +192,24 @@ public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
         if(!TreeCutting.canChop(tree_state) || (world.isBlockPowered(pos))) {
           if(device_state.getValue(ACTIVE)) world.setBlockState(pos, device_state.withProperty(ACTIVE, false), 1|2);
           proc_time_elapsed_ = 0;
+          active_timer_ = 0;
           tick_timer_ = IDLE_TICK_INTERVAL;
           return;
         }
         proc_time_elapsed_ += TICK_INTERVAL;
-        if(boost_energy_ >= boost_energy_consumption) { boost_energy_ = 0; proc_time_elapsed_ += TICK_INTERVAL*BOOST_FACTOR; }
-        boolean active = true;
+        if(boost_energy_ >= boost_energy_consumption) {
+          boost_energy_ = 0;
+          proc_time_elapsed_ += TICK_INTERVAL*BOOST_FACTOR;
+          active_timer_ = 2;
+        } else if(!requires_power) {
+          active_timer_ = 1024;
+        } else if(active_timer_ > 0) {
+          --active_timer_;
+        }
+        boolean active = (active_timer_ > 0);
         if(proc_time_elapsed_ >= cutting_time_needed) {
           proc_time_elapsed_ = 0;
-          TreeCutting.chopTree(world, tree_state, tree_pos, 512, false);
+          TreeCutting.chopTree(world, tree_state, tree_pos, 2048, false);
           world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.BLOCK_WOOD_BREAK, SoundCategory.BLOCKS, 1.0f, 1.0f);
           active = false;
         }

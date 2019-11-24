@@ -41,6 +41,8 @@ import net.minecraft.util.*;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import wile.engineersdecor.detail.ModConfig;
+
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
@@ -127,11 +129,13 @@ public class BlockDecor extends Block implements IDecorBlock
     }
   }
 
-  public static boolean dropBlock(BlockState state, World world, BlockPos pos, boolean explosion)
+  public static boolean dropBlock(BlockState state, World world, BlockPos pos, @Nullable PlayerEntity player)
   {
     if(!(state.getBlock() instanceof IDecorBlock)) { world.removeBlock(pos, false); return true; }
     if(!world.isRemote()) {
-      ((IDecorBlock)state.getBlock()).dropList(state, world, pos, explosion).forEach(stack->world.addEntity(new ItemEntity(world, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, stack)));
+      if((ModConfig.with_creative_mode_device_drops) || (player==null) || (!player.isCreative())) {
+        ((IDecorBlock)state.getBlock()).dropList(state, world, pos, player==null).forEach(stack->world.addEntity(new ItemEntity(world, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, stack)));
+      }
     }
     if(state.getBlock().hasTileEntity(state)) world.removeTileEntity(pos);
     world.removeBlock(pos, false);
@@ -140,11 +144,11 @@ public class BlockDecor extends Block implements IDecorBlock
 
   @Override
   public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, IFluidState fluid)
-  { return hasDynamicDropList() ? dropBlock(state, world, pos, false) : super.removedByPlayer(state, world,pos , player, willHarvest, fluid); }
+  { return hasDynamicDropList() ? dropBlock(state, world, pos, player) : super.removedByPlayer(state, world,pos , player, willHarvest, fluid); }
 
   @Override
   public void onExplosionDestroy(World world, BlockPos pos, Explosion explosion)
-  { if(hasDynamicDropList()) dropBlock(world.getBlockState(pos), world, pos, true); }
+  { if(hasDynamicDropList()) dropBlock(world.getBlockState(pos), world, pos, null); }
 
   @Override
   @SuppressWarnings("deprecation")

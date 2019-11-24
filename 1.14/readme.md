@@ -11,7 +11,29 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
-    ~ v1.0.15-b4 [A] Added Fluid Collection Funnel.
+    ~ v1.0.16-b7 [M] Forge blockstates ported from 1.12 transformed to vanilla.
+
+    - v1.0.16-b6 [A] Made slab slice left-click pickup optional (default enabled).
+                 [A] Added config option for device drops in creative mode (addresses #67),
+                 [F] Fixed Panzer Glass Block submerged display (issue #68, thx WenXin20).
+
+    - v1.0.16-b5 [F] Fixed recipe condition bug (issue #65, thx Nachtflame for the report,
+                     and gigaherz & killjoy for the help).
+
+    - v1.0.16-b4 [U] Updated to Forge 1.14.4-28.1.90/20190719-1.14.3.
+                 [M] Increased slag brick recipe yield to 8.
+                 [M] Parent specs in model files adapted.
+
+    - v1.0.16-b3 [A] Config options (opt-outs and tweaks) added.
+                 [M] Increased clinker brick recipe yield to 8 for the builders needs.
+
+    - v1.0.16-b2 [A] Added Gas Concrete (including wall, stairs, slab, and slab slice).
+                 [F] Fixed Small Block Breaker active model.
+                 [F] Fixed item-on-ground display glitch (issue #61, thx Federsavo for the hint).
+                 [F] Added two missing recipes.
+
+    - v1.0.16-b1 [U] Updated to Forge 1.14.4-28.1.79/20190719-1.14.3.
+                 [A] Added Fluid Collection Funnel.
 
     - v1.0.15-b3 [A] Added Small Block Breaker.
                  [M] Mineral Smelter fluid handler/transfer added.
@@ -21,7 +43,7 @@ Mod sources for Minecraft version 1.14.4.
                  [A] Added Small Tree Cutter.
 
     - v1.0.15-b1 [A] Added Floor Edge Light.
-                 [U] Updated to Forge1.14.4-28.1.68/20190719-1.14.3.
+                 [U] Updated to Forge 1.14.4-28.1.68/20190719-1.14.3.
 
     - v1.0.14-b1 [U] Updated to Forge 1.14.4-28.1.40/20190719-1.14.3.
                  [A] Factory Hopper added (configurable hopper and item collector).

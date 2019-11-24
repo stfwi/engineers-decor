@@ -70,6 +70,11 @@ public class ModContent
 
   public static final BlockDecorWall CONCRETE_WALL = new BlockDecorWall("concrete_wall", BlockDecor.CFG_DEFAULT, Material.ROCK, 5f, 20f, SoundType.STONE);
 
+  public static final BlockDecorFull GAS_CONCRETE_BLOCK = new BlockDecorFull("gas_concrete", 0, Material.ROCK, 1.5f, 10f, SoundType.STONE);
+  public static final BlockDecorStairs GAS_CONCRETE_STAIRS = new BlockDecorStairs("gas_concrete_stairs", REBAR_CONCRETE_BLOCK.getDefaultState());
+  public static final BlockDecorWall GAS_CONCRETE_WALL = new BlockDecorWall("gas_concrete_wall", BlockDecor.CFG_DEFAULT, Material.ROCK, 1.5f, 10f, SoundType.STONE);
+  public static final BlockDecorSlab GAS_CONCRETE_SLAB = new BlockDecorSlab("gas_concrete_slab", BlockDecor.CFG_DEFAULT, Material.ROCK, 1.5f, 10f, SoundType.STONE);
+
   public static final BlockDecorLadder METAL_RUNG_LADDER = new BlockDecorLadder("metal_rung_ladder", 0, Material.IRON, 0.5f, 20f, SoundType.METAL);
   public static final BlockDecorLadder METAL_RUNG_STEPS = new BlockDecorLadder("metal_rung_steps", 0, Material.IRON, 0.5f, 20f, SoundType.METAL);
   public static final BlockDecorLadder TREATED_WOOD_LADDER = new BlockDecorLadder("treated_wood_ladder", 0, Material.WOOD, 0.5f, 10f, SoundType.WOOD);
@@ -136,6 +141,13 @@ public class ModContent
     BlockDecor.CFG_LOOK_PLACEMENT,
     Material.IRON, 1f, 15f, SoundType.METAL,
     ModAuxiliaries.getPixeledAABB(1.1,0,1.1, 14.9,16,14.9)
+  );
+
+  public static final BlockDecorMilker SMALL_MILKING_MACHINE = new BlockDecorMilker(
+    "small_milking_machine",
+    BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_CUTOUT|BlockDecor.CFG_ELECTRICAL,
+    Material.IRON, 1f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,13)
   );
 
   public static final BlockDecorSolarPanel SMALL_SOLAR_PANEL = new BlockDecorSolarPanel(
@@ -350,51 +362,51 @@ public class ModContent
 
   public static final BlockDecorDirected SIGN_MODLOGO = new BlockDecorDirected(
     "sign_decor",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
     Material.WOOD, 0.1f, 1000f, SoundType.WOOD,
-    ModAuxiliaries.getPixeledAABB(0,0,15.6, 16,16,16)
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,0.5)
   );
 
   public static final BlockDecorDirected SIGN_HOTWIRE = new BlockDecorDirected(
     "sign_hotwire",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
     Material.WOOD, 0.1f, 1f, SoundType.WOOD,
-    ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
+    ModAuxiliaries.getPixeledAABB(2,2,0, 14,14,0.5)
   );
 
   public static final BlockDecorDirected SIGN_MINDSTEP = new BlockDecorDirected(
     "sign_mindstep",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
     Material.WOOD, 0.1f, 1f, SoundType.WOOD,
-    ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,0.5)
   );
 
   public static final BlockDecorDirected SIGN_DANGER = new BlockDecorDirected(
     "sign_danger",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
     Material.WOOD, 0.1f, 1f, SoundType.WOOD,
-    ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
+    ModAuxiliaries.getPixeledAABB(2,2,0, 14,14,0.5)
   );
 
   public static final BlockDecorDirected SIGN_DEFENSE = new BlockDecorDirected(
     "sign_defense",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_OPPOSITE_PLACEMENT|(1<<BlockDecor.CFG_LIGHT_VALUE_SHIFT),
     Material.WOOD, 0.1f, 1f, SoundType.WOOD,
-    ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,0.5)
   );
 
   public static final BlockDecorDirected SIGN_FACTORY_AREA = new BlockDecorDirected(
     "sign_factoryarea",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Material.WOOD, 0.1f, 1f, SoundType.WOOD,
-    ModAuxiliaries.getPixeledAABB(2,2,15.6, 15,15,16)
+    ModAuxiliaries.getPixeledAABB(1,1,0, 15,15,0.5)
   );
 
   public static final BlockDecorDirected SIGN_EXIT = new BlockDecorDirected(
     "sign_exit",
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Material.WOOD, 0.1f, 1f, SoundType.WOOD,
-    ModAuxiliaries.getPixeledAABB(3,7,15.6, 13,13,16)
+    ModAuxiliaries.getPixeledAABB(3,7,0, 13,13,0.5)
   );
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -408,6 +420,11 @@ public class ModContent
     "halfslab_concrete",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HARD_IE_DEPENDENT,
     Material.ROCK, 1.0f, 10f, SoundType.STONE
+  );
+  public static final BlockDecorHalfSlab HALFSLAB_GAS_CONCRETE = new BlockDecorHalfSlab(
+    "halfslab_gas_concrete",
+    BlockDecor.CFG_CUTOUT,
+    Material.ROCK, 1.5f, 10f, SoundType.STONE
   );
   public static final BlockDecorHalfSlab HALFSLAB_TREATEDWOOD = new BlockDecorHalfSlab(
     "halfslab_treated_wood",
@@ -493,6 +510,9 @@ public class ModContent
   private static final TileEntityRegistrationData SMALL_MINERAL_SMELTER_TEI = new TileEntityRegistrationData(
     BlockDecorMineralSmelter.BTileEntity.class, "te_small_mineral_smelter"
   );
+  private static final TileEntityRegistrationData SMALL_MILKING_MACHINE_TEI = new TileEntityRegistrationData(
+    BlockDecorMilker.BTileEntity.class, "te_small_milking_machine"
+  );
   private static final TileEntityRegistrationData SMALL_SOLAR_PANEL_TEI = new TileEntityRegistrationData(
     BlockDecorSolarPanel.BTileEntity.class, "te_small_solar_panel"
   );
@@ -523,6 +543,7 @@ public class ModContent
     SMALL_SOLAR_PANEL,SMALL_SOLAR_PANEL_TEI,
     SMALL_MINERAL_SMELTER, SMALL_MINERAL_SMELTER_TEI,
     STRAIGHT_CHECK_VALVE, STRAIGHT_REDSTONE_VALVE, STRAIGHT_REDSTONE_ANALOG_VALVE, STRAIGHT_PIPE_VALVE_TEI,
+    SMALL_FLUID_FUNNEL,SMALL_FLUID_FUNNEL_TEI,
     PASSIVE_FLUID_ACCUMULATOR, PASSIVE_FLUID_ACCUMULATOR_TEI,
     CLINKER_BRICK_BLOCK,
     CLINKER_BRICK_SLAB,
@@ -542,6 +563,10 @@ public class ModContent
     REBAR_CONCRETE_TILE,
     REBAR_CONCRETE_TILE_SLAB,
     REBAR_CONCRETE_TILE_STAIRS,
+    GAS_CONCRETE_BLOCK,
+    GAS_CONCRETE_SLAB,
+    GAS_CONCRETE_STAIRS,
+    GAS_CONCRETE_WALL,
     CONCRETE_WALL,
     PANZERGLASS_BLOCK,
     METAL_RUNG_LADDER,
@@ -568,17 +593,17 @@ public class ModContent
     STEEL_MESH_FENCE,
     SIGN_HOTWIRE, SIGN_DANGER, SIGN_DEFENSE, SIGN_FACTORY_AREA, SIGN_EXIT, SIGN_MODLOGO,
     TREATED_WOOD_SIDE_TABLE,
-    HALFSLAB_REBARCONCRETE, HALFSLAB_CONCRETE, HALFSLAB_TREATEDWOOD,
+    HALFSLAB_REBARCONCRETE, HALFSLAB_CONCRETE, HALFSLAB_GAS_CONCRETE, HALFSLAB_TREATEDWOOD,
     HALFSLAB_SHEETMETALIRON, HALFSLAB_SHEETMETALSTEEL, HALFSLAB_SHEETMETALCOPPER,
     HALFSLAB_SHEETMETALGOLD, HALFSLAB_SHEETMETALALUMINIUM,
   };
 
   private static final Object dev_content[] = {
-    SIGN_MINDSTEP,
+    SIGN_MINDSTEP,                            // @todo: somehow make this sign look good.
     PANZERGLASS_SLAB,                         // @todo: check if another class is needed due to is_side_visible
     TREATED_WOOD_FLOOR,                       // @todo: check if textures need improvement
     TEST_BLOCK,TEST_BLOCK_TEI,
-    SMALL_FLUID_FUNNEL,SMALL_FLUID_FUNNEL_TEI
+    SMALL_MILKING_MACHINE,SMALL_MILKING_MACHINE_TEI
   };
 
   //--------------------------------------------------------------------------------------------------------------------

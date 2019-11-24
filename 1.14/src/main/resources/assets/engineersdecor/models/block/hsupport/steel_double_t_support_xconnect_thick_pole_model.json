@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube",
+	"parent": "block/block",
 	"textures": {
 		"pside": "engineersdecor:block/pole/thick_steel_pole_side_texture",
 		"particle": "engineersdecor:block/pole/thick_steel_pole_side_texture",
@@ -49,6 +49,7 @@
 	],
 	"display": {
 		"ground": {
+      "translation": [0, 1.75, 0],
 			"scale": [0.2, 0.2, 0.2]
 		},
 		"gui": {

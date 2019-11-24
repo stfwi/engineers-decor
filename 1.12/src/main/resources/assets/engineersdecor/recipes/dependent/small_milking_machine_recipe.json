@@ -1,0 +1,41 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:small_milking_machine",
+      "required": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "PAO",
+    "CBC"
+  ],
+  "key": {
+    "O": {
+      "item": "minecraft:observer",
+      "data": 0
+    },
+    "P": {
+      "item": "#plateAnyFerroMetal",
+      "data": 0
+    },
+    "A": {
+      "item": "minecraft:milk_bucket",
+      "data": 0
+    },
+    "B": {
+      "item": "#itemSteelBarrel",
+      "data": 0
+    },
+    "C": {
+      "item": "#anyMechanicalComponent",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:small_milking_machine",
+    "count": 1
+  }
+}

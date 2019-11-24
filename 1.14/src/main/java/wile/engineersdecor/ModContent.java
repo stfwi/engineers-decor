@@ -12,8 +12,7 @@
  */
 package wile.engineersdecor;
 
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import org.apache.commons.lang3.ArrayUtils;
+
 import wile.engineersdecor.blocks.*;
 import wile.engineersdecor.detail.ModAuxiliaries;
 import net.minecraft.client.gui.ScreenManager;
@@ -29,12 +28,13 @@ import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.BlockItem;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.event.RegistryEvent;
-import wile.engineersdecor.detail.ModTesrs;
 
+import org.apache.commons.lang3.ArrayUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
@@ -139,6 +139,34 @@ public class ModContent
 
   // -------------------------------------------------------------------------------------------------------------------
 
+  public static final BlockDecor GAS_CONCRETE_BLOCK = (BlockDecor)(new BlockDecor(
+    BlockDecor.CFG_DEFAULT,
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5f, 10f).sound(SoundType.STONE)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "gas_concrete"));
+
+  public static final BlockDecorSlab GAS_CONCRETE_SLAB = (BlockDecorSlab)(new BlockDecorSlab(
+    BlockDecor.CFG_DEFAULT,
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5f, 10f).sound(SoundType.STONE)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "gas_concrete_slab"));
+
+  public static final BlockDecorStairs GAS_CONCRETE_STAIRS = (BlockDecorStairs)(new BlockDecorStairs(
+    BlockDecor.CFG_DEFAULT,
+    REBAR_CONCRETE_BLOCK.getDefaultState(),
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5f, 10f).sound(SoundType.STONE)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "gas_concrete_stairs"));
+
+  public static final BlockDecorWall GAS_CONCRETE_WALL = (BlockDecorWall)(new BlockDecorWall(
+    BlockDecor.CFG_DEFAULT,
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5f, 10f).sound(SoundType.STONE)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "gas_concrete_wall"));
+
+  public static final BlockDecorHalfSlab HALFSLAB_GASCONCRETE = (BlockDecorHalfSlab)(new BlockDecorHalfSlab(
+    BlockDecor.CFG_CUTOUT,
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5f, 10f).sound(SoundType.STONE)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "halfslab_gas_concrete"));
+
+  // -------------------------------------------------------------------------------------------------------------------
+
   public static final BlockDecor REBAR_CONCRETE_TILE = (BlockDecor)(new BlockDecor(
     BlockDecor.CFG_DEFAULT,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 2000f).sound(SoundType.STONE)
@@ -158,8 +186,8 @@ public class ModContent
   // -------------------------------------------------------------------------------------------------------------------
 
   public static final BlockDecorGlassBlock PANZERGLASS_BLOCK = (BlockDecorGlassBlock)(new BlockDecorGlassBlock(
-    BlockDecor.CFG_DEFAULT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(5f, 2000f).sound(SoundType.METAL)
+    BlockDecor.CFG_TRANSLUCENT,
+    Block.Properties.create(Material.GLASS, MaterialColor.AIR).hardnessAndResistance(5f, 2000f).sound(SoundType.METAL)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "panzerglass_block"));
 
   public static final BlockDecorSlab PANZERGLASS_SLAB = (BlockDecorSlab)(new BlockDecorSlab(
@@ -364,19 +392,19 @@ public class ModContent
 
   public static final BlockDecorDropper FACTORY_DROPPER = (BlockDecorDropper)(new BlockDecorDropper(
     BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_REDSTONE_CONTROLLED,
-    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,15)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "factory_dropper"));
 
   public static final BlockDecorPlacer FACTORY_PLACER = (BlockDecorPlacer)(new BlockDecorPlacer(
-    BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|BlockDecor.CFG_REDSTONE_CONTROLLED,
-    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
+    BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_REDSTONE_CONTROLLED,
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
     ModAuxiliaries.getPixeledAABB(2,2,2, 14,14,14)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "factory_placer"));
 
   public static final BlockDecorBreaker SMALL_BLOCK_BREAKER = (BlockDecorBreaker)(new BlockDecorBreaker(
-    BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
-    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
+    BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,12,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_block_breaker"));
 
@@ -403,6 +431,12 @@ public class ModContent
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,11.5,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_solar_panel"));
+
+  public static final BlockDecorMilker SMALL_MILKING_MACHINE = (BlockDecorMilker)(new BlockDecorMilker(
+    BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_CUTOUT|BlockDecor.CFG_ELECTRICAL,
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,13)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_milking_machine"));
 
   public static final BlockDecorTreeCutter SMALL_TREE_CUTTER = (BlockDecorTreeCutter)(new BlockDecorTreeCutter(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
@@ -526,7 +560,12 @@ public class ModContent
     REBAR_CONCRETE_TILE,
     REBAR_CONCRETE_TILE_SLAB,
     REBAR_CONCRETE_TILE_STAIRS,
+    GAS_CONCRETE_BLOCK,
+    GAS_CONCRETE_SLAB,
+    GAS_CONCRETE_STAIRS,
+    GAS_CONCRETE_WALL,
     HALFSLAB_REBARCONCRETE,
+    HALFSLAB_GASCONCRETE,
     HALFSLAB_CONCRETE,
     //HALFSLAB_TREATEDWOOD,
     //HALFSLAB_SHEETMETALIRON
@@ -569,6 +608,7 @@ public class ModContent
   };
 
   private static final Block devBlocks[] = {
+    SMALL_MILKING_MACHINE
   };
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -640,6 +680,11 @@ public class ModContent
     .build(null)
     .setRegistryName(ModEngineersDecor.MODID, "te_small_solar_panel");
 
+  public static final TileEntityType<?> TET_SMALL_MILKING_MACHINE = TileEntityType.Builder
+    .create(BlockDecorMilker.BTileEntity::new, SMALL_MILKING_MACHINE)
+    .build(null)
+    .setRegistryName(ModEngineersDecor.MODID, "te_small_milking_machine");
+
   public static final TileEntityType<?> TET_SMALL_TREE_CUTTER = TileEntityType.Builder
     .create(BlockDecorTreeCutter.BTileEntity::new, SMALL_TREE_CUTTER)
     .build(null)
@@ -658,6 +703,7 @@ public class ModContent
     TET_WASTE_INCINERATOR,
     TET_MINERAL_SMELTER,
     TET_SMALL_SOLAR_PANEL,
+    TET_SMALL_MILKING_MACHINE,
     TET_STRAIGHT_PIPE_VALVE,
     TET_PASSIVE_FLUID_ACCUMULATOR,
     TET_SMALL_FLUID_FUNNEL,
@@ -806,6 +852,6 @@ public class ModContent
   @OnlyIn(Dist.CLIENT)
   public static final void registerTileEntityRenderers(final FMLClientSetupEvent event)
   {
-    ClientRegistry.bindTileEntitySpecialRenderer(BlockDecorCraftingTable.BTileEntity.class, new ModTesrs.TesrDecorCraftingTable());
+    ClientRegistry.bindTileEntitySpecialRenderer(BlockDecorCraftingTable.BTileEntity.class, new wile.engineersdecor.detail.ModTesrs.TesrDecorCraftingTable());
   }
 }

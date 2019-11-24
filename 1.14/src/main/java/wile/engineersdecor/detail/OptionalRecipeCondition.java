@@ -57,11 +57,16 @@ public class OptionalRecipeCondition implements ICondition
   @Override
   public boolean test()
   {
+    if(ModConfig.withoutRecipes()) return false;
     if((experimental) && (!ModConfig.withExperimental())) return false;
     final IForgeRegistry<Block> block_registry = ForgeRegistries.BLOCKS;
     final IForgeRegistry<Item> item_registry = ForgeRegistries.ITEMS;
     if(result != null) {
-      if((!block_registry.containsKey(result)) && (!item_registry.containsKey(result))) return false; // required result not registered
+      boolean item_registered = item_registry.containsKey(result);
+      boolean block_registered = block_registry.containsKey(result);
+      if((!block_registered) && (!item_registered)) return false; // required result not registered
+      if(item_registered && ModConfig.isOptedOut(item_registry.getValue(result))) return false;
+      if(block_registered && ModConfig.isOptedOut(block_registry.getValue(result))) return false;
     }
     if(!all_required.isEmpty()) {
       for(ResourceLocation rl:all_required) {

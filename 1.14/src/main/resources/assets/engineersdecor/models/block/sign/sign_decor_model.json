@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube",
+	"parent": "block/block",
 	"textures": {
 		"s": "engineersdecor:block/iestyle/treated_wood_rough_texture",
 		"f": "engineersdecor:block/sign/engineersdecor-logo",
@@ -31,7 +31,7 @@
 			"scale": [0.35, 0.35, 0.35]
 		},
 		"ground": {
-			"translation": [0, 0, 2.5],
+			"translation": [0, 1.75, 2.5],
 			"scale": [0.3, 0.3, 0.3]
 		},
 		"gui": {

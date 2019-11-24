@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube",
+	"parent": "block/block",
 	"textures": {
 		"s": "engineersdecor:block/iestyle/treated_wood_rough_texture",
 		"particle": "engineersdecor:block/iestyle/treated_wood_rough_texture",
@@ -187,7 +187,7 @@
 			"scale": [0.4, 0.4, 0.4]
 		},
 		"ground": {
-			"translation": [0, 0, 2.75],
+			"translation": [0, 1.75, 2.75],
 			"scale": [0.35, 0.35, 0.35]
 		},
 		"gui": {

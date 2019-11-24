@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube",
+	"parent": "block/block",
 	"textures": {
 		"o": "engineersdecor:block/iestyle/treated_wood_framed_texture",
 		"particle": "engineersdecor:block/iestyle/treated_wood_framed_texture"
@@ -138,6 +138,7 @@
 			"rotation": [-3, 18, 0]
 		},
 		"ground": {
+      "translation": [0, 1.75, 0],
 			"scale": [0.2, 0.2, 0.2]
 		},
 		"gui": {

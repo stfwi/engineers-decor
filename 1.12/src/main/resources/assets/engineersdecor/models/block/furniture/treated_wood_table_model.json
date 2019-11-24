@@ -176,6 +176,7 @@
 	],
 	"display": {
 		"ground": {
+      "translation": [0, 1.75, 0],
 			"scale": [0.2, 0.2, 0.2]
 		},
 		"gui": {

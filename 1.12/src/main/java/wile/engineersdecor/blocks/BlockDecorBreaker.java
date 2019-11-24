@@ -16,7 +16,6 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.init.Blocks;
@@ -113,16 +112,19 @@ public class BlockDecorBreaker extends BlockDecorDirected
     private static int boost_energy_consumption = DEFAULT_BOOST_ENERGY;
     private static int breaking_reluctance = DEFAULT_BREAKING_RELUCTANCE;
     private static int min_breaking_time = DEFAULT_MIN_BREAKING_TIME;
+    private static boolean requires_power = false;
     private int tick_timer_;
+    private int active_timer_;
     private int proc_time_elapsed_;
     private int boost_energy_;
 
-    public static void on_config(int boost_energy_per_tick, int breaking_time_per_hardness, int min_breaking_time_ticks)
+    public static void on_config(int boost_energy_per_tick, int breaking_time_per_hardness, int min_breaking_time_ticks, boolean power_required)
     {
       boost_energy_consumption = TICK_INTERVAL * MathHelper.clamp(boost_energy_per_tick, 16, 512);
       breaking_reluctance = MathHelper.clamp(breaking_time_per_hardness, 5, 50);
       min_breaking_time = MathHelper.clamp(min_breaking_time_ticks, 10, 100);
-      ModEngineersDecor.logger.info("Config block breaker: Boost energy consumption:" + boost_energy_consumption + "rf/t, reluctance=" + breaking_reluctance + "/hrdn, break time offset=" + min_breaking_time );
+      requires_power = power_required;
+      ModEngineersDecor.logger.info("Config block breaker: Boost energy consumption:" + (boost_energy_consumption/TICK_INTERVAL) + "rf/t, reluctance=" + breaking_reluctance + "t/hrdn, break time offset=" + min_breaking_time + "t");
     }
 
     public BTileEntity()
@@ -208,13 +210,12 @@ public class BlockDecorBreaker extends BlockDecorDirected
       return true;
     }
 
-    private boolean breakBlock(IBlockState state, BlockPos pos, World world)
+    private static boolean breakBlock(IBlockState state, BlockPos pos, World world)
     {
       if(world.isRemote || world.restoringBlockSnapshots) return false; // retry next cycle
-      NonNullList<ItemStack> drops = NonNullList.create();
-      state.getBlock().getDrops(drops, world, pos, state, 0);
+      final Block block = state.getBlock();
+      block.dropBlockAsItem(world, pos, state, 0);
       world.setBlockToAir(pos);
-      for(ItemStack drop:drops) spawnAsEntity(world, pos, drop);
       SoundType stype = state.getBlock().getSoundType(state, world, pos, null);
       if(stype != null) world.playSound(null, pos, stype.getPlaceSound(), SoundCategory.BLOCKS, stype.getVolume()*0.6f, stype.getPitch());
       return true;
@@ -252,14 +253,19 @@ public class BlockDecorBreaker extends BlockDecorDirected
           tick_timer_ = IDLE_TICK_INTERVAL;
           return;
         }
-        proc_time_elapsed_ += TICK_INTERVAL;
-        boolean active = true;
         int time_needed = (int)(target_state.getBlockHardness(world, pos) * breaking_reluctance) + min_breaking_time;
         if(boost_energy_ >= boost_energy_consumption) {
           boost_energy_ = 0;
-          proc_time_elapsed_ += TICK_INTERVAL * BOOST_FACTOR;
+          proc_time_elapsed_ += TICK_INTERVAL * (1+BOOST_FACTOR);
           time_needed += min_breaking_time * (3*BOOST_FACTOR/5);
+          active_timer_ = 2;
+        } else if(!requires_power) {
+          proc_time_elapsed_ += TICK_INTERVAL;
+          active_timer_ = 1024;
+        } else if(active_timer_ > 0) {
+          --active_timer_;
         }
+        boolean active = (active_timer_ > 0);
         time_needed = MathHelper.clamp(time_needed, min_breaking_time, MAX_BREAKING_TIME);
         if(proc_time_elapsed_ >= time_needed) {
           proc_time_elapsed_ = 0;

@@ -1,0 +1,24 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:gas_concrete",
+      "required": ["engineersdecor:gas_concrete_stairs"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SS",
+    "SS"
+  ],
+  "key": {
+    "S": {
+      "item": "engineersdecor:gas_concrete_stairs",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:gas_concrete",
+    "count": 4
+  }
+}

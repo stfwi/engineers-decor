@@ -1,12 +1,8 @@
 {
-  "forge_marker": 1,
-  "defaults": { "model": "engineersdecor:block/device/small_fluid_funnel_model_s0" },
   "variants": {
-    "level": {
-      "0":{},
-      "1":{"model": "engineersdecor:block/device/small_fluid_funnel_model_s1"},
-      "2":{"model": "engineersdecor:block/device/small_fluid_funnel_model_s2"},
-      "3":{"model": "engineersdecor:block/device/small_fluid_funnel_model_s3"}
-    }
+    "level=0": { "model": "engineersdecor:block/device/small_fluid_funnel_model_s0" },
+    "level=1": { "model": "engineersdecor:block/device/small_fluid_funnel_model_s1" },
+    "level=2": { "model": "engineersdecor:block/device/small_fluid_funnel_model_s2" },
+    "level=3": { "model": "engineersdecor:block/device/small_fluid_funnel_model_s3" }
   }
 }

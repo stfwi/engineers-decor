@@ -9,7 +9,8 @@ engineersdecor.tooltip.hint.extended=§6[§9SHIFT§r More Info§6]§r
 engineersdecor.tooltip.hint.help=§6[§9CTRL-SHIFT§r Help§6]§r
 engineersdecor.tooltip.slabpickup.help=§rFast pickup by left-clicking while looking up/down and holding this slab.
 #-----------------------------------------------------------------------------------------------------------
-# Stone/"ceramic material" based blocks
+engineersdecor.tooltip.requires_rf_power=Requires RF power.
+engineersdecor.tooltip.massive_speed_boost_with_rf_power=Apply RF power to magnificently increase the speed.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.clinker_brick_block.name=Clinker Brick Block
 tile.engineersdecor.clinker_brick_block.help=§6A brick block with position dependent texture variations.§r\nLooks slightly darker and more color intensive than the vanilla brick block.
@@ -19,6 +20,8 @@ tile.engineersdecor.slag_brick_block.name=Slag Brick Block
 tile.engineersdecor.slag_brick_block.help=§6A gray-brown brick block with position dependent texture variations.
 tile.engineersdecor.rebar_concrete.name=Rebar Concrete Block
 tile.engineersdecor.rebar_concrete.help=§6Steel reinforced concrete block.§r Expensive but Creeper-proof like obsidian.
+tile.engineersdecor.gas_concrete.name=Gas Concrete Block
+tile.engineersdecor.gas_concrete.help=§6Low hardness, high production yield concrete.§r Easy to break decorative concrete block.
 tile.engineersdecor.panzerglass_block.name=Panzer Glass Block
 tile.engineersdecor.panzerglass_block.help=§6Reinforced glass block.§r Expensive, explosion-proof. Dark gray tint, faint structural lines visible, multi texture for seemless look.
 tile.engineersdecor.rebar_concrete_tile.name=Rebar Concrete Tile
@@ -34,6 +37,8 @@ tile.engineersdecor.rebar_concrete_slab.name=Rebar Concrete Slab
 tile.engineersdecor.rebar_concrete_slab.help=§6Steel reinforced concrete slab.§r Expensive but Creeper-proof like obsidian.
 tile.engineersdecor.rebar_concrete_tile_slab.name=Rebar Concrete Tile Slab
 tile.engineersdecor.rebar_concrete_tile_slab.help=§6Steel reinforced concrete tile slab.§r Expensive but Creeper-proof like obsidian.
+tile.engineersdecor.gas_concrete_slab.name=Gas Concrete Slab
+tile.engineersdecor.gas_concrete_slab.help=§6Low hardness concrete slab.§r Easy to break decorative concrete.
 tile.engineersdecor.panzerglass_slab.name=Panzer Glass Slab
 tile.engineersdecor.panzerglass_slab.help=§6Reinforced glass slab.§r Expensive, explosion-proof. Dark gray tint, faint structural lines visible.
 tile.engineersdecor.treated_wood_floor.name=Treated Wood Floor
@@ -43,6 +48,8 @@ tile.engineersdecor.rebar_concrete_wall.name=Rebar Concrete Wall
 tile.engineersdecor.rebar_concrete_wall.help=§6Steel reinforced concrete wall.§r Expensive but Creeper-proof like obsidian.
 tile.engineersdecor.concrete_wall.name=Concrete Wall
 tile.engineersdecor.concrete_wall.help=§6Wall made of solid concrete.
+tile.engineersdecor.gas_concrete_wall.name=Gas Concrete Wall
+tile.engineersdecor.gas_concrete_wall.help=§6Low hardness concrete wall.§r Easy to break decorative concrete.
 tile.engineersdecor.clinker_brick_wall.name=Clinker Brick Wall
 tile.engineersdecor.clinker_brick_wall.help=§6Simplistic Clinker Brick Wall.
 tile.engineersdecor.slag_brick_wall.name=Slag Brick Wall
@@ -65,6 +72,8 @@ tile.engineersdecor.rebar_concrete_stairs.name=Rebar Concrete Stairs
 tile.engineersdecor.rebar_concrete_stairs.help=§6Steel reinforced concrete stairs.§r Expensive but Creeper-proof like obsidian.
 tile.engineersdecor.rebar_concrete_tile_stairs.name=Rebar Concrete Tile Stairs
 tile.engineersdecor.rebar_concrete_tile_stairs.help=§6Steel reinforced concrete tile stairs.§r Expensive but Creeper-proof like obsidian.
+tile.engineersdecor.gas_concrete_stairs.name=Gas Concrete Stairs
+tile.engineersdecor.gas_concrete_stairs.help=§6Low hardness concrete stairs.§r Easy to break decorative concrete.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.treated_wood_pole.name=Straight Treated Wood Pole
 tile.engineersdecor.treated_wood_pole.help=§6Straight pole fragment with a diameter of a wire relay.§r\n\
@@ -175,7 +184,8 @@ tile.engineersdecor.small_block_breaker.name=Small Block Breaker
 tile.engineersdecor.small_block_breaker.help=§6Breaks blocks in front of it.§r\n\
                                         Can be disabled by applying a redstone signal. \
                                         The time needed to destroy a block depends on the hardness of that block. \
-                                        Provide RF/FE power to speed up the breaking process (massively).
+                                        ${!block_breaker_requires_power?engineersdecor.tooltip.massive_speed_boost_with_rf_power}\
+                                        ${block_breaker_requires_power?engineersdecor.tooltip.requires_rf_power}
 tile.engineersdecor.small_mineral_smelter.name=Small Mineral Melting Furnace
 tile.engineersdecor.small_mineral_smelter.help=§6High temperature, high insulation electrical stone melting furnace.§r\n\
                                                Heats up mineral blocks to magma blocks, and finally to lava. Click with a \
@@ -192,7 +202,15 @@ tile.engineersdecor.small_solar_panel.help=§6Produces a small amount of power w
 tile.engineersdecor.small_tree_cutter.name=Small Tree Cutter
 tile.engineersdecor.small_tree_cutter.help=§6Chops grown trees in front of it.§r\n\
                                            Does not collect the lumbers. Deactivate with a redstone signal. \
-                                           Provide RF power to boost the cutting speed (takes a long time without power).
+                                           ${!tree_cuttter_requires_power?engineersdecor.tooltip.massive_speed_boost_with_rf_power}\
+                                           ${tree_cuttter_requires_power?engineersdecor.tooltip.requires_rf_power}
+tile.engineersdecor.small_milking_machine.name=Small Milking Machine
+tile.engineersdecor.small_milking_machine.help=§6Occasionally grooms and milks cows.§r\n\
+                                           Has an internal fluid tank. Does not feed the animals. Use buckets to retrieve the milk. \
+                                           Pulls/stores milk container items from/to inventories at the back or bottom (preferrs \
+                                           extracting from the back and inserting below, but can also put filled vessels back into the \
+                                           same inventory). Supports fluid output to tanks or pipes below (only if milk exists as fluid). \
+                                           Care that it's not too crowdy in the cow pen, only happy animals stroll by voluntarily.
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.sign_decor.name=Sign Plate (Engineer's decor)
 tile.engineersdecor.sign_decor.help=§6This should not be craftable or visible in JEI. Used for creative tab and screenshots.
@@ -213,6 +231,8 @@ tile.engineersdecor.halfslab_rebar_concrete.name=Rebar Concrete Slice
 tile.engineersdecor.halfslab_rebar_concrete.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
 tile.engineersdecor.halfslab_concrete.name=Concrete Slice
 tile.engineersdecor.halfslab_concrete.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
+tile.engineersdecor.halfslab_gas_concrete.name=Gas Concrete Slice
+tile.engineersdecor.halfslab_gas_concrete.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
 tile.engineersdecor.halfslab_treated_wood.name=Treated Wood Slice
 tile.engineersdecor.halfslab_treated_wood.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
 tile.engineersdecor.halfslab_sheetmetal_iron.name=Iron Sheet Metal Slice

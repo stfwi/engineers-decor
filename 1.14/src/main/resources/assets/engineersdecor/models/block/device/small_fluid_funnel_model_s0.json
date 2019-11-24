@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube",
+	"parent": "block/block",
 	"textures": {
 		"top": "engineersdecor:block/device/small_fluid_funnel_top",
 		"bottom": "engineersdecor:block/device/small_fluid_funnel_bottom",
@@ -282,6 +282,7 @@
 	],
 	"display": {
 		"ground": {
+      "translation": [0, 1.75, 0],
 			"scale": [0.2, 0.2, 0.2]
 		},
 		"gui": {

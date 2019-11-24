@@ -9,6 +9,7 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import net.minecraft.entity.LivingEntity;
@@ -196,7 +197,7 @@ public class BlockDecorMineralSmelter extends BlockDecorDirectedHorizontal
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class BTileEntity extends TileEntity implements INameable, ITickableTileEntity, ISidedInventory, IEnergyStorage, ICapabilityProvider // IFluidTankProperties,
+  public static class BTileEntity extends TileEntity implements INameable, ITickableTileEntity, ISidedInventory, IEnergyStorage, ICapabilityProvider
   {
     public static final int TICK_INTERVAL = 20;
     public static final int MAX_FLUID_LEVEL = 1000;
@@ -535,15 +536,14 @@ public class BlockDecorMineralSmelter extends BlockDecorDirectedHorizontal
 
     // Capability export ----------------------------------------------------------------------------
 
-    // @todo: INCLUDE FLUID HANDLER WHEN FORGE FluidStack/Fluid ISSUE fixed
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
       if(!this.removed && (facing != null)) {
         if(capability== CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
           return item_handler_.cast();
-      //} else if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-      //  return fluid_handler_.cast();
+        } else if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+          return fluid_handler_.cast();
         } else if(capability== CapabilityEnergy.ENERGY) {
           return energy_handler_.cast();
         }
