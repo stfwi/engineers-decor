@@ -10,7 +10,16 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
-    ~ v1.0.16-b4
+                  -------------------------------------------------------------------
+    - v1.0.16     [R] Release based on v1.0.16-b3. Release-to-release changes:
+                      * Added Gas Concrete blocks/walls/stairs/slabs/slab slices.
+                      * Added Fluid Collection Funnel
+                      * Crafting yield for Clinker/Slag bricks increased.
+                      * Block Placer improvements (cocoa planting) and fixes.
+                      * Block breaker compat improvements and fixes.
+                      * Recipe compat auto detection fixes.
+                      * Feature opt-out and tweak config options for mod packs improved.
+                  -------------------------------------------------------------------
 
     - v1.0.16-b3  [M] Increased slag brick recipe yield to 8.
                   [A] Small Block Placer can plant Cocoa.
