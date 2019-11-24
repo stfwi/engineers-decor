@@ -1,7 +1,1 @@
-{
-  "forge_marker": 1,
-  "defaults": { "model": "engineersdecor:block/furniture/steel_table_model" },
-  "variants": {
-    "": [{}]
-  }
-}
+{ "variants": { "": { "model": "engineersdecor:block/furniture/steel_table_model" } } }

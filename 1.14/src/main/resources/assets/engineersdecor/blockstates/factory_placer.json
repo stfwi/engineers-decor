@@ -1,9 +1,10 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "engineersdecor:block/device/factory_placer_model"
-  },
   "variants": {
-    "facing": { "north":{"y":0}, "south":{"y":180}, "west":{"y":270}, "east":{"y":90}, "up": {"x":-90}, "down": {"x":90} }
+    "facing=north": { "model": "engineersdecor:block/device/factory_placer_model"          },
+    "facing=south": { "model": "engineersdecor:block/device/factory_placer_model", "y":180 },
+    "facing=west":  { "model": "engineersdecor:block/device/factory_placer_model", "y":270 },
+    "facing=east":  { "model": "engineersdecor:block/device/factory_placer_model", "y":90  },
+    "facing=up":    { "model": "engineersdecor:block/device/factory_placer_model", "x":270 },
+    "facing=down":  { "model": "engineersdecor:block/device/factory_placer_model", "x":90  }
   }
 }

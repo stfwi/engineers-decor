@@ -1,0 +1,8 @@
+{
+  "parent": "engineersdecor:block/pole/straight_thin_metal_pole_model",
+  "textures": {
+    "particle": "engineersdecor:block/pole/thin_steel_pole_side_texture",
+    "side": "engineersdecor:block/pole/thin_steel_pole_side_texture",
+    "top": "engineersdecor:block/pole/thin_steel_pole_top_texture"
+  }
+}

@@ -8,9 +8,8 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.entity.ai.goal.Goal;
-import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.ModContent;
 import wile.engineersdecor.detail.ExtItems;
 import wile.engineersdecor.detail.ItemHandling;
 import net.minecraft.world.World;
@@ -23,12 +22,11 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.ai.goal.PrioritizedGoal;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MoverType;
 import net.minecraft.item.*;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
@@ -302,9 +300,7 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
     // ITickable ------------------------------------------------------------------------------------
 
     private void log(String s)
-    {
-      //System.out.println("Milker|" + s);
-    } // may be enabled with config, for dev was println
+    {} // System.out.println("Milker|" + s); may be enabled with config, for dev was println
 
     private static ItemStack milk_filled_container_item(ItemStack stack)
     { return milk_containers_.entrySet().stream().filter(e->e.getKey().isItemEqual(stack)).map(Map.Entry::getValue).findFirst().orElse(ItemStack.EMPTY); }
@@ -331,25 +327,21 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
 
     private void release_cow(CowEntity cow)
     {
-      log("RELEASE");
+      log("release cow");
       if(cow != null) {
         cow.setNoAI(false);
-        cow.targetSelector.getRunningGoals().filter(g->(g.getGoal()) instanceof MoveToMilkingMachineGoal).forEach(cow.goalSelector::removeGoal);
-        cow.goalSelector.getRunningGoals().filter(g->(g.getGoal()) instanceof MoveToMilkingMachineGoal).forEach(cow.goalSelector::removeGoal);
+        SingleMoveGoal.abortFor(cow);
       }
       tracked_cow_ = null;
       state_ = MilkingState.IDLE;
       tick_timer_ = TICK_INTERVAL;
     }
 
-    private boolean is_coming(CowEntity cow)
-    { return (cow != null) && (cow.goalSelector.getRunningGoals().anyMatch(g->(g.getGoal()) instanceof MoveToMilkingMachineGoal)); }
-
     private boolean milking_process()
     {
       if((tracked_cow_ == null) && (fluid_level() >= MAX_MILKING_TANK_LEVEL)) return false; // nothing to do
       final Direction facing = world.getBlockState(getPos()).get(HORIZONTAL_FACING).getOpposite();
-      final BlockPos target_pos = getPos().offset(facing);
+      final Vec3d target_pos = new Vec3d(getPos().offset(facing)).add(0.5,0,0.5);
       CowEntity cow = null;
       {
         AxisAlignedBB aabb = new AxisAlignedBB(pos.offset(facing, 3)).grow(4, 2, 4);
@@ -366,152 +358,108 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
       if((cow == null) || (!cow.isAlive())) { release_cow(cow); cow = null; }
       if(tracked_cow_ == null) state_ = MilkingState.IDLE;
       if(cow == null) { log("Init: No cow"); return false; } // retry next cycle
-      //tick_timer_ = PROCESSING_TICK_INTERVAL;
-
-      if(is_coming(cow)) {
-        log("coming ... ");
-      } else {
-        if(!target_pos.withinDistance(cow.getPosition(), 0.5)) {
-          log("come ... ");
+      tick_timer_ = PROCESSING_TICK_INTERVAL;
+      state_timer_ -= PROCESSING_TICK_INTERVAL;
+      if(state_timer_ > 0) return false;
+      switch(state_) { // Let's do this the old school FSA sequencing way ...
+        case IDLE: {
+          final List<LivingEntity> blocking_entities = world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(pos.offset(facing)).grow(0.5, 0.5, 0.5));
+          if(blocking_entities.size() > 0) {
+            tick_timer_ = TICK_INTERVAL;
+            log("Idle: Position blocked");
+            if(blocking_entities.get(0) instanceof CowEntity) {
+              CowEntity blocker = (CowEntity)blocking_entities.get(0);
+              BlockPos p = getPos().offset(facing,2);
+              log("Idle: Shove off");
+              blocker.setNoAI(false);
+              SingleMoveGoal.startFor(blocker, p, 2, 1.0, (goal, world, pos)->(pos.distanceSq(goal.getCreature().getPosition())>49));
+            }
+            return false;
+          }
+          if(cow.getLeashed() || cow.isChild() || cow.isInLove() || (!cow.onGround) || cow.isBeingRidden() || cow.isSprinting()) return false;
+          tracked_cow_ = cow.getUniqueID();
+          state_ = MilkingState.PICKED;
+          state_timeout_ = 200;
+          tracked_cow_original_position_ = cow.getPosition();
+          log("Idle: Picked cow " + tracked_cow_);
+          return false;
+        }
+        case PICKED: {
+          SingleMoveGoal.startFor(
+            cow, target_pos, 2, 1.0,
+            (goal, world, pos)->{
+              if(pos.distanceSq(goal.getCreature().getPosition())>100) return true;
+              for(int i=0; i<4; ++i) {
+                if(world.getBlockState(pos.offset(Direction.byHorizontalIndex(i))).getBlock() instanceof BlockDecorMilker) return false;
+              }
+              return true;
+            },
+            (goal, world, pos)->{
+              log("move: position reached");
+              goal.getCreature().setLocationAndAngles(goal.getTargetPosition().getX(), goal.getTargetPosition().getY(), goal.getTargetPosition().getZ(), facing.getHorizontalAngle(), 0);
+            },
+            (goal, world, pos)->{
+              log("move: aborted");
+            }
+          );
+          state_ = MilkingState.COMING;
+          state_timeout_ = 400; // 15s should be enough
+          log("Picked: coming to " + target_pos);
+          return false;
+        }
+        case COMING: {
+          if(target_pos.squareDistanceTo(cow.getPositionVec()) <= 1) {
+            log("Coming: position reached");
+            state_ = MilkingState.POSITIONING;
+            state_timeout_ = 100; // 5s
+          } else if((!SingleMoveGoal.isActiveFor(cow))) {
+            release_cow(cow);
+            log("Coming: aborted");
+          } else {
+            state_timeout_ -= 100;
+          }
+          return false;
+        }
+        case POSITIONING: {
+          log("Positioning: start milking");
+          cow.setNoAI(true);
+          cow.setLocationAndAngles(target_pos.getX(), target_pos.getY(), target_pos.getZ(), facing.getHorizontalAngle(), 0);
+          world.playSound(null, pos, SoundEvents.ENTITY_COW_MILK, SoundCategory.BLOCKS, 0.5f, 1f);
+          state_timeout_ = 600;
+          state_ = MilkingState.MILKING;
+          state_timer_ = 30;
+          return false;
+        }
+        case MILKING: {
+          tank_level_ = MathHelper.clamp(tank_level_+BUCKET_SIZE, 0, TANK_CAPACITY);
+          state_timeout_ = 600;
+          state_ = MilkingState.LEAVING;
+          state_timer_ = 20;
+          cow.setNoAI(false);
           cow.getNavigator().clearPath();
-          cow.goalSelector.getRunningGoals().forEach(PrioritizedGoal::resetTask);
-          Goal goal = new MoveToMilkingMachineGoal(cow, target_pos);
-          cow.goalSelector.addGoal(2, goal);
-          cow.targetSelector.addGoal(2, goal);
-        } else {
-          log("in pos ... ");
-          cow.moveToBlockPosAndAngles(target_pos, facing.getHorizontalAngle(), 0);
+          log("Milking: done, leave");
+          return true;
+        }
+        case LEAVING: {
+          BlockPos p = (tracked_cow_original_position_ != null) ? (tracked_cow_original_position_) : getPos().offset(facing,2).offset(facing.rotateYCCW());
+          SingleMoveGoal.startFor(cow, p, 2, 1.0, (goal, world, pos)->(pos.distanceSq(goal.getCreature().getPosition())>100));
+          state_timeout_ = 600;
+          state_timer_ = 500;
+          tick_timer_ = TICK_INTERVAL;
+          state_ = MilkingState.WAITING;
+          log("Leaving: process done");
+          return true;
+        }
+        case WAITING: {
+          // wait for the timeout to kick in until starting with the next.
+          tick_timer_ = TICK_INTERVAL;
+          log("Waiting: ...");
+          return true;
+        }
+        default: {
+          release_cow(cow);
         }
       }
-
-      {
-        if(cow!=null) return false;
-
-        state_timer_ -= PROCESSING_TICK_INTERVAL;
-        if(state_timer_ > 0) return false;
-        switch(state_) { // Let's do this the old school FSA sequencing way ...
-          case IDLE: {
-            final List<LivingEntity> blocking_entities = world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(pos.offset(facing)).grow(0.5, 0.5, 0.5));
-            if(blocking_entities.size() > 0) {
-              tick_timer_ = TICK_INTERVAL;
-              log("Idle: Position blocked");
-              if(blocking_entities.get(0) instanceof CowEntity) {
-                CowEntity blocker = (CowEntity)blocking_entities.get(0);
-                BlockPos p = getPos().offset(facing,2);
-                log("Idle: Shove off");
-                blocker.setNoAI(false);
-                blocker.goalSelector.getRunningGoals().forEach(PrioritizedGoal::resetTask);
-                blocker.getNavigator().tryMoveToXYZ(p.getX()+0.5, p.getY()+0.5, p.getZ()+0.5, 1);
-              }
-              return false;
-            }
-            if(cow.getLeashed() || cow.isChild() || cow.isInLove() || (!cow.onGround) || cow.isBeingRidden() || cow.isSprinting()) return false;
-            tracked_cow_ = cow.getUniqueID();
-            state_ = MilkingState.PICKED;
-            state_timeout_ = 200;
-            tracked_cow_original_position_ = cow.getPosition();
-            log("Idle: Picked cow " + tracked_cow_);
-            return false;
-          }
-          case PICKED: {
-            BlockPos p = getPos().offset(facing).offset(facing.rotateY());
-            cow.getNavigator().clearPath();
-            if(!cow.getNavigator().tryMoveToXYZ(p.getX(), p.getY(), p.getZ(),1.0)) {
-              log("Picked: No path");
-              cow.goalSelector.getRunningGoals().forEach(PrioritizedGoal::resetTask);
-              tracked_cow_ = null;
-              tick_timer_ = TICK_INTERVAL;
-              return false;
-            }
-            state_ = MilkingState.COMING;
-            state_timeout_ = 300; // 15s should be enough
-            log("Picked: coming to " +p);
-            return false;
-          }
-          case COMING: {
-            BlockPos p = getPos().offset(facing).offset(facing.rotateY());
-            if(cow.getPosition().distanceSq(p) > 1) {
-              if(cow.getNavigator().getTargetPos().equals(p) && (!cow.getNavigator().noPath())) return false;
-              if(!cow.getNavigator().tryMoveToXYZ(p.getX(), p.getY(), p.getZ(),1.0)) {
-                log("Coming: lost path");
-                cow.goalSelector.getRunningGoals().forEach(PrioritizedGoal::resetTask);
-                tracked_cow_ = null;
-                tick_timer_ = TICK_INTERVAL;
-                return false;
-              } else {
-                log("Coming: Re-init path");
-                state_timeout_ -= 100;
-              }
-            } else {
-              BlockPos next_p = getPos().offset(facing);
-              if(!cow.getNavigator().tryMoveToXYZ(next_p.getX(), next_p.getY(), next_p.getZ(), 1.0)) {
-                log("Coming: No path");
-                tracked_cow_ = null;
-                cow.goalSelector.getRunningGoals().forEach(PrioritizedGoal::resetTask);
-                tick_timer_ = TICK_INTERVAL;
-                return false;
-              }
-              log("Coming: position reached");
-              state_ = MilkingState.POSITIONING;
-              state_timeout_ = 100; // 5s
-            }
-            return false;
-          }
-          case POSITIONING: {
-            BlockPos p = getPos().offset(facing);
-            if(p.distanceSq(cow.posX, cow.posY, cow.posZ, true) > 0.45) {
-              if(cow.getNavigator().getTargetPos().equals(p) && (!cow.getNavigator().noPath())) return false;
-              if(!cow.getNavigator().tryMoveToXYZ(p.getX(), p.getY(), p.getZ(), 1.0)) {
-                log("Positioning: lost path");
-                tick_timer_ = TICK_INTERVAL;
-                cow.goalSelector.getRunningGoals().forEach(PrioritizedGoal::resetTask);
-              } else {
-                log("Positioning: Re-init path");
-                state_timeout_ -= 25;
-              }
-              tracked_cow_ = null;
-              return false;
-            }
-            cow.setNoAI(true);
-            cow.move(MoverType.SELF, new Vec3d(p.getX()+0.5-cow.posX, 0,p.getZ()+0.5-cow.posZ));
-            world.playSound(null, pos, SoundEvents.ENTITY_COW_MILK, SoundCategory.BLOCKS, 0.5f, 1f);
-            state_timeout_ = 600;
-            state_ = MilkingState.MILKING;
-            state_timer_ = 30;
-            log("Positioning: start milking");
-            return false;
-          }
-          case MILKING: {
-            tank_level_ = MathHelper.clamp(tank_level_+BUCKET_SIZE, 0, TANK_CAPACITY);
-            state_timeout_ = 600;
-            state_ = MilkingState.LEAVING;
-            state_timer_ = 20;
-            cow.setNoAI(false);
-            cow.getNavigator().clearPath();
-            log("Milking: done, leave");
-            return true;
-          }
-          case LEAVING: {
-            BlockPos p = (tracked_cow_original_position_ != null) ? (tracked_cow_original_position_) : getPos().offset(facing,2).offset(facing.rotateYCCW());
-            if(!cow.getNavigator().tryMoveToXYZ(p.getX(), p.getY(), p.getZ(), 1.0)) cow.getNavigator().clearPath();
-            state_timeout_ = 600;
-            state_timer_ = 500;
-            tick_timer_ = TICK_INTERVAL;
-            state_ = MilkingState.WAITING;
-            log("Leaving: process done");
-            return true;
-          }
-          case WAITING: {
-            tick_timer_ = TICK_INTERVAL;
-            log("Waiting: ...");
-            return true; // wait for the timeout to kick in until starting with the next.
-          }
-          default: {
-            tracked_cow_ = null;
-          }
-        }
-      }
-
       return (tracked_cow_ != null);
     }
 
@@ -522,8 +470,7 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
       tick_timer_ = TICK_INTERVAL;
       boolean dirty = false;
       final BlockState block_state = world.getBlockState(pos);
-      if(!world.isBlockPowered(pos) && (state_==MilkingState.IDLE)) {
-        log("Cycle");
+      if(!world.isBlockPowered(pos) || (state_ != MilkingState.IDLE)) {
         if(energy_consumption > 0) {
           if(energy_stored_ <= 0) return;
           energy_stored_ = MathHelper.clamp(energy_stored_-energy_consumption, 0, MAX_ENERGY_BUFFER);
@@ -559,65 +506,122 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
     }
   }
 
-  public static class MoveToMilkingMachineGoal extends net.minecraft.entity.ai.goal.MoveToBlockGoal
+  public static class SingleMoveGoal extends net.minecraft.entity.ai.goal.MoveToBlockGoal
   {
+    @FunctionalInterface public interface TargetPositionInValidCheck { boolean test(SingleMoveGoal goal, IWorldReader world, BlockPos pos); }
+    @FunctionalInterface public interface StrollEvent { void apply(SingleMoveGoal goal, IWorldReader world, Vec3d pos); }
+    private static void log(String s) {} // System.out.println(s);
 
-    public MoveToMilkingMachineGoal(CowEntity creature, BlockPos pos)
+    private static final int motion_timeout = 20*20;
+    private boolean aborted_;
+    private boolean in_position_;
+    private boolean was_aborted_;
+    private Vec3d target_pos_;
+    private TargetPositionInValidCheck abort_condition_;
+    private StrollEvent on_target_position_reached_;
+    private StrollEvent on_aborted_;
+
+    public SingleMoveGoal(CreatureEntity creature, Vec3d pos, double speed, TargetPositionInValidCheck abort_condition, @Nullable StrollEvent on_position_reached, @Nullable StrollEvent on_aborted)
     {
-      super(creature, 1.0, 20, 4);
-      destinationBlock = pos;
-      runDelay = 0;
+      super(creature, speed, 32, 32);
+      abort_condition_ = abort_condition;
+      on_target_position_reached_ = on_position_reached;
+      on_aborted_ = on_aborted;
+      destinationBlock = new BlockPos(pos.getX(), pos.getY(), pos.getZ());
       timeoutCounter = 0;
+      runDelay = 0;
+      aborted_ = false;
+      was_aborted_ = false;
+      target_pos_ = pos;
     }
 
-    private void abort()
-    {
-      creature.targetSelector.getRunningGoals().filter(g->(g.getGoal()) instanceof MoveToMilkingMachineGoal).forEach(creature.goalSelector::removeGoal);
-      creature.goalSelector.getRunningGoals().filter(g->(g.getGoal()) instanceof MoveToMilkingMachineGoal).forEach(creature.goalSelector::removeGoal);
-    }
+    public static void startFor(CreatureEntity entity, BlockPos target_pos, int priority, double speed, TargetPositionInValidCheck abort_condition)
+    { startFor(entity, new Vec3d(target_pos.getX(),target_pos.getY(),target_pos.getZ()), priority, speed, abort_condition, null, null); }
+
+    public static void startFor(CreatureEntity entity, Vec3d target_pos, int priority, double speed, TargetPositionInValidCheck abort_condition, @Nullable StrollEvent on_position_reached, @Nullable StrollEvent on_aborted)
+    { entity.goalSelector.addGoal(priority, new SingleMoveGoal(entity, target_pos, speed, abort_condition, on_position_reached, on_aborted)); }
+
+    public static boolean isActiveFor(CreatureEntity entity)
+    { return (entity != null) && (entity.goalSelector.getRunningGoals().anyMatch(g->(g.getGoal()) instanceof SingleMoveGoal)); }
+
+    public static void abortFor(CreatureEntity entity)
+    { entity.goalSelector.getRunningGoals().filter(g->(g.getGoal()) instanceof SingleMoveGoal).forEach(g->((SingleMoveGoal)g.getGoal()).abort()); }
+
+    public Vec3d getTargetPosition()
+    { return target_pos_; }
+
+    public CreatureEntity getCreature()
+    { return creature; }
+
+    public void abort()
+    { aborted_ = true; }
+
+    @Override
+    public void resetTask()
+    { runDelay = 0; timeoutCounter = 0; }
 
     @Override
     public double getTargetDistanceSq()
-    { return 0.8; }
+    { return 1.2; }
 
     @Override
     public boolean shouldMove()
-    { return (timeoutCounter & 0x3) == 0; }
+    { return (timeoutCounter & 0x7) == 0; }
 
     @Override
-    public boolean shouldExecute() {
-      if(--runDelay > 0) return false;
-      runDelay = 4;
+    public boolean shouldExecute()
+    {
+      if(!shouldMoveTo(creature.world, destinationBlock)) {
+        aborted_ = true;
+        return false;
+      } else if(aborted_) {
+        // shouldExecute is the point where in GoalSelector.tick() the goal is not in flagGoals and can be removed.
+        creature.goalSelector.getRunningGoals().filter(g->(g.getGoal()) instanceof SingleMoveGoal).forEach(g->creature.goalSelector.removeGoal(g));
+        creature.goalSelector.removeGoal(this);
+        if((!was_aborted_) && (on_aborted_!=null)) on_aborted_.apply(this, creature.world, target_pos_);
+        was_aborted_ = true;
+        return false;
+      } else if(--runDelay > 0) {
+        return false;
+      } else {
+        runDelay = 10;
+        return true;
+      }
+    }
+
+    @Override
+    public void startExecuting()
+    {
+      log("startExecuting()");
+      timeoutCounter = 0;
+      if(!creature.getNavigator().tryMoveToXYZ(target_pos_.getX(), target_pos_.getY(), target_pos_.getZ(), this.movementSpeed)) abort();
+    }
+
+    public boolean shouldContinueExecuting()
+    {
+      if((aborted_) || (creature.getNavigator().noPath()) || (timeoutCounter > motion_timeout) || (!shouldMoveTo(creature.world, destinationBlock))) {
+        abort();
+        return false;
+      }
       return true;
     }
 
     @Override
-    public void tick()
-    {
-      if(!destinationBlock.withinDistance(creature.getPositionVec(), getTargetDistanceSq())) {
-        ++timeoutCounter;
-        if(shouldMove()) {
-          if(!creature.getNavigator().tryMoveToXYZ(destinationBlock.getX()+0.5, destinationBlock.getY(), destinationBlock.getZ()+0.5, this.movementSpeed)) {
-            System.out.println("TRYMOVE FAILED");
-            abort();
-          }
-        }
-      } else {
-        System.out.println("IN POSITION");
-        abort();
-      }
-    }
+    protected boolean shouldMoveTo(IWorldReader world, BlockPos pos)
+    { if(!abort_condition_.test(this, world, pos)) { return true; } abort(); return false; }
 
     @Override
-    protected boolean shouldMoveTo(IWorldReader world, BlockPos pos)
+    public void tick()
     {
-      for(int i=0; i<4; ++i) {
-        if(world.getBlockState(pos.offset(Direction.byHorizontalIndex(i))).getBlock() instanceof BlockDecorMilker) return true;
+      BlockPos testpos = new BlockPos(target_pos_.getX(), creature.getPositionVec().getY(), target_pos_.getZ());
+      if(!testpos.withinDistance(creature.getPositionVec(), getTargetDistanceSq())) {
+        if((++timeoutCounter > motion_timeout)) { abort(); return; }
+        if(shouldMove() && (!creature.getNavigator().tryMoveToXYZ(target_pos_.getX(), target_pos_.getY(), target_pos_.getZ(), movementSpeed))) abort();
+      } else {
+        in_position_ = true;
+        abort();
+        if(on_target_position_reached_ != null) on_target_position_reached_.apply(this, creature.world, target_pos_);
       }
-      System.out.println("NO MOVE TO");
-      abort();
-      return false;
     }
   }
-
 }
