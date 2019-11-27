@@ -11,7 +11,7 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
-    ~ v1.0.16-b7 [M] Forge blockstates ported from 1.12 transformed to vanilla.
+    - v1.0.16-b7 [M] Forge blockstates ported from 1.12 transformed to vanilla.
 
     - v1.0.16-b6 [A] Made slab slice left-click pickup optional (default enabled).
                  [A] Added config option for device drops in creative mode (addresses #67),
