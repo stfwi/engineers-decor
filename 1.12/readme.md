@@ -10,6 +10,10 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    - v1.0.17-b1  [A] Added Milking Machine.
+                  [M] Window placement improved.
+                  [M] Made Pipe Valve textures slightly darker to fit IE pipes better when shaded.
+
                   -------------------------------------------------------------------
     - v1.0.16     [R] Release based on v1.0.16-b3. Release-to-release changes:
                       * Added Gas Concrete blocks/walls/stairs/slabs/slab slices.

@@ -33,7 +33,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.event.RegistryEvent;
-
 import org.apache.commons.lang3.ArrayUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -525,6 +524,14 @@ public class ModContent
 
   // -------------------------------------------------------------------------------------------------------------------
 
+  public static final BlockDecorTest TEST_BLOCK = (BlockDecorTest)(new BlockDecorTest(
+    BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|BlockDecor.CFG_ELECTRICAL|BlockDecor.CFG_REDSTONE_CONTROLLED,
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(0f, 32000f).sound(SoundType.METAL),
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "test_block"));
+
+  // -------------------------------------------------------------------------------------------------------------------
+
   private static final Block modBlocks[] = {
     TREATED_WOOD_CRAFTING_TABLE,
     SMALL_LAB_FURNACE,
@@ -537,6 +544,7 @@ public class ModContent
     SMALL_SOLAR_PANEL,
     SMALL_WASTE_INCINERATOR,
     SMALL_MINERAL_SMELTER,
+    SMALL_MILKING_MACHINE,
     STRAIGHT_CHECK_VALVE,
     STRAIGHT_REDSTONE_VALVE,
     STRAIGHT_REDSTONE_ANALOG_VALVE,
@@ -608,7 +616,7 @@ public class ModContent
   };
 
   private static final Block devBlocks[] = {
-    SMALL_MILKING_MACHINE
+    //TEST_BLOCK
   };
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -690,6 +698,10 @@ public class ModContent
     .build(null)
     .setRegistryName(ModEngineersDecor.MODID, "te_small_tree_cutter");
 
+  public static final TileEntityType<?> TET_TEST_BLOCK = TileEntityType.Builder
+    .create(BlockDecorPipeValve.BTileEntity::new, TEST_BLOCK)
+    .build(null)
+    .setRegistryName(ModEngineersDecor.MODID, "te_test_block");
 
   private static final TileEntityType<?> tile_entity_types[] = {
     TET_TREATED_WOOD_CRAFTING_TABLE,
@@ -707,6 +719,7 @@ public class ModContent
     TET_STRAIGHT_PIPE_VALVE,
     TET_PASSIVE_FLUID_ACCUMULATOR,
     TET_SMALL_FLUID_FUNNEL,
+    TET_TEST_BLOCK
   };
 
   //--------------------------------------------------------------------------------------------------------------------

@@ -112,7 +112,7 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected
     public void read(CompoundNBT nbt)
     {
       super.read(nbt);
-      tank_ = (!nbt.contains("tank")) ? (FluidStack.EMPTY.copy()) : (FluidStack.loadFluidStackFromNBT(nbt.getCompound("tank")));
+      tank_ = (!nbt.contains("tank")) ? (FluidStack.EMPTY) : (FluidStack.loadFluidStackFromNBT(nbt.getCompound("tank")));
     }
 
     @Override
@@ -134,8 +134,8 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected
       @Override public int getTankCapacity(int tank) { return max_flowrate; }
       @Override public boolean isFluidValid(int tank, @Nonnull FluidStack stack) { return true; }
       @Override public int fill(FluidStack resource, FluidAction action) { return 0; }
-      @Override public FluidStack drain(FluidStack resource, FluidAction action) { return FluidStack.EMPTY.copy(); }
-      @Override public FluidStack drain(int maxDrain, FluidAction action) { return FluidStack.EMPTY.copy(); }
+      @Override public FluidStack drain(FluidStack resource, FluidAction action) { return FluidStack.EMPTY; }
+      @Override public FluidStack drain(int maxDrain, FluidAction action) { return FluidStack.EMPTY; }
     }
 
     // Output flow handler ---------------------------------------------------------------------
@@ -152,21 +152,21 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected
 
       @Override public FluidStack drain(FluidStack resource, FluidAction action)
       {
-        if((resource==null) || (te.tank_.isEmpty())) return FluidStack.EMPTY.copy();
-        return (!(te.tank_.isFluidEqual(resource))) ? (FluidStack.EMPTY.copy()) : drain(resource.getAmount(), action);
+        if((resource==null) || (te.tank_.isEmpty())) return FluidStack.EMPTY;
+        return (!(te.tank_.isFluidEqual(resource))) ? (FluidStack.EMPTY) : drain(resource.getAmount(), action);
       }
 
       @Override public FluidStack drain(int maxDrain, FluidAction action)
       {
-        if(!te.initialized_) FluidStack.EMPTY.copy();
+        if(!te.initialized_) return FluidStack.EMPTY;
         if((action==FluidAction.EXECUTE) && (maxDrain > 0)) te.last_drain_request_amount_ = maxDrain;
-        if(te.tank_.isEmpty()) return FluidStack.EMPTY.copy();
+        if(te.tank_.isEmpty()) return FluidStack.EMPTY;
         maxDrain = MathHelper.clamp(maxDrain ,0 , te.tank_.getAmount());
         FluidStack res = te.tank_.copy();
         if(action!=FluidAction.EXECUTE) return res;
         res.setAmount(maxDrain);
         te.tank_.setAmount(te.tank_.getAmount()-maxDrain);
-        if(te.tank_.getAmount() <= 0) te.tank_ = FluidStack.EMPTY.copy();
+        if(te.tank_.getAmount() <= 0) te.tank_ = FluidStack.EMPTY;
         te.total_volume_drained_ += res.getAmount();
         return res;
       }
@@ -232,7 +232,7 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected
         if(fh==null) continue;
         if(tank_.isEmpty()) {
           FluidStack res = fh.drain(n_requested, FluidAction.EXECUTE).copy();
-          if(res.getAmount()==0) continue;
+          if(res.isEmpty()) continue;
           total_volume_filled_ += res.getAmount();
           tank_ = res.copy();
           has_refilled = true;
@@ -240,7 +240,9 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected
           if((tank_.getAmount() + n_requested) > max_flowrate) n_requested = (max_flowrate - tank_.getAmount());
           FluidStack rq = tank_.copy();
           rq.setAmount(n_requested);
-          FluidStack res = fh.drain(rq, FluidAction.EXECUTE);
+          FluidStack res = fh.drain(rq, FluidAction.SIMULATE);
+          if(!res.isFluidEqual(rq)) continue;
+          res = fh.drain(rq, FluidAction.EXECUTE);
           if(res.isEmpty()) continue;
           tank_.setAmount(tank_.getAmount()+res.getAmount());
           total_volume_filled_ += res.getAmount();

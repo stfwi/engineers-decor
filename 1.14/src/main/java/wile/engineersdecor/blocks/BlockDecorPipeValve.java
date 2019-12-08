@@ -11,24 +11,27 @@ package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
-import net.minecraft.block.IWaterLoggable;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.BooleanProperty;
 import net.minecraft.world.IWorld;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.World;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.block.IWaterLoggable;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -82,11 +85,15 @@ public class BlockDecorPipeValve extends BlockDecorDirected implements IWaterLog
     return state;
   }
 
-  private void update_te(World world, BlockState state, BlockPos pos)
+  private void update_te(IWorld world, BlockState state, BlockPos pos)
   {
     TileEntity te = world.getTileEntity(pos);
     if(te instanceof BlockDecorPipeValve.BTileEntity) ((BlockDecorPipeValve.BTileEntity)te).block_reconfigure(state.get(FACING), config);
   }
+
+  @Override
+  public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext)
+  { return VoxelShapes.fullCube(); }
 
   @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
@@ -103,26 +110,16 @@ public class BlockDecorPipeValve extends BlockDecorDirected implements IWaterLog
   @Override
   @SuppressWarnings("deprecation")
   public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos pos, BlockPos facingPos)
-  { return get_rsconnector_state(state, world, pos, null); }
+  {
+    update_te(world, state, pos);
+    return get_rsconnector_state(state, world, pos, null);
+  }
 
   @Override
   public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
   {
     update_te(world, state, pos);
     world.notifyNeighborsOfStateChange(pos,this);
-  }
-
-  @Deprecated
-  @SuppressWarnings("deprecation")
-  public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos)
-  {
-    Direction fc = state.get(FACING);
-    if(fromPos.equals(pos.offset(fc)) || fromPos.equals(pos.offset(fc.getOpposite()))) {
-      update_te(world, state, pos);
-    } else {
-      BlockState connector_state = get_rsconnector_state(state, world, pos, fromPos);
-      if(!state.equals(connector_state)) world.setBlockState(pos, connector_state);
-    }
   }
 
   @Override
@@ -146,13 +143,10 @@ public class BlockDecorPipeValve extends BlockDecorDirected implements IWaterLog
   {
     protected static int fluid_maxflow_mb = 1000;
     protected static int redstone_flow_slope_mb = 1000/15;
-    // private final IFluidTankProperties[] fluid_props_ = {this};
-    private Direction block_facing_ = Direction.NORTH;
+    private Direction block_facing_ = null;
     private boolean filling_ = false;
     private boolean getlocked_ = false;
-    private boolean filling_enabled_ = true;
     private long block_config_ = 0;
-
 
     public BTileEntity()
     { this(ModContent.TET_STRAIGHT_PIPE_VALVE); }
@@ -160,35 +154,22 @@ public class BlockDecorPipeValve extends BlockDecorDirected implements IWaterLog
     public BTileEntity(TileEntityType<?> te_type)
     { super(te_type); }
 
-
     public void block_reconfigure(Direction facing, long block_config)
     {
       block_facing_ = facing;
       block_config_ = block_config;
-      filling_enabled_ = false;
-//      IFluidHandler fh = forward_fluid_handler();
-//      if(fh!=null) {
-//        if(fh.getTankProperties().length==0) {
-//          filling_enabled_ = true; // we don't know, so in doubt try filling.
-//        } else {
-//          for(IFluidTankProperties fp:fh.getTankProperties()) {
-//            if((fp!=null) && (fp.canFill())) { filling_enabled_ = true; break; }
-//          }
-//        }
-//      }
+    }
+
+    private Direction block_facing()
+    {
+      if(block_facing_ == null) {
+        BlockState st = getWorld().getBlockState(getPos());
+        block_facing_ = (st.getBlock() instanceof BlockDecorPipeValve) ? st.get(FACING) : Direction.NORTH;
+      }
+      return block_facing_;
     }
 
     // TileEntity ------------------------------------------------------------------------------
-
-    @Override
-    public void onLoad()
-    {
-      if(!hasWorld()) return;
-      final BlockState state = world.getBlockState(pos);
-      if((!(state.getBlock() instanceof BlockDecorPipeValve))) return;
-      block_reconfigure(state.get(FACING), block_config_);
-      world.notifyNeighborsOfStateChange(pos, state.getBlock());
-    }
 
     @Override
     public void read(CompoundNBT nbt)
@@ -203,7 +184,7 @@ public class BlockDecorPipeValve extends BlockDecorDirected implements IWaterLog
     public CompoundNBT write(CompoundNBT nbt)
     {
       super.write(nbt);
-      nbt.putInt("facing", block_facing_.getIndex());
+      if(block_facing_!=null) nbt.putInt("facing", block_facing_.getIndex());
       nbt.putLong("conf", block_config_);
       return nbt;
     }
@@ -218,8 +199,8 @@ public class BlockDecorPipeValve extends BlockDecorDirected implements IWaterLog
     {
       if(!this.removed && (facing != null)) {
         if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-          if(facing == block_facing_) return fluid_handler_.cast();
-          if(facing == block_facing_.getOpposite()) return back_flow_handler_.cast();
+          if(facing == block_facing()) return back_flow_handler_.cast();
+          if(facing == block_facing().getOpposite()) return fluid_handler_.cast();
         }
       }
       return super.getCapability(capability, facing);
@@ -230,9 +211,9 @@ public class BlockDecorPipeValve extends BlockDecorDirected implements IWaterLog
     @Nullable
     private IFluidHandler forward_fluid_handler()
     {
-      final TileEntity te = world.getTileEntity(pos.offset(block_facing_));
+      final TileEntity te = world.getTileEntity(pos.offset(block_facing()));
       if(te == null) return null;
-      return te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, block_facing_.getOpposite()).orElse(null);
+      return te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, block_facing().getOpposite()).orElse(null);
     }
 
     // Forward flow handler --
@@ -244,13 +225,15 @@ public class BlockDecorPipeValve extends BlockDecorDirected implements IWaterLog
       @Override public int getTanks() { return 0; }
       @Override public FluidStack getFluidInTank(int tank) { return FluidStack.EMPTY; }
       @Override public int getTankCapacity(int tank) { return fluid_maxflow_mb; }
-      @Override public FluidStack drain(FluidStack resource, FluidAction action) { return FluidStack.EMPTY.copy(); }
-      @Override public FluidStack drain(int maxDrain, FluidAction action) { return FluidStack.EMPTY.copy(); }
+      @Override public FluidStack drain(FluidStack resource, FluidAction action) { return FluidStack.EMPTY; }
+      @Override public FluidStack drain(int maxDrain, FluidAction action) { return FluidStack.EMPTY; }
       @Override public boolean isFluidValid(int tank, @Nonnull FluidStack stack) { return true; }
 
       @Override public int fill(FluidStack resource, FluidAction action)
       {
-        if((te.filling_) || (!te.filling_enabled_)) return 0;
+        if(te.filling_) return 0;
+        final IFluidHandler fh = te.forward_fluid_handler();
+        if(fh==null) return 0;
         if((te.block_config_ & CFG_REDSTONE_CONTROLLED) != 0) {
           int rs = te.world.getRedstonePowerFromNeighbors(te.pos);
           if(rs <= 0) return 0;
@@ -258,17 +241,15 @@ public class BlockDecorPipeValve extends BlockDecorDirected implements IWaterLog
         }
         FluidStack res = resource.copy();
         if(res.getAmount() > fluid_maxflow_mb) res.setAmount(fluid_maxflow_mb);
-        final IFluidHandler fh = te.forward_fluid_handler();
-        if(fh==null) return 0;
-        te.filling_ = true; // in case someone does not check the cap, but just "forwards back" what is beeing filled right now.
-        //if(res.amount > 50) {
-          //final TileEntity te = te.world.getTileEntity(te.pos.offset(te.block_facing_));
-          //if(te instanceof IFluidPipe) {
-          //  // forward pressureized tag
-          //  if(res.tag == null) res.tag = new CompoundNBT();
-          //  res.tag.putBoolean("pressurized", true);
-          //}
-        //}
+        te.filling_ = true;
+        // IE fluid pipe not available yet
+        //  if(res.getAmount() > 50) {
+        //    final TileEntity fte = te.world.getTileEntity(te.pos.offset(te.block_facing()));
+        //    if(!(fte instanceof IFluidPipe)) {
+        //      CompoundNBT tag = res.getTag();
+        //      if((tag != null) && (tag.contains("pressurized"))) tag.remove("pressurized"); // remove pressureized tag if no IFluidPipe
+        //    }
+        //  }
         int n_filled = fh.fill(res, action);
         te.filling_ = false;
         return n_filled;
@@ -284,21 +265,21 @@ public class BlockDecorPipeValve extends BlockDecorDirected implements IWaterLog
       @Override public int getTankCapacity(int tank) { return 0; }
       @Override public boolean isFluidValid(int tank, @Nonnull FluidStack stack) { return false; }
       @Override public int fill(FluidStack resource, FluidAction action) { return 0; }
-      @Override public FluidStack drain(FluidStack resource, FluidAction action) { return FluidStack.EMPTY.copy(); }
-      @Override public FluidStack drain(int maxDrain, FluidAction action) { return FluidStack.EMPTY.copy(); }
+      @Override public FluidStack drain(FluidStack resource, FluidAction action) { return FluidStack.EMPTY; }
+      @Override public FluidStack drain(int maxDrain, FluidAction action) { return FluidStack.EMPTY; }
     }
 
-    // IFluidPipe
+    // IE IFluidPipe
 
     //    @Override
     //    public boolean hasOutputConnection(Direction side)
-    //    { return (side == block_facing_); }
+    //    { return (side == block_facing()); }
     //
     //    @Override
     //    public boolean canOutputPressurized(boolean consumePower)
     //    {
     //      if(getlocked_ || (!filling_enabled_)) return false;
-    //      final TileEntity te = world.getTileEntity(pos.offset(block_facing_));
+    //      final TileEntity te = world.getTileEntity(pos.offset(block_facing()));
     //      if(!(te instanceof IFluidPipe)) return false;
     //      getlocked_ = true; // not sure if IE explicitly pre-detects loops, so let's lock recurion here, too.
     //      boolean r = ((IFluidPipe)te).canOutputPressurized(consumePower);

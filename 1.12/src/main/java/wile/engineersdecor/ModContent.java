@@ -12,12 +12,11 @@
  */
 package wile.engineersdecor;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import wile.engineersdecor.blocks.*;
+import wile.engineersdecor.detail.ModAuxiliaries;
+import wile.engineersdecor.detail.ModConfig;
+import wile.engineersdecor.detail.ModTesrs;
+import wile.engineersdecor.items.ItemDecor;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -32,11 +31,11 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import wile.engineersdecor.blocks.*;
-import wile.engineersdecor.detail.ModAuxiliaries;
-import wile.engineersdecor.detail.ModConfig;
-import wile.engineersdecor.detail.ModTesrs;
-import wile.engineersdecor.items.ItemDecor;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import javax.annotation.Nonnull;
+
 
 @SuppressWarnings("unused")
 public class ModContent
@@ -545,6 +544,7 @@ public class ModContent
     STRAIGHT_CHECK_VALVE, STRAIGHT_REDSTONE_VALVE, STRAIGHT_REDSTONE_ANALOG_VALVE, STRAIGHT_PIPE_VALVE_TEI,
     SMALL_FLUID_FUNNEL,SMALL_FLUID_FUNNEL_TEI,
     PASSIVE_FLUID_ACCUMULATOR, PASSIVE_FLUID_ACCUMULATOR_TEI,
+    SMALL_MILKING_MACHINE,SMALL_MILKING_MACHINE_TEI,
     CLINKER_BRICK_BLOCK,
     CLINKER_BRICK_SLAB,
     CLINKER_BRICK_STAIRS,
@@ -603,7 +603,6 @@ public class ModContent
     PANZERGLASS_SLAB,                         // @todo: check if another class is needed due to is_side_visible
     TREATED_WOOD_FLOOR,                       // @todo: check if textures need improvement
     TEST_BLOCK,TEST_BLOCK_TEI,
-    SMALL_MILKING_MACHINE,SMALL_MILKING_MACHINE_TEI
   };
 
   //--------------------------------------------------------------------------------------------------------------------
