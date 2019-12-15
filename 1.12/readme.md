@@ -10,7 +10,7 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
-    ~ v1.0.17-b2  [A] Reverse recipes for slabs and slab slices added.
+    - v1.0.17-b2  [A] Reverse recipes for slabs and slab slices added.
                   [M] Inset Floor Edge Light slightly thinner, looks better.
 
     - v1.0.17-b1  [A] Added Milking Machine.
