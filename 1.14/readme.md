@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
+    ~ v1.0.17-b2  [A] Reverse recipes for slabs and slab slices added.
+                  [M] Inset Floor Edge Light slightly thinner, looks better.
+
     - v1.0.17-b1  [A] Added Milking Machine.
                   [A] Added Mineral Smelter gravity fluid transfer.
                   [M] Window placement improved.

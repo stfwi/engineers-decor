@@ -1,0 +1,22 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "immersiveengineering:sheetmetal_slab",
+      "required": ["engineersdecor:halfslab_sheetmetal_iron"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SS",
+    "SS"
+  ],
+  "key": {
+    "S": { "item": "engineersdecor:halfslab_sheetmetal_iron" }
+  },
+  "result": {
+    "item": "immersiveengineering:sheetmetal_slab",
+    "data": 9,
+    "count": 1
+  }
+}

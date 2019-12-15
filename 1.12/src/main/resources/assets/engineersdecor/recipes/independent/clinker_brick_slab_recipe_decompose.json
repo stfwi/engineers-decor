@@ -1,0 +1,21 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:clinker_brick_block",
+      "required": ["engineersdecor:clinker_brick_slab"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "B",
+    "B"
+  ],
+  "key": {
+    "B": { "item": "engineersdecor:clinker_brick_slab" }
+  },
+  "result": {
+    "item": "engineersdecor:clinker_brick_block",
+    "count": 1
+  }
+}
