@@ -4,7 +4,9 @@
     "1.12.2-recommended": "1.0.16",
     "1.12.2-latest": "1.0.17-b2",
     "1.14.4-recommended": "",
-    "1.14.4-latest": "1.0.17-b2"
+    "1.14.4-latest": "1.0.17-b2",
+    "1.15.1-recommended": "",
+    "1.15.1-latest": "1.0.17-b2"
   },
   "1.12.2": {
     "1.0.17-b2": "[A] Reverse recipes for slabs and slab slices added.\n[M] Inset Floor Edge Light slightly thinner, looks better.",
@@ -112,5 +114,8 @@
     "1.0.7-b5": "[U] Updated to Forge BETA 1.14.2-26.0.35/20190608-1.14.2.\n[A] Factory dropper functionality ported.\n[A] Small lab furnace functionality ported.\n[A] Small electrical lab furnace functionality ported.\n[A] Small waste incinerator functionality ported.\n[A] Fluid valves, Passive Fluid Accumulator ported.\n[I] Issue: Scoped recipe constants still not working.",
     "1.0.7-b4": "[U] Updated to Forge BETA 1.14.2-26.0.32/20190608-1.14.2.\n[A] Sitting on the stool ported.\n[A] Ladder climbing speed boost ported.\n[A] Crafting table functionality ported.\n[I] Issue: Scoped recipe constants not working yet with the current Forge version (or somehow changed).",
     "1.0.7-b3": "[A] Initial 1.14.2 port of decorative blocks."
+  },
+  "1.15.1": {
+    "1.0.17-b2": "[A] Initial port."
   }
 }

@@ -225,6 +225,8 @@ commits.
 
   - [1.14](1.14/readme.md)
 
+  - [1.15](1.15/readme.md)
+
 ### Community references
 
 Mods covering similar features, or may fit well together with IE and the decorations or features of this mod:

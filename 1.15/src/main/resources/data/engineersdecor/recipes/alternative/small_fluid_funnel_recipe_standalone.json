@@ -1,0 +1,24 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:small_fluid_funnel",
+      "missing": ["immersiveengineering:metal_device1"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "HHH",
+    "IBI",
+    "III"
+  ],
+  "key": {
+    "B": { "item": "minecraft:bucket" },
+    "I": { "item": "minecraft:iron_ingot" },
+    "H": { "item": "minecraft:hopper" }
+  },
+  "result": {
+    "item": "engineersdecor:small_fluid_funnel",
+    "count": 1
+  }
+}

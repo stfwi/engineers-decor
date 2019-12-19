@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=north": { "model": "engineersdecor:block/pole/thin_steel_pole_model"         },
+    "facing=south": { "model": "engineersdecor:block/pole/thin_steel_pole_model"         },
+    "facing=west":  { "model": "engineersdecor:block/pole/thin_steel_pole_model", "y":90 },
+    "facing=east":  { "model": "engineersdecor:block/pole/thin_steel_pole_model", "y":90 },
+    "facing=up":    { "model": "engineersdecor:block/pole/thin_steel_pole_model", "x":90 },
+    "facing=down":  { "model": "engineersdecor:block/pole/thin_steel_pole_model", "x":90 }
+  }
+}

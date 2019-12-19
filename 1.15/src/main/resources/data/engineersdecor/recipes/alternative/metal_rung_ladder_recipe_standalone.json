@@ -1,0 +1,22 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:metal_rung_ladder",
+      "missing": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "S S",
+    "SSS",
+    "   "
+  ],
+  "key": {
+    "S": { "item": "minecraft:iron_nugget" }
+  },
+  "result": {
+    "item": "engineersdecor:metal_rung_ladder",
+    "count": 1
+  }
+}
