@@ -897,7 +897,6 @@ public class ModContent
     RenderingRegistry.registerEntityRenderingHandler(ET_CHAIR,
       manager->(new wile.engineersdecor.detail.ModRenderers.InvisibleEntityRenderer<BlockDecorChair.EntityChair>(manager))
     );
-
   }
 
 }
