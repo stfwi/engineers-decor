@@ -262,11 +262,11 @@ public class BlockDecorPlacer extends BlockDecorDirected
       }
       // player slots
       for(int x=0; x<9; ++x) {
-        addSlotToContainer(new Slot(playerInventory, x, 8+x*18, 129)); // player slots: 0..8
+        addSlotToContainer(new Slot(playerInventory, x, 9+x*18, 129)); // player slots: 0..8
       }
       for(int y=0; y<3; ++y) {
         for(int x=0; x<9; ++x) {
-          addSlotToContainer(new Slot(playerInventory, x+y*9+9, 8+x*18, 71+y*18)); // player slots: 9..35
+          addSlotToContainer(new Slot(playerInventory, x+y*9+9, 9+x*18, 71+y*18)); // player slots: 9..35
         }
       }
     }

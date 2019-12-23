@@ -4,7 +4,7 @@
     "1.12.2-recommended": "1.0.16",
     "1.12.2-latest": "1.0.17-b3",
     "1.14.4-recommended": "",
-    "1.14.4-latest": "1.0.17-b2",
+    "1.14.4-latest": "1.0.17-b3",
     "1.15.1-recommended": "",
     "1.15.1-latest": "1.0.17-b2"
   },
@@ -80,6 +80,7 @@
     "1.0.0-b1": "[A] Initial structure.\n[A] Added clinker bricks and clinker brick stairs.\n[A] Added slag bricks and slag brick stairs.\n[A] Added metal rung ladder.\n[A] Added staggered metal steps ladder.\n[A] Added treated wood ladder.\n[A] Added treated wood pole.\n[A] Added treated wood table."
   },
   "1.14.4": {
+    "1.0.17-b3": "[F] Double newline escapes in lang files fixed (\"\\n\" in a tooltip).\n[M] Updated zh_cn lang file (scikirbypoke).",
     "1.0.17-b2": "[A] Reverse recipes for slabs and slab slices added.\n[M] Inset Floor Edge Light slightly thinner, looks better.",
     "1.0.17-b1": "[A] Added Milking Machine.\n[A] Added Mineral Smelter gravity fluid transfer.\n[M] Window placement improved.\n[M] Made Pipe Valve textures slightly darker to fit IE pipes better when shaded.\n[F] Levers can be directly attached to redstone controller Pipe Valves.\n[F] Replaced Pipe Valve early load with lazy initialized data (issue #69, thx @Siriuo).",
     "1.0.16-b7": "[M] Forge blockstates ported from 1.12 transformed to vanilla.",
