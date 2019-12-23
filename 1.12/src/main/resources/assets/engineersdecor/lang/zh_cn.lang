@@ -9,8 +9,8 @@ engineersdecor.tooltip.hint.extended=§6[§9SHIFT§r 查看更多信息§6]§r
 engineersdecor.tooltip.hint.help=§6[§9CTRL-SHIFT§r 查看帮助§6]§r
 engineersdecor.tooltip.slabpickup.help=§r手持同类台阶往上/下看时单击该台阶可无需破坏快速拾起。
 #-----------------------------------------------------------------------------------------------------------
-engineersdecor.tooltip.requires_rf_power=Requires RF power.
-engineersdecor.tooltip.massive_speed_boost_with_rf_power=Apply RF power to magnificently increase the speed.
+engineersdecor.tooltip.requires_rf_power=需要RF能量。
+engineersdecor.tooltip.massive_speed_boost_with_rf_power=提供RF能量可显著提升速度。
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.clinker_brick_block.name=过烧砖块
 tile.engineersdecor.clinker_brick_block.help=§6一种放在不同位置贴图有不同变化的砖块。§r\n比原版砖看起来颜色更深，色度也更高。
@@ -20,8 +20,8 @@ tile.engineersdecor.slag_brick_block.name=炉渣砖块
 tile.engineersdecor.slag_brick_block.help=§6一种放在不同位置贴图有不同变化的灰棕色砖块。
 tile.engineersdecor.rebar_concrete.name=钢筋混凝土
 tile.engineersdecor.rebar_concrete.help=§6钢强化的混凝土。§r昂贵但像黑曜石一样防爬行者爆炸。
-tile.engineersdecor.gas_concrete.name=Gas Concrete Block
-#tile.engineersdecor.gas_concrete.help=§6Low hardness, high production yield concrete.§r Easy to break decorative concrete block.
+tile.engineersdecor.gas_concrete.name=加气混凝土
+tile.engineersdecor.gas_concrete.help=§6低硬度，高产出的混凝土。§r容易破坏的装饰性混凝土方块。
 tile.engineersdecor.panzerglass_block.name=装甲玻璃块
 tile.engineersdecor.panzerglass_block.help=§6强化的玻璃方块。§r昂贵，防爆。深灰色调，有隐约可见的结构线和多种纹理，外观无光泽。
 tile.engineersdecor.rebar_concrete_tile.name=钢筋混凝土砖
@@ -37,8 +37,8 @@ tile.engineersdecor.rebar_concrete_slab.name=钢筋混凝土台阶
 tile.engineersdecor.rebar_concrete_slab.help=§6钢强化的混凝土台阶。§r昂贵但像黑曜石一样防爬行者爆炸。
 tile.engineersdecor.rebar_concrete_tile_slab.name=钢筋混凝土砖台阶
 tile.engineersdecor.rebar_concrete_tile_slab.help=§6钢强化的混凝土砖台阶。§r昂贵但像黑曜石一样防爬行者爆炸。
-tile.engineersdecor.gas_concrete_slab.name=Gas Concrete Slab
-#tile.engineersdecor.gas_concrete_slab.help=§6Low hardness concrete slab.§r Easy to break decorative concrete.
+tile.engineersdecor.gas_concrete_slab.name=加气混凝土台阶
+tile.engineersdecor.gas_concrete_slab.help=§6低硬度的混凝土台阶。§r容易破坏的装饰性混凝土。
 tile.engineersdecor.panzerglass_slab.name=装甲玻璃台阶
 tile.engineersdecor.panzerglass_slab.help=§6强化的玻璃台阶。§r昂贵，防爆。深灰色调，有隐约可见的结构线和多种纹理。
 tile.engineersdecor.treated_wood_floor.name=防腐木地板
@@ -48,8 +48,8 @@ tile.engineersdecor.rebar_concrete_wall.name=钢筋混凝土墙
 tile.engineersdecor.rebar_concrete_wall.help=§6钢强化的混凝土墙。§r 昂贵但像黑曜石一样防爬行者爆炸。
 tile.engineersdecor.concrete_wall.name=混凝土墙
 tile.engineersdecor.concrete_wall.help=§6用坚固混凝土制造的墙。
-tile.engineersdecor.gas_concrete_wall.name=Gas Concrete Wall
-#tile.engineersdecor.gas_concrete_wall.help=§6Low hardness concrete wall.§r Easy to break decorative concrete.
+tile.engineersdecor.gas_concrete_wall.name=加气混凝土墙
+tile.engineersdecor.gas_concrete_wall.help=§6低硬度的混凝土墙。§r容易破坏的装饰性混凝土。
 tile.engineersdecor.clinker_brick_wall.name=过烧砖墙
 tile.engineersdecor.clinker_brick_wall.help=§6简单的过烧砖墙。
 tile.engineersdecor.slag_brick_wall.name=炉渣砖墙
@@ -72,8 +72,8 @@ tile.engineersdecor.rebar_concrete_stairs.name=钢筋混凝土楼梯
 tile.engineersdecor.rebar_concrete_stairs.help=§6钢强化的混凝土楼梯。§r昂贵但像黑曜石一样防爬行者爆炸。
 tile.engineersdecor.rebar_concrete_tile_stairs.name=钢筋混凝土砖楼梯
 tile.engineersdecor.rebar_concrete_tile_stairs.help=§6钢强化的混凝土砖楼梯。§r昂贵但像黑曜石一样防爬行者爆炸。
-tile.engineersdecor.gas_concrete_stairs.name=Gas Concrete Stairs
-#tile.engineersdecor.gas_concrete_stairs.help=§6Low hardness concrete stairs.§r Easy to break decorative concrete.
+tile.engineersdecor.gas_concrete_stairs.name=加气混凝土楼梯
+#tile.engineersdecor.gas_concrete_stairs.help=§6低硬度的混凝土楼梯。§r容易破坏的装饰性混凝土。
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.treated_wood_pole.name=直防腐木杆
 tile.engineersdecor.treated_wood_pole.help=§6直杆的一段，有着继电器的直径。§r\n\
@@ -113,9 +113,9 @@ tile.engineersdecor.iron_inset_light.name=嵌入灯
 tile.engineersdecor.iron_inset_light.help=§6小型荧石光源，能嵌入地板、天花板或墙里。§r\n\
                                           用于照亮电力光源难以安装的地方。\
                                           亮度与火把一样。
-tile.engineersdecor.iron_floor_edge_light.name=Inset Floor Edge Light
-#tile.engineersdecor.iron_floor_edge_light.help=§6Small glowstone light source, placed at the edge of a floor block.§r\n\
-                                          Useful to light up places where electrical light installations are problematic.
+tile.engineersdecor.iron_floor_edge_light.name=嵌入地板边缘灯
+tile.engineersdecor.iron_floor_edge_light.help=§6小型荧石光源，置于地板方块边缘。§r\n\
+                                          用于照亮电力光源难以安装的地方。
 tile.engineersdecor.treated_wood_window.name=防腐木窗
 tile.engineersdecor.treated_wood_window.help=§6木框三层玻璃窗。绝缘良好。§r不像玻璃板一样连接到相邻方块。
 tile.engineersdecor.treated_wood_windowsill.name=防腐木窗台
@@ -158,11 +158,11 @@ tile.engineersdecor.straight_pipe_valve_redstone_analog.help=§6一段直输液�
 tile.engineersdecor.passive_fluid_accumulator.name=被动流体累积器。
 tile.engineersdecor.passive_fluid_accumulator.help=§6基于真空吸力的流体收集器。§r有一个输出面，其他面都是输入。\
                                                    当从输出面被泵抽取时，从输入面邻接储罐抽取液体。
-tile.engineersdecor.small_fluid_funnel.name=Small Fluid Collection Funnel
-#tile.engineersdecor.small_fluid_funnel.help=§6Collects fluids above it.§r Has an internal tank with three buckets capacity. Traces \
-                                            flowing fluids to nearby source blocks. The fluid can be obtained with fluid transfer systems \
-                                            or a bucket. Fills only tanks below (gravity transfer). Compatible with vanilla \
-                                            infinite-water-source creation.
+tile.engineersdecor.small_fluid_funnel.name=小型流体收集漏斗
+tile.engineersdecor.small_fluid_funnel.help=§6收集上方的流体。§r有一个三桶大的内部储罐。会\
+                                            追溯流体到附近的源方块。流体可被流体运输系统或桶\
+                                            移出。只会装满下方的储罐（重力传输）。与原版\
+                                            无限水兼容。
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.factory_dropper.name=工厂掉落器
 tile.engineersdecor.factory_dropper.help=§6适用于高级工厂自动化的掉落器。§r有十二个轮询选择的储物格。\
@@ -171,18 +171,18 @@ tile.engineersdecor.factory_dropper.help=§6适用于高级工厂自动化的掉
                                          还能和外部红石信号触发再进行逻辑与或逻辑或。触发模拟按钮仅作测试用途。\
                                          当内部触发条件满足时，预先打开卷帘门。所有符合条件的物品\
                                          会同时掉落。点击GUI的各处来了解如何运作。
-tile.engineersdecor.factory_hopper.name=Factory Hopper
-#tile.engineersdecor.factory_hopper.help=§6Hopper suitable for advanced factory automation.§r Can transfer half-stacks, max collection range 9x9.\n\
-                                        GUI Slider controls: Collection range (0 to 4), insertion delay (0.5s to 10s), insertion stack size (1 to 32).\n\
-                                        GUI Redstone controls: Not inverted / inverted (default), pulse mode / continuous mode (default).
-tile.engineersdecor.factory_placer.name=Factory Block Placer
-#tile.engineersdecor.factory_placer.help=§6Allows placing blocks and planting crops or trees.§r\n\
-                                        GUI Redstone controls: Not inverted / inverted (default), pulse mode / continuous mode (default).\n\
-                                        Also supports spike planing from underneath the soil. Spits out items that it cannot place or plant.
-tile.engineersdecor.small_block_breaker.name=Factory Block Breaker
-#tile.engineersdecor.small_block_breaker.help=§6Breaks blocks in front of it.§r\n\
-                                        Can be disabled by applying a redstone signal. \
-                                        The time needed to destroy a block depends on the hardness of that block. \
+tile.engineersdecor.factory_hopper.name=工厂漏斗
+tile.engineersdecor.factory_hopper.help=§6适用于高级工厂自动化的漏斗。§r可一次传输半组物品，最大收集范围9x9。\n\
+                                        GUI滑动条：控制收集距离（0到4），插入延迟（0.5秒到10秒），插入一叠物品的大小（1到32）。\n\
+                                        GUI红石控制：不反相/反相（默认），脉冲模式/持续模式（默认）。
+tile.engineersdecor.factory_placer.name=工厂方块放置器
+tile.engineersdecor.factory_placer.help=§6能够放置方块和种植作物或树。§r\n\
+                                        GUI红石控制：不反相/反相（默认），脉冲模式/持续模式（默认）。\n\
+                                        也支持从耕地下方穿透方块种植。会吐出不能放置或种植的物品。
+tile.engineersdecor.small_block_breaker.name=工厂方块破坏器
+tile.engineersdecor.small_block_breaker.help=§6破坏其正前方的方块。§r\n\
+                                        通入红石信号可以停止破坏。\
+                                        破坏一个方块需要的时间取决于其硬度。\
                                         ${!block_breaker_requires_power?engineersdecor.tooltip.massive_speed_boost_with_rf_power}\
                                         ${block_breaker_requires_power?engineersdecor.tooltip.requires_rf_power}
 tile.engineersdecor.small_mineral_smelter.name=小型矿物熔炼炉
@@ -199,13 +199,13 @@ tile.engineersdecor.small_tree_cutter.name=小型砍树机
 tile.engineersdecor.small_tree_cutter.help=§6砍倒正前方的树。§r\n\
                                            不收集木材。通入红石信号停用。\
                                            提供RF来加快砍树速度。（没有的话会很慢。）
-tile.engineersdecor.small_milking_machine.name=Small Milking Machine
-#tile.engineersdecor.small_milking_machine.help=§6Occasionally grooms and milks cows.§r\n\
-                                           Has an internal fluid tank. Does not feed the animals. Use buckets to retrieve the milk. \
-                                           Pulls/stores milk container items from/to inventories at the back or bottom (preferrs \
-                                           extracting from the back and inserting below, but can also put filled vessels back into the \
-                                           same inventory). Supports fluid output to tanks or pipes below (only if milk exists as fluid). \
-                                           Care that it's not too crowdy in the cow pen, only happy animals stroll by voluntarily.
+tile.engineersdecor.small_milking_machine.name=小型挤奶机
+tile.engineersdecor.small_milking_machine.help=§6偶尔给奶牛梳理和挤奶。§r\n\
+                                           有一个内置流体储罐。不会喂食动物。使用桶获得牛奶。\
+                                           从后方或下方的方块物品栏拉取或存储牛奶容器物品（偏好\
+                                           从下方输入，从后方输出，但也能将装满的牛奶容器放回原来\
+                                           的物品栏）支持将牛奶作为流体输出到下方的储罐和管道（只要牛奶是流体）。\
+                                           小心牛栏里不要太拥挤，只有快乐的动物才会自觉地在挤奶机前散步。
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.sign_decor.name=标志板（工程师的装饰）
 tile.engineersdecor.sign_decor.help=§6这不应该可合成或在JEI看到。用于创造模式的物品栏标签和截屏。
@@ -226,8 +226,8 @@ tile.engineersdecor.halfslab_rebar_concrete.name=强化混凝土切片
 tile.engineersdecor.halfslab_rebar_concrete.help=§6可垂直堆叠的切片。§r手持切片右/左击切片堆叠的顶端或底部来添加/移除切片。
 tile.engineersdecor.halfslab_concrete.name=混凝土切片
 tile.engineersdecor.halfslab_concrete.help=§6可垂直堆叠的切片。§r手持切片右/左击切片堆叠的顶端或底部来添加/移除切片。
-tile.engineersdecor.halfslab_gas_concrete.name=Gas Concrete Slice
-#tile.engineersdecor.halfslab_gas_concrete.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.
+tile.engineersdecor.halfslab_gas_concrete.name=加气混凝土切片
+tile.engineersdecor.halfslab_gas_concrete.help=§6可垂直堆叠的切片。§r手持切片右/左击切片堆叠的顶端或底部来添加/移除切片。
 tile.engineersdecor.halfslab_treated_wood.name=防腐木切片
 tile.engineersdecor.halfslab_treated_wood.help=§6可垂直堆叠的切片。§r手持切片右/左击切片堆叠的顶端或底部来添加/移除切片。
 tile.engineersdecor.halfslab_sheetmetal_iron.name=铁板金属块切片
