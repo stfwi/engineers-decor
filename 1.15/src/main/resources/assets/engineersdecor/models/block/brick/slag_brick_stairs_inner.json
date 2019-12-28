@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "engineersdecor:block/slag_brick/slag_brick_texture0",
+    "top": "engineersdecor:block/slag_brick/slag_brick_texture1",
+    "side": "engineersdecor:block/slag_brick/slag_brick_texture2"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:iron_inset_light",
+      "missing": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "GGG",
+    "PLP"
+  ],
+  "key": {
+    "P": { "item": "minecraft:iron_ingot" },
+    "L": { "item": "minecraft:glowstone" },
+    "G": { "tag": "engineersdecor:plain_glass_panes" }
+  },
+  "result": {
+    "item": "engineersdecor:iron_inset_light",
+    "count": 8
+  }
+}

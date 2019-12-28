@@ -1,0 +1,24 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:slag_brick_stairs",
+      "required": ["engineersdecor:slag_brick_block"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "C  ",
+    "CC ",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "engineersdecor:slag_brick_block"
+    }
+  },
+  "result": {
+    "item": "engineersdecor:slag_brick_stairs",
+    "count": 6
+  }
+}

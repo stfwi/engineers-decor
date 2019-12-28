@@ -418,12 +418,19 @@ public class BlockDecorPlacer extends BlockDecorDirected
     { return (i<NUM_OF_SLOTS-1) ? (i+1) : 0; }
 
     private boolean spit_out(Direction facing)
+    { return spit_out(facing, false); }
+
+    private boolean spit_out(Direction facing, boolean all)
     {
       ItemStack stack = stacks_.get(current_slot_index_);
       ItemStack drop = stack.copy();
-      stack.shrink(1);
-      stacks_.set(current_slot_index_, stack);
-      drop.setCount(1);
+      if(!all) {
+        stack.shrink(1);
+        stacks_.set(current_slot_index_, stack);
+        drop.setCount(1);
+      } else {
+        stacks_.set(current_slot_index_, ItemStack.EMPTY);
+      }
       for(int i=0; i<8; ++i) {
         BlockPos p = pos.offset(facing, i);
         if(!world.isAirBlock(p)) continue;
@@ -486,7 +493,7 @@ public class BlockDecorPlacer extends BlockDecorDirected
         block = Blocks.AIR;
         no_space = true;
       }
-      // System.out.println("PLACE " + current_stack + "  --> " + block + " at " + placement_pos.subtract(pos) + "( item=" + item + ")");
+      // println("PLACE " + current_stack + "  --> " + block + " at " + placement_pos.subtract(pos) + "( item=" + item + ")");
       if(block != Blocks.AIR) {
         try {
           BlockItemUseContext use_context = null;
@@ -524,9 +531,9 @@ public class BlockDecorPlacer extends BlockDecorDirected
           // The block really needs a player or other issues happened during placement.
           // A hard crash should not be fired here, instead spit out the item to indicated that this
           // block is not compatible.
-          System.out.println("Exception while trying to place " + e);
+          ModEngineersDecor.logger().error("Exception while trying to place " + ((block==null)?(""):(""+block)) + ", spitting out. Exception is: " + e);
           world.removeBlock(placement_pos, false);
-          return spit_out(facing);
+          return spit_out(facing, true);
         }
       }
       if((!no_space) && (!current_stack.isEmpty())) {

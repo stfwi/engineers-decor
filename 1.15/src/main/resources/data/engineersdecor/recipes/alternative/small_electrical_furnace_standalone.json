@@ -1,0 +1,24 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:small_electrical_furnace",
+      "missing": ["immersiveengineering:material"],
+      "required": ["engineersdecor:small_lab_furnace"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    "HFH"
+  ],
+  "key": {
+    "F": { "item": "engineersdecor:small_lab_furnace" },
+    "C": { "item": "minecraft:iron_ingot" },
+    "H": { "item": "minecraft:hopper" }
+  },
+  "result": {
+    "item": "engineersdecor:small_electrical_furnace",
+    "count": 1
+  }
+}

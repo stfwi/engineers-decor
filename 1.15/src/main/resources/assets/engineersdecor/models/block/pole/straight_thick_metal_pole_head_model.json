@@ -1,0 +1,129 @@
+{
+	"parent": "block/block",
+	"textures": {
+		"side": "engineersdecor:block/pole/thick_steel_pole_side_texture",
+		"particle": "engineersdecor:block/pole/thick_steel_pole_side_texture",
+		"top": "engineersdecor:block/pole/thick_steel_pole_top_texture"
+	},
+	"elements": [
+		{
+			"from": [6, 10, 0],
+			"to": [10, 11, 14],
+			"faces": {
+				"north": {"uv": [6, 5, 10, 6], "texture": "#top"},
+				"up": {"uv": [6, 0, 10, 16], "texture": "#side"},
+				"down": {"uv": [6, 0, 10, 16], "texture": "#side"}
+			}
+		},
+		{
+			"from": [10, 5, 0],
+			"to": [11, 11, 14],
+			"faces": {
+				"north": {"uv": [5, 5, 6, 11], "texture": "#top", "cullface": "north"},
+				"east": {"uv": [5, 0, 11, 16], "rotation": 90, "texture": "#side"},
+				"west": {"uv": [5, 0, 11, 16], "rotation": 90, "texture": "#side"},
+				"up": {"uv": [10, 0, 11, 16], "texture": "#side"},
+				"down": {"uv": [10, 0, 11, 16], "texture": "#side"}
+			}
+		},
+		{
+			"from": [5, 5, 0],
+			"to": [6, 11, 14],
+			"faces": {
+				"north": {"uv": [10, 5, 11, 11], "texture": "#top", "cullface": "north"},
+				"east": {"uv": [5, 0, 11, 16], "rotation": 90, "texture": "#side"},
+				"west": {"uv": [5, 0, 11, 16], "rotation": 90, "texture": "#side"},
+				"up": {"uv": [5, 0, 6, 16], "texture": "#side"},
+				"down": {"uv": [5, 0, 6, 16], "texture": "#side"}
+			}
+		},
+		{
+			"from": [6, 5, 0],
+			"to": [10, 6, 14],
+			"faces": {
+				"north": {"uv": [6, 10, 10, 11], "texture": "#top"},
+				"up": {"uv": [6, 0, 10, 16], "texture": "#side"},
+				"down": {"uv": [6, 0, 10, 16], "texture": "#side"}
+			}
+		},
+		{
+			"from": [3, 3, 14],
+			"to": [13, 13, 16],
+			"faces": {
+				"north": {"uv": [4, 4, 12, 12], "texture": "#top", "cullface": "north"},
+				"east": {"uv": [4, 5, 6, 13], "texture": "#side"},
+				"south": {"uv": [3, 3, 13, 13], "texture": "#top", "cullface": "south"},
+				"west": {"uv": [14, 4, 16, 12], "texture": "#side"},
+				"up": {"uv": [12, 4, 14, 12], "rotation": 90, "texture": "#side"},
+				"down": {"uv": [10, 1, 12, 10], "rotation": 90, "texture": "#side"}
+			}
+		},
+		{
+			"from": [6, 11, 13],
+			"to": [10, 11.5, 15],
+			"rotation": {"angle": -45, "axis": "x", "origin": [8, 11.25, 14]},
+			"faces": {
+				"east": {"uv": [2, 5.5, 4, 6], "texture": "#top"},
+				"west": {"uv": [12, 5.5, 14, 6], "texture": "#top"},
+				"up": {"uv": [6, 13, 10, 15], "texture": "#top"}
+			}
+		},
+		{
+			"from": [6, 4.5, 13],
+			"to": [10, 5, 15],
+			"rotation": {"angle": 45, "axis": "x", "origin": [8, 4.75, 14]},
+			"faces": {
+				"east": {"uv": [2, 5.5, 4, 6], "texture": "#top"},
+				"west": {"uv": [12, 5.5, 14, 6], "texture": "#top"},
+				"down": {"uv": [6, 1, 10, 3], "texture": "#top"}
+			}
+		},
+		{
+			"from": [4.5, 6, 13],
+			"to": [5, 10, 15],
+			"rotation": {"angle": -45, "axis": "y", "origin": [4.75, 8, 14]},
+			"faces": {
+				"west": {"uv": [6, 1, 10, 3], "rotation": 270, "texture": "#top"},
+				"up": {"uv": [12, 5.5, 14, 6], "rotation": 90, "texture": "#top"},
+				"down": {"uv": [2, 5.5, 4, 6], "rotation": 270, "texture": "#top"}
+			}
+		},
+		{
+			"from": [11, 6, 13],
+			"to": [11.5, 10, 15],
+			"rotation": {"angle": 45, "axis": "y", "origin": [11.25, 8, 14]},
+			"faces": {
+				"east": {"uv": [6, 13, 10, 15], "rotation": 270, "texture": "#top"},
+				"up": {"uv": [12, 5.5, 14, 6], "rotation": 90, "texture": "#top"},
+				"down": {"uv": [2, 5.5, 4, 6], "rotation": 270, "texture": "#top"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [89, 2, 14],
+			"translation": [0.5, -2.5, -0.75],
+			"scale": [0.45, 0.45, 0.45]
+		},
+		"firstperson_righthand": {
+			"rotation": [83, 3, -15],
+			"translation": [0.5, 0, 0],
+			"scale": [0.35, 0.35, 0.35]
+		},
+		"ground": {
+      "rotation": [90, 0, 0],
+      "translation": [0, 1.75, 0],
+			"scale": [0.2, 0.2, 0.2]
+		},
+		"gui": {
+			"rotation": [115, 0, 40],
+			"translation": [0, 0.25, 0],
+			"scale": [0.625, 0.625, 0.625]
+		},
+		"fixed": {
+			"rotation": [90, 0, 0],
+			"translation": [0, 0, 0.5],
+			"scale": [0.5, 0.5, 0.5]
+		}
+	}
+}

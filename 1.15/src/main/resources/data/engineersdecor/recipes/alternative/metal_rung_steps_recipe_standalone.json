@@ -1,0 +1,22 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:metal_rung_steps",
+      "missing": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " SS",
+    "SS ",
+    " SS"
+  ],
+  "key": {
+    "S": { "item": "minecraft:iron_ingot" }
+  },
+  "result": {
+    "item": "engineersdecor:metal_rung_steps",
+    "count": 4
+  }
+}

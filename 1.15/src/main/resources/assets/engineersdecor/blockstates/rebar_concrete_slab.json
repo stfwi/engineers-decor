@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "parts=0,tvariant=0": { "model": "engineersdecor:block/slab/specific/rebar_concrete_slab_s0v0_model" },
+    "parts=0,tvariant=1": { "model": "engineersdecor:block/slab/specific/rebar_concrete_slab_s0v1_model" },
+    "parts=0,tvariant=2": { "model": "engineersdecor:block/slab/specific/rebar_concrete_slab_s0v2_model" },
+    "parts=0,tvariant=3": { "model": "engineersdecor:block/slab/specific/rebar_concrete_slab_s0v3_model" },
+    "parts=1,tvariant=0": { "model": "engineersdecor:block/slab/specific/rebar_concrete_slab_s1v0_model" },
+    "parts=1,tvariant=1": { "model": "engineersdecor:block/slab/specific/rebar_concrete_slab_s1v1_model" },
+    "parts=1,tvariant=2": { "model": "engineersdecor:block/slab/specific/rebar_concrete_slab_s1v2_model" },
+    "parts=1,tvariant=3": { "model": "engineersdecor:block/slab/specific/rebar_concrete_slab_s1v3_model" },
+    "parts=2,tvariant=0": { "model": "engineersdecor:block/slab/specific/rebar_concrete_slab_s2v0_model" },
+    "parts=2,tvariant=1": { "model": "engineersdecor:block/slab/specific/rebar_concrete_slab_s2v1_model" },
+    "parts=2,tvariant=2": { "model": "engineersdecor:block/slab/specific/rebar_concrete_slab_s2v2_model" },
+    "parts=2,tvariant=3": { "model": "engineersdecor:block/slab/specific/rebar_concrete_slab_s2v3_model" }
+  }
+}

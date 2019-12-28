@@ -148,7 +148,7 @@ public class BlockDecorFluidFunnel extends BlockDecor
     public static final int MAX_TRACKING_STEPS_PER_CYCLE_INTENSIVE = 1024;
     public static final int MAX_TRACK_RADIUS_SQ = MAX_TRACK_RADIUS*MAX_TRACK_RADIUS;
     public static final int INTENSIVE_SEARCH_TRIGGER_THRESHOLD = 16;
-    private FluidStack tank_ = FluidStack.EMPTY.copy();
+    private FluidStack tank_ = FluidStack.EMPTY;
     private int tick_timer_ = 0;
     private int collection_timer_ = 0;
     private int no_fluid_found_counter_ = 0;
@@ -168,7 +168,7 @@ public class BlockDecorFluidFunnel extends BlockDecor
 
     public void readnbt(CompoundNBT nbt)
     {
-      tank_ = (!nbt.contains("tank")) ? (FluidStack.EMPTY.copy()) : (FluidStack.loadFluidStackFromNBT(nbt.getCompound("tank")));
+      tank_ = (!nbt.contains("tank")) ? (FluidStack.EMPTY) : (FluidStack.loadFluidStackFromNBT(nbt.getCompound("tank")));
     }
 
     public void writenbt(CompoundNBT nbt)
@@ -200,19 +200,19 @@ public class BlockDecorFluidFunnel extends BlockDecor
 
       @Override public FluidStack drain(FluidStack resource, FluidAction action)
       {
-        if((resource==null) || (te.tank_.isEmpty())) return FluidStack.EMPTY.copy();
-        return (!(te.tank_.isFluidEqual(resource))) ? (FluidStack.EMPTY.copy()) : drain(resource.getAmount(), action);
+        if((resource==null) || (te.tank_.isEmpty())) return FluidStack.EMPTY;
+        return (!(te.tank_.isFluidEqual(resource))) ? (FluidStack.EMPTY) : drain(resource.getAmount(), action);
       }
 
       @Override public FluidStack drain(int maxDrain, FluidAction action)
       {
+        if(te.tank_.isEmpty()) return FluidStack.EMPTY;
         FluidStack res = te.tank_.copy();
-        if(res.isEmpty()) return res;
         maxDrain = MathHelper.clamp(maxDrain ,0 , te.tank_.getAmount());
         res.setAmount(maxDrain);
         if(action != FluidAction.EXECUTE) return res;
         te.tank_.setAmount(te.tank_.getAmount()-maxDrain);
-        if(te.tank_.getAmount() <= 0) te.tank_ = FluidStack.EMPTY.copy();
+        if(te.tank_.getAmount() <= 0) te.tank_ = FluidStack.EMPTY;
         return res;
       }
     }

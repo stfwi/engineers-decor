@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north,phase=0": { "model": "engineersdecor:block/furnace/small_mineral_smelter_model", "y":   0 },
+    "facing=south,phase=0": { "model": "engineersdecor:block/furnace/small_mineral_smelter_model", "y": 180 },
+    "facing=west,phase=0":  { "model": "engineersdecor:block/furnace/small_mineral_smelter_model", "y": 270 },
+    "facing=east,phase=0":  { "model": "engineersdecor:block/furnace/small_mineral_smelter_model", "y":  90 },
+    "facing=north,phase=1":  { "model": "engineersdecor:block/furnace/small_mineral_smelter_model_s1", "y":   0 },
+    "facing=south,phase=1":  { "model": "engineersdecor:block/furnace/small_mineral_smelter_model_s1", "y": 180 },
+    "facing=west,phase=1":   { "model": "engineersdecor:block/furnace/small_mineral_smelter_model_s1", "y": 270 },
+    "facing=east,phase=1":   { "model": "engineersdecor:block/furnace/small_mineral_smelter_model_s1", "y":  90 },
+    "facing=north,phase=2":  { "model": "engineersdecor:block/furnace/small_mineral_smelter_model_s2", "y":   0 },
+    "facing=south,phase=2":  { "model": "engineersdecor:block/furnace/small_mineral_smelter_model_s2", "y": 180 },
+    "facing=west,phase=2":   { "model": "engineersdecor:block/furnace/small_mineral_smelter_model_s2", "y": 270 },
+    "facing=east,phase=2":   { "model": "engineersdecor:block/furnace/small_mineral_smelter_model_s2", "y":  90 },
+    "facing=north,phase=3":  { "model": "engineersdecor:block/furnace/small_mineral_smelter_model_s3", "y":   0 },
+    "facing=south,phase=3":  { "model": "engineersdecor:block/furnace/small_mineral_smelter_model_s3", "y": 180 },
+    "facing=west,phase=3":   { "model": "engineersdecor:block/furnace/small_mineral_smelter_model_s3", "y": 270 },
+    "facing=east,phase=3":   { "model": "engineersdecor:block/furnace/small_mineral_smelter_model_s3", "y":  90 }
+  }
+}

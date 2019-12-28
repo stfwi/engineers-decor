@@ -1,0 +1,24 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:steel_double_t_support",
+      "required": ["engineersdecor:thin_steel_pole"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    " P ",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "item": "engineersdecor:thin_steel_pole"
+    }
+  },
+  "result": {
+    "item": "engineersdecor:steel_double_t_support",
+    "count": 6
+  }
+}

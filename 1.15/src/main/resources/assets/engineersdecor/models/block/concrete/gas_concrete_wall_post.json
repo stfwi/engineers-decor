@@ -1,0 +1,7 @@
+{
+  "parent":"engineersdecor:block/wall/concrete_wall_post",
+	"textures": {
+    "wall": "engineersdecor:block/concrete/gas_concrete_texture0",
+    "particle": "engineersdecor:block/concrete/gas_concrete_texture0"
+	}
+}

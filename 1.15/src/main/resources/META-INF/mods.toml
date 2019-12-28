@@ -1,0 +1,30 @@
+# @file mods.toml
+# @spec TOML v0.5.0 (https://github.com/toml-lang/toml)
+modLoader="javafml"
+loaderVersion="[28,)"
+issueTrackerURL="https://github.com/stfwi/engineers-decor/issues/"
+
+[[mods]]
+modId="engineersdecor"
+version="${file.jarVersion}"
+displayName="Engineer's Decor"
+description="Adds cosmetic blocks for the engineer's workshop, factory and home."
+authors="wilechaote"
+credits="BluSunrize, Damien Hazard, malte0811, et al., the Forge Smiths, the Modders of the World."
+updateJSONURL="https://raw.githubusercontent.com/stfwi/engineers-decor/develop/meta/update.json"
+displayURL="https://github.com/stfwi/engineers-decor/"
+logoFile="logo.png"
+
+[[dependencies.engineersdecor]]
+  modId="forge"
+  mandatory=true
+  versionRange="[30.0.16,)"
+  ordering="NONE"
+  side="BOTH"
+
+[[dependencies.engineersdecor]]
+  modId="minecraft"
+  mandatory=true
+  versionRange="[1.15.1]"
+  ordering="NONE"
+  side="BOTH"

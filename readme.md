@@ -225,16 +225,20 @@ commits.
 
   - [1.14](1.14/readme.md)
 
+  - [1.15](1.15/readme.md)
+
 ### Community references
 
-Mods covering similar features, or may fit well together with IE and the decorations of this mod:
+Mods covering similar features, or may fit well together with IE and the decorations or features of this mod:
 
 - [Immersive Engineering](https://github.com/BluSunrize/ImmersiveEngineering/): Without IE, my
-  little mod here does not make much sense ;). It works without IE, but quite a few blocks are
-  not craftable.
+  little mod here does not make much sense ;). It works without IE ("standalone recipes" are automatically
+  selected), but the vanilla-ingredient based recipes are not as good compared to the available IE items.
 
 - [Engineer's doors](https://www.curseforge.com/minecraft/mc-mods/engineers-doors) has brilliant
   doors, trapdoors, and fence doors, all made of the IE materials.
+
+- [Immersive Posts](https://www.curseforge.com/minecraft/mc-mods/immersiveposts) provides extensible wire posts.
 
 - [Dirty Bricks](https://www.curseforge.com/minecraft/texture-packs/dirty-bricks-vanilla-add-on) applies
   position dependent variations to the vanilla bricks, similar to the clinkers and slag bricks in this
@@ -242,6 +246,10 @@ Mods covering similar features, or may fit well together with IE and the decorat
 
 - [Chisel](https://www.curseforge.com/minecraft/mc-mods/chisel) needless to say, Chisel has a variety
   of factory blocks.
+
+- [Actually Additions](https://www.curseforge.com/minecraft/mc-mods/actually-additions) and [Cyclic](https://www.curseforge.com/minecraft/mc-mods/cyclic)
+  also have a block breakers and block placers.
+
 
 ### Screenshots
 

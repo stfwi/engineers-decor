@@ -11,6 +11,27 @@ Mod sources for Minecraft version 1.12.2.
 ## Version history
 
                   -------------------------------------------------------------------
+    - v1.0.17     [R] Release based on v1.0.17-b3. Release-to-release changes:
+                      * Milking machine added.
+                      * Reverse recipes for slab slices added.
+                      * Texture and model improvements.
+                      * Lang file updates.
+                      * Minor bug fixes.
+                      * Config options added.
+                  -------------------------------------------------------------------
+                  [M] Updated zh_cn lang file (scikirbypoke).
+                  [A] Added opt-out config for the Small Tree Cutter.
+
+    - v1.0.17-b3  [F] Fixed Small Block Breaker facings to the horizontal range (issue #70, thx JimMiningWorm).
+
+    - v1.0.17-b2  [A] Reverse recipes for slabs and slab slices added.
+                  [M] Inset Floor Edge Light slightly thinner, looks better.
+
+    - v1.0.17-b1  [A] Added Milking Machine.
+                  [M] Window placement improved.
+                  [M] Made Pipe Valve textures slightly darker to fit IE pipes better when shaded.
+
+                  -------------------------------------------------------------------
     - v1.0.16     [R] Release based on v1.0.16-b3. Release-to-release changes:
                       * Added Gas Concrete blocks/walls/stairs/slabs/slab slices.
                       * Added Fluid Collection Funnel

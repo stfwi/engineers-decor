@@ -1,0 +1,21 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:gas_concrete_slab",
+      "required": ["engineersdecor:halfslab_gas_concrete"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SS",
+    "SS"
+  ],
+  "key": {
+    "S": { "item": "engineersdecor:halfslab_gas_concrete" }
+  },
+  "result": {
+    "item": "engineersdecor:gas_concrete_slab",
+    "count": 1
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:treated_wood_stool",
+      "missing": ["immersiveengineering:material"],
+      "required": ["engineersdecor:treated_wood_pole"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "WWW",
+    " S "
+  ],
+  "key": {
+    "W": { "tag": "minecraft:wooden_slabs" },
+    "S": { "item": "engineersdecor:treated_wood_pole" }
+  },
+  "result": {
+    "item": "engineersdecor:treated_wood_stool",
+    "count": 1
+  }
+}

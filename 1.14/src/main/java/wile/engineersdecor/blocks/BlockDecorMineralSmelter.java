@@ -9,38 +9,42 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
-import net.minecraft.entity.LivingEntity;
+
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
+import net.minecraft.block.*;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.block.*;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.util.*;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.block.BlockState;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.fluid.Fluids;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -213,6 +217,7 @@ public class BlockDecorMineralSmelter extends BlockDecorDirectedHorizontal
     private static final ItemStack MAGMA_STACK = new ItemStack(Blocks.MAGMA_BLOCK);
     private static final ItemStack BUCKET_STACK = new ItemStack(Items.BUCKET);
     private static final ItemStack LAVA_BUCKET_STACK = new ItemStack(Items.LAVA_BUCKET);
+    private static final FluidStack LAVA_BUCKET_FLUID_STACK = new FluidStack(Fluids.LAVA, 1000);
     private static int energy_consumption = DEFAULT_ENERGY_CONSUMPTION;
     private static int heatup_rate = DEFAULT_HEATUP_RATE;
     private static int cooldown_rate = 1;
@@ -485,7 +490,7 @@ public class BlockDecorMineralSmelter extends BlockDecorDirectedHorizontal
       @Override
       public FluidStack drain(FluidStack resource, FluidAction action)
       {
-        if(!resource.isFluidEqual(lava) || (te.fluid_level() <= 0)) return FluidStack.EMPTY.copy();
+        if(!resource.isFluidEqual(lava) || (te.fluid_level() <= 0)) return FluidStack.EMPTY;
         FluidStack stack = new FluidStack(lava, te.fluid_level());
         if(action == FluidAction.EXECUTE) te.fluid_level_drain(te.fluid_level());
         return stack;
@@ -494,7 +499,7 @@ public class BlockDecorMineralSmelter extends BlockDecorDirectedHorizontal
       @Override
       public FluidStack drain(int maxDrain, FluidAction action)
       {
-        if(te.fluid_level() <= 0) return FluidStack.EMPTY.copy();
+        if(te.fluid_level() <= 0) return FluidStack.EMPTY;
         maxDrain = (action==FluidAction.EXECUTE) ? (te.fluid_level_drain(maxDrain)) : (Math.min(maxDrain, te.fluid_level()));
         return new FluidStack(lava, maxDrain);
       }
@@ -633,7 +638,21 @@ public class BlockDecorMineralSmelter extends BlockDecorDirectedHorizontal
               break;
           }
         }
+      } else if((phase()==PHASE_LAVA) && (fluid_level() >= MAX_BUCKET_EXTRACT_FLUID_LEVEL)) {
+        // Fluid transfer check
+        final IFluidHandler fh = FluidUtil.getFluidHandler(world, getPos().down(), Direction.UP).orElse(null);
+        if(fh != null) {
+          int n = fh.fill(LAVA_BUCKET_FLUID_STACK.copy(), FluidAction.SIMULATE);
+          if(n >= LAVA_BUCKET_FLUID_STACK.getAmount()/2) {
+            n = fh.fill(LAVA_BUCKET_FLUID_STACK.copy(), FluidAction.EXECUTE);
+            if(n > 0) {
+              reset_process();
+              world.playSound(null, pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.3f, 0.7f);
+            }
+          }
+        }
       }
+      // Block state
       BlockState state = world.getBlockState(pos);
       if((state.getBlock() instanceof BlockDecorMineralSmelter) && (force_block_update_ || (state.get(PHASE) != new_phase))) {
         state = state.with(PHASE, new_phase);

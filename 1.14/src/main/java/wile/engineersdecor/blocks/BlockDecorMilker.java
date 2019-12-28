@@ -269,12 +269,12 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
 
       @Override
       public FluidStack drain(FluidStack resource, FluidAction action)
-      { return (!resource.isFluidEqual(milk_fluid_)) ? (FluidStack.EMPTY.copy()) : drain(resource.getAmount(), action); }
+      { return (!resource.isFluidEqual(milk_fluid_)) ? (FluidStack.EMPTY) : drain(resource.getAmount(), action); }
 
       @Override
       public FluidStack drain(int maxDrain, FluidAction action)
       {
-        if(te.fluid_level() <= 0) return FluidStack.EMPTY.copy();
+        if(te.fluid_level() <= 0) return FluidStack.EMPTY;
         FluidStack fs = milk_fluid_.copy();
         fs.setAmount(Math.min(fs.getAmount(), te.fluid_level()));
         if(action==FluidAction.EXECUTE) te.tank_level_ -= fs.getAmount();
@@ -300,7 +300,7 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
     // ITickable ------------------------------------------------------------------------------------
 
     private void log(String s)
-    {} // System.out.println("Milker|" + s); may be enabled with config, for dev was println
+    {} // println("Milker|" + s); may be enabled with config, for dev was println
 
     private static ItemStack milk_filled_container_item(ItemStack stack)
     { return milk_containers_.entrySet().stream().filter(e->e.getKey().isItemEqual(stack)).map(Map.Entry::getValue).findFirst().orElse(ItemStack.EMPTY); }
@@ -510,7 +510,7 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
   {
     @FunctionalInterface public interface TargetPositionInValidCheck { boolean test(SingleMoveGoal goal, IWorldReader world, BlockPos pos); }
     @FunctionalInterface public interface StrollEvent { void apply(SingleMoveGoal goal, IWorldReader world, Vec3d pos); }
-    private static void log(String s) {} // System.out.println(s);
+    private static void log(String s) {} // println(s);
 
     private static final int motion_timeout = 20*20;
     private boolean aborted_;

@@ -1,0 +1,4 @@
+{
+  "parent": "engineersdecor:block/sign/sign_decor_model",
+  "textures": { "f": "engineersdecor:block/sign/sign_mindstep_texture" }
+}

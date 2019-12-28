@@ -1,0 +1,24 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:small_waste_incinerator",
+      "missing": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "HPP",
+    "PHP",
+    "PLP"
+  ],
+  "key": {
+    "H": { "item": "minecraft:hopper" },
+    "P": { "item": "minecraft:iron_ingot" },
+    "L": { "item": "minecraft:lava_bucket" }
+  },
+  "result": {
+    "item": "engineersdecor:small_waste_incinerator",
+    "count": 1
+  }
+}

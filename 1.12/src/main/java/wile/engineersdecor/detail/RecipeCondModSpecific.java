@@ -73,7 +73,7 @@ public class RecipeCondModSpecific implements IConditionFactory
         return RECIPE_INCLUDE; // no missing given, means include if result and required are all there.
       }
     } catch(Throwable ex) {
-      ModEngineersDecor.logger.error("rsgauges::ResultRegisteredCondition failed: " + ex.toString());
+      ModEngineersDecor.logger.error("ResultRegisteredCondition failed: " + ex.toString());
     }
     return exclude(); // skip on exception.
   }

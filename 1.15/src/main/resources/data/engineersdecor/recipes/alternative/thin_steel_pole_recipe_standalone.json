@@ -1,0 +1,22 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:thin_steel_pole",
+      "missing": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  S",
+    " S ",
+    "S  "
+  ],
+  "key": {
+    "S": { "item": "minecraft:iron_ingot" }
+  },
+  "result": {
+    "item": "engineersdecor:thin_steel_pole",
+    "count": 12
+  }
+}

@@ -1,0 +1,45 @@
+{
+	"parent": "block/block",
+	"textures": {
+		"s": "engineersdecor:block/iestyle/treated_wood_rough_texture",
+		"f": "engineersdecor:block/sign/engineersdecor-logo",
+		"particle": "engineersdecor:block/iestyle/treated_wood_rough_texture"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 0.5],
+			"faces": {
+				"north": {"texture": "#s"},
+				"east": {"texture": "#s"},
+				"south": {"texture": "#f"},
+				"west": {"texture": "#s"},
+				"up": {"texture": "#s"},
+				"down": {"texture": "#s"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [-1, -78, -10],
+			"translation": [-2.75, -1.25, -1.5],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"firstperson_righthand": {
+			"rotation": [2, -68, 8],
+			"translation": [0.5, 0, -0.25],
+			"scale": [0.35, 0.35, 0.35]
+		},
+		"ground": {
+			"translation": [0, 1.75, 2.5],
+			"scale": [0.3, 0.3, 0.3]
+		},
+		"gui": {
+			"translation": [0, 0.5, 0]
+		},
+		"fixed": {
+			"rotation": [0, 180, 0],
+			"translation": [0, 0, -7.8]
+		}
+	}
+}

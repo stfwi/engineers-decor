@@ -1,0 +1,22 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "immersiveengineering:treated_wood_slab",
+      "required": ["engineersdecor:halfslab_treated_wood"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SS",
+    "SS"
+  ],
+  "key": {
+    "S": { "item": "engineersdecor:halfslab_treated_wood" }
+  },
+  "result": {
+    "item": "immersiveengineering:treated_wood_slab",
+    "data": 0,
+    "count": 1
+  }
+}

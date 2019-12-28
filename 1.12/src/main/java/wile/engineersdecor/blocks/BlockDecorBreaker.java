@@ -35,7 +35,7 @@ import java.util.HashSet;
 import java.util.Random;
 
 
-public class BlockDecorBreaker extends BlockDecorDirected
+public class BlockDecorBreaker extends BlockDecorDirectedHorizontal
 {
   public static final PropertyBool ACTIVE = PropertyBool.create("active");
 
