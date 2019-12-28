@@ -11,7 +11,7 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
-    ~ v1.0.18-b1  [U] Updated to Forge 1.14.4-28.1.109/20190719-1.14.3.
+    - v1.0.18-b1  [U] Updated to Forge 1.14.4-28.1.109/20190719-1.14.3.
                   [A] Added opt-out config for the Small Tree Cutter.
 
     - v1.0.17-b3  [F] Double newline escapes in lang files fixed ("\n" in a tooltip).

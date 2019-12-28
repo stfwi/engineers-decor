@@ -11,7 +11,7 @@ Mod sources for Minecraft version 1.12.2.
 ## Version history
 
                   -------------------------------------------------------------------
-    ~ v1.0.17     [R] Release based on v1.0.17-b3. Release-to-release changes:
+    - v1.0.17     [R] Release based on v1.0.17-b3. Release-to-release changes:
                       * Milking machine added.
                       * Reverse recipes for slab slices added.
                       * Texture and model improvements.
