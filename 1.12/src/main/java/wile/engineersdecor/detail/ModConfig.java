@@ -213,6 +213,11 @@ public class ModConfig
     @Config.RequiresMcRestart
     public boolean without_mineral_smelter = false;
 
+    @Config.Comment({"Disable the Small Tree Cutter."})
+    @Config.Name("Without tree cutter")
+    @Config.RequiresMcRestart
+    public boolean without_treecutter = false;
+
     @Config.Comment({"Disable the Small Mikling Machine."})
     @Config.Name("Without milking machine")
     @Config.RequiresMcRestart
@@ -534,6 +539,7 @@ public class ModConfig
     if(block instanceof BlockDecorMineralSmelter) return optout.without_mineral_smelter;
     if(block instanceof BlockDecorMilker) return optout.without_milker;
     if(block instanceof BlockDecorPipeValve) return optout.without_valves;
+    if(block instanceof BlockDecorTreeCutter) return optout.without_treecutter;
 
     // Type based evaluation where later filters may match, too
     if(optout.without_slabs && (block instanceof BlockDecorSlab)) return true;

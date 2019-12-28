@@ -17,8 +17,10 @@ Mod sources for Minecraft version 1.12.2.
                       * Texture and model improvements.
                       * Lang file updates.
                       * Minor bug fixes.
+                      * Config options added.
                   -------------------------------------------------------------------
                   [M] Updated zh_cn lang file (scikirbypoke).
+                  [A] Added opt-out config for the Small Tree Cutter.
 
     - v1.0.17-b3  [F] Fixed Small Block Breaker facings to the horizontal range (issue #70, thx JimMiningWorm).
 

@@ -873,6 +873,7 @@ public class ModContent
     //ClientRegistry.bindTileEntityRenderer(TET_TREATED_WOOD_CRAFTING_TABLE, new wile.engineersdecor.detail.ModRenderers.TesrDecorCraftingTable());
   }
 
+  @OnlyIn(Dist.CLIENT)
   public static final void processContentClientSide(final FMLClientSetupEvent event)
   {
     // Block renderer selection

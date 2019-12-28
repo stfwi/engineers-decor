@@ -122,6 +122,7 @@ public class ModConfig
     public final ForgeConfigSpec.BooleanValue without_fluid_funnel;
     public final ForgeConfigSpec.BooleanValue without_mineral_smelter;
     public final ForgeConfigSpec.BooleanValue without_milking_machine;
+    public final ForgeConfigSpec.BooleanValue without_tree_cutter;
     public final ForgeConfigSpec.BooleanValue without_chair_sitting;
     public final ForgeConfigSpec.BooleanValue without_mob_chair_sitting;
     public final ForgeConfigSpec.BooleanValue without_ladder_speed_boost;
@@ -301,6 +302,10 @@ public class ModConfig
           .translation(ModEngineersDecor.MODID + ".config.without_milking_machine")
           .comment("Disable the small milking machine.")
           .define("without_milking_machine", false);
+        without_tree_cutter = builder
+          .translation(ModEngineersDecor.MODID + ".config.without_tree_cutter")
+          .comment("Disable the small tree cutter.")
+          .define("without_tree_cutter", false);
         without_slabs = builder
           .translation(ModEngineersDecor.MODID + ".config.without_slabs")
           .comment("Disable horizontal half-block slab.")
@@ -533,6 +538,7 @@ public class ModConfig
       if(block instanceof BlockDecorSolarPanel) return COMMON.without_solar_panel.get();
       if(block instanceof BlockDecorMineralSmelter) return COMMON.without_mineral_smelter.get();
       if(block instanceof BlockDecorMilker) return COMMON.without_milking_machine.get();
+      if(block instanceof BlockDecorTreeCutter) return COMMON.without_tree_cutter.get();
       // Type based evaluation where later filters may match, too
       if(COMMON.without_slabs.get() && (block instanceof BlockDecorSlab)) return true;
       if(COMMON.without_stairs.get() && (block instanceof BlockDecorStairs)) return true;

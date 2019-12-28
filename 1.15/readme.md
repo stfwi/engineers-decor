@@ -11,9 +11,11 @@ Mod sources for Minecraft version 1.15.1.
 
 ## Version history
 
-    ~ v1.0.17-b3  [U] Updated to Forge 1.15.1-30.0.15/20190719-1.14.3.
+    - v1.0.18-b1  [U] Updated to Forge 1.15.1-30.0.16/20190719-1.14.3.
+                  [F] Client setup Dist annotation fixed (issue #73, thx hitsu420).
                   [F] Double newline escapes in lang files fixed ("\n" in a tooltip).
                   [M] Updated zh_cn lang file (scikirbypoke).
+                  [A] Added opt-out config for the Small Tree Cutter
 
     - v1.0.17-b2  [A] Initial port.
 

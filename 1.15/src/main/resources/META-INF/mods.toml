@@ -18,7 +18,7 @@ logoFile="logo.png"
 [[dependencies.engineersdecor]]
   modId="forge"
   mandatory=true
-  versionRange="[30,)"
+  versionRange="[30.0.16,)"
   ordering="NONE"
   side="BOTH"
 
