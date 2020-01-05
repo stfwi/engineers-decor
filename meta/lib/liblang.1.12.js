@@ -49,7 +49,7 @@
     for(var i in lines) {
       if(!lines[i].length) continue;
       const kv = lines[i].split("=", 2);
-      if(kv.length!=2) throw new Error("Invalid line in '"+file_path+"': '"+lines[i]+"'");
+      if(kv.length!=2) throw new Error("Invalid line " + i + " in '"+file_path+"': '"+lines[i]+"'");
       const key = kv[0].trim();
       const text = kv[1].trim();
       text = text.replace("\\\\n", "\n").replace("\\n", "\n");

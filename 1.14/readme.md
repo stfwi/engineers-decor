@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
+    - v1.0.18-b2  [F] Fixed JEI integration warning if nothing is opt'ed out (thx @SDUBZ for reporting).
+                  [M] Lang ru_ru updated (Smollet777).
+
     - v1.0.18-b1  [U] Updated to Forge 1.14.4-28.1.109/20190719-1.14.3.
                   [A] Added opt-out config for the Small Tree Cutter.
 

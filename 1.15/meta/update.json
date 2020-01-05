@@ -1,11 +1,12 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.15.1": {
+    "1.0.18-b2": "[M] Lang ru_ru updated (Smollet777).",
     "1.0.18-b1": "[U] Updated to Forge 1.15.1-30.0.16/20190719-1.14.3.\n[F] Client setup Dist annotation fixed (issue #73, thx hitsu420).\n[F] Double newline escapes in lang files fixed (\"\\n\" in a tooltip).\n[M] Updated zh_cn lang file (scikirbypoke).\n[A] Added opt-out config for the Small Tree Cutter",
     "1.0.17-b2": "[A] Initial port."
   },
   "promos": {
     "1.15.1-recommended": "",
-    "1.15.1-latest": "1.0.18-b1"
+    "1.15.1-latest": "1.0.18-b2"
   }
 }

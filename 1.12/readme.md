@@ -10,6 +10,8 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    - v1.0.18-b1  [M] Lang ru_ru updated (Smollet777).
+
                   -------------------------------------------------------------------
     - v1.0.17     [R] Release based on v1.0.17-b3. Release-to-release changes:
                       * Milking machine added.

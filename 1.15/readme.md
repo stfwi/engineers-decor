@@ -11,6 +11,8 @@ Mod sources for Minecraft version 1.15.1.
 
 ## Version history
 
+    - v1.0.18-b2  [M] Lang ru_ru updated (Smollet777).
+
     - v1.0.18-b1  [U] Updated to Forge 1.15.1-30.0.16/20190719-1.14.3.
                   [F] Client setup Dist annotation fixed (issue #73, thx hitsu420).
                   [F] Double newline escapes in lang files fixed ("\n" in a tooltip).

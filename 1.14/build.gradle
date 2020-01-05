@@ -19,12 +19,6 @@ version = "${version_engineersdecor}"
 group = "wile.engineersdecor"
 archivesBaseName = "engineersdecor-${version_minecraft}"
 
-def signingData = { ->
-  def sp = new Properties()
-  if(file("signing.properties").exists()) file("signing.properties").withInputStream { sp.load(it) }
-  return sp
-}()
-
 repositories {
   maven { name = "Progwml6 maven"; url = "https://dvs1.progwml6.com/files/maven/" } // JEI files
   maven { name = "ModMaven"; url = "modmaven.k-4u.nl" } // JEI files, fallback

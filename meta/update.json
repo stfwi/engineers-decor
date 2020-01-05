@@ -2,13 +2,14 @@
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "promos": {
     "1.12.2-recommended": "1.0.17",
-    "1.12.2-latest": "1.0.17",
+    "1.12.2-latest": "1.0.18-b1",
     "1.14.4-recommended": "",
-    "1.14.4-latest": "1.0.18-b1",
+    "1.14.4-latest": "1.0.18-b2",
     "1.15.1-recommended": "",
-    "1.15.1-latest": "1.0.18-b1"
+    "1.15.1-latest": "1.0.18-b2"
   },
   "1.12.2": {
+    "1.0.18-b1": "[M] Lang ru_ru updated (Smollet777).",
     "1.0.17": "[R] Release based on v1.0.17-b3. Release-to-release changes: * Milking machine added. * Reverse recipes for slab slices added. * Texture and model improvements. * Lang file updates. * Minor bug fixes. * Config options added.\n[M] Updated zh_cn lang file (scikirbypoke).\n[A] Added opt-out config for the Small Tree Cutter.",
     "1.0.17-b3": "[F] Fixed Small Block Breaker facings to the horizontal range (issue #70, thx JimMiningWorm).",
     "1.0.17-b2": "[A] Reverse recipes for slabs and slab slices added.\n[M] Inset Floor Edge Light slightly thinner, looks better.",
@@ -81,6 +82,7 @@
     "1.0.0-b1": "[A] Initial structure.\n[A] Added clinker bricks and clinker brick stairs.\n[A] Added slag bricks and slag brick stairs.\n[A] Added metal rung ladder.\n[A] Added staggered metal steps ladder.\n[A] Added treated wood ladder.\n[A] Added treated wood pole.\n[A] Added treated wood table."
   },
   "1.14.4": {
+    "1.0.18-b2": "[F] Fixed JEI integration warning if nothing is opt'ed out (thx @SDUBZ for reporting).\n[M] Lang ru_ru updated (Smollet777).",
     "1.0.18-b1": "[U] Updated to Forge 1.14.4-28.1.109/20190719-1.14.3.\n[A] Added opt-out config for the Small Tree Cutter.",
     "1.0.17-b3": "[F] Double newline escapes in lang files fixed (\"\\n\" in a tooltip).\n[M] Updated zh_cn lang file (scikirbypoke).",
     "1.0.17-b2": "[A] Reverse recipes for slabs and slab slices added.\n[M] Inset Floor Edge Light slightly thinner, looks better.",
@@ -120,6 +122,7 @@
     "1.0.7-b3": "[A] Initial 1.14.2 port of decorative blocks."
   },
   "1.15.1": {
+    "1.0.18-b2": "[M] Lang ru_ru updated (Smollet777).",
     "1.0.18-b1": "[U] Updated to Forge 1.15.1-30.0.16/20190719-1.14.3.\n[F] Client setup Dist annotation fixed (issue #73, thx hitsu420).\n[F] Double newline escapes in lang files fixed (\"\\n\" in a tooltip).\n[M] Updated zh_cn lang file (scikirbypoke).\n[A] Added opt-out config for the Small Tree Cutter",
     "1.0.17-b2": "[A] Initial port."
   }
