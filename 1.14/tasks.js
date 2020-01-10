@@ -48,4 +48,8 @@ tasks["create-half-slab-assets"] = function() {
   for(var i in block_data) halfslab_assets.create(block_data[i]);
 }
 
+tasks["lang-json-fixes"] = function() {
+  libtask114.stdtasks["lang-json-fixes"]();
+};
+
 libtask.run(tasks, sys.args);

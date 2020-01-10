@@ -8,12 +8,12 @@
  */
 package wile.engineersdecor.eapi.jei;
 
-import mezz.jei.api.constants.VanillaRecipeCategoryUid;
-import mezz.jei.api.registration.IRecipeTransferRegistration;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.blocks.BlockDecorCraftingTable;
 import wile.engineersdecor.detail.ModConfig;
 import wile.engineersdecor.ModContent;
+import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.block.Block;

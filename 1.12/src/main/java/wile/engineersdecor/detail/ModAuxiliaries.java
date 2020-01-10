@@ -76,6 +76,14 @@ public class ModAuxiliaries
     }
   }
 
+  @SideOnly(Side.CLIENT)
+  public static final boolean isShiftDown()
+  { return (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)||Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)); }
+
+  @SideOnly(Side.CLIENT)
+  public static final boolean isCtrlDown()
+  { return ((Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)||Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))); }
+
   /**
    * Returns true if a given key is translated for the current language.
    */
@@ -87,11 +95,11 @@ public class ModAuxiliaries
   {
     @SideOnly(Side.CLIENT)
     public static boolean extendedTipCondition()
-    { return (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)||Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)); }
+    { return isShiftDown(); }
 
     @SideOnly(Side.CLIENT)
     public static boolean helpCondition()
-    { return extendedTipCondition() && ((Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)||Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))); }
+    { return isShiftDown() && isCtrlDown(); }
 
     /**
      * Adds an extended tooltip or help tooltip depending on the key states of CTRL and SHIFT.

@@ -11,6 +11,12 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
+    - v1.0.18-b3  [A] Added Treated Wood Crafting table tweaks (ctrl-shift moves all same stacks from the
+                      inventory, mouse wheel over crafting slot increases/decreases crafting grid stacks).
+                  [F] EN Lang file fixed (issue #76, thx Riverstar907).
+                  [F] Fixed Tree Cutter not respecting power-required config (thx federsavo, issue #77).
+                  [F] Fixed Small Solar Panel not exposing energy capability (thx MatthiasMann, issue #78).
+
     - v1.0.18-b2  [F] Fixed JEI integration warning if nothing is opt'ed out (thx @SDUBZ for reporting).
                   [M] Lang ru_ru updated (Smollet777).
 

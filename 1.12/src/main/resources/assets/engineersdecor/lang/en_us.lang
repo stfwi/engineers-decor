@@ -66,8 +66,8 @@ tile.engineersdecor.clinker_brick_stairs.name=Clinker Brick Stairs
 tile.engineersdecor.clinker_brick_stairs.help=§6Looks slightly darker and more color intensive than the vanilla brick block.
 tile.engineersdecor.clinker_brick_stained_stairs.name=Stained Clinker Brick Stairs
 tile.engineersdecor.clinker_brick_stained_stairs.help=§6Looks slightly darker and more color intensive than the vanilla brick block. Has more visible traces of grime or stain.
-tile.engineersdecor.slag_brick_stairs.name=Clinker Brick Stairs
-tile.engineersdecor.slag_brick_stairs.help=§6Looks slightly darker and more color intensive than the vanilla brick block.
+tile.engineersdecor.slag_brick_stairs.name=Slag Brick Stairs
+tile.engineersdecor.slag_brick_stairs.help=§6Gray-brown brick stairs.
 tile.engineersdecor.rebar_concrete_stairs.name=Rebar Concrete Stairs
 tile.engineersdecor.rebar_concrete_stairs.help=§6Steel reinforced concrete stairs.§r Expensive but Creeper-proof like obsidian.
 tile.engineersdecor.rebar_concrete_tile_stairs.name=Rebar Concrete Tile Stairs
@@ -106,7 +106,8 @@ tile.engineersdecor.treated_wood_crafting_table.name=Treated Wood Crafting Table
 tile.engineersdecor.treated_wood_crafting_table.help=§6Robust and weather-proof.§r Eight storage slots, keeps inventory, no vanilla recipe book.\n\
                                                      Click up/down arrow buttons for crafting history selection, output slot for item placement, X-button \
                                                      to clear crafting grid and history. Shift-click stack: player-to-storage stack transfer when crafting \
-                                                     grid empty, otherwise player-to-grid stack transfer. Automatically distributes the clicked stack.
+                                                     grid empty, otherwise player-to-grid stack transfer. Automatically distributes the clicked stack. \
+                                                     Shift-Ctrl-click stack: Move all same stacks. Mouse wheel over crafting slot: Increase/decrease crafting grid items.
 tile.engineersdecor.treated_wood_side_table.name=Treated Wood Side Table
 tile.engineersdecor.treated_wood_side_table.help=§6Needed after the work's done.
 tile.engineersdecor.iron_inset_light.name=Inset Light

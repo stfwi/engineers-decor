@@ -207,6 +207,9 @@ public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
           --active_timer_;
         }
         boolean active = (active_timer_ > 0);
+        if(requires_power && !active) {
+          proc_time_elapsed_ = Math.max(0, proc_time_elapsed_ - 2*TICK_INTERVAL);
+        }
         if(proc_time_elapsed_ >= cutting_time_needed) {
           proc_time_elapsed_ = 0;
           TreeCutting.chopTree(world, tree_state, tree_pos, 2048, false);

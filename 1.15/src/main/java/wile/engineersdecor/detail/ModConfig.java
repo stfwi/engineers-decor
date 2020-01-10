@@ -143,6 +143,7 @@ public class ModConfig
     public final ForgeConfigSpec.DoubleValue chair_mob_sitting_probability_percent;
     public final ForgeConfigSpec.DoubleValue chair_mob_standup_probability_percent;
     public final ForgeConfigSpec.BooleanValue with_crafting_quickmove_buttons;
+    public final ForgeConfigSpec.BooleanValue without_crafting_mouse_scrolling;
     public final ForgeConfigSpec.IntValue pipevalve_max_flowrate;
     public final ForgeConfigSpec.IntValue pipevalve_redstone_gain;
     public final ForgeConfigSpec.IntValue block_breaker_power_consumption;
@@ -389,6 +390,10 @@ public class ModConfig
           .comment("Enables small quick-move arrows from/to player/block storage. " +
             "Makes the UI a bit too busy, therefore disabled by default.")
           .define("with_crafting_quickmove_buttons", false);
+        without_crafting_mouse_scrolling = builder
+          .translation(ModEngineersDecor.MODID + ".config.without_crafting_mouse_scrolling")
+          .comment("Disables increasing/decreasing the crafting grid items by scrolling over the crafting result slot.")
+          .define("without_crafting_mouse_scrolling", false);
         pipevalve_max_flowrate = builder
           .translation(ModEngineersDecor.MODID + ".config.pipevalve_max_flowrate")
           .comment("Defines how many millibuckets can be transferred (per tick) through the valves. " +
@@ -598,7 +603,7 @@ public class ModConfig
     BlockDecorFurnace.BTileEntity.on_config(COMMON.furnace_smelting_speed_percent.get(), COMMON.furnace_fuel_efficiency_percent.get(), COMMON.furnace_boost_energy_consumption.get());
     BlockDecorChair.on_config(COMMON.without_chair_sitting.get(), COMMON.without_mob_chair_sitting.get(), COMMON.chair_mob_sitting_probability_percent.get(), COMMON.chair_mob_standup_probability_percent.get());
     BlockDecorLadder.on_config(COMMON.without_ladder_speed_boost.get());
-    BlockDecorCraftingTable.on_config(COMMON.without_crafting_table_history.get(), false, COMMON.with_crafting_quickmove_buttons.get());
+    BlockDecorCraftingTable.on_config(COMMON.without_crafting_table_history.get(), false, COMMON.with_crafting_quickmove_buttons.get(), COMMON.without_crafting_mouse_scrolling.get());
     BlockDecorPipeValve.on_config(COMMON.pipevalve_max_flowrate.get(), COMMON.pipevalve_redstone_gain.get());
     BlockDecorFurnaceElectrical.BTileEntity.on_config(COMMON.e_furnace_speed_percent.get(), COMMON.e_furnace_power_consumption.get(), COMMON.e_furnace_automatic_pulling.get());
     BlockDecorSolarPanel.BTileEntity.on_config(COMMON.small_solar_panel_peak_production.get());

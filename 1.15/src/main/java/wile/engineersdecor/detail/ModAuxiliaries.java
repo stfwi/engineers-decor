@@ -24,6 +24,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 import javax.annotation.Nullable;
 import java.io.BufferedReader;
@@ -35,9 +36,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+
 public class ModAuxiliaries
 {
   public static final String MODID = ModEngineersDecor.MODID;
+  public static final Logger LOGGER = ModEngineersDecor.logger();
+  public static final ModEngineersDecor.ISidedProxy PROXY = ModEngineersDecor.proxy;
 
   // -------------------------------------------------------------------------------------------------------------------
   // Sideness, system/environment, tagging interfaces
@@ -51,18 +55,32 @@ public class ModAuxiliaries
   public static final boolean isDevelopmentMode()
   { return SharedConstants.developmentMode; }
 
+  @OnlyIn(Dist.CLIENT)
+  public static final boolean isShiftDown()
+  {
+    return (InputMappings.isKeyDown(PROXY.mc().func_228018_at_()/*getMainWindow()*/.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ||
+            InputMappings.isKeyDown(PROXY.mc().func_228018_at_()/*getMainWindow()*/.getHandle(), GLFW.GLFW_KEY_RIGHT_SHIFT));
+  }
+
+  @OnlyIn(Dist.CLIENT)
+  public static final boolean isCtrlDown()
+  {
+    return (InputMappings.isKeyDown(PROXY.mc().func_228018_at_()/*getMainWindow()*/.getHandle(), GLFW.GLFW_KEY_LEFT_CONTROL) ||
+            InputMappings.isKeyDown(PROXY.mc().func_228018_at_()/*getMainWindow()*/.getHandle(), GLFW.GLFW_KEY_RIGHT_CONTROL));
+  }
+
   // -------------------------------------------------------------------------------------------------------------------
   // Logging
   // -------------------------------------------------------------------------------------------------------------------
 
   public static final void logInfo(final String msg)
-  { ModEngineersDecor.logger().info(msg); }
+  { LOGGER.info(msg); }
 
   public static final void logWarn(final String msg)
-  { ModEngineersDecor.logger().warn(msg); }
+  { LOGGER.warn(msg); }
 
   public static final void logError(final String msg)
-  { ModEngineersDecor.logger().error(msg); }
+  { LOGGER.error(msg); }
 
   // -------------------------------------------------------------------------------------------------------------------
   // Block handling
@@ -100,12 +118,12 @@ public class ModAuxiliaries
   // -------------------------------------------------------------------------------------------------------------------
 
   /**
-   * Text localisation wrapper, implicitly prepends `ModEngineersDecor.MODID` to the
+   * Text localisation wrapper, implicitly prepends `MODID` to the
    * translation keys. Forces formatting argument, nullable if no special formatting shall be applied..
    */
   public static TranslationTextComponent localizable(String modtrkey, @Nullable TextFormatting color, Object... args)
   {
-    TranslationTextComponent tr = new TranslationTextComponent(ModEngineersDecor.MODID+"."+modtrkey, args);
+    TranslationTextComponent tr = new TranslationTextComponent(MODID+"."+modtrkey, args);
     if(color!=null) tr.getStyle().setColor(color);
     return tr;
   }
@@ -114,7 +132,7 @@ public class ModAuxiliaries
   { return localizable(modtrkey, null); }
 
   public static TranslationTextComponent localizable_block_key(String blocksubkey)
-  { return new TranslationTextComponent("block."+ModEngineersDecor.MODID+"."+blocksubkey); }
+  { return new TranslationTextComponent("block."+MODID+"."+blocksubkey); }
 
   @OnlyIn(Dist.CLIENT)
   public static String localize(String translationKey, Object... args)
@@ -163,21 +181,11 @@ public class ModAuxiliaries
   {
     @OnlyIn(Dist.CLIENT)
     public static boolean extendedTipCondition()
-    {
-      return (
-        InputMappings.isKeyDown(ModEngineersDecor.proxy.mc().func_228018_at_()/*getMainWindow()*/.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ||
-        InputMappings.isKeyDown(ModEngineersDecor.proxy.mc().func_228018_at_()/*getMainWindow()*/.getHandle(), GLFW.GLFW_KEY_RIGHT_SHIFT)
-      );
-    }
+    { return isShiftDown(); }
 
     @OnlyIn(Dist.CLIENT)
     public static boolean helpCondition()
-    {
-      return extendedTipCondition() && (
-        InputMappings.isKeyDown(ModEngineersDecor.proxy.mc().func_228018_at_()/*getMainWindow()*/.getHandle(), GLFW.GLFW_KEY_LEFT_CONTROL) ||
-        InputMappings.isKeyDown(ModEngineersDecor.proxy.mc().func_228018_at_()/*getMainWindow()*/.getHandle(), GLFW.GLFW_KEY_RIGHT_CONTROL)
-      );
-    }
+    { return isShiftDown() && isCtrlDown(); }
 
     /**
      * Adds an extended tooltip or help tooltip depending on the key states of CTRL and SHIFT.
@@ -206,8 +214,8 @@ public class ModAuxiliaries
         return true;
       } else if(addAdvancedTooltipHints) {
         String s = "";
-        if(tip_available) s += localize(ModEngineersDecor.MODID + ".tooltip.hint.extended") + (help_available ? " " : "");
-        if(help_available) s += localize(ModEngineersDecor.MODID + ".tooltip.hint.help");
+        if(tip_available) s += localize(MODID + ".tooltip.hint.extended") + (help_available ? " " : "");
+        if(help_available) s += localize(MODID + ".tooltip.hint.help");
         tooltip.add(new StringTextComponent(s));
       }
       return false;
@@ -250,7 +258,7 @@ public class ModAuxiliaries
   {
     try {
       // Done during construction to have an exact version in case of a crash while registering.
-      String version = ModAuxiliaries.loadResourceText("/.gitversion").trim();
+      String version = ModAuxiliaries.loadResourceText("/.gitversion-" + MODID).trim();
       logInfo(mod_name+((version.isEmpty())?(" (dev build)"):(" GIT id #"+version)) + ".");
     } catch(Throwable e) {
       // (void)e; well, then not. Priority is not to get unneeded crashes because of version logging.
