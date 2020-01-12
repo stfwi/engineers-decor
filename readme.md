@@ -28,7 +28,9 @@ looking manufacturing contraptions. Current feature set:
   refabrication of previous recipes. Providesa a recipe collision resolver (selection
   button for ambiguous recipes). Quick-move buttons (opt-in) to from/to storage or
   player inventory. Smart shift-click placement (balanced placing of items in the
-  crafting grid). Shows the placed items on the top of the table.
+  crafting grid). Ctrl-Shift-click places all same stacks. Scroll with the mouse over
+  the crafting output slot to increase or decrease the stack sizes (shift and/or ctrl
+  higher step size). Shows the placed items on the top of the table.
 
 - *Small Laboratory Furnace*: Solid fuel consuming, updraught. Slightly hotter and
   better isolated than a cobblestone furnace, therefore more efficient. Has internal

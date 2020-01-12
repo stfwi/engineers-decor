@@ -524,7 +524,7 @@ public class ModConfig
         excludes_.clear();
       }
       // Early non-opt out type based evaluation
-      if(block instanceof BlockDecorCraftingTable) return COMMON.without_crafting_table.get();
+      if(block instanceof BlockDecorCraftingTable.CraftingTableBlock) return COMMON.without_crafting_table.get();
       if(block instanceof BlockDecorFurnaceElectrical) return COMMON.without_electrical_furnace.get();
       if((block instanceof BlockDecorFurnace) && (!(block instanceof BlockDecorFurnaceElectrical))) return COMMON.without_lab_furnace.get();
       if(block instanceof BlockDecorPassiveFluidAccumulator) return COMMON.without_passive_fluid_accumulator.get();

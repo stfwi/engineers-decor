@@ -11,6 +11,8 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
+    ~ v1.0.18-b4
+
     - v1.0.18-b3  [A] Added Treated Wood Crafting table tweaks (ctrl-shift moves all same stacks from the
                       inventory, mouse wheel over crafting slot increases/decreases crafting grid stacks).
                   [F] EN Lang file fixed (issue #76, thx Riverstar907).

@@ -33,6 +33,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.commons.lang3.ArrayUtils;
 import java.util.ArrayList;
@@ -373,7 +374,7 @@ public class ModContent
 
   // -------------------------------------------------------------------------------------------------------------------
 
-  public static final BlockDecorCraftingTable TREATED_WOOD_CRAFTING_TABLE = (BlockDecorCraftingTable)(new BlockDecorCraftingTable(
+  public static final BlockDecorCraftingTable.CraftingTableBlock TREATED_WOOD_CRAFTING_TABLE = (BlockDecorCraftingTable.CraftingTableBlock)(new BlockDecorCraftingTable.CraftingTableBlock(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 15f).sound(SoundType.WOOD),
     ModAuxiliaries.getPixeledAABB(1,0,1, 15,15.9,15)
@@ -626,7 +627,7 @@ public class ModContent
   //--------------------------------------------------------------------------------------------------------------------
 
   public static final TileEntityType<?> TET_TREATED_WOOD_CRAFTING_TABLE = TileEntityType.Builder
-    .create(BlockDecorCraftingTable.BTileEntity::new, TREATED_WOOD_CRAFTING_TABLE)
+    .create(BlockDecorCraftingTable.CraftingTableTileEntity::new, TREATED_WOOD_CRAFTING_TABLE)
     .build(null)
     .setRegistryName(ModEngineersDecor.MODID, "te_treated_wood_crafting_table");
 
@@ -747,7 +748,7 @@ public class ModContent
   // Container registration
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static final ContainerType<BlockDecorCraftingTable.BContainer> CT_TREATED_WOOD_CRAFTING_TABLE;
+  public static final ContainerType<BlockDecorCraftingTable.CraftingTableContainer> CT_TREATED_WOOD_CRAFTING_TABLE;
   public static final ContainerType<BlockDecorDropper.BContainer> CT_FACTORY_DROPPER;
   public static final ContainerType<BlockDecorPlacer.BContainer> CT_FACTORY_PLACER;
   public static final ContainerType<BlockDecorHopper.BContainer> CT_FACTORY_HOPPER;
@@ -756,7 +757,7 @@ public class ModContent
   public static final ContainerType<BlockDecorWasteIncinerator.BContainer> CT_WASTE_INCINERATOR;
 
   static {
-    CT_TREATED_WOOD_CRAFTING_TABLE = (new ContainerType<BlockDecorCraftingTable.BContainer>(BlockDecorCraftingTable.BContainer::new));
+    CT_TREATED_WOOD_CRAFTING_TABLE = (new ContainerType<BlockDecorCraftingTable.CraftingTableContainer>(BlockDecorCraftingTable.CraftingTableContainer::new));
     CT_TREATED_WOOD_CRAFTING_TABLE.setRegistryName(ModEngineersDecor.MODID,"ct_treated_wood_crafting_table");
     CT_FACTORY_DROPPER = (new ContainerType<BlockDecorDropper.BContainer>(BlockDecorDropper.BContainer::new));
     CT_FACTORY_DROPPER.setRegistryName(ModEngineersDecor.MODID,"ct_factory_dropper");
@@ -857,7 +858,7 @@ public class ModContent
   @OnlyIn(Dist.CLIENT)
   public static final void registerContainerGuis(final FMLClientSetupEvent event)
   {
-    ScreenManager.registerFactory(CT_TREATED_WOOD_CRAFTING_TABLE, BlockDecorCraftingTable.BGui::new);
+    ScreenManager.registerFactory(CT_TREATED_WOOD_CRAFTING_TABLE, BlockDecorCraftingTable.CraftingTableGui::new);
     ScreenManager.registerFactory(CT_FACTORY_DROPPER, BlockDecorDropper.BGui::new);
     ScreenManager.registerFactory(CT_FACTORY_PLACER, BlockDecorPlacer.BGui::new);
     ScreenManager.registerFactory(CT_FACTORY_HOPPER, BlockDecorHopper.BGui::new);
@@ -867,10 +868,13 @@ public class ModContent
   }
 
   @OnlyIn(Dist.CLIENT)
+  @SuppressWarnings("unchecked")
   public static final void registerTileEntityRenderers(final FMLClientSetupEvent event)
   {
-    // @todo: re-enable
-    //ClientRegistry.bindTileEntityRenderer(TET_TREATED_WOOD_CRAFTING_TABLE, new wile.engineersdecor.detail.ModRenderers.TesrDecorCraftingTable());
+    ClientRegistry.bindTileEntityRenderer(
+      (TileEntityType<BlockDecorCraftingTable.CraftingTableTileEntity>)TET_TREATED_WOOD_CRAFTING_TABLE,
+      wile.engineersdecor.detail.ModRenderers.CraftingTableTer::new
+    );
   }
 
   @OnlyIn(Dist.CLIENT)

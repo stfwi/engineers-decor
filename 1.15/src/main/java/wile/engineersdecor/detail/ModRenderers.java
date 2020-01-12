@@ -10,31 +10,23 @@
 package wile.engineersdecor.detail;
 
 import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.blocks.BlockDecorChair;
 import wile.engineersdecor.blocks.BlockDecorCraftingTable;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.model.ModelManager;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemFrameEntity;
-import net.minecraft.item.FilledMapItem;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.storage.MapData;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
+
 
 public class ModRenderers
 {
@@ -71,56 +63,55 @@ public class ModRenderers
   // Crafting table
   //--------------------------------------------------------------------------------------------------------------------
 
-/*
   @OnlyIn(Dist.CLIENT)
-  public static class TesrDecorCraftingTable extends TileEntityRenderer<BlockDecorCraftingTable.BTileEntity>
+  public static class CraftingTableTer extends TileEntityRenderer<BlockDecorCraftingTable.CraftingTableTileEntity>
   {
     private static int tesr_error_counter = 4;
-    private static double scaler = 0.10;
-    private static double gap = 0.19;
-    private static double yrotations[] = {0, 90, 180, 270}; // [hdirection] S-W-N-E
-    private static double offsets[][][] = { // [hdirection][slotindex][xz]
+    private static float scaler = 0.1f;
+    private static float gap = 0.19f;
+    private static float yrotations[] = {0, 90, 180, 270}; // [hdirection] S-W-N-E
+    private static float offsets[][][] = { // [hdirection][slotindex][xz]
       { {-1,-1},{+0,-1},{+1,-1}, {-1,+0},{+0,+0},{+1,+0}, {-1,+1},{+0,+1},{+1,+1} }, // S
       { {+1,-1},{+1,+0},{+1,+1}, {+0,-1},{+0,+0},{+0,+1}, {-1,-1},{-1,+0},{-1,+1} }, // W
       { {+1,+1},{+0,+1},{-1,+1}, {+1,+0},{+0,+0},{-1,+0}, {+1,-1},{+0,-1},{-1,-1} }, // N
       { {-1,+1},{-1,+0},{-1,-1}, {+0,+1},{+0,+0},{+0,-1}, {+1,+1},{+1,+0},{+1,-1} }, // E
     };
 
+    public CraftingTableTer(TileEntityRendererDispatcher dispatcher)
+    { super(dispatcher); }
+
     @Override
-    public void func_225616_a_(final BlockDecorCraftingTable.BTileEntity te, float p_225616_2_, MatrixStack p_225616_3_, IRenderTypeBuffer p_225616_4_, int p_225616_5_, int p_225616_6_)
-    {
-      render(final BlockDecorCraftingTable.BTileEntity te, double x, double y, double z, float partialTicks, int destroyStage);
-    }
+    public void func_225616_a_(final BlockDecorCraftingTable.CraftingTableTileEntity te, float f2, MatrixStack mxs, IRenderTypeBuffer buf, int i5, int i6)
+    { render(te, f2, mxs, buf, i5, i6); }
 
     @SuppressWarnings("deprecation")
-    public void render(final BlockDecorCraftingTable.BTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
+    public void render(final BlockDecorCraftingTable.CraftingTableTileEntity te, float unused1, MatrixStack mxs, IRenderTypeBuffer buf, int i5, int i6)
     {
-      if(tesr_error_counter<=0) return;
+      if(tesr_error_counter <= 0) return;
       try {
-        int di = MathHelper.clamp(te.getWorld().getBlockState(te.getPos()).get(BlockDecorCraftingTable.FACING).getHorizontalIndex(), 0, 3);
+        final int di = MathHelper.clamp(te.getWorld().getBlockState(te.getPos()).get(BlockDecorCraftingTable.CraftingTableBlock.FACING).getHorizontalIndex(), 0, 3);
         long posrnd = te.getPos().toLong();
         posrnd = (posrnd>>16)^(posrnd<<1);
         for(int i=0; i<9; ++i) {
           final ItemStack stack = te.getStackInSlot(i);
           if(stack.isEmpty()) continue;
-          double prnd = ((double)(((Integer.rotateRight(stack.getItem().hashCode()^(int)posrnd,(stack.getCount()+i)&31)))&1023))/1024.0;
-          double rndo = gap * ((prnd*0.1)-0.05);
-          double ox = gap * offsets[di][i][0], oz = gap * offsets[di][i][1];
-          double oy = 0.5;
-          double ry = ((yrotations[di]+180) + ((prnd*60)-30)) % 360;
+          float prnd = ((float)(((Integer.rotateRight(stack.getItem().hashCode()^(int)posrnd,(stack.getCount()+i)&31)))&1023))/1024f;
+          float rndo = gap * ((prnd*0.1f)-0.05f);
+          float ox = gap * offsets[di][i][0], oz = gap * offsets[di][i][1];
+          float oy = 0.5f;
+          float ry = ((yrotations[di]+180) + ((prnd*60)-30)) % 360;
           if(stack.isEmpty()) return;
-          GlStateManager.pushMatrix();
-          GlStateManager.disableLighting();
-          RenderHelper.enableStandardItemLighting();
-          GlStateManager.translated(x+0.5+ox, y+0.5+oy, z+0.5+oz);
-          GlStateManager.rotated(90, 1, 0, 0);
-          GlStateManager.rotated(ry, 0, 0, 1);
-          GlStateManager.translated(rndo, rndo, 0);
-          GlStateManager.scaled(scaler, scaler, scaler);
-          Minecraft.getInstance().getItemRenderer().renderItem(stack, net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType.FIXED);
-          RenderHelper.disableStandardItemLighting();
-          GlStateManager.enableLighting();
-          GlStateManager.popMatrix();
+          mxs.func_227860_a_(); // mxs.push()
+          mxs.func_227861_a_(0.5+ox, 0.5+oy, 0.5+oz); // mxs.translate()
+
+          mxs.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(90.0f));  // mxs.transform(Vector3f.x_plus.rotation(90))
+
+          mxs.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(ry)); // mxs.transform(Vector3f.z_plus.rotation(ry))
+
+          mxs.func_227861_a_(rndo, rndo, 0); // mxs.translate()
+          mxs.func_227862_a_(scaler, scaler, scaler); // mxs.scale()
+          Minecraft.getInstance().getItemRenderer().func_229110_a_(stack, net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType.FIXED, i5, i6, mxs, buf);
+          mxs.func_227865_b_(); // mxs.pop()
         }
       } catch(Throwable e) {
         if(--tesr_error_counter<=0) {
@@ -130,5 +121,4 @@ public class ModRenderers
       }
     }
   }
-*/
 }

@@ -28,7 +28,7 @@ public class ModTesrs
   //--------------------------------------------------------------------------------------------------------------------
 
   @OnlyIn(Dist.CLIENT)
-  public static class TesrDecorCraftingTable extends TileEntityRenderer<BlockDecorCraftingTable.BTileEntity>
+  public static class TesrDecorCraftingTable extends TileEntityRenderer<BlockDecorCraftingTable.CraftingTableTileEntity>
   {
     private static int tesr_error_counter = 4;
     private static double scaler = 0.10;
@@ -43,11 +43,11 @@ public class ModTesrs
 
     @Override
     @SuppressWarnings("deprecation")
-    public void render(final BlockDecorCraftingTable.BTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
+    public void render(final BlockDecorCraftingTable.CraftingTableTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
     {
       if(tesr_error_counter<=0) return;
       try {
-        int di = MathHelper.clamp(te.getWorld().getBlockState(te.getPos()).get(BlockDecorCraftingTable.FACING).getHorizontalIndex(), 0, 3);
+        int di = MathHelper.clamp(te.getWorld().getBlockState(te.getPos()).get(BlockDecorCraftingTable.CraftingTableBlock.FACING).getHorizontalIndex(), 0, 3);
         long posrnd = te.getPos().toLong();
         posrnd = (posrnd>>16)^(posrnd<<1);
         for(int i=0; i<9; ++i) {

@@ -35,7 +35,7 @@ public class JEIPlugin implements mezz.jei.api.IModPlugin
     if(!ModConfig.without_crafting_table) {
       try {
         registration.addRecipeTransferHandler(
-          BlockDecorCraftingTable.BContainer.class,
+          BlockDecorCraftingTable.CraftingTableContainer.class,
           VanillaRecipeCategoryUid.CRAFTING,
           1, 9, 10, 44
         );
