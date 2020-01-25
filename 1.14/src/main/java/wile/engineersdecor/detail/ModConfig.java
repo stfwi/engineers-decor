@@ -154,6 +154,7 @@ public class ModConfig
     public final ForgeConfigSpec.IntValue tree_cuttter_cutting_time_needed;
     public final ForgeConfigSpec.BooleanValue tree_cuttter_requires_power;
     public final ForgeConfigSpec.IntValue milking_machine_energy_consumption;
+    public final ForgeConfigSpec.IntValue milking_machine_milking_delay;
 
     CommonConfig(ForgeConfigSpec.Builder builder)
     {
@@ -476,6 +477,10 @@ public class ModConfig
             "Use zero to disable energy dependency and energy handling of the machine. " +
             "The config value can be changed on-the-fly for tuning.")
           .defineInRange("milking_machine_energy_consumption", BlockDecorMilker.BTileEntity.DEFAULT_ENERGY_CONSUMPTION, 0, 128);
+        milking_machine_milking_delay = builder
+          .translation(ModEngineersDecor.MODID + ".config.milking_machine_milking_delay")
+          .comment("Defines (for each individual cow) the minimum time between milking." )
+          .defineInRange("milking_machine_milking_delay", BlockDecorMilker.BTileEntity.DEFAULT_MILKING_DELAY_PER_COW, 1000, 24000);
         builder.pop();
       }
     }
@@ -609,7 +614,7 @@ public class ModConfig
     BlockDecorSolarPanel.BTileEntity.on_config(COMMON.small_solar_panel_peak_production.get());
     BlockDecorBreaker.BTileEntity.on_config(COMMON.block_breaker_power_consumption.get(), COMMON.block_breaker_reluctance.get(), COMMON.block_breaker_min_breaking_time.get(), COMMON.block_breaker_requires_power.get());
     BlockDecorTreeCutter.BTileEntity.on_config(COMMON.tree_cuttter_energy_consumption.get(), COMMON.tree_cuttter_cutting_time_needed.get(), COMMON.tree_cuttter_requires_power.get());
-    BlockDecorMilker.BTileEntity.on_config(COMMON.milking_machine_energy_consumption.get());
+    BlockDecorMilker.BTileEntity.on_config(COMMON.milking_machine_energy_consumption.get(), COMMON.milking_machine_milking_delay.get());
     without_crafting_table = isOptedOut(ModContent.TREATED_WOOD_CRAFTING_TABLE);
     immersiveengineering_installed = ModAuxiliaries.isModLoaded("immersiveengineering");
     with_experimental_features_ = COMMON.with_experimental.get();

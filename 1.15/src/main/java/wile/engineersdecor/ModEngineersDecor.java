@@ -124,7 +124,7 @@ public class ModEngineersDecor
     { config_loaded = true; }
 
     @SubscribeEvent
-    public static void onConfigFileChange(net.minecraftforge.fml.config.ModConfig.ConfigReloading configEvent)
+    public static void onConfigReload(net.minecraftforge.fml.config.ModConfig.Reloading configEvent)
     {
       try {
         ModEngineersDecor.logger().info("Config file changed {}", configEvent.getConfig().getFileName());

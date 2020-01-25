@@ -8,7 +8,10 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.util.math.*;
+import net.minecraft.world.IWorld;
 import wile.engineersdecor.detail.ModAuxiliaries;
 import net.minecraft.block.*;
 import net.minecraft.client.util.ITooltipFlag;
@@ -36,7 +39,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class BlockDecorSlab extends BlockDecor implements IWaterLoggable
+public class BlockDecorSlab extends BlockDecor.WaterLoggable
 {
   public static final IntegerProperty PARTS = IntegerProperty.create("parts", 0, 2);
   public static final IntegerProperty TEXTURE_VARIANT = IntegerProperty.create("tvariant", 0, 3);
@@ -93,16 +96,37 @@ public class BlockDecorSlab extends BlockDecor implements IWaterLoggable
 
   @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-  { super.fillStateContainer(builder); builder.add(PARTS, TEXTURE_VARIANT, WATERLOGGED); }
+  { super.fillStateContainer(builder); builder.add(PARTS, TEXTURE_VARIANT); }
 
   @Override
   @Nullable
   public BlockState getStateForPlacement(BlockItemUseContext context)
   {
-    final Direction facing = context.getFace();
-    double y = context.getHitVec().getY();
-    int rnd = MathHelper.clamp((int)(MathHelper.getPositionRandom(context.getPos()) % 4), 0, 3);
-    return super.getStateForPlacement(context).with(PARTS, ((facing==Direction.UP) || ((facing!=Direction.DOWN) && (y < 0.6))) ? 0 : 1).with(TEXTURE_VARIANT, rnd);
+    BlockPos pos = context.getPos();
+    if(context.getWorld().getBlockState(pos).getBlock() == this) return context.getWorld().getBlockState(pos).with(PARTS, 2).with(WATERLOGGED, false);
+    final int rnd = MathHelper.clamp((int)(MathHelper.getPositionRandom(context.getPos()) & 0x3), 0, 3);
+    final Direction face = context.getFace();
+    final BlockState placement_state = super.getStateForPlacement(context).with(TEXTURE_VARIANT, rnd); // fluid state
+    if(face == Direction.UP) return placement_state.with(PARTS, 0);
+    if(face == Direction.DOWN) return placement_state.with(PARTS, 1);
+    if(!face.getAxis().isHorizontal()) return placement_state;
+    final boolean isupper = ((context.getHitVec().getY() - context.getPos().getY()) > 0.5);
+    return placement_state.with(PARTS, isupper ? 1 : 0);
+  }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  public boolean isReplaceable(BlockState state, BlockItemUseContext context)
+  {
+    if(context.getItem().getItem() != this.asItem()) return false;
+    if(!context.replacingClickedOnBlock()) return true;
+    final Direction face = context.getFace();
+    final int parts = state.get(PARTS);
+    if((face == Direction.UP) && (parts==0)) return true;
+    if((face == Direction.DOWN) && (parts==1)) return true;
+    if(!face.getAxis().isHorizontal()) return false;
+    final boolean isupper = ((context.getHitVec().getY() - context.getPos().getY()) > 0.5);
+    return isupper ? (parts==0) : (parts==1);
   }
 
   @Override
@@ -122,29 +146,6 @@ public class BlockDecorSlab extends BlockDecor implements IWaterLoggable
   @Override
   public List<ItemStack> dropList(BlockState state, World world, BlockPos pos, boolean explosion)
   { return new ArrayList<ItemStack>(Collections.singletonList(new ItemStack(this.asItem(), num_slabs_contained_in_parts_[state.get(PARTS) & 0x3]))); }
-
-  @Override
-  @SuppressWarnings("deprecation")
-  public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
-  {
-    Direction face = rayTraceResult.getFace();
-    final ItemStack stack = player.getHeldItem(hand);
-    if(stack.isEmpty() || (Block.getBlockFromItem(stack.getItem()) != this)) return false;
-    int parts = state.get(PARTS);
-    if(((face == Direction.UP) && (parts == 0)) || ((face == Direction.DOWN) && (parts == 1))) {
-      world.setBlockState(pos, state.with(PARTS, 2), 3);
-    } else {
-      return false; // "not handled" -> let parent decide if a new slab has to be placed on top/bottom.
-    }
-    if(world.isRemote) return true;
-    if(!player.isCreative()) {
-      stack.shrink(1);
-      if(player.inventory != null) player.inventory.markDirty();
-    }
-    SoundType st = this.getSoundType(state, world, pos, null);
-    world.playSound(null, pos, st.getPlaceSound(), SoundCategory.BLOCKS, (st.getVolume()+1f)/2.5f, 0.9f*st.getPitch());
-    return true;
-  }
 
   @Override
   @SuppressWarnings("deprecation")
@@ -179,5 +180,12 @@ public class BlockDecorSlab extends BlockDecor implements IWaterLoggable
     SoundType st = this.getSoundType(state, world, pos, null);
     world.playSound(player, pos, st.getPlaceSound(), SoundCategory.BLOCKS, (st.getVolume()+1f)/2.5f, 0.9f*st.getPitch());
   }
+
+  @Override
+  public boolean receiveFluid(IWorld world, BlockPos pos, BlockState state, IFluidState fluidState)
+  { return (state.get(PARTS)==2) ? false : super.receiveFluid(world, pos, state, fluidState); }
+
+  public boolean canContainFluid(IBlockReader world, BlockPos pos, BlockState state, Fluid fluid)
+  { return (state.get(PARTS)==2) ? false : super.canContainFluid(world, pos, state, fluid); }
 
 }
