@@ -1,5 +1,6 @@
 package wile.engineersdecor;
 
+import wile.engineersdecor.detail.ModAuxiliaries;
 import wile.engineersdecor.detail.ModConfig;
 import wile.engineersdecor.detail.Networking;
 import wile.engineersdecor.blocks.*;
@@ -38,12 +39,14 @@ import javax.annotation.Nullable;
 public class ModEngineersDecor
 {
   public static final String MODID = "engineersdecor";
+  public static final String MODNAME = "Engineer's Decor";
   public static final int VERSION_DATAFIXER = 0;
   private static final Logger LOGGER = LogManager.getLogger();
   private static boolean config_loaded = false;
 
   public ModEngineersDecor()
   {
+    ModAuxiliaries.logGitVersion(MODNAME);
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onSetup);
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onSendImc);
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRecvImc);
@@ -121,7 +124,7 @@ public class ModEngineersDecor
     { config_loaded = true; }
 
     @SubscribeEvent
-    public static void onConfigFileChange(net.minecraftforge.fml.config.ModConfig.ConfigReloading configEvent)
+    public static void onConfigReload(net.minecraftforge.fml.config.ModConfig.Reloading configEvent)
     {
       try {
         ModEngineersDecor.logger().info("Config file changed {}", configEvent.getConfig().getFileName());

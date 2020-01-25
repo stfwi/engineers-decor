@@ -330,6 +330,28 @@
     }
   };
 
+  me.tasks.lang_json_text_replacements = function() {
+    var file_list = (function() {
+      var ls = [];
+      const dir = "./" + constants.local_assets_root() + "/lang";
+      if(fs.isdir(dir)) {
+        ls = ls.concat(fs.find(dir, '*.json'));
+        for(var i in ls) ls[i] = ls[i].replace(/\\/g,"/");
+      }
+      ls.sort();
+      return ls;
+    })();
+
+    for(var file_i in file_list) {
+      var file = file_list[file_i];
+      var txt = fs.readfile(file);
+      if(txt===undefined) throw new Error("Failed to read '" + file + "'");
+      txt = txt.replace(/\\\\n/g,"\\n");
+      fs.writefile(file, txt);
+    }
+  };
+
+
   me.stdtasks = {};
   me.stdtasks["assets"] = function() {
     me.tasks.map_regnames_blockstate_filenames();
@@ -366,6 +388,10 @@
       }
     }
   };
+
+  me.stdtasks["lang-json-fixes"] = function() {
+    me.tasks.lang_json_text_replacements();
+  }
 
   Object.freeze(me);
   Object.freeze(me.tasks);

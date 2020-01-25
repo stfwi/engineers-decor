@@ -11,6 +11,19 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
+    - v1.0.18-b4  [M] Lang update ru_ru (PR#77, thanks Smollet777).
+                  [F] Fixed Milking machine cow path issue, added milking delay cow tracking.
+                  [F] Slab / Slab Slice placement adapted to vanilla standard.
+
+    - v1.0.18-b3  [A] Added Treated Wood Crafting table tweaks (ctrl-shift moves all same stacks from the
+                      inventory, mouse wheel over crafting slot increases/decreases crafting grid stacks).
+                  [F] EN Lang file fixed (issue #76, thx Riverstar907).
+                  [F] Fixed Tree Cutter not respecting power-required config (thx federsavo, issue #77).
+                  [F] Fixed Small Solar Panel not exposing energy capability (thx MatthiasMann, issue #78).
+
+    - v1.0.18-b2  [F] Fixed JEI integration warning if nothing is opt'ed out (thx @SDUBZ for reporting).
+                  [M] Lang ru_ru updated (Smollet777).
+
     - v1.0.18-b1  [U] Updated to Forge 1.14.4-28.1.109/20190719-1.14.3.
                   [A] Added opt-out config for the Small Tree Cutter.
 

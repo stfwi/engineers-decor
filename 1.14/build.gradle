@@ -19,12 +19,6 @@ version = "${version_engineersdecor}"
 group = "wile.engineersdecor"
 archivesBaseName = "engineersdecor-${version_minecraft}"
 
-def signingData = { ->
-  def sp = new Properties()
-  if(file("signing.properties").exists()) file("signing.properties").withInputStream { sp.load(it) }
-  return sp
-}()
-
 repositories {
   maven { name = "Progwml6 maven"; url = "https://dvs1.progwml6.com/files/maven/" } // JEI files
   maven { name = "ModMaven"; url = "modmaven.k-4u.nl" } // JEI files, fallback
@@ -76,7 +70,7 @@ dependencies {
 
 processResources {
   outputs.upToDateWhen { false } // thx to @tterrag for this hint
-  doLast { file("${sourceSets.main.output.resourcesDir}/.gitversion").text = 'git log "-1" "--format=%h"'.execute().in.text.trim() }
+  doLast { file("${sourceSets.main.output.resourcesDir}/.gitversion-engineersdecor").text = 'git log "-1" "--format=%h"'.execute().in.text.trim() }
 }
 
 jar {

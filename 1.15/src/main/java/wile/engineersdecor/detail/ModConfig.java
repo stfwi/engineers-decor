@@ -143,6 +143,7 @@ public class ModConfig
     public final ForgeConfigSpec.DoubleValue chair_mob_sitting_probability_percent;
     public final ForgeConfigSpec.DoubleValue chair_mob_standup_probability_percent;
     public final ForgeConfigSpec.BooleanValue with_crafting_quickmove_buttons;
+    public final ForgeConfigSpec.BooleanValue without_crafting_mouse_scrolling;
     public final ForgeConfigSpec.IntValue pipevalve_max_flowrate;
     public final ForgeConfigSpec.IntValue pipevalve_redstone_gain;
     public final ForgeConfigSpec.IntValue block_breaker_power_consumption;
@@ -153,6 +154,7 @@ public class ModConfig
     public final ForgeConfigSpec.IntValue tree_cuttter_cutting_time_needed;
     public final ForgeConfigSpec.BooleanValue tree_cuttter_requires_power;
     public final ForgeConfigSpec.IntValue milking_machine_energy_consumption;
+    public final ForgeConfigSpec.IntValue milking_machine_milking_delay;
 
     CommonConfig(ForgeConfigSpec.Builder builder)
     {
@@ -389,6 +391,10 @@ public class ModConfig
           .comment("Enables small quick-move arrows from/to player/block storage. " +
             "Makes the UI a bit too busy, therefore disabled by default.")
           .define("with_crafting_quickmove_buttons", false);
+        without_crafting_mouse_scrolling = builder
+          .translation(ModEngineersDecor.MODID + ".config.without_crafting_mouse_scrolling")
+          .comment("Disables increasing/decreasing the crafting grid items by scrolling over the crafting result slot.")
+          .define("without_crafting_mouse_scrolling", false);
         pipevalve_max_flowrate = builder
           .translation(ModEngineersDecor.MODID + ".config.pipevalve_max_flowrate")
           .comment("Defines how many millibuckets can be transferred (per tick) through the valves. " +
@@ -471,6 +477,10 @@ public class ModConfig
             "Use zero to disable energy dependency and energy handling of the machine. " +
             "The config value can be changed on-the-fly for tuning.")
           .defineInRange("milking_machine_energy_consumption", BlockDecorMilker.BTileEntity.DEFAULT_ENERGY_CONSUMPTION, 0, 128);
+        milking_machine_milking_delay = builder
+          .translation(ModEngineersDecor.MODID + ".config.milking_machine_milking_delay")
+          .comment("Defines (for each individual cow) the minimum time between milking." )
+          .defineInRange("milking_machine_milking_delay", BlockDecorMilker.BTileEntity.DEFAULT_MILKING_DELAY_PER_COW, 1000, 24000);
         builder.pop();
       }
     }
@@ -519,7 +529,7 @@ public class ModConfig
         excludes_.clear();
       }
       // Early non-opt out type based evaluation
-      if(block instanceof BlockDecorCraftingTable) return COMMON.without_crafting_table.get();
+      if(block instanceof BlockDecorCraftingTable.CraftingTableBlock) return COMMON.without_crafting_table.get();
       if(block instanceof BlockDecorFurnaceElectrical) return COMMON.without_electrical_furnace.get();
       if((block instanceof BlockDecorFurnace) && (!(block instanceof BlockDecorFurnaceElectrical))) return COMMON.without_lab_furnace.get();
       if(block instanceof BlockDecorPassiveFluidAccumulator) return COMMON.without_passive_fluid_accumulator.get();
@@ -598,13 +608,13 @@ public class ModConfig
     BlockDecorFurnace.BTileEntity.on_config(COMMON.furnace_smelting_speed_percent.get(), COMMON.furnace_fuel_efficiency_percent.get(), COMMON.furnace_boost_energy_consumption.get());
     BlockDecorChair.on_config(COMMON.without_chair_sitting.get(), COMMON.without_mob_chair_sitting.get(), COMMON.chair_mob_sitting_probability_percent.get(), COMMON.chair_mob_standup_probability_percent.get());
     BlockDecorLadder.on_config(COMMON.without_ladder_speed_boost.get());
-    BlockDecorCraftingTable.on_config(COMMON.without_crafting_table_history.get(), false, COMMON.with_crafting_quickmove_buttons.get());
+    BlockDecorCraftingTable.on_config(COMMON.without_crafting_table_history.get(), false, COMMON.with_crafting_quickmove_buttons.get(), COMMON.without_crafting_mouse_scrolling.get());
     BlockDecorPipeValve.on_config(COMMON.pipevalve_max_flowrate.get(), COMMON.pipevalve_redstone_gain.get());
     BlockDecorFurnaceElectrical.BTileEntity.on_config(COMMON.e_furnace_speed_percent.get(), COMMON.e_furnace_power_consumption.get(), COMMON.e_furnace_automatic_pulling.get());
     BlockDecorSolarPanel.BTileEntity.on_config(COMMON.small_solar_panel_peak_production.get());
     BlockDecorBreaker.BTileEntity.on_config(COMMON.block_breaker_power_consumption.get(), COMMON.block_breaker_reluctance.get(), COMMON.block_breaker_min_breaking_time.get(), COMMON.block_breaker_requires_power.get());
     BlockDecorTreeCutter.BTileEntity.on_config(COMMON.tree_cuttter_energy_consumption.get(), COMMON.tree_cuttter_cutting_time_needed.get(), COMMON.tree_cuttter_requires_power.get());
-    BlockDecorMilker.BTileEntity.on_config(COMMON.milking_machine_energy_consumption.get());
+    BlockDecorMilker.BTileEntity.on_config(COMMON.milking_machine_energy_consumption.get(), COMMON.milking_machine_milking_delay.get());
     without_crafting_table = isOptedOut(ModContent.TREATED_WOOD_CRAFTING_TABLE);
     immersiveengineering_installed = ModAuxiliaries.isModLoaded("immersiveengineering");
     with_experimental_features_ = COMMON.with_experimental.get();

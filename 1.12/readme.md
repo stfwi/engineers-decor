@@ -11,6 +11,21 @@ Mod sources for Minecraft version 1.12.2.
 ## Version history
 
                   -------------------------------------------------------------------
+    - v1.0.18     [R] Release based on v1.0.18-b2. Release-to-release changes:
+                    * Tree cutter config fixes.
+                    * Treated Wood Crafting Table mouse tweaks.
+                    * Lang updates.
+                  -------------------------------------------------------------------
+                  [M] Lang update ru_ru (PR#77, thanks Smollet777).
+
+    - v1.0.18-b2  [A] Added Treated Wood Crafting table tweaks (ctrl-shift moves all same stacks from the
+                      inventory, mouse wheel over crafting slot increases/decreases crafting grid stacks).
+                  [F] EN Lang file fixed (issue #76, thx Riverstar907).
+                  [F] Fixed Tree Cutter not respecting power-required config (thx federsavo, issue #77).
+
+    - v1.0.18-b1  [M] Lang ru_ru updated (Smollet777).
+
+                  -------------------------------------------------------------------
     - v1.0.17     [R] Release based on v1.0.17-b3. Release-to-release changes:
                       * Milking machine added.
                       * Reverse recipes for slab slices added.

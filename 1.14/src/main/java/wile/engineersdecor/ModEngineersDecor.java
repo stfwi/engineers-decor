@@ -1,5 +1,8 @@
 package wile.engineersdecor;
 
+import net.minecraft.client.util.InputMappings;
+import org.lwjgl.glfw.GLFW;
+import wile.engineersdecor.detail.ModAuxiliaries;
 import wile.engineersdecor.detail.ModConfig;
 import wile.engineersdecor.detail.Networking;
 import wile.engineersdecor.blocks.*;
@@ -32,18 +35,21 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 
 @Mod("engineersdecor")
 public class ModEngineersDecor
 {
   public static final String MODID = "engineersdecor";
+  public static final String MODNAME = "Engineer's Decor";
   public static final int VERSION_DATAFIXER = 0;
   private static final Logger LOGGER = LogManager.getLogger();
   private static boolean config_loaded = false;
 
   public ModEngineersDecor()
   {
+    ModAuxiliaries.logGitVersion(MODNAME);
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onSetup);
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onSendImc);
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRecvImc);
@@ -143,19 +149,17 @@ public class ModEngineersDecor
     default @Nullable PlayerEntity getPlayerClientSide() { return null; }
     default @Nullable World getWorldClientSide() { return null; }
     default @Nullable Minecraft mc() { return null; }
+    default Optional<Boolean> isCtrlDown() { return Optional.empty(); }
   }
   public static final class ClientProxy implements ISidedProxy
   {
     public @Nullable PlayerEntity getPlayerClientSide() { return Minecraft.getInstance().player; }
     public @Nullable World getWorldClientSide() { return Minecraft.getInstance().world; }
     public @Nullable Minecraft mc() { return Minecraft.getInstance(); }
+    public Optional<Boolean> isCtrlDown() { return Optional.of(ModAuxiliaries.isCtrlDown()); }
   }
   public static final class ServerProxy implements ISidedProxy
-  {
-    public @Nullable PlayerEntity getPlayerClientSide() { return null; }
-    public @Nullable World getWorldClientSide() { return null; }
-    public @Nullable Minecraft mc() { return null; }
-  }
+  {}
 
   //
   // Item group / creative tab

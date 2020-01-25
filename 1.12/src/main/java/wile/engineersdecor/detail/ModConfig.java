@@ -328,11 +328,15 @@ public class ModConfig
     @Config.RangeDouble(min=0.001, max=10)
     public double chair_mob_standup_probability_percent = 1;
 
+    @Config.Comment({"Disables increasing/decreasing the crafting grid items by scrolling over the crafting result slot."})
+    @Config.Name("Crafting table: Move buttons")
+    public boolean with_crafting_quickmove_buttons = false;
+
     @Config.Comment({"Enables small quick-move arrows from/to player/block storage. " +
       "Makes the UI a bit too busy, therefore disabled by default."
     })
-    @Config.Name("Crafting table: Move buttons")
-    public boolean with_crafting_quickmove_buttons = false;
+    @Config.Name("Crafting table: Mouse scrolling")
+    public boolean without_crafting_mouse_scrolling = false;
 
     @Config.Comment({
       "Defines how many millibuckets can be transferred (per tick) through the valves. " +
@@ -600,7 +604,7 @@ public class ModConfig
     BlockDecorFurnace.BTileEntity.on_config(tweaks.furnace_smelting_speed_percent, tweaks.furnace_fuel_efficiency_percent, tweaks.furnace_boost_energy_consumption);
     BlockDecorChair.on_config(optout.without_chair_sitting, optout.without_mob_chair_sitting, tweaks.chair_mob_sitting_probability_percent, tweaks.chair_mob_standup_probability_percent);
     BlockDecorLadder.on_config(optout.without_ladder_speed_boost);
-    BlockDecorCraftingTable.on_config(optout.without_crafting_table_history, false, tweaks.with_crafting_quickmove_buttons);
+    BlockDecorCraftingTable.on_config(optout.without_crafting_table_history, false, tweaks.with_crafting_quickmove_buttons, tweaks.without_crafting_mouse_scrolling);
     BlockDecorPipeValve.on_config(tweaks.pipevalve_max_flowrate, tweaks.pipevalve_redstone_slope);
     BlockDecorFurnaceElectrical.BTileEntity.on_config(tweaks.e_furnace_speed_percent, tweaks.e_furnace_power_consumption);
     BlockDecorSolarPanel.BTileEntity.on_config(tweaks.solar_panel_peak_power);

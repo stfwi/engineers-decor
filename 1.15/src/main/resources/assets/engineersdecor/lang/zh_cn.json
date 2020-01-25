@@ -196,6 +196,7 @@
  "block.engineersdecor.sign_factoryarea": "指示牌 \"工厂区域\"",
  "block.engineersdecor.sign_factoryarea.help": "§6用于指示真的很大的机器所在的建筑和区域。",
  "block.engineersdecor.sign_exit": "出口指示牌",
+ "block.engineersdecor.sign_exit.help": "§6There's the door, please ...",
  "block.engineersdecor.halfslab_rebar_concrete": "强化混凝土切片",
  "block.engineersdecor.halfslab_rebar_concrete.help": "§6可垂直堆叠的切片。§r手持切片右/左击切片堆叠的顶端或底部来添加/移除切片。",
  "block.engineersdecor.halfslab_concrete": "混凝土切片",

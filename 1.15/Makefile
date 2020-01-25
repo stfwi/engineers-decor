@@ -68,6 +68,7 @@ sanatize:
 	@echo "[1.15] Running sanatising tasks ..."
 	@djs tasks.js trailing-whitespaces
 	@djs tasks.js tabs-to-spaces
+	@djs tasks.js lang-json-fixes
 	@djs tasks.js sync-languages
 	@djs tasks.js version-check
 	@djs tasks.js update-json

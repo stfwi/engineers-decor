@@ -8,8 +8,10 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.item.crafting.*;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.detail.ModAuxiliaries;
 import wile.engineersdecor.detail.Networking;
 import net.minecraft.inventory.container.*;
 import net.minecraft.network.play.server.SSetSlotPacket;
@@ -27,10 +29,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.inventory.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
@@ -53,105 +51,118 @@ import com.google.common.collect.ImmutableList;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.Arrays;
 
 
-public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
+public class BlockDecorCraftingTable
 {
   public static boolean with_assist = true;
   public static boolean with_assist_direct_history_refab = false;
   public static boolean with_assist_quickmove_buttons = false;
+  public static boolean with_crafting_slot_mouse_scrolling = true;
+  public static boolean with_outslot_defined_refab = true;
 
-  public static final void on_config(boolean without_crafting_assist, boolean with_assist_immediate_history_refab, boolean with_quickmove_buttons)
+  public static final void on_config(boolean without_crafting_assist, boolean with_assist_immediate_history_refab,
+                                     boolean with_quickmove_buttons, boolean without_crafting_slot_mouse_scrolling)
   {
     with_assist = !without_crafting_assist;
     with_assist_direct_history_refab = with_assist_immediate_history_refab;
     with_assist_quickmove_buttons = with_quickmove_buttons;
+    with_crafting_slot_mouse_scrolling = !without_crafting_slot_mouse_scrolling;
+    with_outslot_defined_refab = with_assist;
     CraftingHistory.max_history_size(32);
   }
 
-  public BlockDecorCraftingTable(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
-  { super(config|CFG_WATERLOGGABLE, builder, unrotatedAABB); }
+  //--------------------------------------------------------------------------------------------------------------------
+  // Block
+  //--------------------------------------------------------------------------------------------------------------------
 
-  @Override
-  public boolean hasTileEntity(BlockState state)
-  { return true; }
-
-  @Override
-  @Nullable
-  public TileEntity createTileEntity(BlockState state, IBlockReader world)
-  { return new BlockDecorCraftingTable.BTileEntity(); }
-
-  @Override
-  @SuppressWarnings("deprecation")
-  public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+  public static final class CraftingTableBlock extends BlockDecorDirected.WaterLoggable
   {
-    if(world.isRemote) return true;
-    final TileEntity te = world.getTileEntity(pos);
-    if(!(te instanceof BTileEntity)) return true;
-    if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return true;
-    NetworkHooks.openGui((ServerPlayerEntity)player,(INamedContainerProvider)te);
-    return true;
-  }
+    public CraftingTableBlock(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
+    { super(config|CFG_WATERLOGGABLE, builder, unrotatedAABB); }
 
-  @Override
-  public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
-  {
-    if(world.isRemote) return;
-    if(!stack.hasTag()) return;
-    if((!stack.hasTag()) || (!stack.getTag().contains("inventory"))) return;
-    CompoundNBT inventory_nbt = stack.getTag().getCompound("inventory");
-    if(inventory_nbt.isEmpty()) return;
-    final TileEntity te = world.getTileEntity(pos);
-    if(!(te instanceof BTileEntity)) return;
-    ((BTileEntity)te).readnbt(inventory_nbt);
-    ((BTileEntity)te).markDirty();
-  }
+    @Override
+    public boolean hasTileEntity(BlockState state)
+    { return true; }
 
-  @Override
-  public boolean hasDynamicDropList()
-  { return true; }
+    @Override
+    @Nullable
+    public TileEntity createTileEntity(BlockState state, IBlockReader world)
+    { return new BlockDecorCraftingTable.CraftingTableTileEntity(); }
 
-  @Override
-  public List<ItemStack> dropList(BlockState state, World world, BlockPos pos, boolean explosion)
-  {
-    final List<ItemStack> stacks = new ArrayList<ItemStack>();
-    if(world.isRemote) return stacks;
-    final TileEntity te = world.getTileEntity(pos);
-    if(!(te instanceof BTileEntity)) return stacks;
-    if(!explosion) {
-      ItemStack stack = new ItemStack(this, 1);
-      CompoundNBT inventory_nbt = new CompoundNBT();
-      ItemStackHelper.saveAllItems(inventory_nbt, ((BTileEntity)te).stacks, false);
-      if(!inventory_nbt.isEmpty()) {
-        CompoundNBT nbt = new CompoundNBT();
-        nbt.put("inventory", inventory_nbt);
-        stack.setTag(nbt);
-      }
-      ((BTileEntity) te).clear();
-      stacks.add(stack);
-    } else {
-      for(ItemStack stack: ((BTileEntity)te).stacks) {
-        if(!stack.isEmpty()) stacks.add(stack);
-      }
-      ((BTileEntity)te).reset();
+    @Override
+    @SuppressWarnings("deprecation")
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+    {
+      if(world.isRemote) return true;
+      final TileEntity te = world.getTileEntity(pos);
+      if(!(te instanceof CraftingTableTileEntity)) return true;
+      if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return true;
+      NetworkHooks.openGui((ServerPlayerEntity)player,(INamedContainerProvider)te);
+      return true;
     }
-    return stacks;
+
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    {
+      if(world.isRemote) return;
+      if(!stack.hasTag()) return;
+      if((!stack.hasTag()) || (!stack.getTag().contains("inventory"))) return;
+      CompoundNBT inventory_nbt = stack.getTag().getCompound("inventory");
+      if(inventory_nbt.isEmpty()) return;
+      final TileEntity te = world.getTileEntity(pos);
+      if(!(te instanceof CraftingTableTileEntity)) return;
+      ((CraftingTableTileEntity)te).readnbt(inventory_nbt);
+      ((CraftingTableTileEntity)te).markDirty();
+    }
+
+    @Override
+    public boolean hasDynamicDropList()
+    { return true; }
+
+    @Override
+    public List<ItemStack> dropList(BlockState state, World world, BlockPos pos, boolean explosion)
+    {
+      final List<ItemStack> stacks = new ArrayList<ItemStack>();
+      if(world.isRemote) return stacks;
+      final TileEntity te = world.getTileEntity(pos);
+      if(!(te instanceof CraftingTableTileEntity)) return stacks;
+      if(!explosion) {
+        ItemStack stack = new ItemStack(this, 1);
+        CompoundNBT inventory_nbt = new CompoundNBT();
+        ItemStackHelper.saveAllItems(inventory_nbt, ((CraftingTableTileEntity)te).stacks, false);
+        if(!inventory_nbt.isEmpty()) {
+          CompoundNBT nbt = new CompoundNBT();
+          nbt.put("inventory", inventory_nbt);
+          stack.setTag(nbt);
+        }
+        ((CraftingTableTileEntity) te).clear();
+        stacks.add(stack);
+      } else {
+        for(ItemStack stack: ((CraftingTableTileEntity)te).stacks) {
+          if(!stack.isEmpty()) stacks.add(stack);
+        }
+        ((CraftingTableTileEntity)te).reset();
+      }
+      return stacks;
+    }
   }
 
   //--------------------------------------------------------------------------------------------------------------------
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class BTileEntity extends TileEntity implements IInventory, INameable, INamedContainerProvider
+  public static class CraftingTableTileEntity extends TileEntity implements IInventory, INameable, INamedContainerProvider
   {
     public static final int NUM_OF_SLOTS = 9+8;
     protected NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
     protected CompoundNBT history = new CompoundNBT();
 
-    public BTileEntity()
+    public CraftingTableTileEntity()
     { this(ModContent.TET_TREATED_WOOD_CRAFTING_TABLE); }
 
-    public BTileEntity(TileEntityType<?> te_type)
+    public CraftingTableTileEntity(TileEntityType<?> te_type)
     { super(te_type); }
 
     public void reset()
@@ -224,7 +235,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
 
     @Override
     public Container createMenu( int id, PlayerInventory inventory, PlayerEntity player )
-    { return new BContainer(id, inventory, this, IWorldPosCallable.of(world, pos)); }
+    { return new CraftingTableContainer(id, inventory, this, IWorldPosCallable.of(world, pos)); }
 
     // IInventory ------------------------------------------------------------------------------
 
@@ -292,83 +303,8 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
   // Crafting container
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class BContainer extends Container implements Networking.INetworkSynchronisableContainer
+  public static class CraftingTableContainer extends Container implements Networking.INetworkSynchronisableContainer
   {
-    // Crafting slot of container --------------------------------------------------------------------------------------
-    public static class BSlotCrafting extends CraftingResultSlot
-    {
-      private final BContainer container;
-      private final PlayerEntity player;
-
-      public BSlotCrafting(BContainer container, PlayerEntity player, CraftingInventory craftingInventory, IInventory inventoryIn, int slotIndex, int xPosition, int yPosition)
-      { super(player, craftingInventory, inventoryIn, slotIndex, xPosition, yPosition); this.container = container; this.player=player; }
-
-      @Override
-      protected void onCrafting(ItemStack stack)
-      {
-        if((with_assist) && ((player.world!=null) && (!(player.world.isRemote))) && (!stack.isEmpty())) {
-          final IRecipe recipe = ((CraftResultInventory)this.inventory).getRecipeUsed();
-          final ArrayList<ItemStack> grid = new ArrayList<ItemStack>();
-          grid.add(stack);
-          for(int i = 0; i < 9; ++i) grid.add(container.inventory_.getStackInSlot(i));
-          container.history().add(grid, recipe);
-          container.history().reset_current();
-          container.syncHistory(player);
-        }
-        super.onCrafting(stack);
-      }
-    }
-
-    // Crafting inventory (needed to allow SlotCrafting to have a InventoryCrafting) -----------------------------------
-    public static class BInventoryCrafting extends CraftingInventory
-    {
-      protected final Container container;
-      protected final IInventory inventory;
-
-      public BInventoryCrafting(Container container_, IInventory block_inventory) {
-        super(container_, 3, 3);
-        container = container_;
-        inventory = block_inventory;
-      }
-
-      @Override
-      public int getSizeInventory()
-      { return 9; }
-
-      @Override
-      public void openInventory(PlayerEntity player)
-      { inventory.openInventory(player); }
-
-      @Override
-      public void closeInventory(PlayerEntity player)
-      { inventory.closeInventory(player); }
-
-      @Override
-      public void markDirty()
-      { inventory.markDirty(); }
-
-      @Override
-      public void setInventorySlotContents(int index, ItemStack stack)
-      {
-        inventory.setInventorySlotContents(index, stack);
-        container.onCraftMatrixChanged(this);
-      }
-
-      @Override
-      public ItemStack getStackInSlot(int index)
-      { return inventory.getStackInSlot(index); }
-
-      @Override
-      public ItemStack decrStackSize(int index, int count)
-      {
-        final ItemStack stack = inventory.decrStackSize(index, count);
-        if(!stack.isEmpty()) container.onCraftMatrixChanged(this);
-        return stack;
-      }
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-    //------------------------------------------------------------------------------------------------------------------
     public static final int CRAFTING_SLOTS_BEGIN = 0;
     public static final int NUM_OF_CRAFTING_SLOTS = 9;
     public static final int STORAGE_SLOTS_BEGIN = NUM_OF_CRAFTING_SLOTS;
@@ -379,27 +315,28 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
     private final IInventory inventory_;
     private final IWorldPosCallable wpc_;
     private final CraftingHistory history_;
-    private final BInventoryCrafting matrix_;
+    private final CraftingTableGrid matrix_;
     private final CraftResultInventory result_;
     private boolean has_recipe_collision_;
+    private boolean crafting_matrix_changed_now_;
 
-    public BContainer(int cid, PlayerInventory pinv)
-    { this(cid, pinv, new Inventory(BTileEntity.NUM_OF_SLOTS), IWorldPosCallable.DUMMY); }
+    public CraftingTableContainer(int cid, PlayerInventory pinv)
+    { this(cid, pinv, new Inventory(CraftingTableTileEntity.NUM_OF_SLOTS), IWorldPosCallable.DUMMY); }
 
-    private BContainer(int cid, PlayerInventory pinv, IInventory block_inventory, IWorldPosCallable wpc)
+    private CraftingTableContainer(int cid, PlayerInventory pinv, IInventory block_inventory, IWorldPosCallable wpc)
     {
       super(ModContent.CT_TREATED_WOOD_CRAFTING_TABLE, cid);
       wpc_ = wpc;
       player_ = pinv.player;
       inventory_ = block_inventory;
       World world = player_.world;
-      if(world.isRemote && (inventory_ instanceof BTileEntity)) world = ((BTileEntity)inventory_).getWorld();
+      if(world.isRemote && (inventory_ instanceof CraftingTableTileEntity)) world = ((CraftingTableTileEntity)inventory_).getWorld();
       history_ = new CraftingHistory(world);
       result_ = new CraftResultInventory();
-      matrix_ = new BInventoryCrafting(this, block_inventory);
+      matrix_ = new CraftingTableGrid(this, block_inventory);
       matrix_.openInventory(player_);
       // container slotId 0 === crafting output
-      addSlot(new BSlotCrafting(this, pinv.player, matrix_, result_, 0, 134, 35));
+      addSlot(new CraftingOutputSlot(this, pinv.player, matrix_, result_, 0, 134, 35));
       ArrayList<Tuple<Integer,Integer>> slotpositions = new ArrayList<Tuple<Integer,Integer>>();
       slotpositions.add(new Tuple<>(134, 35));
       // container slotId 1..9 === TE slots 0..8
@@ -427,9 +364,9 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
           addSlot(new Slot(matrix_, x+y*2+9, 8+x*18, 9+y*18));
         }
       }
-      if((!player_.world.isRemote) && (inventory_ instanceof BTileEntity)) {
-        history_.read(((BTileEntity)inventory_).history.copy());
-        syncHistory(player_);
+      if((!player_.world.isRemote) && (inventory_ instanceof CraftingTableTileEntity)) {
+        history_.read(((CraftingTableTileEntity)inventory_).history.copy());
+        syncHistory();
       }
       CRAFTING_SLOT_COORDINATES = ImmutableList.copyOf(slotpositions);
       onCraftMatrixChanged(matrix_);
@@ -446,7 +383,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
       wpc_.consume((world,pos)->{
         if(world.isRemote) return;
         try {
-          //craft(windowId, world, player_, matrix_, result_);
+          crafting_matrix_changed_now_ = true;
           ServerPlayerEntity player = (ServerPlayerEntity) player_;
           ItemStack stack = ItemStack.EMPTY;
           List<ICraftingRecipe> recipes = world.getServer().getRecipeManager().getRecipes(IRecipeType.CRAFTING, matrix_, world);
@@ -464,7 +401,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
           }
           result_.setInventorySlotContents(0, stack);
           player.connection.sendPacket(new SSetSlotPacket(windowId, 0, stack));
-          syncProperties(player);
+          syncProperties();
         } catch(Throwable exc) {
           ModEngineersDecor.logger().error("Recipe failed:", exc);
         }
@@ -523,6 +460,222 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
       return stack;
     }
 
+    @Override
+    public ItemStack slotClick(int slotId, int button, ClickType clickType, PlayerEntity player)
+    {
+      crafting_matrix_changed_now_ = false;
+      final ItemStack stack = super.slotClick(slotId, button, clickType, player);
+      if((with_outslot_defined_refab) && (slotId == 0) && (clickType == ClickType.PICKUP)) {
+        if((!crafting_matrix_changed_now_) && (!player.world.isRemote()) && (crafting_grid_empty())) {
+          final ItemStack dragged = player.inventory.getItemStack(); // @todo: check, as far as seen this is actually `stack`.
+          if((dragged != null) && (!dragged.isEmpty())) {
+            try_result_stack_refab(dragged, player.world);
+          } else if(!history().current().isEmpty()) {
+            try_result_stack_refab(history().current_recipe().getRecipeOutput(), player.world);
+          }
+        }
+      }
+      return stack;
+    }
+
+    // Container client/server synchronisation --------------------------------------------------
+
+    @OnlyIn(Dist.CLIENT)
+    public void onGuiAction(String message, CompoundNBT nbt)
+    {
+      nbt.putString("action", message);
+      Networking.PacketContainerSyncClientToServer.sendToServer(windowId, nbt);
+    }
+
+    public void onServerPacketReceived(int windowId, CompoundNBT nbt)
+    {
+      if(nbt.contains("history"))  history_.read(nbt.getCompound("history"));
+      if(nbt.contains("hascollision")) has_recipe_collision_ = nbt.getBoolean("hascollision");
+    }
+
+    public void onClientPacketReceived(int windowId, PlayerEntity player, CompoundNBT nbt)
+    {
+      boolean changed = false;
+      boolean player_inventory_changed = false;
+      if(with_assist && nbt.contains("action")) {
+        switch(nbt.getString("action")) {
+          case CraftingTableGui.BUTTON_NEXT: {
+            history_.next();
+            syncHistory();
+            // implicitly clear the grid, so that the player can see the refab, and that no recipe is active.
+            if(clear_grid_to_player(player)) { changed = true; player_inventory_changed = true; }
+            if(clear_grid_to_storage(player)) changed = true;
+          } break;
+          case CraftingTableGui.BUTTON_PREV: {
+            history_.prev();
+            syncHistory();
+            if(clear_grid_to_player(player)) { changed = true; player_inventory_changed = true; }
+            if(clear_grid_to_storage(player)) changed = true;
+          } break;
+          case CraftingTableGui.BUTTON_CLEAR_GRID: {
+            history_.reset_selection();
+            syncHistory();
+            if(clear_grid_to_player(player)) { changed = true; player_inventory_changed = true; }
+            if(clear_grid_to_storage(player)) changed = true;
+          } break;
+          case CraftingTableGui.BUTTON_TO_STORAGE: {
+            if(clear_grid_to_storage(player)) changed = true;
+          } break;
+          case CraftingTableGui.BUTTON_TO_PLAYER: {
+            if(clear_grid_to_player(player)) { changed = true; player_inventory_changed = true; }
+          } break;
+          case CraftingTableGui.BUTTON_FROM_STORAGE: {
+            if(place_stacks(new SlotRange[]{
+              new SlotRange(inventory_, STORAGE_SLOTS_BEGIN, STORAGE_SLOTS_BEGIN+NUM_OF_STORAGE_SLOTS)
+            }, refab_crafting_stacks()) != PlacementResult.UNCHANGED) {
+              changed = true;
+            }
+          } break;
+          case CraftingTableGui.BUTTON_FROM_PLAYER: {
+            if(place_stacks(new SlotRange[]{
+              new SlotRange(player.inventory, 9, 36),
+              new SlotRange(player.inventory, 0, 9)
+            }, refab_crafting_stacks()) != PlacementResult.UNCHANGED) {
+              changed = true; player_inventory_changed = true;
+            }
+          } break;
+          case CraftingTableGui.ACTION_PLACE_CURRENT_HISTORY_SEL: {
+            if(place_stacks(new SlotRange[]{
+              new SlotRange(player.inventory, 0, 9),
+              new SlotRange(player.inventory, 9, 36),
+              new SlotRange(inventory_, STORAGE_SLOTS_BEGIN, STORAGE_SLOTS_BEGIN+NUM_OF_STORAGE_SLOTS)
+            }, refab_crafting_stacks()) != PlacementResult.UNCHANGED) {
+              changed = true;
+            }
+          } break;
+          case CraftingTableGui.ACTION_PLACE_SHIFTCLICKED_STACK: {
+            final int container_slot_id = nbt.getInt("containerslot");
+            if((container_slot_id < 10) || (container_slot_id > 53)) {
+              break; // out of range
+            }
+            if(container_slot_id >= 46) {
+              // from storage
+              final int storage_slot = container_slot_id - 46 + STORAGE_SLOTS_BEGIN;
+              PlacementResult stat = distribute_stack(inventory_, storage_slot);
+              if(stat != PlacementResult.UNCHANGED) changed = true;
+            } else {
+              // from player
+              int player_slot = (container_slot_id >= 37) ? (container_slot_id-37) : (container_slot_id-10+9);
+              final ItemStack reference_stack = player.inventory.getStackInSlot(player_slot).copy();
+              if((!reference_stack.isEmpty()) && (distribute_stack(player.inventory, player_slot) != PlacementResult.UNCHANGED)) {
+                player_inventory_changed = true;
+                changed = true;
+                if(nbt.contains("move-all")) {
+                  for(int i=0; i < player.inventory.getSizeInventory(); ++i) {
+                    final ItemStack stack = player.inventory.getStackInSlot(i);
+                    if(!reference_stack.isItemEqual(stack)) continue;
+                    if(distribute_stack(player.inventory, i) == PlacementResult.UNCHANGED) break; // grid is full
+                  }
+                }
+              }
+            }
+          } break;
+          case CraftingTableGui.ACTION_MOVE_ALL_STACKS: {
+            final int container_slot_id = nbt.getInt("containerslot");
+            if((container_slot_id < 1) || (container_slot_id > 53)) {
+              break; // out of range
+            } else if(container_slot_id < 10) {
+              // from crafting grid to player inventory, we clear the grid here as this is most likely
+              // what is wanted in the end. Saves clicking the other grid stacks.
+              if(clear_grid_to_player(player)) { changed = true; player_inventory_changed = true; }
+              if(clear_grid_to_storage(player)) changed = true;
+              break;
+            }
+            IInventory from_inventory;
+            SlotRange[] to_ranges;
+            int from_slot;
+            if(container_slot_id >= 46) {
+              // from storage to player inventory
+              from_inventory = inventory_;
+              from_slot = container_slot_id - 46 + STORAGE_SLOTS_BEGIN;
+              to_ranges = new SlotRange[] {new SlotRange(player.inventory, 9, 36), new SlotRange(player.inventory, 0, 9)};
+            } else {
+              // from player to storage (otherwise ACTION_PLACE_SHIFTCLICKED_STACK would have been used)
+              from_inventory = player.inventory;
+              from_slot = (container_slot_id >= 37) ? (container_slot_id-37) : (container_slot_id-10+9);
+              to_ranges = new SlotRange[] {new SlotRange(inventory_, STORAGE_SLOTS_BEGIN, STORAGE_SLOTS_BEGIN+NUM_OF_STORAGE_SLOTS)};
+            }
+            final ItemStack reference_stack = from_inventory.getStackInSlot(from_slot).copy();
+            if(!reference_stack.isEmpty()) {
+              boolean abort = false;
+              for(int i=0; (i < from_inventory.getSizeInventory()) && (!abort); ++i) {
+                final ItemStack stack = from_inventory.getStackInSlot(i);
+                if(!reference_stack.isItemEqual(stack)) continue;
+                ItemStack remaining = from_inventory.getStackInSlot(i);
+                for(SlotRange range:to_ranges) {
+                  remaining = move_stack_to_inventory(remaining, range, false, 0);
+                  if(!remaining.isEmpty()) {
+                    abort = true; // no space left
+                    break;
+                  } else {
+                    changed = player_inventory_changed = true;
+                  }
+                }
+                from_inventory.setInventorySlotContents(i, remaining);
+              }
+            }
+          } break;
+          case CraftingTableGui.BUTTON_NEXT_COLLISION_RECIPE: {
+            select_next_collision_recipe(inventory_);
+          } break;
+          case CraftingTableGui.ACTION_DECREASE_CRAFTING_STACKS: {
+            changed = player_inventory_changed = decrease_grid_stacks(new SlotRange[]{
+              new SlotRange(player.inventory, 9, 36),
+              new SlotRange(player.inventory, 0, 9),
+              new SlotRange(inventory_, STORAGE_SLOTS_BEGIN, STORAGE_SLOTS_BEGIN+NUM_OF_STORAGE_SLOTS)
+            }, MathHelper.clamp(nbt.getInt("limit"), 1, 8));
+          } break;
+          case CraftingTableGui.ACTION_INCREASE_CRAFTING_STACKS: {
+            changed = player_inventory_changed = increase_grid_stacks(new SlotRange[]{
+              new SlotRange(player.inventory, 9, 36),
+              new SlotRange(player.inventory, 0, 9),
+              new SlotRange(inventory_, STORAGE_SLOTS_BEGIN, STORAGE_SLOTS_BEGIN+NUM_OF_STORAGE_SLOTS)
+            }, MathHelper.clamp(nbt.getInt("limit"), 1, 8));
+          } break;
+        }
+      }
+      if(changed) inventory_.markDirty();
+      if(player_inventory_changed) player.inventory.markDirty();
+      if(changed || player_inventory_changed) {
+        this.onCraftMatrixChanged(inventory_);
+        this.detectAndSendChanges();
+      }
+    }
+
+    public CraftingHistory history()
+    { return history_; }
+
+    private void syncHistory()
+    {
+      if(!with_assist) return;
+      this.wpc_.consume((world,pos)->{
+        if(world.isRemote()) return;
+        CompoundNBT hist_nbt = history_.write();
+        if((inventory_ instanceof CraftingTableTileEntity)) {
+          ((CraftingTableTileEntity)inventory_).history = hist_nbt.copy();
+          inventory_.markDirty();
+        }
+        final CompoundNBT nbt = new CompoundNBT();
+        nbt.put("history", hist_nbt);
+        nbt.putBoolean("hascollision", has_recipe_collision_);
+        Networking.PacketContainerSyncServerToClient.sendToListeners(world, this, nbt);
+      });
+    }
+
+    private void syncProperties()
+    {
+      this.wpc_.consume((world,pos)->{
+        final CompoundNBT nbt = new CompoundNBT();
+        nbt.putBoolean("hascollision", has_recipe_collision_);
+        Networking.PacketContainerSyncServerToClient.sendToListeners(world, this, nbt);
+      });
+    }
+
     // private aux methods ---------------------------------------------------------------------
 
     public boolean has_recipe_collision()
@@ -558,12 +711,129 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
       });
     }
 
+    @Nullable
+    private ICraftingRecipe find_first_recipe_for(World world, ItemStack stack)
+    {
+      return (ICraftingRecipe)world.getServer().getRecipeManager().getRecipes().stream()
+        .filter(r->(r.getType()==IRecipeType.CRAFTING) && (r.getRecipeOutput().isItemEqual(stack)))
+        .findFirst().orElse(null);
+    }
+
+    private ItemStack search_inventory(ItemStack match_stack, ItemStack not_found_value) {
+      SlotRange search_ranges[] = new SlotRange[]{
+        new SlotRange(player_.inventory, 0, 36),
+        new SlotRange(inventory_, STORAGE_SLOTS_BEGIN, STORAGE_SLOTS_BEGIN+NUM_OF_STORAGE_SLOTS)
+      };
+      for(SlotRange range: search_ranges) {
+        for(int i=0; i<range.inventory.getSizeInventory(); ++i) {
+          ItemStack stack = range.inventory.getStackInSlot(i);
+          if(stack.isItemEqual(match_stack)) return match_stack;
+        }
+      }
+      return not_found_value;
+    }
+
+    private ItemStack search_inventory(ItemStack[] match_stacks, ItemStack not_found_value) {
+      for(ItemStack match_stack: match_stacks) {
+        ItemStack stack = search_inventory(match_stack, ItemStack.EMPTY);
+        if(!stack.isEmpty()) return stack;
+      }
+      return not_found_value;
+    }
+
+    private ArrayList<ItemStack> placement_stacks(ICraftingRecipe recipe)
+    {
+      final World world = player_.world;
+      final ArrayList<ItemStack> grid = new ArrayList<ItemStack>();
+      if(recipe.getIngredients().size() > 9) {
+        return grid;
+      } else if(recipe instanceof ShapedRecipe) {
+        final int endw = ((ShapedRecipe)recipe).getWidth();
+        final int endh = ((ShapedRecipe)recipe).getHeight();
+        int ingredient_index = 0;
+        for(int i=3-endh; i>0; --i) for(int w=0; w<3; ++w) {
+          grid.add(ItemStack.EMPTY);
+        }
+        for(int h=3-endh; h<3; ++h) for(int w=0; w<3; ++w) {
+          if((w >= endw) || (ingredient_index >= recipe.getIngredients().size())) { grid.add(ItemStack.EMPTY); continue; }
+          ItemStack[] match_stacks = recipe.getIngredients().get(ingredient_index++).getMatchingStacks();
+          if(match_stacks.length == 0) { grid.add(ItemStack.EMPTY); continue; }
+          ItemStack preferred = search_inventory(match_stacks, match_stacks[0]);
+          if(preferred.isEmpty()) { grid.add(ItemStack.EMPTY); continue; }
+          grid.add(preferred);
+        }
+      } else if(recipe instanceof ShapelessRecipe) {
+        // todo: check if a collision resolver with shaped recipes makes sense here.
+        for(int ingredient_index=0; ingredient_index<recipe.getIngredients().size(); ++ingredient_index) {
+          ItemStack[] match_stacks = recipe.getIngredients().get(ingredient_index).getMatchingStacks();
+          if(match_stacks.length == 0) { grid.add(ItemStack.EMPTY); continue; }
+          ItemStack preferred = search_inventory(match_stacks, match_stacks[0]);
+          if(preferred.isEmpty()) { grid.add(ItemStack.EMPTY); continue; }
+          grid.add(preferred);
+        }
+        while(grid.size()<9) grid.add(ItemStack.EMPTY);
+      }
+      return grid;
+    }
+
+    private boolean adapt_recipe_placement(ICraftingRecipe recipe, List<ItemStack> grid_stacks)
+    {
+      boolean changed = false;
+      final List<Ingredient> ingredients = recipe.getIngredients();
+      for(int stack_index=0; stack_index < grid_stacks.size(); ++stack_index) {
+        ItemStack to_replace = grid_stacks.get(stack_index);
+        ItemStack replacement = to_replace;
+        if(to_replace.isEmpty() || (!search_inventory(to_replace, ItemStack.EMPTY).isEmpty())) continue; // no replacement needed
+        for(int ingredient_index=0; ingredient_index<recipe.getIngredients().size(); ++ingredient_index) {
+          ItemStack[] match_stacks = recipe.getIngredients().get(ingredient_index).getMatchingStacks();
+          if(Arrays.stream(match_stacks).anyMatch(s->s.isItemEqual(to_replace))) {
+            replacement = search_inventory(match_stacks, to_replace);
+            changed = true;
+            break;
+          }
+        }
+        grid_stacks.set(stack_index, replacement);
+      }
+      return changed;
+    }
+
+    private void try_result_stack_refab(ItemStack output_stack, World world)
+    {
+      ICraftingRecipe recipe;
+      int history_index = history().find(output_stack);
+      if(history_index >= 0) {
+        history().selection(history_index);
+        recipe = history().current_recipe();
+        List<ItemStack> grid_stacks = history().current().subList(1, history().current().size());
+        if(adapt_recipe_placement(recipe, grid_stacks)) {
+          history().stash(grid_stacks, recipe);
+          recipe = history().current_recipe();
+        }
+      } else if((recipe=find_first_recipe_for(world, output_stack)) != null) {
+        ArrayList<ItemStack> stacks = placement_stacks(recipe);
+        if(stacks.isEmpty()) {
+          recipe = null;
+        } else {
+          history().stash(stacks, recipe);
+          recipe = history().current_recipe();
+        }
+      }
+      if(recipe != null) {
+        onCraftMatrixChanged(inventory_);
+        syncHistory();
+      }
+    }
+
+    private boolean crafting_grid_empty()
+    { for(int i=0; i<10; ++i) { if(getSlot(i).getHasStack()) return false; } return true; }
+
     private boolean itemstack_recipe_match(ItemStack grid_stack, ItemStack history_stack)
     {
       if(history_.current_recipe()!=null) {
+        final NonNullList<Ingredient> ingredients = history_.current_recipe().getIngredients();
         boolean grid_match, dist_match;
-        for(int i=0; i<history_.current_recipe().getIngredients().size(); ++i) {
-          Ingredient ingredient = (Ingredient)history_.current_recipe().getIngredients().get(i);
+        for(int i=0; i<ingredients.size(); ++i) {
+          Ingredient ingredient = ingredients.get(i);
           grid_match = false; dist_match = false;
           for(final ItemStack match:ingredient.getMatchingStacks()) {
             if(match.isItemEqualIgnoreDurability(grid_stack)) dist_match = true;
@@ -575,7 +845,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
       return false;
     }
 
-    private List<ItemStack> crafting_slot_stacks_to_add()
+    private List<ItemStack> refab_crafting_stacks()
     {
       final ArrayList<ItemStack> slots = new ArrayList<ItemStack>();
       final List<ItemStack> tocraft = history_.current();
@@ -617,30 +887,46 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
       return slots;
     }
 
+    private List<ItemStack> incr_crafting_grid_stacks(int count)
+    {
+      final ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
+      for(int i=0; i<9; ++i) {
+        final ItemStack palced = inventory_.getStackInSlot(i+CRAFTING_SLOTS_BEGIN).copy();
+        if(!palced.isEmpty()) palced.setCount(count);
+        stacks.add(palced);
+      }
+      return stacks;
+    }
+
     /**
      * Moves as much items from the stack to the slots in range [first_slot, last_slot] of the inventory,
      * filling up existing stacks first, then (player inventory only) checks appropriate empty slots next
      * to stacks that have that item already, and last uses any empty slot that can be found.
      * Returns the stack that is still remaining in the referenced `stack`.
      */
-    private ItemStack move_stack_to_inventory(final ItemStack stack_to_move, IInventory inventory, final int slot_begin, final int slot_end, boolean only_fillup)
+    private ItemStack move_stack_to_inventory(final ItemStack stack_to_move, SlotRange range, boolean only_fillup, int limit)
     {
+      final IInventory inventory = range.inventory;
+      final int slot_begin = range.start_slot;
+      final int slot_end = range.end_slot;
       final ItemStack mvstack = stack_to_move.copy();
       if((mvstack.isEmpty()) || (slot_begin < 0) || (slot_end > inventory.getSizeInventory())) return mvstack;
+      int limit_left = (limit>0) ? (Math.min(limit, mvstack.getMaxStackSize())) : (mvstack.getMaxStackSize());
       // first iteration: fillup existing stacks
       for(int i = slot_begin; i < slot_end; ++i) {
         final ItemStack stack = inventory.getStackInSlot(i);
         if((stack.isEmpty()) || (!stack.isItemEqual(mvstack))) continue;
-        int nmax = stack.getMaxStackSize() - stack.getCount();
+        int nmax = Math.min(limit_left, stack.getMaxStackSize() - stack.getCount());
         if(mvstack.getCount() <= nmax) {
           stack.setCount(stack.getCount()+mvstack.getCount());
           mvstack.setCount(0);
           inventory.setInventorySlotContents(i, stack);
           return mvstack;
         } else {
-          stack.setCount(stack.getMaxStackSize());
+          stack.grow(nmax);
           mvstack.shrink(nmax);
           inventory.setInventorySlotContents(i, stack);
+          limit_left -= nmax;
         }
       }
       if(only_fillup) return mvstack;
@@ -650,8 +936,11 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
           final ItemStack stack = inventory.getStackInSlot(i);
           if(!stack.isEmpty()) continue;
           if((!inventory.getStackInSlot(i+1).isItemEqual(mvstack)) && (!inventory.getStackInSlot(i-1).isItemEqual(mvstack))) continue;
-          inventory.setInventorySlotContents(i, mvstack.copy());
-          mvstack.setCount(0);
+          int nmax = Math.min(limit_left, mvstack.getCount());
+          ItemStack placed = mvstack.copy();
+          placed.setCount(nmax);
+          mvstack.shrink(nmax);
+          inventory.setInventorySlotContents(i, placed);
           return mvstack;
         }
       }
@@ -659,8 +948,11 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
       for(int i = slot_begin; i < slot_end; ++i) {
         final ItemStack stack = inventory.getStackInSlot(i);
         if(!stack.isEmpty()) continue;
-        inventory.setInventorySlotContents(i, mvstack.copy());
-        mvstack.setCount(0);
+        int nmax = Math.min(limit_left, mvstack.getCount());
+        ItemStack placed = mvstack.copy();
+        placed.setCount(nmax);
+        mvstack.shrink(nmax);
+        inventory.setInventorySlotContents(i, placed);
         return mvstack;
       }
       return mvstack;
@@ -670,8 +962,11 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
      * Moves as much items from the slots in range [first_slot, last_slot] of the inventory into a new stack.
      * Implicitly shrinks the inventory stacks and the `request_stack`.
      */
-    private ItemStack move_stack_from_inventory(IInventory inventory, final ItemStack request_stack, final int slot_begin, final int slot_end)
+    private ItemStack move_stack_from_inventory(SlotRange range, final ItemStack request_stack)
     {
+      final IInventory inventory = range.inventory;
+      final int slot_begin = range.start_slot;
+      final int slot_end = range.end_slot;
       ItemStack fetched_stack = request_stack.copy();
       fetched_stack.setCount(0);
       int n_left = request_stack.getCount();
@@ -686,8 +981,8 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
             // the user has to place this item manually.
             if(stack.hasTag()) {
               final CompoundNBT nbt = stack.getTag();
-              int n = stack.getTag().size();
-              if((n > 0) && (stack.getTag().contains("Damage"))) --n;
+              int n = nbt.size();
+              if((n > 0) && (nbt.contains("Damage"))) --n;
               if(n > 0) continue;
             }
             fetched_stack = stack.copy(); // copy exact stack with nbt and tool damage, otherwise we have an automagical repair of items.
@@ -719,7 +1014,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
       for(int grid_i = CRAFTING_SLOTS_BEGIN; grid_i < (CRAFTING_SLOTS_BEGIN+NUM_OF_CRAFTING_SLOTS); ++grid_i) {
         ItemStack stack = inventory_.getStackInSlot(grid_i);
         if(stack.isEmpty()) continue;
-        ItemStack remaining = move_stack_to_inventory(stack, inventory_, STORAGE_SLOTS_BEGIN, STORAGE_SLOTS_BEGIN+NUM_OF_STORAGE_SLOTS, false);
+        ItemStack remaining = move_stack_to_inventory(stack, new SlotRange(inventory_, STORAGE_SLOTS_BEGIN, STORAGE_SLOTS_BEGIN+NUM_OF_STORAGE_SLOTS), false, 0);
         inventory_.setInventorySlotContents(grid_i, remaining);
         changed = true;
       }
@@ -732,63 +1027,68 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
       for(int grid_i = CRAFTING_SLOTS_BEGIN; grid_i < (CRAFTING_SLOTS_BEGIN+NUM_OF_CRAFTING_SLOTS); ++grid_i) {
         ItemStack remaining = inventory_.getStackInSlot(grid_i);
         if(remaining.isEmpty()) continue;
-        remaining = move_stack_to_inventory(remaining, player.inventory,9, 36, true); // prefer filling up inventory stacks
-        remaining = move_stack_to_inventory(remaining, player.inventory,0, 9, true);  // then fill up the hotbar stacks
-        remaining = move_stack_to_inventory(remaining, player.inventory,9, 36, false); // then allow empty stacks in inventory
-        remaining = move_stack_to_inventory(remaining, player.inventory,0, 9, false);  // then new stacks in the hotbar
+        remaining = move_stack_to_inventory(remaining, new SlotRange(player.inventory,9, 36), true, 0); // prefer filling up inventory stacks
+        remaining = move_stack_to_inventory(remaining, new SlotRange(player.inventory,0, 9), true, 0);  // then fill up the hotbar stacks
+        remaining = move_stack_to_inventory(remaining, new SlotRange(player.inventory,9, 36), false, 0); // then allow empty stacks in inventory
+        remaining = move_stack_to_inventory(remaining, new SlotRange(player.inventory,0, 9), false, 0);  // then new stacks in the hotbar
         inventory_.setInventorySlotContents(grid_i, remaining);
         changed = true;
       }
       return changed;
     }
 
-    enum EnumRefabPlacement { UNCHANGED, INCOMPLETE, PLACED }
-    private EnumRefabPlacement place_refab_stacks(IInventory inventory, final int slot_begin, final int slot_end)
+    private PlacementResult place_stacks(final SlotRange[] ranges, final List<ItemStack> to_fill)
     {
-      List<ItemStack> to_fill = crafting_slot_stacks_to_add();
       if(history_.current_recipe() != null) result_.setRecipeUsed(history_.current_recipe());
       boolean slots_changed = false;
-      boolean missing_item = false;
-      int num_slots_placed = 0;
       if(!to_fill.isEmpty()) {
-        for(int it_guard=63; it_guard>=0; --it_guard) {
-          boolean slots_updated = false;
-          for(int i = 0; i < 9; ++i) {
-            final ItemStack req_stack = to_fill.get(i).copy();
-            if(req_stack.isEmpty()) continue;
-            req_stack.setCount(1);
-            to_fill.get(i).shrink(1);
-            final ItemStack mv_stack = move_stack_from_inventory(inventory, req_stack, slot_begin, slot_end);
-            if(mv_stack.isEmpty()) { missing_item=true; continue; }
-            // sizes already checked
-            ItemStack grid_stack = inventory_.getStackInSlot(i + CRAFTING_SLOTS_BEGIN).copy();
-            if(grid_stack.isEmpty()) {
-              grid_stack = mv_stack.copy();
-            } else {
-              grid_stack.grow(mv_stack.getCount());
+        for(SlotRange slot_range: ranges) {
+          for(int it_guard=63; it_guard>=0; --it_guard) {
+            boolean slots_updated = false;
+            for(int i = 0; i < 9; ++i) {
+              if(to_fill.get(i).isEmpty()) continue;
+              ItemStack grid_stack = inventory_.getStackInSlot(i + CRAFTING_SLOTS_BEGIN).copy();
+              if(grid_stack.getCount() >= grid_stack.getMaxStackSize()) continue;
+              final ItemStack req_stack = to_fill.get(i).copy();
+              req_stack.setCount(1);
+              final ItemStack mv_stack = move_stack_from_inventory(slot_range, req_stack);
+              if(mv_stack.isEmpty()) continue;
+              to_fill.get(i).shrink(1);
+              if(grid_stack.isEmpty()) {
+                grid_stack = mv_stack.copy();
+              } else {
+                grid_stack.grow(mv_stack.getCount());
+              }
+              inventory_.setInventorySlotContents(i + CRAFTING_SLOTS_BEGIN, grid_stack);
+              slots_changed = true;
+              slots_updated = true;
             }
-            inventory_.setInventorySlotContents(i + CRAFTING_SLOTS_BEGIN, grid_stack);
-            slots_changed = true;
-            slots_updated = true;
+            if(!slots_updated) break;
           }
-          if(!slots_updated) break;
+        }
+      }
+      boolean missing_item = false;
+      for(ItemStack st:to_fill) {
+        if(!st.isEmpty()) {
+          missing_item = true;
+          break;
         }
       }
       if(!slots_changed) {
-        return EnumRefabPlacement.UNCHANGED;
+        return PlacementResult.UNCHANGED;
       } else if(missing_item) {
-        return EnumRefabPlacement.INCOMPLETE;
+        return PlacementResult.INCOMPLETE;
       } else {
-        return EnumRefabPlacement.PLACED;
+        return PlacementResult.PLACED;
       }
     }
 
-    private EnumRefabPlacement distribute_stack(IInventory inventory, final int slotno)
+    private PlacementResult distribute_stack(IInventory inventory, final int slotno)
     {
-      List<ItemStack> to_refab = crafting_slot_stacks_to_add();
+      List<ItemStack> to_refab = refab_crafting_stacks();
       if(history_.current_recipe() != null) result_.setRecipeUsed(history_.current_recipe());
       ItemStack to_distribute = inventory.getStackInSlot(slotno).copy();
-      if(to_distribute.isEmpty()) return EnumRefabPlacement.UNCHANGED;
+      if(to_distribute.isEmpty()) return PlacementResult.UNCHANGED;
       int matching_grid_stack_sizes[] = {-1,-1,-1,-1,-1,-1,-1,-1,-1};
       int max_matching_stack_size = -1;
       int min_matching_stack_size = 65;
@@ -815,9 +1115,9 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
           }
         }
       }
-      if(min_matching_stack_size < 0) return EnumRefabPlacement.UNCHANGED;
+      if(min_matching_stack_size < 0) return PlacementResult.UNCHANGED;
       final int stack_limit_size = Math.min(to_distribute.getMaxStackSize(), inventory_.getInventoryStackLimit());
-      if(min_matching_stack_size >= stack_limit_size) return EnumRefabPlacement.UNCHANGED;
+      if(min_matching_stack_size >= stack_limit_size) return PlacementResult.UNCHANGED;
       int n_to_distribute = to_distribute.getCount();
       for(int it_guard=63; it_guard>=0; --it_guard) {
         if(n_to_distribute <= 0) break;
@@ -836,7 +1136,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
         }
         if(min_matching_stack_size >= stack_limit_size) break; // all full
       }
-      if(n_to_distribute == to_distribute.getCount()) return EnumRefabPlacement.UNCHANGED; // was already full
+      if(n_to_distribute == to_distribute.getCount()) return PlacementResult.UNCHANGED; // was already full
       if(n_to_distribute <= 0) {
         inventory.setInventorySlotContents(slotno, ItemStack.EMPTY);
       } else {
@@ -850,131 +1150,30 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
         grid_stack.setCount(matching_grid_stack_sizes[i]);
         inventory_.setInventorySlotContents(i + CRAFTING_SLOTS_BEGIN, grid_stack);
       }
-      return EnumRefabPlacement.PLACED;
+      return PlacementResult.PLACED;
     }
 
-    // Container client/server synchronisation --------------------------------------------------
-
-    @OnlyIn(Dist.CLIENT)
-    public void onGuiAction(String message, CompoundNBT nbt)
-    {
-      nbt.putString("action", message);
-      Networking.PacketContainerSyncClientToServer.sendToServer(windowId, nbt);
-    }
-
-    public void onServerPacketReceived(int windowId, CompoundNBT nbt)
-    {
-      if(nbt.contains("history"))  history_.read(nbt.getCompound("history"));
-      if(nbt.contains("hascollision")) has_recipe_collision_ = nbt.getBoolean("hascollision");
-    }
-
-    public void onClientPacketReceived(int windowId, PlayerEntity player, CompoundNBT nbt)
+    private boolean decrease_grid_stacks(SlotRange[] ranges, int limit)
     {
       boolean changed = false;
-      boolean player_inventory_changed = false;
-      if(with_assist && nbt.contains("action")) {
-        switch(nbt.getString("action")) {
-          case BGui.BUTTON_NEXT: {
-            history_.next();
-            syncHistory(player);
-            // implicitly clear the grid, so that the player can see the refab, and that no recipe is active.
-            if(clear_grid_to_player(player)) { changed = true; player_inventory_changed = true; }
-            if(clear_grid_to_storage(player)) changed = true;
-          } break;
-          case BGui.BUTTON_PREV: {
-            history_.prev();
-            syncHistory(player);
-            if(clear_grid_to_player(player)) { changed = true; player_inventory_changed = true; }
-            if(clear_grid_to_storage(player)) changed = true;
-          } break;
-          case BGui.BUTTON_CLEAR_GRID: {
-            history_.reset_selection();
-            syncHistory(player);
-            if(clear_grid_to_player(player)) { changed = true; player_inventory_changed = true; }
-            if(clear_grid_to_storage(player)) changed = true;
-          } break;
-          case BGui.BUTTON_TO_STORAGE: {
-            if(clear_grid_to_storage(player)) changed = true;
-          } break;
-          case BGui.BUTTON_TO_PLAYER: {
-            if(clear_grid_to_player(player)) { changed = true; player_inventory_changed = true; }
-          } break;
-          case BGui.BUTTON_FROM_STORAGE: {
-            EnumRefabPlacement from_storage = place_refab_stacks(inventory_, STORAGE_SLOTS_BEGIN, STORAGE_SLOTS_BEGIN+NUM_OF_STORAGE_SLOTS);
-            if(from_storage != EnumRefabPlacement.UNCHANGED) changed = true;
-          } break;
-          case BGui.BUTTON_FROM_PLAYER: {
-            EnumRefabPlacement from_player_inv = place_refab_stacks(player.inventory, 9, 36);
-            if(from_player_inv != EnumRefabPlacement.UNCHANGED) { changed = true; player_inventory_changed = true; }
-            if(from_player_inv != EnumRefabPlacement.PLACED) {
-              EnumRefabPlacement from_hotbar = place_refab_stacks(player.inventory, 0, 9);
-              if(from_hotbar != EnumRefabPlacement.UNCHANGED) { changed = true; player_inventory_changed = true; }
-            }
-          } break;
-          case BGui.ACTION_PLACE_CURRENT_HISTORY_SEL: {
-            EnumRefabPlacement from_storage = place_refab_stacks(inventory_, STORAGE_SLOTS_BEGIN, STORAGE_SLOTS_BEGIN+NUM_OF_STORAGE_SLOTS);
-            if(from_storage != EnumRefabPlacement.UNCHANGED) changed = true;
-            if(from_storage != EnumRefabPlacement.PLACED) {
-              EnumRefabPlacement from_player_inv = place_refab_stacks(player.inventory, 9, 36);
-              if(from_player_inv != EnumRefabPlacement.UNCHANGED) { changed = true; player_inventory_changed = true; }
-              if(from_player_inv != EnumRefabPlacement.PLACED) {
-                EnumRefabPlacement from_hotbar = place_refab_stacks(player.inventory, 0, 9);
-                if(from_hotbar != EnumRefabPlacement.UNCHANGED) { changed = true; player_inventory_changed = true; }
-              }
-            }
-          } break;
-          case BGui.ACTION_PLACE_SHIFTCLICKED_STACK: {
-            final int container_slot_id = nbt.getInt("containerslot");
-            if((container_slot_id < 10) || (container_slot_id > 53)) break; // out of range
-            if(container_slot_id >= 46) {
-              // from storage
-              final int storage_slot = container_slot_id - 46 + STORAGE_SLOTS_BEGIN;
-              EnumRefabPlacement stat = distribute_stack(inventory_, storage_slot);
-              if(stat != EnumRefabPlacement.UNCHANGED) changed = true;
-            } else {
-              // from player
-              int player_slot = (container_slot_id >= 37) ? (container_slot_id-37) : (container_slot_id-10+9);
-              EnumRefabPlacement stat = distribute_stack(player.inventory, player_slot);
-              if(stat != EnumRefabPlacement.UNCHANGED) { player_inventory_changed = true; changed = true; }
-            }
-          } break;
-          case BGui.BUTTON_NEXT_COLLISION_RECIPE: {
-            select_next_collision_recipe(inventory_);
-          } break;
+      for(int i=0; i<9; ++i) {
+        ItemStack stack = inventory_.getStackInSlot(i+CRAFTING_SLOTS_BEGIN).copy();
+        if(stack.isEmpty()) continue;
+        for(SlotRange range:ranges) {
+          ItemStack remaining = move_stack_to_inventory(stack, range, false, limit);
+          if(remaining.getCount() < stack.getCount()) changed = true;
+          boolean stop = (remaining.getCount() <= Math.max(0, (stack.getCount()-limit)));
+          stack = remaining;
+          if(stop) break;
         }
+        inventory_.setInventorySlotContents(i+CRAFTING_SLOTS_BEGIN, stack.isEmpty() ? ItemStack.EMPTY : stack);
       }
-      if(changed) inventory_.markDirty();
-      if(player_inventory_changed) player.inventory.markDirty();
-      if(changed || player_inventory_changed) {
-        this.onCraftMatrixChanged(inventory_);
-        this.detectAndSendChanges();
-      }
+      return changed;
     }
 
-    public CraftingHistory history()
-    { return history_; }
+    private boolean increase_grid_stacks(SlotRange[] ranges, int limit)
+    { return place_stacks(ranges, incr_crafting_grid_stacks(limit)) != PlacementResult.UNCHANGED; }
 
-    // todo: somehow hook into the container listeners for syncing all clients having that container open.
-    private void syncHistory(PlayerEntity player)
-    {
-      if((!with_assist) || (player.world.isRemote)) return;
-      CompoundNBT hist_nbt = history_.write();
-      if((inventory_ instanceof BTileEntity)) {
-        ((BTileEntity)inventory_).history = hist_nbt.copy();
-        inventory_.markDirty();
-      }
-      final CompoundNBT nbt = new CompoundNBT();
-      nbt.put("history", hist_nbt);
-      nbt.putBoolean("hascollision", has_recipe_collision_);
-      Networking.PacketContainerSyncServerToClient.sendToPlayer(player, windowId, nbt);
-    }
-
-    private void syncProperties(PlayerEntity player)
-    {
-      final CompoundNBT nbt = new CompoundNBT();
-      nbt.putBoolean("hascollision", has_recipe_collision_);
-      Networking.PacketContainerSyncServerToClient.sendToPlayer(player, windowId, nbt);
-    }
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -982,7 +1181,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
   //--------------------------------------------------------------------------------------------------------------------
 
   @OnlyIn(Dist.CLIENT)
-  public static class BGui extends ContainerScreen<BContainer>
+  public static class CraftingTableGui extends ContainerScreen<CraftingTableContainer>
   {
     protected static final String BUTTON_NEXT = "next";
     protected static final String BUTTON_PREV = "prev";
@@ -994,12 +1193,15 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
     protected static final String BUTTON_NEXT_COLLISION_RECIPE = "next-recipe";
     protected static final String ACTION_PLACE_CURRENT_HISTORY_SEL = "place-refab";
     protected static final String ACTION_PLACE_SHIFTCLICKED_STACK = "place-stack";
+    protected static final String ACTION_MOVE_ALL_STACKS = "move-stacks";
+    protected static final String ACTION_INCREASE_CRAFTING_STACKS = "inc-crafting-stacks";
+    protected static final String ACTION_DECREASE_CRAFTING_STACKS = "dec-crafting-stacks";
     protected static final ResourceLocation BACKGROUND = new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/treated_wood_crafting_table.png");
     protected final PlayerEntity player;
     protected final ArrayList<Button> buttons = new ArrayList<Button>();
     protected final boolean history_slot_tooltip[] = {false,false,false,false,false,false,false,false,false,false};
 
-    public BGui(BContainer container, PlayerInventory playerInventory, ITextComponent title)
+    public CraftingTableGui(CraftingTableContainer container, PlayerInventory playerInventory, ITextComponent title)
     {
       super(container, playerInventory, title);
       this.player = playerInventory.player;
@@ -1071,7 +1273,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
         if((crafting_template == null) || (crafting_template.isEmpty())) return;
         {
           int i = 0;
-          for(Tuple<Integer, Integer> e : ((BContainer)getContainer()).CRAFTING_SLOT_COORDINATES) {
+          for(Tuple<Integer, Integer> e : ((CraftingTableContainer)getContainer()).CRAFTING_SLOT_COORDINATES) {
             if(i==0) continue; // explicitly here, that is the result slot.
             if((getContainer().getSlot(i).getHasStack())) {
               if(!getContainer().getSlot(i).getStack().isItemEqual(crafting_template.get(i))) {
@@ -1083,7 +1285,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
         }
         {
           int i = 0;
-          for(Tuple<Integer, Integer> e : ((BContainer) getContainer()).CRAFTING_SLOT_COORDINATES) {
+          for(Tuple<Integer, Integer> e : ((CraftingTableContainer) getContainer()).CRAFTING_SLOT_COORDINATES) {
             final ItemStack stack = crafting_template.get(i);
             if(!stack.isEmpty()) {
               if(!getContainer().getSlot(i).getHasStack()) history_slot_tooltip[i] = true;
@@ -1138,27 +1340,72 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
         if(place_refab && (!with_assist_direct_history_refab)) on_history_item_placement(); // place after crafting -> confirmation first
         return;
       }
-      if((type == ClickType.QUICK_MOVE) && (slotId > 9) && (slot.getHasStack())) { // container slots 0..9 are crafting output and grid
+      if((type == ClickType.QUICK_MOVE) && (slotId > 0) && (slot.getHasStack())) { // container slots 0 is crafting output
         if(with_assist) {
           List<ItemStack> history = getContainer().history().current();
-          boolean palce_in_crafting_grid = (!history.isEmpty());
-          if(!palce_in_crafting_grid) {
-            for(int i = 0; i < 9; ++i) {
-              if(!(getContainer().getSlot(i).getStack().isEmpty())) {
-                palce_in_crafting_grid = true;
-                break;
+          boolean palce_in_crafting_grid = false;
+          if(slotId > 9) { // container slots 1..9 are crafting grid
+            palce_in_crafting_grid = (!history.isEmpty());
+            if(!palce_in_crafting_grid) {
+              for(int i = 0; i < 9; ++i) {
+                if(!(getContainer().getSlot(i).getStack().isEmpty())) {
+                  palce_in_crafting_grid = true;
+                  break;
+                }
               }
             }
           }
           if(palce_in_crafting_grid) {
+            // Explicit grid placement.
             CompoundNBT nbt = new CompoundNBT();
             nbt.putInt("containerslot", slotId);
+            if(ModAuxiliaries.isCtrlDown()) nbt.putBoolean("move-all", true);
             action(ACTION_PLACE_SHIFTCLICKED_STACK, nbt);
             return;
+          } else if(ModAuxiliaries.isCtrlDown()) {
+            // Move all same items from the inventory of the clicked slot
+            // (or the crafting grid) to the corresponding target inventory.
+            CompoundNBT nbt = new CompoundNBT();
+            nbt.putInt("containerslot", slotId);
+            action(ACTION_MOVE_ALL_STACKS, nbt);
+            return;
+          } else {
+            // Let the normal slot click handle that.
           }
         }
       }
       super.handleMouseClick(slot, slotId, mouseButton, type);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double wheel_inc)
+    {
+      final Slot resultSlot = this.getSlotUnderMouse();
+      if((!with_crafting_slot_mouse_scrolling) || (!(resultSlot instanceof CraftingResultSlot))) {
+        return this.getEventListenerForPos(mouseX, mouseY).filter((evl) -> {
+          return evl.mouseScrolled(mouseX, mouseY, wheel_inc);
+        }).isPresent();
+      }
+      int count = resultSlot.getStack().getCount();
+      int limit = (ModAuxiliaries.isShiftDown() ? 2 : 1) * (ModAuxiliaries.isCtrlDown() ? 4 : 1);
+      if(wheel_inc > 0.1) {
+        if(count > 0) {
+          if((count < resultSlot.getStack().getMaxStackSize()) && (count < resultSlot.getSlotStackLimit())) {
+            CompoundNBT nbt = new CompoundNBT();
+            if(limit > 1) nbt.putInt("limit", limit);
+            action(ACTION_INCREASE_CRAFTING_STACKS, nbt);
+          }
+        } else if(!getContainer().history().current().isEmpty()) {
+          action(ACTION_PLACE_CURRENT_HISTORY_SEL);
+        }
+      } else if(wheel_inc < -0.1) {
+        if(count > 0) {
+          CompoundNBT nbt = new CompoundNBT();
+          if(limit > 1) nbt.putInt("limit", limit);
+          action(ACTION_DECREASE_CRAFTING_STACKS, nbt);
+        }
+      }
+      return true;
     }
 
     private void on_history_item_placement()
@@ -1171,9 +1418,12 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
   }
 
   //--------------------------------------------------------------------------------------------------------------------
-  // Crafting history
+  // Nested auxilliary classes
   //--------------------------------------------------------------------------------------------------------------------
 
+  public enum PlacementResult { UNCHANGED, INCOMPLETE, PLACED }
+
+  // Crafting history --------------------------------------------------------------------------------------------------
   private static class CraftingHistory
   {
     public static final int RESULT_STACK_INDEX = 0;
@@ -1182,9 +1432,10 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
     private static int max_history_size_ = 5;
     private final World world;
     private List<String> history_ = new ArrayList<String>();
+    private String stash_ = new String();
     private int current_ = -1;
     private List<ItemStack> current_stacks_ = new ArrayList<ItemStack>();
-    private IRecipe current_recipe_ = null;
+    private ICraftingRecipe current_recipe_ = null;
 
     public CraftingHistory(World world)
     { this.world = world; }
@@ -1205,6 +1456,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
           for(String e:ls) history_.add(e.toLowerCase().trim());
         }
         current_ = (!nbt.contains("current")) ? (-1) : MathHelper.clamp(nbt.getInt("current"), -1, history_.size()-1);
+        stash_ = nbt.getString("stash");
         update_current();
       } catch(Throwable ex) {
         ModEngineersDecor.logger().error("Exception reading crafting table history NBT, resetting, exception is:" + ex.getMessage());
@@ -1217,6 +1469,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
       final CompoundNBT nbt = new CompoundNBT();
       nbt.putInt("current", current_);
       nbt.putString("elements", String.join("|", history_));
+      if(!stash_.isEmpty()) nbt.putString("stash", stash_);
       return nbt;
     }
 
@@ -1224,23 +1477,58 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
     { reset_current(); history_.clear(); }
 
     public void reset_current()
-    { current_ = -1; current_stacks_ = NOTHING; current_recipe_ = null; }
+    { current_ = -1; stash_ = ""; current_stacks_ = NOTHING; current_recipe_ = null; }
 
     void update_current()
     {
-      if((current_ < 0) || (current_ >= history_.size())) { reset_current(); return; }
-      Tuple<IRecipe, List<ItemStack>> data = str2stacks(history_.get(current_));
-      if(data == null) { reset_current(); return; }
-      current_recipe_ = data.getA();
-      current_stacks_ = data.getB();
+      if(!stash_.isEmpty()) {
+        Tuple<ICraftingRecipe, List<ItemStack>> data = str2stacks(stash_);
+        if(data != null) {
+          current_recipe_ = data.getA();
+          current_stacks_ = data.getB();
+        }
+      } else if((current_ < 0) || (current_ >= history_.size())) {
+        reset_current();
+      } else {
+        Tuple<ICraftingRecipe, List<ItemStack>> data = str2stacks(history_.get(current_));
+        if(data == null) { reset_current(); return; }
+        current_recipe_ = data.getA();
+        current_stacks_ = data.getB();
+      }
     }
 
-    public void add(final List<ItemStack> grid_stacks, IRecipe recipe)
+    public void stash(final List<ItemStack> grid_stacks, ICraftingRecipe recipe)
+    {
+      if(grid_stacks.size() == 9) {
+        ArrayList<ItemStack> result_and_stacks = new ArrayList<>();
+        result_and_stacks.add(recipe.getRecipeOutput());
+        result_and_stacks.addAll(grid_stacks);
+        stash_ = stacks2str(result_and_stacks, recipe);
+        current_stacks_ = result_and_stacks;
+      } else {
+        stash_ = stacks2str(grid_stacks, recipe);
+        current_stacks_ = grid_stacks;
+      }
+      current_ = -1;
+      current_recipe_ = recipe;
+    }
+
+    public int find(ItemStack result)
+    {
+      for(int i=0; i<history_.size(); ++i) {
+        Tuple<ICraftingRecipe, List<ItemStack>> data = str2stacks(history_.get(i));
+        if((data!=null) && (data.getA().getRecipeOutput().isItemEqual(result))) return i;
+      }
+      return -1;
+    }
+
+    public void add(final List<ItemStack> grid_stacks, ICraftingRecipe recipe)
     {
       if(!with_assist) { clear(); return; }
+      stash_ = "";
       String s = stacks2str(grid_stacks, recipe);
-      String recipe_filter = recipe.getId().toString() + ";";
       if(s.isEmpty()) return;
+      String recipe_filter = recipe.getId().toString() + ";";
       history_.removeIf(e->e.equals(s));
       history_.removeIf(e->e.startsWith(recipe_filter));
       history_.add(s);
@@ -1248,17 +1536,26 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
       if(current_ >= history_.size()) reset_current();
     }
 
-    public String stacks2str(final List<ItemStack> grid_stacks, IRecipe recipe)
+    public String stacks2str(final List<ItemStack> grid_stacks, ICraftingRecipe recipe)
     {
-      if((grid_stacks==null) || (grid_stacks.size() != 10) || (recipe==null)) return "";
-      if(grid_stacks.get(0).isEmpty()) return "";
+      if((grid_stacks==null) || (recipe==null)) return "";
+      final int num_stacks = grid_stacks.size();
+      if((num_stacks < 9) || (num_stacks > 10)) return "";
       final ArrayList<String> items = new ArrayList<String>();
-      items.add(recipe.getId().toString().trim());
-      for(ItemStack st:grid_stacks) items.add( (st.isEmpty()) ? ("") : ((st.getItem().getRegistryName().toString().trim())));
+      items.add(recipe.getId().toString());
+      if(num_stacks < 10) items.add(recipe.getRecipeOutput().getItem().getRegistryName().toString());
+      for(ItemStack st:grid_stacks) {
+        if(st.isEmpty()) {
+          items.add("");
+        } else {
+          ResourceLocation rl = st.getItem().getRegistryName();
+          items.add( rl.getNamespace().equals("minecraft") ? rl.getPath() : rl.toString());
+        }
+      }
       return String.join(";", items);
     }
 
-    public @Nullable Tuple<IRecipe, List<ItemStack>> str2stacks(final String entry)
+    public @Nullable Tuple<ICraftingRecipe, List<ItemStack>> str2stacks(final String entry)
     {
       if((world==null) || (entry == null) || (entry.isEmpty())) return null;
       try {
@@ -1277,8 +1574,8 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
         }
         if((stacks.size() != 10) || (stacks.get(0).isEmpty())) return null; // invalid size or no result
         IRecipe recipe = world.getRecipeManager().getRecipe(new ResourceLocation(recipe_name)).orElse(null);
-        if(recipe==null) return null;
-        return new Tuple<IRecipe, List<ItemStack>>(recipe, stacks);
+        if(!(recipe instanceof ICraftingRecipe)) return null;
+        return new Tuple<ICraftingRecipe, List<ItemStack>>((ICraftingRecipe)recipe, stacks);
       } catch(Throwable ex) {
         ModEngineersDecor.logger().error("History stack building failed: " + ex.getMessage());
         return null;
@@ -1288,11 +1585,12 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
     public List<ItemStack> current()
     { return current_stacks_; }
 
-    public IRecipe current_recipe()
+    public ICraftingRecipe current_recipe()
     { return current_recipe_; }
 
     public void next()
     {
+      stash_ = "";
       if(history_.isEmpty()) {
         current_ = -1;
       } else {
@@ -1303,6 +1601,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
 
     public void prev()
     {
+      stash_ = "";
       if(history_.isEmpty()) {
         current_ = -1;
       } else {
@@ -1312,16 +1611,107 @@ public class BlockDecorCraftingTable extends BlockDecorDirected.WaterLoggable
     }
 
     public void reset_selection()
-    { current_ = -1; update_current(); }
+    { current_ = -1; stash_ = ""; update_current(); }
+
+    public void selection(int index)
+    { current_ = ((index < 0) || (index >= history_.size())) ? (-1) : (index); update_current(); }
+
+    public int selection()
+    { return current_; }
+
+    public int size()
+    { return history_.size(); }
 
     public String toString()
     {
       String rec = (current_recipe_==null) ? "none" : (current_recipe_.getId().toString());
       StringBuilder s = new StringBuilder("{ current:" + current_ + ", recipe:'" + rec + "', elements:[ ");
-      for(int i=0; i<history_.size(); ++i) s.append("{i:").append(i).append(", e:[").append(history_.get(i)).append("]} ");
-      s.append("]}");
+      for(int i=0; i<history_.size(); ++i) s.append("{i:").append(i).append(", e:[").append(history_.get(i))
+        .append("], stash: '").append(stash_).append("'}");
       return s.toString();
     }
+  }
+
+  // Crafting slot of container ----------------------------------------------------------------------------------------
+  public static class CraftingOutputSlot extends CraftingResultSlot
+  {
+    private final CraftingTableContainer container;
+    private final PlayerEntity player;
+
+    public CraftingOutputSlot(CraftingTableContainer container, PlayerEntity player, CraftingInventory craftingInventory, IInventory inventoryIn, int slotIndex, int xPosition, int yPosition)
+    { super(player, craftingInventory, inventoryIn, slotIndex, xPosition, yPosition); this.container = container; this.player=player; }
+
+    @Override
+    protected void onCrafting(ItemStack stack)
+    {
+      if((with_assist) && ((player.world!=null) && (!(player.world.isRemote))) && (!stack.isEmpty())) {
+        final IRecipe recipe = ((CraftResultInventory)this.inventory).getRecipeUsed();
+        final ArrayList<ItemStack> grid = new ArrayList<ItemStack>();
+        grid.add(stack);
+        for(int i = 0; i < 9; ++i) grid.add(container.inventory_.getStackInSlot(i));
+        if(recipe instanceof ICraftingRecipe) {
+          container.history().add(grid, (ICraftingRecipe)recipe);
+          container.history().reset_current();
+          container.syncHistory();
+        }
+      }
+      super.onCrafting(stack);
+    }
+  }
+
+  // Crafting inventory (needed to allow SlotCrafting to have a InventoryCrafting) -------------------------------------
+  public static class CraftingTableGrid extends CraftingInventory
+  {
+    protected final Container container;
+    protected final IInventory inventory;
+
+    public CraftingTableGrid(Container container_, IInventory block_inventory) {
+      super(container_, 3, 3);
+      container = container_;
+      inventory = block_inventory;
+    }
+
+    @Override
+    public int getSizeInventory()
+    { return 9; }
+
+    @Override
+    public void openInventory(PlayerEntity player)
+    { inventory.openInventory(player); }
+
+    @Override
+    public void closeInventory(PlayerEntity player)
+    { inventory.closeInventory(player); }
+
+    @Override
+    public void markDirty()
+    { inventory.markDirty(); }
+
+    @Override
+    public void setInventorySlotContents(int index, ItemStack stack)
+    {
+      inventory.setInventorySlotContents(index, stack);
+      container.onCraftMatrixChanged(this);
+    }
+
+    @Override
+    public ItemStack getStackInSlot(int index)
+    { return inventory.getStackInSlot(index); }
+
+    @Override
+    public ItemStack decrStackSize(int index, int count)
+    {
+      final ItemStack stack = inventory.decrStackSize(index, count);
+      if(!stack.isEmpty()) container.onCraftMatrixChanged(this);
+      return stack;
+    }
+  }
+
+  private static class SlotRange
+  {
+    public final IInventory inventory;
+    public int start_slot, end_slot;
+    public SlotRange(IInventory inv, int start, int end) { inventory=inv; start_slot=start; end_slot=end; }
   }
 
 }

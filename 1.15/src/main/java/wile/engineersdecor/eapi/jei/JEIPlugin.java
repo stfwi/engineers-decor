@@ -56,10 +56,12 @@ public class JEIPlugin implements mezz.jei.api.IModPlugin
         blacklisted.add(new ItemStack(e.asItem()));
       }
     }
-    try {
-      jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM, blacklisted);
-    } catch(Exception e) {
-      ModEngineersDecor.logger().warn("Exception in JEI opt-out processing: '" + e.getMessage() + "', skipping further JEI optout processing.");
+    if(!blacklisted.isEmpty()) {
+      try {
+        jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM, blacklisted);
+      } catch(Exception e) {
+        ModEngineersDecor.logger().warn("Exception in JEI opt-out processing: '" + e.getMessage() + "', skipping further JEI optout processing.");
+      }
     }
   }
 }

@@ -82,7 +82,7 @@ public class ModLootTables extends LootTableProvider
   private LootTable.Builder defaultBlockDrops(String rl_path, Block block)
   {
     ItemLootEntry.Builder iltb = ItemLootEntry.builder(block);
-    iltb.acceptFunction(CopyName.func_215893_a(Source.BLOCK_ENTITY));
+    iltb.acceptFunction(CopyName.builder(Source.BLOCK_ENTITY));
     if(block.hasTileEntity(block.getDefaultState())) {
       iltb.acceptFunction(CopyNbt.func_215881_a(CopyNbt.Source.BLOCK_ENTITY));
     }

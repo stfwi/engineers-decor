@@ -11,7 +11,7 @@ package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.detail.ModAuxiliaries;
 import net.minecraft.block.*;
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.world.IWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.IntegerProperty;
@@ -20,9 +20,12 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.world.World;
 import net.minecraft.entity.EntityType;
 import net.minecraft.state.StateContainer;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.block.BlockState;
@@ -40,7 +43,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class BlockDecorHalfSlab extends BlockDecor implements IWaterLoggable
+public class BlockDecorHalfSlab extends BlockDecor.WaterLoggable
 {
   public static final IntegerProperty PARTS = IntegerProperty.create("parts", 0, 14);
 
@@ -102,7 +105,7 @@ public class BlockDecorHalfSlab extends BlockDecor implements IWaterLoggable
 
   @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-  { super.fillStateContainer(builder); builder.add(PARTS, WATERLOGGED); }
+  { super.fillStateContainer(builder); builder.add(PARTS); }
 
   @Override
   @Nullable
@@ -192,4 +195,13 @@ public class BlockDecorHalfSlab extends BlockDecor implements IWaterLoggable
     SoundType st = this.getSoundType(state, world, pos, null);
     world.playSound(player, pos, st.getPlaceSound(), SoundCategory.BLOCKS, (st.getVolume()+1f)/2.5f, 0.9f*st.getPitch());
   }
+
+  @Override
+  public boolean receiveFluid(IWorld world, BlockPos pos, BlockState state, IFluidState fluidState)
+  { return (state.get(PARTS)==14) ? false : super.receiveFluid(world, pos, state, fluidState); }
+
+  @Override
+  public boolean canContainFluid(IBlockReader world, BlockPos pos, BlockState state, Fluid fluid)
+  { return (state.get(PARTS)==14) ? false : super.canContainFluid(world, pos, state, fluid); }
+
 }

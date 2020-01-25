@@ -8,12 +8,12 @@
  */
 package wile.engineersdecor.eapi.jei;
 
-import mezz.jei.api.constants.VanillaRecipeCategoryUid;
-import mezz.jei.api.registration.IRecipeTransferRegistration;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.blocks.BlockDecorCraftingTable;
 import wile.engineersdecor.detail.ModConfig;
 import wile.engineersdecor.ModContent;
+import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.block.Block;
@@ -35,7 +35,7 @@ public class JEIPlugin implements mezz.jei.api.IModPlugin
     if(!ModConfig.without_crafting_table) {
       try {
         registration.addRecipeTransferHandler(
-          BlockDecorCraftingTable.BContainer.class,
+          BlockDecorCraftingTable.CraftingTableContainer.class,
           VanillaRecipeCategoryUid.CRAFTING,
           1, 9, 10, 44
         );
@@ -54,10 +54,12 @@ public class JEIPlugin implements mezz.jei.api.IModPlugin
         blacklisted.add(new ItemStack(e.asItem()));
       }
     }
-    try {
-      jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM, blacklisted);
-    } catch(Exception e) {
-      ModEngineersDecor.logger().warn("Exception in JEI opt-out processing: '" + e.getMessage() + "', skipping further JEI optout processing.");
+    if(!blacklisted.isEmpty()) {
+      try {
+        jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM, blacklisted);
+      } catch(Exception e) {
+        ModEngineersDecor.logger().warn("Exception in JEI opt-out processing: '" + e.getMessage() + "', skipping further JEI optout processing.");
+      }
     }
   }
 }

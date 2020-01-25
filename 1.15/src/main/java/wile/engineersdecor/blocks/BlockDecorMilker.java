@@ -50,6 +50,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 
 public class BlockDecorMilker extends BlockDecorDirectedHorizontal
@@ -143,12 +144,14 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
     public static final int MAX_ENERGY_BUFFER = 16000;
     public static final int MAX_ENERGY_TRANSFER = 512;
     public static final int DEFAULT_ENERGY_CONSUMPTION = 0;
+    public static final int DEFAULT_MILKING_DELAY_PER_COW = 4000;
     private static final Direction FLUID_TRANSFER_DIRECTRIONS[] = {Direction.DOWN,Direction.EAST,Direction.SOUTH,Direction.WEST,Direction.NORTH};
     private enum MilkingState { IDLE, PICKED, COMING, POSITIONING, MILKING, LEAVING, WAITING }
 
     private static FluidStack milk_fluid_ = new FluidStack(Fluids.WATER, 0);
     private static HashMap<ItemStack, ItemStack> milk_containers_ = new HashMap<>();
     private static int energy_consumption = DEFAULT_ENERGY_CONSUMPTION;
+    private static long min_milking_delay_per_cow_ticks = DEFAULT_MILKING_DELAY_PER_COW;
     private int tick_timer_;
     private int energy_stored_;
     private int tank_level_ = 0;
@@ -158,9 +161,10 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
     private int state_timer_ = 0;
     private BlockPos tracked_cow_original_position_ = null;
 
-    public static void on_config(int energy_consumption_per_tick)
+    public static void on_config(int energy_consumption_per_tick, int min_milking_delay_per_cow)
     {
       energy_consumption = MathHelper.clamp(energy_consumption_per_tick, 0, 128);
+      min_milking_delay_per_cow_ticks = MathHelper.clamp(min_milking_delay_per_cow, 1000, 24000);
       {
         Fluid milk = null; // FluidRe.getFluid("milk");
         if(milk != null) milk_fluid_ = new FluidStack(milk, BUCKET_SIZE);
@@ -299,8 +303,10 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
 
     // ITickable ------------------------------------------------------------------------------------
 
+    private static final HashMap<Integer, Long> tracked_cows_ = new HashMap<Integer, Long>();
+
     private void log(String s)
-    {} // println("Milker|" + s); may be enabled with config, for dev was println
+    { System.out.println("Milker|" + s); } // println("Milker|" + s); may be enabled with config, for dev was println
 
     private static ItemStack milk_filled_container_item(ItemStack stack)
     { return milk_containers_.entrySet().stream().filter(e->e.getKey().isItemEqual(stack)).map(Map.Entry::getValue).findFirst().orElse(ItemStack.EMPTY); }
@@ -331,6 +337,10 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
       if(cow != null) {
         cow.setNoAI(false);
         SingleMoveGoal.abortFor(cow);
+        tracked_cows_.remove(cow.getEntityId());
+        for(int id:tracked_cows_.keySet().stream().filter(i->cow.getEntityWorld().getEntityByID(i)==null).collect(Collectors.toList())) {
+          tracked_cows_.remove(id);
+        }
       }
       tracked_cow_ = null;
       state_ = MilkingState.IDLE;
@@ -345,8 +355,15 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
       CowEntity cow = null;
       {
         AxisAlignedBB aabb = new AxisAlignedBB(pos.offset(facing, 3)).grow(4, 2, 4);
+        final long t = world.getGameTime();
         final List<CowEntity> cows = world.getEntitiesWithinAABB(CowEntity.class, aabb,
-          e->( ((tracked_cow_==null) && ((!e.isChild()) && (!e.isInLove()) && (!e.isBeingRidden()))) || (e.getUniqueID().equals(tracked_cow_)) )
+          e-> {
+            if(e.getUniqueID().equals(tracked_cow_)) return true;
+            if((tracked_cow_!=null) || e.isChild() || e.isInLove() || e.isBeingRidden()) return false;
+            if(!e.getNavigator().noPath()) return false;
+            if(Math.abs(tracked_cows_.getOrDefault(e.getEntityId(), 0L)-t) < min_milking_delay_per_cow_ticks) return false;
+            return true;
+          }
         );
         if(cows.size() == 1) {
           cow = cows.get(0); // tracked or only one
@@ -372,11 +389,12 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
               BlockPos p = getPos().offset(facing,2);
               log("Idle: Shove off");
               blocker.setNoAI(false);
-              SingleMoveGoal.startFor(blocker, p, 2, 1.0, (goal, world, pos)->(pos.distanceSq(goal.getCreature().getPosition())>49));
+              SingleMoveGoal.startFor(blocker, p, 2, 1.0, (goal, world, pos)->(pos.distanceSq(goal.getCreature().getPosition())>100));
             }
             return false;
           }
           if(cow.getLeashed() || cow.isChild() || cow.isInLove() || (!cow.onGround) || cow.isBeingRidden() || cow.isSprinting()) return false;
+          tracked_cows_.put(cow.getEntityId(), cow.getEntityWorld().getGameTime());
           tracked_cow_ = cow.getUniqueID();
           state_ = MilkingState.PICKED;
           state_timeout_ = 200;
@@ -387,13 +405,7 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
         case PICKED: {
           SingleMoveGoal.startFor(
             cow, target_pos, 2, 1.0,
-            (goal, world, pos)->{
-              if(pos.distanceSq(goal.getCreature().getPosition())>100) return true;
-              for(int i=0; i<4; ++i) {
-                if(world.getBlockState(pos.offset(Direction.byHorizontalIndex(i))).getBlock() instanceof BlockDecorMilker) return false;
-              }
-              return true;
-            },
+            (goal, world, pos)->(pos.distanceSq(goal.getCreature().getPosition())>100),
             (goal, world, pos)->{
               log("move: position reached");
               goal.getCreature().setLocationAndAngles(goal.getTargetPosition().getX(), goal.getTargetPosition().getY(), goal.getTargetPosition().getZ(), facing.getHorizontalAngle(), 0);
@@ -422,6 +434,7 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
         }
         case POSITIONING: {
           log("Positioning: start milking");
+          SingleMoveGoal.abortFor(cow);
           cow.setNoAI(true);
           cow.setLocationAndAngles(target_pos.getX(), target_pos.getY(), target_pos.getZ(), facing.getHorizontalAngle(), 0);
           world.playSound(null, pos, SoundEvents.ENTITY_COW_MILK, SoundCategory.BLOCKS, 0.5f, 1f);
@@ -447,13 +460,18 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
           state_timer_ = 500;
           tick_timer_ = TICK_INTERVAL;
           state_ = MilkingState.WAITING;
+          tracked_cows_.put(cow.getEntityId(), cow.getEntityWorld().getGameTime());
           log("Leaving: process done");
           return true;
         }
         case WAITING: {
           // wait for the timeout to kick in until starting with the next.
           tick_timer_ = TICK_INTERVAL;
-          log("Waiting: ...");
+          if(state_timer_ < 40) {
+            tracked_cow_ = null;
+            release_cow(null);
+          }
+          log("Waiting time elapsed");
           return true;
         }
         default: {
@@ -510,8 +528,9 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
   {
     @FunctionalInterface public interface TargetPositionInValidCheck { boolean test(SingleMoveGoal goal, IWorldReader world, BlockPos pos); }
     @FunctionalInterface public interface StrollEvent { void apply(SingleMoveGoal goal, IWorldReader world, Vec3d pos); }
-    private static void log(String s) {} // println(s);
+    private static void log(String s) {} // println("SingleMoveGoal: "+s);
 
+    private static final HashMap<Integer, SingleMoveGoal> tracked_entities_ = new HashMap<Integer, SingleMoveGoal>();
     private static final int motion_timeout = 20*20;
     private boolean aborted_;
     private boolean in_position_;
@@ -538,14 +557,40 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
     public static void startFor(CreatureEntity entity, BlockPos target_pos, int priority, double speed, TargetPositionInValidCheck abort_condition)
     { startFor(entity, new Vec3d(target_pos.getX(),target_pos.getY(),target_pos.getZ()), priority, speed, abort_condition, null, null); }
 
-    public static void startFor(CreatureEntity entity, Vec3d target_pos, int priority, double speed, TargetPositionInValidCheck abort_condition, @Nullable StrollEvent on_position_reached, @Nullable StrollEvent on_aborted)
-    { entity.goalSelector.addGoal(priority, new SingleMoveGoal(entity, target_pos, speed, abort_condition, on_position_reached, on_aborted)); }
+    public static boolean startFor(CreatureEntity entity, Vec3d target_pos, int priority, double speed, TargetPositionInValidCheck abort_condition, @Nullable StrollEvent on_position_reached, @Nullable StrollEvent on_aborted)
+    {
+      synchronized(tracked_entities_) {
+        SingleMoveGoal goal = tracked_entities_.getOrDefault(entity.getEntityId(), null);
+        if(goal != null) {
+          if(!goal.aborted()) return false; // that is still running.
+          entity.goalSelector.removeGoal(goal);
+        }
+        log("::start("+entity.getEntityId()+")");
+        goal = new SingleMoveGoal(entity, target_pos, speed, abort_condition, on_position_reached, on_aborted);
+        tracked_entities_.put(entity.getEntityId(), goal);
+        entity.goalSelector.addGoal(priority, goal);
+        return true;
+      }
+    }
 
     public static boolean isActiveFor(CreatureEntity entity)
-    { return (entity != null) && (entity.goalSelector.getRunningGoals().anyMatch(g->(g.getGoal()) instanceof SingleMoveGoal)); }
+    { return (entity != null) && (entity.goalSelector.getRunningGoals().anyMatch(
+      g->((g.getGoal()) instanceof SingleMoveGoal) && (!((SingleMoveGoal)(g.getGoal())).aborted())
+    )); }
 
     public static void abortFor(CreatureEntity entity)
-    { entity.goalSelector.getRunningGoals().filter(g->(g.getGoal()) instanceof SingleMoveGoal).forEach(g->((SingleMoveGoal)g.getGoal()).abort()); }
+    {
+      log("::abort("+entity.getEntityId()+")");
+      if(entity.isAlive()) {
+        entity.goalSelector.getRunningGoals().filter(g->(g.getGoal()) instanceof SingleMoveGoal).forEach(g->((SingleMoveGoal)g.getGoal()).abort());
+      }
+      final World world = entity.getEntityWorld();
+      if(world != null) {
+        // @todo: check nicer way to filter a map.
+        List<Integer> to_remove = tracked_entities_.keySet().stream().filter(i->(world.getEntityByID(i) == null)).collect(Collectors.toList());
+        for(int id:to_remove)tracked_entities_.remove(id);
+      }
+    }
 
     public Vec3d getTargetPosition()
     { return target_pos_; }
@@ -553,8 +598,25 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
     public CreatureEntity getCreature()
     { return creature; }
 
-    public void abort()
+    public synchronized void abort()
     { aborted_ = true; }
+
+    public synchronized boolean aborted()
+    { return aborted_; }
+
+    public synchronized void initialize(Vec3d target_pos, double speed, TargetPositionInValidCheck abort_condition, @Nullable StrollEvent on_position_reached, @Nullable StrollEvent on_aborted)
+    {
+      abort_condition_ = abort_condition;
+      on_target_position_reached_ = on_position_reached;
+      on_aborted_ = on_aborted;
+      destinationBlock = new BlockPos(target_pos.getX(), target_pos.getY(), target_pos.getZ());
+      timeoutCounter = 0;
+      runDelay = 0;
+      aborted_ = false;
+      was_aborted_ = false;
+      target_pos_ = new Vec3d(target_pos.getX(), target_pos.getY(), target_pos.getZ());
+      // this.movementSpeed = speed; -> that is final, need to override tick and func_whatever
+    }
 
     @Override
     public void resetTask()
@@ -562,24 +624,21 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
 
     @Override
     public double getTargetDistanceSq()
-    { return 1.2; }
+    { return 0.7; }
 
     @Override
     public boolean shouldMove()
-    { return (timeoutCounter & 0x7) == 0; }
+    { return (!aborted()) && (timeoutCounter & 0x7) == 0; }
 
     @Override
     public boolean shouldExecute()
     {
-      if(!shouldMoveTo(creature.world, destinationBlock)) {
-        aborted_ = true;
-        return false;
-      } else if(aborted_) {
-        // shouldExecute is the point where in GoalSelector.tick() the goal is not in flagGoals and can be removed.
-        creature.goalSelector.getRunningGoals().filter(g->(g.getGoal()) instanceof SingleMoveGoal).forEach(g->creature.goalSelector.removeGoal(g));
-        creature.goalSelector.removeGoal(this);
+      if(aborted_) {
         if((!was_aborted_) && (on_aborted_!=null)) on_aborted_.apply(this, creature.world, target_pos_);
         was_aborted_ = true;
+        return false;
+      } else if(!shouldMoveTo(creature.world, destinationBlock)) {
+        synchronized(this) { aborted_ = true; }
         return false;
       } else if(--runDelay > 0) {
         return false;
@@ -592,32 +651,69 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
     @Override
     public void startExecuting()
     {
-      log("startExecuting()");
       timeoutCounter = 0;
-      if(!creature.getNavigator().tryMoveToXYZ(target_pos_.getX(), target_pos_.getY(), target_pos_.getZ(), this.movementSpeed)) abort();
+      if(!creature.getNavigator().tryMoveToXYZ(target_pos_.getX(), target_pos_.getY(), target_pos_.getZ(), this.movementSpeed)) {
+        abort();
+        log("startExecuting() -> abort, no path");
+      } else {
+        log("startExecuting() -> started");
+      }
     }
 
     public boolean shouldContinueExecuting()
     {
-      if((aborted_) || (creature.getNavigator().noPath()) || (timeoutCounter > motion_timeout) || (!shouldMoveTo(creature.world, destinationBlock))) {
+      if(aborted()) {
+        log("shouldContinueExecuting() -> already aborted");
+        return false;
+      } else if(creature.getNavigator().noPath()) {
+        if((!creature.getNavigator().setPath(creature.getNavigator().func_225466_a(target_pos_.getX(), target_pos_.getY(), target_pos_.getZ(), 0), movementSpeed))) {
+          log("shouldContinueExecuting() -> abort, no path");
+          abort();
+          return false;
+        } else {
+          return true;
+        }
+      } else if(timeoutCounter > motion_timeout) {
+        log("shouldContinueExecuting() -> abort, timeout");
         abort();
         return false;
+      } else if(!shouldMoveTo(creature.world, destinationBlock)) {
+        log("shouldContinueExecuting() -> abort, !shouldMoveTo()");
+        abort();
+        return false;
+      } else {
+        log("shouldContinueExecuting() -> yes");
+        return true;
       }
-      return true;
     }
 
     @Override
     protected boolean shouldMoveTo(IWorldReader world, BlockPos pos)
-    { if(!abort_condition_.test(this, world, pos)) { return true; } abort(); return false; }
+    {
+      if(abort_condition_.test(this, world, pos)) {
+        log("shouldMoveTo() -> abort_condition");
+        return false;
+      } else {
+        return true;
+      }
+    }
 
     @Override
     public void tick()
     {
       BlockPos testpos = new BlockPos(target_pos_.getX(), creature.getPositionVec().getY(), target_pos_.getZ());
       if(!testpos.withinDistance(creature.getPositionVec(), getTargetDistanceSq())) {
-        if((++timeoutCounter > motion_timeout)) { abort(); return; }
-        if(shouldMove() && (!creature.getNavigator().tryMoveToXYZ(target_pos_.getX(), target_pos_.getY(), target_pos_.getZ(), movementSpeed))) abort();
+        if((++timeoutCounter > motion_timeout)) {
+          log("tick() -> abort, timeoutCounter");
+          abort();
+          return;
+        }
+        if(shouldMove() && (!creature.getNavigator().tryMoveToXYZ(target_pos_.getX(), target_pos_.getY(), target_pos_.getZ(), movementSpeed))) {
+          log("tick() -> abort, !tryMoveToXYZ()");
+          abort();
+        }
       } else {
+        log("tick() -> abort, in position)");
         in_position_ = true;
         abort();
         if(on_target_position_reached_ != null) on_target_position_reached_.apply(this, creature.world, target_pos_);

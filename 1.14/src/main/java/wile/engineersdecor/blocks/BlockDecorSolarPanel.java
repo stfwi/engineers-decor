@@ -25,6 +25,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 
@@ -61,7 +63,7 @@ public class BlockDecorSolarPanel extends BlockDecor
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class BTileEntity extends TileEntity implements ITickableTileEntity
+  public static class BTileEntity extends TileEntity implements ITickableTileEntity, ICapabilityProvider, IEnergyStorage
   {
     public static final int DEFAULT_PEAK_POWER = 45;
     public static final int TICK_INTERVAL = 8;
@@ -92,6 +94,51 @@ public class BlockDecorSolarPanel extends BlockDecor
 
     protected void writenbt(CompoundNBT nbt, boolean update_packet)
     { nbt.putInt("energy", accumulated_power_); }
+
+    // IEnergyStorage --------------------------------------------------------------------------
+
+    @Override
+    public boolean canExtract()
+    { return true; }
+
+    @Override
+    public boolean canReceive()
+    { return false; }
+
+    @Override
+    public int getMaxEnergyStored()
+    { return max_power_storage_; }
+
+    @Override
+    public int getEnergyStored()
+    { return accumulated_power_; }
+
+    @Override
+    public int extractEnergy(int maxExtract, boolean simulate)
+    {
+      int p = Math.min(accumulated_power_, maxExtract);
+      if(!simulate) accumulated_power_ -= p;
+      return p;
+    }
+
+    @Override
+    public int receiveEnergy(int maxReceive, boolean simulate)
+    { return 0; }
+
+    // ICapabilityProvider ---------------------------------------------------------------------
+
+    protected LazyOptional<IEnergyStorage> energy_handler_ = LazyOptional.of(() -> (IEnergyStorage)this);
+
+    @Override
+    public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
+    {
+      if(!this.removed && (facing != null)) {
+        if(capability== CapabilityEnergy.ENERGY) {
+          return energy_handler_.cast();
+        }
+      }
+      return super.getCapability(capability, facing);
+    }
 
     // TileEntity ------------------------------------------------------------------------------
 
