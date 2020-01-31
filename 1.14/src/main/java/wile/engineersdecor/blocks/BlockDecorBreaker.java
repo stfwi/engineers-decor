@@ -126,7 +126,7 @@ public class BlockDecorBreaker extends BlockDecorDirectedHorizontal
     private int tick_timer_;
     private int active_timer_;
     private int proc_time_elapsed_;
-    private int boost_energy_;
+    private int energy_;
 
     public static void on_config(int boost_energy_per_tick, int breaking_time_per_hardness, int min_breaking_time_ticks, boolean power_required)
     {
@@ -161,11 +161,11 @@ public class BlockDecorBreaker extends BlockDecorDirectedHorizontal
 
     @Override
     public int getMaxEnergyStored()
-    { return boost_energy_consumption; }
+    { return boost_energy_consumption*2; }
 
     @Override
     public int getEnergyStored()
-    { return boost_energy_; }
+    { return energy_; }
 
     @Override
     public int extractEnergy(int maxExtract, boolean simulate)
@@ -173,10 +173,10 @@ public class BlockDecorBreaker extends BlockDecorDirectedHorizontal
 
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate)
-    { // only speedup support, no buffering, not in nbt -> no markdirty
-      if((boost_energy_ >= boost_energy_consumption) || (maxReceive < boost_energy_consumption)) return 0;
-      if(!simulate) boost_energy_ = boost_energy_consumption;
-      return boost_energy_consumption;
+    {
+      maxReceive = MathHelper.clamp(maxReceive, 0, Math.max((boost_energy_consumption*2) - energy_, 0));
+      if(!simulate) energy_ += maxReceive;
+      return maxReceive;
     }
 
     // Capability export ----------------------------------------------------------------------------
@@ -262,9 +262,9 @@ public class BlockDecorBreaker extends BlockDecorDirectedHorizontal
           tick_timer_ = IDLE_TICK_INTERVAL;
           return;
         }
-        int time_needed = (int)(target_state.getBlockHardness(world, pos) * breaking_reluctance) + min_breaking_time;
-        if(boost_energy_ >= boost_energy_consumption) {
-          boost_energy_ = 0;
+        int time_needed = MathHelper.clamp((int)(target_state.getBlockHardness(world, pos) * breaking_reluctance) + min_breaking_time, min_breaking_time, MAX_BREAKING_TIME);
+        if(energy_ >= boost_energy_consumption) {
+          energy_ -= boost_energy_consumption;
           proc_time_elapsed_ += TICK_INTERVAL * (1+BOOST_FACTOR);
           time_needed += min_breaking_time * (3*BOOST_FACTOR/5);
           active_timer_ = 2;
@@ -275,12 +275,9 @@ public class BlockDecorBreaker extends BlockDecorDirectedHorizontal
           --active_timer_;
         }
         boolean active = (active_timer_ > 0);
-        if(boost_energy_ >= boost_energy_consumption) {
-          boost_energy_ = 0;
-          proc_time_elapsed_ += TICK_INTERVAL * BOOST_FACTOR;
-          time_needed += min_breaking_time * (3*BOOST_FACTOR/5);
+        if(requires_power && !active) {
+          proc_time_elapsed_ = Math.max(0, proc_time_elapsed_ - 2*TICK_INTERVAL);
         }
-        time_needed = MathHelper.clamp(time_needed, min_breaking_time, MAX_BREAKING_TIME);
         if(proc_time_elapsed_ >= time_needed) {
           proc_time_elapsed_ = 0;
           breakBlock(target_state, target_pos, world);

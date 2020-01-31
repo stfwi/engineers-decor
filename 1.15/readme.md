@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.15.1.
 
 ## Version history
 
+    - v1.0.19-b1  [U] Update to 1.15.2.
+                  [F] Fixed Tree Cutter / Block Breaker not accepting small energy transfers (thx WindFox, issue #82).
+
     - v1.0.18-b4  [A] Ported Treated Wood Crafting Table item rendering.
                   [F] Fixed Milking machine cow path issue, added milking delay cow tracking.
                   [F] Slab / Slab Slice placement adapted to vanilla standard.

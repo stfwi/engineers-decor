@@ -11,6 +11,8 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
+    - v1.0.19-b1  [F] Fixed Tree Cutter / Block Breaker not accepting small energy transfers (thx WindFox, issue #82).
+
     - v1.0.18-b4  [M] Lang update ru_ru (PR#77, thanks Smollet777).
                   [F] Fixed Milking machine cow path issue, added milking delay cow tracking.
                   [F] Slab / Slab Slice placement adapted to vanilla standard.

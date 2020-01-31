@@ -10,6 +10,8 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    - v1.0.19-b1  [F] Fixed Tree Cutter / Block Breaker not accepting small energy transfers (thx WindFox, issue #82).
+
                   -------------------------------------------------------------------
     - v1.0.18     [R] Release based on v1.0.18-b2. Release-to-release changes:
                     * Tree cutter config fixes.

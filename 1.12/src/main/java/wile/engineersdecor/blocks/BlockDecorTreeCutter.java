@@ -104,7 +104,7 @@ public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
     private int tick_timer_;
     private int active_timer_;
     private int proc_time_elapsed_; // small, not saved in nbt.
-    private int boost_energy_;      // small, not saved in nbt.
+    private int energy_;            // small, not saved in nbt.
 
     public static void on_config(int boost_energy_per_tick, int cutting_time_seconds, boolean power_required)
     {
@@ -135,11 +135,11 @@ public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
 
     @Override
     public int getMaxEnergyStored()
-    { return boost_energy_consumption; }
+    { return boost_energy_consumption*2; }
 
     @Override
     public int getEnergyStored()
-    { return boost_energy_; }
+    { return energy_; }
 
     @Override
     public int extractEnergy(int maxExtract, boolean simulate)
@@ -147,10 +147,10 @@ public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
 
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate)
-    { // only speedup support, no buffering, not in nbt -> no markdirty
-      if((boost_energy_ >= boost_energy_consumption) || (maxReceive < boost_energy_consumption)) return 0;
-      if(!simulate) boost_energy_ = boost_energy_consumption;
-      return boost_energy_consumption;
+    {
+      maxReceive = MathHelper.clamp(maxReceive, 0, Math.max((boost_energy_consumption*2) - energy_, 0));
+      if(!simulate) energy_ += maxReceive;
+      return maxReceive;
     }
 
     // Capability export ----------------------------------------------------------------------------
@@ -197,8 +197,8 @@ public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
           return;
         }
         proc_time_elapsed_ += TICK_INTERVAL;
-        if(boost_energy_ >= boost_energy_consumption) {
-          boost_energy_ = 0;
+        if(energy_ >= boost_energy_consumption) {
+          energy_ -= boost_energy_consumption;
           proc_time_elapsed_ += TICK_INTERVAL*BOOST_FACTOR;
           active_timer_ = 2;
         } else if(!requires_power) {

@@ -306,7 +306,7 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
     private static final HashMap<Integer, Long> tracked_cows_ = new HashMap<Integer, Long>();
 
     private void log(String s)
-    { System.out.println("Milker|" + s); } // println("Milker|" + s); may be enabled with config, for dev was println
+    {} // println("Milker|" + s); may be enabled with config, for dev was println
 
     private static ItemStack milk_filled_container_item(ItemStack stack)
     { return milk_containers_.entrySet().stream().filter(e->e.getKey().isItemEqual(stack)).map(Map.Entry::getValue).findFirst().orElse(ItemStack.EMPTY); }

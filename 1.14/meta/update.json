@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.14.4": {
+    "1.0.19-b1": "[F] Fixed Tree Cutter / Block Breaker not accepting small energy transfers (thx WindFox, issue #82).",
     "1.0.18-b4": "[M] Lang update ru_ru (PR#77, thanks Smollet777).\n[F] Fixed Milking machine cow path issue, added milking delay cow tracking.\n[F] Slab / Slab Slice placement adapted to vanilla standard.",
     "1.0.18-b3": "[A] Added Treated Wood Crafting table tweaks (ctrl-shift moves all same stacks from the inventory, mouse wheel over crafting slot increases/decreases crafting grid stacks).\n[F] EN Lang file fixed (issue #76, thx Riverstar907).\n[F] Fixed Tree Cutter not respecting power-required config (thx federsavo, issue #77).\n[F] Fixed Small Solar Panel not exposing energy capability (thx MatthiasMann, issue #78).",
     "1.0.18-b2": "[F] Fixed JEI integration warning if nothing is opt'ed out (thx @SDUBZ for reporting).\n[M] Lang ru_ru updated (Smollet777).",
@@ -44,6 +45,6 @@
   },
   "promos": {
     "1.14.4-recommended": "",
-    "1.14.4-latest": "1.0.18-b4"
+    "1.14.4-latest": "1.0.19-b1"
   }
 }
