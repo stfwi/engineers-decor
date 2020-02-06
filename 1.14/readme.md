@@ -11,6 +11,12 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
+    - v1.0.19-b2  [F] Fixed Floor Grating item pass-through jitters (thx Cid).
+                  [M] Removed obsolete recipe collision testing recipes.
+                  [F] Fixed missing Block Breaker dynamic block drops.
+                  [F] Block Placer planting race condition issue fixed (issue #83, thx jcardii).
+                  [F] Factory Hopper: Added second standard insertion after smart-insert to circumcent compat issues (issue #84, thx NillerMedDild).
+
     - v1.0.19-b1  [F] Fixed Tree Cutter / Block Breaker not accepting small energy transfers (thx WindFox, issue #82).
 
     - v1.0.18-b4  [M] Lang update ru_ru (PR#77, thanks Smollet777).

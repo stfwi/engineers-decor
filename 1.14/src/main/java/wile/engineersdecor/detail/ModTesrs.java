@@ -19,6 +19,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import com.mojang.blaze3d.platform.GlStateManager;
+import wile.engineersdecor.blocks.BlockDecorCraftingTable.CraftingTableBlock;
 
 
 public class ModTesrs
@@ -47,7 +48,7 @@ public class ModTesrs
     {
       if(tesr_error_counter<=0) return;
       try {
-        int di = MathHelper.clamp(te.getWorld().getBlockState(te.getPos()).get(BlockDecorCraftingTable.CraftingTableBlock.FACING).getHorizontalIndex(), 0, 3);
+        int di = MathHelper.clamp(te.getWorld().getBlockState(te.getPos()).get(CraftingTableBlock.HORIZONTAL_FACING).getHorizontalIndex(), 0, 3);
         long posrnd = te.getPos().toLong();
         posrnd = (posrnd>>16)^(posrnd<<1);
         for(int i=0; i<9; ++i) {

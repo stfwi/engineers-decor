@@ -55,7 +55,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 
-public class BlockDecorMineralSmelter extends BlockDecorDirectedHorizontal
+public class BlockDecorMineralSmelter extends BlockDecor.Horizontal implements IDecorBlock
 {
   public static final int PHASE_MAX = 3;
   public static final IntegerProperty PHASE = IntegerProperty.create("phase", 0, PHASE_MAX);

@@ -12,7 +12,7 @@
  */
 package wile.engineersdecor.blocks;
 
-import wile.engineersdecor.detail.ModAuxiliaries;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
@@ -40,11 +40,11 @@ import java.util.List;
 
 public class BlockDecorLadder extends LadderBlock implements IDecorBlock
 {
-  protected static final AxisAlignedBB EDLADDER_UNROTATED_AABB = ModAuxiliaries.getPixeledAABB(3, 0, 0, 13, 16, 3);
-  protected static final VoxelShape EDLADDER_SOUTH_AABB =  VoxelShapes.create(ModAuxiliaries.getRotatedAABB(EDLADDER_UNROTATED_AABB, Direction.SOUTH, false));
-  protected static final VoxelShape EDLADDER_EAST_AABB  = VoxelShapes.create(ModAuxiliaries.getRotatedAABB(EDLADDER_UNROTATED_AABB, Direction.EAST, false));
-  protected static final VoxelShape EDLADDER_WEST_AABB  = VoxelShapes.create(ModAuxiliaries.getRotatedAABB(EDLADDER_UNROTATED_AABB, Direction.WEST, false));
-  protected static final VoxelShape EDLADDER_NORTH_AABB = VoxelShapes.create(ModAuxiliaries.getRotatedAABB(EDLADDER_UNROTATED_AABB, Direction.NORTH, false));
+  protected static final AxisAlignedBB EDLADDER_UNROTATED_AABB = Auxiliaries.getPixeledAABB(3, 0, 0, 13, 16, 3);
+  protected static final VoxelShape EDLADDER_SOUTH_AABB =  VoxelShapes.create(Auxiliaries.getRotatedAABB(EDLADDER_UNROTATED_AABB, Direction.SOUTH, false));
+  protected static final VoxelShape EDLADDER_EAST_AABB  = VoxelShapes.create(Auxiliaries.getRotatedAABB(EDLADDER_UNROTATED_AABB, Direction.EAST, false));
+  protected static final VoxelShape EDLADDER_WEST_AABB  = VoxelShapes.create(Auxiliaries.getRotatedAABB(EDLADDER_UNROTATED_AABB, Direction.WEST, false));
+  protected static final VoxelShape EDLADDER_NORTH_AABB = VoxelShapes.create(Auxiliaries.getRotatedAABB(EDLADDER_UNROTATED_AABB, Direction.NORTH, false));
   private static boolean without_speed_boost_ = false;
 
   public static void on_config(boolean without_speed_boost)
@@ -60,7 +60,7 @@ public class BlockDecorLadder extends LadderBlock implements IDecorBlock
   @Override
   @OnlyIn(Dist.CLIENT)
   public void addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
-  { ModAuxiliaries.Tooltip.addInformation(stack, world, tooltip, flag, true); }
+  { Auxiliaries.Tooltip.addInformation(stack, world, tooltip, flag, true); }
 
   public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos)
   {

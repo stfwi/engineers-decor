@@ -12,6 +12,7 @@ package wile.engineersdecor.detail;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.blocks.*;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -500,7 +501,7 @@ public class ModConfig
     if(COMMON == null) return false;
     try {
       if(!COMMON.with_experimental.get()) {
-        if(block instanceof ModAuxiliaries.IExperimentalFeature) return true;
+        if(block instanceof Auxiliaries.IExperimentalFeature) return true;
         if(ModContent.isExperimentalBlock(block)) return true;
       }
       final String rn = block.getRegistryName().getPath();
@@ -615,8 +616,10 @@ public class ModConfig
     BlockDecorBreaker.BTileEntity.on_config(COMMON.block_breaker_power_consumption.get(), COMMON.block_breaker_reluctance.get(), COMMON.block_breaker_min_breaking_time.get(), COMMON.block_breaker_requires_power.get());
     BlockDecorTreeCutter.BTileEntity.on_config(COMMON.tree_cuttter_energy_consumption.get(), COMMON.tree_cuttter_cutting_time_needed.get(), COMMON.tree_cuttter_requires_power.get());
     BlockDecorMilker.BTileEntity.on_config(COMMON.milking_machine_energy_consumption.get(), COMMON.milking_machine_milking_delay.get());
+    BlockDecorSlab.on_config(!COMMON.without_direct_slab_pickup.get());
+    BlockDecorHalfSlab.on_config(!COMMON.without_direct_slab_pickup.get());
     without_crafting_table = isOptedOut(ModContent.TREATED_WOOD_CRAFTING_TABLE);
-    immersiveengineering_installed = ModAuxiliaries.isModLoaded("immersiveengineering");
+    immersiveengineering_installed = Auxiliaries.isModLoaded("immersiveengineering");
     with_experimental_features_ = COMMON.with_experimental.get();
     without_recipes_ = COMMON.without_recipes.get();
     without_direct_slab_pickup = COMMON.without_direct_slab_pickup.get();

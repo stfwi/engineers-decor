@@ -1,5 +1,5 @@
 /*
- * @file BlockDecorDirected.java
+ * @file BlockDecor.Directed.java
  * @author Stefan Wilhelm (wile)
  * @copyright (C) 2019 Stefan Wilhelm
  * @license MIT (see https://opensource.org/licenses/MIT)
@@ -32,7 +32,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nullable;
 
 
-public class BlockDecorSolarPanel extends BlockDecor
+public class BlockDecorSolarPanel extends BlockDecor implements IDecorBlock
 {
   public static final IntegerProperty EXPOSITION = IntegerProperty.create("exposition", 0, 4);
 
@@ -45,11 +45,6 @@ public class BlockDecorSolarPanel extends BlockDecor
   @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
   { super.fillStateContainer(builder); builder.add(EXPOSITION); }
-
-  @Override
-  @Nullable
-  public BlockState getStateForPlacement(BlockItemUseContext context)
-  { return super.getStateForPlacement(context); }
 
   @Override
   public boolean hasTileEntity(BlockState state)

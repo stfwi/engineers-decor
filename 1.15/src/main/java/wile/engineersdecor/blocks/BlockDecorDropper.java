@@ -10,7 +10,7 @@ package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.detail.Networking;
+import wile.engineersdecor.libmc.detail.Networking;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.block.DoorBlock;
@@ -55,7 +55,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class BlockDecorDropper extends BlockDecorDirected
+public class BlockDecorDropper extends BlockDecor.Directed implements IDecorBlock
 {
   public static final BooleanProperty OPEN = DoorBlock.OPEN;
 

@@ -65,10 +65,6 @@ public class BlockDecorWasteIncinerator extends BlockDecor
   { super(config, builder, unrotatedAABB); }
 
   @Override
-  public RenderTypeHint getRenderTypeHint()
-  { return RenderTypeHint.SOLID; }
-
-  @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
   { super.fillStateContainer(builder); builder.add(LIT); }
 

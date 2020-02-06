@@ -14,7 +14,8 @@
 package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.ModContent;
-import wile.engineersdecor.detail.ModAuxiliaries;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
 import net.minecraft.world.World;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.block.Block;
@@ -40,7 +41,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 
-public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected
+public class BlockDecorPassiveFluidAccumulator extends StandardBlocks.Directed implements IDecorBlock
 {
   public BlockDecorPassiveFluidAccumulator(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
   { super(config, builder, unrotatedAABB); }
@@ -94,7 +95,7 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected
     public void send_device_stats(PlayerEntity player)
     {
       int t_vol = tank_.getAmount();
-      ModAuxiliaries.playerChatMessage(player,"" + t_vol + "mB");
+      Auxiliaries.playerChatMessage(player,"" + t_vol + "mB");
     }
 
     public void block_changed()

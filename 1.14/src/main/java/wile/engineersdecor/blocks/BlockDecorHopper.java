@@ -10,7 +10,8 @@ package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.detail.Networking;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.detail.Networking;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.block.Block;
@@ -50,7 +51,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class BlockDecorHopper extends BlockDecorDirected
+public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorBlock
 {
   public BlockDecorHopper(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
   { super(config, builder, unrotatedAABB); }
@@ -486,18 +487,20 @@ public class BlockDecorHopper extends BlockDecorDirected
       ItemStack insert_stack = current_stack.copy();
       if(insert_stack.getCount() > transfer_count_) insert_stack.setCount(transfer_count_);
       final int initial_insert_stack_size = insert_stack.getCount();
-      int first_empty_slot_index = -1;
       if((ih == null) || ih.getSlots() <= 0) return false;
+      // First stack comletion insert run.
       for(int i=0; i<ih.getSlots(); ++i) {
-        if(!ih.isItemValid(i, insert_stack)) continue;
         final ItemStack target_stack = ih.getStackInSlot(i);
-        if((first_empty_slot_index < 0) && target_stack.isEmpty()) first_empty_slot_index = i;
         if(!target_stack.isItemEqual(insert_stack)) continue;
         insert_stack = ih.insertItem(i, insert_stack.copy(), false);
         if(insert_stack.isEmpty()) break;
       }
-      if((first_empty_slot_index >= 0) && (!insert_stack.isEmpty())) {
-        insert_stack = ih.insertItem(first_empty_slot_index, insert_stack.copy(), false);
+      // First-available insert run.
+      if(!insert_stack.isEmpty()) {
+        for(int i=0; i<ih.getSlots(); ++i) {
+          insert_stack = ih.insertItem(i, insert_stack.copy(), false);
+          if(insert_stack.isEmpty()) break;
+        }
       }
       final int num_inserted = initial_insert_stack_size-insert_stack.getCount();
       if(num_inserted > 0) {

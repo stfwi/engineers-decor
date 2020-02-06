@@ -8,25 +8,8 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import java.util.Collections;
-import java.util.List;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
 
-
-public interface IDecorBlock
+public interface IDecorBlock extends StandardBlocks.IStandardBlock
 {
-  enum RenderTypeHint { SOLID,CUTOUT,CUTOUT_MIPPED,TRANSLUCENT }
-
-  default boolean hasDynamicDropList()
-  { return false; }
-
-  default List<ItemStack> dropList(BlockState state, World world, BlockPos pos, boolean explosion)
-  { return Collections.singletonList((!world.isRemote()) ? (new ItemStack(state.getBlock().asItem())) : (ItemStack.EMPTY)); }
-
-  default RenderTypeHint getRenderTypeHint()
-  { return RenderTypeHint.SOLID; }
-
 }

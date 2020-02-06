@@ -12,17 +12,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
+
 import java.util.Collections;
 import java.util.List;
 
 
-public interface IDecorBlock
+public interface IDecorBlock extends StandardBlocks.IStandardBlock
 {
-
-  default boolean hasDynamicDropList()
-  { return false; }
-
-  default List<ItemStack> dropList(BlockState state, World world, BlockPos pos, boolean explosion)
-  { return Collections.singletonList((!world.isRemote()) ? (new ItemStack(state.getBlock().asItem())) : (ItemStack.EMPTY)); }
-
 }

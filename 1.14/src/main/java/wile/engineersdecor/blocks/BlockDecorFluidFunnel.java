@@ -36,13 +36,14 @@ import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
 
-public class BlockDecorFluidFunnel extends BlockDecor
+public class BlockDecorFluidFunnel extends StandardBlocks.BaseBlock implements IDecorBlock
 {
   public static final int FILL_LEVEL_MAX = 3;
   public static final IntegerProperty FILL_LEVEL = IntegerProperty.create("level", 0, FILL_LEVEL_MAX);

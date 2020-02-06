@@ -9,7 +9,7 @@
  */
 package wile.engineersdecor.blocks;
 
-import wile.engineersdecor.detail.ModAuxiliaries;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 
-public class BlockDecorGlassBlock extends StainedGlassBlock
+public class BlockDecorGlassBlock extends StainedGlassBlock implements IDecorBlock
 {
   public BlockDecorGlassBlock(long config, Block.Properties properties)
   { super(DyeColor.BLACK, properties); }
@@ -33,7 +33,7 @@ public class BlockDecorGlassBlock extends StainedGlassBlock
   @Override
   @OnlyIn(Dist.CLIENT)
   public void addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
-  { ModAuxiliaries.Tooltip.addInformation(stack, world, tooltip, flag, true); }
+  { Auxiliaries.Tooltip.addInformation(stack, world, tooltip, flag, true); }
 
   @Override
   @OnlyIn(Dist.CLIENT)

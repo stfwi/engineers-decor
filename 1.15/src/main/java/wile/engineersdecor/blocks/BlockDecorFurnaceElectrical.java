@@ -10,7 +10,7 @@ package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.detail.Networking;
+import wile.engineersdecor.libmc.detail.Networking;
 import net.minecraft.inventory.container.*;
 import net.minecraft.item.crafting.AbstractCookingRecipe;
 import net.minecraft.item.crafting.FurnaceRecipe;
@@ -57,7 +57,7 @@ import javax.annotation.Nullable;
 import java.util.Random;
 
 
-public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
+public class BlockDecorFurnaceElectrical extends BlockDecorFurnace implements IDecorBlock
 {
   public BlockDecorFurnaceElectrical(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
   { super(config, builder, unrotatedAABB); }
@@ -274,7 +274,7 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
 
     @Override
     public boolean canInsertItem(int index, ItemStack itemStackIn, Direction direction)
-    { return isItemValidForSlot(index, itemStackIn); }
+    { return ((index==FIFO_INPUT_0_SLOT_NO) || (index==FIFO_INPUT_1_SLOT_NO)) && isItemValidForSlot(index, itemStackIn); }
 
     @Override
     public boolean canExtractItem(int index, ItemStack stack, Direction direction)
@@ -538,7 +538,7 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
       if(energy_stored_  < transfer_energy_consumption_) return false;
       final BlockState state = world.getBlockState(pos);
       if(!(state.getBlock() instanceof BlockDecorFurnaceElectrical)) return false;
-      final Direction out_facing = state.get(FACING);
+      final Direction out_facing = state.get(HORIZONTAL_FACING);
       if(out && (!stacks_.get(FIFO_OUTPUT_1_SLOT_NO).isEmpty())) {
         TileEntity te = world.getTileEntity(pos.offset(out_facing));
         if(te!=null) {
@@ -552,7 +552,7 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
         }
       }
       if(with_automatic_inventory_pulling_) {
-        final Direction inp_facing = state.get(FACING).getOpposite();
+        final Direction inp_facing = state.get(HORIZONTAL_FACING).getOpposite();
         if(inp && (stacks_.get(FIFO_INPUT_1_SLOT_NO).isEmpty())) {
           TileEntity te = world.getTileEntity(pos.offset(inp_facing));
           if(te!=null) {

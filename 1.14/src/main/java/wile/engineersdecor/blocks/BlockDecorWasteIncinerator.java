@@ -50,6 +50,8 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import com.mojang.blaze3d.platform.GlStateManager;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -57,17 +59,12 @@ import java.util.List;
 import java.util.Random;
 
 
-public class BlockDecorWasteIncinerator extends BlockDecor
+public class BlockDecorWasteIncinerator extends StandardBlocks.BaseBlock
 {
   public static final BooleanProperty LIT = BlockDecorFurnace.LIT;
 
   public BlockDecorWasteIncinerator(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
   { super(config, builder, unrotatedAABB); }
-
-  @Override
-  @OnlyIn(Dist.CLIENT)
-  public BlockRenderLayer getRenderLayer()
-  { return BlockRenderLayer.SOLID; }
 
   @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)

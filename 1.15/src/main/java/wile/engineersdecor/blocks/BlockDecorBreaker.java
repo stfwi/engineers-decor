@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Random;
 
 
-public class BlockDecorBreaker extends BlockDecorDirectedHorizontal
+public class BlockDecorBreaker extends BlockDecor.HorizontalWaterLoggable implements IDecorBlock
 {
   public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
@@ -221,7 +221,13 @@ public class BlockDecorBreaker extends BlockDecorDirectedHorizontal
     private boolean breakBlock(BlockState state, BlockPos pos, World world)
     {
       if(world.isRemote  || (!(world instanceof ServerWorld)) || world.restoringBlockSnapshots) return false; // retry next cycle
-      List<ItemStack> drops = Block.getDrops(state, (ServerWorld)world, pos, world.getTileEntity(pos));
+      List<ItemStack> drops;
+      final Block block = state.getBlock();
+      if((!(block instanceof IDecorBlock)) || (!((IDecorBlock)block).hasDynamicDropList())) {
+        drops = Block.getDrops(state, (ServerWorld)world, pos, world.getTileEntity(pos));
+      } else {
+        drops = ((IDecorBlock)block).dropList(state, world, pos, false);
+      }
       world.removeBlock(pos, false);
       for(ItemStack drop:drops) spawnAsEntity(world, pos, drop);
       SoundType stype = state.getBlock().getSoundType(state, world, pos, null);

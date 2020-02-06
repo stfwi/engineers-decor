@@ -45,6 +45,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -53,7 +54,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 
-public class BlockDecorMilker extends BlockDecorDirectedHorizontal
+public class BlockDecorMilker extends StandardBlocks.Horizontal implements IDecorBlock
 {
   public static final BooleanProperty FILLED = BooleanProperty.create("filled");
   public static final BooleanProperty ACTIVE = BooleanProperty.create("active");

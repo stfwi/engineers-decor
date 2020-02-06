@@ -1,18 +1,15 @@
 package wile.engineersdecor;
 
-import wile.engineersdecor.detail.ModAuxiliaries;
-import wile.engineersdecor.detail.ModConfig;
-import wile.engineersdecor.detail.Networking;
 import wile.engineersdecor.blocks.*;
-import wile.engineersdecor.detail.OptionalRecipeCondition.Serializer;
-import wile.engineersdecor.datagen.ModLootTables;
-import net.minecraft.client.Minecraft;
+import wile.engineersdecor.detail.ModConfig;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.OptionalRecipeCondition;
+import wile.engineersdecor.libmc.detail.Networking;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.world.World;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -21,7 +18,6 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.*;
@@ -31,8 +27,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import javax.annotation.Nullable;
 
 
 @Mod("engineersdecor")
@@ -46,7 +40,9 @@ public class ModEngineersDecor
 
   public ModEngineersDecor()
   {
-    ModAuxiliaries.logGitVersion(MODNAME);
+    Auxiliaries.init(MODID, LOGGER, ModConfig::getServerConfig);
+    Auxiliaries.logGitVersion(MODNAME);
+    OptionalRecipeCondition.init(MODID, LOGGER);
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onSetup);
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onSendImc);
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRecvImc);
@@ -65,8 +61,8 @@ public class ModEngineersDecor
   private void onSetup(final FMLCommonSetupEvent event)
   {
     LOGGER.info("Registering recipe condition processor ...");
-    CraftingHelper.register(Serializer.INSTANCE);
-    Networking.init();
+    CraftingHelper.register(OptionalRecipeCondition.Serializer.INSTANCE);
+    Networking.init(MODID);
     if(config_loaded) {
       try {
         logger().info("Applying loaded config file.");
@@ -137,31 +133,8 @@ public class ModEngineersDecor
     @SubscribeEvent
     public static void onDataGeneration(GatherDataEvent event)
     {
-      event.getGenerator().addProvider(new ModLootTables(event.getGenerator()));
+      event.getGenerator().addProvider(new wile.engineersdecor.libmc.datagen.LootTableGen(event.getGenerator(), ModContent::allBlocks));
     }
-  }
-
-  //
-  // Sided proxy functionality (skel)
-  //
-  public static ISidedProxy proxy = DistExecutor.runForDist(()->ClientProxy::new, ()->ServerProxy::new);
-  public interface ISidedProxy
-  {
-    default @Nullable PlayerEntity getPlayerClientSide() { return null; }
-    default @Nullable World getWorldClientSide() { return null; }
-    default @Nullable Minecraft mc() { return null; }
-  }
-  public static final class ClientProxy implements ISidedProxy
-  {
-    public @Nullable PlayerEntity getPlayerClientSide() { return Minecraft.getInstance().player; }
-    public @Nullable World getWorldClientSide() { return Minecraft.getInstance().world; }
-    public @Nullable Minecraft mc() { return Minecraft.getInstance(); }
-  }
-  public static final class ServerProxy implements ISidedProxy
-  {
-    public @Nullable PlayerEntity getPlayerClientSide() { return null; }
-    public @Nullable World getWorldClientSide() { return null; }
-    public @Nullable Minecraft mc() { return null; }
   }
 
   //

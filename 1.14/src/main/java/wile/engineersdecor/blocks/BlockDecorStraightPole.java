@@ -18,17 +18,15 @@ import net.minecraft.world.World;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
+
 import javax.annotation.Nullable;
 
 
-public class BlockDecorStraightPole extends BlockDecorDirected implements IWaterLoggable
+public class BlockDecorStraightPole extends StandardBlocks.DirectedWaterLoggable implements IDecorBlock,IWaterLoggable
 {
   public BlockDecorStraightPole(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
-  { super(config|CFG_WATERLOGGABLE, builder, unrotatedAABB); }
-
-  @Override
-  protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-  { super.fillStateContainer(builder); builder.add(WATERLOGGED); }
+  { super(config, builder, unrotatedAABB); }
 
   @Override
   @Nullable
@@ -37,7 +35,7 @@ public class BlockDecorStraightPole extends BlockDecorDirected implements IWater
     Direction facing = context.getFace();
     final boolean waterlogged = context.getWorld().getFluidState(context.getPos()).getFluid()==Fluids.WATER;
     BlockState state = super.getStateForPlacement(context).with(FACING, facing).with(WATERLOGGED, waterlogged);
-    if((config & CFG_FLIP_PLACEMENT_IF_SAME) != 0) {
+    if((config & StandardBlocks.CFG_FLIP_PLACEMENT_IF_SAME) != 0) {
       World world = context.getWorld();
       BlockPos pos = context.getPos();
       if(world.getBlockState(pos.offset(facing.getOpposite())).getBlock() instanceof BlockDecorStraightPole) {

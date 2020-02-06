@@ -26,6 +26,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import wile.engineersdecor.blocks.BlockDecorCraftingTable.CraftingTableBlock;
 
 
 public class ModRenderers
@@ -89,7 +90,7 @@ public class ModRenderers
     {
       if(tesr_error_counter <= 0) return;
       try {
-        final int di = MathHelper.clamp(te.getWorld().getBlockState(te.getPos()).get(BlockDecorCraftingTable.CraftingTableBlock.FACING).getHorizontalIndex(), 0, 3);
+        final int di = MathHelper.clamp(te.getWorld().getBlockState(te.getPos()).get(CraftingTableBlock.HORIZONTAL_FACING).getHorizontalIndex(), 0, 3);
         long posrnd = te.getPos().toLong();
         posrnd = (posrnd>>16)^(posrnd<<1);
         for(int i=0; i<9; ++i) {

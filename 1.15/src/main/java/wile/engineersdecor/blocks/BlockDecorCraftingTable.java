@@ -1,5 +1,5 @@
 /*
- * @file BlockDecorDirected.java
+ * @file BlockDecor.Directed.java
  * @author Stefan Wilhelm (wile)
  * @copyright (C) 2019 Stefan Wilhelm
  * @license MIT (see https://opensource.org/licenses/MIT)
@@ -11,8 +11,8 @@ package wile.engineersdecor.blocks;
 import net.minecraft.item.crafting.*;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.detail.ModAuxiliaries;
-import wile.engineersdecor.detail.Networking;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.Networking;
 import net.minecraft.inventory.container.*;
 import net.minecraft.network.play.server.SSetSlotPacket;
 import net.minecraft.network.NetworkManager;
@@ -77,10 +77,10 @@ public class BlockDecorCraftingTable
   // Block
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static final class CraftingTableBlock extends BlockDecorDirected.WaterLoggable
+  public static final class CraftingTableBlock extends BlockDecor.HorizontalWaterLoggable implements IDecorBlock
   {
     public CraftingTableBlock(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
-    { super(config|CFG_WATERLOGGABLE, builder, unrotatedAABB); }
+    { super(config, builder, unrotatedAABB); }
 
     @Override
     public boolean hasTileEntity(BlockState state)
@@ -1359,10 +1359,10 @@ public class BlockDecorCraftingTable
             // Explicit grid placement.
             CompoundNBT nbt = new CompoundNBT();
             nbt.putInt("containerslot", slotId);
-            if(ModAuxiliaries.isCtrlDown()) nbt.putBoolean("move-all", true);
+            if(Auxiliaries.isCtrlDown()) nbt.putBoolean("move-all", true);
             action(ACTION_PLACE_SHIFTCLICKED_STACK, nbt);
             return;
-          } else if(ModAuxiliaries.isCtrlDown()) {
+          } else if(Auxiliaries.isCtrlDown()) {
             // Move all same items from the inventory of the clicked slot
             // (or the crafting grid) to the corresponding target inventory.
             CompoundNBT nbt = new CompoundNBT();
@@ -1387,7 +1387,7 @@ public class BlockDecorCraftingTable
         }).isPresent();
       }
       int count = resultSlot.getStack().getCount();
-      int limit = (ModAuxiliaries.isShiftDown() ? 2 : 1) * (ModAuxiliaries.isCtrlDown() ? 4 : 1);
+      int limit = (Auxiliaries.isShiftDown() ? 2 : 1) * (Auxiliaries.isCtrlDown() ? 4 : 1);
       if(wheel_inc > 0.1) {
         if(count > 0) {
           if((count < resultSlot.getStack().getMaxStackSize()) && (count < resultSlot.getSlotStackLimit())) {

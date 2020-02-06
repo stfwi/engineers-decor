@@ -11,6 +11,13 @@ Mod sources for Minecraft version 1.15.1.
 
 ## Version history
 
+    - v1.0.19-b2  [F] Fixed Floor Grating item pass-through jitters (thx Cid).
+                  [M] Removed obsolete recipe collision testing recipes.
+                  [F] Fixed missing Block Breaker dynamic block drops.
+                  [F] Block Placer planting race condition issue fixed (issue #83, thx jcardii).
+                  [F] Factory Hopper: Added second standard insertion run after smart-insert to circumcent compat issues (issue #84, thx NillerMedDild).
+                  [A] Enabled JEI plugin (issue #85, thx ProsperCraft/Goshen).
+
     - v1.0.19-b1  [U] Update to 1.15.2.
                   [F] Fixed Tree Cutter / Block Breaker not accepting small energy transfers (thx WindFox, issue #82).
 

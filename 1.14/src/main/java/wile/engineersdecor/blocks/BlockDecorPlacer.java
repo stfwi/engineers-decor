@@ -10,9 +10,9 @@ package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.detail.Networking;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.detail.Networking;
 import net.minecraft.block.*;
-import net.minecraft.state.StateContainer;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -54,28 +54,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class BlockDecorPlacer extends BlockDecorDirected
+public class BlockDecorPlacer extends StandardBlocks.Directed
 {
   public BlockDecorPlacer(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
   { super(config, builder, unrotatedAABB); }
 
   @Override
-  @OnlyIn(Dist.CLIENT)
-  public BlockRenderLayer getRenderLayer()
-  { return BlockRenderLayer.SOLID; }
-
-  @Override
   public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext)
   { return VoxelShapes.fullCube(); }
-
-  @Override
-  protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-  { super.fillStateContainer(builder); }
-
-  @Override
-  @Nullable
-  public BlockState getStateForPlacement(BlockItemUseContext context)
-  { return super.getStateForPlacement(context); }
 
   @Override
   @SuppressWarnings("deprecation")
@@ -456,7 +442,7 @@ public class BlockDecorPlacer extends BlockDecorDirected
       if(current_stack.isEmpty()) { current_slot_index_ = 0; return false; }
       boolean no_space = false;
       final Item item = current_stack.getItem();
-      Block block = (item instanceof IPlantable) ? (((IPlantable)item).getPlant(world, pos).getBlock()) : Block.getBlockFromItem(item);
+      Block block = Block.getBlockFromItem(item);
       if(block == Blocks.AIR) {
         if(item != null) {
           return spit_out(facing); // Item not accepted
@@ -511,10 +497,15 @@ public class BlockDecorPlacer extends BlockDecorDirected
           final BlockState placement_state = (use_context==null) ? (block.getDefaultState()) : (block.getStateForPlacement(use_context));
           if(placement_state == null) {
             return spit_out(facing);
-          } else if(item instanceof BlockItem) {
+          } else if((use_context!=null) && (item instanceof BlockItem)) {
             if(((BlockItem)item).tryPlace(use_context) == ActionResultType.SUCCESS) {
               SoundType stype = block.getSoundType(placement_state, world, pos, null);
               if(stype != null) world.playSound(null, placement_pos, stype.getPlaceSound(), SoundCategory.BLOCKS, stype.getVolume()*0.6f, stype.getPitch());
+            } else if(block instanceof IPlantable) {
+              if(world.setBlockState(placement_pos, placement_state, 1|2|8)) {
+                SoundType stype = block.getSoundType(placement_state, world, pos, null);
+                if(stype != null) world.playSound(null, placement_pos, stype.getPlaceSound(), SoundCategory.BLOCKS, stype.getVolume()*0.6f, stype.getPitch());
+              }
             } else {
               return spit_out(facing);
             }

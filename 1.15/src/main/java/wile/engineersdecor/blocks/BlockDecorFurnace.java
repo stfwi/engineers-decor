@@ -11,7 +11,7 @@ package wile.engineersdecor.blocks;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.detail.ExtItems;
-import wile.engineersdecor.detail.Networking;
+import wile.engineersdecor.libmc.detail.Networking;
 import net.minecraft.tileentity.*;
 import net.minecraft.inventory.container.*;
 import net.minecraft.item.crafting.AbstractCookingRecipe;
@@ -63,14 +63,14 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 
-public class BlockDecorFurnace extends BlockDecorDirected
+public class BlockDecorFurnace extends BlockDecor.Horizontal
 {
   public static final BooleanProperty LIT = RedstoneTorchBlock.LIT;
 
   public BlockDecorFurnace(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
   {
     super(config, builder, unrotatedAABB);
-    setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH).with(LIT, false));
+    setDefaultState(super.getDefaultState().with(LIT, false));
   }
 
   @Override
@@ -85,7 +85,7 @@ public class BlockDecorFurnace extends BlockDecorDirected
   @Override
   @Nullable
   public BlockState getStateForPlacement(BlockItemUseContext context)
-  { return super.getStateForPlacement(context).with(FACING, context.getPlacementHorizontalFacing().getOpposite()).with(LIT, false); }
+  { return super.getStateForPlacement(context).with(LIT, false); }
 
   @Override
   @SuppressWarnings("deprecation")
@@ -171,7 +171,7 @@ public class BlockDecorFurnace extends BlockDecorDirected
     final double x=0.5+pos.getX(), y=0.5+pos.getY(), z=0.5+pos.getZ();
     final double xc=0.52, xr=rnd.nextDouble()*0.4-0.2, yr=(y-0.3+rnd.nextDouble()*0.2);
     if(rv < 0.1d) world.playSound(x, y, z, SoundEvents.BLOCK_FURNACE_FIRE_CRACKLE, SoundCategory.BLOCKS, 0.4f, 0.5f, false);
-    switch(state.get(FACING)) {
+    switch(state.get(HORIZONTAL_FACING)) {
       case WEST:  world.addParticle(ParticleTypes.SMOKE, x-xc, yr, z+xr, 0.0, 0.0, 0.0); break;
       case EAST:  world.addParticle(ParticleTypes.SMOKE, x+xc, yr, z+xr, 0.0, 0.0, 0.0); break;
       case NORTH: world.addParticle(ParticleTypes.SMOKE, x+xr, yr, z-xc, 0.0, 0.0, 0.0); break;
@@ -451,7 +451,7 @@ public class BlockDecorFurnace extends BlockDecorDirected
 
     @Override
     public boolean canInsertItem(int index, ItemStack itemStackIn, Direction direction)
-    { return isItemValidForSlot(index, itemStackIn); }
+    { return ((index==FIFO_INPUT_1_SLOT_NO) || (index==FIFO_INPUT_0_SLOT_NO) || (index==FIFO_FUEL_1_SLOT_NO) || (index==FIFO_FUEL_0_SLOT_NO)) && isItemValidForSlot(index, itemStackIn); }
 
     @Override
     public boolean canExtractItem(int index, ItemStack stack, Direction direction)

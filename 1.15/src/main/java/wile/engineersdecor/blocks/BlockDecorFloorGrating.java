@@ -15,17 +15,14 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 
-public class BlockDecorFloorGrating extends BlockDecor.WaterLoggable
+public class BlockDecorFloorGrating extends BlockDecor.WaterLoggable implements IDecorBlock
 {
   public BlockDecorFloorGrating(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
-  { super(config|CFG_WATERLOGGABLE, builder, unrotatedAABB); }
+  { super(config, builder, unrotatedAABB); }
 
   @Override
   public RenderTypeHint getRenderTypeHint()
@@ -36,39 +33,37 @@ public class BlockDecorFloorGrating extends BlockDecor.WaterLoggable
   { return true; }
 
   @Override
-  public void onLanded(IBlockReader world, Entity entity)
-  {
-    if(!(entity instanceof ItemEntity)) {
-      super.onLanded(world, entity);
-    } else {
-      entity.setMotion(0, -0.1,0);
-      entity.setPositionAndUpdate(entity.getPosition().getX(), entity.getPosition().getY()-0.3, entity.getPosition().getZ());
-    }
-  }
-
-  @Override
-  public void onFallenUpon(World world, BlockPos pos, Entity entity, float fallDistance)
-  {
-    if(!(entity instanceof ItemEntity)) {
-      super.onFallenUpon(world, pos, entity, fallDistance);
-    } else {
-      entity.setMotion(0, -0.1,0);
-      entity.setPositionAndUpdate(entity.getPosition().getX(), entity.getPosition().getY()-0.3, entity.getPosition().getZ());
-    }
-  }
+  @SuppressWarnings("deprecation")
+  public boolean isNormalCube(BlockState state, IBlockReader worldIn, BlockPos pos)
+  { return false; }
 
   @Override
   @SuppressWarnings("deprecation")
   public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity)
   {
     if(!(entity instanceof ItemEntity)) return;
-    if((entity.getPosition().getY()-pos.getY()) < 0.7) return;
-    double vy = MathHelper.clamp(entity.getMotion().y, -1.2, -0.2);
-    entity.setMotion(0, vy, 0);
-    entity.setPositionAndUpdate(pos.getX()+0.5, entity.getPosition().getY()-0.3, pos.getZ()+0.5);
+    final boolean colliding = ((entity.getPositionVec().y-pos.getY()) > 0.7);
+    if(colliding || (entity.getMotion().getY() > 0)) {
+      double x = pos.getX() + 0.5;
+      double y = MathHelper.clamp(entity.getPositionVec().y-0.3, pos.getY(), pos.getY()+0.6);
+      double z = pos.getZ() + 0.5;
+      double vx = entity.getMotion().getX();
+      double vy = entity.getMotion().getY();
+      double vz = entity.getMotion().getZ();
+      if(colliding) {
+        vx = 0;
+        vy = -0.3;
+        vz = 0;
+        if((entity.getPositionVec().y-pos.getY()) > 0.8) y = pos.getY() + 0.6;
+        entity.prevPosX = x+0.1;
+        entity.prevPosY = y+0.1;
+        entity.prevPosZ = z+0.1;
+      }
+      vy = MathHelper.clamp(vy, -0.3, 0);
+      entity.setMotion(vx, vy, vz);
+      entity.fallDistance = 0;
+      entity.setPositionAndUpdate(x,y,z);
+    }
   }
 
-  @Override
-  public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)
-  { return (context.getEntity() instanceof ItemEntity) ? VoxelShapes.empty() : super.getCollisionShape(state, world, pos, context); }
 }

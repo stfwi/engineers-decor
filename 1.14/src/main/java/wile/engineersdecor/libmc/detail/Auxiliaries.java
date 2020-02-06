@@ -1,16 +1,16 @@
 /*
- * @file ModAuxiliaries.java
+ * @file Auxiliaries.java
  * @author Stefan Wilhelm (wile)
  * @copyright (C) 2018 Stefan Wilhelm
  * @license MIT (see https://opensource.org/licenses/MIT)
  *
  * General commonly used functionality.
  */
-package wile.engineersdecor.detail;
+package wile.engineersdecor.libmc.detail;
 
-import wile.engineersdecor.ModEngineersDecor;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SharedConstants;
 import net.minecraft.util.text.ITextComponent;
@@ -32,16 +32,34 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
-public class ModAuxiliaries
+public class Auxiliaries
 {
-  public static final String MODID = ModEngineersDecor.MODID;
-  public static final Logger LOGGER = ModEngineersDecor.logger();
-  public static final ModEngineersDecor.ISidedProxy PROXY = ModEngineersDecor.proxy;
+  private static String modid;
+  private static Logger logger;
+  private static Supplier<CompoundNBT> server_config_supplier = ()->new CompoundNBT();
+
+  public static void init(String modid, Logger logger, Supplier<CompoundNBT> server_config_supplier)
+  {
+    Auxiliaries.modid = modid;
+    Auxiliaries.logger = logger;
+    Auxiliaries.server_config_supplier = server_config_supplier;
+  }
+
+  // -------------------------------------------------------------------------------------------------------------------
+  // Mod specific exports
+  // -------------------------------------------------------------------------------------------------------------------
+
+  public static String modid()
+  { return modid; }
+
+  public static Logger logger()
+  { return logger; }
 
   // -------------------------------------------------------------------------------------------------------------------
   // Sideness, system/environment, tagging interfaces
@@ -58,15 +76,15 @@ public class ModAuxiliaries
   @OnlyIn(Dist.CLIENT)
   public static final boolean isShiftDown()
   {
-    return (InputMappings.isKeyDown(PROXY.mc().func_228018_at_()/*getMainWindow()*/.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ||
-            InputMappings.isKeyDown(PROXY.mc().func_228018_at_()/*getMainWindow()*/.getHandle(), GLFW.GLFW_KEY_RIGHT_SHIFT));
+    return (InputMappings.isKeyDown(SidedProxy.mc().mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ||
+            InputMappings.isKeyDown(SidedProxy.mc().mainWindow.getHandle(), GLFW.GLFW_KEY_RIGHT_SHIFT));
   }
 
   @OnlyIn(Dist.CLIENT)
   public static final boolean isCtrlDown()
   {
-    return (InputMappings.isKeyDown(PROXY.mc().func_228018_at_()/*getMainWindow()*/.getHandle(), GLFW.GLFW_KEY_LEFT_CONTROL) ||
-            InputMappings.isKeyDown(PROXY.mc().func_228018_at_()/*getMainWindow()*/.getHandle(), GLFW.GLFW_KEY_RIGHT_CONTROL));
+    return (InputMappings.isKeyDown(SidedProxy.mc().mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_CONTROL) ||
+            InputMappings.isKeyDown(SidedProxy.mc().mainWindow.getHandle(), GLFW.GLFW_KEY_RIGHT_CONTROL));
   }
 
   // -------------------------------------------------------------------------------------------------------------------
@@ -74,44 +92,13 @@ public class ModAuxiliaries
   // -------------------------------------------------------------------------------------------------------------------
 
   public static final void logInfo(final String msg)
-  { LOGGER.info(msg); }
+  { logger.info(msg); }
 
   public static final void logWarn(final String msg)
-  { LOGGER.warn(msg); }
+  { logger.warn(msg); }
 
   public static final void logError(final String msg)
-  { LOGGER.error(msg); }
-
-  // -------------------------------------------------------------------------------------------------------------------
-  // Block handling
-  // -------------------------------------------------------------------------------------------------------------------
-
-  public static final AxisAlignedBB getPixeledAABB(double x0, double y0, double z0, double x1, double y1, double z1)
-  { return new AxisAlignedBB(x0/16.0, y0/16.0, z0/16.0, x1/16.0, y1/16.0, z1/16.0); }
-
-  public static final AxisAlignedBB getRotatedAABB(AxisAlignedBB bb, Direction new_facing, boolean horizontal_rotation)
-  {
-    if(!horizontal_rotation) {
-      switch(new_facing.getIndex()) {
-        case 0: return new AxisAlignedBB(1-bb.maxX, 1-bb.maxZ, 1-bb.maxY, 1-bb.minX, 1-bb.minZ, 1-bb.minY); // D
-        case 1: return new AxisAlignedBB(1-bb.maxX,   bb.minZ,   bb.minY, 1-bb.minX,   bb.maxZ,   bb.maxY); // U
-        case 2: return new AxisAlignedBB(1-bb.maxX,   bb.minY, 1-bb.maxZ, 1-bb.minX,   bb.maxY, 1-bb.minZ); // N
-        case 3: return new AxisAlignedBB(  bb.minX,   bb.minY,   bb.minZ,   bb.maxX,   bb.maxY,   bb.maxZ); // S --> bb
-        case 4: return new AxisAlignedBB(1-bb.maxZ,   bb.minY,   bb.minX, 1-bb.minZ,   bb.maxY,   bb.maxX); // W
-        case 5: return new AxisAlignedBB(  bb.minZ,   bb.minY, 1-bb.maxX,   bb.maxZ,   bb.maxY, 1-bb.minX); // E
-      }
-    } else {
-      switch(new_facing.getIndex()) {
-        case 0: return new AxisAlignedBB(  bb.minX, bb.minY,   bb.minZ,   bb.maxX, bb.maxY,   bb.maxZ); // D --> bb
-        case 1: return new AxisAlignedBB(  bb.minX, bb.minY,   bb.minZ,   bb.maxX, bb.maxY,   bb.maxZ); // U --> bb
-        case 2: return new AxisAlignedBB(  bb.minX, bb.minY,   bb.minZ,   bb.maxX, bb.maxY,   bb.maxZ); // N --> bb
-        case 3: return new AxisAlignedBB(1-bb.maxX, bb.minY, 1-bb.maxZ, 1-bb.minX, bb.maxY, 1-bb.minZ); // S
-        case 4: return new AxisAlignedBB(  bb.minZ, bb.minY, 1-bb.maxX,   bb.maxZ, bb.maxY, 1-bb.minX); // W
-        case 5: return new AxisAlignedBB(1-bb.maxZ, bb.minY,   bb.minX, 1-bb.minZ, bb.maxY,   bb.maxX); // E
-      }
-    }
-    return bb;
-  }
+  { logger.error(msg); }
 
   // -------------------------------------------------------------------------------------------------------------------
   // Localization, text formatting
@@ -123,7 +110,7 @@ public class ModAuxiliaries
    */
   public static TranslationTextComponent localizable(String modtrkey, @Nullable TextFormatting color, Object... args)
   {
-    TranslationTextComponent tr = new TranslationTextComponent(MODID+"."+modtrkey, args);
+    TranslationTextComponent tr = new TranslationTextComponent(modid+"."+modtrkey, args);
     if(color!=null) tr.getStyle().setColor(color);
     return tr;
   }
@@ -132,7 +119,7 @@ public class ModAuxiliaries
   { return localizable(modtrkey, null); }
 
   public static TranslationTextComponent localizable_block_key(String blocksubkey)
-  { return new TranslationTextComponent("block."+MODID+"."+blocksubkey); }
+  { return new TranslationTextComponent("block."+modid+"."+blocksubkey); }
 
   @OnlyIn(Dist.CLIENT)
   public static String localize(String translationKey, Object... args)
@@ -153,10 +140,10 @@ public class ModAuxiliaries
           boolean not = key.startsWith("!");
           if(not) key = key.replaceFirst("!", "");
           m = kv[1].trim();
-          if(!ModConfig.getServerConfig().contains(key)) {
+          if(!server_config_supplier.get().contains(key)) {
             m = "";
           } else {
-            boolean r = ModConfig.getServerConfig().getBoolean(key);
+            boolean r = server_config_supplier.get().getBoolean(key);
             if(not) r = !r;
             if(!r) m = "";
           }
@@ -197,14 +184,14 @@ public class ModAuxiliaries
     {
       // Note: intentionally not using keybinding here, this must be `control` or `shift`. MC uses lwjgl Keyboard,
       //       so using this also here should be ok.
-      final boolean help_available = (helpTranslationKey != null) && ModAuxiliaries.hasTranslation(helpTranslationKey + ".help");
-      final boolean tip_available = (advancedTooltipTranslationKey != null) && ModAuxiliaries.hasTranslation(helpTranslationKey + ".tip");
+      final boolean help_available = (helpTranslationKey != null) && Auxiliaries.hasTranslation(helpTranslationKey + ".help");
+      final boolean tip_available = (advancedTooltipTranslationKey != null) && Auxiliaries.hasTranslation(helpTranslationKey + ".tip");
       if((!help_available) && (!tip_available)) return false;
       if(helpCondition()) {
         if(!help_available) return false;
         String s = localize(helpTranslationKey + ".help");
         if(s.isEmpty()) return false;
-        tooltip.add(new StringTextComponent(s));
+        tooltip.add(new StringTextComponent(s)); // @todo: check how to optimise that (to use TranslationTextComponent directly without compat losses)
         return true;
       } else if(extendedTipCondition()) {
         if(!tip_available) return false;
@@ -214,8 +201,8 @@ public class ModAuxiliaries
         return true;
       } else if(addAdvancedTooltipHints) {
         String s = "";
-        if(tip_available) s += localize(MODID + ".tooltip.hint.extended") + (help_available ? " " : "");
-        if(help_available) s += localize(MODID + ".tooltip.hint.help");
+        if(tip_available) s += localize(modid + ".tooltip.hint.extended") + (help_available ? " " : "");
+        if(help_available) s += localize(modid + ".tooltip.hint.help");
         tooltip.add(new StringTextComponent(s));
       }
       return false;
@@ -231,6 +218,37 @@ public class ModAuxiliaries
     { return addInformation(stack.getTranslationKey(), stack.getTranslationKey(), tooltip, flag, addAdvancedTooltipHints); }
   }
 
+  // -------------------------------------------------------------------------------------------------------------------
+  // Block handling
+  // -------------------------------------------------------------------------------------------------------------------
+
+  public static final AxisAlignedBB getPixeledAABB(double x0, double y0, double z0, double x1, double y1, double z1)
+  { return new AxisAlignedBB(x0/16.0, y0/16.0, z0/16.0, x1/16.0, y1/16.0, z1/16.0); }
+
+  public static final AxisAlignedBB getRotatedAABB(AxisAlignedBB bb, Direction new_facing, boolean horizontal_rotation)
+  {
+    if(!horizontal_rotation) {
+      switch(new_facing.getIndex()) {
+        case 0: return new AxisAlignedBB(1-bb.maxX,   bb.minZ,   bb.minY, 1-bb.minX,   bb.maxZ,   bb.maxY); // D
+        case 1: return new AxisAlignedBB(1-bb.maxX, 1-bb.maxZ, 1-bb.maxY, 1-bb.minX, 1-bb.minZ, 1-bb.minY); // U
+        case 2: return new AxisAlignedBB(  bb.minX,   bb.minY,   bb.minZ,   bb.maxX,   bb.maxY,   bb.maxZ); // N --> bb
+        case 3: return new AxisAlignedBB(1-bb.maxX,   bb.minY, 1-bb.maxZ, 1-bb.minX,   bb.maxY, 1-bb.minZ); // S
+        case 4: return new AxisAlignedBB(  bb.minZ,   bb.minY, 1-bb.maxX,   bb.maxZ,   bb.maxY, 1-bb.minX); // W
+        case 5: return new AxisAlignedBB(1-bb.maxZ,   bb.minY,   bb.minX, 1-bb.minZ,   bb.maxY,   bb.maxX); // E
+      }
+    } else {
+      switch(new_facing.getIndex()) {
+        case 0: return new AxisAlignedBB(  bb.minX, bb.minY,   bb.minZ,   bb.maxX, bb.maxY,   bb.maxZ); // D --> bb
+        case 1: return new AxisAlignedBB(  bb.minX, bb.minY,   bb.minZ,   bb.maxX, bb.maxY,   bb.maxZ); // U --> bb
+        case 2: return new AxisAlignedBB(  bb.minX, bb.minY,   bb.minZ,   bb.maxX, bb.maxY,   bb.maxZ); // N --> bb
+        case 3: return new AxisAlignedBB(1-bb.maxX, bb.minY, 1-bb.maxZ, 1-bb.minX, bb.maxY, 1-bb.minZ); // S
+        case 4: return new AxisAlignedBB(  bb.minZ, bb.minY, 1-bb.maxX,   bb.maxZ, bb.maxY, 1-bb.minX); // W
+        case 5: return new AxisAlignedBB(1-bb.maxZ, bb.minY,   bb.minX, 1-bb.minZ, bb.maxY,   bb.maxX); // E
+      }
+    }
+    return bb;
+  }
+
   @SuppressWarnings("unused")
   public static void playerChatMessage(final PlayerEntity player, final String message)
   {
@@ -242,10 +260,9 @@ public class ModAuxiliaries
   // JAR resource related
   // -------------------------------------------------------------------------------------------------------------------
 
-  public static String loadResourceText(String path)
+  public static String loadResourceText(InputStream is)
   {
     try {
-      InputStream is = ModAuxiliaries.class.getResourceAsStream(path);
       if(is==null) return "";
       BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
       return br.lines().collect(Collectors.joining("\n"));
@@ -254,15 +271,17 @@ public class ModAuxiliaries
     }
   }
 
+  public static String loadResourceText(String path)
+  { return loadResourceText(Auxiliaries.class.getResourceAsStream(path)); }
+
   public static void logGitVersion(String mod_name)
   {
     try {
       // Done during construction to have an exact version in case of a crash while registering.
-      String version = ModAuxiliaries.loadResourceText("/.gitversion-" + MODID).trim();
+      String version = Auxiliaries.loadResourceText("/.gitversion-" + modid).trim();
       logInfo(mod_name+((version.isEmpty())?(" (dev build)"):(" GIT id #"+version)) + ".");
     } catch(Throwable e) {
       // (void)e; well, then not. Priority is not to get unneeded crashes because of version logging.
     }
   }
-
 }

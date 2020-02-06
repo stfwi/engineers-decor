@@ -10,6 +10,7 @@ package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
 import net.minecraft.entity.*;
 import net.minecraft.entity.monster.*;
 import net.minecraft.nbt.CompoundNBT;
@@ -28,7 +29,7 @@ import java.util.List;
 import java.util.Random;
 
 
-public class BlockDecorChair extends BlockDecorDirected.WaterLoggable
+public class BlockDecorChair extends StandardBlocks.HorizontalWaterLoggable
 {
   private static boolean sitting_enabled = true;
   private static double sitting_probability = 0.1;

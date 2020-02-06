@@ -10,26 +10,20 @@ package wile.engineersdecor.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.IWaterLoggable;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.StateContainer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import javax.annotation.Nullable;
 
-public class BlockDecorWindow extends BlockDecorDirected implements IWaterLoggable
+public class BlockDecorWindow extends BlockDecor.DirectedWaterLoggable
 {
   public BlockDecorWindow(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
-  { super(config|CFG_WATERLOGGABLE, builder, unrotatedAABB); }
+  { super(config, builder, unrotatedAABB); }
 
   @Override
   public RenderTypeHint getRenderTypeHint()
   { return RenderTypeHint.TRANSLUCENT; }
-
-  @Override
-  protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-  { super.fillStateContainer(builder); builder.add(WATERLOGGED); }
 
   @Override
   @Nullable
@@ -49,5 +43,4 @@ public class BlockDecorWindow extends BlockDecorDirected implements IWaterLoggab
     }
     return super.getStateForPlacement(context).with(FACING, facing);
   }
-
 }

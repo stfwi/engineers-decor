@@ -4,13 +4,9 @@
     "facing=south,lit=false": { "model": "engineersdecor:block/furnace/small_electrical_furnace_model", "y": 180 },
     "facing=west,lit=false":  { "model": "engineersdecor:block/furnace/small_electrical_furnace_model", "y": 270 },
     "facing=east,lit=false":  { "model": "engineersdecor:block/furnace/small_electrical_furnace_model", "y":  90 },
-    "facing=up,lit=false":    { "model": "engineersdecor:block/furnace/small_electrical_furnace_model", "y":   0 },
-    "facing=down,lit=false":  { "model": "engineersdecor:block/furnace/small_electrical_furnace_model", "y":   0 },
     "facing=north,lit=true":  { "model": "engineersdecor:block/furnace/small_electrical_furnace_model_lit", "y":   0 },
     "facing=south,lit=true":  { "model": "engineersdecor:block/furnace/small_electrical_furnace_model_lit", "y": 180 },
     "facing=west,lit=true":   { "model": "engineersdecor:block/furnace/small_electrical_furnace_model_lit", "y": 270 },
-    "facing=east,lit=true":   { "model": "engineersdecor:block/furnace/small_electrical_furnace_model_lit", "y":  90 },
-    "facing=up,lit=true":     { "model": "engineersdecor:block/furnace/small_electrical_furnace_model_lit", "y":  0 },
-    "facing=down,lit=true":   { "model": "engineersdecor:block/furnace/small_electrical_furnace_model_lit", "y":  0 }
+    "facing=east,lit=true":   { "model": "engineersdecor:block/furnace/small_electrical_furnace_model_lit", "y":  90 }
   }
 }

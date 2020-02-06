@@ -27,11 +27,12 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
 
 import javax.annotation.Nullable;
 
 
-public class BlockDecorSolarPanel extends BlockDecor
+public class BlockDecorSolarPanel extends StandardBlocks.BaseBlock
 {
   public static final IntegerProperty EXPOSITION = IntegerProperty.create("exposition", 0, 4);
 

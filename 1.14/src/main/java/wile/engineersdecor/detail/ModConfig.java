@@ -12,6 +12,8 @@ package wile.engineersdecor.detail;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.blocks.*;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.OptionalRecipeCondition;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -500,7 +502,7 @@ public class ModConfig
     if(COMMON == null) return false;
     try {
       if(!COMMON.with_experimental.get()) {
-        if(block instanceof ModAuxiliaries.IExperimentalFeature) return true;
+        if(block instanceof Auxiliaries.IExperimentalFeature) return true;
         if(ModContent.isExperimentalBlock(block)) return true;
       }
       final String rn = block.getRegistryName().getPath();
@@ -595,7 +597,6 @@ public class ModConfig
   private static final CompoundNBT server_config_ = new CompoundNBT();
   public static boolean without_crafting_table = false;
   public static boolean immersiveengineering_installed = false;
-  public static boolean without_direct_slab_pickup = false;
   public static boolean with_creative_mode_device_drops = false;
   private static boolean with_experimental_features_ = false;
   private static boolean without_recipes_ = false;
@@ -605,6 +606,7 @@ public class ModConfig
 
   public static final void apply()
   {
+    OptionalRecipeCondition.on_config(with_experimental_features_, without_recipes_, (block)->isOptedOut(block), (item)->isOptedOut(item));
     BlockDecorFurnace.BTileEntity.on_config(COMMON.furnace_smelting_speed_percent.get(), COMMON.furnace_fuel_efficiency_percent.get(), COMMON.furnace_boost_energy_consumption.get());
     BlockDecorChair.on_config(COMMON.without_chair_sitting.get(), COMMON.without_mob_chair_sitting.get(), COMMON.chair_mob_sitting_probability_percent.get(), COMMON.chair_mob_standup_probability_percent.get());
     BlockDecorLadder.on_config(COMMON.without_ladder_speed_boost.get());
@@ -615,11 +617,12 @@ public class ModConfig
     BlockDecorBreaker.BTileEntity.on_config(COMMON.block_breaker_power_consumption.get(), COMMON.block_breaker_reluctance.get(), COMMON.block_breaker_min_breaking_time.get(), COMMON.block_breaker_requires_power.get());
     BlockDecorTreeCutter.BTileEntity.on_config(COMMON.tree_cuttter_energy_consumption.get(), COMMON.tree_cuttter_cutting_time_needed.get(), COMMON.tree_cuttter_requires_power.get());
     BlockDecorMilker.BTileEntity.on_config(COMMON.milking_machine_energy_consumption.get(), COMMON.milking_machine_milking_delay.get());
+    BlockDecorSlab.on_config(!COMMON.without_direct_slab_pickup.get());
+    BlockDecorHalfSlab.on_config(!COMMON.without_direct_slab_pickup.get());
     without_crafting_table = isOptedOut(ModContent.TREATED_WOOD_CRAFTING_TABLE);
-    immersiveengineering_installed = ModAuxiliaries.isModLoaded("immersiveengineering");
+    immersiveengineering_installed = Auxiliaries.isModLoaded("immersiveengineering");
     with_experimental_features_ = COMMON.with_experimental.get();
     without_recipes_ = COMMON.without_recipes.get();
-    without_direct_slab_pickup = COMMON.without_direct_slab_pickup.get();
     if(with_experimental_features_) {
       ModEngineersDecor.logger().info("Config: EXPERIMENTAL FEATURES ENABLED.");
     }

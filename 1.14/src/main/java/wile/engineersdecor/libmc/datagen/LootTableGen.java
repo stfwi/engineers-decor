@@ -6,11 +6,10 @@
  *
  * Loot table generator.
  */
-package wile.engineersdecor.datagen;
+package wile.engineersdecor.libmc.datagen;
 
-import wile.engineersdecor.ModContent;
-import wile.engineersdecor.blocks.IDecorBlock;
-import wile.engineersdecor.detail.ModAuxiliaries;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
 import net.minecraft.block.Block;
 import net.minecraft.data.*;
 import net.minecraft.util.ResourceLocation;
@@ -26,24 +25,26 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 
-public class ModLootTables extends LootTableProvider
+public class LootTableGen extends LootTableProvider
 {
   private static final Logger LOGGER = LogManager.getLogger();
   private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
   private final DataGenerator generator;
+  private final Supplier<List<Block>> block_listing;
 
   //--------------------------------------------------------------------------------------------------------------------
 
-  public ModLootTables(DataGenerator gen)
-  { super(gen); generator=gen; }
+  public LootTableGen(DataGenerator gen, Supplier<List<Block>> block_list_supplier)
+  { super(gen); generator=gen; block_listing = block_list_supplier; }
 
   //-- LootTableProvider -----------------------------------------------------------------------------------------------
 
   @Override
   public String getName()
-  { return ModAuxiliaries.MODID + " Loot Tables"; }
+  { return Auxiliaries.modid() + " Loot Tables"; }
 
   @Override
   public void act(DirectoryCache cache)
@@ -54,9 +55,9 @@ public class ModLootTables extends LootTableProvider
   private Map<ResourceLocation, LootTable> generate()
   {
     final HashMap<ResourceLocation, LootTable> tables = new HashMap<ResourceLocation, LootTable>();
-    final List<Block> blocks = ModContent.allBlocks();
+    final List<Block> blocks = block_listing.get();
     blocks.forEach((block)->{
-      if((!(block instanceof IDecorBlock)) || (!(((IDecorBlock)block).hasDynamicDropList()))) {
+      if((!(block instanceof StandardBlocks.IStandardBlock)) || (!(((StandardBlocks.IStandardBlock)block).hasDynamicDropList()))) {
         tables.put(
           block.getLootTable(),
           defaultBlockDrops(block.getRegistryName().getPath() + "_dlt", block)

@@ -14,7 +14,8 @@ package wile.engineersdecor;
 
 
 import wile.engineersdecor.blocks.*;
-import wile.engineersdecor.detail.ModAuxiliaries;
+import wile.engineersdecor.libmc.blocks.StandardBlocks.IStandardBlock;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -219,55 +220,55 @@ public class ModContent
   public static final BlockDecor.WaterLoggable TREATED_WOOD_TABLE = (BlockDecor.WaterLoggable)(new BlockDecor.WaterLoggable(
     BlockDecor.CFG_CUTOUT,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD),
-    ModAuxiliaries.getPixeledAABB(1,0,1, 15,15.9,15)
+    Auxiliaries.getPixeledAABB(1,0,1, 15,15.9,15)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "treated_wood_table"));
 
   public static final BlockDecorChair TREATED_WOOD_STOOL = (BlockDecorChair)(new BlockDecorChair(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD),
-    ModAuxiliaries.getPixeledAABB(4.1,0,4.1, 11.8,8.8,11.8)
+    Auxiliaries.getPixeledAABB(4.1,0,4.1, 11.8,8.8,11.8)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "treated_wood_stool"));
 
   public static final BlockDecor.WaterLoggable TREATED_WOOD_SIDE_TABLE = (BlockDecor.WaterLoggable)(new BlockDecor.WaterLoggable(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD),
-    ModAuxiliaries.getPixeledAABB(2,0,2, 14,15.9,14)
+    Auxiliaries.getPixeledAABB(2,0,2, 14,15.9,14)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "treated_wood_side_table"));
 
-  public static final BlockDecorDirected.WaterLoggable TREATED_WOOD_WINDOWSILL = (BlockDecorDirected.WaterLoggable)(new BlockDecorDirected.WaterLoggable(
+  public static final BlockDecor.DirectedWaterLoggable TREATED_WOOD_WINDOWSILL = (BlockDecor.DirectedWaterLoggable)(new BlockDecor.DirectedWaterLoggable(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_FACING_PLACEMENT,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD),
-    ModAuxiliaries.getPixeledAABB(0.5,15,10.5, 15.5,16,16)
+    Auxiliaries.getPixeledAABB(0.5,15,10.5, 15.5,16,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "treated_wood_windowsill"));
 
-  public static final BlockDecorDirected.WaterLoggable TREATED_WOOD_BROAD_WINDOWSILL = (BlockDecorDirected.WaterLoggable)(new BlockDecorDirected.WaterLoggable(
+  public static final BlockDecor.DirectedWaterLoggable TREATED_WOOD_BROAD_WINDOWSILL = (BlockDecor.DirectedWaterLoggable)(new BlockDecor.DirectedWaterLoggable(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_FACING_PLACEMENT,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD),
-    ModAuxiliaries.getPixeledAABB(0,14.5,4, 16,16,16)
+    Auxiliaries.getPixeledAABB(0,14.5,4, 16,16,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "treated_wood_broad_windowsill"));
 
-  public static final BlockDecorDirected.WaterLoggable INSET_LIGHT_IRON = (BlockDecorDirected.WaterLoggable)(new BlockDecorDirected.WaterLoggable(
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+  public static final BlockDecor.DirectedWaterLoggable INSET_LIGHT_IRON = (BlockDecor.DirectedWaterLoggable)(new BlockDecor.DirectedWaterLoggable(
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).lightValue(15),
-    ModAuxiliaries.getPixeledAABB(5.2,5.2,15.7, 10.8,10.8,16.0)
+    Auxiliaries.getPixeledAABB(5.2,5.2,0, 10.8,10.8,0.3)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "iron_inset_light"));
 
-  public static final BlockDecorDirected.WaterLoggable FLOOR_EDGE_LIGHT_IRON = (BlockDecorDirected.WaterLoggable)(new BlockDecorDirected.WaterLoggable(
+  public static final BlockDecor.DirectedWaterLoggable FLOOR_EDGE_LIGHT_IRON = (BlockDecor.DirectedWaterLoggable)(new BlockDecor.DirectedWaterLoggable(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_HORIZIONTAL,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).lightValue(15),
-    ModAuxiliaries.getPixeledAABB(5,0,0, 11,2,1)
+    Auxiliaries.getPixeledAABB(5,0,0, 11,2,0.5)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "iron_floor_edge_light"));
 
   public static final BlockDecor.WaterLoggable STEEL_TABLE = (BlockDecor.WaterLoggable)(new BlockDecor.WaterLoggable(
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
+    BlockDecor.CFG_CUTOUT,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD),
-    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+    Auxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "steel_table"));
 
-  public static final BlockDecor STEEL_FLOOR_GRATING = (BlockDecorFloorGrating)(new BlockDecorFloorGrating(
+  public static final BlockDecorFloorGrating STEEL_FLOOR_GRATING = (BlockDecorFloorGrating)(new BlockDecorFloorGrating(
     BlockDecor.CFG_CUTOUT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).func_226896_b_(),
-    ModAuxiliaries.getPixeledAABB(0,14,0, 16,16,16)
+    Auxiliaries.getPixeledAABB(0,14,0, 16,15.9,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "steel_floor_grating"));
 
   // -------------------------------------------------------------------------------------------------------------------
@@ -275,13 +276,13 @@ public class ModContent
   public static final BlockDecorWindow TREATED_WOOD_WINDOW = (BlockDecorWindow)(new BlockDecorWindow(
     BlockDecor.CFG_LOOK_PLACEMENT,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.GLASS),
-    ModAuxiliaries.getPixeledAABB(0,0,7, 16,16,9)
+    Auxiliaries.getPixeledAABB(0,0,7, 16,16,9)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "treated_wood_window"));
 
   public static final BlockDecorWindow STEEL_FRAMED_WINDOW = (BlockDecorWindow)(new BlockDecorWindow(
     BlockDecor.CFG_LOOK_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.GLASS),
-    ModAuxiliaries.getPixeledAABB(0,0,7.5, 16,16,8.5)
+    Auxiliaries.getPixeledAABB(0,0,7.5, 16,16,8.5)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "steel_framed_window"));
 
   // -------------------------------------------------------------------------------------------------------------------
@@ -289,87 +290,87 @@ public class ModContent
   public static final BlockDecorStraightPole TREATED_WOOD_POLE = (BlockDecorStraightPole)(new BlockDecorStraightPole(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_IF_SAME,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD),
-    ModAuxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16)
+    Auxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "treated_wood_pole"));
 
   public static final BlockDecorStraightPole TREATED_WOOD_POLE_HEAD = (BlockDecorStraightPole)(new BlockDecorStraightPole(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_IF_SAME,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD),
-    ModAuxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16)
+    Auxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "treated_wood_pole_head"));
 
   public static final BlockDecorStraightPole TREATED_WOOD_POLE_SUPPORT = (BlockDecorStraightPole)(new BlockDecorStraightPole(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_IF_SAME,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD),
-    ModAuxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16)
+    Auxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "treated_wood_pole_support"));
 
   public static final BlockDecorStraightPole THIN_STEEL_POLE = (BlockDecorStraightPole)(new BlockDecorStraightPole(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
-    ModAuxiliaries.getPixeledAABB(6,6,0, 10,10,16)
+    Auxiliaries.getPixeledAABB(6,6,0, 10,10,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "thin_steel_pole"));
 
   public static final BlockDecorStraightPole THIN_STEEL_POLE_HEAD = (BlockDecorStraightPole)(new BlockDecorStraightPole(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_IF_SAME,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).func_226896_b_(),
-    ModAuxiliaries.getPixeledAABB(6,6,0, 10,10,16)
+    Auxiliaries.getPixeledAABB(6,6,0, 10,10,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "thin_steel_pole_head"));
 
   public static final BlockDecorStraightPole THICK_STEEL_POLE = (BlockDecorStraightPole)(new BlockDecorStraightPole(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
-    ModAuxiliaries.getPixeledAABB(5,5,0, 11,11,16)
+    Auxiliaries.getPixeledAABB(5,5,0, 11,11,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "thick_steel_pole"));
 
   public static final BlockDecorStraightPole THICK_STEEL_POLE_HEAD = (BlockDecorStraightPole)(new BlockDecorStraightPole(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_IF_SAME,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).func_226896_b_(),
-    ModAuxiliaries.getPixeledAABB(5,5,0, 11,11,16)
+    Auxiliaries.getPixeledAABB(5,5,0, 11,11,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "thick_steel_pole_head"));
 
   public static final BlockDecorHorizontalSupport STEEL_DOUBLE_T_SUPPORT = (BlockDecorHorizontalSupport)(new BlockDecorHorizontalSupport(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
-    ModAuxiliaries.getPixeledAABB(5,11,0, 11,16,16)
+    Auxiliaries.getPixeledAABB(5,11,0, 11,16,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "steel_double_t_support"));
 
   // -------------------------------------------------------------------------------------------------------------------
 
-  public static final BlockDecorDirected.WaterLoggable SIGN_MODLOGO = (BlockDecorDirected.WaterLoggable)(new BlockDecorDirected.WaterLoggable(
+  public static final BlockDecor.DirectedWaterLoggable SIGN_MODLOGO = (BlockDecor.DirectedWaterLoggable)(new BlockDecor.DirectedWaterLoggable(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_HORIZIONTAL,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1000f).sound(SoundType.WOOD).lightValue(1),
-    ModAuxiliaries.getPixeledAABB(0,0,15.6, 16,16,16.0)
+    Auxiliaries.getPixeledAABB(0,0,15.6, 16,16,16.0)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_decor"));
 
-  public static final BlockDecorDirected.WaterLoggable SIGN_HOTWIRE = (BlockDecorDirected.WaterLoggable)(new BlockDecorDirected.WaterLoggable(
+  public static final BlockDecor.DirectedWaterLoggable SIGN_HOTWIRE = (BlockDecor.DirectedWaterLoggable)(new BlockDecor.DirectedWaterLoggable(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_HORIZIONTAL,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1f).sound(SoundType.WOOD),
-    ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
+    Auxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_hotwire"));
 
-  public static final BlockDecorDirected.WaterLoggable SIGN_DANGER = (BlockDecorDirected.WaterLoggable)(new BlockDecorDirected.WaterLoggable(
+  public static final BlockDecor.DirectedWaterLoggable SIGN_DANGER = (BlockDecor.DirectedWaterLoggable)(new BlockDecor.DirectedWaterLoggable(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_HORIZIONTAL,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1f).sound(SoundType.WOOD),
-    ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
+    Auxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_danger"));
 
-  public static final BlockDecorDirected.WaterLoggable SIGN_DEFENSE = (BlockDecorDirected.WaterLoggable)(new BlockDecorDirected.WaterLoggable(
+  public static final BlockDecor.DirectedWaterLoggable SIGN_DEFENSE = (BlockDecor.DirectedWaterLoggable)(new BlockDecor.DirectedWaterLoggable(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_HORIZIONTAL,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1f).sound(SoundType.WOOD),
-    ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
+    Auxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_defense"));
 
-  public static final BlockDecorDirected.WaterLoggable SIGN_FACTORY_AREA = (BlockDecorDirected.WaterLoggable)(new BlockDecorDirected.WaterLoggable(
+  public static final BlockDecor.DirectedWaterLoggable SIGN_FACTORY_AREA = (BlockDecor.DirectedWaterLoggable)(new BlockDecor.DirectedWaterLoggable(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_HORIZIONTAL,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1f).sound(SoundType.WOOD),
-    ModAuxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
+    Auxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_factoryarea"));
 
-  public static final BlockDecorDirected.WaterLoggable SIGN_EXIT = (BlockDecorDirected.WaterLoggable)(new BlockDecorDirected.WaterLoggable(
+  public static final BlockDecor.DirectedWaterLoggable SIGN_EXIT = (BlockDecor.DirectedWaterLoggable)(new BlockDecor.DirectedWaterLoggable(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_HORIZIONTAL,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1f).sound(SoundType.WOOD),
-    ModAuxiliaries.getPixeledAABB(3,7,15.6, 13,13,16)
+    Auxiliaries.getPixeledAABB(3,7,15.6, 13,13,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_exit"));
 
   // -------------------------------------------------------------------------------------------------------------------
@@ -377,103 +378,106 @@ public class ModContent
   public static final BlockDecorCraftingTable.CraftingTableBlock TREATED_WOOD_CRAFTING_TABLE = (BlockDecorCraftingTable.CraftingTableBlock)(new BlockDecorCraftingTable.CraftingTableBlock(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 15f).sound(SoundType.WOOD),
-    ModAuxiliaries.getPixeledAABB(1,0,1, 15,15.9,15)
+    Auxiliaries.getPixeledAABB(1,0,1, 15,15.9,15)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "treated_wood_crafting_table"));
 
   public static final BlockDecorFurnace SMALL_LAB_FURNACE = (BlockDecorFurnace)(new BlockDecorFurnace(
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 15f).sound(SoundType.METAL).func_226896_b_(),
-    ModAuxiliaries.getPixeledAABB(1,0,1, 15,15,16.0)
+    Auxiliaries.getPixeledAABB(1,0,1, 15,15,16.0)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_lab_furnace"));
 
   public static final BlockDecorFurnaceElectrical SMALL_ELECTRICAL_FURNACE = (BlockDecorFurnaceElectrical)(new BlockDecorFurnaceElectrical(
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_ELECTRICAL,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).func_226896_b_(),
-    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+    Auxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_electrical_furnace"));
 
   public static final BlockDecorDropper FACTORY_DROPPER = (BlockDecorDropper)(new BlockDecorDropper(
-    BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_REDSTONE_CONTROLLED,
+    BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).func_226896_b_(),
-    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,15)
+    Auxiliaries.getPixeledAABB(0,0,1, 16,16,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "factory_dropper"));
 
   public static final BlockDecorPlacer FACTORY_PLACER = (BlockDecorPlacer)(new BlockDecorPlacer(
-    BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_REDSTONE_CONTROLLED,
+    BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).func_226896_b_(),
-    ModAuxiliaries.getPixeledAABB(2,2,2, 14,14,14)
+    Auxiliaries.getPixeledAABB(2,2,2, 14,14,14)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "factory_placer"));
 
   public static final BlockDecorBreaker SMALL_BLOCK_BREAKER = (BlockDecorBreaker)(new BlockDecorBreaker(
     BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).func_226896_b_(),
-    ModAuxiliaries.getPixeledAABB(0,0,0, 16,12,16)
+    Auxiliaries.getPixeledAABB(0,0,0, 16,12,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_block_breaker"));
 
   public static final BlockDecorHopper FACTORY_HOPPER = (BlockDecorHopper)(new BlockDecorHopper(
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_REDSTONE_CONTROLLED,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).func_226896_b_(),
-    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+    Auxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "factory_hopper"));
 
   public static final BlockDecorWasteIncinerator SMALL_WASTE_INCINERATOR = (BlockDecorWasteIncinerator)(new BlockDecorWasteIncinerator(
-    BlockDecor.CFG_DEFAULT|BlockDecor.CFG_ELECTRICAL,
+    BlockDecor.CFG_DEFAULT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
-    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+    Auxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_waste_incinerator"));
 
   public static final BlockDecorMineralSmelter SMALL_MINERAL_SMELTER = (BlockDecorMineralSmelter)(new BlockDecorMineralSmelter(
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_ELECTRICAL,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).func_226896_b_(),
-    ModAuxiliaries.getPixeledAABB(1.1,0,1.1, 14.9,16,14.9)
+    Auxiliaries.getPixeledAABB(1.1,0,1.1, 14.9,16,14.9)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_mineral_smelter"));
 
   public static final BlockDecorSolarPanel SMALL_SOLAR_PANEL = (BlockDecorSolarPanel)(new BlockDecorSolarPanel(
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_ELECTRICAL,
+    BlockDecor.CFG_CUTOUT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).func_226896_b_(),
-    ModAuxiliaries.getPixeledAABB(0,0,0, 16,11.5,16)
+    Auxiliaries.getPixeledAABB(0,0,0, 16,11.5,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_solar_panel"));
 
   public static final BlockDecorMilker SMALL_MILKING_MACHINE = (BlockDecorMilker)(new BlockDecorMilker(
-    BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_CUTOUT|BlockDecor.CFG_ELECTRICAL,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).func_226896_b_(),
-    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,13)
+    Auxiliaries.getPixeledAABB(0,0,0, 16,16,13)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_milking_machine"));
 
   public static final BlockDecorTreeCutter SMALL_TREE_CUTTER = (BlockDecorTreeCutter)(new BlockDecorTreeCutter(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).func_226896_b_(),
-    ModAuxiliaries.getPixeledAABB(0,0,0, 16,8,16)
+    Auxiliaries.getPixeledAABB(0,0,0, 16,8,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_tree_cutter"));
 
   public static final BlockDecorPipeValve STRAIGHT_CHECK_VALVE = (BlockDecorPipeValve)(new BlockDecorPipeValve(
-    BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|BlockDecor.CFG_CUTOUT,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
+    BlockDecorPipeValve.CFG_CHECK_VALVE,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).func_226896_b_(),
-    ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
+    Auxiliaries.getPixeledAABB(4,4,0, 12,12,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "straight_pipe_valve"));
 
   public static final BlockDecorPipeValve STRAIGHT_REDSTONE_VALVE = (BlockDecorPipeValve)(new BlockDecorPipeValve(
-    BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|BlockDecor.CFG_CUTOUT|BlockDecor.CFG_REDSTONE_CONTROLLED,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
+    BlockDecorPipeValve.CFG_REDSTONE_CONTROLLED_VALVE,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).func_226896_b_(),
-    ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
+    Auxiliaries.getPixeledAABB(4,4,0, 12,12,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "straight_pipe_valve_redstone"));
 
   public static final BlockDecorPipeValve STRAIGHT_REDSTONE_ANALOG_VALVE = (BlockDecorPipeValve)(new BlockDecorPipeValve(
-    BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|BlockDecor.CFG_CUTOUT|BlockDecor.CFG_REDSTONE_CONTROLLED|BlockDecor.CFG_ANALOG,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
+    BlockDecorPipeValve.CFG_REDSTONE_CONTROLLED_VALVE|BlockDecorPipeValve.CFG_ANALOG_VALVE,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).func_226896_b_(),
-    ModAuxiliaries.getPixeledAABB(4,4,0, 12,12,16)
+    Auxiliaries.getPixeledAABB(4,4,0, 12,12,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "straight_pipe_valve_redstone_analog"));
 
   public static final BlockDecorPassiveFluidAccumulator PASSIVE_FLUID_ACCUMULATOR = (BlockDecorPassiveFluidAccumulator)(new BlockDecorPassiveFluidAccumulator(
-    BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|BlockDecor.CFG_CUTOUT,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).func_226896_b_(),
-    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+    Auxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "passive_fluid_accumulator"));
 
   public static final BlockDecorFluidFunnel SMALL_FLUID_FUNNEL = (BlockDecorFluidFunnel)(new BlockDecorFluidFunnel(
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_REDSTONE_CONTROLLED,
+    BlockDecor.CFG_CUTOUT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).func_226896_b_(),
-    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+    Auxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_fluid_funnel"));
 
   // -------------------------------------------------------------------------------------------------------------------
@@ -528,9 +532,9 @@ public class ModContent
   // -------------------------------------------------------------------------------------------------------------------
 
   public static final BlockDecorTest TEST_BLOCK = (BlockDecorTest)(new BlockDecorTest(
-    BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|BlockDecor.CFG_ELECTRICAL|BlockDecor.CFG_REDSTONE_CONTROLLED,
+    BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(0f, 32000f).sound(SoundType.METAL),
-    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+    Auxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "test_block"));
 
   // -------------------------------------------------------------------------------------------------------------------
@@ -807,10 +811,10 @@ public class ModContent
 
   public static final void registerBlocks(final RegistryEvent.Register<Block> event)
   {
-    if(ModAuxiliaries.isModLoaded("immersiveengineering")) ModAuxiliaries.logInfo("Immersive Engineering also installed ...");
+    if(Auxiliaries.isModLoaded("immersiveengineering")) Auxiliaries.logInfo("Immersive Engineering also installed ...");
     registeredBlocks.addAll(allBlocks());
     for(Block e:registeredBlocks) event.getRegistry().register(e);
-    ModAuxiliaries.logInfo("Registered " + Integer.toString(registeredBlocks.size()) + " blocks.");
+    Auxiliaries.logInfo("Registered " + Integer.toString(registeredBlocks.size()) + " blocks.");
   }
 
   public static final void registerBlockItems(final RegistryEvent.Register<Item> event)
@@ -831,7 +835,7 @@ public class ModContent
       event.getRegistry().register(e);
       ++n_registered;
     }
-    ModAuxiliaries.logInfo("Registered " + Integer.toString(n_registered) + " tile entities.");
+    Auxiliaries.logInfo("Registered " + Integer.toString(n_registered) + " tile entities.");
   }
 
   public static final void registerEntities(final RegistryEvent.Register<EntityType<?>> event)
@@ -842,7 +846,7 @@ public class ModContent
       event.getRegistry().register(e);
       ++n_registered;
     }
-    ModAuxiliaries.logInfo("Registered " + Integer.toString(n_registered) + " entities bound to blocks.");
+    Auxiliaries.logInfo("Registered " + Integer.toString(n_registered) + " entities bound to blocks.");
   }
 
   public static final void registerContainers(final RegistryEvent.Register<ContainerType<?>> event)
@@ -852,7 +856,7 @@ public class ModContent
       event.getRegistry().register(e);
       ++n_registered;
     }
-    ModAuxiliaries.logInfo("Registered " + Integer.toString(n_registered) + " containers bound to tile entities.");
+    Auxiliaries.logInfo("Registered " + Integer.toString(n_registered) + " containers bound to tile entities.");
   }
 
   @OnlyIn(Dist.CLIENT)
@@ -882,8 +886,8 @@ public class ModContent
   {
     // Block renderer selection
     for(Block block: getRegisteredBlocks()) {
-      if(block instanceof IDecorBlock) {
-        switch(((IDecorBlock)block).getRenderTypeHint()) {
+      if(block instanceof IStandardBlock) {
+        switch(((IStandardBlock)block).getRenderTypeHint()) {
           case CUTOUT:
             RenderTypeLookup.setRenderLayer(block, RenderType.func_228643_e_()/*cutout*/);
             break;

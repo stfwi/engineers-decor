@@ -9,8 +9,9 @@
 package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.ModContent;
-import wile.engineersdecor.detail.ModAuxiliaries;
-import wile.engineersdecor.detail.ModAuxiliaries.IExperimentalFeature;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.Auxiliaries.IExperimentalFeature;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -44,7 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class BlockDecorTest extends BlockDecorDirected implements IExperimentalFeature
+public class BlockDecorTest extends StandardBlocks.Directed implements IExperimentalFeature
 {
   public BlockDecorTest(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
   { super(config, builder, unrotatedAABB); }
@@ -151,7 +152,7 @@ public class BlockDecorTest extends BlockDecorDirected implements IExperimentalF
           if(message.isEmpty()) {
             message = "No fluid, energy, or item interactions done yet.";
           }
-          ModAuxiliaries.playerChatMessage(player, message);
+          Auxiliaries.playerChatMessage(player, message);
           return;
         }
       }
@@ -166,23 +167,23 @@ public class BlockDecorTest extends BlockDecorDirected implements IExperimentalF
           if(!fs.isEmpty()) {
             if(active_fill_fluidstack_.isEmpty()) {
               active_fill_fluidstack_ = fs.copy();
-              ModAuxiliaries.playerChatMessage(player, "Fluid insertion fluid set: " + dump_fluid_stack(active_fill_fluidstack_));
+              Auxiliaries.playerChatMessage(player, "Fluid insertion fluid set: " + dump_fluid_stack(active_fill_fluidstack_));
             } else if(fs.isFluidEqual(active_fill_fluidstack_)) {
               active_fill_fluidstack_.grow(fs.getAmount());
-              ModAuxiliaries.playerChatMessage(player, "Fluid insertion flowrate increased: " + dump_fluid_stack(active_fill_fluidstack_));
+              Auxiliaries.playerChatMessage(player, "Fluid insertion flowrate increased: " + dump_fluid_stack(active_fill_fluidstack_));
             } else {
               int amount = active_fill_fluidstack_.getAmount();
               active_fill_fluidstack_ = fs.copy();
               active_fill_fluidstack_.setAmount(amount);
-              ModAuxiliaries.playerChatMessage(player, "Fluid insertion fluid changed: " + dump_fluid_stack(active_fill_fluidstack_));
+              Auxiliaries.playerChatMessage(player, "Fluid insertion fluid changed: " + dump_fluid_stack(active_fill_fluidstack_));
             }
           } else {
             if(!active_fill_fluidstack_.isEmpty()) {
               active_fill_fluidstack_.shrink(1000);
               if(active_fill_fluidstack_.isEmpty()) active_fill_fluidstack_ = FluidStack.EMPTY;
-              ModAuxiliaries.playerChatMessage(player, "Fluid insertion flowrate decreased: " + dump_fluid_stack(active_fill_fluidstack_));
+              Auxiliaries.playerChatMessage(player, "Fluid insertion flowrate decreased: " + dump_fluid_stack(active_fill_fluidstack_));
             } else {
-              ModAuxiliaries.playerChatMessage(player, "Fluid insertion disabled.");
+              Auxiliaries.playerChatMessage(player, "Fluid insertion disabled.");
             }
           }
           passive_drain_fluidstack_ = active_fill_fluidstack_.copy(); // currently no difference

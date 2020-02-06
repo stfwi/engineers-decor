@@ -36,7 +36,7 @@ import javax.annotation.Nullable;
 import java.util.Random;
 
 
-public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
+public class BlockDecorTreeCutter extends BlockDecor.Horizontal
 {
   public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 

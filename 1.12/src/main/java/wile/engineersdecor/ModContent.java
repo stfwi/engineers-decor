@@ -338,7 +338,7 @@ public class ModContent
     "steel_floor_grating",
     BlockDecor.CFG_CUTOUT,
     Material.IRON, 1.0f, 15f, SoundType.METAL,
-    ModAuxiliaries.getPixeledAABB(0,14,0, 16,16,16)
+    ModAuxiliaries.getPixeledAABB(0,14,0, 16,15.9,16)
   );
 
   //--------------------------------------------------------------------------------------------------------------------

@@ -9,9 +9,8 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.block.IWaterLoggable;
 import wile.engineersdecor.ModContent;
-import wile.engineersdecor.detail.ModAuxiliaries;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.block.Block;
@@ -28,15 +27,13 @@ import net.minecraft.world.World;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 
-public class BlockDecorHorizontalSupport extends BlockDecor implements IWaterLoggable
+public class BlockDecorHorizontalSupport extends BlockDecor.WaterLoggable implements IDecorBlock
 {
   public static final BooleanProperty EASTWEST  = BooleanProperty.create("eastwest");
   public static final BooleanProperty LEFTBEAM  = BooleanProperty.create("leftbeam");
@@ -46,14 +43,14 @@ public class BlockDecorHorizontalSupport extends BlockDecor implements IWaterLog
 
   public BlockDecorHorizontalSupport(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
   {
-    super(config|CFG_HORIZIONTAL|CFG_WATERLOGGABLE, builder);
+    super(config|BlockDecor.CFG_HORIZIONTAL, builder);
     AABBs = new ArrayList<VoxelShape>(Arrays.asList(
       // Effective bounding box
-      VoxelShapes.create(ModAuxiliaries.getRotatedAABB(unrotatedAABB.grow(2.0/16, 0, 0), Direction.NORTH, true)),
-      VoxelShapes.create(ModAuxiliaries.getRotatedAABB(unrotatedAABB.grow(2.0/16, 0, 0), Direction.WEST, true)),
+      VoxelShapes.create(Auxiliaries.getRotatedAABB(unrotatedAABB.grow(2.0/16, 0, 0), Direction.NORTH, true)),
+      VoxelShapes.create(Auxiliaries.getRotatedAABB(unrotatedAABB.grow(2.0/16, 0, 0), Direction.WEST, true)),
       // Displayed bounding box
-      VoxelShapes.create(ModAuxiliaries.getRotatedAABB(unrotatedAABB, Direction.NORTH, true)),
-      VoxelShapes.create(ModAuxiliaries.getRotatedAABB(unrotatedAABB, Direction.WEST, true))
+      VoxelShapes.create(Auxiliaries.getRotatedAABB(unrotatedAABB, Direction.NORTH, true)),
+      VoxelShapes.create(Auxiliaries.getRotatedAABB(unrotatedAABB, Direction.WEST, true))
     ));
   }
 
@@ -80,7 +77,7 @@ public class BlockDecorHorizontalSupport extends BlockDecor implements IWaterLog
 
   @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-  { super.fillStateContainer(builder); builder.add(EASTWEST, RIGHTBEAM, LEFTBEAM, DOWNCONNECT, WATERLOGGED); }
+  { super.fillStateContainer(builder); builder.add(EASTWEST, RIGHTBEAM, LEFTBEAM, DOWNCONNECT); }
 
   @Override
   @Nullable

@@ -17,12 +17,12 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 
 public class BlockDecorFloorGrating extends BlockDecor
 {
@@ -46,44 +46,26 @@ public class BlockDecorFloorGrating extends BlockDecor
   { return BlockFaceShape.UNDEFINED; }
 
   @Override
-  public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entity, boolean isActualState)
-  { if(!(entity instanceof EntityItem)) super.addCollisionBoxToList(state, world, pos, entityBox, collidingBoxes, entity, isActualState); }
-
-  @Override
-  public void onFallenUpon(World world, BlockPos pos, Entity entity, float fallDistance)
-  {
-    if(!(entity instanceof EntityItem)) {
-      entity.fall(fallDistance, 1.0F);
-    } else {
-      entity.motionX = 0;
-      entity.motionY = -0.1;
-      entity.motionZ = 0;
-      entity.setPositionAndUpdate(pos.getX()+0.5, entity.posY-0.3, pos.getZ()+0.5);
-    }
-  }
-
-  @Override
-  public void onLanded(World world, Entity entity)
-  {
-    if(!(entity instanceof EntityItem)) {
-      super.onLanded(world, entity);
-    } else {
-      entity.motionX = 0;
-      entity.motionY = -0.1;
-      entity.motionZ = 0;
-      entity.setPositionAndUpdate(entity.posX, entity.posY-0.3, entity.posZ);
-    }
-  }
-
-  @Override
   public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity)
   {
     if(!(entity instanceof EntityItem)) return;
-    entity.motionX = 0;
-    entity.motionZ = 0;
-    if((entity.posY-pos.getY()) > 0.7) {
-      if(entity.motionY > -0.2) entity.motionY = -0.2;
-      entity.setPositionAndUpdate(pos.getX()+0.5, entity.posY-0.3, pos.getZ()+0.5);
+    final boolean colliding = ((entity.posY-pos.getY()) > 0.7);
+    if(colliding || (entity.motionY > 0)) {
+      double x = pos.getX() + 0.5;
+      double y = MathHelper.clamp(entity.posY-0.3, pos.getY(), pos.getY()+0.6);
+      double z = pos.getZ() + 0.5;
+      if(colliding) {
+        entity.motionX = 0;
+        entity.motionZ = 0;
+        entity.motionY = -0.3;
+        if((entity.posY-pos.getY()) > 0.8) y = pos.getY() + 0.6;
+        entity.prevPosX = x+0.1;
+        entity.prevPosY = y+0.1;
+        entity.prevPosZ = z+0.1;
+      }
+      entity.motionY = MathHelper.clamp(entity.motionY, -0.3, 0);
+      entity.fallDistance = 0;
+      entity.setPositionAndUpdate(x,y,z);
     }
   }
 }

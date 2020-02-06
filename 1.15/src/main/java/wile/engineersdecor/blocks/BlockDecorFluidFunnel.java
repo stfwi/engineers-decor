@@ -42,7 +42,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 
-public class BlockDecorFluidFunnel extends BlockDecor
+public class BlockDecorFluidFunnel extends BlockDecor implements IDecorBlock
 {
   public static final int FILL_LEVEL_MAX = 3;
   public static final IntegerProperty FILL_LEVEL = IntegerProperty.create("level", 0, FILL_LEVEL_MAX);

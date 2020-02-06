@@ -6,9 +6,8 @@
  *
  * Main client/server message handling.
  */
-package wile.engineersdecor.detail;
+package wile.engineersdecor.libmc.detail;
 
-import wile.engineersdecor.ModEngineersDecor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -29,14 +28,14 @@ import java.util.function.Supplier;
 public class Networking
 {
   private static final String PROTOCOL = "1";
+  private static SimpleChannel DEFAULT_CHANNEL;
 
-  private static final SimpleChannel DEFAULT_CHANNEL = NetworkRegistry.ChannelBuilder
-            .named(new ResourceLocation(ModEngineersDecor.MODID, "default_ch"))
-            .clientAcceptedVersions(PROTOCOL::equals).serverAcceptedVersions(PROTOCOL::equals).networkProtocolVersion(() -> PROTOCOL)
-            .simpleChannel();
-
-  public static void init()
+  public static void init(String modid)
   {
+    DEFAULT_CHANNEL = NetworkRegistry.ChannelBuilder
+      .named(new ResourceLocation(modid, "default_ch"))
+      .clientAcceptedVersions(PROTOCOL::equals).serverAcceptedVersions(PROTOCOL::equals).networkProtocolVersion(() -> PROTOCOL)
+      .simpleChannel();
     int discr = -1;
     DEFAULT_CHANNEL.registerMessage(++discr, PacketTileNotifyClientToServer.class, PacketTileNotifyClientToServer::compose, PacketTileNotifyClientToServer::parse, PacketTileNotifyClientToServer.Handler::handle);
     DEFAULT_CHANNEL.registerMessage(++discr, PacketTileNotifyServerToClient.class, PacketTileNotifyServerToClient::compose, PacketTileNotifyServerToClient::parse, PacketTileNotifyServerToClient.Handler::handle);
@@ -128,7 +127,7 @@ public class Networking
       public static void handle(final PacketTileNotifyServerToClient pkt, final Supplier<NetworkEvent.Context> ctx)
       {
         ctx.get().enqueueWork(() -> {
-          World world = ModEngineersDecor.proxy.getWorldClientSide();
+          World world = SidedProxy.getWorldClientSide();
           if(world == null) return;
           final TileEntity te = world.getTileEntity(pkt.pos);
           if(!(te instanceof IPacketTileNotifyReceiver)) return;
@@ -230,7 +229,7 @@ public class Networking
       public static void handle(final PacketContainerSyncServerToClient pkt, final Supplier<NetworkEvent.Context> ctx)
       {
         ctx.get().enqueueWork(() -> {
-          PlayerEntity player = ModEngineersDecor.proxy.getPlayerClientSide();
+          PlayerEntity player = SidedProxy.getPlayerClientSide();
           if(!(player.openContainer instanceof INetworkSynchronisableContainer)) return;
           if(player.openContainer.windowId != pkt.id) return;
           ((INetworkSynchronisableContainer)player.openContainer).onServerPacketReceived(pkt.id,pkt.nbt);

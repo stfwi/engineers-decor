@@ -11,6 +11,7 @@ package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.IBlockReader;
@@ -18,7 +19,6 @@ import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.IWaterLoggable;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -37,11 +37,12 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 
-public class BlockDecorPipeValve extends BlockDecorDirected implements IWaterLoggable
+public class BlockDecorPipeValve extends StandardBlocks.DirectedWaterLoggable implements IDecorBlock
 {
   public static final BooleanProperty RS_CN_N = BooleanProperty.create("rs_n");
   public static final BooleanProperty RS_CN_S = BooleanProperty.create("rs_s");
@@ -50,6 +51,11 @@ public class BlockDecorPipeValve extends BlockDecorDirected implements IWaterLog
   public static final BooleanProperty RS_CN_U = BooleanProperty.create("rs_u");
   public static final BooleanProperty RS_CN_D = BooleanProperty.create("rs_d");
 
+  public static final int CFG_CHECK_VALVE                = 0x0;
+  public static final int CFG_ANALOG_VALVE               = 0x1;
+  public static final int CFG_REDSTONE_CONTROLLED_VALVE  = 0x2;
+  public final int valve_config;
+
   public static void on_config(int container_size_decl, int redstone_slope)
   {
     BTileEntity.fluid_maxflow_mb = MathHelper.clamp(container_size_decl, 1, 10000);
@@ -57,12 +63,12 @@ public class BlockDecorPipeValve extends BlockDecorDirected implements IWaterLog
     ModEngineersDecor.logger().info("Config pipe valve: maxflow:" + BTileEntity.fluid_maxflow_mb + "mb, redstone amp:" + BTileEntity.redstone_flow_slope_mb + "mb/sig");
   }
 
-  public BlockDecorPipeValve(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
-  { super(config|CFG_WATERLOGGABLE, builder, unrotatedAABB); }
+  public BlockDecorPipeValve(long config, int valve_config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
+  { super(config, builder, unrotatedAABB); this.valve_config = valve_config; }
 
   private BlockState get_rsconnector_state(BlockState state, IWorld world, BlockPos pos, @Nullable BlockPos fromPos)
   {
-    if((config & (CFG_REDSTONE_CONTROLLED))==0) return state;
+    if((valve_config & (CFG_REDSTONE_CONTROLLED_VALVE))==0) return state;
     Direction.Axis bfa = state.get(FACING).getAxis();
     int bfi = state.get(FACING).getIndex();
     for(Direction f:Direction.values()) {
@@ -88,7 +94,7 @@ public class BlockDecorPipeValve extends BlockDecorDirected implements IWaterLog
   private void update_te(IWorld world, BlockState state, BlockPos pos)
   {
     TileEntity te = world.getTileEntity(pos);
-    if(te instanceof BlockDecorPipeValve.BTileEntity) ((BlockDecorPipeValve.BTileEntity)te).block_reconfigure(state.get(FACING), config);
+    if(te instanceof BlockDecorPipeValve.BTileEntity) ((BlockDecorPipeValve.BTileEntity)te).block_reconfigure(state.get(FACING), config, valve_config);
   }
 
   @Override
@@ -97,7 +103,7 @@ public class BlockDecorPipeValve extends BlockDecorDirected implements IWaterLog
 
   @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-  { super.fillStateContainer(builder); builder.add(RS_CN_N, RS_CN_S, RS_CN_E, RS_CN_W, RS_CN_U, RS_CN_D, WATERLOGGED); }
+  { super.fillStateContainer(builder); builder.add(RS_CN_N, RS_CN_S, RS_CN_E, RS_CN_W, RS_CN_U, RS_CN_D); }
 
   @Override
   @Nullable
@@ -147,6 +153,7 @@ public class BlockDecorPipeValve extends BlockDecorDirected implements IWaterLog
     private boolean filling_ = false;
     private boolean getlocked_ = false;
     private long block_config_ = 0;
+    private long valve_config_ = 0;
 
     public BTileEntity()
     { this(ModContent.TET_STRAIGHT_PIPE_VALVE); }
@@ -154,10 +161,11 @@ public class BlockDecorPipeValve extends BlockDecorDirected implements IWaterLog
     public BTileEntity(TileEntityType<?> te_type)
     { super(te_type); }
 
-    public void block_reconfigure(Direction facing, long block_config)
+    public void block_reconfigure(Direction facing, long block_config, int valve_config)
     {
       block_facing_ = facing;
       block_config_ = block_config;
+      valve_config_ = valve_config;
     }
 
     private Direction block_facing()
@@ -234,10 +242,10 @@ public class BlockDecorPipeValve extends BlockDecorDirected implements IWaterLog
         if(te.filling_) return 0;
         final IFluidHandler fh = te.forward_fluid_handler();
         if(fh==null) return 0;
-        if((te.block_config_ & CFG_REDSTONE_CONTROLLED) != 0) {
+        if((te.valve_config_ & CFG_REDSTONE_CONTROLLED_VALVE) != 0) {
           int rs = te.world.getRedstonePowerFromNeighbors(te.pos);
           if(rs <= 0) return 0;
-          if(((te.block_config_ & CFG_ANALOG) != 0) && (rs < 15)) resource.setAmount(MathHelper.clamp(rs * redstone_flow_slope_mb, 1, resource.getAmount()));
+          if(((te.valve_config_ & CFG_ANALOG_VALVE) != 0) && (rs < 15)) resource.setAmount(MathHelper.clamp(rs * redstone_flow_slope_mb, 1, resource.getAmount()));
         }
         FluidStack res = resource.copy();
         if(res.getAmount() > fluid_maxflow_mb) res.setAmount(fluid_maxflow_mb);

@@ -10,6 +10,9 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    - v1.0.19-b2  [F] Fixed Floor Grating item pass-through jitters (thx Cid).
+                  [M] Removed obsolete recipe collision testing recipes.
+
     - v1.0.19-b1  [F] Fixed Tree Cutter / Block Breaker not accepting small energy transfers (thx WindFox, issue #82).
 
                   -------------------------------------------------------------------

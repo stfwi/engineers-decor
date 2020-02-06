@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.15.2": {
+    "1.0.19-b2": "[F] Fixed Floor Grating item pass-through jitters (thx Cid).\n[M] Removed obsolete recipe collision testing recipes.\n[F] Fixed missing Block Breaker dynamic block drops.\n[F] Block Placer planting race condition issue fixed (issue #83, thx jcardii).\n[F] Factory Hopper: Added second standard insertion run after smart-insert to circumcent compat issues (issue #84, thx NillerMedDild).\n[A] Enabled JEI plugin (issue #85, thx ProsperCraft/Goshen).",
     "1.0.19-b1": "[U] Update to 1.15.2.\n[F] Fixed Tree Cutter / Block Breaker not accepting small energy transfers (thx WindFox, issue #82).",
     "1.0.18-b4": "[A] Ported Treated Wood Crafting Table item rendering.\n[F] Fixed Milking machine cow path issue, added milking delay cow tracking.\n[F] Slab / Slab Slice placement adapted to vanilla standard.\n[M] Lang update ru_ru (PR#77, thanks Smollet777).",
     "1.0.18-b3": "[A] Added Treated Wood Crafting Table tweaks (ctrl-shift moves all same stacks from the inventory, mouse wheel over crafting slot increases/decreases crafting grid stacks).\n[F] EN Lang file fixed (issue #76, thx Riverstar907).\n[F] Fixed Tree Cutter not respecting power-required config (thx federsavo, issue #77).\n[F] Fixed Small Solar Panel not exposing energy capability (thx MatthiasMann, issue #78).",
@@ -10,6 +11,6 @@
   },
   "promos": {
     "1.15.2-recommended": "",
-    "1.15.2-latest": "1.0.19-b1"
+    "1.15.2-latest": "1.0.19-b2"
   }
 }

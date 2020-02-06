@@ -21,7 +21,7 @@ archivesBaseName = "engineersdecor-${version_minecraft}"
 
 repositories {
   maven { name = "Progwml6 maven"; url = "https://dvs1.progwml6.com/files/maven/" } // JEI files
-  maven { name = "ModMaven"; url = "modmaven.k-4u.nl" } // JEI files, fallback
+  maven { name = "ModMaven"; url = "https://modmaven.k-4u.nl" } // JEI files, fallback
 }
 
 minecraft {
@@ -64,8 +64,8 @@ minecraft {
 
 dependencies {
   minecraft "net.minecraftforge:forge:${version_forge_minecraft}"
-  //compileOnly fg.deobf("mezz.jei:jei-${version_jei}:api")
-  //runtimeOnly fg.deobf("mezz.jei:jei-${version_jei}")
+  compileOnly fg.deobf("mezz.jei:jei-${version_jei}:api")
+  runtimeOnly fg.deobf("mezz.jei:jei-${version_jei}")
 }
 
 processResources {
