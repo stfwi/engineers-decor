@@ -8,10 +8,10 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.item.crafting.*;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.Inventories;
 import wile.engineersdecor.libmc.detail.Networking;
 import net.minecraft.inventory.container.*;
 import net.minecraft.network.play.server.SSetSlotPacket;
@@ -29,6 +29,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.*;
 import net.minecraft.inventory.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
@@ -79,8 +80,8 @@ public class BlockDecorCraftingTable
 
   public static final class CraftingTableBlock extends BlockDecor.HorizontalWaterLoggable implements IDecorBlock
   {
-    public CraftingTableBlock(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
-    { super(config, builder, unrotatedAABB); }
+    public CraftingTableBlock(long config, Block.Properties builder, final AxisAlignedBB[] unrotatedAABBs)
+    { super(config, builder, unrotatedAABBs); }
 
     @Override
     public boolean hasTileEntity(BlockState state)
@@ -568,7 +569,7 @@ public class BlockDecorCraftingTable
                 if(nbt.contains("move-all")) {
                   for(int i=0; i < player.inventory.getSizeInventory(); ++i) {
                     final ItemStack stack = player.inventory.getStackInSlot(i);
-                    if(!reference_stack.isItemEqual(stack)) continue;
+                    if(!Inventories.areItemStacksIdentical(reference_stack, stack)) continue;
                     if(distribute_stack(player.inventory, i) == PlacementResult.UNCHANGED) break; // grid is full
                   }
                 }
@@ -605,7 +606,7 @@ public class BlockDecorCraftingTable
               boolean abort = false;
               for(int i=0; (i < from_inventory.getSizeInventory()) && (!abort); ++i) {
                 final ItemStack stack = from_inventory.getStackInSlot(i);
-                if(!reference_stack.isItemEqual(stack)) continue;
+                if(Inventories.areItemStacksDifferent(reference_stack, stack)) continue;
                 ItemStack remaining = from_inventory.getStackInSlot(i);
                 for(SlotRange range:to_ranges) {
                   remaining = move_stack_to_inventory(remaining, range, false, 0);
@@ -727,7 +728,7 @@ public class BlockDecorCraftingTable
       for(SlotRange range: search_ranges) {
         for(int i=0; i<range.inventory.getSizeInventory(); ++i) {
           ItemStack stack = range.inventory.getStackInSlot(i);
-          if(stack.isItemEqual(match_stack)) return match_stack;
+          if(Inventories.areItemStacksIdentical(stack, match_stack)) return match_stack;
         }
       }
       return not_found_value;
@@ -786,7 +787,7 @@ public class BlockDecorCraftingTable
         if(to_replace.isEmpty() || (!search_inventory(to_replace, ItemStack.EMPTY).isEmpty())) continue; // no replacement needed
         for(int ingredient_index=0; ingredient_index<recipe.getIngredients().size(); ++ingredient_index) {
           ItemStack[] match_stacks = recipe.getIngredients().get(ingredient_index).getMatchingStacks();
-          if(Arrays.stream(match_stacks).anyMatch(s->s.isItemEqual(to_replace))) {
+          if(Arrays.stream(match_stacks).anyMatch(s->Inventories.areItemStacksIdentical(s, to_replace))) {
             replacement = search_inventory(match_stacks, to_replace);
             changed = true;
             break;
@@ -935,7 +936,7 @@ public class BlockDecorCraftingTable
         for(int i = slot_begin+1; i < slot_end-1; ++i) {
           final ItemStack stack = inventory.getStackInSlot(i);
           if(!stack.isEmpty()) continue;
-          if((!inventory.getStackInSlot(i+1).isItemEqual(mvstack)) && (!inventory.getStackInSlot(i-1).isItemEqual(mvstack))) continue;
+          if((Inventories.areItemStacksDifferent(inventory.getStackInSlot(i+1), mvstack)) && (Inventories.areItemStacksDifferent(inventory.getStackInSlot(i-1), mvstack))) continue;
           int nmax = Math.min(limit_left, mvstack.getCount());
           ItemStack placed = mvstack.copy();
           placed.setCount(nmax);
@@ -975,17 +976,14 @@ public class BlockDecorCraftingTable
         int smallest_stack_index = -1;
         for(int i = slot_begin; i < slot_end; ++i) {
           final ItemStack stack = inventory.getStackInSlot(i);
-          if((!stack.isEmpty()) && (stack.isItemEqual(request_stack))) {
-            // Never automatically place stuff with nbt (except a few allowed like "Damage"),
-            // as this could be a full crate, a valuable tool item, etc. For these recipes
-            // the user has to place this item manually.
+          if((!stack.isEmpty()) && (Inventories.areItemStacksIdentical(stack, request_stack))) {
             if(stack.hasTag()) {
               final CompoundNBT nbt = stack.getTag();
               int n = nbt.size();
               if((n > 0) && (nbt.contains("Damage"))) --n;
               if(n > 0) continue;
             }
-            fetched_stack = stack.copy(); // copy exact stack with nbt and tool damage, otherwise we have an automagical repair of items.
+            fetched_stack = stack.copy();
             fetched_stack.setCount(0);
             int n = stack.getCount();
             if((n < smallest_stack_size) || (smallest_stack_size <= 0)) {
@@ -1096,12 +1094,12 @@ public class BlockDecorCraftingTable
       for(int i=0; i<9; ++i) {
         final ItemStack grid_stack = inventory_.getStackInSlot(i+CRAFTING_SLOTS_BEGIN);
         final ItemStack refab_stack = to_refab.isEmpty() ? ItemStack.EMPTY : to_refab.get(i).copy();
-        if((!grid_stack.isEmpty()) && (grid_stack.isItemEqual(to_distribute))) {
+        if((!grid_stack.isEmpty()) && Inventories.areItemStacksIdentical(grid_stack, to_distribute)) {
           matching_grid_stack_sizes[i] = grid_stack.getCount();
           total_num_missing_stacks += grid_stack.getMaxStackSize()-grid_stack.getCount();
           if(max_matching_stack_size < matching_grid_stack_sizes[i]) max_matching_stack_size = matching_grid_stack_sizes[i];
           if(min_matching_stack_size > matching_grid_stack_sizes[i]) min_matching_stack_size = matching_grid_stack_sizes[i];
-        } else if((!refab_stack.isEmpty()) && (refab_stack.isItemEqual(to_distribute))) {
+        } else if((!refab_stack.isEmpty()) && (Inventories.areItemStacksIdentical(refab_stack, to_distribute))) {
           matching_grid_stack_sizes[i] = 0;
           total_num_missing_stacks += grid_stack.getMaxStackSize();
           if(max_matching_stack_size < matching_grid_stack_sizes[i]) max_matching_stack_size = matching_grid_stack_sizes[i];

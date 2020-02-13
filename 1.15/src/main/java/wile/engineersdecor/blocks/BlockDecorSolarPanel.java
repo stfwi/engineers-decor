@@ -17,7 +17,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.math.MathHelper;
@@ -73,7 +72,7 @@ public class BlockDecorSolarPanel extends BlockDecor implements IDecorBlock
 
     public static void on_config(int peak_power_per_tick)
     {
-      peak_power_per_tick_ = peak_power_per_tick;
+      peak_power_per_tick_ = MathHelper.clamp(peak_power_per_tick, 2, 8192);
       ModEngineersDecor.logger().info("Config small solar panel: Peak production:" + peak_power_per_tick_ + "/tick");
     }
 

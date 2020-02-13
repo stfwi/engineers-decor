@@ -1,4 +1,12 @@
-package wile.engineersdecor.detail;
+/*
+ * @file Inventories.java
+ * @author Stefan Wilhelm (wile)
+ * @copyright (C) 2019 Stefan Wilhelm
+ * @license MIT (see https://opensource.org/licenses/MIT)
+ *
+ * General inventory item handling functionality.
+ */
+package wile.engineersdecor.libmc.detail;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -12,12 +20,19 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
-
 import javax.annotation.Nullable;
 
 
-public class ItemHandling
+public class Inventories
 {
+
+  public static boolean areItemStacksIdentical(ItemStack a, ItemStack b)
+  { return (a.getItem()==b.getItem()) && ItemStack.areItemStackTagsEqual(a, b); }
+
+  public static boolean areItemStacksDifferent(ItemStack a, ItemStack b)
+  { return (a.getItem()!=b.getItem()) || (!ItemStack.areItemStackTagsEqual(a, b)); }
+
+
 
   public static IItemHandler itemhandler(World world, BlockPos pos, @Nullable Direction side)
   {
@@ -56,9 +71,9 @@ public class ItemHandling
       final ItemStack stack = inventory.getStackInSlot(i);
       if(stack.isEmpty()) continue;
       if(out_stack.isEmpty()) {
-        if((match!=null) && (!stack.isItemEqual(match))) continue;
+        if((match!=null) && Inventories.areItemStacksDifferent(stack, match)) continue;
         out_stack = inventory.extractItem(i, amount, simulate);
-      } else if(stack.isItemEqual(out_stack)) {
+      } else if(Inventories.areItemStacksIdentical(stack, out_stack)) {
         ItemStack es = inventory.extractItem(i, (amount-out_stack.getCount()), simulate);
         out_stack.grow(es.getCount());
       }

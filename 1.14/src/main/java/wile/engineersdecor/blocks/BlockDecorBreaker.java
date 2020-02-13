@@ -46,8 +46,8 @@ public class BlockDecorBreaker extends StandardBlocks.HorizontalWaterLoggable im
 {
   public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
-  public BlockDecorBreaker(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
-  { super(config, builder, unrotatedAABB); }
+  public BlockDecorBreaker(long config, Block.Properties builder, final AxisAlignedBB[] unrotatedAABBs)
+  { super(config, builder, unrotatedAABBs); }
 
   @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
@@ -132,7 +132,7 @@ public class BlockDecorBreaker extends StandardBlocks.HorizontalWaterLoggable im
 
     public static void on_config(int boost_energy_per_tick, int breaking_time_per_hardness, int min_breaking_time_ticks, boolean power_required)
     {
-      boost_energy_consumption = TICK_INTERVAL * MathHelper.clamp(boost_energy_per_tick, 16, 512);
+      boost_energy_consumption = TICK_INTERVAL * MathHelper.clamp(boost_energy_per_tick, 4, 4096);
       breaking_reluctance = MathHelper.clamp(breaking_time_per_hardness, 5, 50);
       min_breaking_time = MathHelper.clamp(min_breaking_time_ticks, 10, 100);
       requires_power = power_required;

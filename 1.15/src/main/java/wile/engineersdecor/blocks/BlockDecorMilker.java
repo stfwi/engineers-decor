@@ -8,10 +8,10 @@
  */
 package wile.engineersdecor.blocks;
 
+import wile.engineersdecor.libmc.detail.Inventories;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.detail.ExtItems;
-import wile.engineersdecor.detail.ItemHandling;
 import net.minecraft.world.World;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.IBlockReader;
@@ -40,12 +40,12 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
@@ -58,8 +58,8 @@ public class BlockDecorMilker extends BlockDecor.Horizontal implements IDecorBlo
   public static final BooleanProperty FILLED = BooleanProperty.create("filled");
   public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
-  public BlockDecorMilker(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
-  { super(config, builder, unrotatedAABB); }
+  public BlockDecorMilker(long config, Block.Properties builder, final AxisAlignedBB[] unrotatedAABBs)
+  { super(config, builder, unrotatedAABBs); }
 
   @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
@@ -133,7 +133,7 @@ public class BlockDecorMilker extends BlockDecor.Horizontal implements IDecorBlo
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class BTileEntity extends TileEntity implements ITickableTileEntity, IEnergyStorage, ICapabilityProvider
+  public static class BTileEntity extends TileEntity implements ITickableTileEntity, IEnergyStorage, IFluidTank, ICapabilityProvider
   {
     public static final int BUCKET_SIZE = 1000;
     public static final int TICK_INTERVAL = 80;
@@ -145,10 +145,11 @@ public class BlockDecorMilker extends BlockDecor.Horizontal implements IDecorBlo
     public static final int MAX_ENERGY_TRANSFER = 512;
     public static final int DEFAULT_ENERGY_CONSUMPTION = 0;
     public static final int DEFAULT_MILKING_DELAY_PER_COW = 4000;
+    private static final FluidStack NO_MILK_FLUID = new FluidStack(Fluids.WATER, 0);
     private static final Direction FLUID_TRANSFER_DIRECTRIONS[] = {Direction.DOWN,Direction.EAST,Direction.SOUTH,Direction.WEST,Direction.NORTH};
     private enum MilkingState { IDLE, PICKED, COMING, POSITIONING, MILKING, LEAVING, WAITING }
 
-    private static FluidStack milk_fluid_ = new FluidStack(Fluids.WATER, 0);
+    private static FluidStack milk_fluid_ = NO_MILK_FLUID;
     private static HashMap<ItemStack, ItemStack> milk_containers_ = new HashMap<>();
     private static int energy_consumption = DEFAULT_ENERGY_CONSUMPTION;
     private static long min_milking_delay_per_cow_ticks = DEFAULT_MILKING_DELAY_PER_COW;
@@ -163,7 +164,7 @@ public class BlockDecorMilker extends BlockDecor.Horizontal implements IDecorBlo
 
     public static void on_config(int energy_consumption_per_tick, int min_milking_delay_per_cow)
     {
-      energy_consumption = MathHelper.clamp(energy_consumption_per_tick, 0, 128);
+      energy_consumption = MathHelper.clamp(energy_consumption_per_tick, 0, 1024);
       min_milking_delay_per_cow_ticks = MathHelper.clamp(min_milking_delay_per_cow, 1000, 24000);
       {
         Fluid milk = null; // FluidRe.getFluid("milk");
@@ -257,7 +258,7 @@ public class BlockDecorMilker extends BlockDecor.Horizontal implements IDecorBlo
       return n;
     }
 
-    // IFluidHandler / IFluidTankProperties ---------------------------------------------------------------------
+    // IFluidHandler ---------------------------------------------------------------------------------------
 
     private LazyOptional<IFluidHandler> fluid_handler_ = LazyOptional.of(() -> (IFluidHandler)new BFluidHandler(this));
 
@@ -266,24 +267,54 @@ public class BlockDecorMilker extends BlockDecor.Horizontal implements IDecorBlo
       private final BTileEntity te;
       BFluidHandler(BTileEntity te) { this.te = te; }
       @Override public int getTanks() { return 1; }
-      @Override public FluidStack getFluidInTank(int tank) { return new FluidStack(milk_fluid_, te.fluid_level()); }
-      @Override public int getTankCapacity(int tank) { return TANK_CAPACITY; }
-      @Override public boolean isFluidValid(int tank, @Nonnull FluidStack stack) { return false; }
+      @Override public FluidStack getFluidInTank(int tank) { return te.getFluid(); }
+      @Override public int getTankCapacity(int tank) { return te.getCapacity(); }
+      @Override public boolean isFluidValid(int tank, @Nonnull FluidStack stack) { return te.isFluidValid(stack); }
       @Override public int fill(FluidStack resource, FluidAction action)  { return 0; }
+      @Override public FluidStack drain(FluidStack resource, FluidAction action) { return te.drain(resource, action); }
+      @Override public FluidStack drain(int maxDrain, FluidAction action) { return te.drain(maxDrain, action); }
+    }
 
-      @Override
-      public FluidStack drain(FluidStack resource, FluidAction action)
-      { return (!resource.isFluidEqual(milk_fluid_)) ? (FluidStack.EMPTY) : drain(resource.getAmount(), action); }
+    // IFluidTank ------------------------------------------------------------------------------------------
 
-      @Override
-      public FluidStack drain(int maxDrain, FluidAction action)
-      {
-        if(te.fluid_level() <= 0) return FluidStack.EMPTY;
-        FluidStack fs = milk_fluid_.copy();
-        fs.setAmount(Math.min(fs.getAmount(), te.fluid_level()));
-        if(action==FluidAction.EXECUTE) te.tank_level_ -= fs.getAmount();
-        return fs;
-      }
+    private boolean has_milk_fluid()
+    { return !(NO_MILK_FLUID.isFluidEqual(milk_fluid_)); }
+
+    @Override
+    @Nonnull
+    public FluidStack getFluid()
+    { return has_milk_fluid() ? (new FluidStack(milk_fluid_, fluid_level())) : (FluidStack.EMPTY); }
+
+    @Override
+    public int getFluidAmount()
+    { return has_milk_fluid() ? fluid_level() : 0; }
+
+    @Override
+    public int getCapacity()
+    { return TANK_CAPACITY; }
+
+    @Override
+    public boolean isFluidValid(FluidStack stack)
+    { return has_milk_fluid() && stack.isFluidEqual(milk_fluid_); }
+
+    @Override
+    public int fill(FluidStack resource, FluidAction action)
+    { return 0; }
+
+    @Override
+    @Nonnull
+    public FluidStack drain(FluidStack resource, FluidAction action)
+    { return (!resource.isFluidEqual(milk_fluid_)) ? (FluidStack.EMPTY) : drain(resource.getAmount(), action); }
+
+    @Override
+    @Nonnull
+    public FluidStack drain(int maxDrain, FluidAction action)
+    {
+      if((!has_milk_fluid()) || (fluid_level() <= 0)) return FluidStack.EMPTY;
+      FluidStack fs = milk_fluid_.copy();
+      fs.setAmount(Math.min(fs.getAmount(), fluid_level()));
+      if(action==FluidAction.EXECUTE) tank_level_ -= fs.getAmount();
+      return fs;
     }
 
     // ICapabilityProvider ---------------------------------------------------------------------------
@@ -292,7 +323,7 @@ public class BlockDecorMilker extends BlockDecor.Horizontal implements IDecorBlo
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
       if(!this.removed && (facing != null)) {
-        if((capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) && (!milk_fluid_.isEmpty())) {
+        if((capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) && has_milk_fluid()) {
           return fluid_handler_.cast();
         } else if((capability == CapabilityEnergy.ENERGY) && (energy_consumption>0)) {
           return energy_handler_.cast();
@@ -309,21 +340,21 @@ public class BlockDecorMilker extends BlockDecor.Horizontal implements IDecorBlo
     {} // println("Milker|" + s); may be enabled with config, for dev was println
 
     private static ItemStack milk_filled_container_item(ItemStack stack)
-    { return milk_containers_.entrySet().stream().filter(e->e.getKey().isItemEqual(stack)).map(Map.Entry::getValue).findFirst().orElse(ItemStack.EMPTY); }
+    { return milk_containers_.entrySet().stream().filter(e->Inventories.areItemStacksIdentical(e.getKey(), stack)).map(Map.Entry::getValue).findFirst().orElse(ItemStack.EMPTY); }
 
     private void fill_adjacent_inventory_item_containers(Direction block_facing)
     {
       // Check inventory existence, back to down is preferred, otherwise sort back into same inventory.
-      IItemHandler src = ItemHandling.itemhandler(world, pos.offset(block_facing), block_facing.getOpposite());
-      IItemHandler dst = ItemHandling.itemhandler(world, pos.down(), Direction.UP);
+      IItemHandler src = Inventories.itemhandler(world, pos.offset(block_facing), block_facing.getOpposite());
+      IItemHandler dst = Inventories.itemhandler(world, pos.down(), Direction.UP);
       if(src==null) { src = dst; } else if(dst==null) { dst = src; }
       if((src==null) || (dst==null)) return;
       while((tank_level_ >= BUCKET_SIZE)) {
         boolean inserted = false;
         for(Entry<ItemStack,ItemStack> e:milk_containers_.entrySet()) {
-          if(ItemHandling.extract(src, e.getKey(), 1, true).isEmpty()) continue;
-          if(!ItemHandling.insert(dst, e.getValue().copy(), false).isEmpty()) continue;
-          ItemHandling.extract(src, e.getKey(), 1, false);
+          if(Inventories.extract(src, e.getKey(), 1, true).isEmpty()) continue;
+          if(!Inventories.insert(dst, e.getValue().copy(), false).isEmpty()) continue;
+          Inventories.extract(src, e.getKey(), 1, false);
           tank_level_ -= BUCKET_SIZE;
           inserted = true;
         }

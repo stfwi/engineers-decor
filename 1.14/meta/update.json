@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.14.4": {
+    "1.0.19-b3": "[M] Config tweaks: Value limit ranges increased to facilitate modpacking.\n[A] Factory Hopper: Added bottom item handler (CR#227).\n[M] Block shapes refined.\n[F] Fixed duping bug (issue #87, thx Nachtflame)",
     "1.0.19-b2": "[F] Fixed Floor Grating item pass-through jitters (thx Cid).\n[M] Removed obsolete recipe collision testing recipes.\n[F] Fixed missing Block Breaker dynamic block drops.\n[F] Block Placer planting race condition issue fixed (issue #83, thx jcardii).\n[F] Factory Hopper: Added second standard insertion after smart-insert to circumcent compat issues (issue #84, thx NillerMedDild).",
     "1.0.19-b1": "[F] Fixed Tree Cutter / Block Breaker not accepting small energy transfers (thx WindFox, issue #82).",
     "1.0.18-b4": "[M] Lang update ru_ru (PR#77, thanks Smollet777).\n[F] Fixed Milking machine cow path issue, added milking delay cow tracking.\n[F] Slab / Slab Slice placement adapted to vanilla standard.",
@@ -46,6 +47,6 @@
   },
   "promos": {
     "1.14.4-recommended": "",
-    "1.14.4-latest": "1.0.19-b2"
+    "1.14.4-latest": "1.0.19-b3"
   }
 }

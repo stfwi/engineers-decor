@@ -360,14 +360,14 @@ public class ModConfig
           .comment("Defines, in percent, how fast the lab furnace smelts compared to " +
             "a vanilla furnace. 100% means vanilla furnace speed, 150% means the " +
             "lab furnace is faster. The value can be changed on-the-fly for tuning.")
-          .defineInRange("furnace_smelting_speed_percent", 130, 50, 500);
+          .defineInRange("furnace_smelting_speed_percent", 130, 50, 800);
         furnace_fuel_efficiency_percent = builder
           .translation(ModEngineersDecor.MODID + ".config.furnace_fuel_efficiency_percent")
           .comment("Defines, in percent, how fuel efficient the lab furnace is, compared " +
             "to a vanilla furnace. 100% means vanilla furnace consumiton, 200% means " +
             "the lab furnace needs about half the fuel of a vanilla furnace, " +
             "The value can be changed on-the-fly for tuning.")
-          .defineInRange("furnace_fuel_efficiency_percent", 100, 50, 250);
+          .defineInRange("furnace_fuel_efficiency_percent", 100, 50, 400);
         furnace_boost_energy_consumption = builder
           .translation(ModEngineersDecor.MODID + ".config.furnace_boost_energy_consumption")
           .comment("Defines the energy consumption (per tick) for speeding up the smelting process. " +
@@ -375,7 +375,7 @@ public class ModConfig
             "of the lab furnace. The power source needs to be able to provide at least 4 times " +
             "this consumption (fixed threshold value). The value can be changed on-the-fly for tuning. " +
             "The default value corresponds to the IE heater consumption.")
-          .defineInRange("furnace_boost_energy_consumption", 24, 16, 256);
+          .defineInRange("furnace_boost_energy_consumption", 24, 2, 1024);
         chair_mob_sitting_probability_percent = builder
           .translation(ModEngineersDecor.MODID + ".config.chair_mob_sitting_probability_percent")
           .comment("Defines, in percent, how high the probability is that a mob sits on a chair " +
@@ -402,27 +402,27 @@ public class ModConfig
             "That is technically the 'storage size' specified for blocks that want to fill " +
             "fluids into the valve (the valve has no container and forward that to the output " +
             "block), The value can be changed on-the-fly for tuning. ")
-          .defineInRange("pipevalve_max_flowrate", 1000, 1, 10000);
+          .defineInRange("pipevalve_max_flowrate", 1000, 1, 32000);
         pipevalve_redstone_gain = builder
           .translation(ModEngineersDecor.MODID + ".config.pipevalve_redstone_gain")
           .comment("Defines how many millibuckets per redstone signal strength can be transferred per tick " +
             "through the analog redstone controlled valves. Note: power 0 is always off, power 15 is always " +
             "the max flow rate. Between power 1 and 14 this scaler will result in a flow = 'redstone slope' * 'current redstone power'. " +
             "The value can be changed on-the-fly for tuning. ")
-          .defineInRange("pipevalve_redstone_gain", 20, 1, 10000);
+          .defineInRange("pipevalve_redstone_gain", 20, 1, 32000);
         e_furnace_speed_percent = builder
           .translation(ModEngineersDecor.MODID + ".config.e_furnace_speed_percent")
           .comment("Defines, in percent, how fast the electrical furnace smelts compared to " +
             "a vanilla furnace. 100% means vanilla furnace speed, 150% means the " +
             "electrical furnace is faster. The value can be changed on-the-fly for tuning.")
-          .defineInRange("e_furnace_speed_percent", BlockDecorFurnaceElectrical.BTileEntity.DEFAULT_SPEED_PERCENT, 50, 500);
+          .defineInRange("e_furnace_speed_percent", BlockDecorFurnaceElectrical.BTileEntity.DEFAULT_SPEED_PERCENT, 50, 800);
         e_furnace_power_consumption = builder
           .translation(ModEngineersDecor.MODID + ".config.e_furnace_power_consumption")
           .comment("Defines how much RF per tick the the electrical furnace consumed (average) for smelting. " +
             "The feeders transferring items from/to adjacent have this consumption/8 for each stack transaction. " +
             "The default value is only slightly higher than a furnace with an IE external heater (and no burning fuel inside)." +
             "The config value can be changed on-the-fly for tuning.")
-          .defineInRange("e_furnace_power_consumption", BlockDecorFurnaceElectrical.BTileEntity.DEFAULT_ENERGY_CONSUMPTION, 10, 256);
+          .defineInRange("e_furnace_power_consumption", BlockDecorFurnaceElectrical.BTileEntity.DEFAULT_ENERGY_CONSUMPTION, 8, 4096);
         e_furnace_automatic_pulling = builder
           .translation(ModEngineersDecor.MODID + ".config.e_furnace_automatic_pulling")
           .comment("Defines if the electrical furnace automatically pulls items from an inventory at the input side." +
@@ -434,12 +434,12 @@ public class ModConfig
             "Note that the agerage power is much less, as no power is produced at all during the night, " +
             "and the power curve is nonlinear rising/falling during the day. Bad weather conditions also " +
             "decrease the production. The config value can be changed on-the-fly for tuning.")
-          .defineInRange("small_solar_panel_peak_production", BlockDecorSolarPanel.BTileEntity.DEFAULT_PEAK_POWER, 10, 256);
+          .defineInRange("small_solar_panel_peak_production", BlockDecorSolarPanel.BTileEntity.DEFAULT_PEAK_POWER, 2, 4096);
         block_breaker_power_consumption = builder
           .translation(ModEngineersDecor.MODID + ".config.block_breaker_power_consumption")
           .comment("Defines how much RF power the Small Block Breaker requires to magnificently increase the processing speed. " +
             "The config value can be changed on-the-fly for tuning.")
-          .defineInRange("block_breaker_power_consumption", BlockDecorBreaker.BTileEntity.DEFAULT_BOOST_ENERGY, 16, 512);
+          .defineInRange("block_breaker_power_consumption", BlockDecorBreaker.BTileEntity.DEFAULT_BOOST_ENERGY, 4, 1024);
         block_breaker_reluctance = builder
           .translation(ModEngineersDecor.MODID + ".config.block_breaker_reluctance")
           .comment("Defines how much time the Small Block Breaker needs per block hardness, " +
@@ -460,7 +460,7 @@ public class ModConfig
           .translation(ModEngineersDecor.MODID + ".config.tree_cuttter_energy_consumption")
           .comment("Defines how much RF power the Small Tree Cutter requires to magnificently increase the processing speed. " +
             "The config value can be changed on-the-fly for tuning.")
-          .defineInRange("tree_cuttter_energy_consumption", BlockDecorTreeCutter.BTileEntity.DEFAULT_BOOST_ENERGY, 16, 512);
+          .defineInRange("tree_cuttter_energy_consumption", BlockDecorTreeCutter.BTileEntity.DEFAULT_BOOST_ENERGY, 4, 1024);
         tree_cuttter_cutting_time_needed = builder
           .translation(ModEngineersDecor.MODID + ".config.tree_cuttter_cutting_time_needed")
           .comment("Defines how much time the Small Tree Cutter needs to cut a tree without RF power. " +
@@ -477,7 +477,7 @@ public class ModConfig
             "Note this is a permanent standby power, not only when the device does something. " +
             "Use zero to disable energy dependency and energy handling of the machine. " +
             "The config value can be changed on-the-fly for tuning.")
-          .defineInRange("milking_machine_energy_consumption", BlockDecorMilker.BTileEntity.DEFAULT_ENERGY_CONSUMPTION, 0, 128);
+          .defineInRange("milking_machine_energy_consumption", BlockDecorMilker.BTileEntity.DEFAULT_ENERGY_CONSUMPTION, 0, 1024);
         milking_machine_milking_delay = builder
           .translation(ModEngineersDecor.MODID + ".config.milking_machine_milking_delay")
           .comment("Defines (for each individual cow) the minimum time between milking." )

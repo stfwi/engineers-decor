@@ -10,6 +10,7 @@ package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.libmc.detail.Inventories;
 import wile.engineersdecor.libmc.detail.Networking;
 import net.minecraft.inventory.container.*;
 import net.minecraft.item.crafting.AbstractCookingRecipe;
@@ -59,8 +60,8 @@ import java.util.Random;
 
 public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
 {
-  public BlockDecorFurnaceElectrical(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
-  { super(config, builder, unrotatedAABB); }
+  public BlockDecorFurnaceElectrical(long config, Block.Properties builder, final AxisAlignedBB[] unrotatedAABBs)
+  { super(config, builder, unrotatedAABBs); }
 
   @Override
   @Nullable
@@ -137,7 +138,7 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
     public static void on_config(int speed_percent, int standard_energy_per_tick, boolean with_automatic_inventory_pulling)
     {
       proc_speed_percent_ = MathHelper.clamp(speed_percent, 10, 500);
-      energy_consumption_ = MathHelper.clamp(standard_energy_per_tick, 10, 256) * HEAT_INCREMENT * proc_speed_percent_ / 100;
+      energy_consumption_ = MathHelper.clamp(standard_energy_per_tick, 4, 4096) * HEAT_INCREMENT * proc_speed_percent_ / 100;
       transfer_energy_consumption_ = MathHelper.clamp(energy_consumption_ / 8, 8, HEAT_INCREMENT);
       with_automatic_inventory_pulling_ = with_automatic_inventory_pulling;
       ModEngineersDecor.logger().info("Config electrical furnace speed:" + proc_speed_percent_ + ", power consumption:" + energy_consumption_);
@@ -514,7 +515,7 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
         stacks_.set(index_to, from.split(count));
       } else if(to.getCount() >= to.getMaxStackSize()) {
         changed = false;
-      } else if((!from.isItemEqual(to)) || (!ItemStack.areItemStackTagsEqual(from, to))) {
+      } else if(Inventories.areItemStacksDifferent(from, to)) {
         changed = false;
       } else {
         if((to.getCount()+count) >= to.getMaxStackSize()) {

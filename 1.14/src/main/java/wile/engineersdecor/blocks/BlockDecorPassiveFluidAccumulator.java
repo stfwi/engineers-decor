@@ -43,7 +43,7 @@ import javax.annotation.Nullable;
 
 public class BlockDecorPassiveFluidAccumulator extends StandardBlocks.Directed implements IDecorBlock
 {
-  public BlockDecorPassiveFluidAccumulator(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
+  public BlockDecorPassiveFluidAccumulator(long config, Block.Properties builder, final AxisAlignedBB[] unrotatedAABB)
   { super(config, builder, unrotatedAABB); }
 
   @Override

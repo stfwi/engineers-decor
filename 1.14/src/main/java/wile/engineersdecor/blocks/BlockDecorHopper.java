@@ -11,6 +11,7 @@ package wile.engineersdecor.blocks;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.detail.Inventories;
 import wile.engineersdecor.libmc.detail.Networking;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -34,6 +35,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -49,12 +51,13 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 
 public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorBlock
 {
-  public BlockDecorHopper(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
-  { super(config, builder, unrotatedAABB); }
+  public BlockDecorHopper(long config, Block.Properties builder, final Supplier<ArrayList<VoxelShape>> shape_supplier)
+  { super(config, builder, shape_supplier); }
 
   @Override
   @SuppressWarnings("deprecation")
@@ -395,7 +398,7 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
 
     // ISidedInventory --------------------------------------------------------------------------------------
 
-    LazyOptional<? extends IItemHandler>[] item_handlers = SidedInvWrapper.create(this, Direction.UP);
+    LazyOptional<? extends IItemHandler>[] item_handlers = SidedInvWrapper.create(this, Direction.UP, Direction.DOWN);
     private static final int[] SIDED_INV_SLOTS;
     static {
       SIDED_INV_SLOTS = new int[NUM_OF_SLOTS];
@@ -420,7 +423,10 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
       if(!this.removed && (facing != null)) {
-        if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handlers[0].cast();
+        if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+          if(facing == Direction.UP) return item_handlers[0].cast();
+          if(facing == Direction.DOWN) return item_handlers[1].cast();
+        }
       }
       return super.getCapability(capability, facing);
     }
@@ -438,7 +444,7 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
       for(int i=0; i<stacks_.size(); ++i) {
         final ItemStack slotstack = stacks_.get(i);
         if((first_empty_slot < 0) && slotstack.isEmpty()) { first_empty_slot=i; continue; }
-        if(!stack.isItemEqual(slotstack)) continue;
+        if(Inventories.areItemStacksDifferent(stack, slotstack)) continue;
         int nspace = slotstack.getMaxStackSize() - slotstack.getCount();
         if(nspace <= 0) {
           continue;
@@ -491,7 +497,7 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
       // First stack comletion insert run.
       for(int i=0; i<ih.getSlots(); ++i) {
         final ItemStack target_stack = ih.getStackInSlot(i);
-        if(!target_stack.isItemEqual(insert_stack)) continue;
+        if(Inventories.areItemStacksDifferent(target_stack, insert_stack)) continue;
         insert_stack = ih.insertItem(i, insert_stack.copy(), false);
         if(insert_stack.isEmpty()) break;
       }

@@ -13,6 +13,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SharedConstants;
+import net.minecraft.util.math.shapes.IBooleanFunction;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IBlockReader;
@@ -247,6 +250,20 @@ public class Auxiliaries
       }
     }
     return bb;
+  }
+
+  public static final AxisAlignedBB[] getRotatedAABB(AxisAlignedBB[] bbs, Direction new_facing, boolean horizontal_rotation)
+  {
+    AxisAlignedBB[] transformed = new AxisAlignedBB[bbs.length];
+    for(int i=0; i<bbs.length; ++i) transformed[i] = getRotatedAABB(bbs[i], new_facing, horizontal_rotation);
+    return transformed;
+  }
+
+  public static final VoxelShape getUnionShape(AxisAlignedBB[] aabbs)
+  {
+    VoxelShape shape = VoxelShapes.empty();
+    for(AxisAlignedBB aabb: aabbs) shape = VoxelShapes.combine(shape, VoxelShapes.create(aabb), IBooleanFunction.OR);
+    return shape;
   }
 
   @SuppressWarnings("unused")

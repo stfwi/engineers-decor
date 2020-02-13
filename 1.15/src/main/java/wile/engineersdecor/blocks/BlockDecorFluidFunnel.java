@@ -47,7 +47,7 @@ public class BlockDecorFluidFunnel extends BlockDecor implements IDecorBlock
   public static final int FILL_LEVEL_MAX = 3;
   public static final IntegerProperty FILL_LEVEL = IntegerProperty.create("level", 0, FILL_LEVEL_MAX);
 
-  public BlockDecorFluidFunnel(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
+  public BlockDecorFluidFunnel(long config, Block.Properties builder, final AxisAlignedBB[] unrotatedAABB)
   { super(config, builder, unrotatedAABB); }
 
   @Override
@@ -142,7 +142,7 @@ public class BlockDecorFluidFunnel extends BlockDecor implements IDecorBlock
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class BTileEntity extends TileEntity implements ITickableTileEntity, ICapabilityProvider
+  public static class BTileEntity extends TileEntity implements ITickableTileEntity, ICapabilityProvider, IFluidTank
   {
     public static final int TANK_CAPACITY = 3000;
     public static final int TICK_INTERVAL = 10; // ca 500ms
@@ -201,24 +201,8 @@ public class BlockDecorFluidFunnel extends BlockDecor implements IDecorBlock
       @Override public int getTankCapacity(int tank) { return TANK_CAPACITY; }
       @Override public boolean isFluidValid(int tank, @Nonnull FluidStack stack) { return true; }
       @Override public int fill(FluidStack resource, FluidAction action) { return 0; }
-
-      @Override public FluidStack drain(FluidStack resource, FluidAction action)
-      {
-        if((resource==null) || (te.tank_.isEmpty())) return FluidStack.EMPTY;
-        return (!(te.tank_.isFluidEqual(resource))) ? (FluidStack.EMPTY) : drain(resource.getAmount(), action);
-      }
-
-      @Override public FluidStack drain(int maxDrain, FluidAction action)
-      {
-        if(te.tank_.isEmpty()) return FluidStack.EMPTY;
-        FluidStack res = te.tank_.copy();
-        maxDrain = MathHelper.clamp(maxDrain ,0 , te.tank_.getAmount());
-        res.setAmount(maxDrain);
-        if(action != FluidAction.EXECUTE) return res;
-        te.tank_.setAmount(te.tank_.getAmount()-maxDrain);
-        if(te.tank_.getAmount() <= 0) te.tank_ = FluidStack.EMPTY;
-        return res;
-      }
+      @Override public FluidStack drain(FluidStack resource, FluidAction action) { return te.drain(resource, action); }
+      @Override public FluidStack drain(int maxDrain, FluidAction action) { return te.drain(maxDrain, action); }
     }
 
     private final LazyOptional<IFluidHandler> fluid_handler_ = LazyOptional.of(() -> new OutputFluidHandler(this));
@@ -228,6 +212,51 @@ public class BlockDecorFluidFunnel extends BlockDecor implements IDecorBlock
     {
       if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) return fluid_handler_.cast();
       return super.getCapability(capability, facing);
+    }
+
+    // IFluidTank ------------------------------------------------------------------------------------------
+
+    @Override
+    @Nonnull
+    public FluidStack getFluid()
+    { return tank_.copy(); }
+
+    @Override
+    public int getFluidAmount()
+    { return tank_.getAmount(); }
+
+    @Override
+    public int getCapacity()
+    { return TANK_CAPACITY; }
+
+    @Override
+    public boolean isFluidValid(FluidStack stack)
+    { return true; }
+
+    @Override
+    public int fill(FluidStack resource, FluidAction action)
+    { return 0; }
+
+    @Override
+    @Nonnull
+    public FluidStack drain(FluidStack resource, FluidAction action)
+    {
+      if((resource==null) || (tank_.isEmpty())) return FluidStack.EMPTY;
+      return (!(tank_.isFluidEqual(resource))) ? (FluidStack.EMPTY) : drain(resource.getAmount(), action);
+    }
+
+    @Override
+    @Nonnull
+    public FluidStack drain(int maxDrain, FluidAction action)
+    {
+      if(tank_.isEmpty()) return FluidStack.EMPTY;
+      FluidStack res = tank_.copy();
+      maxDrain = MathHelper.clamp(maxDrain ,0 , tank_.getAmount());
+      res.setAmount(maxDrain);
+      if(action != FluidAction.EXECUTE) return res;
+      tank_.setAmount(tank_.getAmount()-maxDrain);
+      if(tank_.getAmount() <= 0) tank_ = FluidStack.EMPTY;
+      return res;
     }
 
     // ITickableTileEntity --------------------------------------------------------------------------------

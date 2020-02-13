@@ -56,7 +56,7 @@ import java.util.List;
 
 public class BlockDecorPlacer extends BlockDecor.Directed
 {
-  public BlockDecorPlacer(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
+  public BlockDecorPlacer(long config, Block.Properties builder, final AxisAlignedBB[] unrotatedAABB)
   { super(config, builder, unrotatedAABB); }
 
   @Override

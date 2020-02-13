@@ -11,6 +11,7 @@ package wile.engineersdecor.blocks;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.detail.ExtItems;
+import wile.engineersdecor.libmc.detail.Inventories;
 import wile.engineersdecor.libmc.detail.Networking;
 import net.minecraft.tileentity.*;
 import net.minecraft.inventory.container.*;
@@ -67,11 +68,8 @@ public class BlockDecorFurnace extends BlockDecor.Horizontal
 {
   public static final BooleanProperty LIT = RedstoneTorchBlock.LIT;
 
-  public BlockDecorFurnace(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
-  {
-    super(config, builder, unrotatedAABB);
-    setDefaultState(super.getDefaultState().with(LIT, false));
-  }
+  public BlockDecorFurnace(long config, Block.Properties properties, final AxisAlignedBB[] unrotatedAABB)
+  { super(config, properties, unrotatedAABB); setDefaultState(super.getDefaultState().with(LIT, false)); }
 
   @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
@@ -215,7 +213,7 @@ public class BlockDecorFurnace extends BlockDecor.Horizontal
     {
       proc_speed_ = ((double)MathHelper.clamp(speed_percent, 10, 500)) / 100;
       proc_fuel_efficiency_ = ((double) MathHelper.clamp(fuel_efficiency_percent, 10, 500)) / 100;
-      boost_energy_consumption = TICK_INTERVAL * MathHelper.clamp(boost_energy_per_tick, 16, 512);
+      boost_energy_consumption = TICK_INTERVAL * MathHelper.clamp(boost_energy_per_tick, 4, 4096);
       ModEngineersDecor.logger().info("Config lab furnace speed:" + (proc_speed_*100) + "%, efficiency:" + (proc_fuel_efficiency_*100) + "%");
     }
 
@@ -350,7 +348,7 @@ public class BlockDecorFurnace extends BlockDecor.Horizontal
     public void setInventorySlotContents(int index, ItemStack stack)
     {
       ItemStack slot_stack = stacks_.get(index);
-      boolean already_in_slot = (!stack.isEmpty()) && (stack.isItemEqual(slot_stack)) && (ItemStack.areItemStackTagsEqual(stack, slot_stack));
+      boolean already_in_slot = (!stack.isEmpty()) && (Inventories.areItemStacksIdentical(stack, slot_stack));
       stacks_.set(index, stack);
       if(stack.getCount() > getInventoryStackLimit()) stack.setCount(getInventoryStackLimit());
       if((index == SMELTING_INPUT_SLOT_NO) && (!already_in_slot)) {
@@ -624,7 +622,7 @@ public class BlockDecorFurnace extends BlockDecor.Horizontal
         stacks_.set(index_to, from.split(count));
       } else if(to.getCount() >= to.getMaxStackSize()) {
         changed = false;
-      } else if((!from.isItemEqual(to)) || (!ItemStack.areItemStackTagsEqual(from, to))) {
+      } else if(Inventories.areItemStacksDifferent(from, to)) {
         changed = false;
       } else {
         if((to.getCount()+count) >= to.getMaxStackSize()) {

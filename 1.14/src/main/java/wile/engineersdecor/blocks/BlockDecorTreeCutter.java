@@ -41,7 +41,7 @@ public class BlockDecorTreeCutter extends StandardBlocks.Horizontal
 {
   public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
-  public BlockDecorTreeCutter(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
+  public BlockDecorTreeCutter(long config, Block.Properties builder, final AxisAlignedBB[] unrotatedAABB)
   { super(config, builder, unrotatedAABB); }
 
   @Override
@@ -100,7 +100,7 @@ public class BlockDecorTreeCutter extends StandardBlocks.Horizontal
 
     public static void on_config(int boost_energy_per_tick, int cutting_time_seconds, boolean power_required)
     {
-      boost_energy_consumption = TICK_INTERVAL * MathHelper.clamp(boost_energy_per_tick, 16, 512);
+      boost_energy_consumption = TICK_INTERVAL * MathHelper.clamp(boost_energy_per_tick, 4, 4096);
       cutting_time_needed = 20 * MathHelper.clamp(cutting_time_seconds, 10, 240);
       requires_power = power_required;
       ModEngineersDecor.logger().info("Config tree cutter: Boost energy consumption:" + boost_energy_consumption + "rf/t" + (requires_power?" (power required for operation) ":"") + ", cutting time " + cutting_time_needed + "t." );

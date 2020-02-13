@@ -61,8 +61,8 @@ public class BlockDecorPipeValve extends BlockDecor.DirectedWaterLoggable implem
     ModEngineersDecor.logger().info("Config pipe valve: maxflow:" + BTileEntity.fluid_maxflow_mb + "mb, redstone amp:" + BTileEntity.redstone_flow_slope_mb + "mb/sig");
   }
 
-  public BlockDecorPipeValve(long config, int valve_config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
-  { super(config, builder, unrotatedAABB); this.valve_config=valve_config;}
+  public BlockDecorPipeValve(long config, int valve_config, Block.Properties builder, final AxisAlignedBB[] unrotatedAABB)
+  { super(config, builder, unrotatedAABB); this.valve_config = valve_config; }
 
   private BlockState get_rsconnector_state(BlockState state, IWorld world, BlockPos pos, @Nullable BlockPos fromPos)
   {

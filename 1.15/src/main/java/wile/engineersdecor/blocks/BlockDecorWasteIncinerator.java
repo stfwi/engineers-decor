@@ -10,6 +10,7 @@ package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.libmc.detail.Inventories;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -178,7 +179,7 @@ public class BlockDecorWasteIncinerator extends BlockDecor
 
     public static void on_config(int speed_percent, int fuel_efficiency_percent, int boost_energy_per_tick)
     {
-      energy_consumption = MathHelper.clamp(boost_energy_per_tick, 16, 512);
+      energy_consumption = MathHelper.clamp(boost_energy_per_tick, 4, 4096);
       ModEngineersDecor.logger().info("Config waste incinerator boost energy consumption:" + energy_consumption);
     }
 
@@ -573,7 +574,7 @@ public class BlockDecorWasteIncinerator extends BlockDecor
         stacks_.set(index_to, from.split(count));
       } else if(to.getCount() >= to.getMaxStackSize()) {
         changed = false;
-      } else if((!from.isItemEqual(to)) || (!ItemStack.areItemStackTagsEqual(from, to))) {
+      } else if(Inventories.areItemStacksDifferent(from, to)) {
         changed = false;
       } else {
         if((to.getCount()+count) >= to.getMaxStackSize()) {

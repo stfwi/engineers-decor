@@ -11,6 +11,11 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
+    - v1.0.19-b3  [M] Config tweaks: Value limit ranges increased to facilitate modpacking.
+                  [A] Factory Hopper: Added bottom item handler (CR#227).
+                  [M] Block shapes refined.
+                  [F] Fixed duping bug (issue #87, thx Nachtflame)
+
     - v1.0.19-b2  [F] Fixed Floor Grating item pass-through jitters (thx Cid).
                   [M] Removed obsolete recipe collision testing recipes.
                   [F] Fixed missing Block Breaker dynamic block drops.

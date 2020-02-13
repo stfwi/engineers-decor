@@ -19,6 +19,8 @@ import net.minecraft.block.IWaterLoggable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.block.Block;
+import java.util.ArrayList;
+import java.util.function.Supplier;
 
 
 public class BlockDecor extends StandardBlocks.BaseBlock implements IDecorBlock
@@ -46,6 +48,9 @@ public class BlockDecor extends StandardBlocks.BaseBlock implements IDecorBlock
   public BlockDecor(long conf, Block.Properties properties, VoxelShape voxel_shape)
   { super(conf, properties, voxel_shape); }
 
+  public BlockDecor(long conf, Block.Properties properties, AxisAlignedBB[] aabbs)
+  { super(conf, properties, aabbs); }
+
   public static class WaterLoggable extends StandardBlocks.WaterLoggable implements IStandardBlock, IWaterLoggable
   {
     public WaterLoggable(long config, Block.Properties properties)
@@ -62,23 +67,47 @@ public class BlockDecor extends StandardBlocks.BaseBlock implements IDecorBlock
   {
     public Directed(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
     { super(config, builder, unrotatedAABB); }
+
+    public Directed(long config, Block.Properties properties, final AxisAlignedBB[] unrotatedAABBs)
+    { super(config, properties, unrotatedAABBs); }
+
+    public Directed(long config, Block.Properties properties, final Supplier<ArrayList<VoxelShape>> shape_supplier)
+    { super(config, properties, shape_supplier); }
   }
 
   public static class DirectedWaterLoggable extends StandardBlocks.DirectedWaterLoggable implements IDecorBlock,IWaterLoggable
   {
     public DirectedWaterLoggable(long config, Block.Properties properties, AxisAlignedBB aabb)
     { super(config, properties, aabb); }
+
+    public DirectedWaterLoggable(long config, Block.Properties properties, AxisAlignedBB[] aabbs)
+    { super(config, properties, aabbs); }
+
+    public DirectedWaterLoggable(long config, Block.Properties properties, final Supplier<ArrayList<VoxelShape>> shape_supplier)
+    { super(config, properties, shape_supplier); }
   }
 
   public static class Horizontal extends StandardBlocks.Horizontal implements IDecorBlock
   {
     public Horizontal(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
     { super(config, builder, unrotatedAABB); }
+
+    public Horizontal(long config, Block.Properties properties, final AxisAlignedBB[] unrotatedAABBs)
+    { super(config, properties, unrotatedAABBs); }
+
+    public Horizontal(long config, Block.Properties properties, final Supplier<ArrayList<VoxelShape>> shape_supplier)
+    { super(config, properties, shape_supplier); }
   }
 
   public static class HorizontalWaterLoggable extends StandardBlocks.HorizontalWaterLoggable implements IWaterLoggable
   {
     public HorizontalWaterLoggable(long config, Block.Properties properties, AxisAlignedBB aabb)
     { super(config, properties, aabb); }
+
+    public HorizontalWaterLoggable(long config, Block.Properties properties, AxisAlignedBB[] aabbs)
+    { super(config, properties, aabbs); }
+
+    public HorizontalWaterLoggable(long config, Block.Properties properties, final Supplier<ArrayList<VoxelShape>> shape_supplier)
+    { super(config, properties, shape_supplier); }
   }
 }

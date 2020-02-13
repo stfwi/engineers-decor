@@ -13,6 +13,10 @@
 package wile.engineersdecor;
 
 
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import wile.engineersdecor.blocks.*;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import net.minecraft.client.gui.ScreenManager;
@@ -35,6 +39,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.event.RegistryEvent;
 import org.apache.commons.lang3.ArrayUtils;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Collections;
 import javax.annotation.Nonnull;
@@ -222,7 +227,12 @@ public class ModContent
   public static final BlockDecorChair TREATED_WOOD_STOOL = (BlockDecorChair)(new BlockDecorChair(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD),
-    Auxiliaries.getPixeledAABB(4.1,0,4.1, 11.8,8.8,11.8)
+    new AxisAlignedBB[]{
+      Auxiliaries.getPixeledAABB(4,7,4, 12,8.8,12),
+      Auxiliaries.getPixeledAABB(7,0,7, 9,7,9),
+      Auxiliaries.getPixeledAABB(4,0,7, 12,1,9),
+      Auxiliaries.getPixeledAABB(7,0,4, 9,1,12),
+    }
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "treated_wood_stool"));
 
   public static final BlockDecor.WaterLoggable TREATED_WOOD_SIDE_TABLE = (BlockDecor.WaterLoggable)(new BlockDecor.WaterLoggable(
@@ -374,19 +384,31 @@ public class ModContent
   public static final BlockDecorCraftingTable.CraftingTableBlock TREATED_WOOD_CRAFTING_TABLE = (BlockDecorCraftingTable.CraftingTableBlock)(new BlockDecorCraftingTable.CraftingTableBlock(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 15f).sound(SoundType.WOOD),
-    Auxiliaries.getPixeledAABB(1,0,1, 15,15.9,15)
+    new AxisAlignedBB[]{
+      Auxiliaries.getPixeledAABB(0,13,0, 16,16,16),
+      Auxiliaries.getPixeledAABB(1, 0,1, 15,13,15)
+    }
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "treated_wood_crafting_table"));
 
   public static final BlockDecorFurnace SMALL_LAB_FURNACE = (BlockDecorFurnace)(new BlockDecorFurnace(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 15f).sound(SoundType.METAL),
-    Auxiliaries.getPixeledAABB(1,0,1, 15,15,16.0)
+    new AxisAlignedBB[]{
+      Auxiliaries.getPixeledAABB(1,0,1, 15, 1,15),
+      Auxiliaries.getPixeledAABB(0,1,1, 16,16,16),
+    }
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_lab_furnace"));
 
   public static final BlockDecorFurnaceElectrical SMALL_ELECTRICAL_FURNACE = (BlockDecorFurnaceElectrical)(new BlockDecorFurnaceElectrical(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
-    Auxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+    new AxisAlignedBB[]{
+      Auxiliaries.getPixeledAABB(0, 0,0, 16,11,16),
+      Auxiliaries.getPixeledAABB(1,11,0, 15,12,16),
+      Auxiliaries.getPixeledAABB(2,12,0, 14,13,16),
+      Auxiliaries.getPixeledAABB(3,13,0, 13,14,16),
+      Auxiliaries.getPixeledAABB(4,14,0, 12,16,16),
+    }
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_electrical_furnace"));
 
   public static final BlockDecorDropper FACTORY_DROPPER = (BlockDecorDropper)(new BlockDecorDropper(
@@ -398,19 +420,70 @@ public class ModContent
   public static final BlockDecorPlacer FACTORY_PLACER = (BlockDecorPlacer)(new BlockDecorPlacer(
     BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
-    Auxiliaries.getPixeledAABB(2,2,2, 14,14,14)
+    new AxisAlignedBB[]{
+      Auxiliaries.getPixeledAABB(0,0,2, 16,16,16),
+      Auxiliaries.getPixeledAABB( 0,0,0, 1,16, 2),
+      Auxiliaries.getPixeledAABB(15,0,0,16,16, 2)
+    }
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "factory_placer"));
 
   public static final BlockDecorBreaker SMALL_BLOCK_BREAKER = (BlockDecorBreaker)(new BlockDecorBreaker(
     BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
-    Auxiliaries.getPixeledAABB(0,0,0, 16,12,16)
+    new AxisAlignedBB[]{
+      Auxiliaries.getPixeledAABB(1,0,0, 15, 4, 7),
+      Auxiliaries.getPixeledAABB(1,0,7, 15,12,16),
+      Auxiliaries.getPixeledAABB(0,0,0, 1, 5, 4),
+      Auxiliaries.getPixeledAABB(0,0,4, 1,12,16),
+      Auxiliaries.getPixeledAABB(15,0,0, 16, 5, 4),
+      Auxiliaries.getPixeledAABB(15,0,4, 16,12,16)
+    }
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_block_breaker"));
 
   public static final BlockDecorHopper FACTORY_HOPPER = (BlockDecorHopper)(new BlockDecorHopper(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
-    Auxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL), ()->{
+      final AxisAlignedBB[] down_aabbs = new AxisAlignedBB[]{
+        Auxiliaries.getPixeledAABB( 5, 0, 5, 11, 1,11),
+        Auxiliaries.getPixeledAABB( 4, 1, 4, 12, 7,12),
+        Auxiliaries.getPixeledAABB( 2, 7, 2, 14,10,14),
+        Auxiliaries.getPixeledAABB( 0,10, 0, 16,16,16),
+        Auxiliaries.getPixeledAABB( 0, 4, 5,  2,10,11),
+        Auxiliaries.getPixeledAABB(14, 4, 5, 16,10,11),
+        Auxiliaries.getPixeledAABB( 5, 4, 0, 11,10, 2),
+        Auxiliaries.getPixeledAABB( 5, 4,14, 11,10,16),
+      };
+      final AxisAlignedBB[] up_aabbs = new AxisAlignedBB[]{
+        Auxiliaries.getPixeledAABB( 5,15, 5, 11,16,11),
+        Auxiliaries.getPixeledAABB( 4,14, 4, 12, 9,12),
+        Auxiliaries.getPixeledAABB( 2, 9, 2, 14, 6,14),
+        Auxiliaries.getPixeledAABB( 0, 6, 0, 16, 0,16),
+        Auxiliaries.getPixeledAABB( 0,12, 5,  2, 6,11),
+        Auxiliaries.getPixeledAABB(14,12, 5, 16, 6,11),
+        Auxiliaries.getPixeledAABB( 5,12, 0, 11, 6, 2),
+        Auxiliaries.getPixeledAABB( 5,12,14, 11, 6,16),
+      };
+      final AxisAlignedBB[] north_aabbs = new AxisAlignedBB[]{
+        Auxiliaries.getPixeledAABB( 5, 0, 5, 11, 1,11),
+        Auxiliaries.getPixeledAABB( 4, 1, 4, 12, 7,12),
+        Auxiliaries.getPixeledAABB( 2, 7, 2, 14,10,14),
+        Auxiliaries.getPixeledAABB( 0,10, 0, 16,16,16),
+        Auxiliaries.getPixeledAABB( 0, 4, 5,  2,10,11),
+        Auxiliaries.getPixeledAABB(14, 4, 5, 16,10,11),
+        Auxiliaries.getPixeledAABB( 5, 1, 0, 11, 7, 4),
+        Auxiliaries.getPixeledAABB( 5, 4,14, 11,10,16),
+      };
+      return new ArrayList<VoxelShape>(Arrays.asList(
+        Auxiliaries.getUnionShape(down_aabbs),
+        Auxiliaries.getUnionShape(up_aabbs),
+        Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(north_aabbs, Direction.NORTH, false)),
+        Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(north_aabbs, Direction.SOUTH, false)),
+        Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(north_aabbs, Direction.WEST, false)),
+        Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(north_aabbs, Direction.EAST, false)),
+        VoxelShapes.fullCube(),
+        VoxelShapes.fullCube()
+      ));
+    }
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "factory_hopper"));
 
   public static final BlockDecorWasteIncinerator SMALL_WASTE_INCINERATOR = (BlockDecorWasteIncinerator)(new BlockDecorWasteIncinerator(
@@ -434,46 +507,81 @@ public class ModContent
   public static final BlockDecorMilker SMALL_MILKING_MACHINE = (BlockDecorMilker)(new BlockDecorMilker(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
-    Auxiliaries.getPixeledAABB(0,0,0, 16,16,13)
+    new AxisAlignedBB[]{
+      Auxiliaries.getPixeledAABB( 1, 1,0, 15,14,10),
+      Auxiliaries.getPixeledAABB( 0,14,0, 16,16,13),
+      Auxiliaries.getPixeledAABB( 0, 0,0, 16, 1,13),
+      Auxiliaries.getPixeledAABB( 0, 1,1,  1,14,11),
+      Auxiliaries.getPixeledAABB(15, 1,1, 16,14,11)
+    }
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_milking_machine"));
 
   public static final BlockDecorTreeCutter SMALL_TREE_CUTTER = (BlockDecorTreeCutter)(new BlockDecorTreeCutter(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
-    Auxiliaries.getPixeledAABB(0,0,0, 16,8,16)
+    new AxisAlignedBB[]{
+      Auxiliaries.getPixeledAABB( 0,0, 0, 16,3,16),
+      Auxiliaries.getPixeledAABB( 0,3, 0,  3,8,16),
+      Auxiliaries.getPixeledAABB( 3,7, 0,  5,8,16),
+      Auxiliaries.getPixeledAABB(15,0, 0, 16,6,16),
+      Auxiliaries.getPixeledAABB( 0,0,13, 16,8,16),
+      Auxiliaries.getPixeledAABB( 5,6,12, 16,8,13),
+    }
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_tree_cutter"));
 
   public static final BlockDecorPipeValve STRAIGHT_CHECK_VALVE = (BlockDecorPipeValve)(new BlockDecorPipeValve(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
     BlockDecorPipeValve.CFG_CHECK_VALVE,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
-    Auxiliaries.getPixeledAABB(4,4,0, 12,12,16)
+    new AxisAlignedBB[]{
+      Auxiliaries.getPixeledAABB(2,2, 0, 14,14, 2),
+      Auxiliaries.getPixeledAABB(2,2,14, 14,14,16),
+      Auxiliaries.getPixeledAABB(3,3, 5, 13,13,11),
+      Auxiliaries.getPixeledAABB(4,4, 2, 12,12,14),
+    }
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "straight_pipe_valve"));
 
   public static final BlockDecorPipeValve STRAIGHT_REDSTONE_VALVE = (BlockDecorPipeValve)(new BlockDecorPipeValve(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
     BlockDecorPipeValve.CFG_REDSTONE_CONTROLLED_VALVE,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
-    Auxiliaries.getPixeledAABB(4,4,0, 12,12,16)
+    new AxisAlignedBB[]{
+      Auxiliaries.getPixeledAABB(2,2, 0, 14,14, 2),
+      Auxiliaries.getPixeledAABB(2,2,14, 14,14,16),
+      Auxiliaries.getPixeledAABB(3,3, 5, 13,13,11),
+      Auxiliaries.getPixeledAABB(4,4, 2, 12,12,14),
+    }
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "straight_pipe_valve_redstone"));
 
   public static final BlockDecorPipeValve STRAIGHT_REDSTONE_ANALOG_VALVE = (BlockDecorPipeValve)(new BlockDecorPipeValve(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
     BlockDecorPipeValve.CFG_REDSTONE_CONTROLLED_VALVE|BlockDecorPipeValve.CFG_ANALOG_VALVE,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
-    Auxiliaries.getPixeledAABB(4,4,0, 12,12,16)
+    new AxisAlignedBB[]{
+      Auxiliaries.getPixeledAABB(2,2, 0, 14,14, 2),
+      Auxiliaries.getPixeledAABB(2,2,14, 14,14,16),
+      Auxiliaries.getPixeledAABB(3,3, 5, 13,13,11),
+      Auxiliaries.getPixeledAABB(4,4, 2, 12,12,14),
+    }
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "straight_pipe_valve_redstone_analog"));
 
   public static final BlockDecorPassiveFluidAccumulator PASSIVE_FLUID_ACCUMULATOR = (BlockDecorPassiveFluidAccumulator)(new BlockDecorPassiveFluidAccumulator(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
-    Auxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+    new AxisAlignedBB[]{
+      Auxiliaries.getPixeledAABB(3,3,0, 13,13, 1),
+      Auxiliaries.getPixeledAABB(0,0,1, 16,16,16)
+    }
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "passive_fluid_accumulator"));
 
   public static final BlockDecorFluidFunnel SMALL_FLUID_FUNNEL = (BlockDecorFluidFunnel)(new BlockDecorFluidFunnel(
     BlockDecor.CFG_CUTOUT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
-    Auxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+    new AxisAlignedBB[]{
+      Auxiliaries.getPixeledAABB(0, 0,0, 16,14,16),
+      Auxiliaries.getPixeledAABB(1,14,1, 15,15,15),
+      Auxiliaries.getPixeledAABB(0,15,0, 16,16,16)
+    }
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_fluid_funnel"));
 
   // -------------------------------------------------------------------------------------------------------------------
@@ -522,7 +630,8 @@ public class ModContent
 
   public static final BlockDecorFence STEEL_MESH_FENCE = (BlockDecorFence)(new BlockDecorFence(
     BlockDecor.CFG_CUTOUT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL)
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
+    1.5, 16, 0.25, 0, 16
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "steel_mesh_fence"));
 
   // -------------------------------------------------------------------------------------------------------------------

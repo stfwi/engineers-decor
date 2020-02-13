@@ -42,8 +42,8 @@ public class BlockDecorChair extends BlockDecor.HorizontalWaterLoggable
     ModEngineersDecor.logger().info("Config chairs: " + sitting_enabled + ", sit: " + sitting_probability, ", stand up: " + standup_probability);
   }
 
-  public BlockDecorChair(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
-  { super(config, builder.tickRandomly(), unrotatedAABB); }
+  public BlockDecorChair(long config, Block.Properties builder, final AxisAlignedBB[] unrotatedAABBs)
+  { super(config, builder.tickRandomly(), unrotatedAABBs); }
 
   @Override
   @SuppressWarnings("deprecation")

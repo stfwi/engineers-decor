@@ -24,6 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -36,11 +37,15 @@ public class StandardFenceBlock extends WallBlock implements StandardBlocks.ISta
   private final VoxelShape[] shape_voxels;
   private final VoxelShape[] collision_shape_voxels;
 
-  public StandardFenceBlock(long config, Block.Properties builder)
+
+  public StandardFenceBlock(long config, Block.Properties properties)
+  { this(config, properties, 1.5,16, 1.5, 0, 16); }
+
+  public StandardFenceBlock(long config, Block.Properties properties, double pole_width, double pole_height, double side_width, double side_max_y, double side_min_y)
   {
-    super(builder);
-    this.shape_voxels = buildWallShapes(1.5f, 1.5f, 16f, 0f, 16f);
-    this.collision_shape_voxels = buildWallShapes(1.5f, 1.5f, 24f, 0f, 24f);
+    super(properties);
+    this.shape_voxels = buildShapes(pole_width, pole_height, side_width, side_max_y, side_min_y);
+    this.collision_shape_voxels = buildShapes(pole_width,24, pole_width, 0, 24);
   }
 
   @Override
@@ -48,8 +53,36 @@ public class StandardFenceBlock extends WallBlock implements StandardBlocks.ISta
   public void addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
   { Auxiliaries.Tooltip.addInformation(stack, world, tooltip, flag, true); }
 
-  protected VoxelShape[] buildWallShapes(float pole_width_x, float pole_width_z, float pole_height, float side_min_y, float side_max_y)
-  { return super.makeShapes(pole_width_x, pole_width_z, pole_height, side_min_y, side_max_y); }
+
+  protected VoxelShape[] buildShapes(double pole_width, double pole_height, double side_width, double side_min_y, double side_max_y)
+  {
+    final double px0=8d-pole_width, px1=8d+pole_width, sx0=8d-side_width, sx1=8d+side_width;
+    VoxelShape vp  = Block.makeCuboidShape(px0, 0, px0, px1, pole_height, px1);
+    VoxelShape vs1 = Block.makeCuboidShape(sx0, side_min_y, 0, sx1, side_max_y, sx1);
+    VoxelShape vs2 = Block.makeCuboidShape(sx0, side_min_y, sx0, sx1, side_max_y, 16);
+    VoxelShape vs3 = Block.makeCuboidShape(0, side_min_y, sx0, sx1, side_max_y, sx1);
+    VoxelShape vs4 = Block.makeCuboidShape(sx0, side_min_y, sx0, 16, side_max_y, sx1);
+    VoxelShape vs5 = VoxelShapes.or(vs1, vs4);
+    VoxelShape vs6 = VoxelShapes.or(vs2, vs3);
+    return new VoxelShape[] {
+      vp,
+      VoxelShapes.or(vp, vs2),
+      VoxelShapes.or(vp, vs3),
+      VoxelShapes.or(vp, vs6),
+      VoxelShapes.or(vp, vs1),
+        VoxelShapes.or(vs2, vs1),
+      VoxelShapes.or(vp, VoxelShapes.or(vs3, vs1)),
+      VoxelShapes.or(vp, VoxelShapes.or(vs6, vs1)),
+      VoxelShapes.or(vp, vs4),
+      VoxelShapes.or(vp, VoxelShapes.or(vs2, vs4)),
+        VoxelShapes.or(vs3, vs4),
+      VoxelShapes.or(vp, VoxelShapes.or(vs6, vs4)),
+      VoxelShapes.or(vp, vs5),
+      VoxelShapes.or(vp, VoxelShapes.or(vs2, vs5)),
+      VoxelShapes.or(vp, VoxelShapes.or(vs3, vs5)),
+      VoxelShapes.or(vp, VoxelShapes.or(vs6, vs5))
+    };
+  }
 
   @Override
   public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext)

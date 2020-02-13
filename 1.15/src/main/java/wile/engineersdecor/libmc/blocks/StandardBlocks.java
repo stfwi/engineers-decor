@@ -13,6 +13,7 @@
 package wile.engineersdecor.libmc.blocks;
 
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.world.server.ServerWorld;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import net.minecraft.block.*;
@@ -43,9 +44,9 @@ import net.minecraft.util.*;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Supplier;
 
 
 public class StandardBlocks
@@ -91,6 +92,14 @@ public class StandardBlocks
 
     public BaseBlock(long conf, Block.Properties properties, VoxelShape voxel_shape)
     { super(properties); config = conf; vshape = voxel_shape; }
+
+    public BaseBlock(long conf, Block.Properties properties, AxisAlignedBB[] aabbs)
+    {
+      super(properties); config = conf;
+      VoxelShape shape = VoxelShapes.empty();
+      for(AxisAlignedBB aabb:aabbs) shape = VoxelShapes.combine(shape, VoxelShapes.create(aabb), IBooleanFunction.OR);
+      vshape = shape;
+    }
 
     ///////////// --------------------------------------------------------------------------------------------------------
     // 1.15 transition
@@ -231,6 +240,9 @@ public class StandardBlocks
     public WaterLoggable(long config, Block.Properties properties, VoxelShape voxel_shape)
     { super(config|CFG_WATERLOGGABLE, properties, voxel_shape);  }
 
+    public WaterLoggable(long config, Block.Properties properties, AxisAlignedBB[] aabbs)
+    { super(config|CFG_WATERLOGGABLE, properties, aabbs); }
+
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
     { super.fillStateContainer(builder); builder.add(WATERLOGGED); }
@@ -239,24 +251,34 @@ public class StandardBlocks
   public static class Directed extends BaseBlock implements IStandardBlock
   {
     public static final DirectionProperty FACING = DirectionalBlock.FACING;
-    protected final ArrayList<VoxelShape> AABBs;
+    protected final ArrayList<VoxelShape> vshapes;
 
-    public Directed(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
+    public Directed(long config, Block.Properties properties, final Supplier<ArrayList<VoxelShape>> shape_supplier)
     {
-      super(config, builder);
+      super(config, properties);
       setDefaultState(stateContainer.getBaseState().with(FACING, Direction.UP));
-      final boolean is_horizontal = ((config & CFG_HORIZIONTAL)!=0);
-      AABBs = new ArrayList<VoxelShape>(Arrays.asList(
-        VoxelShapes.create(Auxiliaries.getRotatedAABB(unrotatedAABB, Direction.DOWN, is_horizontal)),
-        VoxelShapes.create(Auxiliaries.getRotatedAABB(unrotatedAABB, Direction.UP, is_horizontal)),
-        VoxelShapes.create(Auxiliaries.getRotatedAABB(unrotatedAABB, Direction.NORTH, is_horizontal)),
-        VoxelShapes.create(Auxiliaries.getRotatedAABB(unrotatedAABB, Direction.SOUTH, is_horizontal)),
-        VoxelShapes.create(Auxiliaries.getRotatedAABB(unrotatedAABB, Direction.WEST, is_horizontal)),
-        VoxelShapes.create(Auxiliaries.getRotatedAABB(unrotatedAABB, Direction.EAST, is_horizontal)),
-        VoxelShapes.create(unrotatedAABB),
-        VoxelShapes.create(unrotatedAABB)
-      ));
+      vshapes = shape_supplier.get();
     }
+
+    public Directed(long config, Block.Properties properties, final AxisAlignedBB[] unrotatedAABBs)
+    {
+      this(config, properties, ()->{
+        final boolean is_horizontal = ((config & CFG_HORIZIONTAL)!=0);
+        return new ArrayList<VoxelShape>(Arrays.asList(
+          Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.DOWN, is_horizontal)),
+          Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.UP, is_horizontal)),
+          Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.NORTH, is_horizontal)),
+          Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.SOUTH, is_horizontal)),
+          Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.WEST, is_horizontal)),
+          Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.EAST, is_horizontal)),
+          VoxelShapes.fullCube(),
+          VoxelShapes.fullCube()
+        ));
+      });
+    }
+
+    public Directed(long config, Block.Properties properties, final AxisAlignedBB unrotatedAABB)
+    { this(config, properties, new AxisAlignedBB[]{unrotatedAABB}); }
 
     @Override
     public boolean canSpawnInBlock()
@@ -269,7 +291,7 @@ public class StandardBlocks
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader source, BlockPos pos, ISelectionContext selectionContext)
-    { return AABBs.get((state.get(FACING)).getIndex() & 0x7); }
+    { return vshapes.get((state.get(FACING)).getIndex() & 0x7); }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext)
@@ -305,27 +327,37 @@ public class StandardBlocks
   public static class Horizontal extends BaseBlock implements IStandardBlock
   {
     public static final DirectionProperty HORIZONTAL_FACING = HorizontalBlock.HORIZONTAL_FACING;
-    protected final ArrayList<VoxelShape> AABBs;
+    protected final ArrayList<VoxelShape> vshapes;
 
-    public Horizontal(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
+    public Horizontal(long config, Block.Properties properties, final Supplier<ArrayList<VoxelShape>> shape_supplier)
     {
-      super(config|CFG_HORIZIONTAL, builder, unrotatedAABB);
+      super(config|CFG_HORIZIONTAL, properties);
       setDefaultState(stateContainer.getBaseState().with(HORIZONTAL_FACING, Direction.NORTH));
-      AABBs = new ArrayList<VoxelShape>(Arrays.asList(
-        VoxelShapes.create(Auxiliaries.getRotatedAABB(unrotatedAABB, Direction.DOWN, true)),
-        VoxelShapes.create(Auxiliaries.getRotatedAABB(unrotatedAABB, Direction.UP, true)),
-        VoxelShapes.create(Auxiliaries.getRotatedAABB(unrotatedAABB, Direction.NORTH, true)),
-        VoxelShapes.create(Auxiliaries.getRotatedAABB(unrotatedAABB, Direction.SOUTH, true)),
-        VoxelShapes.create(Auxiliaries.getRotatedAABB(unrotatedAABB, Direction.WEST, true)),
-        VoxelShapes.create(Auxiliaries.getRotatedAABB(unrotatedAABB, Direction.EAST, true)),
-        VoxelShapes.create(unrotatedAABB),
-        VoxelShapes.create(unrotatedAABB)
-      ));
+      vshapes = shape_supplier.get();
     }
+
+    public Horizontal(long config, Block.Properties properties, final AxisAlignedBB[] unrotatedAABBs)
+    {
+      this(config, properties, ()->{
+        return new ArrayList<VoxelShape>(Arrays.asList(
+          VoxelShapes.fullCube(),
+          VoxelShapes.fullCube(),
+          Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.NORTH, true)),
+          Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.SOUTH, true)),
+          Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.WEST, true)),
+          Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.EAST, true)),
+          VoxelShapes.fullCube(),
+          VoxelShapes.fullCube()
+        ));
+      });
+    }
+
+    public Horizontal(long config, Block.Properties properties, final AxisAlignedBB unrotatedAABB)
+    { this(config, properties, new AxisAlignedBB[]{unrotatedAABB}); }
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader source, BlockPos pos, ISelectionContext selectionContext)
-    { return AABBs.get((state.get(HORIZONTAL_FACING)).getIndex() & 0x7); }
+    { return vshapes.get((state.get(HORIZONTAL_FACING)).getIndex() & 0x7); }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext)
@@ -368,6 +400,12 @@ public class StandardBlocks
     public DirectedWaterLoggable(long config, Block.Properties properties, AxisAlignedBB aabb)
     { super(config|CFG_WATERLOGGABLE, properties, aabb); }
 
+    public DirectedWaterLoggable(long config, Block.Properties properties, AxisAlignedBB[] aabbs)
+    { super(config|CFG_WATERLOGGABLE, properties, aabbs); }
+
+    public DirectedWaterLoggable(long config, Block.Properties properties, final Supplier<ArrayList<VoxelShape>> shape_supplier)
+    { super(config|CFG_WATERLOGGABLE, properties, shape_supplier); }
+
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
     { super.fillStateContainer(builder); builder.add(WATERLOGGED); }
@@ -377,6 +415,12 @@ public class StandardBlocks
   {
     public HorizontalWaterLoggable(long config, Block.Properties properties, AxisAlignedBB aabb)
     { super(config|CFG_WATERLOGGABLE|CFG_HORIZIONTAL, properties, aabb); }
+
+    public HorizontalWaterLoggable(long config, Block.Properties properties, AxisAlignedBB[] aabbs)
+    { super(config|CFG_WATERLOGGABLE|CFG_HORIZIONTAL, properties, aabbs); }
+
+    public HorizontalWaterLoggable(long config, Block.Properties properties, final Supplier<ArrayList<VoxelShape>> shape_supplier)
+    { super(config|CFG_WATERLOGGABLE|CFG_HORIZIONTAL, properties, shape_supplier); }
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)

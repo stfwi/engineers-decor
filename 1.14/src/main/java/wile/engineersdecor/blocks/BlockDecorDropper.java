@@ -11,6 +11,7 @@ package wile.engineersdecor.blocks;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.detail.Inventories;
 import wile.engineersdecor.libmc.detail.Networking;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
@@ -552,7 +553,6 @@ public class BlockDecorDropper extends StandardBlocks.Directed implements IDecor
         {
           int filter_nset = 0;
           int last_filter_matches_[] = filter_matches_.clone();
-          boolean slot_assigned = false;
           for(int ci=0; ci<CTRL_SLOTS_SIZE; ++ci) {
             filter_matches_[ci] = 0;
             final ItemStack cmp_stack = stacks_.get(CTRL_SLOTS_FIRST+ci);
@@ -563,7 +563,7 @@ public class BlockDecorDropper extends StandardBlocks.Directed implements IDecor
             int slot = drop_slot_index_;
             for(int i=INPUT_SLOTS_FIRST; i<(INPUT_SLOTS_FIRST+INPUT_SLOTS_SIZE); ++i) {
               final ItemStack inp_stack = stacks_.get(slot);
-              if(!inp_stack.isItemEqual(cmp_stack)) { slot = next_slot(slot); continue; }
+              if(Inventories.areItemStacksDifferent(inp_stack, cmp_stack)) { slot = next_slot(slot); continue; }
               inventory_item_count += inp_stack.getCount();
               if(inventory_item_count < cmp_stack_count) { slot = next_slot(slot); continue; }
               filter_matches_[ci] = 2;
@@ -628,7 +628,7 @@ public class BlockDecorDropper extends StandardBlocks.Directed implements IDecor
               int ntoremove = drop_stacks[fi].getCount();
               for(int i=INPUT_SLOTS_SIZE-1; (i>=0) && (ntoremove>0); --i) {
                 ItemStack stack = stacks_.get(i);
-                if(!stack.isItemEqual(drop_stacks[fi])) continue;
+                if(Inventories.areItemStacksDifferent(stack, drop_stacks[fi])) continue;
                 if(stack.getCount() <= ntoremove) {
                   ntoremove -= stack.getCount();
                   stacks_.set(i, ItemStack.EMPTY);
