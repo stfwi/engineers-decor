@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.12.2": {
+    "1.0.19-b3": "[A] Factory Hopper: Added bottom item handler (CR#227).",
     "1.0.19-b2": "[F] Fixed Floor Grating item pass-through jitters (thx Cid).\n[M] Removed obsolete recipe collision testing recipes.",
     "1.0.19-b1": "[F] Fixed Tree Cutter / Block Breaker not accepting small energy transfers (thx WindFox, issue #82).",
     "1.0.18": "[R] Release based on v1.0.18-b2. Release-to-release changes: * Tree cutter config fixes. * Treated Wood Crafting Table mouse tweaks. * Lang updates.\n[M] Lang update ru_ru (PR#77, thanks Smollet777).",
@@ -79,6 +80,6 @@
   },
   "promos": {
     "1.12.2-recommended": "1.0.18",
-    "1.12.2-latest": "1.0.19-b2"
+    "1.12.2-latest": "1.0.19-b3"
   }
 }
