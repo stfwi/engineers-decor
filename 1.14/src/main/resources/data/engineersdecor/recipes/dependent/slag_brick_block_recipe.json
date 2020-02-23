@@ -1,0 +1,56 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:clinker_brick_block",
+          "required": ["immersiveengineering:slag", "#engineersdecor:brick_ingots"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "BBB",
+          "BSB",
+          "BBB"
+        ],
+        "key": {
+          "B": { "tag" : "engineersdecor:brick_ingots" },
+          "S": { "item": "immersiveengineering:slag" }
+        },
+        "result": {
+          "item": "engineersdecor:slag_brick_block",
+          "count": 8
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:slag_brick_block",
+          "missing": ["immersiveengineering:slag", "#engineersdecor:brick_ingots"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "BAB",
+          "ASA",
+          "BAB"
+        ],
+        "key": {
+          "B": { "item": "minecraft:brick" },
+          "A": { "tag": "engineersdecor:brick_ingots" },
+          "S": { "item": "minecraft:nether_bricks" }
+        },
+        "result": {
+          "item": "engineersdecor:slag_brick_block",
+          "count": 8
+        }
+      }
+    }
+  ]
+}

@@ -20,6 +20,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -78,7 +79,12 @@ public class ModEngineersDecor
   { ModContent.registerContainerGuis(event); ModContent.registerTileEntityRenderers(event); }
 
   private void onSendImc(final InterModEnqueueEvent event)
-  {}
+  {
+    // @todo: RE-ENABLE when issue https://github.com/cpw/inventorysorter/issues/88 is resolved.
+    //InterModComms.sendTo("inventorysorter", "containerblacklist", ()->ModContent.CT_TREATED_WOOD_CRAFTING_TABLE.getRegistryName());
+    //InterModComms.sendTo("inventorysorter", "slotblacklist", ()->BlockDecorCraftingTable.CraftingOutputSlot.class.getName());
+    //InterModComms.sendTo("inventorysorter", "slotblacklist", ()->BlockDecorCraftingTable.CraftingGridSlot.class.getName());
+  }
 
   private void onRecvImc(final InterModProcessEvent event)
   {}

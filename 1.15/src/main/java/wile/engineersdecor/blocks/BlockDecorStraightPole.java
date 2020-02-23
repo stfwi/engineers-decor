@@ -18,7 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import javax.annotation.Nullable;
 
 
-public class BlockDecorStraightPole extends BlockDecor.DirectedWaterLoggable  implements IDecorBlock
+public class BlockDecorStraightPole extends BlockDecor.DirectedWaterLoggable implements IDecorBlock
 {
   public BlockDecorStraightPole(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
   { super(config, builder, unrotatedAABB); }

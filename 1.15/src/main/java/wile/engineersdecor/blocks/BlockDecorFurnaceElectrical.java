@@ -197,6 +197,15 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace implements ID
       ItemStackHelper.saveAllItems(nbt, stacks_);
     }
 
+    public int getComparatorOutput()
+    {
+      return (energy_stored_ <= 0) ? (0) : (
+        (stacks_.get(FIFO_INPUT_1_SLOT_NO).isEmpty() ? 0 : 5) +
+        (stacks_.get(FIFO_INPUT_0_SLOT_NO).isEmpty() ? 0 : 5) +
+        (stacks_.get(SMELTING_INPUT_SLOT_NO).isEmpty() ? 0 : 5)
+      );
+    }
+
     // INameable -------------------------------------------------------------------------------
 
     @Override

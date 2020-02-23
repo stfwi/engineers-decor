@@ -22,6 +22,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -83,7 +84,11 @@ public class ModEngineersDecor
   }
 
   private void onSendImc(final InterModEnqueueEvent event)
-  {}
+  {
+    InterModComms.sendTo("inventorysorter", "containerblacklist", ()->ModContent.CT_TREATED_WOOD_CRAFTING_TABLE.getRegistryName());
+    InterModComms.sendTo("inventorysorter", "slotblacklist", ()->BlockDecorCraftingTable.CraftingOutputSlot.class.getName());
+    InterModComms.sendTo("inventorysorter", "slotblacklist", ()->BlockDecorCraftingTable.CraftingGridSlot.class.getName());
+  }
 
   private void onRecvImc(final InterModProcessEvent event)
   {}

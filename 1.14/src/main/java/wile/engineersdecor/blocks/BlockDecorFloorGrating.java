@@ -12,6 +12,7 @@ import wile.engineersdecor.libmc.blocks.StandardBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -62,4 +63,10 @@ public class BlockDecorFloorGrating extends StandardBlocks.WaterLoggable impleme
       entity.setPositionAndUpdate(x,y,z);
     }
   }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  public boolean canEntitySpawn(BlockState state, IBlockReader world, BlockPos pos, EntityType<?> type)
+  { return false; }
+
 }

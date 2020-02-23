@@ -11,6 +11,15 @@ Mod sources for Minecraft version 1.15.1.
 
 ## Version history
 
+    - v1.0.19-b4  [A] Ported primary Immersive Engineering dependent recipes (alternative recipes
+                      will still work if IE is not installed).
+                  [F] Blacklisted Treated Wood Crafting Table in inventorysorter mod (issue #88, thx Nachtflame).
+                  [M] Furni comparator output overrides reflect input slots and empty fuel state/power-cutoff.
+                  [M] Solar Panel config: Default value for internal battery capacity increased.
+                  [F] Block Placer: Shifted GUI player slots 1px to the right.
+                  [A] Added mod block tags for slabs, stairs, and walls (PR#89, thanks CrudeAustin for the data).
+                  [A] Added experimental Patchouli manual (creative only).
+
     - v1.0.19-b3  [M] Config tweaks: Value limit ranges increased to facilitate modpacking.
                   [A] Factory Hopper: Added bottom item handler (CR#227).
                   [M] Block shapes refined.

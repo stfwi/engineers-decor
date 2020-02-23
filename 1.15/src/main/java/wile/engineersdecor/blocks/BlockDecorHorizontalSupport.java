@@ -27,7 +27,6 @@ import net.minecraft.world.World;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;

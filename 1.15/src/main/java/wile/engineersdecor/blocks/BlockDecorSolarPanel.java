@@ -8,26 +8,25 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.world.LightType;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.LightType;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-
 import javax.annotation.Nullable;
 
 
@@ -65,10 +64,11 @@ public class BlockDecorSolarPanel extends BlockDecor implements IDecorBlock
     public static final int ACCUMULATION_INTERVAL = 4;
     private static final Direction transfer_directions_[] = {Direction.DOWN, Direction.EAST, Direction.SOUTH, Direction.WEST, Direction.NORTH };
     private static int peak_power_per_tick_ = DEFAULT_PEAK_POWER;
-    private static int max_power_storage_ = 10000;
+    private static int max_power_storage_ = 100000;
     private int tick_timer_ = 0;
     private int recalc_timer_ = 0;
     private int accumulated_power_ = 0;
+    private boolean output_enabled_ = false;
 
     public static void on_config(int peak_power_per_tick)
     {
@@ -151,7 +151,7 @@ public class BlockDecorSolarPanel extends BlockDecor implements IDecorBlock
       if((world.isRemote) || (--tick_timer_ > 0)) return;
       tick_timer_ = TICK_INTERVAL;
       if(!world.canBlockSeeSky(pos)) { tick_timer_ = TICK_INTERVAL * 5; return; }
-      if(accumulated_power_ > 0) {
+      if(output_enabled_) {
         for(int i=0; (i<transfer_directions_.length) && (accumulated_power_>0); ++i) {
           final Direction f = transfer_directions_[i];
           TileEntity te = world.getTileEntity(pos.offset(f));
@@ -161,6 +161,7 @@ public class BlockDecorSolarPanel extends BlockDecor implements IDecorBlock
           accumulated_power_ = MathHelper.clamp(accumulated_power_-es.receiveEnergy(accumulated_power_, false),0, accumulated_power_);
         }
       }
+      if(accumulated_power_ <= 0) output_enabled_ = false;
       if(--recalc_timer_ > 0) return;
       recalc_timer_ = ACCUMULATION_INTERVAL + ((int)(Math.random()+.5));
       BlockState state = world.getBlockState(pos);
@@ -178,6 +179,7 @@ public class BlockDecorSolarPanel extends BlockDecor implements IDecorBlock
       double rf = Math.abs(1.0-(((double)Math.abs(MathHelper.clamp(theta, 0, 180)-90))/90));
       rf = Math.sqrt(rf) * sb * ((TICK_INTERVAL*ACCUMULATION_INTERVAL)+2) * peak_power_per_tick_;
       accumulated_power_ = Math.min(accumulated_power_+(int)rf, max_power_storage_);
+      if(accumulated_power_ >= (max_power_storage_/5)) output_enabled_ = true;
     }
   }
 }

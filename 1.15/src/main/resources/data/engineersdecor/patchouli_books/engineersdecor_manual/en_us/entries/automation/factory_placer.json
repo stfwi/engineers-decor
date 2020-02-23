@@ -1,0 +1,34 @@
+{
+  "name": "Factory Block Placer",
+  "icon": "engineersdecor:factory_placer",
+  "category": "automation",
+  "sortnum": 6030,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "Factory Block Placer",
+      "item": "engineersdecor:factory_placer",
+      "text": "A simple automation device that places blocks or plants in front of it.$(br)18 internal storage slots hold the items to be placed, where the currently selected slot is marked with a red frame in the GUI. If the current item cannot be placed, or if that slot is empty, then the next slot is selected - e.g. when the soil"
+    },
+    {
+      "type": "text",
+      "text": "underneath is not suitable for a plant. $(t:... like Pufferfish, food, or tools. It also spits items out that are causing errors when being placed.)Items, which cannot be placed at all$(), are simply spat out to keep the storage slots clean.$(br)You can place the device in all directions, where sneak-clicking flips the placement direction.$(br2)By default, the device places items directly when it can, as long as it is not disabled with a Redstone signal. This can be tuned using the Redstone controls in the bottom right of"
+    },
+    {
+      "type": "text",
+      "text": "the GUI: There is an indicator LED for external signals, an inverter, and finally a trigger control. The indicator is lit when an external signal is currently applied, which is helpful for trouble-shooting. This signal is fed into the inversion control. By default the curve shown there is going down, meaning that this control $(t:Input 0..15 -> output 15..0)inverts the signal$(). Click it to change this to 'not inverted'. Now the placer will operate only $(o)when$() a Redstone signal is applied."
+    },
+    {
+      "type": "text",
+      "text": "Finally, the trigger control decides if the device shall work continuously, or only when the Redstone signal changes (edge detection trigger). By default this is set to $(o)continuous$(). Clicking changes this to $(o)triggered$(), means 'try to place only the moment when the signal goes off->on (not inverted) or on->off (inverted)'.$(br2)§nSpike Planting$()$(br)Normally blocks are placed in front of the placer. Plants can also be planted through the"
+    },
+    {
+      "type": "text",
+      "text": "soil, e.g. from underneath. This can be useful for automation (if there is no space at the surface), or also for cosmetic reasons.$(br2)A typical tree farm automation setup is to spike plant saplings through the ground, chop the grown trees with the $(o)Small Tree Cutter$(), and collect the dropped items using $(o)Factory Hoppers$(), also located below ground level. The saplings can be fed back into the placer, other drops stored"
+    },
+    {
+      "type": "text",
+      "text": "or disposed in a $(o)Small Waste Incinerator$(). Item sorting either conventionally or with an $(o)IE Item Router$()."
+    }
+  ]
+}

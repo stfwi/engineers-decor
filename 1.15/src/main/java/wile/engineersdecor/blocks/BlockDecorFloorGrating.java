@@ -11,6 +11,7 @@ package wile.engineersdecor.blocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -35,6 +36,11 @@ public class BlockDecorFloorGrating extends BlockDecor.WaterLoggable implements 
   @Override
   @SuppressWarnings("deprecation")
   public boolean isNormalCube(BlockState state, IBlockReader worldIn, BlockPos pos)
+  { return false; }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  public boolean canEntitySpawn(BlockState state, IBlockReader world, BlockPos pos, EntityType<?> type)
   { return false; }
 
   @Override

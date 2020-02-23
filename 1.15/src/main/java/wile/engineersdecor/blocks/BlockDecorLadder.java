@@ -13,9 +13,6 @@
 package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.libmc.detail.Auxiliaries;
-import net.minecraft.fluid.IFluidState;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.entity.player.PlayerEntity;

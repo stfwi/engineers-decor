@@ -1,0 +1,55 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:treated_wood_window",
+          "required": ["#forge:treated_wood_slab", "#forge:glass_panes"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "WGW",
+          "GGG",
+          "WGW"
+        ],
+        "key": {
+          "W": { "tag": "forge:treated_wood_slab" },
+          "G": { "tag": "forge:glass_panes" }
+        },
+        "result": {
+          "item": "engineersdecor:treated_wood_window",
+          "count": 9
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:treated_wood_window",
+          "missing": ["#forge:treated_wood_slab", "#forge:glass_panes"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "WGW",
+          "GGG",
+          "WGW"
+        ],
+        "key": {
+          "W": { "tag": "minecraft:wooden_slabs" },
+          "G": { "tag": "engineersdecor:plain_glass_panes" }
+        },
+        "result": {
+          "item": "engineersdecor:treated_wood_window",
+          "count": 9
+        }
+      }
+    }
+  ]
+}

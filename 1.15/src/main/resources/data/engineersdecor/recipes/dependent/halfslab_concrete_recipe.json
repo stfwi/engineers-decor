@@ -1,0 +1,28 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:halfslab_concrete",
+          "required": ["immersiveengineering:slab_concrete"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "SS",
+          "SS"
+        ],
+        "key": {
+          "S": { "item": "immersiveengineering:slab_concrete" }
+        },
+        "result": {
+          "item": "engineersdecor:halfslab_concrete",
+          "count": 16
+        }
+      }
+    }
+  ]
+}

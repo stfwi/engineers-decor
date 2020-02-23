@@ -60,12 +60,11 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import com.mojang.blaze3d.platform.GlStateManager;
-
 import javax.annotation.Nullable;
 import java.util.*;
 
 
-public class BlockDecorFurnace extends StandardBlocks.Horizontal
+public class BlockDecorFurnace extends StandardBlocks.Horizontal implements IDecorBlock
 {
   public static final BooleanProperty LIT = RedstoneTorchBlock.LIT;
 
@@ -94,7 +93,10 @@ public class BlockDecorFurnace extends StandardBlocks.Horizontal
   @Override
   @SuppressWarnings("deprecation")
   public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos)
-  { return Container.calcRedstone(world.getTileEntity(pos)); }
+  {
+    TileEntity te = world.getTileEntity(pos);
+    return (te instanceof BTileEntity) ? ((BTileEntity)te).getComparatorOutput() : 0;
+  }
 
   @Override
   public boolean hasTileEntity(BlockState state)
@@ -287,6 +289,19 @@ public class BlockDecorFurnace extends StandardBlocks.Horizontal
       CompoundNBT rr = new CompoundNBT();
       for(int i=0; i<recent_recipes_.size(); ++i) rr.putString(Integer.toString(i), recent_recipes_.get(i));
       nbt.put("Recipes", rr);
+    }
+
+    public int getComparatorOutput()
+    {
+      if(stacks_.get(FIFO_FUEL_0_SLOT_NO).isEmpty() && stacks_.get(FIFO_FUEL_1_SLOT_NO).isEmpty() && stacks_.get(SMELTING_FUEL_SLOT_NO).isEmpty()) {
+        return 0; // fuel completely empty
+      } else {
+        return (
+          (stacks_.get(FIFO_INPUT_1_SLOT_NO).isEmpty() ? 0 : 5) +
+          (stacks_.get(FIFO_INPUT_0_SLOT_NO).isEmpty() ? 0 : 5) +
+          (stacks_.get(SMELTING_INPUT_SLOT_NO).isEmpty() ? 0 : 5)
+        );
+      }
     }
 
     // TileEntity ------------------------------------------------------------------------------

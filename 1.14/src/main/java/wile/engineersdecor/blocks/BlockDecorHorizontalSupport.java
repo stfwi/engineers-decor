@@ -9,35 +9,34 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.block.IWaterLoggable;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
-import net.minecraft.entity.EntityType;
-import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.block.IWaterLoggable;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.util.*;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.entity.EntityType;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.block.BlockState;
+import net.minecraft.util.*;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 
-public class BlockDecorHorizontalSupport extends StandardBlocks.WaterLoggable implements IWaterLoggable
+public class BlockDecorHorizontalSupport extends StandardBlocks.WaterLoggable implements IWaterLoggable, IDecorBlock
 {
   public static final BooleanProperty EASTWEST  = BooleanProperty.create("eastwest");
   public static final BooleanProperty LEFTBEAM  = BooleanProperty.create("leftbeam");

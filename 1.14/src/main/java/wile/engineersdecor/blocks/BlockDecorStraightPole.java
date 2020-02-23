@@ -8,22 +8,21 @@
  */
 package wile.engineersdecor.blocks;
 
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IWaterLoggable;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.StateContainer;
 import net.minecraft.world.World;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
 
 import javax.annotation.Nullable;
 
 
-public class BlockDecorStraightPole extends StandardBlocks.DirectedWaterLoggable implements IDecorBlock,IWaterLoggable
+public class BlockDecorStraightPole extends StandardBlocks.DirectedWaterLoggable implements IDecorBlock, IWaterLoggable
 {
   public BlockDecorStraightPole(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
   { super(config, builder, unrotatedAABB); }

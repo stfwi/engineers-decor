@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Random;
 
 
-public class BlockDecorChair extends StandardBlocks.HorizontalWaterLoggable
+public class BlockDecorChair extends StandardBlocks.HorizontalWaterLoggable implements IDecorBlock
 {
   private static boolean sitting_enabled = true;
   private static double sitting_probability = 0.1;

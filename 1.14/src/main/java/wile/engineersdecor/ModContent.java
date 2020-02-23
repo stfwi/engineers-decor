@@ -13,12 +13,12 @@
 package wile.engineersdecor;
 
 
+import wile.engineersdecor.blocks.*;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
-import wile.engineersdecor.blocks.*;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.entity.Entity;
@@ -688,7 +688,7 @@ public class ModContent
     HALFSLAB_GASCONCRETE,
     HALFSLAB_CONCRETE,
     //HALFSLAB_TREATEDWOOD,
-    //HALFSLAB_SHEETMETALIRON
+    //HALFSLAB_SHEETMETALIRON,
     //HALFSLAB_SHEETMETALSTEEL,
     //HALFSLAB_SHEETMETALCOPPER,
     //HALFSLAB_SHEETMETALGOLD,

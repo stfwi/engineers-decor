@@ -10,6 +10,8 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    ~ v1.0.19-b4
+
     - v1.0.19-b3  [A] Factory Hopper: Added bottom item handler (CR#227).
 
     - v1.0.19-b2  [F] Fixed Floor Grating item pass-through jitters (thx Cid).

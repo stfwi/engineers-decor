@@ -54,7 +54,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class BlockDecorPlacer extends StandardBlocks.Directed
+public class BlockDecorPlacer extends StandardBlocks.Directed implements IDecorBlock
 {
   public BlockDecorPlacer(long config, Block.Properties builder, final AxisAlignedBB[] unrotatedAABB)
   { super(config, builder, unrotatedAABB); }
@@ -599,11 +599,11 @@ public class BlockDecorPlacer extends StandardBlocks.Directed
       }
       // player slots
       for(int x=0; x<9; ++x) {
-        addSlot(new Slot(player_inventory, x, 8+x*18, 129)); // player slots: 0..8
+        addSlot(new Slot(player_inventory, x, 9+x*18, 129)); // player slots: 0..8
       }
       for(int y=0; y<3; ++y) {
         for(int x=0; x<9; ++x) {
-          addSlot(new Slot(player_inventory, x+y*9+9, 8+x*18, 71+y*18)); // player slots: 9..35
+          addSlot(new Slot(player_inventory, x+y*9+9, 9+x*18, 71+y*18)); // player slots: 9..35
         }
       }
       this.trackIntArray(fields_); // === Add reference holders

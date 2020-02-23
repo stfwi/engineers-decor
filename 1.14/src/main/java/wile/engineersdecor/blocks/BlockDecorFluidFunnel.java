@@ -11,6 +11,7 @@
 package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.ModContent;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
 import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -36,8 +37,6 @@ import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;

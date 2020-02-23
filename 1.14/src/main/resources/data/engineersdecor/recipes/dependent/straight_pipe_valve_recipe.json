@@ -1,0 +1,52 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:straight_pipe_valve",
+          "required": ["immersiveengineering:component_iron", "immersiveengineering:fluid_pipe"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "PMP"
+        ],
+        "key": {
+          "P": { "item": "immersiveengineering:fluid_pipe" },
+          "M": { "item": "immersiveengineering:component_iron" }
+        },
+        "result": {
+          "item": "engineersdecor:straight_pipe_valve",
+          "count": 2
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:straight_pipe_valve",
+          "required": ["engineersdecor:thick_steel_pole"],
+          "missing": ["immersiveengineering:component_iron", "immersiveengineering:fluid_pipe"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "PIP"
+        ],
+        "key": {
+          "P": { "item": "engineersdecor:thick_steel_pole" },
+          "I": { "item": "minecraft:iron_ingot" }
+        },
+        "result": {
+          "item": "engineersdecor:straight_pipe_valve",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

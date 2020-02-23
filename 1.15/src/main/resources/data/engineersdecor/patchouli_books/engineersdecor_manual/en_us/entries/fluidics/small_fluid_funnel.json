@@ -1,0 +1,18 @@
+{
+  "name": "Fluid Collection Funnel",
+  "icon": "engineersdecor:small_fluid_funnel",
+  "category": "fluidics",
+  "sortnum": 7050,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "Fluid Collection Funnel",
+      "item": "engineersdecor:small_fluid_funnel",
+      "text": "This device consists of a grating at the top, a funnel, and a small tank. Placed in the floor of a factory, it provides additional safety by collecting spilled liquids like Diesel, Petrol/Gazoline, Creosote, and other hazardous fluids. Small gauges on the sides indicate the tank fill level. The tank material can withstand hot liquids like lava."
+    },
+    {
+      "type": "text",
+      "text": "Outlets are at the bottom and the sides, where there is a slow gravity fluid transfer at the bottom outlet. Using a comparator you can determine the fill level (0 empty, 15 full).$(br)When collecting flowing fluids, $(t:To prevent wasting server performance, the device has a tendency -with random reset- to collect source blocks around the last collected location.)the liquid is traced back to its next topmost source block$(), which will be removed.$(br)Digging down next to a Nether lava lake and placing a funnel, a 'crater' of flowing lava will be slowly formed. Also long 'lavafalls' can be removed by placing a funnel underneath."
+    }
+  ]
+}

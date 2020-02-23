@@ -13,10 +13,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
-
 import javax.annotation.Nullable;
 
-public class BlockDecorWindow extends BlockDecor.DirectedWaterLoggable
+
+public class BlockDecorWindow extends BlockDecor.DirectedWaterLoggable implements IDecorBlock
 {
   public BlockDecorWindow(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
   { super(config, builder, unrotatedAABB); }

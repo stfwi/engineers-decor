@@ -9,9 +9,10 @@
  */
 package wile.engineersdecor.detail;
 
-import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.ModContent;
 import wile.engineersdecor.blocks.*;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.block.Block;
@@ -509,6 +510,7 @@ public class ModConfig
       if(!immersiveengineering_installed) {
         if(block == ModContent.CONCRETE_WALL) return true;
         if((block instanceof BlockDecor) && ((((BlockDecor)block).config & BlockDecor.CFG_HARD_IE_DEPENDENT) != 0)) return true;
+        if((block instanceof StandardBlocks.BaseBlock) && ((((StandardBlocks.BaseBlock)block).config & BlockDecor.CFG_HARD_IE_DEPENDENT) != 0)) return true;
       }
       // Force-include/exclude pattern matching
       try {

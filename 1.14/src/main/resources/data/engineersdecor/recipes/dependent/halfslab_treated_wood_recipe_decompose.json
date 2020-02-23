@@ -1,0 +1,28 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "immersiveengineering:slab_treated_wood_horizontal",
+          "required": ["engineersdecor:halfslab_treated_wood"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "SS",
+          "SS"
+        ],
+        "key": {
+          "S": { "item": "engineersdecor:halfslab_treated_wood" }
+        },
+        "result": {
+          "item": "immersiveengineering:slab_treated_wood_horizontal",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class BlockDecorTest extends BlockDecor.Directed implements Auxiliaries.IExperimentalFeature
+public class BlockDecorTest extends BlockDecor.Directed implements Auxiliaries.IExperimentalFeature, IDecorBlock
 {
   public BlockDecorTest(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
   { super(config, builder, unrotatedAABB); }

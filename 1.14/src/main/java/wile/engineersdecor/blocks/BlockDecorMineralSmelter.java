@@ -9,10 +9,9 @@
  */
 package wile.engineersdecor.blocks;
 
-
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
-
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.block.*;
@@ -50,8 +49,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;

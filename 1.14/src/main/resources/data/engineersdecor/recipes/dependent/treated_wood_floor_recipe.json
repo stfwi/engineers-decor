@@ -1,0 +1,28 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:treated_wood_floor",
+          "required": ["#forge:treated_wood_slab"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "SSS",
+          "SSS"
+        ],
+        "key": {
+          "S": { "tag": "forge:treated_wood_slab"}
+        },
+        "result": {
+          "item": "engineersdecor:treated_wood_floor",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

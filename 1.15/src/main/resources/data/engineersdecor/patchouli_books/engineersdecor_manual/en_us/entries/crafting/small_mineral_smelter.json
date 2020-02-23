@@ -1,0 +1,18 @@
+{
+  "name": "Mineral Melting Furnace",
+  "icon": "engineersdecor:small_mineral_smelter",
+  "category": "crafting",
+  "sortnum": 5040,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "Mineral Melting Furnace",
+      "item": "engineersdecor:small_mineral_smelter",
+      "text": "A small, highly insulated, high temperature furnace, which can be used to liquify stone-like materials (preferably Diorite). The process takes a moderate amount of RF energy and time. When inserting a block, either manually or automatically, it will be heated up for a while, then decompose to $(o)Magma Stone$(), and finally liquefy to $(o)Lava$()."
+    },
+    {
+      "type": "text",
+      "text": "If you cut off the RF power to the device, or disable it with a Redstone signal, $(o)Lava$() will cool down and re-crystallise to $(o)Magma Stone$(), and then to $(o)Obsidian$().$(br)To retrieve blocks from the melter, $(t:... careful, don't burn your hands)right click it$() or use extraction devices (like e.g. Hoppers). Lava extraction can be done using a bucket or automated fluid transfer.$(br)Use a $(o)Redstone Comparator$() to get an $(t:FSO=Full Scale Output, means values are scaled from 0 to 15)FSO$() indication of the current process phase $(t:0, 5, 10, and 15)(cold, hot, magma, lava)$()."
+    }
+  ]
+}

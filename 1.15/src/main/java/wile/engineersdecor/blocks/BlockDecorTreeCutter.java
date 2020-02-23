@@ -8,19 +8,19 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.item.BlockItemUseContext;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -31,12 +31,11 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import wile.engineersdecor.detail.TreeCutting;
-
 import javax.annotation.Nullable;
 import java.util.Random;
 
 
-public class BlockDecorTreeCutter extends BlockDecor.Horizontal
+public class BlockDecorTreeCutter extends BlockDecor.Horizontal implements IDecorBlock
 {
   public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 

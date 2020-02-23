@@ -345,7 +345,7 @@ public class BlockDecorCraftingTable
         for(int x=0; x<3; ++x) {
           int xpos = 60+x*18;
           int ypos = 17+y*18;
-          addSlot(new Slot(matrix_, x+y*3, xpos, ypos));
+          addSlot(new CraftingGridSlot(matrix_, x+y*3, xpos, ypos));
           slotpositions.add(new Tuple<>(xpos, ypos));
         }
       }
@@ -1630,7 +1630,7 @@ public class BlockDecorCraftingTable
     }
   }
 
-  // Crafting slot of container ----------------------------------------------------------------------------------------
+  // Crafting slot of the container ------------------------------------------------------------------------------------
   public static class CraftingOutputSlot extends CraftingResultSlot
   {
     private final CraftingTableContainer container;
@@ -1655,6 +1655,13 @@ public class BlockDecorCraftingTable
       }
       super.onCrafting(stack);
     }
+  }
+
+  // Crafting grid slot of the container -------------------------------------------------------------------------------
+  public static class CraftingGridSlot extends Slot
+  {
+    public CraftingGridSlot(IInventory inv, int index, int x, int y)
+    { super(inv, index, x, y); }
   }
 
   // Crafting inventory (needed to allow SlotCrafting to have a InventoryCrafting) -------------------------------------

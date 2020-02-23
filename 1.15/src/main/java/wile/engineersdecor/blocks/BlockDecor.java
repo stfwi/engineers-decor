@@ -19,7 +19,6 @@ import net.minecraft.block.IWaterLoggable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.block.Block;
-
 import java.util.ArrayList;
 import java.util.function.Supplier;
 

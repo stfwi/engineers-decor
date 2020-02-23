@@ -12,7 +12,6 @@ package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
-
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.block.*;

@@ -58,7 +58,7 @@ import java.util.List;
 import java.util.Random;
 
 
-public class BlockDecorWasteIncinerator extends BlockDecor
+public class BlockDecorWasteIncinerator extends BlockDecor implements IDecorBlock
 {
   public static final BooleanProperty LIT = BlockDecorFurnace.LIT;
 

@@ -8,6 +8,7 @@
  */
 package wile.engineersdecor.blocks;
 
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import net.minecraft.block.Blocks;
@@ -34,8 +35,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
-
 import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;

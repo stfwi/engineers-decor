@@ -58,7 +58,7 @@ import javax.annotation.Nullable;
 import java.util.Random;
 
 
-public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
+public class BlockDecorFurnaceElectrical extends BlockDecorFurnace implements IDecorBlock
 {
   public BlockDecorFurnaceElectrical(long config, Block.Properties builder, final AxisAlignedBB[] unrotatedAABBs)
   { super(config, builder, unrotatedAABBs); }
@@ -196,6 +196,15 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
       nbt.putInt("Energy", MathHelper.clamp(energy_stored_, 0, MAX_ENERGY_BUFFER));
       nbt.putInt("SpeedSetting", MathHelper.clamp(speed_, -1, MAX_SPEED_SETTING));
       ItemStackHelper.saveAllItems(nbt, stacks_);
+    }
+
+    public int getComparatorOutput()
+    {
+      return (energy_stored_ <= 0) ? (0) : (
+        (stacks_.get(FIFO_INPUT_1_SLOT_NO).isEmpty() ? 0 : 5) +
+        (stacks_.get(FIFO_INPUT_0_SLOT_NO).isEmpty() ? 0 : 5) +
+        (stacks_.get(SMELTING_INPUT_SLOT_NO).isEmpty() ? 0 : 5)
+      );
     }
 
     // INameable -------------------------------------------------------------------------------

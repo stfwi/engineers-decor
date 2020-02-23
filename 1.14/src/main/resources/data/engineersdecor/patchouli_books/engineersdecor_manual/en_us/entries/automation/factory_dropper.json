@@ -1,0 +1,58 @@
+{
+  "name": "Factory Dropper",
+  "icon": "engineersdecor:factory_dropper",
+  "category": "automation",
+  "sortnum": 6020,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "Factory Dropper",
+      "item": "engineersdecor:factory_dropper",
+      "text": "A device to accurately drop items, suitable for automation contraptions.$(br)Metal shutters in front of the ejector protect the interior, and open only when $(t:... that is a visual indicator for you, read on ...)ready to drop$() or dropping from one of the twelve internal storage slots. After ejecting, the stack selection advances to the next suitable slot (so called $(o)round$()"
+    },
+    {
+      "type": "text",
+      "text": "$(o)robin$() operation - in the GUI the current slot is marked with a red frame). Three filter slots (stack comparators) facilitate advanced automation.$(br)The dropper can be placed in all directions, where sneak-clicking flips the placement orientation.$(br)By default the device works like a cobblestone Dropper, spitting out one item when seeing $(t: that is off->on, or better said zero to nonzero)a rising edge of the external Redstone signal$(). This behavior can be tuned, amongst other features, in the GUI.$(br)"
+    },
+    {
+      "type": "text",
+      "text": "§nPositioning$()$(br)You can adjust angle and drop force with $(t: ... technical term, means that the result will stay the same quite accurately, even if the value may not be precisely what it should be - that would be called accuracy then. In other words, the dropper will keep dropping where it dropped the first time.)high repeatability$(). Looking at the front face of the dropper, you see a x-y coordinate system (a red and a green line). The same is drawn in the top right area of the GUI. Clicking there will move the crosshair away from the centre, changing the spit angle from -45° to +45° left/right and up/down. At the left of the coordinate system, a spring is shown as vertical slider, which adjusts the prestress and thus the drop force."
+    },
+    {
+      "type": "text",
+      "text": "§nStack Count$()$(br)The horizontal slider under the position controls (marked with 1 to 5 dots above) is used to set the number of items that are dropped simultaneously. Range is from 1 to 32.$(br)If a stack does not have that many items, it will be skipped. This is useful if you need an exact amount of items, e.g. for compressing in a $(o)IE Metal Press$(), or for in-world crafting contraptions."
+    },
+    {
+      "type": "text",
+      "text": "§nDrop Delay / Interval$()$(br)The horizontal slider below the stack adjustment allows to set a cool-down in 0.1s steps (delay after ejecting; the icons shall represent a dog and a snail for fast -> slow).$(br2)This can be useful if the contraption or device, which you feed with the dropped items, needs some processing time - means preventing item spam or despawning."
+    },
+    {
+      "type": "text",
+      "text": "§nFilter Slots$()$(br)These slots compare the stacks that you place in them with all stacks in the storage. If the item is the same, and the stack in the storage is at least as big as the one in the filter, then the filter output will be ON, and the slot LED is lit green. If no stack or a too small stack is found in the storage, then the filter slot signal is OFF, and the slot LED red. If you leave a filter slot empty, then the LED is unlit, and the output is ignored."
+    },
+    {
+      "type": "text",
+      "text": "§nRedstone Controls$()$(br)In the lower right area of the GUI, there is a red LED (with down-arrow) and three circuit elements wired up. The LED is lit when the device sees an external Redstone signal, and can also be used as test-trigger button. Below are two logic gates, and one trigger control logic (right).$(br)Let us start at the end of the circuit: If you click at the trigger control, the $(t: The symbols are technical representations, showing what happens if you attach a lever and switch it on. The one curve goes up with the lever signal and stays there - called STEP. The other one also rises with the lever signal, but after a short time falls again by itself, although the lever is still on - that's a PULSE.)symbol changes between $(o)pulse mode$() and $(o)continuous mode$()."
+    },
+    {
+      "type": "text",
+      "text": "The trigger control is fed by the output of a logic gate (in the middle). Click it to switch between $(t:These icons are actually the official [IEC] symbols in schematics. AND means all of the inputs have to be ON. OR means only one of them has to be ON, no matter which one, or more than one. That's why the symbol is '>=1'.)$(o)AND ('&') and OR ('>=1') logic$()$(). One of the inputs comes from the external Redstone, the other one from the filters. Lastly, you can do the same for the three wires coming from the filter slots. $(o)&$(): All of them must be on, $(o)>=1$(): At least one of them must be on.$(br2)What does this mean now? Well, you can drop items triggered or continuously. You can also"
+    },
+    {
+      "type": "text",
+      "text": "define if an external Redstone signal is absolutely needed, or if the device shall also spit automatically when filter slots match. And you can define if stacks in the filter slots shall be only dropped all together, or independently.$(br2)§nShutter Indication$()$(br)The front shutter can help you to see internal conditions without opening the GUI. If you have items in the filter slots and all filters match (LEDs green), so that the dropper is"
+    },
+    {
+      "type": "text",
+      "text": "only waiting for an external Redstone signal, then the shutter will be open.$(br2)§nFurther Details$()$(br)$(li)A blinking yellow LED above the delay slider indicates that the dropper is waiting for the delay to expire.$(li)When saying 'Redstone' OR 'filter slot output' for the second logic gate, and if the filter conditions are not met, then the dropper will instead spit an item that is not in the filter (good for cleaning)."
+    },
+    {
+      "type": "text",
+      "text": "$(li)In contrast to the previous, saying 'Redstone' AND 'filter slot output' for the 2nd logic gate, then only items from the filter will be ejected, other stacks will remain in the storage slots until they are extracted somehow."
+    },
+    {
+      "type": "text",
+      "text": ""
+    }
+  ]
+}

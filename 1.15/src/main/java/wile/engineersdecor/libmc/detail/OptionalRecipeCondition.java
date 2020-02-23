@@ -21,7 +21,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.logging.log4j.Logger;
-
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,6 @@ import java.util.function.Predicate;
 public class OptionalRecipeCondition implements ICondition
 {
   private static ResourceLocation NAME;
-  private static Logger LOGGER;
 
   private final List<ResourceLocation> all_required;
   private final List<ResourceLocation> any_missing;
@@ -49,7 +47,6 @@ public class OptionalRecipeCondition implements ICondition
   public static void init(String modid, Logger logger)
   {
     NAME = new ResourceLocation(modid, "optional");
-    LOGGER = logger;
   }
 
   public static void on_config(boolean enable_experimental, boolean disable_all_recipes,

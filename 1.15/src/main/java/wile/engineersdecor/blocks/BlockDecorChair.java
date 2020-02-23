@@ -23,12 +23,11 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.fml.network.NetworkHooks;
-
 import java.util.List;
 import java.util.Random;
 
 
-public class BlockDecorChair extends BlockDecor.HorizontalWaterLoggable
+public class BlockDecorChair extends BlockDecor.HorizontalWaterLoggable implements IDecorBlock
 {
   private static boolean sitting_enabled = true;
   private static double sitting_probability = 0.1;
