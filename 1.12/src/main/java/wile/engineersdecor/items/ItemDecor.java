@@ -8,28 +8,31 @@
  */
 package wile.engineersdecor.items;
 
+import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.detail.ModAuxiliaries;
+import wile.engineersdecor.detail.ModConfig;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.Item;
+import net.minecraft.block.Block;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.detail.ModAuxiliaries;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemDecor extends Item
+public class ItemDecor extends ItemBlock
 {
-  ItemDecor(String registryName)
+  public ItemDecor(Block block)
   {
-    super();
-    setRegistryName(ModEngineersDecor.MODID, registryName);
-    setTranslationKey(ModEngineersDecor.MODID + "." + registryName);
+    super(block);
+    setRegistryName(block.getRegistryName());
+    setTranslationKey(ModEngineersDecor.MODID + "." + block.getRegistryName().getPath());
     setMaxStackSize(64);
     setCreativeTab(ModEngineersDecor.CREATIVE_TAB_ENGINEERSDECOR);
     setHasSubtypes(false);
@@ -48,4 +51,7 @@ public class ItemDecor extends Item
   public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag)
   { ModAuxiliaries.Tooltip.addInformation(stack, world, tooltip, flag, true); }
 
+  @Nullable
+  public CreativeTabs getCreativeTab()
+  { return ModConfig.isOptedOut(this) ? null : super.getCreativeTab(); }
 }

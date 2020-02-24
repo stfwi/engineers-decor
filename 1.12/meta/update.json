@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.12.2": {
+    "1.0.19-b4": "[A] Creative tab opt-out visibility handling added (issue #90, thx pimalel233).",
     "1.0.19-b3": "[A] Factory Hopper: Added bottom item handler (CR#227).",
     "1.0.19-b2": "[F] Fixed Floor Grating item pass-through jitters (thx Cid).\n[M] Removed obsolete recipe collision testing recipes.",
     "1.0.19-b1": "[F] Fixed Tree Cutter / Block Breaker not accepting small energy transfers (thx WindFox, issue #82).",
@@ -80,6 +81,6 @@
   },
   "promos": {
     "1.12.2-recommended": "1.0.18",
-    "1.12.2-latest": "1.0.19-b3"
+    "1.12.2-latest": "1.0.19-b4"
   }
 }

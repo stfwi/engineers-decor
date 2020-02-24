@@ -10,7 +10,7 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
-    ~ v1.0.19-b4
+    - v1.0.19-b4  [A] Creative tab opt-out visibility handling added (issue #90, thx pimalel233).
 
     - v1.0.19-b3  [A] Factory Hopper: Added bottom item handler (CR#227).
 

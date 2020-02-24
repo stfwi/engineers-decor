@@ -22,7 +22,6 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
@@ -714,13 +713,7 @@ public class ModContent
   // Invoked from CommonProxy.registerItems()
   public static final void registerItemBlocks(RegistryEvent.Register<Item> event)
   {
-    int n = 0;
-    for(Block e:registeredBlocks) {
-      ResourceLocation rl = e.getRegistryName();
-      if(rl == null) continue;
-      event.getRegistry().register(new ItemBlock(e).setRegistryName(rl));
-      ++n;
-    }
+    for(Block e:registeredBlocks) event.getRegistry().register(new ItemDecor(e));
   }
 
 }

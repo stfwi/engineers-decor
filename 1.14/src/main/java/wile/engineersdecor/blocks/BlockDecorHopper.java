@@ -227,9 +227,11 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
       CompoundNBT nbt = new CompoundNBT();
       block_power_signal_ = false;
       writenbt(nbt, false);
-      for(int i=0; i<stacks_.size(); ++i) stacks_.set(i, ItemStack.EMPTY);
+      boolean is_empty = true;
+      for(int i=0; i<stacks_.size(); ++i) { is_empty &= stacks_.get(i).isEmpty(); stacks_.set(i, ItemStack.EMPTY); }
       reset_rtstate();
       block_power_updated_ = false;
+      if(is_empty) nbt = new CompoundNBT();
       return nbt;
     }
 
@@ -398,7 +400,7 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
 
     // ISidedInventory --------------------------------------------------------------------------------------
 
-    LazyOptional<? extends IItemHandler>[] item_handlers = SidedInvWrapper.create(this, Direction.UP, Direction.DOWN);
+    LazyOptional<? extends IItemHandler>[] item_handlers = SidedInvWrapper.create(this, Direction.UP);
     private static final int[] SIDED_INV_SLOTS;
     static {
       SIDED_INV_SLOTS = new int[NUM_OF_SLOTS];
@@ -423,10 +425,7 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
       if(!this.removed && (facing != null)) {
-        if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-          if(facing == Direction.UP) return item_handlers[0].cast();
-          if(facing == Direction.DOWN) return item_handlers[1].cast();
-        }
+        if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handlers[0].cast();
       }
       return super.getCapability(capability, facing);
     }
