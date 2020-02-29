@@ -9,6 +9,7 @@
 package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.detail.ModAuxiliaries;
 import net.minecraft.world.World;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.PropertyBool;
@@ -17,7 +18,9 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -96,6 +99,16 @@ public class BlockDecorBreaker extends BlockDecorDirectedHorizontal
     ((BTileEntity)te).block_updated();
   }
 
+  @Override
+  public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+  {
+    if(world.isRemote) return true;
+    TileEntity te = world.getTileEntity(pos);
+    if(!(te instanceof BTileEntity)) return true;
+    ((BTileEntity)te).state_message(player);
+    return true;
+  }
+
   //--------------------------------------------------------------------------------------------------------------------
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
@@ -110,17 +123,20 @@ public class BlockDecorBreaker extends BlockDecorDirectedHorizontal
     public static final int DEFAULT_MIN_BREAKING_TIME = 15;
     public static final int MAX_BREAKING_TIME = 800;
     private static int boost_energy_consumption = DEFAULT_BOOST_ENERGY;
+    private static int energy_max = 10000;
     private static int breaking_reluctance = DEFAULT_BREAKING_RELUCTANCE;
     private static int min_breaking_time = DEFAULT_MIN_BREAKING_TIME;
     private static boolean requires_power = false;
     private int tick_timer_;
     private int active_timer_;
     private int proc_time_elapsed_;
+    private int time_needed_;
     private int energy_;
 
     public static void on_config(int boost_energy_per_tick, int breaking_time_per_hardness, int min_breaking_time_ticks, boolean power_required)
     {
       boost_energy_consumption = TICK_INTERVAL * MathHelper.clamp(boost_energy_per_tick, 16, 512);
+      energy_max = Math.max(boost_energy_consumption * 10, 10000);
       breaking_reluctance = MathHelper.clamp(breaking_time_per_hardness, 5, 50);
       min_breaking_time = MathHelper.clamp(min_breaking_time_ticks, 10, 100);
       requires_power = power_required;
@@ -133,11 +149,35 @@ public class BlockDecorBreaker extends BlockDecorDirectedHorizontal
     public void block_updated()
     { if(tick_timer_ > 2) tick_timer_ = 2; }
 
+    public void state_message(EntityPlayer player)
+    {
+      String soc = Integer.toString(MathHelper.clamp((energy_*100/energy_max),0,100));
+      String progress = "";
+      if((proc_time_elapsed_ > 0) && (time_needed_ > 0) && (active_timer_ > 0)) {
+        progress = " | " + Integer.toString((int)MathHelper.clamp((((double)proc_time_elapsed_) / ((double)time_needed_) * 100), 0, 100)) + "%%";
+      }
+      ModAuxiliaries.playerChatMessage(player, soc + "%%/" + energy_max + "RF" + progress);
+    }
+
+    public void readnbt(NBTTagCompound nbt)
+    { energy_ = nbt.getInteger("energy"); }
+
+    private void writenbt(NBTTagCompound nbt)
+    { nbt.setInteger("energy", energy_); }
+
     // TileEntity ------------------------------------------------------------------------------
 
     @Override
     public boolean shouldRefresh(World world, BlockPos pos, IBlockState os, IBlockState ns)
     { return (os.getBlock() != ns.getBlock()) || (!(ns.getBlock() instanceof BlockDecorBreaker)); }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbt)
+    { super.readFromNBT(nbt); readnbt(nbt); }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+    { super.writeToNBT(nbt); writenbt(nbt); return nbt; }
 
     // IEnergyStorage ----------------------------------------------------------------------------
 
@@ -164,7 +204,7 @@ public class BlockDecorBreaker extends BlockDecorDirectedHorizontal
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate)
     {
-      maxReceive = MathHelper.clamp(maxReceive, 0, Math.max((boost_energy_consumption*2) - energy_, 0));
+      maxReceive = MathHelper.clamp(maxReceive, 0, Math.max(energy_max-energy_, 0));
       if(!simulate) energy_ += maxReceive;
       return maxReceive;
     }
@@ -253,11 +293,11 @@ public class BlockDecorBreaker extends BlockDecorDirectedHorizontal
           tick_timer_ = IDLE_TICK_INTERVAL;
           return;
         }
-        int time_needed = MathHelper.clamp((int)(target_state.getBlockHardness(world, pos) * breaking_reluctance) + min_breaking_time, min_breaking_time, MAX_BREAKING_TIME);
+        time_needed_ = MathHelper.clamp((int)(target_state.getBlockHardness(world, pos) * breaking_reluctance) + min_breaking_time, min_breaking_time, MAX_BREAKING_TIME);
         if(energy_ >= boost_energy_consumption) {
           energy_ -= boost_energy_consumption;
           proc_time_elapsed_ += TICK_INTERVAL * (1+BOOST_FACTOR);
-          time_needed += min_breaking_time * (3*BOOST_FACTOR/5);
+          time_needed_ += min_breaking_time * (3*BOOST_FACTOR/5);
           active_timer_ = 2;
         } else if(!requires_power) {
           proc_time_elapsed_ += TICK_INTERVAL;
@@ -269,7 +309,7 @@ public class BlockDecorBreaker extends BlockDecorDirectedHorizontal
         if(requires_power && !active) {
           proc_time_elapsed_ = Math.max(0, proc_time_elapsed_ - 2*TICK_INTERVAL);
         }
-        if(proc_time_elapsed_ >= time_needed) {
+        if(proc_time_elapsed_ >= time_needed_) {
           proc_time_elapsed_ = 0;
           breakBlock(target_state, target_pos, world);
           active = false;

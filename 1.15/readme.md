@@ -11,9 +11,10 @@ Mod sources for Minecraft version 1.15.1.
 
 ## Version history
 
-    ~ v1.0.19-b5  [A] Factory Hopper: Resetting NBT when breaking with empty inventory (for stacking), enabled
-                      item cap for all sides.
+    ~ v1.0.19-b5  [A] Added right-click display of power and progress information for Block Breaker, Solar Panel, and Tree Cutter.
+                  [A] Solar Panel power curve tuned.
                   [A] Mod manual 1st edition release recipe added.
+                  [A] Factory Hopper: Resetting NBT when breaking with empty inventory (for stacking), enabled item cap for all sides.
 
     - v1.0.19-b4  [A] Ported primary Immersive Engineering dependent recipes (alternative recipes
                       will still work if IE is not installed).

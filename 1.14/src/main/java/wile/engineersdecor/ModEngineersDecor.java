@@ -1,10 +1,9 @@
 package wile.engineersdecor;
 
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.detail.ModConfig;
 import wile.engineersdecor.blocks.*;
+import wile.engineersdecor.detail.ModConfig;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.OptionalRecipeCondition;
-import wile.engineersdecor.libmc.detail.Networking;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
@@ -20,7 +19,6 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -62,7 +60,7 @@ public class ModEngineersDecor
   {
     LOGGER.info("Registering recipe condition processor ...");
     CraftingHelper.register(OptionalRecipeCondition.Serializer.INSTANCE);
-    Networking.init(MODID);
+    wile.engineersdecor.libmc.detail.Networking.init(MODID);
     if(config_loaded) {
       try {
         logger().info("Applying loaded config file.");
@@ -76,7 +74,11 @@ public class ModEngineersDecor
   }
 
   private void onClientSetup(final FMLClientSetupEvent event)
-  { ModContent.registerContainerGuis(event); ModContent.registerTileEntityRenderers(event); }
+  {
+    ModContent.registerContainerGuis(event);
+    ModContent.registerTileEntityRenderers(event);
+    wile.engineersdecor.libmc.detail.Overlay.register();
+  }
 
   private void onSendImc(final InterModEnqueueEvent event)
   {

@@ -4,7 +4,6 @@ import wile.engineersdecor.blocks.*;
 import wile.engineersdecor.detail.ModConfig;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.OptionalRecipeCondition;
-import wile.engineersdecor.libmc.detail.Networking;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
@@ -63,7 +62,7 @@ public class ModEngineersDecor
   {
     LOGGER.info("Registering recipe condition processor ...");
     CraftingHelper.register(OptionalRecipeCondition.Serializer.INSTANCE);
-    Networking.init(MODID);
+    wile.engineersdecor.libmc.detail.Networking.init(MODID);
     if(config_loaded) {
       try {
         logger().info("Applying loaded config file.");
@@ -81,6 +80,7 @@ public class ModEngineersDecor
     ModContent.registerContainerGuis(event);
     ModContent.registerTileEntityRenderers(event);
     ModContent.processContentClientSide(event);
+    wile.engineersdecor.libmc.detail.Overlay.register();
   }
 
   private void onSendImc(final InterModEnqueueEvent event)

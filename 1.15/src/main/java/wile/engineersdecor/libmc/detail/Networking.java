@@ -9,6 +9,8 @@
 package wile.engineersdecor.libmc.detail;
 
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraft.nbt.CompoundNBT;
@@ -22,6 +24,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import net.minecraftforge.fml.network.NetworkDirection;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 
@@ -41,6 +44,7 @@ public class Networking
     DEFAULT_CHANNEL.registerMessage(++discr, PacketTileNotifyServerToClient.class, PacketTileNotifyServerToClient::compose, PacketTileNotifyServerToClient::parse, PacketTileNotifyServerToClient.Handler::handle);
     DEFAULT_CHANNEL.registerMessage(++discr, PacketContainerSyncClientToServer.class, PacketContainerSyncClientToServer::compose, PacketContainerSyncClientToServer::parse, PacketContainerSyncClientToServer.Handler::handle);
     DEFAULT_CHANNEL.registerMessage(++discr, PacketContainerSyncServerToClient.class, PacketContainerSyncServerToClient::compose, PacketContainerSyncServerToClient::parse, PacketContainerSyncServerToClient.Handler::handle);
+    DEFAULT_CHANNEL.registerMessage(++discr, OverlayTextMessage.class, OverlayTextMessage::compose, OverlayTextMessage::parse, OverlayTextMessage.Handler::handle);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -234,6 +238,63 @@ public class Networking
           if(player.openContainer.windowId != pkt.id) return;
           ((INetworkSynchronisableContainer)player.openContainer).onServerPacketReceived(pkt.id,pkt.nbt);
         });
+        ctx.get().setPacketHandled(true);
+      }
+    }
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Main window GUI text message
+  //--------------------------------------------------------------------------------------------------------------------
+
+  public static class OverlayTextMessage
+  {
+    public static final int DISPLAY_TIME_MS = 3000;
+    private static BiConsumer<ITextComponent, Integer> handler_ = null;
+    private ITextComponent data_;
+    private int delay_ = DISPLAY_TIME_MS;
+    private ITextComponent data() { return data_; }
+    private int delay() { return delay_; }
+
+
+    public static void setHandler(BiConsumer<ITextComponent, Integer> handler)
+    { if(handler_==null) handler_ = handler; }
+
+    public static void sendToPlayer(PlayerEntity player, ITextComponent message, int delay)
+    {
+      if((!(player instanceof ServerPlayerEntity)) || (player instanceof FakePlayer)) return;
+      DEFAULT_CHANNEL.sendTo(new OverlayTextMessage(message, delay), ((ServerPlayerEntity)player).connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+    }
+
+    public OverlayTextMessage()
+    { data_ = new TranslationTextComponent("[unset]"); }
+
+    public OverlayTextMessage(final ITextComponent tct, int delay)
+    { data_ = (ITextComponent)tct.deepCopy(); delay_ = delay; }
+
+    public static OverlayTextMessage parse(final PacketBuffer buf)
+    {
+      try {
+        return new OverlayTextMessage((ITextComponent)buf.readTextComponent(), DISPLAY_TIME_MS);
+      } catch(Throwable e) {
+        return new OverlayTextMessage(new TranslationTextComponent("[incorrect translation]"), DISPLAY_TIME_MS);
+      }
+    }
+
+    public static void compose(final OverlayTextMessage pkt, final PacketBuffer buf)
+    {
+      try {
+        buf.writeTextComponent(pkt.data());
+      } catch(Throwable e) {
+        Auxiliaries.logger().error("OverlayTextMessage.toBytes() failed: " + e.toString());
+      }
+    }
+
+    public static class Handler
+    {
+      public static void handle(final OverlayTextMessage pkt, final Supplier<NetworkEvent.Context> ctx)
+      {
+        if(handler_ != null) ctx.get().enqueueWork(() -> handler_.accept(pkt.data(), pkt.delay()));
         ctx.get().setPacketHandled(true);
       }
     }

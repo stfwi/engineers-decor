@@ -10,6 +10,14 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+                  -------------------------------------------------------------------
+    - v1.0.19     [R] Release based on v1.0.19-b4. Release-to-release changes:
+                    * Transfer fixes for Tree Cutter / Block Braker, and Factory hopper.
+                    * Cleanups, feature backports
+                    * Visual fixes and improvements
+                  -------------------------------------------------------------------
+                  [A] Backport of status display for Tree Cutter, Block Breaker and Solar Panel.
+
     - v1.0.19-b4  [A] Creative tab opt-out visibility handling added (issue #90, thx pimalel233).
 
     - v1.0.19-b3  [A] Factory Hopper: Added bottom item handler (CR#227).

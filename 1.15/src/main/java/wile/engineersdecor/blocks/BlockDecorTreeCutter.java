@@ -10,6 +10,9 @@ package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.detail.TreeCutting;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.Overlay;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.block.Block;
@@ -19,18 +22,20 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import wile.engineersdecor.detail.TreeCutting;
 import javax.annotation.Nullable;
 import java.util.Random;
 
@@ -76,6 +81,15 @@ public class BlockDecorTreeCutter extends BlockDecor.Horizontal implements IDeco
     }
   }
 
+  @Override
+  @SuppressWarnings("deprecation")
+  public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
+  {
+    TileEntity te = world.getTileEntity(pos);
+    if(te instanceof BTileEntity) ((BTileEntity)te).state_message(player);
+    return true;
+  }
+
   //--------------------------------------------------------------------------------------------------------------------
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
@@ -88,6 +102,7 @@ public class BlockDecorTreeCutter extends BlockDecor.Horizontal implements IDeco
     public static final int DEFAULT_BOOST_ENERGY = 64;
     public static final int DEFAULT_CUTTING_TIME_NEEDED = 60; // 60 secs, so that people don't come to the bright idea to carry one with them.
     private static int boost_energy_consumption = DEFAULT_BOOST_ENERGY;
+    private static int energy_max = DEFAULT_BOOST_ENERGY * 20;
     private static int cutting_time_needed = 20 * DEFAULT_CUTTING_TIME_NEEDED;
     private static boolean requires_power = false;
 
@@ -99,6 +114,7 @@ public class BlockDecorTreeCutter extends BlockDecor.Horizontal implements IDeco
     public static void on_config(int boost_energy_per_tick, int cutting_time_seconds, boolean power_required)
     {
       boost_energy_consumption = TICK_INTERVAL * MathHelper.clamp(boost_energy_per_tick, 4, 4096);
+      energy_max = Math.max(boost_energy_consumption * 10, 10000);
       cutting_time_needed = 20 * MathHelper.clamp(cutting_time_seconds, 10, 240);
       requires_power = power_required;
       ModEngineersDecor.logger().info("Config tree cutter: Boost energy consumption:" + boost_energy_consumption + "rf/t" + (requires_power?" (power required for operation) ":"") + ", cutting time " + cutting_time_needed + "t." );
@@ -109,6 +125,32 @@ public class BlockDecorTreeCutter extends BlockDecor.Horizontal implements IDeco
 
     public BTileEntity(TileEntityType<?> te_type)
     { super(te_type); }
+
+    public void readnbt(CompoundNBT nbt)
+    { energy_ = nbt.getInt("energy"); }
+
+    private void writenbt(CompoundNBT nbt)
+    { nbt.putInt("energy", energy_); }
+
+    public void state_message(PlayerEntity player)
+    {
+      String progress = "0";
+      if((active_timer_ > 0) && (cutting_time_needed > 0) && (active_timer_ > 0)) {
+        progress = Integer.toString((int)MathHelper.clamp((((double)proc_time_elapsed_) / ((double)cutting_time_needed) * 100), 0, 100));
+      }
+      String soc = Integer.toString(MathHelper.clamp((energy_*100/energy_max),0,100));
+      Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.small_tree_cutter.status", null, new Object[]{soc, energy_max, progress, (cutting_time_needed/20) }));
+    }
+
+    // TileEntity ------------------------------------------------------------------------------
+
+    @Override
+    public void read(CompoundNBT nbt)
+    { super.read(nbt); readnbt(nbt); }
+
+    @Override
+    public CompoundNBT write(CompoundNBT nbt)
+    { super.write(nbt); writenbt(nbt); return nbt; }
 
     // IEnergyStorage ----------------------------------------------------------------------------
 
@@ -137,7 +179,7 @@ public class BlockDecorTreeCutter extends BlockDecor.Horizontal implements IDeco
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate)
     {
-      maxReceive = MathHelper.clamp(maxReceive, 0, Math.max((boost_energy_consumption*2) - energy_, 0));
+      maxReceive = MathHelper.clamp(maxReceive, 0, Math.max((energy_max) - energy_, 0));
       if(!simulate) energy_ += maxReceive;
       return maxReceive;
     }
