@@ -207,6 +207,16 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace implements ID
       );
     }
 
+    // TileEntity ------------------------------------------------------------------------------
+
+    @Override
+    public void read(CompoundNBT nbt)
+    { super.read(nbt); readnbt(nbt); }
+
+    @Override
+    public CompoundNBT write(CompoundNBT nbt)
+    { super.write(nbt); writenbt(nbt); return nbt; }
+
     // INameable -------------------------------------------------------------------------------
 
     @Override

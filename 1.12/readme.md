@@ -10,6 +10,8 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    ~ v1.0.20-b1  [F]
+
                   -------------------------------------------------------------------
     - v1.0.19     [R] Release based on v1.0.19-b4. Release-to-release changes:
                     * Transfer fixes for Tree Cutter / Block Braker, and Factory hopper.

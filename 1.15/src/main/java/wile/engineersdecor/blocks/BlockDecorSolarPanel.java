@@ -41,7 +41,7 @@ public class BlockDecorSolarPanel extends BlockDecor implements IDecorBlock
 {
   public static final IntegerProperty EXPOSITION = IntegerProperty.create("exposition", 0, 4);
 
-  public BlockDecorSolarPanel(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
+  public BlockDecorSolarPanel(long config, Block.Properties builder, final AxisAlignedBB[] unrotatedAABB)
   {
     super(config, builder, unrotatedAABB);
     setDefaultState(stateContainer.getBaseState().with(EXPOSITION, 1));

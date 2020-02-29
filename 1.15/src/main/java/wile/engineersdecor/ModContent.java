@@ -505,7 +505,10 @@ public class ModContent
   public static final BlockDecorSolarPanel SMALL_SOLAR_PANEL = (BlockDecorSolarPanel)(new BlockDecorSolarPanel(
     BlockDecor.CFG_CUTOUT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).func_226896_b_(),
-    Auxiliaries.getPixeledAABB(0,0,0, 16,11.5,16)
+    new AxisAlignedBB[]{
+      Auxiliaries.getPixeledAABB(0,0,0, 16,2,16),
+      Auxiliaries.getPixeledAABB(6,1.5,3, 10,10.5,13),
+    }
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_solar_panel"));
 
   public static final BlockDecorMilker SMALL_MILKING_MACHINE = (BlockDecorMilker)(new BlockDecorMilker(
