@@ -267,7 +267,7 @@ public class ModContent
 
   public static final BlockDecor.WaterLoggable STEEL_TABLE = (BlockDecor.WaterLoggable)(new BlockDecor.WaterLoggable(
     BlockDecor.CFG_CUTOUT,
-    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
     Auxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "steel_table"));
 
@@ -637,6 +637,12 @@ public class ModContent
     1.5, 16, 0.25, 0, 16
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "steel_mesh_fence"));
 
+  public static final BlockDecorDoubleGate STEEL_MESH_FENCE_GATE = (BlockDecorDoubleGate)(new BlockDecorDoubleGate(
+    BlockDecor.CFG_CUTOUT,
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
+    Auxiliaries.getPixeledAABB(0,0,6.5, 16,16,9.5)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "steel_mesh_fence_gate"));
+
   // -------------------------------------------------------------------------------------------------------------------
 
   public static final BlockDecorTest TEST_BLOCK = (BlockDecorTest)(new BlockDecorTest(
@@ -714,6 +720,7 @@ public class ModContent
     FLOOR_EDGE_LIGHT_IRON,
     STEEL_FLOOR_GRATING,
     STEEL_MESH_FENCE,
+    STEEL_MESH_FENCE_GATE,
     TREATED_WOOD_POLE,
     TREATED_WOOD_POLE_HEAD,
     TREATED_WOOD_POLE_SUPPORT,

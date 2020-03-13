@@ -151,6 +151,8 @@
  "block.engineersdecor.steel_framed_window.help": "§6Стальной каркас окна с тройным остеклением. Хорошо изолирует. §r Не подключается к смежным блокам, таким как стеклянные панели.",
  "block.engineersdecor.steel_mesh_fence": "Забор из стальной сетки",
  "block.engineersdecor.steel_mesh_fence.help": "§6Забор в индустриальном стиле.§r\nНе стыкуется с обычными заборами.",
+ "block.engineersdecor.steel_mesh_fence_gate": "Steel Mesh Fence Gate",
+ "block.engineersdecor.steel_mesh_fence_gate.help": "§6Industrial style fence gate that fits well to the Steel Mesh Fence.§r\nCan be placed as single or double size gate.",
  "block.engineersdecor.small_lab_furnace": "Компактная лабораторная печь",
  "block.engineersdecor.small_lab_furnace.help": "§6Лабораторная печь в металлическом корпусе.§r Подача твёрдого топлива сверху. Немного горячее и изолированней каменной, поэтому быстрее. Два вспомогательных слота, например для хранения. Два слота-воронки для ввода, вывода, и топлива. Поместите внешний нагреватель в слот AUX и подключите питание для электрического повышения скорости обработки.",
  "block.engineersdecor.small_electrical_furnace": "Компактная конвейерная электрическая печь",

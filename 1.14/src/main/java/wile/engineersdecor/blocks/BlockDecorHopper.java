@@ -8,6 +8,8 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
@@ -63,6 +65,10 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
   @SuppressWarnings("deprecation")
   public boolean hasComparatorInputOverride(BlockState state)
   { return true; }
+
+  @Override
+  public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)
+  { return VoxelShapes.fullCube(); }
 
   @Override
   @SuppressWarnings("deprecation")

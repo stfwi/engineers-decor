@@ -21,6 +21,7 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
@@ -79,12 +80,12 @@ public class BlockDecorTest extends BlockDecor.Directed implements Auxiliaries.I
 
   @Override
   @SuppressWarnings("deprecation")
-  public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
+  public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
   {
     TileEntity te = world.getTileEntity(pos);
-    if(!(te instanceof BTileEntity)) return false;
+    if(!(te instanceof BTileEntity)) return ActionResultType.SUCCESS;
     ((BTileEntity)te).activated(player, hand, hit);
-    return true;
+    return ActionResultType.SUCCESS;
   }
 
   //--------------------------------------------------------------------------------------------------------------------

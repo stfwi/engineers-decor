@@ -138,29 +138,28 @@ public class SlabSliceBlock extends StandardBlocks.WaterLoggable implements Stan
   { return new ArrayList<ItemStack>(Collections.singletonList(new ItemStack(this.asItem(), num_slabs_contained_in_parts_[state.get(PARTS) & 0xf]))); }
 
   @Override
-  @SuppressWarnings("deprecation")
-  public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+  public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
   {
     Direction face = rayTraceResult.getFace();
     final ItemStack stack = player.getHeldItem(hand);
-    if(stack.isEmpty() || (Block.getBlockFromItem(stack.getItem()) != this)) return false;
-    if((face != Direction.UP) && (face != Direction.DOWN)) return false;
+    if(stack.isEmpty() || (Block.getBlockFromItem(stack.getItem()) != this)) return ActionResultType.PASS;
+    if((face != Direction.UP) && (face != Direction.DOWN)) return ActionResultType.PASS;
     int parts = state.get(PARTS);
     if((face != Direction.UP) && (parts > 7)) {
       world.setBlockState(pos, state.with(PARTS, parts-1), 3);
     } else if((face != Direction.DOWN) && (parts < 7)) {
       world.setBlockState(pos, state.with(PARTS, parts+1), 3);
     } else {
-      return (parts != 7);
+      return (parts != 7) ? ActionResultType.SUCCESS : ActionResultType.PASS;
     }
-    if(world.isRemote) return true;
+    if(world.isRemote) return ActionResultType.SUCCESS;
     if(!player.isCreative()) {
       stack.shrink(1);
       if(player.inventory != null) player.inventory.markDirty();
     }
     SoundType st = this.getSoundType(state, world, pos, null);
     world.playSound(null, pos, st.getPlaceSound(), SoundCategory.BLOCKS, (st.getVolume()+1f)/2.5f, 0.9f*st.getPitch());
-    return true;
+    return ActionResultType.SUCCESS;
   }
 
   @Override

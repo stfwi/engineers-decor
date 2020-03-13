@@ -85,7 +85,7 @@ public class LootTableGen extends LootTableProvider
     ItemLootEntry.Builder iltb = ItemLootEntry.builder(block);
     iltb.acceptFunction(CopyName.builder(Source.BLOCK_ENTITY));
     if(block.hasTileEntity(block.getDefaultState())) {
-      iltb.acceptFunction(CopyNbt.func_215881_a(CopyNbt.Source.BLOCK_ENTITY));
+      iltb.acceptFunction(CopyNbt.builder(CopyNbt.Source.BLOCK_ENTITY));
     }
     return LootTable.builder().addLootPool(LootPool.builder().name(rl_path).rolls(ConstantRange.of(1)).addEntry(iltb));
   }

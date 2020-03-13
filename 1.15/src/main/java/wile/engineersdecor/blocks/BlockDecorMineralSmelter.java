@@ -111,13 +111,12 @@ public class BlockDecorMineralSmelter extends BlockDecor.Horizontal implements I
   }
 
   @Override
-  @SuppressWarnings("deprecation")
-  public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+  public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
   {
-    if(world.isRemote) return true;
-    if(player.func_225608_bj_()/*isSneaking()*/) return false;
+    if(player.isShiftKeyDown()) return ActionResultType.PASS;
+    if(world.isRemote) return ActionResultType.SUCCESS;
     BTileEntity te = getTe(world, pos);
-    if(te==null) return true;
+    if(te==null) return ActionResultType.FAIL;
     final ItemStack stack = player.getHeldItem(hand);
     boolean dirty = false;
     if(te.accepts_lava_container(stack)) {
@@ -161,7 +160,7 @@ public class BlockDecorMineralSmelter extends BlockDecor.Horizontal implements I
       dirty = true;
     }
     if(dirty) player.inventory.markDirty();
-    return true;
+    return ActionResultType.SUCCESS;
   }
 
   @Override

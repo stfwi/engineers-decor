@@ -134,15 +134,14 @@ public class BlockDecorWasteIncinerator extends BlockDecor implements IDecorBloc
   }
 
   @Override
-  @SuppressWarnings("deprecation")
-  public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+  public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
   {
-    if(world.isRemote) return true;
+    if(world.isRemote) return ActionResultType.SUCCESS;
     final TileEntity te = world.getTileEntity(pos);
-    if(!(te instanceof BTileEntity)) return true;
-    if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return true;
+    if(!(te instanceof BTileEntity)) return ActionResultType.FAIL;
+    if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return ActionResultType.FAIL;
     NetworkHooks.openGui((ServerPlayerEntity)player,(INamedContainerProvider)te);
-    return true;
+    return ActionResultType.SUCCESS;
   }
 
   @Override
@@ -166,6 +165,7 @@ public class BlockDecorWasteIncinerator extends BlockDecor implements IDecorBloc
     public static final int NUM_OF_FIELDS = 1;
     public static final int TICK_INTERVAL = 20;
     public static final int ENERGIZED_TICK_INTERVAL = 5;
+    public static final int INCINERATION_STACK_DECREMENT = 4;
     public static final int MAX_ENERGY_BUFFER = 16000;
     public static final int MAX_ENERGY_TRANSFER = 256;
     public static final int DEFAULT_ENERGY_CONSUMPTION = 16;
@@ -189,7 +189,6 @@ public class BlockDecorWasteIncinerator extends BlockDecor implements IDecorBloc
     private int check_timer_;
     private int energy_stored_;
     protected NonNullList<ItemStack> stacks_ = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
-
 
     public BTileEntity()
     { this(ModContent.TET_WASTE_INCINERATOR); }
@@ -503,7 +502,7 @@ public class BlockDecorWasteIncinerator extends BlockDecor implements IDecorBloc
       ItemStack first_stack = stacks_.get(0);
       boolean shift = !first_stack.isEmpty();
       if(is_processing) {
-        processing_stack.shrink(1);
+        processing_stack.shrink(INCINERATION_STACK_DECREMENT);
         if(processing_stack.getCount() <= 0) {
           processing_stack = ItemStack.EMPTY;
           is_processing = false;
@@ -516,22 +515,11 @@ public class BlockDecorWasteIncinerator extends BlockDecor implements IDecorBloc
         dirty = true;
       }
       if(shift) {
-        int max_shift_slot_no = BURN_SLOT_NO-1;
-        for(int i=1; i<BURN_SLOT_NO-1; ++i) { if(stacks_.get(i).isEmpty()) { max_shift_slot_no=i; break; } }
-        if(max_shift_slot_no < (BURN_SLOT_NO-1)) {
-          // re-stack
-          boolean stacked = false;
-          for(int i=1; i<=max_shift_slot_no; ++i) {
-            if(transferItems(i-1, i, getInventoryStackLimit())) {
-              dirty = true;
-              stacked = true;
-              break;
-            }
-          }
-          if(!stacked) {
-            shiftStacks(0, max_shift_slot_no);
-          }
-        } else if(!is_processing) {
+        boolean transferred = false;
+        for(int i=BURN_SLOT_NO-1; i>0; --i) {
+          transferred |= transferItems(i-1, i, getInventoryStackLimit());
+        }
+        if((!is_processing) && (!transferred)) {
           shiftStacks(0, BURN_SLOT_NO);
           dirty = true;
         }

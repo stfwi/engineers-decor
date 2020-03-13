@@ -151,6 +151,8 @@
   "block.engineersdecor.steel_framed_window.help": "§6Steel framed triple glazed window. Well insulating. §r Does not connect to adjacent blocks like glass panes.",
   "block.engineersdecor.steel_mesh_fence": "Steel Mesh Fence",
   "block.engineersdecor.steel_mesh_fence.help": "§6Industrial style fence.§r\nDoes not connect do regular fences.",
+  "block.engineersdecor.steel_mesh_fence_gate": "Steel Mesh Fence Gate",
+  "block.engineersdecor.steel_mesh_fence_gate.help": "§6Industrial style fence gate that fits well to the Steel Mesh Fence.§r\nCan be placed as single or double size gate.",
   "block.engineersdecor.small_lab_furnace": "Small Laboratory Furnace",
   "block.engineersdecor.small_lab_furnace.help": "§6Small metal cased lab kiln.§r Solid fuel consuming, updraught. Slightly hotter and better isolated than a cobblestone furnace, therefore more efficient. Two auxiliary slots e.g. for storage. Two stack internal hopper fifos for input, output, and fuel. Place an external heater into a aux slot and connect power for electrical smelting speed boost.",
   "block.engineersdecor.small_electrical_furnace": "Small Electrical Furnace",

@@ -2,7 +2,7 @@
   "name": "Windows",
   "icon": "engineersdecor:treated_wood_window",
   "category": "buildingblocks",
-  "sortnum": 1060,
+  "sortnum": 1070,
   "pages": [
     {
       "type": "spotlight",

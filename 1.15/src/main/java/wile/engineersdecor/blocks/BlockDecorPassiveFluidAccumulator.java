@@ -23,10 +23,11 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -56,13 +57,13 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecor.Directed imple
 
   @Override
   @SuppressWarnings("deprecation")
-  public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+  public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
   {
-    if(world.isRemote) return true;
+    if(world.isRemote) return ActionResultType.SUCCESS;
     TileEntity te = world.getTileEntity(pos);
-    if(!(te instanceof BTileEntity)) return true;
+    if(!(te instanceof BTileEntity)) return ActionResultType.FAIL;
     ((BTileEntity)te).send_device_stats(player);
-    return true;
+    return ActionResultType.SUCCESS;
   }
 
   @Override

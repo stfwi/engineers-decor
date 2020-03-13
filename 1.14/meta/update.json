@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.14.4": {
+    "1.0.20-b1": "[A] Electrical Furnace: Added four-position speed switch (off, 100%, 150%, 200%), power consumption increases at higher rate (off, 100%, 200%, 400%).\n[A] Added Steel Mesh Fence Gate (single or double height gate fitting to the Steel Mesh Fence).\n[M] Waste Incinerator processing speed tweaked.",
     "1.0.19-b5": "[A] Added right-click display of power and progress information for Block Breaker, Solar Panel, and Tree Cutter.\n[A] Solar Panel power curve tuned.\n[A] Mod manual 1st edition release recipe added.\n[A] Factory Hopper: Resetting NBT when breaking with empty inventory (for stacking), enabled item cap for all sides.\n[M] Electrical Furnace model polished.",
     "1.0.19-b4": "[A] Ported primary Immersive Engineering dependent recipes (alternative recipes will still work if IE is not installed).\n[M] Furni comparator output overrides reflect input slots and empty fuel state/power-cutoff.\n[M] Solar Panel config: Default value for internal battery capacity increased.\n[F] Block Placer: Shifted GUI player slots 1px to the right.\n[A] Added mod block tags for slabs, stairs, and walls (PR#89, thanks CrudeAustin for the data).\n[A] Added experimental Patchouli manual (creative only).\n[!] Skipped blacklisting Treated Wood Crafting Table slots for the inventorysorter mod due to potential startup crashes for single player games (issue #88 fix deferred).",
     "1.0.19-b3": "[M] Config tweaks: Value limit ranges increased to facilitate modpacking.\n[A] Factory Hopper: Added bottom item handler (CR#227).\n[M] Block shapes refined.\n[F] Fixed duping bug (issue #87, thx Nachtflame)",
@@ -49,6 +50,6 @@
   },
   "promos": {
     "1.14.4-recommended": "",
-    "1.14.4-latest": "1.0.19-b5"
+    "1.14.4-latest": "1.0.20-b1"
   }
 }

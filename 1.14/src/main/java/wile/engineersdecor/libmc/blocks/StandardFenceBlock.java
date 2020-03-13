@@ -94,7 +94,7 @@ public class StandardFenceBlock extends WallBlock implements StandardBlocks.ISta
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
   { super.fillStateContainer(builder); }
 
-  private boolean attachesTo(BlockState facingState, IWorldReader world, BlockPos facingPos, Direction side)
+  protected boolean attachesTo(BlockState facingState, IWorldReader world, BlockPos facingPos, Direction side)
   {
     final Block block = facingState.getBlock();
     if((block instanceof FenceGateBlock) || (block instanceof StandardFenceBlock) || (block instanceof VariantWallBlock)) return true;

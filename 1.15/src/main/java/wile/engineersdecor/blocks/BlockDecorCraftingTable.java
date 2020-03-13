@@ -93,15 +93,14 @@ public class BlockDecorCraftingTable
     { return new BlockDecorCraftingTable.CraftingTableTileEntity(); }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
     {
-      if(world.isRemote) return true;
+      if(world.isRemote) return ActionResultType.SUCCESS;
       final TileEntity te = world.getTileEntity(pos);
-      if(!(te instanceof CraftingTableTileEntity)) return true;
-      if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return true;
+      if(!(te instanceof CraftingTableTileEntity)) return ActionResultType.FAIL;
+      if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return ActionResultType.FAIL;
       NetworkHooks.openGui((ServerPlayerEntity)player,(INamedContainerProvider)te);
-      return true;
+      return ActionResultType.SUCCESS;
     }
 
     @Override

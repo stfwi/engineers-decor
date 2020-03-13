@@ -68,15 +68,15 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace implements ID
   { return new BlockDecorFurnaceElectrical.BTileEntity(); }
 
   @Override
-  public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+  public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
   {
-    if(world.isRemote) return true;
+    if(world.isRemote) return ActionResultType.SUCCESS;
     final TileEntity te = world.getTileEntity(pos);
-    if(!(te instanceof BlockDecorFurnaceElectrical.BTileEntity)) return true;
-    if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return true;
+    if(!(te instanceof BlockDecorFurnaceElectrical.BTileEntity)) return ActionResultType.FAIL;
+    if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return ActionResultType.FAIL;
     NetworkHooks.openGui((ServerPlayerEntity)player,(INamedContainerProvider)te);
     player.addStat(Stats.INTERACT_WITH_FURNACE);
-    return true;
+    return ActionResultType.SUCCESS;
   }
 
   @Override
@@ -112,7 +112,7 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace implements ID
     public static final int FIFO_INTERVAL = 20;
     public static final int HEAT_CAPACITY = 200;
     public static final int HEAT_INCREMENT = 20;
-    public static final int MAX_ENERGY_TRANSFER = 256;
+    public static final int MAX_ENERGY_TRANSFER = 1024;
     public static final int MAX_ENERGY_BUFFER = 32000;
     public static final int MAX_SPEED_SETTING = 2;
     public static final int NUM_OF_SLOTS = 7;
@@ -133,6 +133,7 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace implements ID
     private static int energy_consumption_ = DEFAULT_SCALED_ENERGY_CONSUMPTION;
     private static int transfer_energy_consumption_ = DEFAULT_SCALED_ENERGY_CONSUMPTION / 8;
     private static int proc_speed_percent_ = DEFAULT_SPEED_PERCENT;
+    private static double speed_setting_factor_[] = {0.0, 1.0, 1.5, 2.0};
 
     public static void on_config(int speed_percent, int standard_energy_per_tick, boolean with_automatic_inventory_pulling)
     {
@@ -145,15 +146,16 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace implements ID
 
     // BTileEntity -----------------------------------------------------------------------------
 
-    private int burntime_left_;
-    private int proc_time_elapsed_;
-    private int proc_time_needed_;
-    private int energy_stored_;
-    private int field_max_energy_stored_;
-    private int field_isburning_;
-    private int speed_;
-    private int tick_timer_;
-    private int fifo_timer_;
+    private int burntime_left_ = 0;
+    private int proc_time_elapsed_ = 0;
+    private int proc_time_needed_ = 0;
+    private int energy_stored_ = 0;
+    private int field_max_energy_stored_ = 0;
+    private int field_isburning_ = 0;
+    private int speed_ = 1;
+    private int tick_timer_ = 0;
+    private int fifo_timer_ = 0;
+    private boolean enabled_ = false;
 
     public BTileEntity()
     { this(ModContent.TET_SMALL_ELECTRICAL_FURNACE); }
@@ -185,6 +187,7 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace implements ID
       proc_time_needed_ = nbt.getInt("CookTimeTotal");
       energy_stored_ = nbt.getInt("Energy");
       speed_ = nbt.getInt("SpeedSetting");
+      speed_ = (speed_ < 0) ? (1) : ((speed_>3) ? 3 : speed_);
     }
 
     protected void writenbt(CompoundNBT nbt)
@@ -468,7 +471,12 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace implements ID
         if(transferItems(FIFO_INPUT_0_SLOT_NO, SMELTING_INPUT_SLOT_NO, 64)) dirty = true;
         if(transferItems(FIFO_INPUT_1_SLOT_NO, FIFO_INPUT_0_SLOT_NO, 64)) { dirty = true; } else { shift_in = true; }
       }
-      if((!(stacks_.get(SMELTING_INPUT_SLOT_NO)).isEmpty()) && (energy_stored_ >= energy_consumption_)) {
+      if(energy_stored_ < energy_consumption()) {
+        enabled_ = false;
+      } else if(energy_stored_ >= (MAX_ENERGY_BUFFER/2)) {
+        enabled_ = true;
+      }
+      if((!(stacks_.get(SMELTING_INPUT_SLOT_NO)).isEmpty()) && (enabled_) && (speed_>0) && (speed_<4)) {
         IRecipe last_recipe = currentRecipe();
         updateCurrentRecipe();
         if(currentRecipe() != last_recipe) {
@@ -486,7 +494,7 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace implements ID
           }
           if(burning() && can_smelt) {
             if(heat_up()) dirty = true;
-            proc_time_elapsed_ += (TICK_INTERVAL * proc_speed_percent_/100);
+            proc_time_elapsed_ += (int)(TICK_INTERVAL * proc_speed_percent_ * speed_setting_factor_[speed_] / 100);
             if(proc_time_elapsed_ >= proc_time_needed_) {
               proc_time_elapsed_ = 0;
               proc_time_needed_ = getSmeltingTimeNeeded(world, stacks_.get(SMELTING_INPUT_SLOT_NO));
@@ -510,7 +518,6 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace implements ID
       if(dirty) markDirty();
       field_max_energy_stored_ = getMaxEnergyStored();
       field_isburning_ = burning() ? 1 : 0;
-      //if(this.energy_stored_ < this.getMaxEnergyStored() / 5) this.energy_stored_ = this.getMaxEnergyStored();
     }
 
     // Furnace --------------------------------------------------------------------------------------
@@ -596,15 +603,25 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace implements ID
       return dirty;
     }
 
-    // returns TE dirty
+    int energy_consumption()
+    {
+      switch(speed_) {
+        case 1: return energy_consumption_;
+        case 2: return energy_consumption_ * 2;
+        case 3: return energy_consumption_ * 4;
+        default: return 0;
+      }
+    }
+
     private boolean heat_up()
     {
-      if(energy_stored_ < (energy_consumption_)) return false;
+      int p = energy_consumption();
+      if((p<=0) || (energy_stored_ < p)) return false;
       if(burntime_left_ >= (HEAT_CAPACITY-HEAT_INCREMENT)) return false;
-      energy_stored_ -= energy_consumption_;
+      energy_stored_ -= p;
       burntime_left_ += HEAT_INCREMENT;
       this.markDirty();
-      return true;
+      return true; // returns TE dirty
     }
 
     private void sync_blockstate()
@@ -728,9 +745,13 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace implements ID
     public void onServerPacketReceived(int windowId, CompoundNBT nbt)
     {}
 
-    @Override
     public void onClientPacketReceived(int windowId, PlayerEntity player, CompoundNBT nbt)
-    {}
+    {
+      if(!(inventory_ instanceof BTileEntity)) return;
+      BTileEntity te = (BTileEntity)inventory_;
+      if(nbt.contains("speed")) te.speed_  = MathHelper.clamp(nbt.getInt("speed"), 0, 3);
+      te.markDirty();
+    }
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -773,7 +794,33 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace implements ID
       blit(x0+79, y0+30, 176, 15, 1+progress_px(17), 15);
       int we = energy_px(32, 8);
       if(we>0) blit(x0+88, y0+53, 185, 30, we, 13);
+      switch(getContainer().field(4)) {
+        case 0: blit(x0+144, y0+57, 180, 57, 6, 9); break;
+        case 1: blit(x0+142, y0+58, 190, 58, 9, 6); break;
+        case 2: blit(x0+144, y0+56, 200, 57, 6, 9); break;
+        case 3: blit(x0+143, y0+58, 210, 58, 9, 6); break;
+        default: break;
+      }
       RenderSystem.disableBlend();
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
+    {
+      BContainer container = (BContainer)getContainer();
+      int mx = (int)(mouseX - getGuiLeft() + .5), my = (int)(mouseY - getGuiTop() + .5);
+      if((!isPointInRegion(136, 48, 28, 28, mouseX, mouseY))) {
+        return super.mouseClicked(mouseX, mouseY, mouseButton);
+      } else if(isPointInRegion(144, 64, 6, 10, mouseX, mouseY)) {
+        container.onGuiAction("speed", 0);
+      } else if(isPointInRegion(134, 58, 10, 6, mouseX, mouseY)) {
+        container.onGuiAction("speed", 1);
+      } else if(isPointInRegion(144, 48, 6, 10, mouseX, mouseY)) {
+        container.onGuiAction("speed", 2);
+      } else if(isPointInRegion(150, 58, 10, 6, mouseX, mouseY)) {
+        container.onGuiAction("speed", 3);
+      }
+      return true;
     }
 
     private int progress_px(int pixels)

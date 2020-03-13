@@ -24,6 +24,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -61,12 +62,11 @@ public class BlockDecorSolarPanel extends BlockDecor implements IDecorBlock
   { return new BlockDecorSolarPanel.BTileEntity(); }
 
   @Override
-  @SuppressWarnings("deprecation")
-  public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
+  public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
   {
     TileEntity te = world.getTileEntity(pos);
     if(te instanceof BTileEntity) ((BTileEntity)te).state_message(player);
-    return true;
+    return ActionResultType.SUCCESS;
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -211,7 +211,7 @@ public class BlockDecorSolarPanel extends BlockDecor implements IDecorBlock
       BlockState nstate = state.with(EXPOSITION, e);
       if(nstate != state) world.setBlockState(pos, nstate, 1|2);
       final double eff = (1.0-((world.getRainStrength(1f)*0.6)+(world.getThunderStrength(1f)*0.3)));
-      final double ll = ((double)(world.func_225524_e_().getLightEngine(LightType.SKY).getLightFor(getPos())))/15;
+      final double ll = ((double)(world.getLightManager().getLightEngine(LightType.SKY).getLightFor(getPos())))/15;
       final double rf = Math.sin((Math.PI/2) * Math.sqrt(((double)(((theta<0)||(theta>180))?(0):((theta>90)?(180-theta):(theta))))/90));
       current_production_ = (int)(Math.min(rf*rf*eff*ll, 1) * peak_power_per_tick_);
       accumulated_power_ = Math.min(accumulated_power_ + (current_production_*(TICK_INTERVAL*ACCUMULATION_INTERVAL)), max_power_storage_);

@@ -25,6 +25,7 @@ import net.minecraft.fluid.IFluidState;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.*;
@@ -123,13 +124,12 @@ public class BlockDecorFluidFunnel extends BlockDecor implements IDecorBlock
   }
 
   @Override
-  @SuppressWarnings("deprecation")
-  public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+  public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
   {
-    if(world.isRemote) return true;
+    if(world.isRemote) return ActionResultType.SUCCESS;
     TileEntity te = world.getTileEntity(pos);
-    if(!(te instanceof BTileEntity)) return false;
-    return FluidUtil.interactWithFluidHandler(player, hand, world, pos, rayTraceResult.getFace());
+    if(!(te instanceof BTileEntity)) return ActionResultType.FAIL;
+    return FluidUtil.interactWithFluidHandler(player, hand, world, pos, rayTraceResult.getFace()) ? ActionResultType.SUCCESS : ActionResultType.FAIL;
   }
 
   @Override

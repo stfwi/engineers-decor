@@ -101,27 +101,15 @@ public class StandardBlocks
       vshape = shape;
     }
 
-    ///////////// --------------------------------------------------------------------------------------------------------
-    // 1.15 transition
+    @Override
+    @SuppressWarnings("deprecation")
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
+    { return ActionResultType.PASS; }
 
-    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
-    { return false; }
-
-    @Deprecated
-    public ActionResultType func_225533_a_(BlockState p_225533_1_, World p_225533_2_, BlockPos p_225533_3_, PlayerEntity p_225533_4_, Hand p_225533_5_, BlockRayTraceResult p_225533_6_)
-    {
-      return onBlockActivated(p_225533_1_,p_225533_2_,p_225533_3_,p_225533_4_,p_225533_5_,p_225533_6_) ? ActionResultType.SUCCESS : ActionResultType.PASS;
-    }
-
-    @Deprecated
-    public void func_225534_a_(BlockState p_225534_1_, ServerWorld p_225534_2_, BlockPos p_225534_3_, Random p_225534_4_)
-    { tick(p_225534_1_,p_225534_2_,p_225534_3_,p_225534_4_); }
-
-    public void tick(BlockState state, World world, BlockPos pos, Random rnd)
+    @Override
+    @SuppressWarnings("deprecation")
+    public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rnd)
     {}
-
-    // 1.15 /transition
-    ///////////// --------------------------------------------------------------------------------------------------------
 
     @Override
     @OnlyIn(Dist.CLIENT)
@@ -319,7 +307,7 @@ public class StandardBlocks
         // default: placement on the face the player clicking
       }
       if((config & CFG_OPPOSITE_PLACEMENT)!=0) facing = facing.getOpposite();
-      if(((config & CFG_FLIP_PLACEMENT_SHIFTCLICK) != 0) && (context.getPlayer().func_225608_bj_()/*isSneaking()*/)) facing = facing.getOpposite();
+      if(((config & CFG_FLIP_PLACEMENT_SHIFTCLICK) != 0) && (context.getPlayer().isShiftKeyDown())) facing = facing.getOpposite();
       return super.getStateForPlacement(context).with(FACING, facing);
     }
   }
@@ -380,7 +368,7 @@ public class StandardBlocks
         facing = ((facing==Direction.UP)||(facing==Direction.DOWN)) ? (context.getPlacementHorizontalFacing()) : facing;
       }
       if((config & CFG_OPPOSITE_PLACEMENT)!=0) facing = facing.getOpposite();
-      if(((config & CFG_FLIP_PLACEMENT_SHIFTCLICK) != 0) && (context.getPlayer().func_225608_bj_()/*isSneaking()*/)) facing = facing.getOpposite();
+      if(((config & CFG_FLIP_PLACEMENT_SHIFTCLICK) != 0) && (context.getPlayer().isShiftKeyDown())) facing = facing.getOpposite();
       return super.getStateForPlacement(context).with(HORIZONTAL_FACING, facing);
     }
 

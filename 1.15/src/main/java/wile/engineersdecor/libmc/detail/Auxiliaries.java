@@ -79,15 +79,15 @@ public class Auxiliaries
   @OnlyIn(Dist.CLIENT)
   public static final boolean isShiftDown()
   {
-    return (InputMappings.isKeyDown(SidedProxy.mc().func_228018_at_()/*getMainWindow()*/.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ||
-            InputMappings.isKeyDown(SidedProxy.mc().func_228018_at_()/*getMainWindow()*/.getHandle(), GLFW.GLFW_KEY_RIGHT_SHIFT));
+    return (InputMappings.isKeyDown(SidedProxy.mc().getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ||
+            InputMappings.isKeyDown(SidedProxy.mc().getMainWindow().getHandle(), GLFW.GLFW_KEY_RIGHT_SHIFT));
   }
 
   @OnlyIn(Dist.CLIENT)
   public static final boolean isCtrlDown()
   {
-    return (InputMappings.isKeyDown(SidedProxy.mc().func_228018_at_()/*getMainWindow()*/.getHandle(), GLFW.GLFW_KEY_LEFT_CONTROL) ||
-            InputMappings.isKeyDown(SidedProxy.mc().func_228018_at_()/*getMainWindow()*/.getHandle(), GLFW.GLFW_KEY_RIGHT_CONTROL));
+    return (InputMappings.isKeyDown(SidedProxy.mc().getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_CONTROL) ||
+            InputMappings.isKeyDown(SidedProxy.mc().getMainWindow().getHandle(), GLFW.GLFW_KEY_RIGHT_CONTROL));
   }
 
   // -------------------------------------------------------------------------------------------------------------------

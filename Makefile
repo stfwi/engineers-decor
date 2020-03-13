@@ -41,10 +41,6 @@ compare:
 	@djs tasks.js compare-blockstates -v
 	@djs tasks.js compare-textures -v
 
-migrate-from-112:
-	@cd 1.12; make -s port-languages
-	@djs tasks.js migrate-textures -v
-
 # For reviewers: I am using a local repository for experimental changes,
 # this target copies the local working tree to the location of the
 # repository that you cloned.

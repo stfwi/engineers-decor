@@ -20,7 +20,7 @@
     },
     {
       "type": "text",
-      "text": ""
+      "text": "§nSpeed override switch$()$(br)A four-position switch in the bottom right area of the GUI allows to alter the processing speed of the furnace. Default is position 1 (normal). At high power expenses, you can alter this: $(br)$(li)Position 0: OFF$(li)Position 1: x1.0 -> RF x1$(li)Position 2: x1.5 -> RF x2$(li)Position 3: x2.0 -> RF x4$(br2)(Positions 0..4 are down, left, top, right)."
     }
   ]
 }

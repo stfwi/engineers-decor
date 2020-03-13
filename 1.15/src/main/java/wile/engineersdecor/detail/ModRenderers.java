@@ -82,9 +82,6 @@ public class ModRenderers
     { super(dispatcher); }
 
     @Override
-    public void func_225616_a_(final BlockDecorCraftingTable.CraftingTableTileEntity te, float f2, MatrixStack mxs, IRenderTypeBuffer buf, int i5, int i6)
-    { render(te, f2, mxs, buf, i5, i6); }
-
     @SuppressWarnings("deprecation")
     public void render(final BlockDecorCraftingTable.CraftingTableTileEntity te, float unused1, MatrixStack mxs, IRenderTypeBuffer buf, int i5, int i6)
     {
@@ -102,17 +99,14 @@ public class ModRenderers
           float oy = 0.5f;
           float ry = ((yrotations[di]+180) + ((prnd*60)-30)) % 360;
           if(stack.isEmpty()) return;
-          mxs.func_227860_a_(); // mxs.push()
-          mxs.func_227861_a_(0.5+ox, 0.5+oy, 0.5+oz); // mxs.translate()
-
-          mxs.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(90.0f));  // mxs.transform(Vector3f.x_plus.rotation(90))
-
-          mxs.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(ry)); // mxs.transform(Vector3f.z_plus.rotation(ry))
-
-          mxs.func_227861_a_(rndo, rndo, 0); // mxs.translate()
-          mxs.func_227862_a_(scaler, scaler, scaler); // mxs.scale()
-          Minecraft.getInstance().getItemRenderer().func_229110_a_(stack, net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType.FIXED, i5, i6, mxs, buf);
-          mxs.func_227865_b_(); // mxs.pop()
+          mxs.push();
+          mxs.translate(0.5+ox, 0.5+oy, 0.5+oz);
+          mxs.rotate(Vector3f.XP.rotationDegrees(90.0f));
+          mxs.rotate(Vector3f.ZP.rotationDegrees(ry));
+          mxs.translate(rndo, rndo, 0);
+          mxs.scale(scaler, scaler, scaler);
+          Minecraft.getInstance().getItemRenderer().renderItem(stack, net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType.FIXED, i5, i6, mxs, buf);
+          mxs.pop(); // mxs.pop()
         }
       } catch(Throwable e) {
         if(--tesr_error_counter<=0) {

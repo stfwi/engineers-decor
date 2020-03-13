@@ -10,17 +10,18 @@ package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.IWorldReader;
+import net.minecraft.world.World;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.*;
 import net.minecraft.entity.monster.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.util.math.*;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.*;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.fml.network.NetworkHooks;
 import java.util.List;
@@ -45,11 +46,11 @@ public class BlockDecorChair extends BlockDecor.HorizontalWaterLoggable implemen
   { super(config, builder.tickRandomly(), unrotatedAABBs); }
 
   @Override
-  @SuppressWarnings("deprecation")
-  public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+  public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
   {
-    if(sitting_enabled && (!world.isRemote)) { EntityChair.sit(world, player, pos); }
-    return true;
+    if(!sitting_enabled) return ActionResultType.PASS;
+    if(!world.isRemote) EntityChair.sit(world, player, pos);
+    return ActionResultType.SUCCESS;
   }
 
   @Override
@@ -64,8 +65,7 @@ public class BlockDecorChair extends BlockDecor.HorizontalWaterLoggable implemen
   { return 10; }
 
   @Override
-  @SuppressWarnings("deprecation")
-  public void tick(BlockState state, World world, BlockPos pos, Random rnd)
+  public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rnd)
   {
     if((!sitting_enabled) || (sitting_probability < 1e-6)) return;
     final List<LivingEntity> entities = world.getEntitiesWithinAABB(MobEntity.class, new AxisAlignedBB(pos).grow(2,1,2).expand(0,1,0), e->true);

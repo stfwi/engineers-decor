@@ -86,7 +86,7 @@ public class BlockDecorLadder extends LadderBlock implements IDecorBlock
   // Player update event, forwarded from the main mod instance.
   public static void onPlayerUpdateEvent(final PlayerEntity player)
   {
-    if((without_speed_boost_) || (player.onGround) || (!player.isOnLadder()) || (player.func_225608_bj_()/*isSneaking()*/) || (player.isSpectator())) return;
+    if((without_speed_boost_) || (player.onGround) || (!player.isOnLadder()) || (player.isShiftKeyDown()) || (player.isSpectator())) return;
     double lvy = player.getLookVec().y;
     if(Math.abs(lvy) < 0.94) return;
     final BlockPos pos = player.getPosition();

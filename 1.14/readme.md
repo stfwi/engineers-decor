@@ -11,6 +11,11 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
+    - v1.0.20-b1  [A] Electrical Furnace: Added four-position speed switch (off, 100%, 150%, 200%), power consumption
+                      increases at higher rate (off, 100%, 200%, 400%).
+                  [A] Added Steel Mesh Fence Gate (single or double height gate fitting to the Steel Mesh Fence).
+                  [M] Waste Incinerator processing speed tweaked.
+
     - v1.0.19-b5  [A] Added right-click display of power and progress information for Block Breaker, Solar Panel, and Tree Cutter.
                   [A] Solar Panel power curve tuned.
                   [A] Mod manual 1st edition release recipe added.

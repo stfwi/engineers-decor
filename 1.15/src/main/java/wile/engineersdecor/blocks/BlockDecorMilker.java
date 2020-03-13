@@ -93,15 +93,14 @@ public class BlockDecorMilker extends BlockDecor.Horizontal implements IDecorBlo
   { return new BTileEntity(); }
 
   @Override
-  @SuppressWarnings("deprecation")
-  public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
+  public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
   {
-    if(world.isRemote) return true;
+    if(world.isRemote) return ActionResultType.SUCCESS;
     BTileEntity te = getTe(world, pos);
-    if(te==null) return true;
+    if(te==null) return ActionResultType.FAIL;
     final ItemStack in_stack = player.getHeldItem(hand);
     final ItemStack out_stack = BTileEntity.milk_filled_container_item(in_stack);
-    if(out_stack.isEmpty() && (te.fluid_handler()!=null)) return FluidUtil.interactWithFluidHandler(player, hand, te.fluid_handler());
+    if(out_stack.isEmpty() && (te.fluid_handler()!=null)) return FluidUtil.interactWithFluidHandler(player, hand, te.fluid_handler()) ? ActionResultType.SUCCESS : ActionResultType.FAIL;
     boolean drained = false;
     IItemHandler player_inventory = new PlayerMainInvWrapper(player.inventory);
     if(te.fluid_level() >= BTileEntity.BUCKET_SIZE) {
@@ -122,7 +121,7 @@ public class BlockDecorMilker extends BlockDecor.Horizontal implements IDecorBlo
     if(drained) {
       world.playSound(null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 0.8f, 1f);
     }
-    return true;
+    return ActionResultType.SUCCESS;
   }
 
   @Nullable
@@ -697,7 +696,7 @@ public class BlockDecorMilker extends BlockDecor.Horizontal implements IDecorBlo
         log("shouldContinueExecuting() -> already aborted");
         return false;
       } else if(creature.getNavigator().noPath()) {
-        if((!creature.getNavigator().setPath(creature.getNavigator().func_225466_a(target_pos_.getX(), target_pos_.getY(), target_pos_.getZ(), 0), movementSpeed))) {
+        if((!creature.getNavigator().setPath(creature.getNavigator().getPathToPos(target_pos_.getX(), target_pos_.getY(), target_pos_.getZ(), 0), movementSpeed))) {
           log("shouldContinueExecuting() -> abort, no path");
           abort();
           return false;
