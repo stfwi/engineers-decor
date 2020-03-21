@@ -38,9 +38,11 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import wile.engineersdecor.detail.Networking;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.util.Random;
 
 public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
@@ -134,6 +136,13 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
       drawTexturedModalRect(x0+79, y0+30, 176, 15, 1+progress_px(17), 15);
       int we = energy_px(32, 8);
       if(we>0) drawTexturedModalRect(x0+88, y0+53, 185, 30, we, 13);
+      switch(te.getField(4)) {
+        case 0: drawTexturedModalRect(x0+144, y0+57, 180, 57, 6, 9); break;
+        case 1: drawTexturedModalRect(x0+142, y0+58, 190, 58, 9, 6); break;
+        case 2: drawTexturedModalRect(x0+144, y0+56, 200, 57, 6, 9); break;
+        case 3: drawTexturedModalRect(x0+143, y0+58, 210, 58, 9, 6); break;
+        default: break;
+      }
     }
 
     private int progress_px(int pixels)
@@ -153,10 +162,33 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
       return k;
     }
 
+    @Override
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
+    {
+      BContainer container = (BContainer)inventorySlots;
+      int mx = (int)(mouseX - getGuiLeft() + .5), my = (int)(mouseY - getGuiTop() + .5);
+      int speed = -1;
+      if((!isPointInRegion(136, 48, 28, 28, mouseX, mouseY))) {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+      } else if(isPointInRegion(144, 64, 6, 10, mouseX, mouseY)) {
+        speed = 0;
+      } else if(isPointInRegion(134, 58, 10, 6, mouseX, mouseY)) {
+        speed = 1;
+      } else if(isPointInRegion(144, 48, 6, 10, mouseX, mouseY)) {
+        speed = 2;
+      } else if(isPointInRegion(150, 58, 10, 6, mouseX, mouseY)) {
+        speed = 3;
+      }
+      if(speed >= 0) {
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setInteger("speed", speed);
+        Networking.PacketTileNotify.sendToServer(te, nbt);
+      }
+    }
   }
 
   //--------------------------------------------------------------------------------------------------------------------
-  // container
+  // Container
   //--------------------------------------------------------------------------------------------------------------------
 
   public static class BContainer extends Container
@@ -274,7 +306,7 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class BTileEntity extends BlockDecorFurnace.BTileEntity implements ITickable, ISidedInventory, IEnergyStorage
+  public static class BTileEntity extends BlockDecorFurnace.BTileEntity implements ITickable, ISidedInventory, IEnergyStorage, Networking.IPacketReceiver
   {
     public static final int TICK_INTERVAL = 4;
     public static final int FIFO_INTERVAL = 20;
@@ -295,16 +327,12 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
     public static final int DEFAULT_ENERGY_CONSUMPTION = 16 ;
     public static final int DEFAULT_SCALED_ENERGY_CONSUMPTION = DEFAULT_ENERGY_CONSUMPTION * HEAT_INCREMENT * DEFAULT_SPEED_PERCENT/100;
 
+    // Config ----------------------------------------------------------------------------------
+
     private static int energy_consumption_ = DEFAULT_SCALED_ENERGY_CONSUMPTION;
     private static int transfer_energy_consumption_ = DEFAULT_SCALED_ENERGY_CONSUMPTION/8;
     private static int proc_speed_percent_ = DEFAULT_SPEED_PERCENT;
-    private int burntime_left_;
-    private int proc_time_elapsed_;
-    private int proc_time_needed_;
-    private int energy_stored_;
-    private int speed_;
-    private int tick_timer_;
-    private int fifo_timer_;
+    private static double speed_setting_factor_[] = {0.0, 1.0, 1.5, 2.0};
 
     public static void on_config(int speed_percent, int standard_energy_per_tick)
     {
@@ -313,6 +341,17 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
       transfer_energy_consumption_ = MathHelper.clamp(energy_consumption_/8, 8, HEAT_INCREMENT);
       ModEngineersDecor.logger.info("Config electrical furnace speed:" + proc_speed_percent_ + ", power consumption:" + energy_consumption_);
     }
+
+    // BTileEntity ------------------------------------------------------------------------------
+
+    private int burntime_left_;
+    private int proc_time_elapsed_;
+    private int proc_time_needed_;
+    private int energy_stored_;
+    private int speed_;
+    private int tick_timer_;
+    private int fifo_timer_;
+    private boolean enabled_ = false;
 
     public BTileEntity()
     { super(); reset(); }
@@ -326,7 +365,7 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
       fifo_timer_ = 0;
       tick_timer_ = 0;
       energy_stored_= 0;
-      speed_ = 0;
+      speed_ = 1;
     }
 
     public void readnbt(NBTTagCompound compound)
@@ -339,6 +378,7 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
       proc_time_needed_ = compound.getInteger("CookTimeTotal");
       energy_stored_ = compound.getInteger("Energy");
       speed_ = compound.getInteger("SpeedSetting");
+      speed_ = (speed_ < 0) ? (1) : ((speed_>3) ? 3 : speed_);
     }
 
     protected void writenbt(NBTTagCompound compound)
@@ -602,6 +642,19 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
       return super.getCapability(capability, facing);
     }
 
+    // IPacketReceiver -------------------------------------------------------------------------------
+
+    @Override
+    public void onServerPacketReceived(NBTTagCompound nbt)
+    {}
+
+    @Override
+    public void onClientPacketReceived(EntityPlayer player, NBTTagCompound nbt)
+    {
+      if(nbt.hasKey("speed")) speed_ = MathHelper.clamp(nbt.getInteger("speed"), 0, 3);
+      markDirty();
+    }
+
     // ITickable ------------------------------------------------------------------------------------
 
     private boolean adjacent_inventory_shift(boolean inp, boolean out)
@@ -646,12 +699,22 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
     // returns TE dirty
     private boolean heat_up()
     {
-      if(energy_stored_ < (energy_consumption_)) return false;
+      if(energy_stored_ < (energy_consumption())) return false;
       if(burntime_left_ >= (HEAT_CAPACITY-HEAT_INCREMENT)) return false;
-      energy_stored_ -= energy_consumption_;
+      energy_stored_ -= energy_consumption();
       burntime_left_ += HEAT_INCREMENT;
       this.markDirty();
       return true;
+    }
+
+    int energy_consumption()
+    {
+      switch(speed_) {
+        case 1: return energy_consumption_;
+        case 2: return energy_consumption_ * 2;
+        case 3: return energy_consumption_ * 4;
+        default: return 0;
+      }
     }
 
     private void sync_blockstate()
@@ -682,9 +745,14 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
         if(transferItems(FIFO_INPUT_0_SLOT_NO, SMELTING_INPUT_SLOT_NO, 64)) dirty = true;
         if(transferItems(FIFO_INPUT_1_SLOT_NO, FIFO_INPUT_0_SLOT_NO, 64)) { dirty = true; } else { shift_in = true; }
       }
+      if(energy_stored_ < energy_consumption()) {
+        enabled_ = false;
+      } else if(energy_stored_ >= (MAX_ENERGY_BUFFER/2)) {
+        enabled_ = true;
+      }
       final ItemStack last_inp_stack = current_smelting_input_stack_;
       current_smelting_input_stack_ = stacks_.get(SMELTING_INPUT_SLOT_NO);
-      if((!current_smelting_input_stack_.isEmpty()) && (energy_stored_ >= energy_consumption_)) {
+      if((!current_smelting_input_stack_.isEmpty()) && (enabled_) && (speed_>0) && (speed_<4)) {
         if(!current_smelting_input_stack_.isItemEqual(current_smelting_input_stack_)) {
           proc_time_elapsed_ = 0;
           proc_time_needed_ = getCookTime(current_smelting_input_stack_);
@@ -700,7 +768,7 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
           }
           if(isBurning() && can_smelt) {
             if(heat_up()) dirty = true;
-            proc_time_elapsed_ += (TICK_INTERVAL * proc_speed_percent_/100);
+            proc_time_elapsed_ += (TICK_INTERVAL * proc_speed_percent_ * speed_setting_factor_[speed_] / 100);
             if(proc_time_elapsed_ >= proc_time_needed_) {
               proc_time_elapsed_ = 0;
               proc_time_needed_ = getCookTime(current_smelting_input_stack_);

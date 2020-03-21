@@ -27,6 +27,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import wile.engineersdecor.blocks.BlockDecorCraftingTable.CraftingTableBlock;
+import wile.engineersdecor.blocks.BlockDecorLabeledCrate;
 
 
 public class ModRenderers
@@ -106,12 +107,60 @@ public class ModRenderers
           mxs.translate(rndo, rndo, 0);
           mxs.scale(scaler, scaler, scaler);
           Minecraft.getInstance().getItemRenderer().renderItem(stack, net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType.FIXED, i5, i6, mxs, buf);
-          mxs.pop(); // mxs.pop()
+          mxs.pop();
         }
       } catch(Throwable e) {
         if(--tesr_error_counter<=0) {
-          ModEngineersDecor.logger().error("TESR was disabled because broken, exception was: " + e.getMessage());
+          ModEngineersDecor.logger().error("TER was disabled because broken, exception was: " + e.getMessage());
           ModEngineersDecor.logger().error(e.getStackTrace());
+        }
+      }
+    }
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Labeled Crate
+  //--------------------------------------------------------------------------------------------------------------------
+
+  @OnlyIn(Dist.CLIENT)
+  public static class DecorLabeledCrateTer extends TileEntityRenderer<BlockDecorLabeledCrate.LabeledCrateTileEntity>
+  {
+    private static int tesr_error_counter = 4;
+    private static float scaler = 0.35f;
+    double tr[][]= { // [hdirection=S-W-N-E][param]
+      {  +8.0/32, -8.0/32, +15.5/32, 180.0 }, // N
+      { -15.5/32, -8.0/32,  +8.0/32,  90.0 }, // E
+      {  -8.0/32, -8.0/32, -15.5/32,   0.0 }, // S param=tx,ty,tz,ry
+      { +15.5/32, -8.0/32,  -8.0/32, 270.0 }, // W
+    };
+
+    public DecorLabeledCrateTer(TileEntityRendererDispatcher dispatcher)
+    { super(dispatcher); }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void render(final BlockDecorLabeledCrate.LabeledCrateTileEntity te, float unused1, MatrixStack mxs, IRenderTypeBuffer buf, int i5, int i6)
+    {
+      if(tesr_error_counter<=0) return;
+      try {
+        final ItemStack stack = te.getItemFrameStack();
+        if(stack.isEmpty()) return;
+        final int di = MathHelper.clamp(te.getWorld().getBlockState(te.getPos()).get(BlockDecorLabeledCrate.DecorLabeledCrateBlock.HORIZONTAL_FACING).getHorizontalIndex(), 0, 3);
+        double ox = tr[di][0], oy = tr[di][1], oz = tr[di][2];
+        float ry = (float)tr[di][3];
+        mxs.push();
+        //GlStateManager.disableLighting();
+        //RenderHelper.enableStandardItemLighting();
+        mxs.translate(0.5+ox, 0.5+oy, 0.5+oz);
+        mxs.rotate(Vector3f.YP.rotationDegrees(ry));
+        mxs.scale(scaler, scaler, scaler);
+        Minecraft.getInstance().getItemRenderer().renderItem(stack, net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType.FIXED, i5, i6, mxs, buf);
+        //RenderHelper.disableStandardItemLighting();
+        //GlStateManager.enableLighting();
+        mxs.pop();
+      } catch(Throwable e) {
+        if(--tesr_error_counter<=0) {
+          ModEngineersDecor.logger().error("TER was disabled (because broken), exception was: " + e.getMessage());
         }
       }
     }

@@ -1,0 +1,33 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:grc",
+      "result": "engineersdecor:labeled_crate",
+      "required": ["immersiveengineering:material"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RCR",
+    "CFC",
+    "RCR"
+],
+  "key": {
+    "R": {
+      "item": "#stickIron",
+      "data": 0
+    },
+    "C": {
+      "item": "#crateTreatedWood",
+      "data": 0
+    },
+    "F": {
+      "item": "minecraft:item_frame",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:labeled_crate",
+    "count": 1
+  }
+}

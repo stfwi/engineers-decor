@@ -57,6 +57,8 @@
  "block.engineersdecor.clinker_brick_stained_block.help": "§6A brick block with position dependent texture variations.§r\nLooks slightly darker and more color intensive than the vanilla brick block. Has more visible traces of grime or stain.",
  "block.engineersdecor.slag_brick_block": "Slag Brick Block",
  "block.engineersdecor.slag_brick_block.help": "§6A gray-brown brick block with position dependent texture variations.",
+ "block.engineersdecor.labeled_crate": "Labeled Crate",
+ "block.engineersdecor.labeled_crate.help": "§6A storage crate with 9x6 slots and a built-in item frame at the front.§r\nPlace an item into the frame slot at the bottom right of the GUI to define the shown label.",
  "block.engineersdecor.rebar_concrete": "Rebar Concrete Block",
  "block.engineersdecor.rebar_concrete.help": "§6Steel reinforced concrete block.§r Expensive but Creeper-proof like obsidian.",
  "block.engineersdecor.gas_concrete": "Gas Concrete Block",

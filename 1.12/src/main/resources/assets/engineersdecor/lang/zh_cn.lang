@@ -107,6 +107,8 @@ tile.engineersdecor.treated_wood_crafting_table.help=§6坚固，防风防雨。
                                                      单击上/下箭头按钮可选择合成历史，单击输出格自动放置物品，单击X按钮\
                                                      清除合成栏和历史。Shift单击一叠物品：合成格空时转移到存储格，\
                                                      非空时到合成栏。会自动分配转移的物品。
+tile.engineersdecor.labeled_crate.name=Labeled Crate
+tile.engineersdecor.labeled_crate.help=§6§6A storage crate with 9x6 slots and a built-in item frame at the front.§r\nPlace an item into the frame slot at the bottom right of the GUI to define the shown label.
 tile.engineersdecor.treated_wood_side_table.name=防腐木茶几
 tile.engineersdecor.treated_wood_side_table.help=§6干完活后需要喝杯茶。
 tile.engineersdecor.iron_inset_light.name=嵌入灯

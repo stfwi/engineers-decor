@@ -591,6 +591,12 @@ public class ModContent
     }
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_fluid_funnel"));
 
+  public static final BlockDecorLabeledCrate.DecorLabeledCrateBlock LABELED_CRATE = (BlockDecorLabeledCrate.DecorLabeledCrateBlock)(new BlockDecorLabeledCrate.DecorLabeledCrateBlock(
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(0.5f, 128f).sound(SoundType.METAL).notSolid(),
+    Auxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "labeled_crate"));
+
   // -------------------------------------------------------------------------------------------------------------------
 
   public static final BlockDecorWall CONCRETE_WALL = (BlockDecorWall)(new BlockDecorWall(
@@ -659,6 +665,7 @@ public class ModContent
 
   private static final Block modBlocks[] = {
     TREATED_WOOD_CRAFTING_TABLE,
+    LABELED_CRATE,
     SMALL_LAB_FURNACE,
     SMALL_ELECTRICAL_FURNACE,
     FACTORY_HOPPER,
@@ -754,6 +761,11 @@ public class ModContent
     .build(null)
     .setRegistryName(ModEngineersDecor.MODID, "te_treated_wood_crafting_table");
 
+  public static final TileEntityType<?> TET_LABELED_CRATE = TileEntityType.Builder
+    .create(BlockDecorLabeledCrate.LabeledCrateTileEntity::new, LABELED_CRATE)
+    .build(null)
+    .setRegistryName(ModEngineersDecor.MODID, "te_labeled_crate");
+
   public static final TileEntityType<?> TET_SMALL_LAB_FURNACE = TileEntityType.Builder
     .create(BlockDecorFurnace.BTileEntity::new, SMALL_LAB_FURNACE)
     .build(null)
@@ -831,6 +843,7 @@ public class ModContent
 
   private static final TileEntityType<?> tile_entity_types[] = {
     TET_TREATED_WOOD_CRAFTING_TABLE,
+    TET_LABELED_CRATE,
     TET_SMALL_LAB_FURNACE,
     TET_SMALL_ELECTRICAL_FURNACE,
     TET_FACTORY_HOPPER,
@@ -878,6 +891,7 @@ public class ModContent
   public static final ContainerType<BlockDecorFurnace.BContainer> CT_SMALL_LAB_FURNACE;
   public static final ContainerType<BlockDecorFurnaceElectrical.BContainer> CT_SMALL_ELECTRICAL_FURNACE;
   public static final ContainerType<BlockDecorWasteIncinerator.BContainer> CT_WASTE_INCINERATOR;
+  public static final ContainerType<BlockDecorLabeledCrate.BContainer> CT_LABELED_CRATE;
 
   static {
     CT_TREATED_WOOD_CRAFTING_TABLE = (new ContainerType<BlockDecorCraftingTable.CraftingTableContainer>(BlockDecorCraftingTable.CraftingTableContainer::new));
@@ -894,11 +908,14 @@ public class ModContent
     CT_SMALL_ELECTRICAL_FURNACE.setRegistryName(ModEngineersDecor.MODID,"ct_small_electrical_furnace");
     CT_WASTE_INCINERATOR = (new ContainerType<BlockDecorWasteIncinerator.BContainer>(BlockDecorWasteIncinerator.BContainer::new));
     CT_WASTE_INCINERATOR.setRegistryName(ModEngineersDecor.MODID,"ct_small_waste_incinerator");
+    CT_LABELED_CRATE = (new ContainerType<BlockDecorLabeledCrate.BContainer>(BlockDecorLabeledCrate.BContainer::new));
+    CT_LABELED_CRATE.setRegistryName(ModEngineersDecor.MODID,"ct_labeled_crate");
   }
 
   // DON'T FORGET TO REGISTER THE GUI in registerContainerGuis(), no list/map format found yet for that.
   private static final ContainerType<?> container_types[] = {
     CT_TREATED_WOOD_CRAFTING_TABLE,
+    CT_LABELED_CRATE,
     CT_FACTORY_DROPPER,
     CT_FACTORY_PLACER,
     CT_FACTORY_HOPPER,
@@ -982,6 +999,7 @@ public class ModContent
   public static final void registerContainerGuis(final FMLClientSetupEvent event)
   {
     ScreenManager.registerFactory(CT_TREATED_WOOD_CRAFTING_TABLE, BlockDecorCraftingTable.CraftingTableGui::new);
+    ScreenManager.registerFactory(CT_LABELED_CRATE, BlockDecorLabeledCrate.BGui::new);
     ScreenManager.registerFactory(CT_FACTORY_DROPPER, BlockDecorDropper.BGui::new);
     ScreenManager.registerFactory(CT_FACTORY_PLACER, BlockDecorPlacer.BGui::new);
     ScreenManager.registerFactory(CT_FACTORY_HOPPER, BlockDecorHopper.BGui::new);
@@ -997,6 +1015,10 @@ public class ModContent
     ClientRegistry.bindTileEntityRenderer(
       (TileEntityType<BlockDecorCraftingTable.CraftingTableTileEntity>)TET_TREATED_WOOD_CRAFTING_TABLE,
       wile.engineersdecor.detail.ModRenderers.CraftingTableTer::new
+    );
+    ClientRegistry.bindTileEntityRenderer(
+      (TileEntityType<BlockDecorLabeledCrate.LabeledCrateTileEntity>)TET_LABELED_CRATE,
+      wile.engineersdecor.detail.ModRenderers.DecorLabeledCrateTer::new
     );
   }
 

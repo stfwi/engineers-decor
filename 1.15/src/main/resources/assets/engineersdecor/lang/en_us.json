@@ -135,6 +135,8 @@
   "block.engineersdecor.treated_wood_stool.help": "§6Robust Wood Stool.§r Indoor and outdoor use.",
   "block.engineersdecor.treated_wood_crafting_table": "Treated Wood Crafting Table",
   "block.engineersdecor.treated_wood_crafting_table.help": "§6Robust and weather-proof.§r Eight storage slots, keeps inventory, no vanilla recipe book.\n Click up/down arrow buttons for crafting history selection, output slot for item placement, X-button to clear crafting grid and history. Shift-click stack: player-to-storage stack transfer when crafting grid empty, otherwise player-to-grid stack transfer. Automatically distributes the clicked stack. Shift-Ctrl-click stack: Move all same stacks. Mouse wheel over crafting slot: Increase/decrease crafting grid items.",
+  "block.engineersdecor.labeled_crate": "Labeled Crate",
+  "block.engineersdecor.labeled_crate.help": "§6A storage crate with 9x6 slots and a built-in item frame at the front.§r\nPlace an item into the frame slot at the bottom right of the GUI to define the shown label.",
   "block.engineersdecor.treated_wood_side_table": "Treated Wood Side Table",
   "block.engineersdecor.treated_wood_side_table.help": "§6Needed after the work's done.",
   "block.engineersdecor.iron_inset_light": "Inset Light",

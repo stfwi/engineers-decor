@@ -1,6 +1,8 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.12.2": {
+    "1.0.20-b2": "[A] Backported Electrical Furnace GUI speed selection switch.\n[A] Backported Labeled Crate (storage crate with built-in item frame).",
+    "1.0.20-b1": "[/] Version skipped for 1.12.2.",
     "1.0.19": "[R] Release based on v1.0.19-b4. Release-to-release changes: * Transfer fixes for Tree Cutter / Block Breaker, and Factory hopper. * Cleanups, feature backports * Visual fixes and improvements\n[A] Backport of status display for Tree Cutter, Block Breaker and Solar Panel.",
     "1.0.19-b4": "[A] Creative tab opt-out visibility handling added (issue #90, thx pimalel233).",
     "1.0.19-b3": "[A] Factory Hopper: Added bottom item handler (CR#227).",
@@ -82,6 +84,6 @@
   },
   "promos": {
     "1.12.2-recommended": "1.0.19",
-    "1.12.2-latest": "1.0.19"
+    "1.12.2-latest": "1.0.20-b2"
   }
 }

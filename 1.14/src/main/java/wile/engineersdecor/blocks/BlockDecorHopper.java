@@ -8,8 +8,6 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
@@ -38,6 +36,8 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.text.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;

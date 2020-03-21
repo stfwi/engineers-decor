@@ -173,7 +173,7 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace implements ID
       fifo_timer_ = 0;
       tick_timer_ = 0;
       energy_stored_ = 0;
-      speed_ = 0;
+      speed_ = 1;
       field_max_energy_stored_ = getMaxEnergyStored();
       field_isburning_ = 0;
     }

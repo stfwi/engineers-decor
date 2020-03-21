@@ -10,7 +10,10 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
-    ~ v1.0.20-b1  [F]
+    - v1.0.20-b2  [A] Backported Electrical Furnace GUI speed selection switch.
+                  [A] Backported Labeled Crate (storage crate with built-in item frame).
+
+    - v1.0.20-b1  [/] Version skipped for 1.12.2.
 
                   -------------------------------------------------------------------
     - v1.0.19     [R] Release based on v1.0.19-b4. Release-to-release changes:

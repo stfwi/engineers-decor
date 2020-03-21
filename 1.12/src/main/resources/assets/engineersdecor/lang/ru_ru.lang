@@ -108,6 +108,8 @@ tile.engineersdecor.treated_wood_crafting_table.help=§6Прочный и уст
                                                         очистить сетку крафта и историю. Shift-клик по стеку: передача стека от игрока в хранилище при создании \
                                                       если сетка пуста, в противном случае перенос от игрока в сетку. Автоматически распределяет кликаемый стек.  \
                                                       Shift-Ctrl-клик по стаку: перемещает одинаковые стаки. Колёсико мыши: добавляет/отнимает предметы в сетке.
+tile.engineersdecor.labeled_crate.name=Labeled Crate
+tile.engineersdecor.labeled_crate.help=§6§6A storage crate with 9x6 slots and a built-in item frame at the front.§r\nPlace an item into the frame slot at the bottom right of the GUI to define the shown label.
 tile.engineersdecor.treated_wood_side_table.name=Столик из обработанного дерева
 tile.engineersdecor.treated_wood_side_table.help=§6Нужен после того, как работа выполнена.
 tile.engineersdecor.iron_inset_light.name=Встраиваемый осветитель

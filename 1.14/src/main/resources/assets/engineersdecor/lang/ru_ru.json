@@ -51,6 +51,8 @@
  "engineersdecor.config.pipevalve_redstone_gain": "Клапаны: спад красного камня",
  "engineersdecor.config.e_furnace_speed_percent": "Электропечь: скорость плавления %",
  "engineersdecor.config.e_furnace_power_consumption": "Электропечь: потребление энергии",
+ "block.engineersdecor.labeled_crate": "Labeled Crate",
+ "block.engineersdecor.labeled_crate.help": "§6A storage crate with 9x6 slots and a built-in item frame at the front.§r\nPlace an item into the frame slot at the bottom right of the GUI to define the shown label.",
  "block.engineersdecor.clinker_brick_block": "Клинкерный кирпич",
  "block.engineersdecor.clinker_brick_block.help": "§6Кирпичный блок с вариациями текстуры, зависящими от положения.§r\nВыглядит темнее и интенсивнее, чем Кирпичный блок.",
  "block.engineersdecor.clinker_brick_stained_block": "Грязный клинкерный кирпич",

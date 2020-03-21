@@ -210,6 +210,13 @@ public class ModContent
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   );
 
+  public static final BlockDecorLabeledCrate.DecorLabeledCrateBlock LABELED_CRATE = new BlockDecorLabeledCrate.DecorLabeledCrateBlock(
+    "labeled_crate",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+    Material.WOOD, 0.5f, 128f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+  );
+
   //--------------------------------------------------------------------------------------------------------------------
 
   public static final BlockDecorStraightPole TREATED_WOOD_POLE = new BlockDecorStraightPole(
@@ -478,6 +485,9 @@ public class ModContent
   private static final TileEntityRegistrationData TREATED_WOOD_CRAFTING_TABLE_TEI = new TileEntityRegistrationData(
     BlockDecorCraftingTable.BTileEntity.class, "te_crafting_table"
   );
+  private static final TileEntityRegistrationData LABELED_CRATE_TEI = new TileEntityRegistrationData(
+    BlockDecorLabeledCrate.LabeledCrateTileEntity.class, "te_labeled_crate"
+  );
   private static final TileEntityRegistrationData SMALL_LAB_FURNACE_TEI = new TileEntityRegistrationData(
     BlockDecorFurnace.BTileEntity.class, "te_small_lab_furnace"
   );
@@ -530,6 +540,7 @@ public class ModContent
 
   private static final Object content[] = {
     TREATED_WOOD_CRAFTING_TABLE, TREATED_WOOD_CRAFTING_TABLE_TEI,
+    LABELED_CRATE, LABELED_CRATE_TEI,
     SMALL_LAB_FURNACE, SMALL_LAB_FURNACE_TEI,
     SMALL_ELECTRICAL_FURNACE, SMALL_ELECTRICAL_FURNACE_TEI,
     FACTORY_HOPPER,FACTORY_HOPPER_TEI,
@@ -703,6 +714,9 @@ public class ModContent
     if(!ModConfig.optout.without_tesrs) {
       if(!ModConfig.isOptedOut(TREATED_WOOD_CRAFTING_TABLE)) {
         ClientRegistry.bindTileEntitySpecialRenderer(BlockDecorCraftingTable.BTileEntity.class, new ModTesrs.TesrDecorCraftingTable());
+      }
+      if(!ModConfig.isOptedOut(LABELED_CRATE)) {
+        ClientRegistry.bindTileEntitySpecialRenderer(BlockDecorLabeledCrate.LabeledCrateTileEntity.class, new ModTesrs.TesrDecorLabeledCrate());
       }
       if(!ModConfig.isOptedOut(TEST_BLOCK)) {
         ClientRegistry.bindTileEntitySpecialRenderer(BlockDecorTest.BTileEntity.class, new ModTesrs.TesrDecorTest());

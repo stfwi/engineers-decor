@@ -11,6 +11,8 @@ Mod sources for Minecraft version 1.15.1.
 
 ## Version history
 
+    ~ v1.0.20-b2  [A] Added Labeled Crate (storage crate with built-in item frame).
+
     - v1.0.20-b1  [A] Electrical Furnace: Added four-position speed switch (off, 100%, 150%, 200%), power consumption
                       increases at higher rate (off, 100%, 200%, 400%).
                   [A] Added Steel Mesh Fence Gate (single or double height gate fitting to the Steel Mesh Fence).
