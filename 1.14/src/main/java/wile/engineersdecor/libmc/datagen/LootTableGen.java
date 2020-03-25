@@ -58,13 +58,13 @@ public class LootTableGen extends LootTableProvider
     final List<Block> blocks = block_listing.get();
     blocks.forEach((block)->{
       if((!(block instanceof StandardBlocks.IStandardBlock)) || (!(((StandardBlocks.IStandardBlock)block).hasDynamicDropList()))) {
-        System.out.println("Generating loot table for " + block.getRegistryName());
+        LOGGER.info("Generating loot table for " + block.getRegistryName());
         tables.put(
           block.getLootTable(),
           defaultBlockDrops(block.getRegistryName().getPath() + "_dlt", block)
             .setParameterSet(LootParameterSets.BLOCK).build());
       } else {
-        System.out.println("Dynamic drop list, skipping loot table for " + block.getRegistryName());
+        LOGGER.info("Dynamic drop list, skipping loot table for " + block.getRegistryName());
       }
     });
     return tables;
