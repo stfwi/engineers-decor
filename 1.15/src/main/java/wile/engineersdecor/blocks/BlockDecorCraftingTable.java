@@ -12,6 +12,7 @@ import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.Inventories;
+import wile.engineersdecor.libmc.detail.Inventories.SlotRange;
 import wile.engineersdecor.libmc.detail.Networking;
 import net.minecraft.inventory.container.*;
 import net.minecraft.network.play.server.SSetSlotPacket;
@@ -467,7 +468,7 @@ public class BlockDecorCraftingTable
       final ItemStack stack = super.slotClick(slotId, button, clickType, player);
       if((with_outslot_defined_refab) && (slotId == 0) && (clickType == ClickType.PICKUP)) {
         if((!crafting_matrix_changed_now_) && (!player.world.isRemote()) && (crafting_grid_empty())) {
-          final ItemStack dragged = player.inventory.getItemStack(); // @todo: check, as far as seen this is actually `stack`.
+          final ItemStack dragged = player.inventory.getItemStack();
           if((dragged != null) && (!dragged.isEmpty())) {
             try_result_stack_refab(dragged, player.world);
           } else if(!history().current().isEmpty()) {
@@ -487,12 +488,14 @@ public class BlockDecorCraftingTable
       Networking.PacketContainerSyncClientToServer.sendToServer(windowId, nbt);
     }
 
+    @Override
     public void onServerPacketReceived(int windowId, CompoundNBT nbt)
     {
       if(nbt.contains("history"))  history_.read(nbt.getCompound("history"));
       if(nbt.contains("hascollision")) has_recipe_collision_ = nbt.getBoolean("hascollision");
     }
 
+    @Override
     public void onClientPacketReceived(int windowId, PlayerEntity player, CompoundNBT nbt)
     {
       boolean changed = false;
@@ -608,7 +611,7 @@ public class BlockDecorCraftingTable
                 if(Inventories.areItemStacksDifferent(reference_stack, stack)) continue;
                 ItemStack remaining = from_inventory.getStackInSlot(i);
                 for(SlotRange range:to_ranges) {
-                  remaining = move_stack_to_inventory(remaining, range, false, 0);
+                  remaining = range.insert(remaining, false, 0);
                   if(!remaining.isEmpty()) {
                     abort = true; // no space left
                     break;
@@ -898,120 +901,13 @@ public class BlockDecorCraftingTable
       return stacks;
     }
 
-    /**
-     * Moves as much items from the stack to the slots in range [first_slot, last_slot] of the inventory,
-     * filling up existing stacks first, then (player inventory only) checks appropriate empty slots next
-     * to stacks that have that item already, and last uses any empty slot that can be found.
-     * Returns the stack that is still remaining in the referenced `stack`.
-     */
-    private ItemStack move_stack_to_inventory(final ItemStack stack_to_move, SlotRange range, boolean only_fillup, int limit)
-    {
-      final IInventory inventory = range.inventory;
-      final int slot_begin = range.start_slot;
-      final int slot_end = range.end_slot;
-      final ItemStack mvstack = stack_to_move.copy();
-      if((mvstack.isEmpty()) || (slot_begin < 0) || (slot_end > inventory.getSizeInventory())) return mvstack;
-      int limit_left = (limit>0) ? (Math.min(limit, mvstack.getMaxStackSize())) : (mvstack.getMaxStackSize());
-      // first iteration: fillup existing stacks
-      for(int i = slot_begin; i < slot_end; ++i) {
-        final ItemStack stack = inventory.getStackInSlot(i);
-        if((stack.isEmpty()) || (!stack.isItemEqual(mvstack))) continue;
-        int nmax = Math.min(limit_left, stack.getMaxStackSize() - stack.getCount());
-        if(mvstack.getCount() <= nmax) {
-          stack.setCount(stack.getCount()+mvstack.getCount());
-          mvstack.setCount(0);
-          inventory.setInventorySlotContents(i, stack);
-          return mvstack;
-        } else {
-          stack.grow(nmax);
-          mvstack.shrink(nmax);
-          inventory.setInventorySlotContents(i, stack);
-          limit_left -= nmax;
-        }
-      }
-      if(only_fillup) return mvstack;
-      if(inventory instanceof PlayerInventory) {
-        // second iteration: use appropriate empty slots
-        for(int i = slot_begin+1; i < slot_end-1; ++i) {
-          final ItemStack stack = inventory.getStackInSlot(i);
-          if(!stack.isEmpty()) continue;
-          if((Inventories.areItemStacksDifferent(inventory.getStackInSlot(i+1), mvstack)) && (Inventories.areItemStacksDifferent(inventory.getStackInSlot(i-1), mvstack))) continue;
-          int nmax = Math.min(limit_left, mvstack.getCount());
-          ItemStack placed = mvstack.copy();
-          placed.setCount(nmax);
-          mvstack.shrink(nmax);
-          inventory.setInventorySlotContents(i, placed);
-          return mvstack;
-        }
-      }
-      // third iteration: use any empty slots
-      for(int i = slot_begin; i < slot_end; ++i) {
-        final ItemStack stack = inventory.getStackInSlot(i);
-        if(!stack.isEmpty()) continue;
-        int nmax = Math.min(limit_left, mvstack.getCount());
-        ItemStack placed = mvstack.copy();
-        placed.setCount(nmax);
-        mvstack.shrink(nmax);
-        inventory.setInventorySlotContents(i, placed);
-        return mvstack;
-      }
-      return mvstack;
-    }
-
-    /**
-     * Moves as much items from the slots in range [first_slot, last_slot] of the inventory into a new stack.
-     * Implicitly shrinks the inventory stacks and the `request_stack`.
-     */
-    private ItemStack move_stack_from_inventory(SlotRange range, final ItemStack request_stack)
-    {
-      final IInventory inventory = range.inventory;
-      final int slot_begin = range.start_slot;
-      final int slot_end = range.end_slot;
-      ItemStack fetched_stack = request_stack.copy();
-      fetched_stack.setCount(0);
-      int n_left = request_stack.getCount();
-      while(n_left > 0) {
-        int smallest_stack_size = 0;
-        int smallest_stack_index = -1;
-        for(int i = slot_begin; i < slot_end; ++i) {
-          final ItemStack stack = inventory.getStackInSlot(i);
-          if((!stack.isEmpty()) && (Inventories.areItemStacksIdentical(stack, request_stack))) {
-            if(stack.hasTag()) {
-              final CompoundNBT nbt = stack.getTag();
-              int n = nbt.size();
-              if((n > 0) && (nbt.contains("Damage"))) --n;
-              if(n > 0) continue;
-            }
-            fetched_stack = stack.copy();
-            fetched_stack.setCount(0);
-            int n = stack.getCount();
-            if((n < smallest_stack_size) || (smallest_stack_size <= 0)) {
-              smallest_stack_size = n;
-              smallest_stack_index = i;
-            }
-          }
-        }
-        if(smallest_stack_index < 0) {
-          break; // no more items available
-        } else {
-          int n = Math.min(n_left, smallest_stack_size);
-          n_left -= n;
-          fetched_stack.grow(n);
-          ItemStack st = inventory.getStackInSlot(smallest_stack_index);
-          st.shrink(n);
-          inventory.setInventorySlotContents(smallest_stack_index, st);
-        }
-      }
-      return fetched_stack;
-    }
-
     private boolean clear_grid_to_storage(PlayerEntity player)
     {
       boolean changed = false;
       for(int grid_i = CRAFTING_SLOTS_BEGIN; grid_i < (CRAFTING_SLOTS_BEGIN+NUM_OF_CRAFTING_SLOTS); ++grid_i) {
         ItemStack stack = inventory_.getStackInSlot(grid_i);
         if(stack.isEmpty()) continue;
-        ItemStack remaining = move_stack_to_inventory(stack, new SlotRange(inventory_, STORAGE_SLOTS_BEGIN, STORAGE_SLOTS_BEGIN+NUM_OF_STORAGE_SLOTS), false, 0);
+        ItemStack remaining = (new SlotRange(inventory_, STORAGE_SLOTS_BEGIN, STORAGE_SLOTS_BEGIN+NUM_OF_STORAGE_SLOTS)).insert(stack, false, 0);
         inventory_.setInventorySlotContents(grid_i, remaining);
         changed = true;
       }
@@ -1024,10 +920,10 @@ public class BlockDecorCraftingTable
       for(int grid_i = CRAFTING_SLOTS_BEGIN; grid_i < (CRAFTING_SLOTS_BEGIN+NUM_OF_CRAFTING_SLOTS); ++grid_i) {
         ItemStack remaining = inventory_.getStackInSlot(grid_i);
         if(remaining.isEmpty()) continue;
-        remaining = move_stack_to_inventory(remaining, new SlotRange(player.inventory,9, 36), true, 0); // prefer filling up inventory stacks
-        remaining = move_stack_to_inventory(remaining, new SlotRange(player.inventory,0, 9), true, 0);  // then fill up the hotbar stacks
-        remaining = move_stack_to_inventory(remaining, new SlotRange(player.inventory,9, 36), false, 0); // then allow empty stacks in inventory
-        remaining = move_stack_to_inventory(remaining, new SlotRange(player.inventory,0, 9), false, 0);  // then new stacks in the hotbar
+        remaining = (new SlotRange(player.inventory,9, 36)).insert(remaining,true, 0); // prefer filling up inventory stacks
+        remaining = (new SlotRange(player.inventory,0, 9)).insert(remaining, true, 0);  // then fill up the hotbar stacks
+        remaining = (new SlotRange(player.inventory,9, 36)).insert(remaining, false, 0); // then allow empty stacks in inventory
+        remaining = (new SlotRange(player.inventory,0, 9)).insert(remaining, false, 0);  // then new stacks in the hotbar
         inventory_.setInventorySlotContents(grid_i, remaining);
         changed = true;
       }
@@ -1048,7 +944,7 @@ public class BlockDecorCraftingTable
               if(grid_stack.getCount() >= grid_stack.getMaxStackSize()) continue;
               final ItemStack req_stack = to_fill.get(i).copy();
               req_stack.setCount(1);
-              final ItemStack mv_stack = move_stack_from_inventory(slot_range, req_stack);
+              final ItemStack mv_stack = slot_range.extract(req_stack);
               if(mv_stack.isEmpty()) continue;
               to_fill.get(i).shrink(1);
               if(grid_stack.isEmpty()) {
@@ -1157,7 +1053,7 @@ public class BlockDecorCraftingTable
         ItemStack stack = inventory_.getStackInSlot(i+CRAFTING_SLOTS_BEGIN).copy();
         if(stack.isEmpty()) continue;
         for(SlotRange range:ranges) {
-          ItemStack remaining = move_stack_to_inventory(stack, range, false, limit);
+          ItemStack remaining = range.insert(stack, false, limit);
           if(remaining.getCount() < stack.getCount()) changed = true;
           boolean stop = (remaining.getCount() <= Math.max(0, (stack.getCount()-limit)));
           stack = remaining;
@@ -1709,13 +1605,6 @@ public class BlockDecorCraftingTable
       if(!stack.isEmpty()) container.onCraftMatrixChanged(this);
       return stack;
     }
-  }
-
-  private static class SlotRange
-  {
-    public final IInventory inventory;
-    public int start_slot, end_slot;
-    public SlotRange(IInventory inv, int start, int end) { inventory=inv; start_slot=start; end_slot=end; }
   }
 
 }

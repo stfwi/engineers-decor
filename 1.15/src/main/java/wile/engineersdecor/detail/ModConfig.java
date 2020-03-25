@@ -608,6 +608,12 @@ public class ModConfig
 
   public static final void apply()
   {
+    without_crafting_table = isOptedOut(ModContent.TREATED_WOOD_CRAFTING_TABLE);
+    immersiveengineering_installed = Auxiliaries.isModLoaded("immersiveengineering");
+    with_experimental_features_ = COMMON.with_experimental.get();
+    without_recipes_ = COMMON.without_recipes.get();
+    without_direct_slab_pickup = COMMON.without_direct_slab_pickup.get();
+    // -----------------------------------------------------------------------------------------------------------------
     BlockDecorFurnace.BTileEntity.on_config(COMMON.furnace_smelting_speed_percent.get(), COMMON.furnace_fuel_efficiency_percent.get(), COMMON.furnace_boost_energy_consumption.get());
     BlockDecorChair.on_config(COMMON.without_chair_sitting.get(), COMMON.without_mob_chair_sitting.get(), COMMON.chair_mob_sitting_probability_percent.get(), COMMON.chair_mob_standup_probability_percent.get());
     BlockDecorLadder.on_config(COMMON.without_ladder_speed_boost.get());
@@ -620,11 +626,8 @@ public class ModConfig
     BlockDecorMilker.BTileEntity.on_config(COMMON.milking_machine_energy_consumption.get(), COMMON.milking_machine_milking_delay.get());
     BlockDecorSlab.on_config(!COMMON.without_direct_slab_pickup.get());
     BlockDecorHalfSlab.on_config(!COMMON.without_direct_slab_pickup.get());
-    without_crafting_table = isOptedOut(ModContent.TREATED_WOOD_CRAFTING_TABLE);
-    immersiveengineering_installed = Auxiliaries.isModLoaded("immersiveengineering");
-    with_experimental_features_ = COMMON.with_experimental.get();
-    without_recipes_ = COMMON.without_recipes.get();
-    without_direct_slab_pickup = COMMON.without_direct_slab_pickup.get();
+    BlockDecorLabeledCrate.on_config(false);
+    // -----------------------------------------------------------------------------------------------------------------
     if(with_experimental_features_) {
       ModEngineersDecor.logger().info("Config: EXPERIMENTAL FEATURES ENABLED.");
     }

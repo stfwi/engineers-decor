@@ -11,6 +11,8 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
+    ~ v1.0.20-b3  [M]
+
     - v1.0.20-b2  [U] Forge version requirement set to >= 28.2.3.
                   [A] Added Labeled Crate (storage crate with built-in item frame).
 

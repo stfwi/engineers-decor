@@ -57,11 +57,14 @@ public class LootTableGen extends LootTableProvider
     final HashMap<ResourceLocation, LootTable> tables = new HashMap<ResourceLocation, LootTable>();
     final List<Block> blocks = block_listing.get();
     blocks.forEach((block)->{
+      LOGGER.info("Generating loot table for " + block.getRegistryName());
       if((!(block instanceof StandardBlocks.IStandardBlock)) || (!(((StandardBlocks.IStandardBlock)block).hasDynamicDropList()))) {
         tables.put(
           block.getLootTable(),
           defaultBlockDrops(block.getRegistryName().getPath() + "_dlt", block)
             .setParameterSet(LootParameterSets.BLOCK).build());
+      } else {
+        LOGGER.info("Dynamic drop list, skipping loot table for " + block.getRegistryName());
       }
     });
     return tables;

@@ -891,7 +891,7 @@ public class ModContent
   public static final ContainerType<BlockDecorFurnace.BContainer> CT_SMALL_LAB_FURNACE;
   public static final ContainerType<BlockDecorFurnaceElectrical.BContainer> CT_SMALL_ELECTRICAL_FURNACE;
   public static final ContainerType<BlockDecorWasteIncinerator.BContainer> CT_WASTE_INCINERATOR;
-  public static final ContainerType<BlockDecorLabeledCrate.BContainer> CT_LABELED_CRATE;
+  public static final ContainerType<BlockDecorLabeledCrate.LabeledCrateContainer> CT_LABELED_CRATE;
 
   static {
     CT_TREATED_WOOD_CRAFTING_TABLE = (new ContainerType<BlockDecorCraftingTable.CraftingTableContainer>(BlockDecorCraftingTable.CraftingTableContainer::new));
@@ -908,7 +908,7 @@ public class ModContent
     CT_SMALL_ELECTRICAL_FURNACE.setRegistryName(ModEngineersDecor.MODID,"ct_small_electrical_furnace");
     CT_WASTE_INCINERATOR = (new ContainerType<BlockDecorWasteIncinerator.BContainer>(BlockDecorWasteIncinerator.BContainer::new));
     CT_WASTE_INCINERATOR.setRegistryName(ModEngineersDecor.MODID,"ct_small_waste_incinerator");
-    CT_LABELED_CRATE = (new ContainerType<BlockDecorLabeledCrate.BContainer>(BlockDecorLabeledCrate.BContainer::new));
+    CT_LABELED_CRATE = (new ContainerType<BlockDecorLabeledCrate.LabeledCrateContainer>(BlockDecorLabeledCrate.LabeledCrateContainer::new));
     CT_LABELED_CRATE.setRegistryName(ModEngineersDecor.MODID,"ct_labeled_crate");
   }
 
@@ -999,7 +999,7 @@ public class ModContent
   public static final void registerContainerGuis(final FMLClientSetupEvent event)
   {
     ScreenManager.registerFactory(CT_TREATED_WOOD_CRAFTING_TABLE, BlockDecorCraftingTable.CraftingTableGui::new);
-    ScreenManager.registerFactory(CT_LABELED_CRATE, BlockDecorLabeledCrate.BGui::new);
+    ScreenManager.registerFactory(CT_LABELED_CRATE, BlockDecorLabeledCrate.LabeledCrateGui::new);
     ScreenManager.registerFactory(CT_FACTORY_DROPPER, BlockDecorDropper.BGui::new);
     ScreenManager.registerFactory(CT_FACTORY_PLACER, BlockDecorPlacer.BGui::new);
     ScreenManager.registerFactory(CT_FACTORY_HOPPER, BlockDecorHopper.BGui::new);

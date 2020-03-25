@@ -11,6 +11,9 @@ package wile.engineersdecor.blocks;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.Inventories.SlotRange;
+import wile.engineersdecor.libmc.detail.Networking;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.World;
@@ -29,6 +32,7 @@ import net.minecraft.inventory.*;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.inventory.container.ClickType;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -47,6 +51,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import com.mojang.blaze3d.platform.GlStateManager;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -55,8 +60,11 @@ import java.util.List;
 
 public class BlockDecorLabeledCrate
 {
-  public static void on_config(int stack_limit)
+  private static boolean with_gui_mouse_handling = true;
+
+  public static void on_config(boolean without_gui_mouse_handling)
   {
+    with_gui_mouse_handling = !without_gui_mouse_handling;
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -220,6 +228,10 @@ public class BlockDecorLabeledCrate
     public void handleUpdateTag(CompoundNBT tag) // on client
     { read(tag); }
 
+    @OnlyIn(Dist.CLIENT)
+    public double getMaxRenderDistanceSquared()
+    { return 400; }
+
     // INameable  ---------------------------------------------------------------------------
 
     @Override
@@ -242,7 +254,7 @@ public class BlockDecorLabeledCrate
 
     @Override
     public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player )
-    { return new BContainer(id, inventory, this, IWorldPosCallable.of(world, pos), fields); }
+    { return new LabeledCrateContainer(id, inventory, this, IWorldPosCallable.of(world, pos), fields); }
 
     // IInventory ------------------------------------------------------------------------------
 
@@ -452,50 +464,10 @@ public class BlockDecorLabeledCrate
   }
 
   //--------------------------------------------------------------------------------------------------------------------
-  // GUI
-  //--------------------------------------------------------------------------------------------------------------------
-
-  @OnlyIn(Dist.CLIENT)
-  public static class BGui extends ContainerScreen<BContainer>
-  {
-    protected final PlayerEntity player_;
-
-    public BGui(BContainer container, PlayerInventory player_inventory, ITextComponent title)
-    {
-      super(container, player_inventory, title);
-      player_ = player_inventory.player;
-      xSize = 213;
-      ySize = 206;
-    }
-
-    @Override
-    public void init()
-    { super.init(); }
-
-    @Override
-    public void render(int mouseX, int mouseY, float partialTicks)
-    {
-      renderBackground();
-      super.render(mouseX, mouseY, partialTicks);
-      renderHoveredToolTip(mouseX, mouseY);
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
-    {
-      GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-      this.minecraft.getTextureManager().bindTexture(new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/labeled_crate_gui.png"));
-      final int x0=guiLeft, y0=this.guiTop, w=xSize, h=ySize;
-      blit(x0, y0, 0, 0, w, h);
-    }
-  }
-
-  //--------------------------------------------------------------------------------------------------------------------
   // Container
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class BContainer extends Container
+  public static class LabeledCrateContainer extends Container implements Networking.INetworkSynchronisableContainer
   {
     //------------------------------------------------------------------------------------------------------------------
     protected static class StorageSlot extends Slot
@@ -510,11 +482,13 @@ public class BlockDecorLabeledCrate
 
     //------------------------------------------------------------------------------------------------------------------
     private static final int PLAYER_INV_START_SLOTNO = LabeledCrateTileEntity.NUM_OF_SLOTS;
+    private static final int NUM_OF_CONTAINER_SLOTS = LabeledCrateTileEntity.NUM_OF_SLOTS + 36;
     protected final PlayerEntity player_;
     protected final IInventory inventory_;
     protected final IWorldPosCallable wpc_;
     private final IIntArray fields_;
-    private int proc_time_needed_;
+    private final SlotRange player_inventory_slot_range;
+    private final SlotRange crate_slot_range;
     //------------------------------------------------------------------------------------------------------------------
     public int field(int index) { return fields_.get(index); }
     public PlayerEntity player() { return player_ ; }
@@ -522,16 +496,18 @@ public class BlockDecorLabeledCrate
     public World world() { return player_.world; }
     //------------------------------------------------------------------------------------------------------------------
 
-    public BContainer(int cid, PlayerInventory player_inventory)
+    public LabeledCrateContainer(int cid, PlayerInventory player_inventory)
     { this(cid, player_inventory, new Inventory(LabeledCrateTileEntity.NUM_OF_SLOTS), IWorldPosCallable.DUMMY, new IntArray(LabeledCrateTileEntity.NUM_OF_FIELDS)); }
 
-    private BContainer(int cid, PlayerInventory player_inventory, IInventory block_inventory, IWorldPosCallable wpc, IIntArray fields)
+    private LabeledCrateContainer(int cid, PlayerInventory player_inventory, IInventory block_inventory, IWorldPosCallable wpc, IIntArray fields)
     {
       super(ModContent.CT_LABELED_CRATE, cid);
       player_ = player_inventory.player;
       inventory_ = block_inventory;
       wpc_ = wpc;
       fields_ = fields;
+      crate_slot_range = new SlotRange(inventory_, 0, LabeledCrateTileEntity.ITEMFRAME_SLOTNO);
+      player_inventory_slot_range = new SlotRange(player_inventory, 0, 36);
       int i=-1;
       // storage slots (stacks 0 to 53)
       for(int y=0; y<6; ++y) {
@@ -581,7 +557,7 @@ public class BlockDecorLabeledCrate
         // Player slot
         if(!mergeItemStack(slot_stack, 0, PLAYER_INV_START_SLOTNO-1, false)) return ItemStack.EMPTY;
       } else {
-        // invalid slot
+        // Invalid slot
         return ItemStack.EMPTY;
       }
       if(slot_stack.isEmpty()) {
@@ -593,5 +569,170 @@ public class BlockDecorLabeledCrate
       slot.onTake(player, slot_stack);
       return transferred;
     }
+
+
+    // Container client/server synchronisation --------------------------------------------------
+
+    @OnlyIn(Dist.CLIENT)
+    public void onGuiAction(String message, CompoundNBT nbt)
+    {
+      nbt.putString("action", message);
+      Networking.PacketContainerSyncClientToServer.sendToServer(windowId, nbt);
+    }
+
+    @Override
+    public void onServerPacketReceived(int windowId, CompoundNBT nbt)
+    {}
+
+    protected static final int STORAGE_SLOT_BEGIN = 0;
+    protected static final int STORAGE_SLOT_END = LabeledCrateTileEntity.ITEMFRAME_SLOTNO;
+    protected static final int PLAYER_SLOT_BEGIN = LabeledCrateTileEntity.NUM_OF_SLOTS;
+    protected static final int PLAYER_SLOT_END = LabeledCrateTileEntity.NUM_OF_SLOTS+36;
+
+    @Override
+    public void onClientPacketReceived(int windowId, PlayerEntity player, CompoundNBT nbt)
+    {
+      boolean changed = false;
+      if(!nbt.contains("action")) return;
+      final int slotId = nbt.contains("slot") ? nbt.getInt("slot") : -1;
+      switch(nbt.getString("action")) {
+        case LabeledCrateGui.QUICK_MOVE_ALL: {
+          if((slotId >= STORAGE_SLOT_BEGIN) && (slotId < STORAGE_SLOT_END) && (getSlot(slotId).getHasStack())) {
+            final Slot slot = getSlot(slotId);
+            ItemStack remaining = slot.getStack();
+            slot.putStack(ItemStack.EMPTY);
+            final ItemStack ref_stack = remaining.copy();
+            ref_stack.setCount(ref_stack.getMaxStackSize());
+            for(int i=crate_slot_range.end_slot-crate_slot_range.start_slot; (i>0) && (!remaining.isEmpty()); --i) {
+              remaining = player_inventory_slot_range.insert(remaining, false, 0, true, true);
+              if(!remaining.isEmpty()) break;
+              remaining = crate_slot_range.extract(ref_stack);
+            }
+            if(!remaining.isEmpty()) {
+              slot.putStack(remaining); // put back
+            }
+          } else if((slotId >= PLAYER_SLOT_BEGIN) && (slotId < PLAYER_SLOT_END) && (getSlot(slotId).getHasStack())) {
+            final Slot slot = getSlot(slotId);
+            ItemStack remaining = slot.getStack();
+            slot.putStack(ItemStack.EMPTY);
+            final ItemStack ref_stack = remaining.copy();
+            ref_stack.setCount(ref_stack.getMaxStackSize());
+            for(int i=player_inventory_slot_range.end_slot-player_inventory_slot_range.start_slot; (i>0) && (!remaining.isEmpty()); --i) {
+              remaining = crate_slot_range.insert(remaining, false, 0, false, true);
+              if(!remaining.isEmpty()) break;
+              remaining = player_inventory_slot_range.extract(ref_stack);
+            }
+            if(!remaining.isEmpty()) {
+              slot.putStack(remaining); // put back
+            }
+          }
+          changed = true;
+        } break;
+        case LabeledCrateGui.INCREASE_STACK: {
+        } break;
+        case LabeledCrateGui.DECREASE_STACK: {
+        } break;
+      }
+      if(changed) {
+        inventory_.markDirty();
+        player.inventory.markDirty();
+        detectAndSendChanges();
+      }
+    }
   }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // GUI
+  //--------------------------------------------------------------------------------------------------------------------
+
+  @OnlyIn(Dist.CLIENT)
+  public static class LabeledCrateGui extends ContainerScreen<LabeledCrateContainer>
+  {
+    protected static final String QUICK_MOVE_ALL = "quick-move-all";
+    protected static final String INCREASE_STACK = "increase-stack";
+    protected static final String DECREASE_STACK = "decrease-stack";
+    protected final PlayerEntity player_;
+
+    public LabeledCrateGui(LabeledCrateContainer container, PlayerInventory player_inventory, ITextComponent title)
+    {
+      super(container, player_inventory, title);
+      player_ = player_inventory.player;
+      xSize = 213;
+      ySize = 206;
+    }
+
+    @Override
+    public void init()
+    { super.init(); }
+
+    @Override
+    public void render(int mouseX, int mouseY, float partialTicks)
+    {
+      renderBackground();
+      super.render(mouseX, mouseY, partialTicks);
+      renderHoveredToolTip(mouseX, mouseY);
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
+    {
+      GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+      this.minecraft.getTextureManager().bindTexture(new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/labeled_crate_gui.png"));
+      final int x0=guiLeft, y0=this.guiTop, w=xSize, h=ySize;
+      blit(x0, y0, 0, 0, w, h);
+    }
+
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    protected void action(String message)
+    { action(message, new CompoundNBT()); }
+
+    protected void action(String message, CompoundNBT nbt)
+    { getContainer().onGuiAction(message, nbt); }
+
+    @Override
+    protected void handleMouseClick(Slot slot, int slotId, int button, ClickType type)
+    {
+      if(!with_gui_mouse_handling) {
+        super.handleMouseClick(slot, slotId, button, type);
+      } else if((type == ClickType.QUICK_MOVE) && slot.getHasStack() && Auxiliaries.isShiftDown() && Auxiliaries.isCtrlDown()) {
+        CompoundNBT nbt = new CompoundNBT();
+        nbt.putInt("slot", slotId);
+        action(QUICK_MOVE_ALL, nbt);
+      } else {
+        super.handleMouseClick(slot, slotId, button, type);
+      }
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double wheel_inc)
+    {
+      if(!with_gui_mouse_handling) return super.mouseScrolled(mouseX, mouseY, wheel_inc);
+      final Slot slot = getSlotUnderMouse();
+      if(!slot.getHasStack()) return true;
+      final int count = slot.getStack().getCount();
+      int limit = (Auxiliaries.isShiftDown() ? 2 : 1) * (Auxiliaries.isCtrlDown() ? 4 : 1);
+      if(wheel_inc > 0.1) {
+        if(count > 0) {
+          if((count < slot.getStack().getMaxStackSize()) && (count < slot.getSlotStackLimit())) {
+            CompoundNBT nbt = new CompoundNBT();
+            nbt.putInt("slot", slot.slotNumber);
+            if(limit > 1) nbt.putInt("limit", limit);
+            action(INCREASE_STACK, nbt);
+          }
+        }
+      } else if(wheel_inc < -0.1) {
+        if(count > 0) {
+          CompoundNBT nbt = new CompoundNBT();
+          nbt.putInt("slot", slot.slotNumber);
+          if(limit > 1) nbt.putInt("limit", limit);
+          action(DECREASE_STACK, nbt);
+        }
+      }
+      return true;
+    }
+  }
+
 }

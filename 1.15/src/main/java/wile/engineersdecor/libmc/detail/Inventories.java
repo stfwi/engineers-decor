@@ -8,7 +8,9 @@
  */
 package wile.engineersdecor.libmc.detail;
 
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -21,6 +23,8 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Inventories
@@ -31,8 +35,6 @@ public class Inventories
 
   public static boolean areItemStacksDifferent(ItemStack a, ItemStack b)
   { return (a.getItem()!=b.getItem()) || (!ItemStack.areItemStackTagsEqual(a, b)); }
-
-
 
   public static IItemHandler itemhandler(World world, BlockPos pos, @Nullable Direction side)
   {
@@ -71,9 +73,9 @@ public class Inventories
       final ItemStack stack = inventory.getStackInSlot(i);
       if(stack.isEmpty()) continue;
       if(out_stack.isEmpty()) {
-        if((match!=null) && Inventories.areItemStacksDifferent(stack, match)) continue;
+        if((match!=null) && areItemStacksDifferent(stack, match)) continue;
         out_stack = inventory.extractItem(i, amount, simulate);
-      } else if(Inventories.areItemStacksIdentical(stack, out_stack)) {
+      } else if(areItemStacksIdentical(stack, out_stack)) {
         ItemStack es = inventory.extractItem(i, (amount-out_stack.getCount()), simulate);
         out_stack.grow(es.getCount());
       }
@@ -82,4 +84,112 @@ public class Inventories
     return out_stack;
   }
 
+  private static ItemStack checked(ItemStack stack)
+  { return stack.isEmpty() ? ItemStack.EMPTY : stack; } // explicit EMPTY return
+
+  public static class SlotRange
+  {
+    public final IInventory inventory;
+    public final int start_slot, end_slot;
+
+    public SlotRange(IInventory inv, int start, int end)
+    { inventory=inv; start_slot=start; end_slot=end; }
+
+    /**
+     * Moves as much items from the stack to the slots in range [start_slot, end_slot] of the inventory,
+     * filling up existing stacks first, then (player inventory only) checks appropriate empty slots next
+     * to stacks that have that item already, and last uses any empty slot that can be found.
+     * Returns the stack that is still remaining in the referenced `stack`.
+     */
+    public ItemStack insert(final ItemStack stack_to_move, boolean only_fillup, int limit)
+    { return insert(stack_to_move, only_fillup, limit, false, false); }
+
+    public ItemStack insert(final ItemStack stack_to_move, boolean only_fillup, int limit, boolean reverse, boolean force_group_stacks)
+    {
+      final ItemStack mvstack = stack_to_move.copy();
+      if((mvstack.isEmpty()) || (start_slot < 0) || (end_slot > inventory.getSizeInventory())) return checked(mvstack);
+      int limit_left = (limit>0) ? (Math.min(limit, mvstack.getMaxStackSize())) : (mvstack.getMaxStackSize());
+      // first iteration: fillup existing stacks
+      for(int i = start_slot; i < end_slot; ++i) {
+        final int sno = reverse ? (end_slot-1-i) : (i);
+        final ItemStack stack = inventory.getStackInSlot(sno);
+        if((stack.isEmpty()) || (areItemStacksDifferent(stack, mvstack))) continue;
+        int nmax = Math.min(limit_left, stack.getMaxStackSize() - stack.getCount());
+        if(mvstack.getCount() <= nmax) {
+          stack.setCount(stack.getCount()+mvstack.getCount());
+          inventory.setInventorySlotContents(sno, stack);
+          return ItemStack.EMPTY;
+        } else {
+          stack.grow(nmax);
+          mvstack.shrink(nmax);
+          inventory.setInventorySlotContents(sno, stack);
+          limit_left -= nmax;
+        }
+      }
+      if(only_fillup) return checked(mvstack);
+      if((force_group_stacks) || (inventory instanceof PlayerInventory)) {
+        // second iteration: use appropriate empty slots
+        for(int i = start_slot+1; i < end_slot-1; ++i) {
+          final int sno = reverse ? (end_slot-1-i) : (i);
+          final ItemStack stack = inventory.getStackInSlot(sno);
+          if(!stack.isEmpty()) continue;
+          if((areItemStacksDifferent(inventory.getStackInSlot(sno+1), mvstack)) && (areItemStacksDifferent(inventory.getStackInSlot(sno-1), mvstack))) continue;
+          int nmax = Math.min(limit_left, mvstack.getCount());
+          ItemStack moved = mvstack.copy();
+          moved.setCount(nmax);
+          mvstack.shrink(nmax);
+          inventory.setInventorySlotContents(sno, moved);
+          return checked(mvstack);
+        }
+      }
+      // third iteration: use any empty slots
+      for(int i = start_slot; i < end_slot; ++i) {
+        final int sno = reverse ? (end_slot-1-i) : (i);
+        final ItemStack stack = inventory.getStackInSlot(sno);
+        if(!stack.isEmpty()) continue;
+        int nmax = Math.min(limit_left, mvstack.getCount());
+        ItemStack placed = mvstack.copy();
+        placed.setCount(nmax);
+        mvstack.shrink(nmax);
+        inventory.setInventorySlotContents(sno, placed);
+        return checked(mvstack);
+      }
+      return checked(mvstack);
+    }
+
+    /**
+     * Moves as much items from the slots in range [start_slot, end_slot] of the inventory into a new stack.
+     * Implicitly shrinks the inventory stacks and the `request_stack`.
+     */
+    public ItemStack extract(final ItemStack request_stack)
+    {
+      if(request_stack.isEmpty()) return ItemStack.EMPTY;
+      final IInventory inventory = this.inventory;
+      List<ItemStack> matches = new ArrayList<>();
+      for(int i = start_slot; i < end_slot; ++i) {
+        final ItemStack stack = inventory.getStackInSlot(i);
+        if((!stack.isEmpty()) && (areItemStacksIdentical(stack, request_stack))) {
+          if(stack.hasTag()) {
+            final CompoundNBT nbt = stack.getTag();
+            int n = nbt.size();
+            if((n > 0) && (nbt.contains("Damage"))) --n;
+            if(n > 0) continue;
+          }
+          matches.add(stack);
+        }
+      }
+      matches.sort((a,b) -> Integer.compare(a.getCount(), b.getCount()));
+      if(matches.isEmpty()) return ItemStack.EMPTY;
+      int n_left = request_stack.getCount();
+      ItemStack fetched_stack = matches.get(0).split(n_left);
+      n_left -= fetched_stack.getCount();
+      for(int i=1; (i<matches.size()) && (n_left>0); ++i) {
+        ItemStack stack = matches.get(i).split(n_left);
+        n_left -= stack.getCount();
+        fetched_stack.grow(stack.getCount());
+      }
+      return checked(fetched_stack);
+    }
+  }
 }
+
