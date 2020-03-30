@@ -4,9 +4,9 @@
     "1.12.2-recommended": "1.0.19",
     "1.12.2-latest": "1.0.20-b2",
     "1.14.4-recommended": "",
-    "1.14.4-latest": "1.0.20-b2",
+    "1.14.4-latest": "1.0.20-b3",
     "1.15.2-recommended": "",
-    "1.15.2-latest": "1.0.20-b2"
+    "1.15.2-latest": "1.0.20-b3"
   },
   "1.12.2": {
     "1.0.20-b2": "[A] Backported Electrical Furnace GUI speed selection switch.\n[A] Backported Labeled Crate (storage crate with built-in item frame).",
@@ -91,6 +91,7 @@
     "1.0.0-b1": "[A] Initial structure.\n[A] Added clinker bricks and clinker brick stairs.\n[A] Added slag bricks and slag brick stairs.\n[A] Added metal rung ladder.\n[A] Added staggered metal steps ladder.\n[A] Added treated wood ladder.\n[A] Added treated wood pole.\n[A] Added treated wood table."
   },
   "1.14.4": {
+    "1.0.20-b3": "[M] Labeled Crate: GUI quick-move-all (ctrl-shift click) smart move tweaked, Manual page added.\n[F] Fixed IE ingredients based default recipes for Factory Dropper and Small Electrical Furnace.\n[M] Factory Hopper: GUI quick-move-all added.\n[M] Code structure, simplifications, cap invalidation fixes.\n[M] Valves: Removed performance caching for testing purposes.",
     "1.0.20-b2": "[U] Forge version requirement set to >= 28.2.3.\n[A] Added Labeled Crate (storage crate with built-in item frame).",
     "1.0.20-b1": "[A] Electrical Furnace: Added four-position speed switch (off, 100%, 150%, 200%), power consumption increases at higher rate (off, 100%, 200%, 400%).\n[A] Added Steel Mesh Fence Gate (single or double height gate fitting to the Steel Mesh Fence).\n[M] Waste Incinerator processing speed tweaked.",
     "1.0.19-b5": "[A] Added right-click display of power and progress information for Block Breaker, Solar Panel, and Tree Cutter.\n[A] Solar Panel power curve tuned.\n[A] Mod manual 1st edition release recipe added.\n[A] Factory Hopper: Resetting NBT when breaking with empty inventory (for stacking), enabled item cap for all sides.\n[M] Electrical Furnace model polished.",
@@ -140,6 +141,7 @@
     "1.0.7-b3": "[A] Initial 1.14.2 port of decorative blocks."
   },
   "1.15.2": {
+    "1.0.20-b3": "[M] Labeled Crate: GUI quick-move-all (ctrl-shift click) smart move tweaked, Manual page added.\n[F] Fixed IE ingredients based default recipes for Factory Dropper and Small Electrical Furnace.\n[M] Factory Hopper: GUI quick-move-all added.\n[M] Code structure, simplifications, cap invalidation fixes.\n[M] Valves: Removed performance caching for testing purposes.",
     "1.0.20-b2": "[A] Added Labeled Crate (storage crate with built-in item frame).",
     "1.0.20-b1": "[A] Electrical Furnace: Added four-position speed switch (off, 100%, 150%, 200%), power consumption increases at higher rate (off, 100%, 200%, 400%).\n[A] Added Steel Mesh Fence Gate (single or double height gate fitting to the Steel Mesh Fence).\n[M] Waste Incinerator processing speed tweaked.\n[F] Fixed steel table visual glitch (thx Urbanxx001).\n[M] MCP/Forge mappings updated.",
     "1.0.19-b5": "[A] Added right-click display of power and progress information for Block Breaker, Solar Panel, and Tree Cutter.\n[A] Solar Panel power curve tuned.\n[A] Mod manual 1st edition release recipe added.\n[A] Factory Hopper: Resetting NBT when breaking with empty inventory (for stacking), enabled item cap for all sides.\n[M] Electrical Furnace model polished.",
