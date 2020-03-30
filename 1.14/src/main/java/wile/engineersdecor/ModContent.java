@@ -440,7 +440,7 @@ public class ModContent
     }
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_block_breaker"));
 
-  public static final BlockDecorHopper FACTORY_HOPPER = (BlockDecorHopper)(new BlockDecorHopper(
+  public static final BlockDecorHopper.DecorHopperBlock FACTORY_HOPPER = (BlockDecorHopper.DecorHopperBlock)(new BlockDecorHopper.DecorHopperBlock(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL), ()->{
       final AxisAlignedBB[] down_aabbs = new AxisAlignedBB[]{
@@ -532,8 +532,8 @@ public class ModContent
     }
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_tree_cutter"));
 
-  public static final BlockDecorPipeValve STRAIGHT_CHECK_VALVE = (BlockDecorPipeValve)(new BlockDecorPipeValve(
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
+  public static final BlockDecorPipeValve.DecorPipeValveBlock STRAIGHT_CHECK_VALVE = (BlockDecorPipeValve.DecorPipeValveBlock)(new BlockDecorPipeValve.DecorPipeValveBlock(
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     BlockDecorPipeValve.CFG_CHECK_VALVE,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
     new AxisAlignedBB[]{
@@ -544,8 +544,8 @@ public class ModContent
     }
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "straight_pipe_valve"));
 
-  public static final BlockDecorPipeValve STRAIGHT_REDSTONE_VALVE = (BlockDecorPipeValve)(new BlockDecorPipeValve(
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
+  public static final BlockDecorPipeValve.DecorPipeValveBlock STRAIGHT_REDSTONE_VALVE = (BlockDecorPipeValve.DecorPipeValveBlock)(new BlockDecorPipeValve.DecorPipeValveBlock(
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     BlockDecorPipeValve.CFG_REDSTONE_CONTROLLED_VALVE,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
     new AxisAlignedBB[]{
@@ -556,8 +556,8 @@ public class ModContent
     }
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "straight_pipe_valve_redstone"));
 
-  public static final BlockDecorPipeValve STRAIGHT_REDSTONE_ANALOG_VALVE = (BlockDecorPipeValve)(new BlockDecorPipeValve(
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
+  public static final BlockDecorPipeValve.DecorPipeValveBlock STRAIGHT_REDSTONE_ANALOG_VALVE = (BlockDecorPipeValve.DecorPipeValveBlock)(new BlockDecorPipeValve.DecorPipeValveBlock(
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     BlockDecorPipeValve.CFG_REDSTONE_CONTROLLED_VALVE|BlockDecorPipeValve.CFG_ANALOG_VALVE,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
     new AxisAlignedBB[]{
@@ -788,7 +788,7 @@ public class ModContent
     .setRegistryName(ModEngineersDecor.MODID, "te_small_block_breaker");
 
   public static final TileEntityType<?> TET_FACTORY_HOPPER = TileEntityType.Builder
-    .create(BlockDecorHopper.BTileEntity::new, FACTORY_HOPPER)
+    .create(BlockDecorHopper.DecorHopperTileEntity::new, FACTORY_HOPPER)
     .build(null)
     .setRegistryName(ModEngineersDecor.MODID, "te_factory_hopper");
 
@@ -798,7 +798,7 @@ public class ModContent
     .setRegistryName(ModEngineersDecor.MODID, "te_small_waste_incinerator");
 
   public static final TileEntityType<?> TET_STRAIGHT_PIPE_VALVE = TileEntityType.Builder
-    .create(BlockDecorPipeValve.BTileEntity::new, STRAIGHT_CHECK_VALVE, STRAIGHT_REDSTONE_VALVE, STRAIGHT_REDSTONE_ANALOG_VALVE)
+    .create(BlockDecorPipeValve.DecorPipeValveTileEntity::new, STRAIGHT_CHECK_VALVE, STRAIGHT_REDSTONE_VALVE, STRAIGHT_REDSTONE_ANALOG_VALVE)
     .build(null)
     .setRegistryName(ModEngineersDecor.MODID, "te_pipe_valve");
 
@@ -833,7 +833,7 @@ public class ModContent
     .setRegistryName(ModEngineersDecor.MODID, "te_small_tree_cutter");
 
   public static final TileEntityType<?> TET_TEST_BLOCK = TileEntityType.Builder
-    .create(BlockDecorPipeValve.BTileEntity::new, TEST_BLOCK)
+    .create(BlockDecorPipeValve.DecorPipeValveTileEntity::new, TEST_BLOCK)
     .build(null)
     .setRegistryName(ModEngineersDecor.MODID, "te_test_block");
 
@@ -881,7 +881,7 @@ public class ModContent
   public static final ContainerType<BlockDecorCraftingTable.CraftingTableContainer> CT_TREATED_WOOD_CRAFTING_TABLE;
   public static final ContainerType<BlockDecorDropper.BContainer> CT_FACTORY_DROPPER;
   public static final ContainerType<BlockDecorPlacer.BContainer> CT_FACTORY_PLACER;
-  public static final ContainerType<BlockDecorHopper.BContainer> CT_FACTORY_HOPPER;
+  public static final ContainerType<BlockDecorHopper.DecorHopperContainer> CT_FACTORY_HOPPER;
   public static final ContainerType<BlockDecorFurnace.BContainer> CT_SMALL_LAB_FURNACE;
   public static final ContainerType<BlockDecorFurnaceElectrical.BContainer> CT_SMALL_ELECTRICAL_FURNACE;
   public static final ContainerType<BlockDecorWasteIncinerator.BContainer> CT_WASTE_INCINERATOR;
@@ -894,7 +894,7 @@ public class ModContent
     CT_FACTORY_DROPPER.setRegistryName(ModEngineersDecor.MODID,"ct_factory_dropper");
     CT_FACTORY_PLACER = (new ContainerType<BlockDecorPlacer.BContainer>(BlockDecorPlacer.BContainer::new));
     CT_FACTORY_PLACER.setRegistryName(ModEngineersDecor.MODID,"ct_factory_placer");
-    CT_FACTORY_HOPPER = (new ContainerType<BlockDecorHopper.BContainer>(BlockDecorHopper.BContainer::new));
+    CT_FACTORY_HOPPER = (new ContainerType<BlockDecorHopper.DecorHopperContainer>(BlockDecorHopper.DecorHopperContainer::new));
     CT_FACTORY_HOPPER.setRegistryName(ModEngineersDecor.MODID,"ct_factory_hopper");
     CT_SMALL_LAB_FURNACE = (new ContainerType<BlockDecorFurnace.BContainer>(BlockDecorFurnace.BContainer::new));
     CT_SMALL_LAB_FURNACE.setRegistryName(ModEngineersDecor.MODID,"ct_small_lab_furnace");
@@ -996,7 +996,7 @@ public class ModContent
     ScreenManager.registerFactory(CT_LABELED_CRATE, BlockDecorLabeledCrate.LabeledCrateGui::new);
     ScreenManager.registerFactory(CT_FACTORY_DROPPER, BlockDecorDropper.BGui::new);
     ScreenManager.registerFactory(CT_FACTORY_PLACER, BlockDecorPlacer.BGui::new);
-    ScreenManager.registerFactory(CT_FACTORY_HOPPER, BlockDecorHopper.BGui::new);
+    ScreenManager.registerFactory(CT_FACTORY_HOPPER, BlockDecorHopper.DecorHopperGui::new);
     ScreenManager.registerFactory(CT_SMALL_LAB_FURNACE, BlockDecorFurnace.BGui::new);
     ScreenManager.registerFactory(CT_SMALL_ELECTRICAL_FURNACE, BlockDecorFurnaceElectrical.BGui::new);
     ScreenManager.registerFactory(CT_WASTE_INCINERATOR, BlockDecorWasteIncinerator.BGui::new);

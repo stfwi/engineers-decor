@@ -1,3 +1,11 @@
+/*
+ * @file SidedProxy.java
+ * @author Stefan Wilhelm (wile)
+ * @copyright (C) 2018 Stefan Wilhelm
+ * @license MIT (see https://opensource.org/licenses/MIT)
+ *
+ * General client/server sideness selection proxy.
+ */
 package wile.engineersdecor.libmc.detail;
 
 import net.minecraft.client.Minecraft;

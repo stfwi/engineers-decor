@@ -11,7 +11,9 @@ package wile.engineersdecor.blocks;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.Inventories;
+import wile.engineersdecor.libmc.detail.Inventories.SlotRange;
 import wile.engineersdecor.libmc.detail.Networking;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -33,6 +35,7 @@ import net.minecraft.inventory.*;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.inventory.container.ClickType;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -52,133 +55,147 @@ import net.minecraftforge.items.IItemHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
 
-public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorBlock
+public class BlockDecorHopper
 {
-  public BlockDecorHopper(long config, Block.Properties builder, final Supplier<ArrayList<VoxelShape>> shape_supplier)
-  { super(config, builder, shape_supplier); }
-
-  @Override
-  @SuppressWarnings("deprecation")
-  public boolean hasComparatorInputOverride(BlockState state)
-  { return true; }
-
-  @Override
-  public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)
-  { return VoxelShapes.fullCube(); }
-
-  @Override
-  @SuppressWarnings("deprecation")
-  public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos)
-  { return Container.calcRedstone(world.getTileEntity(pos)); }
-
-  @Override
-  public boolean hasTileEntity(BlockState state)
-  { return true; }
-
-  @Override
-  @Nullable
-  public TileEntity createTileEntity(BlockState state, IBlockReader world)
-  { return new BlockDecorHopper.BTileEntity(); }
-
-  @Override
-  public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+  public static void on_config(int cooldown_ticks)
   {
-    if(world.isRemote) return;
-    if((!stack.hasTag()) || (!stack.getTag().contains("tedata"))) return;
-    CompoundNBT te_nbt = stack.getTag().getCompound("tedata");
-    if(te_nbt.isEmpty()) return;
-    final TileEntity te = world.getTileEntity(pos);
-    if(!(te instanceof BTileEntity)) return;
-    ((BTileEntity)te).readnbt(te_nbt, false);
-    ((BTileEntity)te).reset_rtstate();
-    ((BTileEntity)te).markDirty();
+    // ModEngineersDecor.logger.info("Config factory hopper:");
   }
 
-  @Override
-  public boolean hasDynamicDropList()
-  { return true; }
+  //--------------------------------------------------------------------------------------------------------------------
+  // Block
+  //--------------------------------------------------------------------------------------------------------------------
 
-  @Override
-  public List<ItemStack> dropList(BlockState state, World world, BlockPos pos, boolean explosion)
+  public static class DecorHopperBlock extends StandardBlocks.Directed implements IDecorBlock
   {
-    final List<ItemStack> stacks = new ArrayList<ItemStack>();
-    if(world.isRemote) return stacks;
-    final TileEntity te = world.getTileEntity(pos);
-    if(!(te instanceof BTileEntity)) return stacks;
-    if(!explosion) {
-      ItemStack stack = new ItemStack(this, 1);
-      CompoundNBT te_nbt = ((BTileEntity)te).clear_getnbt();
-      if(!te_nbt.isEmpty()) {
-        CompoundNBT nbt = new CompoundNBT();
-        nbt.put("tedata", te_nbt);
-        stack.setTag(nbt);
-      }
-      stacks.add(stack);
-    } else {
-      for(ItemStack stack: ((BTileEntity)te).stacks_) {
-        if(!stack.isEmpty()) stacks.add(stack);
-      }
-      ((BTileEntity)te).reset_rtstate();
+    public DecorHopperBlock(long config, Block.Properties builder, final Supplier<ArrayList<VoxelShape>> shape_supplier)
+    { super(config, builder, shape_supplier); }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public boolean hasComparatorInputOverride(BlockState state)
+    { return true; }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)
+    { return VoxelShapes.fullCube(); }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos)
+    { return Container.calcRedstone(world.getTileEntity(pos)); }
+
+    @Override
+    public boolean hasTileEntity(BlockState state)
+    { return true; }
+
+    @Override
+    @Nullable
+    public TileEntity createTileEntity(BlockState state, IBlockReader world)
+    { return new DecorHopperTileEntity(); }
+
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    {
+      if(world.isRemote) return;
+      if((!stack.hasTag()) || (!stack.getTag().contains("tedata"))) return;
+      CompoundNBT te_nbt = stack.getTag().getCompound("tedata");
+      if(te_nbt.isEmpty()) return;
+      final TileEntity te = world.getTileEntity(pos);
+      if(!(te instanceof DecorHopperTileEntity)) return;
+      ((DecorHopperTileEntity)te).readnbt(te_nbt, false);
+      ((DecorHopperTileEntity)te).reset_rtstate();
+      ((DecorHopperTileEntity)te).markDirty();
     }
-    return stacks;
+
+    @Override
+    public boolean hasDynamicDropList()
+    { return true; }
+
+    @Override
+    public List<ItemStack> dropList(BlockState state, World world, BlockPos pos, boolean explosion)
+    {
+      final List<ItemStack> stacks = new ArrayList<ItemStack>();
+      if(world.isRemote) return stacks;
+      final TileEntity te = world.getTileEntity(pos);
+      if(!(te instanceof DecorHopperTileEntity)) return stacks;
+      if(!explosion) {
+        ItemStack stack = new ItemStack(this, 1);
+        CompoundNBT te_nbt = ((DecorHopperTileEntity)te).clear_getnbt();
+        if(!te_nbt.isEmpty()) {
+          CompoundNBT nbt = new CompoundNBT();
+          nbt.put("tedata", te_nbt);
+          stack.setTag(nbt);
+        }
+        stacks.add(stack);
+      } else {
+        for(ItemStack stack: ((DecorHopperTileEntity)te).stacks_) {
+          if(!stack.isEmpty()) stacks.add(stack);
+        }
+        ((DecorHopperTileEntity)te).reset_rtstate();
+      }
+      return stacks;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+    {
+      if(world.isRemote) return true;
+      final TileEntity te = world.getTileEntity(pos);
+      if(!(te instanceof DecorHopperTileEntity)) return true;
+      if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return true;
+      NetworkHooks.openGui((ServerPlayerEntity)player,(INamedContainerProvider)te);
+      return true;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean unused)
+    {
+      if(!(world instanceof World) || (((World) world).isRemote)) return;
+      TileEntity te = world.getTileEntity(pos);
+      if(!(te instanceof DecorHopperTileEntity)) return;
+      ((DecorHopperTileEntity)te).block_updated();
+    }
+
+    @Override
+    public void onFallenUpon(World world, BlockPos pos, Entity entity, float fallDistance)
+    {
+      super.onFallenUpon(world, pos, entity, fallDistance);
+      if(!(entity instanceof ItemEntity)) return;
+      TileEntity te = world.getTileEntity(pos);
+      if(!(te instanceof DecorHopperTileEntity)) return;
+      ((DecorHopperTileEntity)te).collection_timer_ = 0;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public boolean canProvidePower(BlockState state)
+    { return true; }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
+    { return 0; }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
+    { return 0; }
+
   }
-
-  @Override
-  @SuppressWarnings("deprecation")
-  public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
-  {
-    if(world.isRemote) return true;
-    final TileEntity te = world.getTileEntity(pos);
-    if(!(te instanceof BTileEntity)) return true;
-    if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return true;
-    NetworkHooks.openGui((ServerPlayerEntity)player,(INamedContainerProvider)te);
-    return true;
-  }
-
-  @Override
-  @SuppressWarnings("deprecation")
-  public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean unused)
-  {
-    if(!(world instanceof World) || (((World) world).isRemote)) return;
-    TileEntity te = world.getTileEntity(pos);
-    if(!(te instanceof BTileEntity)) return;
-    ((BTileEntity)te).block_updated();
-  }
-
-  @Override
-  public void onFallenUpon(World world, BlockPos pos, Entity entity, float fallDistance)
-  {
-    super.onFallenUpon(world, pos, entity, fallDistance);
-    if(!(entity instanceof ItemEntity)) return;
-    TileEntity te = world.getTileEntity(pos);
-    if(!(te instanceof BTileEntity)) return;
-    ((BTileEntity)te).collection_timer_ = 0;
-  }
-
-  @Override
-  @SuppressWarnings("deprecation")
-  public boolean canProvidePower(BlockState state)
-  { return true; }
-
-  @Override
-  @SuppressWarnings("deprecation")
-  public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
-  { return 0; }
-
-  @Override
-  @SuppressWarnings("deprecation")
-  public int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
-  { return 0; }
 
   //--------------------------------------------------------------------------------------------------------------------
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class BTileEntity extends TileEntity implements ITickableTileEntity, INameable, IInventory, INamedContainerProvider, ISidedInventory
+  public static class DecorHopperTileEntity extends TileEntity implements ITickableTileEntity, INameable, IInventory, INamedContainerProvider, ISidedInventory
   {
     public static final int NUM_OF_FIELDS = 7;
     public static final int TICK_INTERVAL = 10;
@@ -203,19 +220,14 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
     private int tick_timer_ = 0;
     protected NonNullList<ItemStack> stacks_;
 
-    public static void on_config(int cooldown_ticks)
-    {
-      // ModEngineersDecor.logger.info("Config factory hopper:");
-    }
-
-    public BTileEntity()
+    public DecorHopperTileEntity()
     {
       this(ModContent.TET_FACTORY_HOPPER);
       stacks_ = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
       reset_rtstate();
     }
 
-    public BTileEntity(TileEntityType<?> te_type)
+    public DecorHopperTileEntity(TileEntityType<?> te_type)
     {
       super(te_type);
       stacks_ = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
@@ -287,6 +299,13 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
     public CompoundNBT write(CompoundNBT nbt)
     { super.write(nbt); writenbt(nbt, false); return nbt; }
 
+    @Override
+    public void remove()
+    {
+      super.remove();
+      Arrays.stream(item_handlers).forEach(LazyOptional::invalidate);
+    }
+
     // INamable ----------------------------------------------------------------------------------------------
 
     @Override
@@ -309,7 +328,7 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
 
     @Override
     public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player )
-    { return new BContainer(id, inventory, this, IWorldPosCallable.of(world, pos), fields); }
+    { return new DecorHopperContainer(id, inventory, this, IWorldPosCallable.of(world, pos), fields); }
 
     // IInventory --------------------------------------------------------------------------------------------
 
@@ -372,7 +391,7 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
 
     // Fields -----------------------------------------------------------------------------------------------
 
-    protected final IIntArray fields = new IntArray(BTileEntity.NUM_OF_FIELDS)
+    protected final IIntArray fields = new IntArray(DecorHopperTileEntity.NUM_OF_FIELDS)
     {
       @Override
       public int get(int id)
@@ -430,9 +449,7 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
-      if(!this.removed && (facing != null)) {
-        if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handlers[0].cast();
-      }
+      if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handlers[0].cast();
       return super.getCapability(capability, facing);
     }
 
@@ -491,8 +508,8 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
       if(te instanceof HopperTileEntity) {
         Direction f = world.getBlockState(pos.offset(facing)).get(HopperBlock.FACING);
         if(f==facing.getOpposite()) return false; // no back transfer
-      } else if(te instanceof BTileEntity) {
-        Direction f = world.getBlockState(pos.offset(facing)).get(FACING);
+      } else if(te instanceof DecorHopperTileEntity) {
+        Direction f = world.getBlockState(pos.offset(facing)).get(DecorHopperBlock.FACING);
         if(f==facing.getOpposite()) return false;
       }
       ItemStack insert_stack = current_stack.copy();
@@ -610,7 +627,7 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
       boolean trigger = (rssignal && ((block_power_updated_) || (!pulse_mode)));
       final BlockState state = world.getBlockState(pos);
       if(state == null) { block_power_signal_= false; return; }
-      final Direction hopper_facing = state.get(FACING);
+      final Direction hopper_facing = state.get(DecorHopperBlock.FACING);
       // Trigger edge detection for next cycle
       {
         boolean tr = world.isBlockPowered(pos);
@@ -650,9 +667,16 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
   // container
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class BContainer extends Container implements Networking.INetworkSynchronisableContainer
+  public static class DecorHopperContainer extends Container implements Networking.INetworkSynchronisableContainer
   {
-    private static final int PLAYER_INV_START_SLOTNO = BTileEntity.NUM_OF_SLOTS;
+    private static final int PLAYER_INV_START_SLOTNO = DecorHopperTileEntity.NUM_OF_SLOTS;
+    private static final int NUM_OF_CONTAINER_SLOTS = DecorHopperTileEntity.NUM_OF_SLOTS + 36;
+    protected static final int STORAGE_SLOT_BEGIN = 0;
+    protected static final int STORAGE_SLOT_END = DecorHopperTileEntity.NUM_OF_SLOTS;
+    protected static final int PLAYER_SLOT_BEGIN = DecorHopperTileEntity.NUM_OF_SLOTS;
+    protected static final int PLAYER_SLOT_END = DecorHopperTileEntity.NUM_OF_SLOTS+36;
+    private final SlotRange player_inventory_slot_range;
+    private final SlotRange hopper_slot_range;
     private final PlayerEntity player_;
     private final IInventory inventory_;
     private final IWorldPosCallable wpc_;
@@ -660,16 +684,19 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
 
     public final int field(int index) { return fields_.get(index); }
 
-    public BContainer(int cid, PlayerInventory player_inventory)
-    { this(cid, player_inventory, new Inventory(BTileEntity.NUM_OF_SLOTS), IWorldPosCallable.DUMMY, new IntArray(BTileEntity.NUM_OF_FIELDS)); }
+    public DecorHopperContainer(int cid, PlayerInventory player_inventory)
+    { this(cid, player_inventory, new Inventory(DecorHopperTileEntity.NUM_OF_SLOTS), IWorldPosCallable.DUMMY, new IntArray(DecorHopperTileEntity.NUM_OF_FIELDS)); }
 
-    private BContainer(int cid, PlayerInventory player_inventory, IInventory block_inventory, IWorldPosCallable wpc, IIntArray fields)
+    private DecorHopperContainer(int cid, PlayerInventory player_inventory, IInventory block_inventory, IWorldPosCallable wpc, IIntArray fields)
     {
       super(ModContent.CT_FACTORY_HOPPER, cid);
       fields_ = fields;
       wpc_ = wpc;
       player_ = player_inventory.player;
       inventory_ = block_inventory;
+      hopper_slot_range = new SlotRange(inventory_, 0, DecorHopperTileEntity.NUM_OF_SLOTS);
+      player_inventory_slot_range = new SlotRange(player_inventory, 0, 36);
+
       int i=-1;
       // input slots (stacks 0 to 17)
       for(int y=0; y<3; ++y) {
@@ -706,7 +733,7 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
         if(!mergeItemStack(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+36, false)) return ItemStack.EMPTY;
       } else if((index >= PLAYER_INV_START_SLOTNO) && (index <= PLAYER_INV_START_SLOTNO+36)) {
         // Player slot
-        if(!mergeItemStack(slot_stack, 0, BTileEntity.NUM_OF_SLOTS, false)) return ItemStack.EMPTY;
+        if(!mergeItemStack(slot_stack, 0, DecorHopperTileEntity.NUM_OF_SLOTS, false)) return ItemStack.EMPTY;
       } else {
         // invalid slot
         return ItemStack.EMPTY;
@@ -735,6 +762,13 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
       Networking.PacketContainerSyncClientToServer.sendToServer(windowId, nbt);
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public void onGuiAction(String message, CompoundNBT nbt)
+    {
+      nbt.putString("action", message);
+      Networking.PacketContainerSyncClientToServer.sendToServer(windowId, nbt);
+    }
+
     @Override
     public void onServerPacketReceived(int windowId, CompoundNBT nbt)
     {}
@@ -742,13 +776,56 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
     @Override
     public void onClientPacketReceived(int windowId, PlayerEntity player, CompoundNBT nbt)
     {
-      if(!(inventory_ instanceof BTileEntity)) return;
-      BTileEntity te = (BTileEntity)inventory_;
-      if(nbt.contains("xsize")) te.transfer_count_  = MathHelper.clamp(nbt.getInt("xsize"), 1, BTileEntity.MAX_TRANSFER_COUNT);
+      if(!(inventory_ instanceof DecorHopperTileEntity)) return;
+      DecorHopperTileEntity te = (DecorHopperTileEntity)inventory_;
+      if(nbt.contains("xsize")) te.transfer_count_  = MathHelper.clamp(nbt.getInt("xsize"), 1, DecorHopperTileEntity.MAX_TRANSFER_COUNT);
       if(nbt.contains("period")) te.transfer_period_ = MathHelper.clamp(nbt.getInt("period"),   0,  100);
-      if(nbt.contains("range")) te.collection_range_ = MathHelper.clamp(nbt.getInt("range"),   0,  BTileEntity.MAX_COLLECTION_RANGE);
+      if(nbt.contains("range")) te.collection_range_ = MathHelper.clamp(nbt.getInt("range"),   0,  DecorHopperTileEntity.MAX_COLLECTION_RANGE);
       if(nbt.contains("logic")) te.logic_  = nbt.getInt("logic");
       if(nbt.contains("manual_trigger") && (nbt.getInt("manual_trigger")!=0)) { te.block_power_signal_=true; te.block_power_updated_=true; te.tick_timer_=1; }
+      if(nbt.contains("action")) {
+        boolean changed = false;
+        final int slotId = nbt.contains("slot") ? nbt.getInt("slot") : -1;
+        switch(nbt.getString("action")) {
+          case DecorHopperGui.QUICK_MOVE_ALL: {
+            if((slotId >= STORAGE_SLOT_BEGIN) && (slotId < STORAGE_SLOT_END) && (getSlot(slotId).getHasStack())) {
+              final Slot slot = getSlot(slotId);
+              ItemStack remaining = slot.getStack();
+              slot.putStack(ItemStack.EMPTY);
+              final ItemStack ref_stack = remaining.copy();
+              ref_stack.setCount(ref_stack.getMaxStackSize());
+              for(int i=hopper_slot_range.end_slot-hopper_slot_range.start_slot; (i>0) && (!remaining.isEmpty()); --i) {
+                remaining = player_inventory_slot_range.insert(remaining, false, 0, true, true);
+                if(!remaining.isEmpty()) break;
+                remaining = hopper_slot_range.extract(ref_stack);
+              }
+              if(!remaining.isEmpty()) {
+                slot.putStack(remaining); // put back
+              }
+            } else if((slotId >= PLAYER_SLOT_BEGIN) && (slotId < PLAYER_SLOT_END) && (getSlot(slotId).getHasStack())) {
+              final Slot slot = getSlot(slotId);
+              ItemStack remaining = slot.getStack();
+              slot.putStack(ItemStack.EMPTY);
+              final ItemStack ref_stack = remaining.copy();
+              ref_stack.setCount(ref_stack.getMaxStackSize());
+              for(int i=player_inventory_slot_range.end_slot-player_inventory_slot_range.start_slot; (i>0) && (!remaining.isEmpty()); --i) {
+                remaining = hopper_slot_range.insert(remaining, false, 0, false, true);
+                if(!remaining.isEmpty()) break;
+                remaining = player_inventory_slot_range.extract(ref_stack);
+              }
+              if(!remaining.isEmpty()) {
+                slot.putStack(remaining); // put back
+              }
+            }
+            changed = true;
+          } break;
+        }
+        if(changed) {
+          inventory_.markDirty();
+          player.inventory.markDirty();
+          detectAndSendChanges();
+        }
+      }
       te.markDirty();
     }
 
@@ -759,11 +836,13 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
   //--------------------------------------------------------------------------------------------------------------------
 
   @OnlyIn(Dist.CLIENT)
-  public static class BGui extends ContainerScreen<BContainer>
+  public static class DecorHopperGui extends ContainerScreen<DecorHopperContainer>
   {
+    protected static final String QUICK_MOVE_ALL = "quick-move-all";
+
     protected final PlayerEntity player_;
 
-    public BGui(BContainer container, PlayerInventory player_inventory, ITextComponent title)
+    public DecorHopperGui(DecorHopperContainer container, PlayerInventory player_inventory, ITextComponent title)
     { super(container, player_inventory, title); this.player_ = player_inventory.player; }
 
     @Override
@@ -779,9 +858,21 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
     }
 
     @Override
+    protected void handleMouseClick(Slot slot, int slotId, int button, ClickType type)
+    {
+      if((type == ClickType.QUICK_MOVE) && (slot!=null) && slot.getHasStack() && Auxiliaries.isShiftDown() && Auxiliaries.isCtrlDown()) {
+        CompoundNBT nbt = new CompoundNBT();
+        nbt.putInt("slot", slotId);
+        container.onGuiAction(QUICK_MOVE_ALL, nbt);
+      } else {
+        super.handleMouseClick(slot, slotId, button, type);
+      }
+    }
+
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
-      BContainer container = (BContainer)getContainer();
+      DecorHopperContainer container = (DecorHopperContainer)getContainer();
       int mx = (int)(mouseX - getGuiLeft() + .5), my = (int)(mouseY - getGuiTop() + .5);
       if((!isPointInRegion(126, 1, 49, 60, mouseX, mouseY))) {
         return super.mouseClicked(mouseX, mouseY, mouseButton);
@@ -792,8 +883,8 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
         } else if(range >= 34) {
           range = container.field(0) + 1; // +
         } else {
-          range = (int)(0.5 + ((((double)BTileEntity.MAX_COLLECTION_RANGE) * range)/34)); // slider
-          range = MathHelper.clamp(range, 0, BTileEntity.MAX_COLLECTION_RANGE);
+          range = (int)(0.5 + ((((double)DecorHopperTileEntity.MAX_COLLECTION_RANGE) * range)/34)); // slider
+          range = MathHelper.clamp(range, 0, DecorHopperTileEntity.MAX_COLLECTION_RANGE);
         }
         container.onGuiAction("range", range);
       } else if(isPointInRegion(128, 21, 44, 10, mouseX, mouseY)) {
@@ -814,15 +905,15 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
         } else if(ndrop >= 34) {
           ndrop = container.field(1) + 1; // +
         } else {
-          ndrop = MathHelper.clamp(1+ndrop, 1, BTileEntity.MAX_TRANSFER_COUNT); // slider
+          ndrop = MathHelper.clamp(1+ndrop, 1, DecorHopperTileEntity.MAX_TRANSFER_COUNT); // slider
         }
         container.onGuiAction("xsize", ndrop);
       } else if(isPointInRegion(133, 49, 9, 9, mouseX, mouseY)) {
         container.onGuiAction("manual_trigger", 1);
       } else if(isPointInRegion(145, 49, 9, 9, mouseX, mouseY)) {
-        container.onGuiAction("logic", container.field(2) ^ BTileEntity.LOGIC_INVERTED);
+        container.onGuiAction("logic", container.field(2) ^ DecorHopperTileEntity.LOGIC_INVERTED);
       } else if(isPointInRegion(159, 49, 7, 9, mouseX, mouseY)) {
-        container.onGuiAction("logic", container.field(2) ^ BTileEntity.LOGIC_CONTINUOUS);
+        container.onGuiAction("logic", container.field(2) ^ DecorHopperTileEntity.LOGIC_CONTINUOUS);
       }
       return true;
     }
@@ -834,11 +925,11 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
       this.minecraft.getTextureManager().bindTexture(new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/factory_hopper_gui.png"));
       final int x0=getGuiLeft(), y0=getGuiTop(), w=getXSize(), h=getYSize();
       blit(x0, y0, 0, 0, w, h);
-      BContainer container = (BContainer)getContainer();
+      DecorHopperContainer container = (DecorHopperContainer)getContainer();
       // active slot
       {
         int slot_index = container.field(6);
-        if((slot_index < 0) || (slot_index >= BTileEntity.NUM_OF_SLOTS)) slot_index = 0;
+        if((slot_index < 0) || (slot_index >= DecorHopperTileEntity.NUM_OF_SLOTS)) slot_index = 0;
         int x = (x0+10+((slot_index % 6) * 18));
         int y = (y0+8+((slot_index / 6) * 17));
         blit(x, y, 200, 8, 18, 18);
@@ -846,7 +937,7 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
       // collection range
       {
         int lut[] = { 133, 141, 149, 157, 166 };
-        int px = lut[MathHelper.clamp(container.field(0), 0, BTileEntity.MAX_COLLECTION_RANGE)];
+        int px = lut[MathHelper.clamp(container.field(0), 0, DecorHopperTileEntity.MAX_COLLECTION_RANGE)];
         int x = x0 + px - 2;
         int y = y0 + 14;
         blit(x, y, 179, 40, 5, 5);
@@ -872,14 +963,14 @@ public class BlockDecorHopper extends StandardBlocks.Directed implements IDecorB
       }
       // trigger logic
       {
-        int inverter_offset = ((container.field(2) & BTileEntity.LOGIC_INVERTED) != 0) ? 11 : 0;
+        int inverter_offset = ((container.field(2) & DecorHopperTileEntity.LOGIC_INVERTED) != 0) ? 11 : 0;
         blit(x0+145, y0+49, 177+inverter_offset, 49, 9, 9);
-        int pulse_mode_offset  = ((container.field(2) & BTileEntity.LOGIC_CONTINUOUS    ) != 0) ? 9 : 0;
+        int pulse_mode_offset  = ((container.field(2) & DecorHopperTileEntity.LOGIC_CONTINUOUS    ) != 0) ? 9 : 0;
         blit(x0+159, y0+49, 199+pulse_mode_offset, 49, 9, 9);
       }
       // delay timer running indicator
       {
-        if((container.field(4) > BTileEntity.PERIOD_OFFSET) && ((System.currentTimeMillis() % 1000) < 500)) {
+        if((container.field(4) > DecorHopperTileEntity.PERIOD_OFFSET) && ((System.currentTimeMillis() % 1000) < 500)) {
           blit(x0+148, y0+22, 187, 22, 3, 3);
         }
       }

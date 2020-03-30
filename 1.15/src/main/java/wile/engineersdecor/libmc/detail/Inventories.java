@@ -96,6 +96,28 @@ public class Inventories
     { inventory=inv; start_slot=start; end_slot=end; }
 
     /**
+     * Returns the number of stacks that match the given stack with NBT.
+     */
+    public int stackMatchCount(final ItemStack ref_stack)
+    {
+      int n = 0; // ... std::accumulate() the old school way.
+      for(int i = start_slot; i < end_slot; ++i) {
+        if(areItemStacksIdentical(ref_stack, inventory.getStackInSlot(i))) ++n;
+      }
+      return n;
+    }
+
+    public int totalMatchingItemCount(final ItemStack ref_stack)
+    {
+      int n = 0;
+      for(int i = start_slot; i < end_slot; ++i) {
+        ItemStack stack = inventory.getStackInSlot(i);
+        if(areItemStacksIdentical(ref_stack, stack)) n += stack.getCount();
+      }
+      return n;
+    }
+
+    /**
      * Moves as much items from the stack to the slots in range [start_slot, end_slot] of the inventory,
      * filling up existing stacks first, then (player inventory only) checks appropriate empty slots next
      * to stacks that have that item already, and last uses any empty slot that can be found.
@@ -109,11 +131,24 @@ public class Inventories
       final ItemStack mvstack = stack_to_move.copy();
       if((mvstack.isEmpty()) || (start_slot < 0) || (end_slot > inventory.getSizeInventory())) return checked(mvstack);
       int limit_left = (limit>0) ? (Math.min(limit, mvstack.getMaxStackSize())) : (mvstack.getMaxStackSize());
-      // first iteration: fillup existing stacks
+      boolean matches[] = new boolean[end_slot];
+      boolean empties[] = new boolean[end_slot];
+      int num_matches = 0;
       for(int i = start_slot; i < end_slot; ++i) {
         final int sno = reverse ? (end_slot-1-i) : (i);
         final ItemStack stack = inventory.getStackInSlot(sno);
-        if((stack.isEmpty()) || (areItemStacksDifferent(stack, mvstack))) continue;
+        if(stack.isEmpty() || (!inventory.isItemValidForSlot(sno, mvstack))) {
+          empties[sno] = true;
+        } else if(areItemStacksIdentical(stack, mvstack)) {
+          matches[sno] = true;
+          ++num_matches;
+        }
+      }
+      // first iteration: fillup existing stacks
+      for(int i = start_slot; i < end_slot; ++i) {
+        final int sno = reverse ? (end_slot-1-i) : (i);
+        if(empties[sno] || !matches[sno]) continue;
+        final ItemStack stack = inventory.getStackInSlot(sno);
         int nmax = Math.min(limit_left, stack.getMaxStackSize() - stack.getCount());
         if(mvstack.getCount() <= nmax) {
           stack.setCount(stack.getCount()+mvstack.getCount());
@@ -127,26 +162,53 @@ public class Inventories
         }
       }
       if(only_fillup) return checked(mvstack);
-      if((force_group_stacks) || (inventory instanceof PlayerInventory)) {
-        // second iteration: use appropriate empty slots
-        for(int i = start_slot+1; i < end_slot-1; ++i) {
-          final int sno = reverse ? (end_slot-1-i) : (i);
-          final ItemStack stack = inventory.getStackInSlot(sno);
-          if(!stack.isEmpty()) continue;
-          if((areItemStacksDifferent(inventory.getStackInSlot(sno+1), mvstack)) && (areItemStacksDifferent(inventory.getStackInSlot(sno-1), mvstack))) continue;
-          int nmax = Math.min(limit_left, mvstack.getCount());
-          ItemStack moved = mvstack.copy();
-          moved.setCount(nmax);
-          mvstack.shrink(nmax);
-          inventory.setInventorySlotContents(sno, moved);
-          return checked(mvstack);
+      if((num_matches>0) && ((force_group_stacks) || (inventory instanceof PlayerInventory))) {
+        // second iteration: use appropriate empty slots,
+        // a) between
+        {
+          int insert_start = -1;
+          int insert_end = -1;
+          int i = start_slot+1;
+          for(;i < end_slot-1; ++i) {
+            final int sno = reverse ? (end_slot-1-i) : (i);
+            if(insert_start < 0) {
+              if(matches[sno]) insert_start = sno;
+            } else if(matches[sno]) {
+              insert_end = sno;
+            }
+          }
+          for(i=insert_start;i < insert_end; ++i) {
+            final int sno = reverse ? (end_slot-1-i) : (i);
+            if(!empties[sno]) continue;
+            int nmax = Math.min(limit_left, mvstack.getCount());
+            ItemStack moved = mvstack.copy();
+            moved.setCount(nmax);
+            mvstack.shrink(nmax);
+            inventory.setInventorySlotContents(sno, moved);
+            return checked(mvstack);
+          }
+        }
+        // b) before/after
+        {
+          for(int i = start_slot+1; i < end_slot-1; ++i) {
+            final int sno = reverse ? (end_slot-1-i) : (i);
+            if(!matches[sno]) continue;
+            int ii = (empties[sno-1]) ? (sno-1) : (empties[sno+1] ? (sno+1) : -1);
+            if(ii >= 0) {
+              int nmax = Math.min(limit_left, mvstack.getCount());
+              ItemStack moved = mvstack.copy();
+              moved.setCount(nmax);
+              mvstack.shrink(nmax);
+              inventory.setInventorySlotContents(ii, moved);
+              return checked(mvstack);
+            }
+          }
         }
       }
       // third iteration: use any empty slots
       for(int i = start_slot; i < end_slot; ++i) {
         final int sno = reverse ? (end_slot-1-i) : (i);
-        final ItemStack stack = inventory.getStackInSlot(sno);
-        if(!stack.isEmpty()) continue;
+        if(!empties[sno]) continue;
         int nmax = Math.min(limit_left, mvstack.getCount());
         ItemStack placed = mvstack.copy();
         placed.setCount(nmax);

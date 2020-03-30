@@ -1,5 +1,5 @@
 /*
- * @file BlockDecorWall.java
+ * @file StandardFenceBlock.java
  * @author Stefan Wilhelm (wile)
  * @copyright (C) 2019 Stefan Wilhelm
  * @license MIT (see https://opensource.org/licenses/MIT)
@@ -8,7 +8,6 @@
  */
 package wile.engineersdecor.libmc.blocks;
 
-import net.minecraft.util.math.shapes.VoxelShapes;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import net.minecraft.world.*;
 import net.minecraft.fluid.IFluidState;
@@ -24,6 +23,7 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;

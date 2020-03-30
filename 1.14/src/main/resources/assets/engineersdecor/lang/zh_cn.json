@@ -53,6 +53,7 @@
  "engineersdecor.config.e_furnace_power_consumption": "电炉：能量消耗",
  "block.engineersdecor.labeled_crate": "Labeled Crate",
  "block.engineersdecor.labeled_crate.help": "§6A storage crate with 9x6 slots and a built-in item frame at the front.§r\nPlace an item into the frame slot at the bottom right of the GUI to define the shown label.",
+ "block.engineersdecor.labeled_crate.tip": "§6Label:§r %1$s\n%2$s slots used / %3$s free\n%4$s total items stored",
  "block.engineersdecor.clinker_brick_block": "过烧砖块",
  "block.engineersdecor.clinker_brick_block.help": "§6一种放在不同位置贴图有不同变化的砖块。§r\n比原版砖看起来颜色更深，色度也更高。",
  "block.engineersdecor.clinker_brick_stained_block": "污渍过烧砖块",

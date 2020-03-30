@@ -17,7 +17,7 @@
           "PPP"
         ],
         "key": {
-          "F": { "tag" : "minecraft:furnace" },
+          "F": { "item": "minecraft:furnace" },
           "C": { "item": "immersiveengineering:connector_lv" },
           "H": { "item": "immersiveengineering:conveyor_basic" },
           "P": { "tag" : "forge:plates/iron" }

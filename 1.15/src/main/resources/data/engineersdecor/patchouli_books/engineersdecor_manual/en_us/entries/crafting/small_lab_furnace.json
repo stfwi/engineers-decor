@@ -2,7 +2,7 @@
   "name": "Small Laboratory Furnace",
   "icon": "engineersdecor:small_lab_furnace",
   "category": "crafting",
-  "sortnum": 5020,
+  "sortnum": 5030,
   "pages": [
     {
       "type": "spotlight",

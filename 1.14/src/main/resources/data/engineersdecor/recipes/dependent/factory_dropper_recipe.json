@@ -19,7 +19,7 @@
         "key": {
           "D": { "item": "minecraft:dropper" },
           "P": { "tag" : "forge:plates/iron" },
-          "W": { "item": "forge:treated_wood" }
+          "W": { "tag" : "forge:treated_wood" }
         },
         "result": {
           "item": "engineersdecor:factory_dropper",

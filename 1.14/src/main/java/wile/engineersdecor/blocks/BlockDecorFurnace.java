@@ -314,6 +314,14 @@ public class BlockDecorFurnace extends StandardBlocks.Horizontal implements IDec
     public CompoundNBT write(CompoundNBT nbt)
     { super.write(nbt); writenbt(nbt); return nbt; }
 
+    @Override
+    public void remove()
+    {
+      super.remove();
+      Arrays.stream(item_handlers).forEach(LazyOptional::invalidate);
+      energy_handler_.invalidate();
+    }
+
     // INamedContainerProvider / INameable ------------------------------------------------------
 
     @Override
@@ -512,7 +520,7 @@ public class BlockDecorFurnace extends StandardBlocks.Horizontal implements IDec
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
-      if(!this.removed && (facing != null)) {
+      if(facing != null) {
         if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
           if(facing == Direction.UP) return item_handlers[0].cast();
           if(facing == Direction.DOWN) return item_handlers[1].cast();

@@ -36,13 +36,13 @@ public class OptionalRecipeCondition implements ICondition
   private final List<ResourceLocation> all_required_tags;
   private final List<ResourceLocation> any_missing_tags;
   private final @Nullable ResourceLocation result;
+  private final boolean result_is_tag;
   private final boolean experimental;
 
   private static boolean with_experimental = false;
   private static boolean without_recipes = false;
   private static Predicate<Block> block_optouts = (block)->false;
   private static Predicate<Item> item_optouts = (item)->false;
-
 
   public static void init(String modid, Logger logger)
   {
@@ -60,13 +60,14 @@ public class OptionalRecipeCondition implements ICondition
   }
 
 
-  public OptionalRecipeCondition(ResourceLocation result, List<ResourceLocation> required, List<ResourceLocation> missing, List<ResourceLocation> required_tags, List<ResourceLocation> missing_tags, boolean isexperimental)
+  public OptionalRecipeCondition(ResourceLocation result, List<ResourceLocation> required, List<ResourceLocation> missing, List<ResourceLocation> required_tags, List<ResourceLocation> missing_tags, boolean isexperimental, boolean result_is_tag)
   {
     all_required = required;
     any_missing = missing;
     all_required_tags = required_tags;
     any_missing_tags = missing_tags;
     this.result = result;
+    this.result_is_tag = result_is_tag;
     experimental=isexperimental;
   }
 
@@ -109,6 +110,7 @@ public class OptionalRecipeCondition implements ICondition
     if(!all_required_tags.isEmpty()) {
       for(ResourceLocation rl:all_required_tags) {
         if(!ItemTags.getCollection().getTagMap().containsKey(rl)) return false;
+        if(ItemTags.getCollection().getTagMap().get(rl).getAllElements().isEmpty()) return false;
       }
     }
     if(!any_missing.isEmpty()) {
@@ -120,12 +122,12 @@ public class OptionalRecipeCondition implements ICondition
     if(!any_missing_tags.isEmpty()) {
       for(ResourceLocation rl:any_missing_tags) {
         if(!ItemTags.getCollection().getTagMap().containsKey(rl)) return true;
+        if(ItemTags.getCollection().getTagMap().get(rl).getAllElements().isEmpty()) return true;
       }
       return false;
     }
     return true;
   }
-
 
   public static class Serializer implements IConditionSerializer<OptionalRecipeCondition>
   {
@@ -144,7 +146,9 @@ public class OptionalRecipeCondition implements ICondition
       for(ResourceLocation e:condition.any_missing) missing.add(e.toString());
       json.add("required", required);
       json.add("missing", missing);
-      if(condition.result != null) json.addProperty("result", condition.result.toString());
+      if(condition.result != null) {
+        json.addProperty("result", (condition.result_is_tag ? "#" : "") + condition.result.toString());
+      }
     }
 
     @Override
@@ -156,7 +160,16 @@ public class OptionalRecipeCondition implements ICondition
       List<ResourceLocation> missing_tags = new ArrayList<>();
       ResourceLocation result = null;
       boolean experimental = false;
-      if(json.has("result")) result = new ResourceLocation(json.get("result").getAsString());
+      boolean result_is_tag = false;
+      if(json.has("result")) {
+        String s = json.get("result").getAsString();
+        if(s.startsWith("#")) {
+          result = new ResourceLocation(s.substring(1));
+          result_is_tag = true;
+        } else {
+          result = new ResourceLocation(s);
+        }
+      }
       if(json.has("required")) {
         for(JsonElement e:JSONUtils.getJsonArray(json, "required")) {
           String s = e.getAsString();
@@ -178,7 +191,7 @@ public class OptionalRecipeCondition implements ICondition
         }
       }
       if(json.has("experimental")) experimental = json.get("experimental").getAsBoolean();
-      return new OptionalRecipeCondition(result, required, missing, required_tags, missing_tags, experimental);
+      return new OptionalRecipeCondition(result, required, missing, required_tags, missing_tags, experimental, result_is_tag);
     }
   }
 }

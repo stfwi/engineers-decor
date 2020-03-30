@@ -186,6 +186,13 @@ public class BlockDecorFluidFunnel extends StandardBlocks.BaseBlock implements I
     public CompoundNBT write(CompoundNBT nbt)
     { super.write(nbt); writenbt(nbt); return nbt; }
 
+    @Override
+    public void remove()
+    {
+      super.remove();
+      fluid_handler_.invalidate();
+    }
+
     // ICapabilityProvider / Output flow handler ----------------------------------------------------------
 
     private static class OutputFluidHandler implements IFluidHandler

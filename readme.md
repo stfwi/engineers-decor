@@ -32,6 +32,9 @@ looking manufacturing contraptions. Current feature set:
   the crafting output slot to increase or decrease the stack sizes (shift and/or ctrl
   higher step size). Shows the placed items on the top of the table.
 
+- *Labeled Crate*: A storage crate with 9x6 slots and a built-in item frame. As known
+  from IE Crates it keeps its inventory when broken.
+
 - *Small Laboratory Furnace*: Solid fuel consuming, updraught. Slightly hotter and
   better isolated than a cobblestone furnace, therefore more efficient. Has internal
   hopper FiFos for input, output, and fuel (two stacks each). Two auxilliary slots

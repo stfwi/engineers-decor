@@ -543,10 +543,10 @@ public class ModConfig
       if(block instanceof BlockDecorHalfSlab) return COMMON.without_halfslabs.get();
       if(block instanceof BlockDecorLadder) return COMMON.without_ladders.get();
       if(block instanceof BlockDecorWindow) return COMMON.without_windows.get();
-      if(block instanceof BlockDecorPipeValve) return COMMON.without_valves.get();
+      if(block instanceof BlockDecorPipeValve.DecorPipeValveBlock) return COMMON.without_valves.get();
       if(block instanceof BlockDecorHorizontalSupport) return COMMON.without_hsupports.get();
       if(block instanceof BlockDecorFloorGrating) return COMMON.without_floor_grating.get();
-      if(block instanceof BlockDecorHopper) return COMMON.without_factory_hopper.get();
+      if(block instanceof BlockDecorHopper.DecorHopperBlock) return COMMON.without_factory_hopper.get();
       if(block instanceof BlockDecorFluidFunnel) return COMMON.without_fluid_funnel.get();
       if(block instanceof BlockDecorSolarPanel) return COMMON.without_solar_panel.get();
       if(block instanceof BlockDecorMineralSmelter) return COMMON.without_mineral_smelter.get();

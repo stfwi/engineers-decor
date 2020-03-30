@@ -39,9 +39,11 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.FakePlayer;
@@ -55,16 +57,22 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 
 public class BlockDecorLabeledCrate
 {
   private static boolean with_gui_mouse_handling = true;
+  private static final HashSet<Item> unstorable_containers = new HashSet<Item>();
 
   public static void on_config(boolean without_gui_mouse_handling)
   {
     with_gui_mouse_handling = !without_gui_mouse_handling;
+    // Currently no config, using a tag for this small feature may be uselessly stressing the registry.
+    unstorable_containers.clear();
+    unstorable_containers.add(ModContent.LABELED_CRATE.asItem());
+    unstorable_containers.add(Items.SHULKER_BOX);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -150,6 +158,39 @@ public class BlockDecorLabeledCrate
     @Override
     public PushReaction getPushReaction(BlockState state)
     { return PushReaction.BLOCK; }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void addInformation(final ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
+    {
+      if(!Auxiliaries.Tooltip.extendedTipCondition() || Auxiliaries.Tooltip.helpCondition()) {
+        super.addInformation(stack, world, tooltip, flag);
+        return;
+      }
+      NonNullList<ItemStack> items = NonNullList.withSize(LabeledCrateTileEntity.NUM_OF_SLOTS, ItemStack.EMPTY);
+      int num_used_slots = 0;
+      int total_items = 0;
+      if(stack.hasTag() && stack.getTag().contains("tedata")) {
+        final CompoundNBT nbt = stack.getTag().getCompound("tedata");
+        if(nbt.contains("Items")) {
+          ItemStackHelper.loadAllItems(nbt, items);
+          for(int i=0; i<LabeledCrateTileEntity.ITEMFRAME_SLOTNO; ++i) {
+            final ItemStack st = items.get(i);
+            if(st.isEmpty()) continue;
+            ++num_used_slots;
+            total_items += st.getCount();
+          }
+        }
+      }
+      int num_free_slots = LabeledCrateTileEntity.ITEMFRAME_SLOTNO - num_used_slots;
+      ItemStack frameStack = items.get(LabeledCrateTileEntity.ITEMFRAME_SLOTNO);
+      tooltip.add(Auxiliaries.localizable(getTranslationKey()+".tip", null, new Object[] {
+        (frameStack.isEmpty() ? (new StringTextComponent("-/-")) : (new TranslationTextComponent(frameStack.getTranslationKey()))),
+        num_used_slots,
+        num_free_slots,
+        total_items
+      }));
+    }
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -188,18 +229,21 @@ public class BlockDecorLabeledCrate
     public void readnbt(CompoundNBT compound)
     {
       NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
-      ItemStackHelper.loadAllItems(compound, stacks);
+      if(!compound.isEmpty()) ItemStackHelper.loadAllItems(compound, stacks);
       while(stacks.size() < NUM_OF_SLOTS) stacks.add(ItemStack.EMPTY);
       stacks_ = stacks;
     }
 
     protected void writenbt(CompoundNBT compound)
     {
-      ItemStackHelper.saveAllItems(compound, stacks_);
+      if(!stacks_.stream().allMatch(ItemStack::isEmpty)) ItemStackHelper.saveAllItems(compound, stacks_);
     }
 
     public ItemStack getItemFrameStack()
     { return (stacks_.size() > ITEMFRAME_SLOTNO) ? (stacks_.get(ITEMFRAME_SLOTNO)) : (ItemStack.EMPTY); }
+
+    protected static boolean inacceptable(ItemStack stack)
+    { return (stack.hasTag() && (!stack.getTag().isEmpty()) && (unstorable_containers.contains(stack.getItem()))); }
 
     // TileEntity ------------------------------------------------------------------------------
 
@@ -210,6 +254,13 @@ public class BlockDecorLabeledCrate
     @Override
     public CompoundNBT write(CompoundNBT compound)
     { super.write(compound); writenbt(compound); return compound; }
+
+    @Override
+    public void remove()
+    {
+      super.remove();
+      item_handler_.invalidate();
+    }
 
     @Override
     public CompoundNBT getUpdateTag()
@@ -313,7 +364,7 @@ public class BlockDecorLabeledCrate
 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack)
-    { return (index != ITEMFRAME_SLOTNO); }
+    { return (index != ITEMFRAME_SLOTNO) && (!inacceptable(stack)); }
 
     @Override
     public void clear()
@@ -380,14 +431,15 @@ public class BlockDecorLabeledCrate
 
       @Override
       public boolean isItemValid(int slot, @Nonnull ItemStack stack)
-      { return true; }
+      { return te.isItemValidForSlot(slot, stack); }
 
       @Override
       @Nonnull
       public ItemStack insertItem(int slotno, @Nonnull ItemStack stack, boolean simulate)
       {
         if(stack.isEmpty()) return ItemStack.EMPTY;
-        if((slotno < 0) || ((slotno >= NUM_OF_SLOTS)) || ((slotno == ITEMFRAME_SLOTNO)) ) return ItemStack.EMPTY;
+        if((slotno < 0) || ((slotno >= NUM_OF_SLOTS)) || ((slotno == ITEMFRAME_SLOTNO)) ) return stack;
+        if((!isItemValid(slotno, stack))) return stack;
         ItemStack slotstack = getStackInSlot(slotno);
         if(!slotstack.isEmpty()) {
           if(slotstack.getCount() >= Math.min(slotstack.getMaxStackSize(), getSlotLimit(slotno))) return stack;
@@ -456,9 +508,7 @@ public class BlockDecorLabeledCrate
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
-      if(!this.removed) {
-        if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handler_.cast();
-      }
+      if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handler_.cast();
       return super.getCapability(capability, facing);
     }
   }
@@ -478,11 +528,19 @@ public class BlockDecorLabeledCrate
       @Override
       public int getSlotStackLimit()
       { return 64; }
+
+      @Override
+      public boolean isItemValid(ItemStack stack)
+      { return !LabeledCrateTileEntity.inacceptable(stack); }
     }
 
     //------------------------------------------------------------------------------------------------------------------
     private static final int PLAYER_INV_START_SLOTNO = LabeledCrateTileEntity.NUM_OF_SLOTS;
     private static final int NUM_OF_CONTAINER_SLOTS = LabeledCrateTileEntity.NUM_OF_SLOTS + 36;
+    protected static final int STORAGE_SLOT_BEGIN = 0;
+    protected static final int STORAGE_SLOT_END = LabeledCrateTileEntity.ITEMFRAME_SLOTNO;
+    protected static final int PLAYER_SLOT_BEGIN = LabeledCrateTileEntity.NUM_OF_SLOTS;
+    protected static final int PLAYER_SLOT_END = LabeledCrateTileEntity.NUM_OF_SLOTS+36;
     protected final PlayerEntity player_;
     protected final IInventory inventory_;
     protected final IWorldPosCallable wpc_;
@@ -570,7 +628,6 @@ public class BlockDecorLabeledCrate
       return transferred;
     }
 
-
     // Container client/server synchronisation --------------------------------------------------
 
     @OnlyIn(Dist.CLIENT)
@@ -583,11 +640,6 @@ public class BlockDecorLabeledCrate
     @Override
     public void onServerPacketReceived(int windowId, CompoundNBT nbt)
     {}
-
-    protected static final int STORAGE_SLOT_BEGIN = 0;
-    protected static final int STORAGE_SLOT_END = LabeledCrateTileEntity.ITEMFRAME_SLOTNO;
-    protected static final int PLAYER_SLOT_BEGIN = LabeledCrateTileEntity.NUM_OF_SLOTS;
-    protected static final int PLAYER_SLOT_END = LabeledCrateTileEntity.NUM_OF_SLOTS+36;
 
     @Override
     public void onClientPacketReceived(int windowId, PlayerEntity player, CompoundNBT nbt)
@@ -683,7 +735,6 @@ public class BlockDecorLabeledCrate
       blit(x0, y0, 0, 0, w, h);
     }
 
-
     //------------------------------------------------------------------------------------------------------------------
 
     protected void action(String message)
@@ -697,7 +748,7 @@ public class BlockDecorLabeledCrate
     {
       if(!with_gui_mouse_handling) {
         super.handleMouseClick(slot, slotId, button, type);
-      } else if((type == ClickType.QUICK_MOVE) && slot.getHasStack() && Auxiliaries.isShiftDown() && Auxiliaries.isCtrlDown()) {
+      } else if((type == ClickType.QUICK_MOVE) && (slot!=null) && slot.getHasStack() && Auxiliaries.isShiftDown() && Auxiliaries.isCtrlDown()) {
         CompoundNBT nbt = new CompoundNBT();
         nbt.putInt("slot", slotId);
         action(QUICK_MOVE_ALL, nbt);

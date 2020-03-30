@@ -213,6 +213,13 @@ public class BlockDecorTest extends StandardBlocks.Directed implements IExperime
       return nbt;
     }
 
+    @Override
+    public void remove()
+    {
+      super.remove();
+      fluid_handler_.invalidate();
+    }
+
     // ICapabilityProvider --------------------------------------------------------------------
 
     private LazyOptional<IFluidHandler> fluid_handler_ = LazyOptional.of(() -> (IFluidHandler)new MainFluidHandler(this));
@@ -220,10 +227,9 @@ public class BlockDecorTest extends StandardBlocks.Directed implements IExperime
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
-      if(!this.removed && (facing != null)) {
-        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-          if(facing != block_facing()) return fluid_handler_.cast();
-        }
+      if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+        if(facing != block_facing()) return fluid_handler_.cast();
+        return LazyOptional.empty();
       }
       return super.getCapability(capability, facing);
     }

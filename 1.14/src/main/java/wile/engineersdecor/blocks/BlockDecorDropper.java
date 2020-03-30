@@ -54,6 +54,7 @@ import net.minecraftforge.items.IItemHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -308,6 +309,13 @@ public class BlockDecorDropper extends StandardBlocks.Directed implements IDecor
     public CompoundNBT write(CompoundNBT nbt)
     { super.write(nbt); writenbt(nbt, false); return nbt; }
 
+    @Override
+    public void remove()
+    {
+      super.remove();
+      Arrays.stream(item_handlers).forEach(LazyOptional::invalidate);
+    }
+
     // INamable ----------------------------------------------------------------------------------------------
 
     @Override
@@ -465,9 +473,7 @@ public class BlockDecorDropper extends StandardBlocks.Directed implements IDecor
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
-      if(!this.removed && (facing != null)) {
-        if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handlers[0].cast();
-      }
+      if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handlers[0].cast();
       return super.getCapability(capability, facing);
     }
 

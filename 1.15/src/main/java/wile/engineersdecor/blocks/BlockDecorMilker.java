@@ -237,6 +237,14 @@ public class BlockDecorMilker extends BlockDecor.Horizontal implements IDecorBlo
     public CompoundNBT write(CompoundNBT nbt)
     { super.write(nbt); writenbt(nbt, false); return nbt; }
 
+    @Override
+    public void remove()
+    {
+      super.remove();
+      energy_handler_.invalidate();
+      fluid_handler_.invalidate();
+    }
+
     // IEnergyStorage ----------------------------------------------------------------------------
 
     protected LazyOptional<IEnergyStorage> energy_handler_ = LazyOptional.of(() -> (IEnergyStorage)this);
@@ -321,13 +329,8 @@ public class BlockDecorMilker extends BlockDecor.Horizontal implements IDecorBlo
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
-      if(!this.removed && (facing != null)) {
-        if((capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) && has_milk_fluid()) {
-          return fluid_handler_.cast();
-        } else if((capability == CapabilityEnergy.ENERGY) && (energy_consumption>0)) {
-          return energy_handler_.cast();
-        }
-      }
+      if((capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) && has_milk_fluid()) return fluid_handler_.cast();
+      if((capability == CapabilityEnergy.ENERGY) && (energy_consumption>0)) return energy_handler_.cast();
       return super.getCapability(capability, facing);
     }
 

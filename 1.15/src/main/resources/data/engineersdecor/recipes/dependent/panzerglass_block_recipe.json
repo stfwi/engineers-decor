@@ -6,20 +6,19 @@
         {
           "type": "engineersdecor:optional",
           "result": "engineersdecor:panzerglass_block",
-          "required": ["#forge:glass", "#forge:rods/steel", "#forge:gems/diamond"]
+          "required": ["#forge:glass", "#forge:rods/iron"]
         }
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
         "pattern": [
           "SGS",
-          "GDG",
+          "GSG",
           "SGS"
         ],
         "key": {
           "G": { "tag": "forge:glass" },
-          "S": { "tag": "forge:rods/steel" },
-          "D": { "tag": "forge:gems/diamond" }
+          "S": { "tag": "forge:rods/iron" }
         },
         "result": {
           "item": "engineersdecor:panzerglass_block",

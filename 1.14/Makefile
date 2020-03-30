@@ -30,7 +30,7 @@ default: mod
 
 all: clean clean-all mod | install
 
-mod: data
+mod:
 	@echo "[1.14] Building mod using gradle ..."
 	@$(GRADLE) build $(GRADLE_OPTS)
 
@@ -78,7 +78,7 @@ dist-check:
 	@echo "[1.14] Running dist checks ..."
 	@djs tasks.js dist-check
 
-dist-files: clean-all init mod
+dist-files: clean-all init data mod
 	@echo "[1.14] Distribution files ..."
 	@mkdir -p dist
 	@cp build/libs/$(MOD_JAR_PREFIX)* dist/

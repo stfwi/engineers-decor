@@ -45,7 +45,7 @@ public class Auxiliaries
 {
   private static String modid;
   private static Logger logger;
-  private static Supplier<CompoundNBT> server_config_supplier = ()->new CompoundNBT();
+  private static Supplier<CompoundNBT> server_config_supplier = CompoundNBT::new;
 
   public static void init(String modid, Logger logger, Supplier<CompoundNBT> server_config_supplier)
   {
@@ -63,6 +63,13 @@ public class Auxiliaries
 
   public static Logger logger()
   { return logger; }
+
+  public static void debug(Object... params)
+  {
+    StringBuilder sb = new StringBuilder();
+    for(Object o:params) sb.append((o==null) ? "<null>" : o.toString()).append(' ');
+    logger().info(sb.toString().trim());
+  }
 
   // -------------------------------------------------------------------------------------------------------------------
   // Sideness, system/environment, tagging interfaces

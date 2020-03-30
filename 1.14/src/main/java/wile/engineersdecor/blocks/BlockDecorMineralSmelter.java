@@ -340,6 +340,15 @@ public class BlockDecorMineralSmelter extends StandardBlocks.Horizontal implemen
     public CompoundNBT write(CompoundNBT nbt)
     { super.write(nbt); writenbt(nbt); return nbt; }
 
+    @Override
+    public void remove()
+    {
+      super.remove();
+      energy_handler_.invalidate();
+      fluid_handler_.invalidate();
+      item_handler_.invalidate();
+    }
+
     // INamedContainerProvider / INameable ------------------------------------------------------
 
     @Override
@@ -543,15 +552,9 @@ public class BlockDecorMineralSmelter extends StandardBlocks.Horizontal implemen
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
-      if(!this.removed && (facing != null)) {
-        if(capability== CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-          return item_handler_.cast();
-        } else if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-          return fluid_handler_.cast();
-        } else if(capability== CapabilityEnergy.ENERGY) {
-          return energy_handler_.cast();
-        }
-      }
+      if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handler_.cast();
+      if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) return fluid_handler_.cast();
+      if(capability == CapabilityEnergy.ENERGY) return energy_handler_.cast();
       return super.getCapability(capability, facing);
     }
 

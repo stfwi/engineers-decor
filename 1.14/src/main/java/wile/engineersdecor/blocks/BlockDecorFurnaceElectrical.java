@@ -55,6 +55,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.Random;
 
 
@@ -219,6 +220,15 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace implements ID
     @Override
     public CompoundNBT write(CompoundNBT nbt)
     { super.write(nbt); writenbt(nbt); return nbt; }
+
+    @Override
+    public void remove()
+    {
+      super.remove();
+      Arrays.stream(item_handlers).forEach(LazyOptional::invalidate);
+      item_handler_.invalidate();
+      energy_handler_.invalidate();
+    }
 
     // INameable -------------------------------------------------------------------------------
 
@@ -443,10 +453,8 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace implements ID
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
-      if(!this.removed && (facing != null)) {
-        if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handler_.cast();
-        if(capability== CapabilityEnergy.ENERGY) return energy_handler_.cast();
-      }
+      if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handler_.cast();
+      if(capability == CapabilityEnergy.ENERGY) return energy_handler_.cast();
       return super.getCapability(capability, facing);
     }
 

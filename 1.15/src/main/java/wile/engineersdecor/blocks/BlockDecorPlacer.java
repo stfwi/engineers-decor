@@ -50,6 +50,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -254,6 +255,13 @@ public class BlockDecorPlacer extends BlockDecor.Directed implements IDecorBlock
     public CompoundNBT write(CompoundNBT nbt)
     { super.write(nbt); writenbt(nbt, false); return nbt; }
 
+    @Override
+    public void remove()
+    {
+      super.remove();
+      Arrays.stream(item_handlers).forEach(LazyOptional::invalidate);
+    }
+
     // INamable ----------------------------------------------------------------------------------------------
 
     @Override
@@ -390,9 +398,7 @@ public class BlockDecorPlacer extends BlockDecor.Directed implements IDecorBlock
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
-      if(!this.removed && (facing != null)) {
-        if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handlers[0].cast();
-      }
+      if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handlers[0].cast();
       return super.getCapability(capability, facing);
     }
 

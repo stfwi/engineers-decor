@@ -1,5 +1,6 @@
 // @file build.gradle
 // Engineer's decor mod gradle build relay (mc1.14.4)
+import net.minecraftforge.gradle.common.task.SignJar
 buildscript {
   repositories {
     maven { url = 'https://files.minecraftforge.net/maven' }
@@ -14,7 +15,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
-//-----------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 version = "${version_engineersdecor}"
 group = "wile.engineersdecor"
 archivesBaseName = "engineersdecor-${version_minecraft}"
@@ -89,6 +90,29 @@ jar {
 
 def reobfFile = file("$buildDir/reobfJar/output.jar")
 def reobfArtifact = artifacts.add('default', reobfFile) { type 'jar'; builtBy 'reobfJar'; }
+
+def signing = { ->
+  def sp = new Properties()
+  sp.keystore_file = project.keystore_file
+  sp.keystore_alias = project.keystore_alias
+  sp.keystore_pass = project.keystore_pass
+  sp.keystore_keypass = project.keystore_keypass
+  sp.fingerprint_sha1 = project.fingerprint_sha1
+  if(file("signing.properties").exists()) file("signing.properties").withInputStream { sp.load(it) }
+  return sp
+}();
+task signJar(type: SignJar, dependsOn: jar) {
+  onlyIf { signing.hasProperty("keystore_file") }
+  if(signing.hasProperty("keystore_file")) {
+    keyStore = signing.getProperty("keystore_file")
+    alias = signing.getProperty("keystore_alias")
+    storePass = signing.getProperty("keystore_pass")
+    keyPass = signing.getProperty("keystore_keypass")
+    inputFile = jar.archivePath
+    outputFile = jar.archivePath
+  }
+}
+build.dependsOn signJar
 
 publishing {
   publications { mavenJava(MavenPublication) { artifact reobfArtifact } }

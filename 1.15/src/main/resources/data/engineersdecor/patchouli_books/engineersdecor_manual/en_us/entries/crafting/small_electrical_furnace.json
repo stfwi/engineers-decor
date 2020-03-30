@@ -2,7 +2,7 @@
   "name": "Small Electrical Furnace",
   "icon": "engineersdecor:small_electrical_furnace",
   "category": "crafting",
-  "sortnum": 5030,
+  "sortnum": 5040,
   "pages": [
     {
       "type": "spotlight",

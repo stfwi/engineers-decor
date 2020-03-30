@@ -236,6 +236,14 @@ public class BlockDecorWasteIncinerator extends BlockDecor implements IDecorBloc
     public CompoundNBT write(CompoundNBT compound)
     { super.write(compound); writenbt(compound); return compound; }
 
+    @Override
+    public void remove()
+    {
+      super.remove();
+      energy_handler_.invalidate();
+      item_handler_.invalidate();
+    }
+
     // INameable  ---------------------------------------------------------------------------
 
     @Override
@@ -478,10 +486,8 @@ public class BlockDecorWasteIncinerator extends BlockDecor implements IDecorBloc
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
-      if(!this.removed && (facing != null)) {
-        if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handler_.cast();
-        if(capability== CapabilityEnergy.ENERGY) return energy_handler_.cast();
-      }
+      if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handler_.cast();
+      if(capability == CapabilityEnergy.ENERGY) return energy_handler_.cast();
       return super.getCapability(capability, facing);
     }
 

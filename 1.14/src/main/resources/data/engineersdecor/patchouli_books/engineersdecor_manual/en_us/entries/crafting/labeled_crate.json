@@ -1,0 +1,18 @@
+{
+  "name": "Labeled Crate",
+  "icon": "engineersdecor:labeled_crate",
+  "category": "crafting",
+  "sortnum": 5020,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "Labeled Crate",
+      "item": "engineersdecor:labeled_crate",
+      "text": "A high capacity storage crate with space for a custom label at the front.$(br2)In addition to the 54 inventory slots, one slot at the bottom right can be used to define the object shown in the built-in Item Frame."
+    },
+    {
+      "type": "text",
+      "text": "$(o)§nQuick Move All Tweaks$()$(br)When using Quick-Move-All (aka shift-ctrl-left-click) on a slot for moving all identical items between the crate storage and the player inventory, the GUI will fill up existing stacks, and then try to insert further stacks into empty slots next to already existing stacks. If no appropriate locations are found, the stacks are moved into the player inventory, and as last option into the hotbar."
+    }
+  ]
+}

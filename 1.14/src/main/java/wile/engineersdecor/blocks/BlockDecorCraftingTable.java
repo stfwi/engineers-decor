@@ -1567,7 +1567,6 @@ public class BlockDecorCraftingTable
     { super(inv, index, x, y); }
   }
 
-
   // Crafting inventory (needed to allow SlotCrafting to have a InventoryCrafting) -----------------------------------
   private static class CraftingTableGrid extends CraftingInventory
   {

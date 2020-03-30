@@ -191,6 +191,13 @@ public class BlockDecorBreaker extends StandardBlocks.HorizontalWaterLoggable im
     public CompoundNBT write(CompoundNBT nbt)
     { super.write(nbt); writenbt(nbt); return nbt; }
 
+    @Override
+    public void remove()
+    {
+      super.remove();
+      energy_handler_.invalidate();
+    }
+
     // IEnergyStorage ----------------------------------------------------------------------------
 
     protected LazyOptional<IEnergyStorage> energy_handler_ = LazyOptional.of(() -> (IEnergyStorage)this);
@@ -228,11 +235,7 @@ public class BlockDecorBreaker extends StandardBlocks.HorizontalWaterLoggable im
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
-      if(!this.removed && (facing != null)) {
-        if(capability== CapabilityEnergy.ENERGY) {
-          return energy_handler_.cast();
-        }
-      }
+      if(capability == CapabilityEnergy.ENERGY) return energy_handler_.cast();
       return super.getCapability(capability, facing);
     }
 

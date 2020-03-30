@@ -1,5 +1,5 @@
 /*
- * @file BlockDecorFull.java
+ * @file StandardBlocks.java
  * @author Stefan Wilhelm (wile)
  * @copyright (C) 2019 Stefan Wilhelm
  * @license MIT (see https://opensource.org/licenses/MIT)
@@ -12,9 +12,6 @@
  */
 package wile.engineersdecor.libmc.blocks;
 
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.IBooleanFunction;
-import net.minecraft.world.server.ServerWorld;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import net.minecraft.block.*;
 import net.minecraft.entity.EntityType;
@@ -27,13 +24,16 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;

@@ -71,7 +71,7 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecor.Directed imple
   public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean unused)
   {
     TileEntity te = world.getTileEntity(pos);
-    if(te instanceof BlockDecorPipeValve.BTileEntity) ((BTileEntity)te).block_changed();
+    if(te instanceof BTileEntity) ((BTileEntity)te).block_changed();
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -122,6 +122,14 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecor.Directed imple
       super.write(nbt);
       if(!tank_.isEmpty()) nbt.put("tank", tank_.writeToNBT(new CompoundNBT()));
       return nbt;
+    }
+
+    @Override
+    public void remove()
+    {
+      super.remove();
+      fill_handler_.invalidate();
+      fluid_handler_.invalidate();
     }
 
     // Input flow handler ---------------------------------------------------------------------
@@ -181,11 +189,12 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecor.Directed imple
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
-      if((initialized_) && (!this.removed) && (facing != null)) {
-        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+      if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+        if(initialized_) {
           if(facing == block_facing_) return fluid_handler_.cast();
-          return fill_handler_.cast();
+          if(facing != null) return fill_handler_.cast();
         }
+        return LazyOptional.empty();
       }
       return super.getCapability(capability, facing);
     }

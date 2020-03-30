@@ -2,7 +2,7 @@
   "name": "Mineral Melting Furnace",
   "icon": "engineersdecor:small_mineral_smelter",
   "category": "crafting",
-  "sortnum": 5040,
+  "sortnum": 5050,
   "pages": [
     {
       "type": "spotlight",
