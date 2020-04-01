@@ -549,7 +549,7 @@ public class ModConfig
       if(block instanceof BlockDecorHopper.DecorHopperBlock) return COMMON.without_factory_hopper.get();
       if(block instanceof BlockDecorFluidFunnel) return COMMON.without_fluid_funnel.get();
       if(block instanceof BlockDecorSolarPanel) return COMMON.without_solar_panel.get();
-      if(block instanceof BlockDecorMineralSmelter) return COMMON.without_mineral_smelter.get();
+      if(block instanceof BlockDecorMineralSmelter.DecorMineralSmelterBlock) return COMMON.without_mineral_smelter.get();
       if(block instanceof BlockDecorMilker) return COMMON.without_milking_machine.get();
       if(block instanceof BlockDecorTreeCutter) return COMMON.without_tree_cutter.get();
       // Type based evaluation where later filters may match, too

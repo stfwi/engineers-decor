@@ -54,153 +54,160 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 
-public class BlockDecorMineralSmelter extends StandardBlocks.Horizontal implements IDecorBlock
+public class BlockDecorMineralSmelter
 {
-  public static final int PHASE_MAX = 3;
-  public static final IntegerProperty PHASE = IntegerProperty.create("phase", 0, PHASE_MAX);
+  //--------------------------------------------------------------------------------------------------------------------
+  // Block
+  //--------------------------------------------------------------------------------------------------------------------
 
-  public BlockDecorMineralSmelter(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
-  { super(config, builder, unrotatedAABB); }
-
-  @Override
-  protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-  { super.fillStateContainer(builder); builder.add(PHASE); }
-
-  @Override
-  @Nullable
-  public BlockState getStateForPlacement(BlockItemUseContext context)
-  { return super.getStateForPlacement(context).with(PHASE, 0); }
-
-  @Override
-  @SuppressWarnings("deprecation")
-  public boolean hasComparatorInputOverride(BlockState state)
-  { return true; }
-
-  @Override
-  @SuppressWarnings("deprecation")
-  public int getComparatorInputOverride(BlockState state, World world, BlockPos pos)
-  { return MathHelper.clamp((state.get(PHASE)*5), 0, 15); }
-
-  @Override
-  public boolean hasTileEntity(BlockState state)
-  { return true; }
-
-  @Override
-  @Nullable
-  public TileEntity createTileEntity(BlockState state, IBlockReader world)
-  { return new BlockDecorMineralSmelter.BTileEntity(); }
-
-  @Override
-  public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
-  {}
-
-  @Override
-  public boolean hasDynamicDropList()
-  { return true; }
-
-  @Override
-  public List<ItemStack> dropList(BlockState state, World world, BlockPos pos, boolean explosion)
+  public static class DecorMineralSmelterBlock extends StandardBlocks.Horizontal implements IDecorBlock
   {
-    final List<ItemStack> stacks = new ArrayList<ItemStack>();
-    if(world.isRemote) return stacks;
-    final BTileEntity te = getTe(world, pos);
-    if(te == null) return stacks;
-    te.reset_process();
-    stacks.add(new ItemStack(this, 1));
-    return stacks;
-  }
+    public static final int PHASE_MAX = 3;
+    public static final IntegerProperty PHASE = IntegerProperty.create("phase", 0, PHASE_MAX);
 
-  @Override
-  @SuppressWarnings("deprecation")
-  public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
-  {
-    if(world.isRemote) return true;
-    if(player.isSneaking()) return false;
-    BTileEntity te = getTe(world, pos);
-    if(te==null) return true;
-    final ItemStack stack = player.getHeldItem(hand);
-    boolean dirty = false;
-    if(te.accepts_lava_container(stack)) {
-      if(stack.isItemEqualIgnoreDurability(BTileEntity.BUCKET_STACK)) { // check how this works with item capabilities or so
-        if(te.fluid_level() >= BTileEntity.MAX_BUCKET_EXTRACT_FLUID_LEVEL) {
-          if(stack.getCount() > 1) {
-            int target_stack_index = -1;
-            for(int i=0; i<player.inventory.getSizeInventory(); ++i) {
-              if(player.inventory.getStackInSlot(i).isEmpty()) {
-                target_stack_index = i;
-                break;
+    public DecorMineralSmelterBlock(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
+    { super(config, builder, unrotatedAABB); }
+
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+    { super.fillStateContainer(builder); builder.add(PHASE); }
+
+    @Override
+    @Nullable
+    public BlockState getStateForPlacement(BlockItemUseContext context)
+    { return super.getStateForPlacement(context).with(PHASE, 0); }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public boolean hasComparatorInputOverride(BlockState state)
+    { return true; }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public int getComparatorInputOverride(BlockState state, World world, BlockPos pos)
+    { return MathHelper.clamp((state.get(PHASE)*5), 0, 15); }
+
+    @Override
+    public boolean hasTileEntity(BlockState state)
+    { return true; }
+
+    @Override
+    @Nullable
+    public TileEntity createTileEntity(BlockState state, IBlockReader world)
+    { return new BlockDecorMineralSmelter.DecorMineralSmelterTileEntity(); }
+
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    {}
+
+    @Override
+    public boolean hasDynamicDropList()
+    { return true; }
+
+    @Override
+    public List<ItemStack> dropList(BlockState state, World world, BlockPos pos, boolean explosion)
+    {
+      final List<ItemStack> stacks = new ArrayList<ItemStack>();
+      if(world.isRemote) return stacks;
+      final DecorMineralSmelterTileEntity te = getTe(world, pos);
+      if(te == null) return stacks;
+      te.reset_process();
+      stacks.add(new ItemStack(this, 1));
+      return stacks;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+    {
+      if(world.isRemote) return true;
+      if(player.isSneaking()) return false;
+      DecorMineralSmelterTileEntity te = getTe(world, pos);
+      if(te==null) return true;
+      final ItemStack stack = player.getHeldItem(hand);
+      boolean dirty = false;
+      if(te.accepts_lava_container(stack)) {
+        if(stack.isItemEqualIgnoreDurability(DecorMineralSmelterTileEntity.BUCKET_STACK)) { // check how this works with item capabilities or so
+          if(te.fluid_level() >= DecorMineralSmelterTileEntity.MAX_BUCKET_EXTRACT_FLUID_LEVEL) {
+            if(stack.getCount() > 1) {
+              int target_stack_index = -1;
+              for(int i=0; i<player.inventory.getSizeInventory(); ++i) {
+                if(player.inventory.getStackInSlot(i).isEmpty()) {
+                  target_stack_index = i;
+                  break;
+                }
               }
-            }
-            if(target_stack_index >= 0) {
+              if(target_stack_index >= 0) {
+                te.reset_process();
+                stack.shrink(1);
+                player.setHeldItem(hand, stack);
+                player.inventory.setInventorySlotContents(target_stack_index, DecorMineralSmelterTileEntity.LAVA_BUCKET_STACK.copy());
+                world.playSound(null, pos, SoundEvents.ITEM_BUCKET_FILL_LAVA, SoundCategory.BLOCKS, 1f, 1f);
+                dirty = true;
+              }
+            } else {
               te.reset_process();
-              stack.shrink(1);
-              player.setHeldItem(hand, stack);
-              player.inventory.setInventorySlotContents(target_stack_index, BTileEntity.LAVA_BUCKET_STACK.copy());
+              player.setHeldItem(hand, DecorMineralSmelterTileEntity.LAVA_BUCKET_STACK.copy());
               world.playSound(null, pos, SoundEvents.ITEM_BUCKET_FILL_LAVA, SoundCategory.BLOCKS, 1f, 1f);
               dirty = true;
             }
-          } else {
-            te.reset_process();
-            player.setHeldItem(hand, BTileEntity.LAVA_BUCKET_STACK.copy());
-            world.playSound(null, pos, SoundEvents.ITEM_BUCKET_FILL_LAVA, SoundCategory.BLOCKS, 1f, 1f);
-            dirty = true;
           }
         }
-      }
-    } else if(stack.isEmpty()) {
-      final ItemStack istack = te.getStackInSlot(1).copy();
-      if(te.phase() > BTileEntity.PHASE_WARMUP) player.setFire(1);
-      if(!istack.isEmpty()) {
-        istack.setCount(1);
-        player.setHeldItem(hand, istack);
-        te.reset_process();
+      } else if(stack.isEmpty()) {
+        final ItemStack istack = te.getStackInSlot(1).copy();
+        if(te.phase() > DecorMineralSmelterTileEntity.PHASE_WARMUP) player.setFire(1);
+        if(!istack.isEmpty()) {
+          istack.setCount(1);
+          player.setHeldItem(hand, istack);
+          te.reset_process();
+          dirty = true;
+        }
+      } else if(te.insert(stack.copy(),false)) {
+        stack.shrink(1);
         dirty = true;
       }
-    } else if(te.insert(stack.copy(),false)) {
-      stack.shrink(1);
-      dirty = true;
+      if(dirty) player.inventory.markDirty();
+      return true;
     }
-    if(dirty) player.inventory.markDirty();
-    return true;
-  }
 
-  @Override
-  @OnlyIn(Dist.CLIENT)
-  public void animateTick(BlockState state, World world, BlockPos pos, Random rnd)
-  {
-    if(state.getBlock()!=this) return;
-    IParticleData particle = ParticleTypes.SMOKE;
-    switch(state.get(PHASE)) {
-      case BTileEntity.PHASE_WARMUP:
-        return;
-      case BTileEntity.PHASE_HOT:
-        if(rnd.nextInt(10) > 4) return;
-        break;
-      case BTileEntity.PHASE_MAGMABLOCK:
-        if(rnd.nextInt(10) > 7) return;
-        particle = ParticleTypes.LARGE_SMOKE;
-        break;
-      case BTileEntity.PHASE_LAVA:
-        if(rnd.nextInt(10) > 2) return;
-        particle = ParticleTypes.LAVA;
-        break;
-      default:
-        return;
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void animateTick(BlockState state, World world, BlockPos pos, Random rnd)
+    {
+      if(state.getBlock()!=this) return;
+      IParticleData particle = ParticleTypes.SMOKE;
+      switch(state.get(PHASE)) {
+        case DecorMineralSmelterTileEntity.PHASE_WARMUP:
+          return;
+        case DecorMineralSmelterTileEntity.PHASE_HOT:
+          if(rnd.nextInt(10) > 4) return;
+          break;
+        case DecorMineralSmelterTileEntity.PHASE_MAGMABLOCK:
+          if(rnd.nextInt(10) > 7) return;
+          particle = ParticleTypes.LARGE_SMOKE;
+          break;
+        case DecorMineralSmelterTileEntity.PHASE_LAVA:
+          if(rnd.nextInt(10) > 2) return;
+          particle = ParticleTypes.LAVA;
+          break;
+        default:
+          return;
+      }
+      final double x=0.5+pos.getX(), y=0.5+pos.getY(), z=0.5+pos.getZ();
+      final double xr=rnd.nextDouble()*0.4-0.2, yr=rnd.nextDouble()*0.5, zr=rnd.nextDouble()*0.4-0.2;
+      world.addParticle(particle, x+xr, y+yr, z+zr, 0.0, 0.0, 0.0);
     }
-    final double x=0.5+pos.getX(), y=0.5+pos.getY(), z=0.5+pos.getZ();
-    final double xr=rnd.nextDouble()*0.4-0.2, yr=rnd.nextDouble()*0.5, zr=rnd.nextDouble()*0.4-0.2;
-    world.addParticle(particle, x+xr, y+yr, z+zr, 0.0, 0.0, 0.0);
-  }
 
-  @Nullable
-  private BTileEntity getTe(World world, BlockPos pos)
-  { final TileEntity te=world.getTileEntity(pos); return (!(te instanceof BTileEntity)) ? (null) : ((BTileEntity)te); }
+    @Nullable
+    private DecorMineralSmelterTileEntity getTe(World world, BlockPos pos)
+    { final TileEntity te=world.getTileEntity(pos); return (!(te instanceof DecorMineralSmelterTileEntity)) ? (null) : ((DecorMineralSmelterTileEntity)te); }
+  }
 
   //--------------------------------------------------------------------------------------------------------------------
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class BTileEntity extends TileEntity implements INameable, ITickableTileEntity, ISidedInventory, IEnergyStorage, ICapabilityProvider
+  public static class DecorMineralSmelterTileEntity extends TileEntity implements INameable, ITickableTileEntity, ISidedInventory, IEnergyStorage, ICapabilityProvider
   {
     public static final int TICK_INTERVAL = 20;
     public static final int MAX_FLUID_LEVEL = 1000;
@@ -217,12 +224,11 @@ public class BlockDecorMineralSmelter extends StandardBlocks.Horizontal implemen
     private static final ItemStack BUCKET_STACK = new ItemStack(Items.BUCKET);
     private static final ItemStack LAVA_BUCKET_STACK = new ItemStack(Items.LAVA_BUCKET);
     private static final FluidStack LAVA_BUCKET_FLUID_STACK = new FluidStack(Fluids.LAVA, 1000);
+    private static Set<Item> accepted_minerals = new HashSet<Item>();
+    private static Set<Item> accepted_lava_contrainers = new HashSet<Item>();
     private static int energy_consumption = DEFAULT_ENERGY_CONSUMPTION;
     private static int heatup_rate = DEFAULT_HEATUP_RATE;
     private static int cooldown_rate = 1;
-    private static Set<Item> accepted_minerals = new HashSet<Item>();
-    private static Set<Item> accepted_lava_contrainers = new HashSet<Item>();
-
     private int tick_timer_;
     private int energy_stored_;
     private int progress_;
@@ -235,18 +241,18 @@ public class BlockDecorMineralSmelter extends StandardBlocks.Horizontal implemen
       accepted_lava_contrainers.add(Items.BUCKET);
     }
 
-    public static void on_config(int energy_consumption, int heatup_per_second)
+    public static void on_config(int consumption, int heatup_per_second)
     {
-      energy_consumption = MathHelper.clamp(energy_consumption, 8, 4096);
+      energy_consumption = MathHelper.clamp(consumption, 8, 4096);
       heatup_rate = MathHelper.clamp(heatup_per_second, 1, 5);
       cooldown_rate = MathHelper.clamp(heatup_per_second/2, 1, 5);
       ModEngineersDecor.logger().info("Config mineal smelter energy consumption:" + energy_consumption + "rf/t, heat-up rate: " + heatup_rate + "%/s.");
     }
 
-    public BTileEntity()
+    public DecorMineralSmelterTileEntity()
     { this(ModContent.TET_MINERAL_SMELTER); }
 
-    public BTileEntity(TileEntityType<?> te_type)
+    public DecorMineralSmelterTileEntity(TileEntityType<?> te_type)
     { super(te_type); }
 
     public int progress()
@@ -267,7 +273,7 @@ public class BlockDecorMineralSmelter extends StandardBlocks.Horizontal implemen
     { amount = MathHelper.clamp(amount, 0, fluid_level_); fluid_level_ -= amount; return amount; }
 
     public int comparator_signal()
-    { return phase() * 5; } // -> 0..15
+    { return phase() * 5; }
 
     private boolean accepts_lava_container(ItemStack stack)
     { return accepted_lava_contrainers.contains(stack.getItem()); }
@@ -439,9 +445,9 @@ public class BlockDecorMineralSmelter extends StandardBlocks.Horizontal implemen
 
     protected static class BItemHandler implements IItemHandler
     {
-      private BTileEntity te;
+      private DecorMineralSmelterTileEntity te;
 
-      BItemHandler(BTileEntity te)
+      BItemHandler(DecorMineralSmelterTileEntity te)
       { this.te = te; }
 
       @Override
@@ -484,9 +490,9 @@ public class BlockDecorMineralSmelter extends StandardBlocks.Horizontal implemen
     private static class BFluidHandler implements IFluidHandler
     {
       private final FluidStack lava;
-      private final BTileEntity te;
+      private final DecorMineralSmelterTileEntity te;
 
-      BFluidHandler(BTileEntity te)
+      BFluidHandler(DecorMineralSmelterTileEntity te)
       { this.te = te; lava = new net.minecraftforge.fluids.FluidStack(net.minecraft.fluid.Fluids.LAVA, 1); }
 
       @Override public int getTanks() { return 1; }
@@ -497,19 +503,14 @@ public class BlockDecorMineralSmelter extends StandardBlocks.Horizontal implemen
 
       @Override
       public FluidStack drain(FluidStack resource, FluidAction action)
-      {
-        if(!resource.isFluidEqual(lava) || (te.fluid_level() <= 0)) return FluidStack.EMPTY;
-        FluidStack stack = new FluidStack(lava, te.fluid_level());
-        if(action == FluidAction.EXECUTE) te.fluid_level_drain(te.fluid_level());
-        return stack;
-      }
+      { return resource.isFluidEqual(lava) ? drain(resource.getAmount(), action) : FluidStack.EMPTY; }
 
       @Override
       public FluidStack drain(int maxDrain, FluidAction action)
       {
-        if(te.fluid_level() <= 0) return FluidStack.EMPTY;
-        maxDrain = (action==FluidAction.EXECUTE) ? (te.fluid_level_drain(maxDrain)) : (Math.min(maxDrain, te.fluid_level()));
-        return new FluidStack(lava, maxDrain);
+        maxDrain = Math.min(maxDrain, te.fluid_level());
+        if(action == FluidAction.EXECUTE) te.fluid_level_ -= maxDrain;
+        return (maxDrain > 0) ? (new FluidStack(lava, maxDrain)) : FluidStack.EMPTY;
       }
     }
 
@@ -656,8 +657,8 @@ public class BlockDecorMineralSmelter extends StandardBlocks.Horizontal implemen
       }
       // Block state
       BlockState state = world.getBlockState(pos);
-      if((state.getBlock() instanceof BlockDecorMineralSmelter) && (force_block_update_ || (state.get(PHASE) != new_phase))) {
-        state = state.with(PHASE, new_phase);
+      if((state.getBlock() instanceof DecorMineralSmelterBlock) && (force_block_update_ || (state.get(DecorMineralSmelterBlock.PHASE) != new_phase))) {
+        state = state.with(DecorMineralSmelterBlock.PHASE, new_phase);
         world.setBlockState(pos, state,3|16);
         world.notifyNeighborsOfStateChange(getPos(), state.getBlock());
         force_block_update_ = false;
@@ -665,5 +666,4 @@ public class BlockDecorMineralSmelter extends StandardBlocks.Horizontal implemen
       if(dirty) markDirty();
     }
   }
-
 }

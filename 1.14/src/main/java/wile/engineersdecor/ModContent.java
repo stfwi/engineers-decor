@@ -492,7 +492,7 @@ public class ModContent
     Auxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_waste_incinerator"));
 
-  public static final BlockDecorMineralSmelter SMALL_MINERAL_SMELTER = (BlockDecorMineralSmelter)(new BlockDecorMineralSmelter(
+  public static final BlockDecorMineralSmelter.DecorMineralSmelterBlock SMALL_MINERAL_SMELTER = (BlockDecorMineralSmelter.DecorMineralSmelterBlock)(new BlockDecorMineralSmelter.DecorMineralSmelterBlock(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
     Auxiliaries.getPixeledAABB(1.1,0,1.1, 14.9,16,14.9)
@@ -813,7 +813,7 @@ public class ModContent
     .setRegistryName(ModEngineersDecor.MODID, "te_small_fluid_funnel");
 
   public static final TileEntityType<?> TET_MINERAL_SMELTER = TileEntityType.Builder
-    .create(BlockDecorMineralSmelter.BTileEntity::new, SMALL_MINERAL_SMELTER)
+    .create(BlockDecorMineralSmelter.DecorMineralSmelterTileEntity::new, SMALL_MINERAL_SMELTER)
     .build(null)
     .setRegistryName(ModEngineersDecor.MODID, "te_small_mineral_smelter");
 
