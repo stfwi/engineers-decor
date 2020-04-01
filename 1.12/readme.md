@@ -10,7 +10,7 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
-    ~ v1.0.20-b3  [F]
+    ~ v1.0.20-b3  [F] Fixed TE registration bug for Crate registry-optout (issue #91, thx tyon2006).
 
     - v1.0.20-b2  [A] Backported Electrical Furnace GUI speed selection switch.
                   [A] Backported Labeled Crate (storage crate with built-in item frame).

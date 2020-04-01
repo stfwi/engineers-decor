@@ -11,6 +11,8 @@ Mod sources for Minecraft version 1.15.1.
 
 ## Version history
 
+    ~ v1.0.20-b4  [M]
+
     - v1.0.20-b3  [M] Labeled Crate: GUI quick-move-all (ctrl-shift click) smart move tweaked, Manual page added.
                   [F] Fixed IE ingredients based default recipes for Factory Dropper and Small Electrical Furnace.
                   [M] Factory Hopper: GUI quick-move-all added.

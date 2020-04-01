@@ -30,7 +30,9 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -479,59 +481,62 @@ public class ModContent
   {
     public final Class<? extends TileEntity> clazz;
     public final ResourceLocation key;
-    public TileEntityRegistrationData(Class<? extends TileEntity> c, String k) { clazz=c; key = new ResourceLocation(ModEngineersDecor.MODID, k); }
+    public final Block[] blocks;
+
+    public TileEntityRegistrationData(Class<? extends TileEntity> c, String k, Block... b)
+    { clazz=c; key = new ResourceLocation(ModEngineersDecor.MODID, k); blocks=b; }
   }
 
   private static final TileEntityRegistrationData TREATED_WOOD_CRAFTING_TABLE_TEI = new TileEntityRegistrationData(
-    BlockDecorCraftingTable.BTileEntity.class, "te_crafting_table"
+    BlockDecorCraftingTable.BTileEntity.class, "te_crafting_table", TREATED_WOOD_CRAFTING_TABLE
   );
   private static final TileEntityRegistrationData LABELED_CRATE_TEI = new TileEntityRegistrationData(
-    BlockDecorLabeledCrate.LabeledCrateTileEntity.class, "te_labeled_crate"
+    BlockDecorLabeledCrate.LabeledCrateTileEntity.class, "te_labeled_crate", LABELED_CRATE
   );
   private static final TileEntityRegistrationData SMALL_LAB_FURNACE_TEI = new TileEntityRegistrationData(
-    BlockDecorFurnace.BTileEntity.class, "te_small_lab_furnace"
+    BlockDecorFurnace.BTileEntity.class, "te_small_lab_furnace", SMALL_ELECTRICAL_FURNACE
   );
   private static final TileEntityRegistrationData SMALL_ELECTRICAL_FURNACE_TEI = new TileEntityRegistrationData(
-    BlockDecorFurnaceElectrical.BTileEntity.class, "te_electrical_lab_furnace"
+    BlockDecorFurnaceElectrical.BTileEntity.class, "te_electrical_lab_furnace", SMALL_ELECTRICAL_FURNACE
   );
   private static final TileEntityRegistrationData STRAIGHT_PIPE_VALVE_TEI = new TileEntityRegistrationData(
-    BlockDecorPipeValve.BTileEntity.class, "te_pipe_valve"
+    BlockDecorPipeValve.BTileEntity.class, "te_pipe_valve", STRAIGHT_CHECK_VALVE,STRAIGHT_REDSTONE_ANALOG_VALVE,STRAIGHT_REDSTONE_VALVE
   );
   private static final TileEntityRegistrationData PASSIVE_FLUID_ACCUMULATOR_TEI = new TileEntityRegistrationData(
-    BlockDecorPassiveFluidAccumulator.BTileEntity.class, "te_passive_fluid_accumulator"
+    BlockDecorPassiveFluidAccumulator.BTileEntity.class, "te_passive_fluid_accumulator", PASSIVE_FLUID_ACCUMULATOR
   );
   private static final TileEntityRegistrationData SMALL_FLUID_FUNNEL_TEI = new TileEntityRegistrationData(
-    BlockDecorFluidFunnel.BTileEntity.class, "te_small_fluid_funnel"
+    BlockDecorFluidFunnel.BTileEntity.class, "te_small_fluid_funnel", SMALL_FLUID_FUNNEL
   );
   private static final TileEntityRegistrationData WASTE_INCINERATOR_TEI = new TileEntityRegistrationData(
-    BlockDecorWasteIncinerator.BTileEntity.class, "te_small_waste_incinerator"
+    BlockDecorWasteIncinerator.BTileEntity.class, "te_small_waste_incinerator", SMALL_WASTE_INCINERATOR
   );
   private static final TileEntityRegistrationData FACTORY_DROPPER_TEI = new TileEntityRegistrationData(
-    BlockDecorDropper.BTileEntity.class, "te_factory_dropper"
+    BlockDecorDropper.BTileEntity.class, "te_factory_dropper", FACTORY_DROPPER
   );
   private static final TileEntityRegistrationData FACTORY_HOPPER_TEI = new TileEntityRegistrationData(
-    BlockDecorHopper.BTileEntity.class, "te_factory_hopper"
+    BlockDecorHopper.BTileEntity.class, "te_factory_hopper", FACTORY_HOPPER
   );
   private static final TileEntityRegistrationData FACTORY_PLACER_TEI = new TileEntityRegistrationData(
-    BlockDecorPlacer.BTileEntity.class, "te_factory_placer"
+    BlockDecorPlacer.BTileEntity.class, "te_factory_placer", FACTORY_PLACER
   );
   private static final TileEntityRegistrationData SMALL_MINERAL_SMELTER_TEI = new TileEntityRegistrationData(
-    BlockDecorMineralSmelter.BTileEntity.class, "te_small_mineral_smelter"
+    BlockDecorMineralSmelter.BTileEntity.class, "te_small_mineral_smelter", SMALL_MINERAL_SMELTER
   );
   private static final TileEntityRegistrationData SMALL_MILKING_MACHINE_TEI = new TileEntityRegistrationData(
-    BlockDecorMilker.BTileEntity.class, "te_small_milking_machine"
+    BlockDecorMilker.BTileEntity.class, "te_small_milking_machine", SMALL_MILKING_MACHINE
   );
   private static final TileEntityRegistrationData SMALL_SOLAR_PANEL_TEI = new TileEntityRegistrationData(
-    BlockDecorSolarPanel.BTileEntity.class, "te_small_solar_panel"
+    BlockDecorSolarPanel.BTileEntity.class, "te_small_solar_panel", SMALL_SOLAR_PANEL
   );
   private static final TileEntityRegistrationData SMALL_TREE_CUTTER_TEI = new TileEntityRegistrationData(
-    BlockDecorTreeCutter.BTileEntity.class, "te_small_tree_cutter"
+    BlockDecorTreeCutter.BTileEntity.class, "te_small_tree_cutter", SMALL_TREE_CUTTER
   );
   private static final TileEntityRegistrationData SMALL_BLOCK_BREAKER_TEI = new TileEntityRegistrationData(
-    BlockDecorBreaker.BTileEntity.class, "te_small_block_breaker"
+    BlockDecorBreaker.BTileEntity.class, "te_small_block_breaker", SMALL_BLOCK_BREAKER
   );
   private static final TileEntityRegistrationData TEST_BLOCK_TEI = new TileEntityRegistrationData(
-    BlockDecorTest.BTileEntity.class, "te_testblock"
+    BlockDecorTest.BTileEntity.class, "te_testblock", TEST_BLOCK
   );
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -682,6 +687,7 @@ public class ModContent
         }
         registeredBlocks.add((Block) e);
       } else if(e instanceof TileEntityRegistrationData) {
+        if((woor) && Arrays.stream(((TileEntityRegistrationData)e).blocks).allMatch(ModConfig::isOptedOut)) continue;
         registeredTileEntityInits.add((TileEntityRegistrationData)e);
       }
     }
