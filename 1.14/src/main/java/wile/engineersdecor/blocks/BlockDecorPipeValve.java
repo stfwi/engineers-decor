@@ -246,22 +246,14 @@ public class BlockDecorPipeValve
         if(te.filling_) return 0;
         final IFluidHandler fh = te.forward_fluid_handler();
         if(fh==null) return 0;
+        FluidStack res = resource.copy();
         if((te.valve_config() & CFG_REDSTONE_CONTROLLED_VALVE) != 0) {
           int rs = te.world.getRedstonePowerFromNeighbors(te.pos);
           if(rs <= 0) return 0;
-          if(((te.valve_config() & CFG_ANALOG_VALVE) != 0) && (rs < 15)) resource.setAmount(MathHelper.clamp(rs * redstone_flow_slope_mb, 1, resource.getAmount()));
+          if(((te.valve_config() & CFG_ANALOG_VALVE) != 0) && (rs < 15)) res.setAmount(MathHelper.clamp(rs * redstone_flow_slope_mb, 1, res.getAmount()));
         }
-        FluidStack res = resource.copy();
         if(res.getAmount() > fluid_maxflow_mb) res.setAmount(fluid_maxflow_mb);
         te.filling_ = true;
-        // IE fluid pipe not available yet
-        //  if(res.getAmount() > 50) {
-        //    final TileEntity fte = te.world.getTileEntity(te.pos.offset(te.block_facing()));
-        //    if(!(fte instanceof IFluidPipe)) {
-        //      CompoundNBT tag = res.getTag();
-        //      if((tag != null) && (tag.contains("pressurized"))) tag.remove("pressurized"); // remove pressureized tag if no IFluidPipe
-        //    }
-        //  }
         int n_filled = fh.fill(res, action);
         te.filling_ = false;
         return n_filled;

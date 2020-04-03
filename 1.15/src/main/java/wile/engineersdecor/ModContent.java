@@ -12,7 +12,6 @@
  */
 package wile.engineersdecor;
 
-
 import wile.engineersdecor.blocks.*;
 import wile.engineersdecor.libmc.blocks.StandardBlocks.IStandardBlock;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
@@ -549,7 +548,7 @@ public class ModContent
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "straight_pipe_valve"));
 
   public static final BlockDecorPipeValve.DecorPipeValveBlock STRAIGHT_REDSTONE_VALVE = (BlockDecorPipeValve.DecorPipeValveBlock)(new BlockDecorPipeValve.DecorPipeValveBlock(
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     BlockDecorPipeValve.CFG_REDSTONE_CONTROLLED_VALVE,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
     new AxisAlignedBB[]{
@@ -561,7 +560,7 @@ public class ModContent
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "straight_pipe_valve_redstone"));
 
   public static final BlockDecorPipeValve.DecorPipeValveBlock STRAIGHT_REDSTONE_ANALOG_VALVE = (BlockDecorPipeValve.DecorPipeValveBlock)(new BlockDecorPipeValve.DecorPipeValveBlock(
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     BlockDecorPipeValve.CFG_REDSTONE_CONTROLLED_VALVE|BlockDecorPipeValve.CFG_ANALOG_VALVE,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
     new AxisAlignedBB[]{
@@ -573,7 +572,7 @@ public class ModContent
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "straight_pipe_valve_redstone_analog"));
 
   public static final BlockDecorPassiveFluidAccumulator PASSIVE_FLUID_ACCUMULATOR = (BlockDecorPassiveFluidAccumulator)(new BlockDecorPassiveFluidAccumulator(
-    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT|BlockDecor.CFG_FLIP_PLACEMENT_SHIFTCLICK,
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_FACING_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
     new AxisAlignedBB[]{
       Auxiliaries.getPixeledAABB(3,3,0, 13,13, 1),

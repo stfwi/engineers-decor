@@ -248,12 +248,12 @@ public class BlockDecorPipeValve
         if(te.filling_) return 0;
         final IFluidHandler fh = te.forward_fluid_handler();
         if(fh==null) return 0;
+        FluidStack res = resource.copy();
         if((te.valve_config() & CFG_REDSTONE_CONTROLLED_VALVE) != 0) {
           int rs = te.world.getRedstonePowerFromNeighbors(te.pos);
           if(rs <= 0) return 0;
-          if(((te.valve_config() & CFG_ANALOG_VALVE) != 0) && (rs < 15)) resource.setAmount(MathHelper.clamp(rs * redstone_flow_slope_mb, 1, resource.getAmount()));
+          if(((te.valve_config() & CFG_ANALOG_VALVE) != 0) && (rs < 15)) res.setAmount(MathHelper.clamp(rs * redstone_flow_slope_mb, 1, res.getAmount()));
         }
-        FluidStack res = resource.copy();
         if(res.getAmount() > fluid_maxflow_mb) res.setAmount(fluid_maxflow_mb);
         te.filling_ = true;
         int n_filled = fh.fill(res, action);
