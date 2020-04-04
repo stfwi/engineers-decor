@@ -10,6 +10,8 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    ~ v1.0.20-b5  [M]
+
     - v1.0.20-b4  [F] Fixed TE registration bug for Crate registry-optout (issue #91, thx tyon2006).
 
     - v1.0.20-b3  [/] Version skipped for 1.12.2.
