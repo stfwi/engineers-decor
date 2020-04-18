@@ -617,7 +617,7 @@ public class ModConfig
     BlockDecorLadder.on_config(optout.without_ladder_speed_boost);
     BlockDecorCraftingTable.on_config(optout.without_crafting_table_history, false, tweaks.with_crafting_quickmove_buttons, tweaks.without_crafting_mouse_scrolling);
     BlockDecorPipeValve.on_config(tweaks.pipevalve_max_flowrate, tweaks.pipevalve_redstone_slope);
-    BlockDecorFurnaceElectrical.BTileEntity.on_config(tweaks.e_furnace_speed_percent, tweaks.e_furnace_power_consumption);
+    BlockDecorFurnaceElectrical.BTileEntity.on_config(tweaks.e_furnace_speed_percent, tweaks.e_furnace_power_consumption, false);
     BlockDecorSolarPanel.BTileEntity.on_config(tweaks.solar_panel_peak_power);
     BlockDecorBreaker.BTileEntity.on_config(tweaks.block_breaker_power_consumption, tweaks.block_breaker_reluctance, tweaks.block_breaker_min_breaking_time, tweaks.block_breaker_requires_power);
     BlockDecorTreeCutter.BTileEntity.on_config(tweaks.tree_cuttter_energy_consumption, tweaks.tree_cuttter_cutting_time_needed, tweaks.tree_cuttter_requires_power);

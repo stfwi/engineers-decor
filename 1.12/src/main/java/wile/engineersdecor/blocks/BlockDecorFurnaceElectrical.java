@@ -9,6 +9,8 @@
 package wile.engineersdecor.blocks;
 
 
+import net.minecraft.init.Blocks;
+import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 
 import net.minecraft.block.SoundType;
@@ -333,12 +335,14 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
     private static int transfer_energy_consumption_ = DEFAULT_SCALED_ENERGY_CONSUMPTION/8;
     private static int proc_speed_percent_ = DEFAULT_SPEED_PERCENT;
     private static double speed_setting_factor_[] = {0.0, 1.0, 1.5, 2.0};
+    private static boolean with_automatic_inventory_pulling_ = false;
 
-    public static void on_config(int speed_percent, int standard_energy_per_tick)
+    public static void on_config(int speed_percent, int standard_energy_per_tick, boolean with_automatic_inventory_pulling)
     {
       proc_speed_percent_ = MathHelper.clamp(speed_percent, 10, 500);
       energy_consumption_ = MathHelper.clamp(standard_energy_per_tick, 10, 256) * HEAT_INCREMENT * proc_speed_percent_ / 100;
       transfer_energy_consumption_ = MathHelper.clamp(energy_consumption_/8, 8, HEAT_INCREMENT);
+      with_automatic_inventory_pulling_ = with_automatic_inventory_pulling;
       ModEngineersDecor.logger.info("Config electrical furnace speed:" + proc_speed_percent_ + ", power consumption:" + energy_consumption_);
     }
 
@@ -657,6 +661,9 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
 
     // ITickable ------------------------------------------------------------------------------------
 
+    private boolean is_accepted_hopper(final ItemStack stack)
+    { return (stack.getItem() == Item.getItemFromBlock(Blocks.HOPPER)) || (stack.getItem() == Item.getItemFromBlock(ModContent.FACTORY_HOPPER)); }
+
     private boolean adjacent_inventory_shift(boolean inp, boolean out)
     {
       boolean dirty = false;
@@ -675,20 +682,22 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
           dirty = true;
         }
       }
-      if(inp && (stacks_.get(FIFO_INPUT_1_SLOT_NO).isEmpty())) {
-        TileEntity te = world.getTileEntity(pos.offset(inp_facing));
-        if((te!=null) && (te.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, out_facing))) {
-          IItemHandler hnd = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, out_facing);
-          for(int i=0; i< hnd.getSlots(); ++i) {
-            ItemStack adj_stack = hnd.getStackInSlot(i);
-            if(!adj_stack.isEmpty()) {
-              ItemStack my_stack = adj_stack.copy();
-              if(my_stack.getCount() > getInventoryStackLimit()) my_stack.setCount(getInventoryStackLimit());
-              adj_stack.shrink(my_stack.getCount());
-              stacks_.set(FIFO_INPUT_1_SLOT_NO, my_stack);
-              energy_stored_ -= transfer_energy_consumption_;
-              dirty = true;
-              break;
+      if(with_automatic_inventory_pulling_ || is_accepted_hopper(stacks_.get(SMELTING_AUX_SLOT_NO))) {
+        if(inp && (stacks_.get(FIFO_INPUT_1_SLOT_NO).isEmpty())) {
+          TileEntity te = world.getTileEntity(pos.offset(inp_facing));
+          if((te!=null) && (te.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, out_facing))) {
+            IItemHandler hnd = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, out_facing);
+            for(int i=0; i< hnd.getSlots(); ++i) {
+              ItemStack adj_stack = hnd.getStackInSlot(i);
+              if(!adj_stack.isEmpty()) {
+                ItemStack my_stack = adj_stack.copy();
+                if(my_stack.getCount() > getInventoryStackLimit()) my_stack.setCount(getInventoryStackLimit());
+                adj_stack.shrink(my_stack.getCount());
+                stacks_.set(FIFO_INPUT_1_SLOT_NO, my_stack);
+                energy_stored_ -= transfer_energy_consumption_;
+                dirty = true;
+                break;
+              }
             }
           }
         }
