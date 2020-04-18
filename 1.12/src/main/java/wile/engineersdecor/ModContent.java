@@ -12,6 +12,7 @@
  */
 package wile.engineersdecor;
 
+import net.minecraft.block.BlockDragonEgg;
 import wile.engineersdecor.blocks.*;
 import wile.engineersdecor.detail.ModAuxiliaries;
 import wile.engineersdecor.detail.ModConfig;
@@ -281,7 +282,14 @@ public class ModContent
 
   public static final BlockDecorFence STEEL_MESH_FENCE = new BlockDecorFence(
     "steel_mesh_fence",
-    BlockDecor.CFG_DEFAULT, Material.IRON, 2f, 15f, SoundType.METAL
+    BlockDecor.CFG_CUTOUT, Material.IRON, 2f, 15f, SoundType.METAL
+  );
+
+  public static final BlockDecorDoubleGate STEEL_MESH_FENCE_GATE = new BlockDecorDoubleGate(
+    "steel_mesh_fence_gate",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_LOOK_PLACEMENT,
+    Material.IRON, 2f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,6.5, 16,16,9.5)
   );
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -606,6 +614,7 @@ public class ModContent
     STEEL_DOUBLE_T_SUPPORT,
     STEEL_FLOOR_GRATING,
     STEEL_MESH_FENCE,
+    STEEL_MESH_FENCE_GATE,
     SIGN_HOTWIRE, SIGN_DANGER, SIGN_DEFENSE, SIGN_FACTORY_AREA, SIGN_EXIT, SIGN_MODLOGO,
     TREATED_WOOD_SIDE_TABLE,
     HALFSLAB_REBARCONCRETE, HALFSLAB_CONCRETE, HALFSLAB_GAS_CONCRETE, HALFSLAB_TREATEDWOOD,

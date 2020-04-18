@@ -1,7 +1,7 @@
 {
   "conditions": [
     {
-      "type": "engineersdecor:grc",
+      "type": "engineersdecor:optional",
       "result": "engineersdecor:rebar_concrete_wall",
       "required": ["engineersdecor:rebar_concrete"]
     }

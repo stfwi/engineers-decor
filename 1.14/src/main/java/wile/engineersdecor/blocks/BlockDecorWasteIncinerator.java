@@ -62,7 +62,7 @@ import java.util.Random;
 
 public class BlockDecorWasteIncinerator extends StandardBlocks.BaseBlock implements IDecorBlock
 {
-  public static final BooleanProperty LIT = BlockDecorFurnace.LIT;
+  public static final BooleanProperty LIT = BlockDecorFurnace.DecorFurnaceBlock.LIT;
 
   public BlockDecorWasteIncinerator(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
   { super(config, builder, unrotatedAABB); }

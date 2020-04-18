@@ -1,7 +1,7 @@
 {
   "conditions": [
     {
-      "type": "engineersdecor:grc",
+      "type": "engineersdecor:optional",
       "result": "engineersdecor:halfslab_gas_concrete",
       "required": ["engineersdecor:gas_concrete_slab"]
     }

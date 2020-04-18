@@ -11,6 +11,10 @@ Mod sources for Minecraft version 1.15.1.
 
 ## Version history
 
+    - v1.0.20-b5  [A] Electrical Furnace can draw in smelting input items from an adjacent inventory when a
+                      Hopper is placed in the auxiliary slot.
+                  [M] Wrapped Labeled Crate label slot to prevent sorting mods from altering the label.
+
     - v1.0.20-b4  [F] Fixed Mineral Smelter fluid voiding on external draining (issue #92, thx papaworld, pupnewfster).
 
     - v1.0.20-b3  [M] Labeled Crate: GUI quick-move-all (ctrl-shift click) smart move tweaked, Manual page added.

@@ -1,0 +1,20 @@
+{
+  "name": "Wooden Supports",
+  "icon": "engineersdecor:treated_wood_pole_support",
+  "category": "structural",
+  "sortnum": 2010,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "Treated Wood Pole",
+      "item": "engineersdecor:treated_wood_pole",
+      "text": "Wooden poles are straight decorative supports that can be placed in all directions. They are slightly thicker than fence posts and do not connect to blocks at the sides. The orientation is defined by the face that you click when placing the block."
+    },
+    {
+      "type": "spotlight",
+      "title": "Pole Head",
+      "item": "engineersdecor:treated_wood_pole_head",
+      "text": "Pole heads form nice looking end pieces for poles. There are two variants: A small one and a big one, where ladder suggests heavy loads, and does not fit everywhere (simply try out if it does). Pole heads will be automatically directed towards placed poles, except you sneak-click, which flips the placement direction."
+    }
+  ]
+}

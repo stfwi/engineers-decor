@@ -1,0 +1,23 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "patchouli:guide_book",
+      "required": ["minecraft:iron_nugget", "minecraft:book"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BN",
+    "N "
+  ],
+  "key": {
+    "B": { "item": "minecraft:book", "data": 0 },
+    "N": { "item": "minecraft:iron_nugget", "data": 0 }
+  },
+  "result": {
+    "item": "patchouli:guide_book",
+    "data": 0,
+    "nbt": { "patchouli:book": "engineersdecor:engineersdecor_manual" }
+  }
+}

@@ -20,7 +20,7 @@
     },
     {
       "type": "text",
-      "text": "§nRF power speed-up:$() When putting an $(o)$(t:Immersive Engineering)IE$() $(o)External Heater$() into one ot the two auxiliary slots and provide RF power to the Lab Furnace, it processes $(t:Configurable, best to try it out for the pack you are playing)much faster$()."
+      "text": "$(l)RF power speed-up:$() When putting an $(o)$(t:Immersive Engineering)IE$() $(o)External Heater$() into one ot the two auxiliary slots and provide RF power to the Lab Furnace, it processes $(t:Configurable, best to try it out for the pack you are playing)much faster$()."
     }
   ]
 }

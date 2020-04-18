@@ -12,7 +12,7 @@
     },
     {
       "type": "text",
-      "text": "The hopper can be placed in all directions including up, in the latter case the device collects or draws items from below.$(br)When you break and relocate the hopper, stored items will stay in place, and settings will be preserved.$(br2)§nCollection$()$(br)The Hopper collects items from inventories or in-world into its eighteen internal storage slots, preferring to fill up existing stacks first."
+      "text": "The hopper can be placed in all directions including up, in the latter case the device collects or draws items from below.$(br)When you break and relocate the hopper, stored items will stay in place, and settings will be preserved.$(br2)$(l)Collection$()$(br)The Hopper collects items from inventories or in-world into its eighteen internal storage slots, preferring to fill up existing stacks first."
     },
     {
       "type": "text",
@@ -20,7 +20,7 @@
     },
     {
       "type": "text",
-      "text": "§nInsertion$()$(br)From its internal storage the hopper frequently transfers item stacks to inventories or devices it is directed to, by default one item at a time. It tries to replenish existing stacks before filling empty slots. In case the item in the currently selected slot (marked in the GUI with a red frame) cannot be inserted, the next possible slot will be selected (round robin).$(br)The slider in the middle of the GUI (icons shall represent a"
+      "text": "$(l)Insertion$()$(br)From its internal storage the hopper frequently transfers item stacks to inventories or devices it is directed to, by default one item at a time. It tries to replenish existing stacks before filling empty slots. In case the item in the currently selected slot (marked in the GUI with a red frame) cannot be inserted, the next possible slot will be selected (round robin).$(br)The slider in the middle of the GUI (icons shall represent a"
     },
     {
       "type": "text",
@@ -28,7 +28,7 @@
     },
     {
       "type": "text",
-      "text": "§nRedstone Controls$()$(br)In the lower right area of the GUI, there is a red LED (with arrow) and two circuit elements wired up. The LED is lit when the device sees an external Redstone signal, and can also be used as test-trigger button. Connected to that input are an analog inverter, followed by a trigger control logic.$(br)By default the curve shown for the inversion control is going down, meaning that this control $(t:Input 0..15 -> output 15..0)inverts the signal$(). Click it to change this to 'not inverted'."
+      "text": "$(l)Redstone Controls$()$(br)In the lower right area of the GUI, there is a red LED (with arrow) and two circuit elements wired up. The LED is lit when the device sees an external Redstone signal, and can also be used as test-trigger button. Connected to that input are an analog inverter, followed by a trigger control logic.$(br)By default the curve shown for the inversion control is going down, meaning that this control $(t:Input 0..15 -> output 15..0)inverts the signal$(). Click it to change this to 'not inverted'."
     },
     {
       "type": "text",
@@ -36,7 +36,7 @@
     },
     {
       "type": "text",
-      "text": "§nDetails$()$(br)$(li)The insertion stack size slider also defines how many items are drawn from the inventory above.$(li)The Factory Hopper does $(t:Unneeded server CPU waste)not insert$() into opposed Hoppers."
+      "text": "$(l)Details$()$(br)$(li)The insertion stack size slider also defines how many items are drawn from the inventory above.$(li)The Factory Hopper does $(t:Unneeded server CPU waste)not insert$() into opposed Hoppers."
     }
   ]
 }

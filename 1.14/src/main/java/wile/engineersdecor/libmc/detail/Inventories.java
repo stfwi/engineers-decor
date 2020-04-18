@@ -8,6 +8,7 @@
  */
 package wile.engineersdecor.libmc.detail;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -253,4 +254,53 @@ public class Inventories
       return checked(fetched_stack);
     }
   }
+
+  public static class InventoryRange implements IInventory
+  {
+    public final IInventory inventory;
+    public final int offset, size;
+
+    public InventoryRange(IInventory inventory, int offset, int size)
+    { this.inventory = inventory; this.offset = offset; this.size = size; }
+
+    public void clear()
+    { inventory.clear(); }
+
+    public int getSizeInventory()
+    { return size; }
+
+    public boolean isEmpty()
+    { for(int i=0; i<size; ++i) if(!inventory.getStackInSlot(offset+i).isEmpty()){return false;} return true; }
+
+    public ItemStack getStackInSlot(int index)
+    { return inventory.getStackInSlot(offset+index); }
+
+    public ItemStack decrStackSize(int index, int count)
+    { return inventory.decrStackSize(offset+index, count); }
+
+    public ItemStack removeStackFromSlot(int index)
+    { return inventory.removeStackFromSlot(offset+index); }
+
+    public void setInventorySlotContents(int index, ItemStack stack)
+    { inventory.setInventorySlotContents(offset+index, stack); }
+
+    public int getInventoryStackLimit()
+    { return inventory.getInventoryStackLimit(); }
+
+    public void markDirty()
+    { inventory.markDirty(); }
+
+    public boolean isUsableByPlayer(PlayerEntity player)
+    { return inventory.isUsableByPlayer(player); }
+
+    public void openInventory(PlayerEntity player)
+    { inventory.openInventory(player); }
+
+    public void closeInventory(PlayerEntity player)
+    { inventory.closeInventory(player); }
+
+    public boolean isItemValidForSlot(int index, ItemStack stack)
+    { return inventory.isItemValidForSlot(offset+index, stack); }
+  }
+
 }

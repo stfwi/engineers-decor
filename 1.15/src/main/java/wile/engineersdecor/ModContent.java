@@ -393,7 +393,7 @@ public class ModContent
     }
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "treated_wood_crafting_table"));
 
-  public static final BlockDecorFurnace SMALL_LAB_FURNACE = (BlockDecorFurnace)(new BlockDecorFurnace(
+  public static final BlockDecorFurnace.DecorFurnaceBlock SMALL_LAB_FURNACE = (BlockDecorFurnace.DecorFurnaceBlock)(new BlockDecorFurnace.DecorFurnaceBlock(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 15f).sound(SoundType.METAL).notSolid(),
     new AxisAlignedBB[]{
@@ -402,7 +402,7 @@ public class ModContent
     }
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_lab_furnace"));
 
-  public static final BlockDecorFurnaceElectrical SMALL_ELECTRICAL_FURNACE = (BlockDecorFurnaceElectrical)(new BlockDecorFurnaceElectrical(
+  public static final BlockDecorFurnaceElectrical.DecorFurnaceElectricalBlock SMALL_ELECTRICAL_FURNACE = (BlockDecorFurnaceElectrical.DecorFurnaceElectricalBlock)(new BlockDecorFurnaceElectrical.DecorFurnaceElectricalBlock(
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
     new AxisAlignedBB[]{
@@ -766,12 +766,12 @@ public class ModContent
     .setRegistryName(ModEngineersDecor.MODID, "te_labeled_crate");
 
   public static final TileEntityType<?> TET_SMALL_LAB_FURNACE = TileEntityType.Builder
-    .create(BlockDecorFurnace.BTileEntity::new, SMALL_LAB_FURNACE)
+    .create(BlockDecorFurnace.DecorFurnaceTileEntity::new, SMALL_LAB_FURNACE)
     .build(null)
     .setRegistryName(ModEngineersDecor.MODID, "te_small_lab_furnace");
 
   public static final TileEntityType<?> TET_SMALL_ELECTRICAL_FURNACE = TileEntityType.Builder
-    .create(BlockDecorFurnaceElectrical.BTileEntity::new, SMALL_ELECTRICAL_FURNACE)
+    .create(BlockDecorFurnaceElectrical.DecorFurnaceElectricalTileEntity::new, SMALL_ELECTRICAL_FURNACE)
     .build(null)
     .setRegistryName(ModEngineersDecor.MODID, "te_small_electrical_furnace");
 
@@ -887,8 +887,8 @@ public class ModContent
   public static final ContainerType<BlockDecorDropper.BContainer> CT_FACTORY_DROPPER;
   public static final ContainerType<BlockDecorPlacer.BContainer> CT_FACTORY_PLACER;
   public static final ContainerType<BlockDecorHopper.DecorHopperContainer> CT_FACTORY_HOPPER;
-  public static final ContainerType<BlockDecorFurnace.BContainer> CT_SMALL_LAB_FURNACE;
-  public static final ContainerType<BlockDecorFurnaceElectrical.BContainer> CT_SMALL_ELECTRICAL_FURNACE;
+  public static final ContainerType<BlockDecorFurnace.DecorFurnaceContainer> CT_SMALL_LAB_FURNACE;
+  public static final ContainerType<BlockDecorFurnaceElectrical.DecorFurnaceElectricalContainer> CT_SMALL_ELECTRICAL_FURNACE;
   public static final ContainerType<BlockDecorWasteIncinerator.BContainer> CT_WASTE_INCINERATOR;
   public static final ContainerType<BlockDecorLabeledCrate.LabeledCrateContainer> CT_LABELED_CRATE;
 
@@ -901,9 +901,9 @@ public class ModContent
     CT_FACTORY_PLACER.setRegistryName(ModEngineersDecor.MODID,"ct_factory_placer");
     CT_FACTORY_HOPPER = (new ContainerType<BlockDecorHopper.DecorHopperContainer>(BlockDecorHopper.DecorHopperContainer::new));
     CT_FACTORY_HOPPER.setRegistryName(ModEngineersDecor.MODID,"ct_factory_hopper");
-    CT_SMALL_LAB_FURNACE = (new ContainerType<BlockDecorFurnace.BContainer>(BlockDecorFurnace.BContainer::new));
+    CT_SMALL_LAB_FURNACE = (new ContainerType<BlockDecorFurnace.DecorFurnaceContainer>(BlockDecorFurnace.DecorFurnaceContainer::new));
     CT_SMALL_LAB_FURNACE.setRegistryName(ModEngineersDecor.MODID,"ct_small_lab_furnace");
-    CT_SMALL_ELECTRICAL_FURNACE = (new ContainerType<BlockDecorFurnaceElectrical.BContainer>(BlockDecorFurnaceElectrical.BContainer::new));
+    CT_SMALL_ELECTRICAL_FURNACE = (new ContainerType<BlockDecorFurnaceElectrical.DecorFurnaceElectricalContainer>(BlockDecorFurnaceElectrical.DecorFurnaceElectricalContainer::new));
     CT_SMALL_ELECTRICAL_FURNACE.setRegistryName(ModEngineersDecor.MODID,"ct_small_electrical_furnace");
     CT_WASTE_INCINERATOR = (new ContainerType<BlockDecorWasteIncinerator.BContainer>(BlockDecorWasteIncinerator.BContainer::new));
     CT_WASTE_INCINERATOR.setRegistryName(ModEngineersDecor.MODID,"ct_small_waste_incinerator");
@@ -1002,8 +1002,8 @@ public class ModContent
     ScreenManager.registerFactory(CT_FACTORY_DROPPER, BlockDecorDropper.BGui::new);
     ScreenManager.registerFactory(CT_FACTORY_PLACER, BlockDecorPlacer.BGui::new);
     ScreenManager.registerFactory(CT_FACTORY_HOPPER, BlockDecorHopper.DecorHopperGui::new);
-    ScreenManager.registerFactory(CT_SMALL_LAB_FURNACE, BlockDecorFurnace.BGui::new);
-    ScreenManager.registerFactory(CT_SMALL_ELECTRICAL_FURNACE, BlockDecorFurnaceElectrical.BGui::new);
+    ScreenManager.registerFactory(CT_SMALL_LAB_FURNACE, BlockDecorFurnace.DecorFurnaceGui::new);
+    ScreenManager.registerFactory(CT_SMALL_ELECTRICAL_FURNACE, BlockDecorFurnaceElectrical.DecorFurnaceElectrical::new);
     ScreenManager.registerFactory(CT_WASTE_INCINERATOR, BlockDecorWasteIncinerator.BGui::new);
   }
 

@@ -1,0 +1,18 @@
+{
+  "name": "Redstone Analog Fluid Valve",
+  "icon": "engineersdecor:straight_pipe_valve_redstone_analog",
+  "category": "fluidics",
+  "sortnum": 7030,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "Analog Fluid Valve",
+      "item": "engineersdecor:straight_pipe_valve_redstone_analog",
+      "text": "$(o)Redstone Analog Fluid Valves$() are, like $(o)Redstone Fluid Valve$(), used to control allocation and distribution in pipe systems.$(br2)Analog valves can, in addition to switching valves, limited the flow rate depending on the Redstone signal strength."
+    },
+    {
+      "type": "text",
+      "text": "Possible uses cases are tuning the processing speed of a machine crafting with fluids, prioritising fluid paths, or defining the concentration of a mixture.$(br)Redstone signal strength 0 blocks all flows, 15 opens the valve completely $(t:Configurable, may vary)(max flow rate 1000mB/t)$(). Values from 1 to 14 open the valve in $(t:Configurable, may vary)20mB/t steps (20 to 280)$().$(br)Placement rules are like the $(o)Fluid Pipe Check Valve$()."
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "conditions": [
     {
-      "type": "engineersdecor:grc",
+      "type": "engineersdecor:optional",
       "result": "engineersdecor:steel_mesh_fence",
       "required": ["engineersdecor:thin_steel_pole"]
     }

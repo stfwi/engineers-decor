@@ -9,6 +9,7 @@
 package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.Inventories.InventoryRange;
 import wile.engineersdecor.libmc.detail.Inventories.SlotRange;
 import wile.engineersdecor.libmc.detail.Networking;
 import wile.engineersdecor.ModContent;
@@ -57,7 +58,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -576,7 +576,7 @@ public class BlockDecorLabeledCrate
         }
       }
       // picture frame slot (54)
-      addSlot(new Slot(inventory_, ++i, 191, 100) {
+      addSlot(new Slot(new InventoryRange(inventory_, 54, 1), 0, 191, 100) {
         @Override public int getSlotStackLimit(){return 1;}
       });
       // player slots

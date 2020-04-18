@@ -1,0 +1,18 @@
+{
+  "name": "Small Waste Incinerator",
+  "icon": "engineersdecor:small_waste_incinerator",
+  "category": "automation",
+  "sortnum": 6060,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "Small Waste Incinerator",
+      "item": "engineersdecor:small_waste_incinerator",
+      "text": "This small device allows to dispose of superfluous items in a safe manner. Inserted materials slide down a ramp of 14 slots before being pushed into a lava chamber, where they are slowly disintegrated.$(br)The stacks will remain in the same slots as long as the topmost input slot is empty, otherwise they get pushed"
+    },
+    {
+      "type": "text",
+      "text": "forward by one slot. You can speed up the incineration process by applying RF power to any side of the device. When you break the block for relocation, the items will remain in place.$(br)To recover accidentally inserted items, open the device GUI and manually take the stack out."
+    }
+  ]
+}

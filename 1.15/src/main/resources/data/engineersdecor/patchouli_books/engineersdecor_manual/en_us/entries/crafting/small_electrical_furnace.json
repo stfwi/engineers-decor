@@ -20,7 +20,15 @@
     },
     {
       "type": "text",
-      "text": "§nSpeed override switch$()$(br)A four-position switch in the bottom right area of the GUI allows to alter the processing speed of the furnace. Default is position 1 (normal). At high power expenses, you can alter this: $(br)$(li)Position 0: OFF$(li)Position 1: x1.0 -> RF x1$(li)Position 2: x1.5 -> RF x2$(li)Position 3: x2.0 -> RF x4$(br2)(Positions 0..4 are down, left, top, right)."
+      "text": "$(l)Speed override switch$()$(br)A four-position switch in the bottom right area of the GUI allows to alter the processing speed of the furnace. Default is position 1 (normal). At high power expenses, you can alter this: $(br)$(li)Position 0: OFF$(li)Position 1: x1.0 -> RF x1$(li)Position 2: x1.5 -> RF x2$(li)Position 3: x2.0 -> RF x4$(br2)(Positions 0..4 are down, left, top, right)."
+    },
+    {
+      "type": "text",
+      "text": "$(l)Automatic feeding support$()$(br)Placing a Hopper or Factory Hopper into the auxiliary slot at the bottom left of the GUI allows to automatically draw items from inventories at the input side (marked blue). The feeding mechanism will operate only when the first input FiFo slot is empty.$(br)$(o)Side note: The furnace passes stacks that it cannot process directly to the output, so it does not get stuck when some unsmeltable items are pulled in.$()"
+    },
+    {
+      "type": "text",
+      "text": ""
     }
   ]
 }

@@ -128,6 +128,9 @@ tile.engineersdecor.steel_framed_window.name=Окно со стальной ра
 tile.engineersdecor.steel_framed_window.help=§6Стальной каркас окна с тройным остеклением. Хорошо изолирует. §r Не подключается к смежным блокам, таким как стеклянные панели.
 tile.engineersdecor.steel_mesh_fence.name=Забор из стальной сетки
 tile.engineersdecor.steel_mesh_fence.help=§6Забор в индустриальном стиле.§r\nНе стыкуется с обычными заборами.
+tile.engineersdecor.steel_mesh_fence_gate.name=Steel Mesh Fence Gate
+tile.engineersdecor.steel_mesh_fence_gate.help=§6Industrial style fence gate that fits well to the Steel Mesh Fence.§r\nCan be placed as single or double size gate.
+
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.small_lab_furnace.name=Компактная лабораторная печь
 tile.engineersdecor.small_lab_furnace.help=§6Лабораторная печь в металлическом корпусе.§r Подача твёрдого топлива сверху. \

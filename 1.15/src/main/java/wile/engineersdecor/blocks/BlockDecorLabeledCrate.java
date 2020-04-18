@@ -12,6 +12,7 @@ import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.Inventories.InventoryRange;
 import wile.engineersdecor.libmc.detail.Inventories.SlotRange;
 import wile.engineersdecor.libmc.detail.Networking;
 import net.minecraft.world.IBlockReader;
@@ -575,7 +576,7 @@ public class BlockDecorLabeledCrate
         }
       }
       // picture frame slot (54)
-      addSlot(new Slot(inventory_, ++i, 191, 100) {
+      addSlot(new Slot(new InventoryRange(inventory_, 54, 1), 0, 191, 100) {
         @Override public int getSlotStackLimit(){return 1;}
       });
       // player slots

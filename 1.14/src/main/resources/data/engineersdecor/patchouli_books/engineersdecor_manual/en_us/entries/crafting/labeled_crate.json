@@ -12,7 +12,7 @@
     },
     {
       "type": "text",
-      "text": "$(o)§nQuick Move All Tweaks$()$(br)When using Quick-Move-All (aka shift-ctrl-left-click) on a slot for moving all identical items between the crate storage and the player inventory, the GUI will fill up existing stacks, and then try to insert further stacks into empty slots next to already existing stacks. If no appropriate locations are found, the stacks are moved into the player inventory, and as last option into the hotbar."
+      "text": "$(o)$(l)Quick Move All Tweaks$()$(br)When using Quick-Move-All (aka shift-ctrl-left-click) on a slot for moving all identical items between the crate storage and the player inventory, the GUI will fill up existing stacks, and then try to insert further stacks into empty slots next to already existing stacks. If no appropriate locations are found, the stacks are moved into the player inventory, and as last option into the hotbar."
     }
   ]
 }

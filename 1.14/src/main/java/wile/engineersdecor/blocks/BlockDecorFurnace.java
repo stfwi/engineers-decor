@@ -64,127 +64,135 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 
-public class BlockDecorFurnace extends StandardBlocks.Horizontal implements IDecorBlock
+public class BlockDecorFurnace
 {
-  public static final BooleanProperty LIT = RedstoneTorchBlock.LIT;
+  //--------------------------------------------------------------------------------------------------------------------
+  // Block
+  //--------------------------------------------------------------------------------------------------------------------
 
-  public BlockDecorFurnace(long config, Block.Properties properties, final AxisAlignedBB[] unrotatedAABB)
-  { super(config, properties, unrotatedAABB); setDefaultState(super.getDefaultState().with(LIT, false)); }
-
-  @Override
-  protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-  { super.fillStateContainer(builder); builder.add(LIT); }
-
-  @Override
-  @SuppressWarnings("deprecation")
-  public int getLightValue(BlockState state)
-  { return state.get(LIT) ? super.getLightValue(state) : 0; }
-
-  @Override
-  @Nullable
-  public BlockState getStateForPlacement(BlockItemUseContext context)
-  { return super.getStateForPlacement(context).with(LIT, false); }
-
-  @Override
-  @SuppressWarnings("deprecation")
-  public boolean hasComparatorInputOverride(BlockState state)
-  { return true; }
-
-  @Override
-  @SuppressWarnings("deprecation")
-  public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos)
+  public static class DecorFurnaceBlock extends StandardBlocks.Horizontal implements IDecorBlock
   {
-    TileEntity te = world.getTileEntity(pos);
-    return (te instanceof BTileEntity) ? ((BTileEntity)te).getComparatorOutput() : 0;
-  }
+    public static final BooleanProperty LIT = RedstoneTorchBlock.LIT;
 
-  @Override
-  public boolean hasTileEntity(BlockState state)
-  { return true; }
+    public DecorFurnaceBlock(long config, Block.Properties properties, final AxisAlignedBB[] unrotatedAABB)
+    { super(config, properties, unrotatedAABB); setDefaultState(super.getDefaultState().with(LIT, false)); }
 
-  @Override
-  @Nullable
-  public TileEntity createTileEntity(BlockState state, IBlockReader world)
-  { return new BlockDecorFurnace.BTileEntity(); }
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+    { super.fillStateContainer(builder); builder.add(LIT); }
 
-  @Override
-  public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
-  {
-    world.setBlockState(pos, state.with(LIT, false));
-    if(world.isRemote) return;
-    if((!stack.hasTag()) || (!stack.getTag().contains("inventory"))) return;
-    CompoundNBT inventory_nbt = stack.getTag().getCompound("inventory");
-    if(inventory_nbt.isEmpty()) return;
-    final TileEntity te = world.getTileEntity(pos);
-    if(!(te instanceof BlockDecorFurnace.BTileEntity)) return;
-    final BlockDecorFurnace.BTileEntity bte = ((BlockDecorFurnace.BTileEntity)te);
-    bte.readnbt(inventory_nbt);
-    bte.markDirty();
-    world.setBlockState(pos, state.with(LIT, bte.burning()));
-  }
+    @Override
+    @SuppressWarnings("deprecation")
+    public int getLightValue(BlockState state)
+    { return state.get(LIT) ? super.getLightValue(state) : 0; }
 
-  @Override
-  public boolean hasDynamicDropList()
-  { return true; }
+    @Override
+    @Nullable
+    public BlockState getStateForPlacement(BlockItemUseContext context)
+    { return super.getStateForPlacement(context).with(LIT, false); }
 
-  @Override
-  public List<ItemStack> dropList(BlockState state, World world, BlockPos pos, boolean explosion) {
-    final List<ItemStack> stacks = new ArrayList<ItemStack>();
-    if(world.isRemote) return stacks;
-    final TileEntity te = world.getTileEntity(pos);
-    if(!(te instanceof BTileEntity)) return stacks;
-    if(!explosion) {
-      ItemStack stack = new ItemStack(this, 1);
-      CompoundNBT inventory_nbt = ((BTileEntity)te).reset_getnbt();
-      if(!inventory_nbt.isEmpty()) {
-        CompoundNBT nbt = new CompoundNBT();
-        nbt.put("inventory", inventory_nbt);
-        stack.setTag(nbt);
+    @Override
+    @SuppressWarnings("deprecation")
+    public boolean hasComparatorInputOverride(BlockState state)
+    { return true; }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos)
+    {
+      TileEntity te = world.getTileEntity(pos);
+      return (te instanceof DecorFurnaceTileEntity) ? ((DecorFurnaceTileEntity)te).getComparatorOutput() : 0;
+    }
+
+    @Override
+    public boolean hasTileEntity(BlockState state)
+    { return true; }
+
+    @Override
+    @Nullable
+    public TileEntity createTileEntity(BlockState state, IBlockReader world)
+    { return new BlockDecorFurnace.DecorFurnaceTileEntity(); }
+
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    {
+      world.setBlockState(pos, state.with(LIT, false));
+      if(world.isRemote) return;
+      if((!stack.hasTag()) || (!stack.getTag().contains("inventory"))) return;
+      CompoundNBT inventory_nbt = stack.getTag().getCompound("inventory");
+      if(inventory_nbt.isEmpty()) return;
+      final TileEntity te = world.getTileEntity(pos);
+      if(!(te instanceof BlockDecorFurnace.DecorFurnaceTileEntity)) return;
+      final BlockDecorFurnace.DecorFurnaceTileEntity bte = ((BlockDecorFurnace.DecorFurnaceTileEntity)te);
+      bte.readnbt(inventory_nbt);
+      bte.markDirty();
+      world.setBlockState(pos, state.with(LIT, bte.burning()));
+    }
+
+    @Override
+    public boolean hasDynamicDropList()
+    { return true; }
+
+    @Override
+    public List<ItemStack> dropList(BlockState state, World world, BlockPos pos, boolean explosion) {
+      final List<ItemStack> stacks = new ArrayList<ItemStack>();
+      if(world.isRemote) return stacks;
+      final TileEntity te = world.getTileEntity(pos);
+      if(!(te instanceof DecorFurnaceTileEntity)) return stacks;
+      if(!explosion) {
+        ItemStack stack = new ItemStack(this, 1);
+        CompoundNBT inventory_nbt = ((DecorFurnaceTileEntity)te).reset_getnbt();
+        if(!inventory_nbt.isEmpty()) {
+          CompoundNBT nbt = new CompoundNBT();
+          nbt.put("inventory", inventory_nbt);
+          stack.setTag(nbt);
+        }
+        stacks.add(stack);
+      } else {
+        for(ItemStack stack: ((DecorFurnaceTileEntity)te).stacks_) stacks.add(stack);
+        ((DecorFurnaceTileEntity)te).reset();
       }
-      stacks.add(stack);
-    } else {
-      for(ItemStack stack: ((BTileEntity)te).stacks_) stacks.add(stack);
-      ((BTileEntity)te).reset();
+      return stacks;
     }
-    return stacks;
-  }
 
-  @Override
-  @SuppressWarnings("deprecation")
-  public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
-  {
-    if(world.isRemote) return true;
-    final TileEntity te = world.getTileEntity(pos);
-    if(!(te instanceof BlockDecorFurnace.BTileEntity)) return true;
-    if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return true;
-    NetworkHooks.openGui((ServerPlayerEntity)player,(INamedContainerProvider)te);
-    player.addStat(Stats.INTERACT_WITH_FURNACE);
-    return true;
-  }
-
-  @Override
-  @OnlyIn(Dist.CLIENT)
-  public void animateTick(BlockState state, World world, BlockPos pos, Random rnd)
-  {
-    if((state.getBlock()!=this) || (!state.get(LIT))) return;
-    final double rv = rnd.nextDouble();
-    if(rv > 0.5) return;
-    final double x=0.5+pos.getX(), y=0.5+pos.getY(), z=0.5+pos.getZ();
-    final double xc=0.52, xr=rnd.nextDouble()*0.4-0.2, yr=(y-0.3+rnd.nextDouble()*0.2);
-    if(rv < 0.1d) world.playSound(x, y, z, SoundEvents.BLOCK_FURNACE_FIRE_CRACKLE, SoundCategory.BLOCKS, 0.4f, 0.5f, false);
-    switch(state.get(HORIZONTAL_FACING)) {
-      case WEST:  world.addParticle(ParticleTypes.SMOKE, x-xc, yr, z+xr, 0.0, 0.0, 0.0); break;
-      case EAST:  world.addParticle(ParticleTypes.SMOKE, x+xc, yr, z+xr, 0.0, 0.0, 0.0); break;
-      case NORTH: world.addParticle(ParticleTypes.SMOKE, x+xr, yr, z-xc, 0.0, 0.0, 0.0); break;
-      default:    world.addParticle(ParticleTypes.SMOKE, x+xr, yr, z+xc, 0.0, 0.0, 0.0); break;
+    @Override
+    @SuppressWarnings("deprecation")
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+    {
+      if(world.isRemote) return true;
+      final TileEntity te = world.getTileEntity(pos);
+      if(!(te instanceof BlockDecorFurnace.DecorFurnaceTileEntity)) return true;
+      if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return true;
+      NetworkHooks.openGui((ServerPlayerEntity)player,(INamedContainerProvider)te);
+      player.addStat(Stats.INTERACT_WITH_FURNACE);
+      return true;
     }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void animateTick(BlockState state, World world, BlockPos pos, Random rnd)
+    {
+      if((state.getBlock()!=this) || (!state.get(LIT))) return;
+      final double rv = rnd.nextDouble();
+      if(rv > 0.5) return;
+      final double x=0.5+pos.getX(), y=0.5+pos.getY(), z=0.5+pos.getZ();
+      final double xc=0.52, xr=rnd.nextDouble()*0.4-0.2, yr=(y-0.3+rnd.nextDouble()*0.2);
+      if(rv < 0.1d) world.playSound(x, y, z, SoundEvents.BLOCK_FURNACE_FIRE_CRACKLE, SoundCategory.BLOCKS, 0.4f, 0.5f, false);
+      switch(state.get(HORIZONTAL_FACING)) {
+        case WEST:  world.addParticle(ParticleTypes.SMOKE, x-xc, yr, z+xr, 0.0, 0.0, 0.0); break;
+        case EAST:  world.addParticle(ParticleTypes.SMOKE, x+xc, yr, z+xr, 0.0, 0.0, 0.0); break;
+        case NORTH: world.addParticle(ParticleTypes.SMOKE, x+xr, yr, z-xc, 0.0, 0.0, 0.0); break;
+        default:    world.addParticle(ParticleTypes.SMOKE, x+xr, yr, z+xc, 0.0, 0.0, 0.0); break;
+      }
+    }
+
   }
 
   //--------------------------------------------------------------------------------------------------------------------
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class BTileEntity extends TileEntity implements ITickableTileEntity, INameable, IInventory, INamedContainerProvider, ISidedInventory, IEnergyStorage
+  public static class DecorFurnaceTileEntity extends TileEntity implements ITickableTileEntity, INameable, IInventory, INamedContainerProvider, ISidedInventory, IEnergyStorage
   {
     public static final IRecipeType<FurnaceRecipe> RECIPE_TYPE = IRecipeType.SMELTING;
     public static final int NUM_OF_FIELDS = 5;
@@ -220,7 +228,7 @@ public class BlockDecorFurnace extends StandardBlocks.Horizontal implements IDec
       ModEngineersDecor.logger().info("Config lab furnace speed:" + (proc_speed_*100) + "%, efficiency:" + (proc_fuel_efficiency_*100) + "%");
     }
 
-    // BTileEntity -----------------------------------------------------------------------------
+    // DecorFurnaceTileEntity -----------------------------------------------------------------------------
 
     private int tick_timer_;
     private int fifo_timer_;
@@ -237,10 +245,10 @@ public class BlockDecorFurnace extends StandardBlocks.Horizontal implements IDec
     protected @Nullable IRecipe current_recipe_ = null;
     private final List<String> recent_recipes_ = new ArrayList<>();
 
-    public BTileEntity()
+    public DecorFurnaceTileEntity()
     { this(ModContent.TET_SMALL_LAB_FURNACE); }
 
-    public BTileEntity(TileEntityType<?> te_type)
+    public DecorFurnaceTileEntity(TileEntityType<?> te_type)
     { super(te_type); reset(); }
 
     public CompoundNBT reset_getnbt()
@@ -344,7 +352,7 @@ public class BlockDecorFurnace extends StandardBlocks.Horizontal implements IDec
 
     @Override
     public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player )
-    { return new BlockDecorFurnace.BContainer(id, inventory, this, IWorldPosCallable.of(world, pos), fields); }
+    { return new BlockDecorFurnace.DecorFurnaceContainer(id, inventory, this, IWorldPosCallable.of(world, pos), fields); }
 
     // IInventory ------------------------------------------------------------------------------
 
@@ -430,17 +438,17 @@ public class BlockDecorFurnace extends StandardBlocks.Horizontal implements IDec
 
     // Fields -----------------------------------------------------------------------------------------------
 
-    protected final IIntArray fields = new IntArray(BTileEntity.NUM_OF_FIELDS)
+    protected final IIntArray fields = new IntArray(DecorFurnaceTileEntity.NUM_OF_FIELDS)
     {
       @Override
       public int get(int id)
       {
         switch(id) {
-          case 0: return BTileEntity.this.burntime_left_;
-          case 1: return BTileEntity.this.fuel_burntime_;
-          case 2: return (int)BTileEntity.this.field_proc_time_elapsed_;
-          case 3: return BTileEntity.this.proc_time_needed_;
-          case 4: return BTileEntity.this.field_is_burning_;
+          case 0: return DecorFurnaceTileEntity.this.burntime_left_;
+          case 1: return DecorFurnaceTileEntity.this.fuel_burntime_;
+          case 2: return (int)DecorFurnaceTileEntity.this.field_proc_time_elapsed_;
+          case 3: return DecorFurnaceTileEntity.this.proc_time_needed_;
+          case 4: return DecorFurnaceTileEntity.this.field_is_burning_;
           default: return 0;
         }
       }
@@ -448,11 +456,11 @@ public class BlockDecorFurnace extends StandardBlocks.Horizontal implements IDec
       public void set(int id, int value)
       {
         switch(id) {
-          case 0: BTileEntity.this.burntime_left_ = value; break;
-          case 1: BTileEntity.this.fuel_burntime_ = value; break;
-          case 2: BTileEntity.this.field_proc_time_elapsed_ = value; break;
-          case 3: BTileEntity.this.proc_time_needed_ = value; break;
-          case 4: BTileEntity.this.field_is_burning_ = value;
+          case 0: DecorFurnaceTileEntity.this.burntime_left_ = value; break;
+          case 1: DecorFurnaceTileEntity.this.fuel_burntime_ = value; break;
+          case 2: DecorFurnaceTileEntity.this.field_proc_time_elapsed_ = value; break;
+          case 3: DecorFurnaceTileEntity.this.proc_time_needed_ = value; break;
+          case 4: DecorFurnaceTileEntity.this.field_is_burning_ = value;
         }
       }
     };
@@ -596,8 +604,8 @@ public class BlockDecorFurnace extends StandardBlocks.Horizontal implements IDec
       if(was_burning != burning()) {
         dirty = true;
         final BlockState state = world.getBlockState(pos);
-        if(state.getBlock() instanceof BlockDecorFurnace) {
-          world.setBlockState(pos, state.with(LIT, burning()));
+        if(state.getBlock() instanceof DecorFurnaceBlock) {
+          world.setBlockState(pos, state.with(DecorFurnaceBlock.LIT, burning()));
         }
       }
       if(dirty) {
@@ -749,7 +757,7 @@ public class BlockDecorFurnace extends StandardBlocks.Horizontal implements IDec
   // container slots
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class BContainer extends Container implements Networking.INetworkSynchronisableContainer
+  public static class DecorFurnaceContainer extends Container implements Networking.INetworkSynchronisableContainer
   {
     // Slots --------------------------------------------------------------------------------------------
 
@@ -800,8 +808,8 @@ public class BlockDecorFurnace extends StandardBlocks.Horizontal implements IDec
       protected void onCrafting(ItemStack stack)
       {
         stack.onCrafting(player_.world, player_, removeCount);
-        if((!player_.world.isRemote) && (inventory_ instanceof BTileEntity)) {
-          BTileEntity te = (BTileEntity)inventory_;
+        if((!player_.world.isRemote) && (inventory_ instanceof DecorFurnaceTileEntity)) {
+          DecorFurnaceTileEntity te = (DecorFurnaceTileEntity)inventory_;
           int xp = removeCount;
           float sxp = te.getSmeltingExperience(stack);
           if(sxp == 0) {
@@ -822,14 +830,14 @@ public class BlockDecorFurnace extends StandardBlocks.Horizontal implements IDec
 
     public static class BFuelSlot extends Slot
     {
-      private final BContainer container_;
+      private final DecorFurnaceContainer container_;
 
-      public BFuelSlot(IInventory inventory, int index, int xpos, int ypos, BContainer container)
+      public BFuelSlot(IInventory inventory, int index, int xpos, int ypos, DecorFurnaceContainer container)
       { super(inventory, index, xpos, ypos); container_=container; }
 
       @Override
       public boolean isItemValid(ItemStack stack)
-      { return isBucket(stack) || (BTileEntity.isFuel(container_.world(), stack)); }
+      { return isBucket(stack) || (DecorFurnaceTileEntity.isFuel(container_.world(), stack)); }
 
       @Override
       public int getItemStackLimit(ItemStack stack)
@@ -853,17 +861,17 @@ public class BlockDecorFurnace extends StandardBlocks.Horizontal implements IDec
     public IInventory inventory() { return inventory_ ; }
     public World world() { return player_.world; }
 
-    public BContainer(int cid, PlayerInventory player_inventory)
-    { this(cid, player_inventory, new Inventory(BTileEntity.NUM_OF_SLOTS), IWorldPosCallable.DUMMY, new IntArray(BTileEntity.NUM_OF_FIELDS)); }
+    public DecorFurnaceContainer(int cid, PlayerInventory player_inventory)
+    { this(cid, player_inventory, new Inventory(DecorFurnaceTileEntity.NUM_OF_SLOTS), IWorldPosCallable.DUMMY, new IntArray(DecorFurnaceTileEntity.NUM_OF_FIELDS)); }
 
-    private BContainer(int cid, PlayerInventory player_inventory, IInventory block_inventory, IWorldPosCallable wpc, IIntArray fields)
+    private DecorFurnaceContainer(int cid, PlayerInventory player_inventory, IInventory block_inventory, IWorldPosCallable wpc, IIntArray fields)
     {
       super(ModContent.CT_SMALL_LAB_FURNACE, cid);
       player_ = player_inventory.player;
       inventory_ = block_inventory;
       wpc_ = wpc;
       fields_ = fields;
-      recipe_type_ = BTileEntity.RECIPE_TYPE;
+      recipe_type_ = DecorFurnaceTileEntity.RECIPE_TYPE;
       addSlot(new Slot(inventory_, 0, 59, 17)); // smelting input
       addSlot(new BFuelSlot(inventory_, 1, 59, 53, this)); // fuel
       addSlot(new BSlotResult(player_, inventory_, 2, 101, 35)); // smelting result
@@ -911,13 +919,13 @@ public class BlockDecorFurnace extends StandardBlocks.Horizontal implements IDec
         if(!mergeItemStack(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+36, false)) return ItemStack.EMPTY;
       } else if((index >= PLAYER_INV_START_SLOTNO) && (index <= PLAYER_INV_START_SLOTNO+36)) {
         // Player inventory
-        if(BTileEntity.canSmelt(world(), slot_stack)) {
+        if(DecorFurnaceTileEntity.canSmelt(world(), slot_stack)) {
           if(
             (!mergeItemStack(slot_stack, 0, 1, false)) && // smelting input
             (!mergeItemStack(slot_stack, 3, 4, false)) && // fifo0
             (!mergeItemStack(slot_stack, 4, 5, false))    // fifo1
           ) return ItemStack.EMPTY;
-        } else if(BTileEntity.isFuel(player_.world, slot_stack)) {
+        } else if(DecorFurnaceTileEntity.isFuel(player_.world, slot_stack)) {
           if(
             (!mergeItemStack(slot_stack, 1, 2, false)) && // fuel input
             (!mergeItemStack(slot_stack, 5, 6, false)) && // fuel fifo0
@@ -974,11 +982,11 @@ public class BlockDecorFurnace extends StandardBlocks.Horizontal implements IDec
   //--------------------------------------------------------------------------------------------------------------------
 
   @OnlyIn(Dist.CLIENT)
-  public static class BGui extends ContainerScreen<BContainer>
+  public static class DecorFurnaceGui extends ContainerScreen<DecorFurnaceContainer>
   {
     protected final PlayerEntity player_;
 
-    public BGui(BContainer container, PlayerInventory player_inventory, ITextComponent title)
+    public DecorFurnaceGui(DecorFurnaceContainer container, PlayerInventory player_inventory, ITextComponent title)
     { super(container, player_inventory, title); this.player_ = player_inventory.player; }
 
     @Override
@@ -1011,7 +1019,7 @@ public class BlockDecorFurnace extends StandardBlocks.Horizontal implements IDec
     { final int tc=getContainer().field(2), T=getContainer().field(3); return ((T>0) && (tc>0)) ? (tc * pixels / T) : (0); }
 
     private int flame_px(int pixels)
-    { int ibt = getContainer().field(1); return ((getContainer().field(0) * pixels) / ((ibt>0) ? (ibt) : (BTileEntity.STD_SMELTING_TIME))); }
+    { int ibt = getContainer().field(1); return ((getContainer().field(0) * pixels) / ((ibt>0) ? (ibt) : (DecorFurnaceTileEntity.STD_SMELTING_TIME))); }
   }
 
 }

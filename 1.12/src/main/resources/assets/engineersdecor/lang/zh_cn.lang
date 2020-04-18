@@ -128,6 +128,9 @@ tile.engineersdecor.steel_framed_window.name=钢框窗
 tile.engineersdecor.steel_framed_window.help=§6钢框三层玻璃窗。绝缘良好。§r不像玻璃板一样连接到相邻方块。
 tile.engineersdecor.steel_mesh_fence.name=钢丝栅栏
 tile.engineersdecor.steel_mesh_fence.help=§6工业式栅栏。§r\n不与普通栅栏连接。
+tile.engineersdecor.steel_mesh_fence_gate.name=Steel Mesh Fence Gate
+tile.engineersdecor.steel_mesh_fence_gate.help=§6Industrial style fence gate that fits well to the Steel Mesh Fence.§r\nCan be placed as single or double size gate.
+
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.small_lab_furnace.name=小型实验室炉
 tile.engineersdecor.small_lab_furnace.help=§6小型金属壳实验室窑。§r消耗固体燃料，向上排气。\

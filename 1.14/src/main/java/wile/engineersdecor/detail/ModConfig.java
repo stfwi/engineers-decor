@@ -417,14 +417,14 @@ public class ModConfig
           .comment("Defines, in percent, how fast the electrical furnace smelts compared to " +
             "a vanilla furnace. 100% means vanilla furnace speed, 150% means the " +
             "electrical furnace is faster. The value can be changed on-the-fly for tuning.")
-          .defineInRange("e_furnace_speed_percent", BlockDecorFurnaceElectrical.BTileEntity.DEFAULT_SPEED_PERCENT, 50, 800);
+          .defineInRange("e_furnace_speed_percent", BlockDecorFurnaceElectrical.DecorFurnaceElectrical.DEFAULT_SPEED_PERCENT, 50, 800);
         e_furnace_power_consumption = builder
           .translation(ModEngineersDecor.MODID + ".config.e_furnace_power_consumption")
           .comment("Defines how much RF per tick the the electrical furnace consumed (average) for smelting. " +
             "The feeders transferring items from/to adjacent have this consumption/8 for each stack transaction. " +
             "The default value is only slightly higher than a furnace with an IE external heater (and no burning fuel inside)." +
             "The config value can be changed on-the-fly for tuning.")
-          .defineInRange("e_furnace_power_consumption", BlockDecorFurnaceElectrical.BTileEntity.DEFAULT_ENERGY_CONSUMPTION, 8, 4096);
+          .defineInRange("e_furnace_power_consumption", BlockDecorFurnaceElectrical.DecorFurnaceElectrical.DEFAULT_ENERGY_CONSUMPTION, 8, 4096);
         e_furnace_automatic_pulling = builder
           .translation(ModEngineersDecor.MODID + ".config.e_furnace_automatic_pulling")
           .comment("Defines if the electrical furnace automatically pulls items from an inventory at the input side." +
@@ -534,8 +534,8 @@ public class ModConfig
       }
       // Early non-opt out type based evaluation
       if(block instanceof BlockDecorCraftingTable.CraftingTableBlock) return COMMON.without_crafting_table.get();
-      if(block instanceof BlockDecorFurnaceElectrical) return COMMON.without_electrical_furnace.get();
-      if((block instanceof BlockDecorFurnace) && (!(block instanceof BlockDecorFurnaceElectrical))) return COMMON.without_lab_furnace.get();
+      if(block instanceof BlockDecorFurnaceElectrical.DecorFurnaceElectricalBlock) return COMMON.without_electrical_furnace.get();
+      if((block instanceof BlockDecorFurnace.DecorFurnaceBlock) && (!(block instanceof BlockDecorFurnaceElectrical.DecorFurnaceElectricalBlock))) return COMMON.without_lab_furnace.get();
       if(block instanceof BlockDecorPassiveFluidAccumulator) return COMMON.without_passive_fluid_accumulator.get();
       if(block instanceof BlockDecorWasteIncinerator) return COMMON.without_waste_incinerator.get();
       if(block instanceof BlockDecorDropper) return COMMON.without_factory_dropper.get();
@@ -614,12 +614,12 @@ public class ModConfig
     without_recipes_ = COMMON.without_recipes.get();
     // -----------------------------------------------------------------------------------------------------------------
     OptionalRecipeCondition.on_config(with_experimental_features_, without_recipes_, ModConfig::isOptedOut, ModConfig::isOptedOut);
-    BlockDecorFurnace.BTileEntity.on_config(COMMON.furnace_smelting_speed_percent.get(), COMMON.furnace_fuel_efficiency_percent.get(), COMMON.furnace_boost_energy_consumption.get());
+    BlockDecorFurnace.DecorFurnaceTileEntity.on_config(COMMON.furnace_smelting_speed_percent.get(), COMMON.furnace_fuel_efficiency_percent.get(), COMMON.furnace_boost_energy_consumption.get());
     BlockDecorChair.on_config(COMMON.without_chair_sitting.get(), COMMON.without_mob_chair_sitting.get(), COMMON.chair_mob_sitting_probability_percent.get(), COMMON.chair_mob_standup_probability_percent.get());
     BlockDecorLadder.on_config(COMMON.without_ladder_speed_boost.get());
     BlockDecorCraftingTable.on_config(COMMON.without_crafting_table_history.get(), false, COMMON.with_crafting_quickmove_buttons.get(), COMMON.without_crafting_mouse_scrolling.get());
     BlockDecorPipeValve.on_config(COMMON.pipevalve_max_flowrate.get(), COMMON.pipevalve_redstone_gain.get());
-    BlockDecorFurnaceElectrical.BTileEntity.on_config(COMMON.e_furnace_speed_percent.get(), COMMON.e_furnace_power_consumption.get(), COMMON.e_furnace_automatic_pulling.get());
+    BlockDecorFurnaceElectrical.DecorFurnaceElectrical.on_config(COMMON.e_furnace_speed_percent.get(), COMMON.e_furnace_power_consumption.get(), COMMON.e_furnace_automatic_pulling.get());
     BlockDecorSolarPanel.BTileEntity.on_config(COMMON.small_solar_panel_peak_production.get());
     BlockDecorBreaker.BTileEntity.on_config(COMMON.block_breaker_power_consumption.get(), COMMON.block_breaker_reluctance.get(), COMMON.block_breaker_min_breaking_time.get(), COMMON.block_breaker_requires_power.get());
     BlockDecorTreeCutter.BTileEntity.on_config(COMMON.tree_cuttter_energy_consumption.get(), COMMON.tree_cuttter_cutting_time_needed.get(), COMMON.tree_cuttter_requires_power.get());

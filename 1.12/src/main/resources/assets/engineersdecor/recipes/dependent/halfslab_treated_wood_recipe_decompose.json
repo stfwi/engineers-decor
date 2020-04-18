@@ -1,7 +1,7 @@
 {
   "conditions": [
     {
-      "type": "engineersdecor:grc",
+      "type": "engineersdecor:optional",
       "result": "immersiveengineering:treated_wood_slab",
       "required": ["engineersdecor:halfslab_treated_wood"]
     }

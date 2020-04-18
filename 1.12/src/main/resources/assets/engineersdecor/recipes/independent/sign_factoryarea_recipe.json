@@ -1,7 +1,7 @@
 {
   "conditions": [
     {
-      "type": "engineersdecor:grc",
+      "type": "engineersdecor:optional",
       "result": "engineersdecor:sign_factoryarea",
       "required": ["engineersdecor:sign_defense"]
     }

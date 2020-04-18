@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.14.4": {
+    "1.0.20-b5": "[A] Electrical Furnace can draw in smelting input items from an adjacent inventory when a Hopper is placed in the auxiliary slot.\n[M] Wrapped Labeled Crate label slot to prevent sorting mods from altering the label.",
     "1.0.20-b4": "[F] Fixed Mineral Smelter fluid voiding on external draining (issue #92, thx papaworld, pupnewfster).",
     "1.0.20-b3": "[M] Labeled Crate: GUI quick-move-all (ctrl-shift click) smart move tweaked, Manual page added.\n[F] Fixed IE ingredients based default recipes for Factory Dropper and Small Electrical Furnace.\n[M] Factory Hopper: GUI quick-move-all added.\n[M] Code structure, simplifications, cap invalidation fixes.\n[M] Valves: Removed performance caching for testing purposes.",
     "1.0.20-b2": "[U] Forge version requirement set to >= 28.2.3.\n[A] Added Labeled Crate (storage crate with built-in item frame).",
@@ -53,6 +54,6 @@
   },
   "promos": {
     "1.14.4-recommended": "",
-    "1.14.4-latest": "1.0.20-b4"
+    "1.14.4-latest": "1.0.20-b5"
   }
 }

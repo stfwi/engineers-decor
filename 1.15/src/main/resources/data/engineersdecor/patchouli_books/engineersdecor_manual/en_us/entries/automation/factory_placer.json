@@ -20,7 +20,7 @@
     },
     {
       "type": "text",
-      "text": "Finally, the trigger control decides if the device shall work continuously, or only when the Redstone signal changes (edge detection trigger). By default this is set to $(o)continuous$(). Clicking changes this to $(o)triggered$(), means 'try to place only the moment when the signal goes off->on (not inverted) or on->off (inverted)'.$(br2)§nSpike Planting$()$(br)Normally blocks are placed in front of the placer. Plants can also be planted through the"
+      "text": "Finally, the trigger control decides if the device shall work continuously, or only when the Redstone signal changes (edge detection trigger). By default this is set to $(o)continuous$(). Clicking changes this to $(o)triggered$(), means 'try to place only the moment when the signal goes off->on (not inverted) or on->off (inverted)'.$(br2)$(l)Spike Planting$()$(br)Normally blocks are placed in front of the placer. Plants can also be planted through the"
     },
     {
       "type": "text",
