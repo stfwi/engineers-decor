@@ -13,6 +13,8 @@
 package wile.engineersdecor.libmc.blocks;
 
 import wile.engineersdecor.libmc.detail.Auxiliaries;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.block.*;
 import net.minecraft.entity.EntityType;
 import net.minecraft.state.DirectionProperty;
@@ -69,6 +71,12 @@ public class StandardBlocks
 
     default List<ItemStack> dropList(BlockState state, World world, BlockPos pos, boolean explosion)
     { return Collections.singletonList((!world.isRemote()) ? (new ItemStack(state.getBlock().asItem())) : (ItemStack.EMPTY)); }
+  }
+
+  public interface IBlockItemFactory
+  {
+    // BlockItem factory for item registry. Only invoked once.
+    BlockItem getBlockItem(Block blockIn, Item.Properties builder);
   }
 
   public static class BaseBlock extends Block implements IStandardBlock

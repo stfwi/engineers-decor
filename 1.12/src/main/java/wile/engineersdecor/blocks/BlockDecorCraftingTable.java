@@ -352,20 +352,6 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
   @SideOnly(Side.CLIENT)
   private static class BGui extends GuiContainer
   {
-    protected static final int BUTTON_NEXT = 0;
-    protected static final int BUTTON_PREV = 1;
-    protected static final int BUTTON_CLEAR_GRID = 2;
-    protected static final int BUTTON_NEXT_COLLISION_RECIPE = 3;
-    protected static final int BUTTON_FROM_STORAGE = 4;
-    protected static final int BUTTON_TO_STORAGE = 5;
-    protected static final int BUTTON_FROM_PLAYER = 6;
-    protected static final int BUTTON_TO_PLAYER = 7;
-    protected static final int ACTION_PLACE_CURRENT_HISTORY_SEL = 8;
-    protected static final int ACTION_PLACE_SHIFTCLICKED_STACK = 9;
-    protected static final int ACTION_MOVE_ALL_STACKS = 10;
-    protected static final int ACTION_INCREASE_CRAFTING_STACKS = 11;
-    protected static final int ACTION_DECREASE_CRAFTING_STACKS = 12;
-
     protected static final ResourceLocation BACKGROUND = new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/treated_wood_crafting_table.png");
     protected final BTileEntity te;
     protected final EntityPlayer player;
@@ -383,15 +369,15 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
       final int x0=((width - xSize)/2), y0=((height - ySize)/2);
       buttons.clear();
       if(with_assist) {
-        buttons.add(addButton(new GuiButtonImage(BUTTON_NEXT,       x0+158,y0+44, 12,12, 194,44, 12, BACKGROUND)));
-        buttons.add(addButton(new GuiButtonImage(BUTTON_PREV,       x0+158,y0+30, 12,12, 180,30, 12, BACKGROUND)));
-        buttons.add(addButton(new GuiButtonImage(BUTTON_CLEAR_GRID, x0+158,y0+58, 12,12, 194,8,  12, BACKGROUND)));
-        buttons.add(addButton(new GuiButtonImage(BUTTON_NEXT_COLLISION_RECIPE, x0+132,y0+18, 20,10, 183,95, 12, BACKGROUND)));
+        buttons.add(addButton(new GuiButtonImage(BContainer.BUTTON_NEXT,       x0+158,y0+44, 12,12, 194,44, 12, BACKGROUND)));
+        buttons.add(addButton(new GuiButtonImage(BContainer.BUTTON_PREV,       x0+158,y0+30, 12,12, 180,30, 12, BACKGROUND)));
+        buttons.add(addButton(new GuiButtonImage(BContainer.BUTTON_CLEAR_GRID, x0+158,y0+58, 12,12, 194,8,  12, BACKGROUND)));
+        buttons.add(addButton(new GuiButtonImage(BContainer.BUTTON_NEXT_COLLISION_RECIPE, x0+132,y0+18, 20,10, 183,95, 12, BACKGROUND)));
         if(with_assist_quickmove_buttons) {
-          buttons.add(addButton(new GuiButtonImage(BUTTON_FROM_STORAGE, x0+49, y0+34,  9,17, 219,34, 17, BACKGROUND)));
-          buttons.add(addButton(new GuiButtonImage(BUTTON_TO_STORAGE,   x0+49, y0+52,  9,17, 208,16, 17, BACKGROUND)));
-          buttons.add(addButton(new GuiButtonImage(BUTTON_FROM_PLAYER,  x0+77, y0+71, 17,9,  198,71, 9, BACKGROUND)));
-          buttons.add(addButton(new GuiButtonImage(BUTTON_TO_PLAYER,    x0+59, y0+71, 17,9,  180,71, 9, BACKGROUND)));
+          buttons.add(addButton(new GuiButtonImage(BContainer.BUTTON_FROM_STORAGE, x0+49, y0+34,  9,17, 219,34, 17, BACKGROUND)));
+          buttons.add(addButton(new GuiButtonImage(BContainer.BUTTON_TO_STORAGE,   x0+49, y0+52,  9,17, 208,16, 17, BACKGROUND)));
+          buttons.add(addButton(new GuiButtonImage(BContainer.BUTTON_FROM_PLAYER,  x0+77, y0+71, 17,9,  198,71, 9, BACKGROUND)));
+          buttons.add(addButton(new GuiButtonImage(BContainer.BUTTON_TO_PLAYER,    x0+59, y0+71, 17,9,  180,71, 9, BACKGROUND)));
         }
       }
     }
@@ -412,8 +398,8 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
       if(with_assist) {
-        buttons.get(BUTTON_NEXT_COLLISION_RECIPE).visible = te.has_recipe_collision();
-        buttons.get(BUTTON_NEXT_COLLISION_RECIPE).enabled = te.has_recipe_collision();
+        buttons.get(BContainer.BUTTON_NEXT_COLLISION_RECIPE).visible = te.has_recipe_collision();
+        buttons.get(BContainer.BUTTON_NEXT_COLLISION_RECIPE).enabled = te.has_recipe_collision();
       }
       drawDefaultBackground();
       super.drawScreen(mouseX, mouseY, partialTicks);
@@ -503,15 +489,15 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
     protected void actionPerformed(GuiButton button)
     {
       switch(button.id) {
-        case BUTTON_NEXT:
-        case BUTTON_PREV:
-        case BUTTON_CLEAR_GRID:
-        case BUTTON_FROM_STORAGE:
-        case BUTTON_TO_STORAGE:
-        case BUTTON_FROM_PLAYER:
-        case BUTTON_TO_PLAYER:
-        case ACTION_PLACE_CURRENT_HISTORY_SEL:
-        case BUTTON_NEXT_COLLISION_RECIPE: {
+        case BContainer.BUTTON_NEXT:
+        case BContainer.BUTTON_PREV:
+        case BContainer.BUTTON_CLEAR_GRID:
+        case BContainer.BUTTON_FROM_STORAGE:
+        case BContainer.BUTTON_TO_STORAGE:
+        case BContainer.BUTTON_FROM_PLAYER:
+        case BContainer.BUTTON_TO_PLAYER:
+        case BContainer.ACTION_PLACE_CURRENT_HISTORY_SEL:
+        case BContainer.BUTTON_NEXT_COLLISION_RECIPE: {
           NBTTagCompound nbt = new NBTTagCompound();
           nbt.setInteger("action", button.id);
           Networking.PacketTileNotify.sendToServer(te, nbt);
@@ -548,7 +534,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
           if(palce_in_crafting_grid) {
             // Explicit grid placement.
             NBTTagCompound nbt = new NBTTagCompound();
-            nbt.setInteger("action", ACTION_PLACE_SHIFTCLICKED_STACK);
+            nbt.setInteger("action", BContainer.ACTION_PLACE_SHIFTCLICKED_STACK);
             nbt.setInteger("containerslot", slotId);
             if(ModAuxiliaries.isCtrlDown()) nbt.setBoolean("move-all", true);
             Networking.PacketTileNotify.sendToServer(te, nbt);
@@ -557,7 +543,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
             // Move all same items from the inventory of the clicked slot
             // (or the crafting grid) to the corresponding target inventory.
             NBTTagCompound nbt = new NBTTagCompound();
-            nbt.setInteger("action", ACTION_MOVE_ALL_STACKS);
+            nbt.setInteger("action", BContainer.ACTION_MOVE_ALL_STACKS);
             nbt.setInteger("containerslot", slotId);
             Networking.PacketTileNotify.sendToServer(te, nbt);
             return;
@@ -579,20 +565,20 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
         if(count > 0) {
           if((count < resultSlot.getStack().getMaxStackSize()) && (count < resultSlot.getSlotStackLimit())) {
             NBTTagCompound nbt = new NBTTagCompound();
-            nbt.setInteger("action", ACTION_INCREASE_CRAFTING_STACKS);
+            nbt.setInteger("action", BContainer.ACTION_INCREASE_CRAFTING_STACKS);
             if(limit > 1) nbt.setInteger("limit", limit);
             Networking.PacketTileNotify.sendToServer(te, nbt);
           }
         } else if(!te.history.current().isEmpty()) {
           NBTTagCompound nbt = new NBTTagCompound();
-          nbt.setInteger("action", ACTION_PLACE_CURRENT_HISTORY_SEL);
+          nbt.setInteger("action", BContainer.ACTION_PLACE_CURRENT_HISTORY_SEL);
           Networking.PacketTileNotify.sendToServer(te, nbt);
         }
       } else if(wheel_inc < 0) {
         if(count > 0) {
           NBTTagCompound nbt = new NBTTagCompound();
           if(limit > 1) nbt.setInteger("limit", limit);
-          nbt.setInteger("action", ACTION_DECREASE_CRAFTING_STACKS);
+          nbt.setInteger("action", BContainer.ACTION_DECREASE_CRAFTING_STACKS);
           Networking.PacketTileNotify.sendToServer(te, nbt);
         }
       }
@@ -605,7 +591,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
       final Slot resultSlot = this.getSlotUnderMouse(); // double check
       if(!(resultSlot instanceof BSlotCrafting)) return;
       NBTTagCompound nbt = new NBTTagCompound();
-      nbt.setInteger("action", ACTION_PLACE_CURRENT_HISTORY_SEL);
+      nbt.setInteger("action", BContainer.ACTION_PLACE_CURRENT_HISTORY_SEL);
       Networking.PacketTileNotify.sendToServer(te, nbt);
     }
   }
@@ -644,6 +630,21 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
 
   public static class BContainer extends Container
   {
+    protected static final int BUTTON_NEXT = 0;
+    protected static final int BUTTON_PREV = 1;
+    protected static final int BUTTON_CLEAR_GRID = 2;
+    protected static final int BUTTON_NEXT_COLLISION_RECIPE = 3;
+    protected static final int BUTTON_FROM_STORAGE = 4;
+    protected static final int BUTTON_TO_STORAGE = 5;
+    protected static final int BUTTON_FROM_PLAYER = 6;
+    protected static final int BUTTON_TO_PLAYER = 7;
+    protected static final int ACTION_PLACE_CURRENT_HISTORY_SEL = 8;
+    protected static final int ACTION_PLACE_SHIFTCLICKED_STACK = 9;
+    protected static final int ACTION_MOVE_ALL_STACKS = 10;
+    protected static final int ACTION_INCREASE_CRAFTING_STACKS = 11;
+    protected static final int ACTION_DECREASE_CRAFTING_STACKS = 12;
+
+
     private final World world;
     private final BlockPos pos;
     private final EntityPlayer player;
@@ -1287,39 +1288,39 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
       boolean player_inventory_changed = false;
       if(with_assist && nbt.hasKey("action")) {
         switch(nbt.getInteger("action")) {
-          case BGui.BUTTON_NEXT: {
+          case BContainer.BUTTON_NEXT: {
             history.next();
             syncHistory(player);
             // implicitly clear the grid, so that the player can see the refab, and that no recipe is active.
             if(clear_grid_to_player(player)) { te_changed = true; player_inventory_changed = true; }
             if(clear_grid_to_storage(player)) te_changed = true;
           } break;
-          case BGui.BUTTON_PREV: {
+          case BContainer.BUTTON_PREV: {
             history.prev();
             syncHistory(player);
             if(clear_grid_to_player(player)) { te_changed = true; player_inventory_changed = true; }
             if(clear_grid_to_storage(player)) te_changed = true;
           } break;
-          case BGui.BUTTON_CLEAR_GRID: {
+          case BContainer.BUTTON_CLEAR_GRID: {
             history.reset_selection();
             syncHistory(player);
             if(clear_grid_to_player(player)) { te_changed = true; player_inventory_changed = true; }
             if(clear_grid_to_storage(player)) te_changed = true;
           } break;
-          case BGui.BUTTON_TO_STORAGE: {
+          case BContainer.BUTTON_TO_STORAGE: {
             if(clear_grid_to_storage(player)) te_changed = true;
           } break;
-          case BGui.BUTTON_TO_PLAYER: {
+          case BContainer.BUTTON_TO_PLAYER: {
             if(clear_grid_to_player(player)) { te_changed = true; player_inventory_changed = true; }
           } break;
-          case BGui.BUTTON_FROM_STORAGE: {
+          case BContainer.BUTTON_FROM_STORAGE: {
             if(place_stacks(new SlotRange[]{
               new SlotRange(this, STORAGE_SLOTS_BEGIN, STORAGE_SLOTS_BEGIN+NUM_OF_STORAGE_SLOTS)
             }, refab_crafting_stacks(), player) != PlacementResult.UNCHANGED) {
               te_changed = true;
             }
           } break;
-          case BGui.BUTTON_FROM_PLAYER: {
+          case BContainer.BUTTON_FROM_PLAYER: {
             if(place_stacks(new SlotRange[]{
               new SlotRange(player.inventory, 9, 36),
               new SlotRange(player.inventory, 0, 9)
@@ -1327,7 +1328,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
               te_changed = true; player_inventory_changed = true;
             }
           } break;
-          case BGui.ACTION_PLACE_CURRENT_HISTORY_SEL: {
+          case BContainer.ACTION_PLACE_CURRENT_HISTORY_SEL: {
             if(place_stacks(new SlotRange[]{
               new SlotRange(player.inventory, 0, 9),
               new SlotRange(player.inventory, 9, 36),
@@ -1336,7 +1337,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
               te_changed = true;
             }
           } break;
-          case BGui.ACTION_PLACE_SHIFTCLICKED_STACK: {
+          case BContainer.ACTION_PLACE_SHIFTCLICKED_STACK: {
             final int container_slot_id = nbt.getInteger("containerslot");
             if((container_slot_id < 10) || (container_slot_id > 53)) {
               break; // out of range
@@ -1363,7 +1364,7 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
               }
             }
           } break;
-          case BGui.ACTION_MOVE_ALL_STACKS: {
+          case BContainer.ACTION_MOVE_ALL_STACKS: {
             final int container_slot_id = nbt.getInteger("containerslot");
             if((container_slot_id < 1) || (container_slot_id > 53)) {
               break; // out of range
@@ -1408,19 +1409,19 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
               }
             }
           } break;
-          case BGui.BUTTON_NEXT_COLLISION_RECIPE: {
+          case BContainer.BUTTON_NEXT_COLLISION_RECIPE: {
             if(player.openContainer instanceof BContainer) {
               ((BContainer)player.openContainer).select_next_collision_recipe(this, player);
             }
           } break;
-          case BGui.ACTION_DECREASE_CRAFTING_STACKS: {
+          case BContainer.ACTION_DECREASE_CRAFTING_STACKS: {
             te_changed = player_inventory_changed = decrease_grid_stacks(new SlotRange[]{
               new SlotRange(player.inventory, 9, 36),
               new SlotRange(player.inventory, 0, 9),
               new SlotRange(this, STORAGE_SLOTS_BEGIN, STORAGE_SLOTS_BEGIN+NUM_OF_STORAGE_SLOTS)
             }, MathHelper.clamp(nbt.getInteger("limit"), 1, 8));
           } break;
-          case BGui.ACTION_INCREASE_CRAFTING_STACKS: {
+          case BContainer.ACTION_INCREASE_CRAFTING_STACKS: {
             te_changed = player_inventory_changed = increase_grid_stacks(new SlotRange[]{
               new SlotRange(player.inventory, 9, 36),
               new SlotRange(player.inventory, 0, 9),

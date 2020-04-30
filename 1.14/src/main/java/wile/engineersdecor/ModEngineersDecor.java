@@ -1,7 +1,6 @@
 package wile.engineersdecor;
 
 import wile.engineersdecor.blocks.*;
-import wile.engineersdecor.detail.ModConfig;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.OptionalRecipeCondition;
 import net.minecraft.entity.EntityType;
@@ -158,7 +157,7 @@ public class ModEngineersDecor
     if(!(event.getEntity() instanceof PlayerEntity)) return;
     final PlayerEntity player = (PlayerEntity)event.getEntity();
     if(player.world == null) return;
-    if(player.isOnLadder()) BlockDecorLadder.onPlayerUpdateEvent(player);
+    if(player.isOnLadder()) EdLadderBlock.onPlayerUpdateEvent(player);
   }
 
 }

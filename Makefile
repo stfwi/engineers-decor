@@ -6,10 +6,9 @@
 # Note for reviewers/clones: This file is a auxiliary script for my setup.
 # It's not needed to build the mod.
 #
-.PHONY: default init clean clean-all mrproper sanatize dist update-json sync-main-repo compare migrate-from-112
+.PHONY: default init clean clean-all mrproper sanatize dist dist-all update-json sync-main-repo compare migrate-from-112
 
 default:	;	@echo "First change to specific version directory."
-init: default
 dist: default
 
 clean:
@@ -36,6 +35,16 @@ sanatize:
 	@cd 1.14; make -s sanatize
 	@cd 1.15; make -s sanatize
 	@make -s update-json
+
+init:
+	-@cd 1.12; make -s init
+	-@cd 1.14; make -s init
+	-@cd 1.15; make -s init
+
+dist-all: clean-all init
+	-@cd 1.12; make -s dist
+	-@cd 1.14; make -s dist
+	-@cd 1.15; make -s dist
 
 compare:
 	@djs tasks.js compare-blockstates -v

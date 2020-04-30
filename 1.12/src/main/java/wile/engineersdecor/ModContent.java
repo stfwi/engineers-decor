@@ -12,7 +12,6 @@
  */
 package wile.engineersdecor;
 
-import net.minecraft.block.BlockDragonEgg;
 import wile.engineersdecor.blocks.*;
 import wile.engineersdecor.detail.ModAuxiliaries;
 import wile.engineersdecor.detail.ModConfig;

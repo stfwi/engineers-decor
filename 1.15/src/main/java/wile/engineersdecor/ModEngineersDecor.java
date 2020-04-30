@@ -1,7 +1,6 @@
 package wile.engineersdecor;
 
 import wile.engineersdecor.blocks.*;
-import wile.engineersdecor.detail.ModConfig;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.OptionalRecipeCondition;
 import net.minecraft.entity.EntityType;
@@ -86,8 +85,8 @@ public class ModEngineersDecor
   private void onSendImc(final InterModEnqueueEvent event)
   {
     InterModComms.sendTo("inventorysorter", "containerblacklist", ()->ModContent.CT_TREATED_WOOD_CRAFTING_TABLE.getRegistryName());
-    InterModComms.sendTo("inventorysorter", "slotblacklist", ()->BlockDecorCraftingTable.CraftingOutputSlot.class.getName());
-    InterModComms.sendTo("inventorysorter", "slotblacklist", ()->BlockDecorCraftingTable.CraftingGridSlot.class.getName());
+    InterModComms.sendTo("inventorysorter", "slotblacklist", ()-> EdCraftingTable.CraftingOutputSlot.class.getName());
+    InterModComms.sendTo("inventorysorter", "slotblacklist", ()-> EdCraftingTable.CraftingGridSlot.class.getName());
   }
 
   private void onRecvImc(final InterModProcessEvent event)
@@ -160,7 +159,7 @@ public class ModEngineersDecor
     if(!(event.getEntity() instanceof PlayerEntity)) return;
     final PlayerEntity player = (PlayerEntity)event.getEntity();
     if(player.world == null) return;
-    if(player.isOnLadder()) BlockDecorLadder.onPlayerUpdateEvent(player);
+    if(player.isOnLadder()) EdLadderBlock.onPlayerUpdateEvent(player);
   }
 
 }

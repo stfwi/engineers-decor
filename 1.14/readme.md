@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
+    - v1.0.20-b6  [M] Slab Slice placement improved.
+                  [M] Quite some naming/refractoring under the hood.
+
     - v1.0.20-b5  [A] Electrical Furnace can draw in smelting input items from an adjacent inventory when a
                       Hopper is placed in the auxiliary slot.
                   [M] Wrapped Labeled Crate label slot to prevent sorting mods from altering the label.

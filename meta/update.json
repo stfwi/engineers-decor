@@ -2,13 +2,14 @@
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "promos": {
     "1.12.2-recommended": "1.0.19",
-    "1.12.2-latest": "1.0.20-b5",
+    "1.12.2-latest": "1.0.20-b6",
     "1.14.4-recommended": "",
-    "1.14.4-latest": "1.0.20-b5",
+    "1.14.4-latest": "1.0.20-b6",
     "1.15.2-recommended": "",
-    "1.15.2-latest": "1.0.20-b5"
+    "1.15.2-latest": "1.0.20-b6"
   },
   "1.12.2": {
+    "1.0.20-b6": "[F] Implemented compat related to issue #91.",
     "1.0.20-b5": "[A] Back-ported Patchouli based Manual (you need to install Vazkii_'s Patchouli, too).\n[A] Back-ported Steel Mesh Fence Gate.\n[M] Minor back-porting compatibility refractoring.",
     "1.0.20-b4": "[F] Fixed TE registration bug for Crate registry-optout (issue #91, thx tyon2006).",
     "1.0.20-b3": "[/] Version skipped for 1.12.2.",
@@ -94,6 +95,7 @@
     "1.0.0-b1": "[A] Initial structure.\n[A] Added clinker bricks and clinker brick stairs.\n[A] Added slag bricks and slag brick stairs.\n[A] Added metal rung ladder.\n[A] Added staggered metal steps ladder.\n[A] Added treated wood ladder.\n[A] Added treated wood pole.\n[A] Added treated wood table."
   },
   "1.14.4": {
+    "1.0.20-b6": "[M] Slab Slice placement improved.\n[M] Quite some naming/refractoring under the hood.",
     "1.0.20-b5": "[A] Electrical Furnace can draw in smelting input items from an adjacent inventory when a Hopper is placed in the auxiliary slot.\n[M] Wrapped Labeled Crate label slot to prevent sorting mods from altering the label.",
     "1.0.20-b4": "[F] Fixed Mineral Smelter fluid voiding on external draining (issue #92, thx papaworld, pupnewfster).",
     "1.0.20-b3": "[M] Labeled Crate: GUI quick-move-all (ctrl-shift click) smart move tweaked, Manual page added.\n[F] Fixed IE ingredients based default recipes for Factory Dropper and Small Electrical Furnace.\n[M] Factory Hopper: GUI quick-move-all added.\n[M] Code structure, simplifications, cap invalidation fixes.\n[M] Valves: Removed performance caching for testing purposes.",
@@ -146,6 +148,7 @@
     "1.0.7-b3": "[A] Initial 1.14.2 port of decorative blocks."
   },
   "1.15.2": {
+    "1.0.20-b6": "[M] Slab Slice placement improved.\n[M] Quite some naming/refractoring under the hood.",
     "1.0.20-b5": "[A] Electrical Furnace can draw in smelting input items from an adjacent inventory when a Hopper is placed in the auxiliary slot.\n[M] Wrapped Labeled Crate label slot to prevent sorting mods from altering the label.",
     "1.0.20-b4": "[F] Fixed Mineral Smelter fluid voiding on external draining (issue #92, thx papaworld, pupnewfster).",
     "1.0.20-b3": "[M] Labeled Crate: GUI quick-move-all (ctrl-shift click) smart move tweaked, Manual page added.\n[F] Fixed IE ingredients based default recipes for Factory Dropper and Small Electrical Furnace.\n[M] Factory Hopper: GUI quick-move-all added.\n[M] Code structure, simplifications, cap invalidation fixes.\n[M] Valves: Removed performance caching for testing purposes.",

@@ -12,6 +12,8 @@
  */
 package wile.engineersdecor.libmc.blocks;
 
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import net.minecraft.block.*;
 import net.minecraft.entity.EntityType;
@@ -76,6 +78,12 @@ public class StandardBlocks
 
     default RenderTypeHint getRenderTypeHint()
     { return RenderTypeHint.SOLID; }
+  }
+
+  public interface IBlockItemFactory
+  {
+    // BlockItem factory for item registry. Only invoked once.
+    BlockItem getBlockItem(Block blockIn, Item.Properties builder);
   }
 
   public static class BaseBlock extends Block implements IStandardBlock

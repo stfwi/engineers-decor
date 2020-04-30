@@ -10,8 +10,8 @@
 package wile.engineersdecor.detail;
 
 import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.blocks.BlockDecorCraftingTable;
-import wile.engineersdecor.blocks.BlockDecorLabeledCrate;
+import wile.engineersdecor.blocks.EdCraftingTable;
+import wile.engineersdecor.blocks.EdLabeledCrate;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
@@ -20,6 +20,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import com.mojang.blaze3d.platform.GlStateManager;
+import wile.engineersdecor.blocks.EdLabeledCrate.LabeledCrateBlock;
 
 public class ModTesrs
 {
@@ -28,7 +29,7 @@ public class ModTesrs
   //--------------------------------------------------------------------------------------------------------------------
 
   @OnlyIn(Dist.CLIENT)
-  public static class TesrDecorCraftingTable extends TileEntityRenderer<BlockDecorCraftingTable.CraftingTableTileEntity>
+  public static class TesrDecorCraftingTable extends TileEntityRenderer<EdCraftingTable.CraftingTableTileEntity>
   {
     private static int tesr_error_counter = 4;
     private static double scaler = 0.10;
@@ -43,11 +44,11 @@ public class ModTesrs
 
     @Override
     @SuppressWarnings("deprecation")
-    public void render(final BlockDecorCraftingTable.CraftingTableTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
+    public void render(final EdCraftingTable.CraftingTableTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
     {
       if(tesr_error_counter<=0) return;
       try {
-        int di = MathHelper.clamp(te.getWorld().getBlockState(te.getPos()).get(BlockDecorCraftingTable.CraftingTableBlock.HORIZONTAL_FACING).getHorizontalIndex(), 0, 3);
+        int di = MathHelper.clamp(te.getWorld().getBlockState(te.getPos()).get(EdCraftingTable.CraftingTableBlock.HORIZONTAL_FACING).getHorizontalIndex(), 0, 3);
         long posrnd = te.getPos().toLong();
         posrnd = (posrnd>>16)^(posrnd<<1);
         for(int i=0; i<9; ++i) {
@@ -86,7 +87,7 @@ public class ModTesrs
   //--------------------------------------------------------------------------------------------------------------------
 
   @OnlyIn(Dist.CLIENT)
-  public static class TesrDecorLabeledCrate extends TileEntityRenderer<BlockDecorLabeledCrate.LabeledCrateTileEntity>
+  public static class TesrDecorLabeledCrate extends TileEntityRenderer<EdLabeledCrate.LabeledCrateTileEntity>
   {
     private static int tesr_error_counter = 4;
     private static double scaler = 0.35;
@@ -99,13 +100,13 @@ public class ModTesrs
 
     @Override
     @SuppressWarnings("deprecation")
-    public void render(final BlockDecorLabeledCrate.LabeledCrateTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
+    public void render(final EdLabeledCrate.LabeledCrateTileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
     {
       if(tesr_error_counter<=0) return;
       try {
         final ItemStack stack = te.getItemFrameStack();
         if(stack.isEmpty()) return;
-        final int di = MathHelper.clamp(te.getWorld().getBlockState(te.getPos()).get(BlockDecorLabeledCrate.DecorLabeledCrateBlock.HORIZONTAL_FACING).getHorizontalIndex(), 0, 3);
+        final int di = MathHelper.clamp(te.getWorld().getBlockState(te.getPos()).get(LabeledCrateBlock.HORIZONTAL_FACING).getHorizontalIndex(), 0, 3);
         double ox = tr[di][0], oy = tr[di][1], oz = tr[di][2], ry = tr[di][3];
         GlStateManager.pushMatrix();
         GlStateManager.disableLighting();

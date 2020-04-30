@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.12.2": {
+    "1.0.20-b6": "[F] Implemented compat related to issue #91.",
     "1.0.20-b5": "[A] Back-ported Patchouli based Manual (you need to install Vazkii_'s Patchouli, too).\n[A] Back-ported Steel Mesh Fence Gate.\n[M] Minor back-porting compatibility refractoring.",
     "1.0.20-b4": "[F] Fixed TE registration bug for Crate registry-optout (issue #91, thx tyon2006).",
     "1.0.20-b3": "[/] Version skipped for 1.12.2.",
@@ -87,6 +88,6 @@
   },
   "promos": {
     "1.12.2-recommended": "1.0.19",
-    "1.12.2-latest": "1.0.20-b5"
+    "1.12.2-latest": "1.0.20-b6"
   }
 }

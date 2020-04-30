@@ -10,29 +10,25 @@
 package wile.engineersdecor.libmc.blocks;
 
 import wile.engineersdecor.libmc.detail.Auxiliaries;
+import net.minecraft.item.*;
+import net.minecraft.util.math.*;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.world.IWorld;
 import net.minecraft.block.*;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.util.*;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.entity.EntityType;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -115,9 +111,39 @@ public class SlabSliceBlock extends StandardBlocks.WaterLoggable implements Stan
   @Nullable
   public BlockState getStateForPlacement(BlockItemUseContext context)
   {
-    final Direction facing = context.getFace();
-    double y = context.getHitVec().getY();
-    return super.getStateForPlacement(context).with(PARTS, ((facing==Direction.UP) || ((facing!=Direction.DOWN) && (y < 0.6))) ? 0 : 14);
+    final BlockPos pos = context.getPos();
+    BlockState state = context.getWorld().getBlockState(pos);
+    if(state.getBlock() == this) {
+      int parts = state.get(PARTS);
+      if(parts == 7) return null; // -> is already a full block.
+      parts += (parts < 7) ? 1 : -1;
+      if(parts==7) state = state.with(WATERLOGGED, false);
+      return state.with(PARTS, parts);
+    } else {
+      final Direction face = context.getFace();
+      final BlockState placement_state = super.getStateForPlacement(context); // fluid state
+      if(face == Direction.UP) return placement_state.with(PARTS, 0);
+      if(face == Direction.DOWN) return placement_state.with(PARTS, 14);
+      if(!face.getAxis().isHorizontal()) return placement_state;
+      final boolean isupper = ((context.getHitVec().getY() - context.getPos().getY()) > 0.5);
+      return placement_state.with(PARTS, isupper ? 14 : 0);
+    }
+  }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  public boolean isReplaceable(BlockState state, BlockItemUseContext context)
+  {
+    if(context.getItem().getItem() != this.asItem()) return false;
+    if(!context.replacingClickedOnBlock()) return true;
+    final Direction face = context.getFace();
+    final int parts = state.get(PARTS);
+    if(parts == 7) return false;
+    if((face == Direction.UP) && (parts < 7)) return true;
+    if((face == Direction.DOWN) && (parts > 7)) return true;
+    if(!face.getAxis().isHorizontal()) return false;
+    final boolean isupper = ((context.getHitVec().getY() - context.getPos().getY()) > 0.5);
+    return isupper ? (parts==0) : (parts==1);
   }
 
   @Override
@@ -137,32 +163,6 @@ public class SlabSliceBlock extends StandardBlocks.WaterLoggable implements Stan
   @Override
   public List<ItemStack> dropList(BlockState state, World world, BlockPos pos, boolean explosion)
   { return new ArrayList<ItemStack>(Collections.singletonList(new ItemStack(this.asItem(), num_slabs_contained_in_parts_[state.get(PARTS) & 0xf]))); }
-
-  @Override
-  @SuppressWarnings("deprecation")
-  public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
-  {
-    Direction face = rayTraceResult.getFace();
-    final ItemStack stack = player.getHeldItem(hand);
-    if(stack.isEmpty() || (Block.getBlockFromItem(stack.getItem()) != this)) return false;
-    if((face != Direction.UP) && (face != Direction.DOWN)) return false;
-    int parts = state.get(PARTS);
-    if((face != Direction.UP) && (parts > 7)) {
-      world.setBlockState(pos, state.with(PARTS, parts-1), 3);
-    } else if((face != Direction.DOWN) && (parts < 7)) {
-      world.setBlockState(pos, state.with(PARTS, parts+1), 3);
-    } else {
-      return (parts != 7);
-    }
-    if(world.isRemote) return true;
-    if(!player.isCreative()) {
-      stack.shrink(1);
-      if(player.inventory != null) player.inventory.markDirty();
-    }
-    SoundType st = this.getSoundType(state, world, pos, null);
-    world.playSound(null, pos, st.getPlaceSound(), SoundCategory.BLOCKS, (st.getVolume()+1f)/2.5f, 0.9f*st.getPitch());
-    return true;
-  }
 
   @Override
   @SuppressWarnings("deprecation")

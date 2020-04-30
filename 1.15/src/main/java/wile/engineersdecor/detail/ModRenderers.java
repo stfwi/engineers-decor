@@ -10,7 +10,7 @@
 package wile.engineersdecor.detail;
 
 import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.blocks.BlockDecorCraftingTable;
+import wile.engineersdecor.blocks.EdCraftingTable;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -26,8 +26,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import wile.engineersdecor.blocks.BlockDecorCraftingTable.CraftingTableBlock;
-import wile.engineersdecor.blocks.BlockDecorLabeledCrate;
+import wile.engineersdecor.blocks.EdCraftingTable.CraftingTableBlock;
+import wile.engineersdecor.blocks.EdLabeledCrate;
 
 
 public class ModRenderers
@@ -66,7 +66,7 @@ public class ModRenderers
   //--------------------------------------------------------------------------------------------------------------------
 
   @OnlyIn(Dist.CLIENT)
-  public static class CraftingTableTer extends TileEntityRenderer<BlockDecorCraftingTable.CraftingTableTileEntity>
+  public static class CraftingTableTer extends TileEntityRenderer<EdCraftingTable.CraftingTableTileEntity>
   {
     private static int tesr_error_counter = 4;
     private static float scaler = 0.1f;
@@ -84,7 +84,7 @@ public class ModRenderers
 
     @Override
     @SuppressWarnings("deprecation")
-    public void render(final BlockDecorCraftingTable.CraftingTableTileEntity te, float unused1, MatrixStack mxs, IRenderTypeBuffer buf, int i5, int i6)
+    public void render(final EdCraftingTable.CraftingTableTileEntity te, float unused1, MatrixStack mxs, IRenderTypeBuffer buf, int i5, int i6)
     {
       if(tesr_error_counter <= 0) return;
       try {
@@ -123,7 +123,7 @@ public class ModRenderers
   //--------------------------------------------------------------------------------------------------------------------
 
   @OnlyIn(Dist.CLIENT)
-  public static class DecorLabeledCrateTer extends TileEntityRenderer<BlockDecorLabeledCrate.LabeledCrateTileEntity>
+  public static class DecorLabeledCrateTer extends TileEntityRenderer<EdLabeledCrate.LabeledCrateTileEntity>
   {
     private static int tesr_error_counter = 4;
     private static float scaler = 0.35f;
@@ -139,13 +139,13 @@ public class ModRenderers
 
     @Override
     @SuppressWarnings("deprecation")
-    public void render(final BlockDecorLabeledCrate.LabeledCrateTileEntity te, float unused1, MatrixStack mxs, IRenderTypeBuffer buf, int i5, int i6)
+    public void render(final EdLabeledCrate.LabeledCrateTileEntity te, float unused1, MatrixStack mxs, IRenderTypeBuffer buf, int i5, int i6)
     {
       if(tesr_error_counter<=0) return;
       try {
         final ItemStack stack = te.getItemFrameStack();
         if(stack.isEmpty()) return;
-        final int di = MathHelper.clamp(te.getWorld().getBlockState(te.getPos()).get(BlockDecorLabeledCrate.DecorLabeledCrateBlock.HORIZONTAL_FACING).getHorizontalIndex(), 0, 3);
+        final int di = MathHelper.clamp(te.getWorld().getBlockState(te.getPos()).get(EdLabeledCrate.DecorLabeledCrateBlock.HORIZONTAL_FACING).getHorizontalIndex(), 0, 3);
         double ox = tr[di][0], oy = tr[di][1], oz = tr[di][2];
         float ry = (float)tr[di][3];
         mxs.push();

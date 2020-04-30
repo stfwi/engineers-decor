@@ -9,9 +9,9 @@
 package wile.engineersdecor.eapi.jei;
 
 import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.blocks.BlockDecorCraftingTable;
-import wile.engineersdecor.detail.ModConfig;
+import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
+import wile.engineersdecor.blocks.EdCraftingTable;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.constants.VanillaTypes;
@@ -35,7 +35,7 @@ public class JEIPlugin implements mezz.jei.api.IModPlugin
     if(!ModConfig.without_crafting_table) {
       try {
         registration.addRecipeTransferHandler(
-          BlockDecorCraftingTable.CraftingTableContainer.class,
+          EdCraftingTable.CraftingTableContainer.class,
           VanillaRecipeCategoryUid.CRAFTING,
           1, 9, 10, 44
         );

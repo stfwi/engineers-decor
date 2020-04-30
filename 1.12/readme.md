@@ -10,6 +10,8 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    - v1.0.20-b6  [F] Implemented compat related to issue #91.
+
     - v1.0.20-b5  [A] Back-ported Patchouli based Manual (you need to install Vazkii_'s Patchouli, too).
                   [A] Back-ported Steel Mesh Fence Gate.
                   [M] Minor back-porting compatibility refractoring.
