@@ -277,11 +277,7 @@ public class EdBreaker
       if(world.isRemote  || (!(world instanceof ServerWorld)) || world.restoringBlockSnapshots) return false; // retry next cycle
       List<ItemStack> drops;
       final Block block = state.getBlock();
-      if((!(block instanceof IDecorBlock)) || (!((IDecorBlock)block).hasDynamicDropList())) {
-        drops = Block.getDrops(state, (ServerWorld)world, pos, world.getTileEntity(pos));
-      } else {
-        drops = ((IDecorBlock)block).dropList(state, world, pos, false);
-      }
+      drops = Block.getDrops(state, (ServerWorld)world, pos, world.getTileEntity(pos));
       world.removeBlock(pos, false);
       for(ItemStack drop:drops) Block.spawnAsEntity(world, pos, drop);
       SoundType stype = state.getBlock().getSoundType(state, world, pos, null);

@@ -108,11 +108,10 @@ public class EdPlacer
     { return true; }
 
     @Override
-    public List<ItemStack> dropList(BlockState state, World world, BlockPos pos, boolean explosion)
+    public List<ItemStack> dropList(BlockState state, World world, BlockPos pos, final TileEntity te, boolean explosion)
     {
       final List<ItemStack> stacks = new ArrayList<ItemStack>();
       if(world.isRemote) return stacks;
-      final TileEntity te = world.getTileEntity(pos);
       if(!(te instanceof PlacerTileEntity)) return stacks;
       if(!explosion) {
         ItemStack stack = new ItemStack(this, 1);

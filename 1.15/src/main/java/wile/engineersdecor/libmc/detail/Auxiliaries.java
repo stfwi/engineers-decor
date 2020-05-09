@@ -113,7 +113,7 @@ public class Auxiliaries
    */
   public static TranslationTextComponent localizable(String modtrkey, @Nullable TextFormatting color, Object... args)
   {
-    TranslationTextComponent tr = new TranslationTextComponent((modtrkey.startsWith("block.")) ? (modtrkey) : (modid+"."+modtrkey), args);
+    TranslationTextComponent tr = new TranslationTextComponent((modtrkey.startsWith("block.") || (modtrkey.startsWith("item."))) ? (modtrkey) : (modid+"."+modtrkey), args);
     if(color!=null) tr.getStyle().setColor(color);
     return tr;
   }

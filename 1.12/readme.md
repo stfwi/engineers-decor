@@ -10,6 +10,15 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+                  -------------------------------------------------------------------
+    - v1.0.20     [R] Release based on v1.0.20-b6. Release-to-release changes:
+                    * Manual back ported.
+                    * Steel Mesh Fence Gate back ported.
+                    * E-Furnace speed selection switch back ported.
+                    * Labeled Crate back ported.
+                    * Minor bug fixes, compatibility changes.
+                  -------------------------------------------------------------------
+
     - v1.0.20-b6  [F] Implemented compat related to issue #91.
 
     - v1.0.20-b5  [A] Back-ported Patchouli based Manual (you need to install Vazkii_'s Patchouli, too).

@@ -103,13 +103,12 @@ public class EdMineralSmelter
     { return true; }
 
     @Override
-    public List<ItemStack> dropList(BlockState state, World world, BlockPos pos, boolean explosion)
+    public List<ItemStack> dropList(BlockState state, World world, BlockPos pos, TileEntity te, boolean explosion)
     {
       final List<ItemStack> stacks = new ArrayList<ItemStack>();
       if(world.isRemote) return stacks;
-      final MineralSmelterTileEntity te = getTe(world, pos);
-      if(te == null) return stacks;
-      te.reset_process();
+      if(!(te instanceof MineralSmelterTileEntity)) return stacks;
+      ((MineralSmelterTileEntity)te).reset_process();
       stacks.add(new ItemStack(this, 1));
       return stacks;
     }

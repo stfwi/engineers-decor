@@ -38,6 +38,7 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -206,6 +207,13 @@ public class ModContent
     DecorBlock.CFG_TRANSLUCENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(5f, 2000f).sound(SoundType.METAL).notSolid()
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "panzerglass_slab"));
+
+  // -------------------------------------------------------------------------------------------------------------------
+
+  public static final DecorBlock.Normal DENSE_GRIT_SAND = (DecorBlock.Normal)(new DecorBlock.Normal(
+    DecorBlock.CFG_DEFAULT,
+    Block.Properties.create(Material.EARTH, MaterialColor.DIRT).hardnessAndResistance(0.5f, 3f).sound(SoundType.GROUND).harvestTool(ToolType.SHOVEL)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "dense_grit_sand_block"));
 
   // -------------------------------------------------------------------------------------------------------------------
 
@@ -596,7 +604,7 @@ public class ModContent
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_fluid_funnel"));
 
   public static final EdLabeledCrate.DecorLabeledCrateBlock LABELED_CRATE = (EdLabeledCrate.DecorLabeledCrateBlock)(new EdLabeledCrate.DecorLabeledCrateBlock(
-    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT,
+    DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(0.5f, 128f).sound(SoundType.METAL).notSolid(),
     Auxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "labeled_crate"));
@@ -686,6 +694,7 @@ public class ModContent
     STRAIGHT_REDSTONE_ANALOG_VALVE,
     PASSIVE_FLUID_ACCUMULATOR,
     SMALL_FLUID_FUNNEL,
+    DENSE_GRIT_SAND,
     CLINKER_BRICK_BLOCK,
     CLINKER_BRICK_SLAB,
     CLINKER_BRICK_STAIRS,

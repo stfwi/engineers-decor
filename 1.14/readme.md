@@ -11,6 +11,10 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
+    ~ v1.0.20-b7  [A] Dense Grit Sand added.
+                  [!] Variant Slab compatibility fix. *This may alter placed slabs of this mod,
+                      data fixers don't work yet unfortunately*.
+
     - v1.0.20-b6  [M] Slab Slice placement improved.
                   [M] Quite some naming/refractoring under the hood.
 

@@ -15,7 +15,10 @@ import net.minecraft.util.math.*;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.block.*;
+import net.minecraft.block.BlockState;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.IntegerProperty;
@@ -26,8 +29,6 @@ import net.minecraft.world.World;
 import net.minecraft.entity.EntityType;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.block.BlockState;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -161,7 +162,7 @@ public class SlabSliceBlock extends StandardBlocks.WaterLoggable implements Stan
   { return true; }
 
   @Override
-  public List<ItemStack> dropList(BlockState state, World world, BlockPos pos, boolean explosion)
+  public List<ItemStack> dropList(BlockState state, World world, BlockPos pos, TileEntity te, boolean explosion)
   { return new ArrayList<ItemStack>(Collections.singletonList(new ItemStack(this.asItem(), num_slabs_contained_in_parts_[state.get(PARTS) & 0xf]))); }
 
   @Override

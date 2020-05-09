@@ -72,9 +72,8 @@ public class EdTestBlock extends StandardBlocks.Directed implements IExperimenta
   { return true; }
 
   @Override
-  public List<ItemStack> dropList(BlockState state, World world, BlockPos pos, boolean explosion)
+  public List<ItemStack> dropList(BlockState state, World world, BlockPos pos, TileEntity te, boolean explosion)
   {
-    // @todo ... there was something like single element list or so ...
     ArrayList<ItemStack> list = new ArrayList<ItemStack>();
     list.add(new ItemStack(this, 1));
     return list;

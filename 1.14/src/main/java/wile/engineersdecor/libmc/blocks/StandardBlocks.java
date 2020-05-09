@@ -21,17 +21,17 @@ import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraft.util.math.shapes.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.material.PushReaction;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockReader;
@@ -69,7 +69,7 @@ public class StandardBlocks
     default boolean hasDynamicDropList()
     { return false; }
 
-    default List<ItemStack> dropList(BlockState state, World world, BlockPos pos, boolean explosion)
+    default List<ItemStack> dropList(BlockState state, World world, BlockPos pos, @Nullable TileEntity te, boolean explosion)
     { return Collections.singletonList((!world.isRemote()) ? (new ItemStack(state.getBlock().asItem())) : (ItemStack.EMPTY)); }
   }
 
@@ -153,31 +153,18 @@ public class StandardBlocks
       }
     }
 
-    public static boolean dropBlock(BlockState state, World world, BlockPos pos, @Nullable PlayerEntity player)
-    {
-      if(!(state.getBlock() instanceof IStandardBlock)) { world.removeBlock(pos, false); return true; }
-      if(!world.isRemote()) {
-        if((player==null) || (!player.isCreative())) {
-          ((IStandardBlock)state.getBlock()).dropList(state, world, pos, player==null).forEach(stack->world.addEntity(new ItemEntity(world, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, stack)));
-        }
-      }
-      if(state.getBlock().hasTileEntity(state)) world.removeTileEntity(pos);
-      world.removeBlock(pos, false);
-      return true;
-    }
-
-    @Override
-    public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, IFluidState fluid)
-    { return hasDynamicDropList() ? dropBlock(state, world, pos, player) : super.removedByPlayer(state, world,pos , player, willHarvest, fluid); }
-
-    @Override
-    public void onExplosionDestroy(World world, BlockPos pos, Explosion explosion)
-    { if(hasDynamicDropList()) dropBlock(world.getBlockState(pos), world, pos, null); }
-
     @Override
     @SuppressWarnings("deprecation")
     public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
-    { return hasDynamicDropList() ? Collections.singletonList(ItemStack.EMPTY) : super.getDrops(state, builder); }
+    {
+      final BlockPos pos = builder.get(LootParameters.POSITION);
+      final ServerWorld world = builder.getWorld();
+      final Float explosion_radius = builder.get(LootParameters.EXPLOSION_RADIUS);
+      final TileEntity te = builder.get(LootParameters.BLOCK_ENTITY);
+      if((!hasDynamicDropList()) || (pos==null) || (world==null)) return super.getDrops(state, builder);
+      boolean is_explosion = (explosion_radius!=null) && (explosion_radius > 0);
+      return dropList(state, world, pos, te, is_explosion);
+    }
 
     @Override
     public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos)

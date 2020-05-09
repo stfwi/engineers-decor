@@ -83,8 +83,7 @@ start-server:
 
 sanatize:
 	@echo "[1.12] Running sanatising tasks ..."
-	@djs tasks.js trailing-whitespaces
-	@djs tasks.js tabs-to-spaces
+	@djs tasks.js sanatize
 	@djs tasks.js sync-languages
 	@djs tasks.js version-check
 	@djs tasks.js update-json
