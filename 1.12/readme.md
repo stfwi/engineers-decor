@@ -10,6 +10,8 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    ~ v1.1.0-b1   [M]
+
                   -------------------------------------------------------------------
     - v1.0.20     [R] Release based on v1.0.20-b6. Release-to-release changes:
                     * Manual back ported.
