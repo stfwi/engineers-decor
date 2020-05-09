@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "engineersdecor:clinker_brick_slab",
+	"engineersdecor:clinker_brick_stained_slab",
+	"engineersdecor:slag_brick_slab",
+	"engineersdecor:rebar_concrete_slab",
+	"engineersdecor:rebar_concrete_tile_slab",
+	"engineersdecor:gas_concrete_slab",
+	"engineersdecor:panzerglass_slab"
+  ]
+}

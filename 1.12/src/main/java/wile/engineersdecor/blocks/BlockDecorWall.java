@@ -178,7 +178,7 @@ public class BlockDecorWall extends BlockDecor
   {
     final IBlockState state = world.getBlockState(other);
     final Block block = state.getBlock();
-    if((block instanceof BlockDecorWall) || (block instanceof BlockFenceGate) || (block instanceof BlockDecorFence)) return true;
+    if((block instanceof BlockDecorWall) || (block instanceof BlockFenceGate) || (block instanceof BlockDecorFence) || (block instanceof BlockDecorDoubleGate)) return true;
     if(world.getBlockState(pos.offset(facing)).getBlock()!=this) return false;
     if(block instanceof BlockFence) return true;
     final BlockFaceShape shp = state.getBlockFaceShape(world, other, facing);

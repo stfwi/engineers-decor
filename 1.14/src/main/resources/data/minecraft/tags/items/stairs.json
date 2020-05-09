@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "engineersdecor:clinker_brick_stairs",
+	"engineersdecor:clinker_brick_stained_stairs",
+	"engineersdecor:slag_brick_stairs",
+	"engineersdecor:rebar_concrete_stairs",
+	"engineersdecor:rebar_concrete_tile_stairs",
+	"engineersdecor:gas_concrete_stairs"
+  ]
+}

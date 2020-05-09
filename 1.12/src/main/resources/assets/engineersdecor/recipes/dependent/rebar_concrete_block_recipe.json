@@ -1,7 +1,7 @@
 {
   "conditions": [
     {
-      "type": "engineersdecor:grc",
+      "type": "engineersdecor:optional",
       "result": "engineersdecor:rebar_concrete",
       "required": ["immersiveengineering:stone_decoration"]
     }

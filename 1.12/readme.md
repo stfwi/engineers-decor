@@ -10,6 +10,49 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    ~ v1.1.0-b1   [M]
+
+                  -------------------------------------------------------------------
+    - v1.0.20     [R] Release based on v1.0.20-b6. Release-to-release changes:
+                    * Manual back ported.
+                    * Steel Mesh Fence Gate back ported.
+                    * E-Furnace speed selection switch back ported.
+                    * Labeled Crate back ported.
+                    * Minor bug fixes, compatibility changes.
+                  -------------------------------------------------------------------
+
+    - v1.0.20-b6  [F] Implemented compat related to issue #91.
+
+    - v1.0.20-b5  [A] Back-ported Patchouli based Manual (you need to install Vazkii_'s Patchouli, too).
+                  [A] Back-ported Steel Mesh Fence Gate.
+                  [M] Minor back-porting compatibility refractoring.
+
+    - v1.0.20-b4  [F] Fixed TE registration bug for Crate registry-optout (issue #91, thx tyon2006).
+
+    - v1.0.20-b3  [/] Version skipped for 1.12.2.
+
+    - v1.0.20-b2  [A] Backported Electrical Furnace GUI speed selection switch.
+                  [A] Backported Labeled Crate (storage crate with built-in item frame).
+
+    - v1.0.20-b1  [/] Version skipped for 1.12.2.
+
+                  -------------------------------------------------------------------
+    - v1.0.19     [R] Release based on v1.0.19-b4. Release-to-release changes:
+                    * Transfer fixes for Tree Cutter / Block Breaker, and Factory hopper.
+                    * Cleanups, feature backports
+                    * Visual fixes and improvements
+                  -------------------------------------------------------------------
+                  [A] Backport of status display for Tree Cutter, Block Breaker and Solar Panel.
+
+    - v1.0.19-b4  [A] Creative tab opt-out visibility handling added (issue #90, thx pimalel233).
+
+    - v1.0.19-b3  [A] Factory Hopper: Added bottom item handler (CR#227).
+
+    - v1.0.19-b2  [F] Fixed Floor Grating item pass-through jitters (thx Cid).
+                  [M] Removed obsolete recipe collision testing recipes.
+
+    - v1.0.19-b1  [F] Fixed Tree Cutter / Block Breaker not accepting small energy transfers (thx WindFox, issue #82).
+
                   -------------------------------------------------------------------
     - v1.0.18     [R] Release based on v1.0.18-b2. Release-to-release changes:
                     * Tree cutter config fixes.

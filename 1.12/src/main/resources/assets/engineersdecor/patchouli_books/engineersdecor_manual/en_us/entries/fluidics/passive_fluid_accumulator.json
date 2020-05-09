@@ -1,0 +1,18 @@
+{
+  "name": "Passive Fluid Accumulator",
+  "icon": "engineersdecor:passive_fluid_accumulator",
+  "category": "fluidics",
+  "sortnum": 7040,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "Fluid Accumulator",
+      "item": "engineersdecor:passive_fluid_accumulator",
+      "text": "This passive collector is useful to drain multiple tanks with one pump. It is basically an empty liquid container with one outlet connector for a suction pump, as well as five inlets for adjacent tanks.$(br)When the pump drains the Fluid Accumulator, the connected tanks will be drained in turn."
+    },
+    {
+      "type": "text",
+      "text": "The Fluid Accumulator supports pressurised (\"high speed\") fluid transfer of $(o)Immersive Engineering$() pumps, and can drain tanks very quickly. Note that the initial flow rate is low, because the container volume needs to be filled up first by the pump vacuum.$(br2)To place the device, click on the input side of the pump (the outlet is on the face you click). Shift-click placement flips the placement direction."
+    }
+  ]
+}

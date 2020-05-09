@@ -27,6 +27,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import wile.engineersdecor.blocks.BlockDecorLabeledCrate;
+import wile.engineersdecor.blocks.BlockDecorLabeledCrate.DecorLabeledCrateBlock;
 import wile.engineersdecor.blocks.BlockDecorTest;
 
 public class ModTesrs
@@ -82,13 +84,58 @@ public class ModTesrs
         }
       } catch(Throwable e) {
         if(--tesr_error_counter<=0) {
-          ModEngineersDecor.logger.error("TESR was disabled because broken, exception was: " + e.getMessage());
+          ModEngineersDecor.logger.error("Crafting Table TESR was disabled because broken, exception was: " + e.getMessage());
           ModEngineersDecor.logger.error(e.getStackTrace());
         }
       }
     }
   }
 
+  //--------------------------------------------------------------------------------------------------------------------
+  // Labeled Crate
+  //--------------------------------------------------------------------------------------------------------------------
+
+  @SideOnly(Side.CLIENT)
+  public static class TesrDecorLabeledCrate extends TileEntitySpecialRenderer<BlockDecorLabeledCrate.LabeledCrateTileEntity>
+  {
+    private static int tesr_error_counter = 4;
+    private static double scaler = 0.35;
+    double tr[][]= { // [hdirection=S-W-N-E][param]
+      {  +8.0/32, -8.0/32, +15.5/32, 180.0 }, // N
+      { -15.5/32, -8.0/32,  +8.0/32,  90.0 }, // E
+      {  -8.0/32, -8.0/32, -15.5/32,   0.0 }, // S param=tx,ty,tz,ry
+      { +15.5/32, -8.0/32,  -8.0/32, 270.0 }, // W
+    };
+
+    @Override
+    public void render(final BlockDecorLabeledCrate.LabeledCrateTileEntity te, final double x, final double y, final double z, final float partialTicks, final int destroyStage, final float alpha)
+    {
+      if(tesr_error_counter<=0) return;
+      try {
+        final ItemStack stack = te.getItemFrameStack();
+        if(stack.isEmpty()) return;
+        final int di = MathHelper.clamp(te.getWorld().getBlockState(te.getPos()).getValue(DecorLabeledCrateBlock.FACING).getHorizontalIndex(), 0, 3);
+        double ox = tr[di][0], oy = tr[di][1], oz = tr[di][2], ry = tr[di][3];
+        GlStateManager.pushMatrix();
+        GlStateManager.disableLighting();
+        RenderHelper.enableStandardItemLighting();
+        GlStateManager.translate(x+0.5+ox, y+0.5+oy, z+0.5+oz);
+        GlStateManager.rotate((float)ry, 0, 1, 0);
+        GlStateManager.scale(scaler, scaler, scaler);
+        Minecraft.getMinecraft().getRenderItem().renderItem(stack, TransformType.FIXED);
+        RenderHelper.disableStandardItemLighting();
+        GlStateManager.enableLighting();
+        GlStateManager.popMatrix();
+      } catch(Throwable e) {
+        if(--tesr_error_counter<=0) {
+          ModEngineersDecor.logger.error("Labeled Crate TESR was disabled (because broken), exception was: " + e.getMessage());
+        }
+      }
+    }
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Test Block
   //--------------------------------------------------------------------------------------------------------------------
 
   @SideOnly(Side.CLIENT)

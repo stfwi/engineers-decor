@@ -10,7 +10,7 @@
 package wile.engineersdecor.detail;
 
 import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.blocks.BlockDecorCraftingTable;
+import wile.engineersdecor.blocks.EdCraftingTable;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -26,6 +26,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import wile.engineersdecor.blocks.EdCraftingTable.CraftingTableBlock;
+import wile.engineersdecor.blocks.EdLabeledCrate;
 
 
 public class ModRenderers
@@ -64,7 +66,7 @@ public class ModRenderers
   //--------------------------------------------------------------------------------------------------------------------
 
   @OnlyIn(Dist.CLIENT)
-  public static class CraftingTableTer extends TileEntityRenderer<BlockDecorCraftingTable.CraftingTableTileEntity>
+  public static class CraftingTableTer extends TileEntityRenderer<EdCraftingTable.CraftingTableTileEntity>
   {
     private static int tesr_error_counter = 4;
     private static float scaler = 0.1f;
@@ -81,15 +83,12 @@ public class ModRenderers
     { super(dispatcher); }
 
     @Override
-    public void func_225616_a_(final BlockDecorCraftingTable.CraftingTableTileEntity te, float f2, MatrixStack mxs, IRenderTypeBuffer buf, int i5, int i6)
-    { render(te, f2, mxs, buf, i5, i6); }
-
     @SuppressWarnings("deprecation")
-    public void render(final BlockDecorCraftingTable.CraftingTableTileEntity te, float unused1, MatrixStack mxs, IRenderTypeBuffer buf, int i5, int i6)
+    public void render(final EdCraftingTable.CraftingTableTileEntity te, float unused1, MatrixStack mxs, IRenderTypeBuffer buf, int i5, int i6)
     {
       if(tesr_error_counter <= 0) return;
       try {
-        final int di = MathHelper.clamp(te.getWorld().getBlockState(te.getPos()).get(BlockDecorCraftingTable.CraftingTableBlock.FACING).getHorizontalIndex(), 0, 3);
+        final int di = MathHelper.clamp(te.getWorld().getBlockState(te.getPos()).get(CraftingTableBlock.HORIZONTAL_FACING).getHorizontalIndex(), 0, 3);
         long posrnd = te.getPos().toLong();
         posrnd = (posrnd>>16)^(posrnd<<1);
         for(int i=0; i<9; ++i) {
@@ -101,22 +100,67 @@ public class ModRenderers
           float oy = 0.5f;
           float ry = ((yrotations[di]+180) + ((prnd*60)-30)) % 360;
           if(stack.isEmpty()) return;
-          mxs.func_227860_a_(); // mxs.push()
-          mxs.func_227861_a_(0.5+ox, 0.5+oy, 0.5+oz); // mxs.translate()
-
-          mxs.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(90.0f));  // mxs.transform(Vector3f.x_plus.rotation(90))
-
-          mxs.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(ry)); // mxs.transform(Vector3f.z_plus.rotation(ry))
-
-          mxs.func_227861_a_(rndo, rndo, 0); // mxs.translate()
-          mxs.func_227862_a_(scaler, scaler, scaler); // mxs.scale()
-          Minecraft.getInstance().getItemRenderer().func_229110_a_(stack, net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType.FIXED, i5, i6, mxs, buf);
-          mxs.func_227865_b_(); // mxs.pop()
+          mxs.push();
+          mxs.translate(0.5+ox, 0.5+oy, 0.5+oz);
+          mxs.rotate(Vector3f.XP.rotationDegrees(90.0f));
+          mxs.rotate(Vector3f.ZP.rotationDegrees(ry));
+          mxs.translate(rndo, rndo, 0);
+          mxs.scale(scaler, scaler, scaler);
+          Minecraft.getInstance().getItemRenderer().renderItem(stack, net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType.FIXED, i5, i6, mxs, buf);
+          mxs.pop();
         }
       } catch(Throwable e) {
         if(--tesr_error_counter<=0) {
-          ModEngineersDecor.logger().error("TESR was disabled because broken, exception was: " + e.getMessage());
+          ModEngineersDecor.logger().error("TER was disabled because broken, exception was: " + e.getMessage());
           ModEngineersDecor.logger().error(e.getStackTrace());
+        }
+      }
+    }
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Labeled Crate
+  //--------------------------------------------------------------------------------------------------------------------
+
+  @OnlyIn(Dist.CLIENT)
+  public static class DecorLabeledCrateTer extends TileEntityRenderer<EdLabeledCrate.LabeledCrateTileEntity>
+  {
+    private static int tesr_error_counter = 4;
+    private static float scaler = 0.35f;
+    double tr[][]= { // [hdirection=S-W-N-E][param]
+      {  +8.0/32, -8.0/32, +15.5/32, 180.0 }, // N
+      { -15.5/32, -8.0/32,  +8.0/32,  90.0 }, // E
+      {  -8.0/32, -8.0/32, -15.5/32,   0.0 }, // S param=tx,ty,tz,ry
+      { +15.5/32, -8.0/32,  -8.0/32, 270.0 }, // W
+    };
+
+    public DecorLabeledCrateTer(TileEntityRendererDispatcher dispatcher)
+    { super(dispatcher); }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void render(final EdLabeledCrate.LabeledCrateTileEntity te, float unused1, MatrixStack mxs, IRenderTypeBuffer buf, int i5, int i6)
+    {
+      if(tesr_error_counter<=0) return;
+      try {
+        final ItemStack stack = te.getItemFrameStack();
+        if(stack.isEmpty()) return;
+        final int di = MathHelper.clamp(te.getWorld().getBlockState(te.getPos()).get(EdLabeledCrate.DecorLabeledCrateBlock.HORIZONTAL_FACING).getHorizontalIndex(), 0, 3);
+        double ox = tr[di][0], oy = tr[di][1], oz = tr[di][2];
+        float ry = (float)tr[di][3];
+        mxs.push();
+        //GlStateManager.disableLighting();
+        //RenderHelper.enableStandardItemLighting();
+        mxs.translate(0.5+ox, 0.5+oy, 0.5+oz);
+        mxs.rotate(Vector3f.YP.rotationDegrees(ry));
+        mxs.scale(scaler, scaler, scaler);
+        Minecraft.getInstance().getItemRenderer().renderItem(stack, net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType.FIXED, i5, i6, mxs, buf);
+        //RenderHelper.disableStandardItemLighting();
+        //GlStateManager.enableLighting();
+        mxs.pop();
+      } catch(Throwable e) {
+        if(--tesr_error_counter<=0) {
+          ModEngineersDecor.logger().error("TER was disabled (because broken), exception was: " + e.getMessage());
         }
       }
     }

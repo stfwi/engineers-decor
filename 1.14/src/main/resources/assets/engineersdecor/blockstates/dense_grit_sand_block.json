@@ -1,0 +1,14 @@
+{
+  "variants": {
+    "": [
+      { "model": "engineersdecor:block/soil/dense_grit_sand_model0" },
+      { "model": "engineersdecor:block/soil/dense_grit_sand_model1" },
+      { "model": "engineersdecor:block/soil/dense_grit_sand_model2" },
+      { "model": "engineersdecor:block/soil/dense_grit_sand_model3" },
+      { "model": "engineersdecor:block/soil/dense_grit_sand_model4" },
+      { "model": "engineersdecor:block/soil/dense_grit_sand_model5" },
+      { "model": "engineersdecor:block/soil/dense_grit_sand_model6" },
+      { "model": "engineersdecor:block/soil/dense_grit_sand_model7" }
+    ]
+  }
+}

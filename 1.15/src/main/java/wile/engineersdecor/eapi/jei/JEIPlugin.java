@@ -8,14 +8,12 @@
  */
 package wile.engineersdecor.eapi.jei;
 
-public class JEIPlugin {}
-/*
+import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.ModConfig;
+import wile.engineersdecor.ModContent;
+import wile.engineersdecor.blocks.EdCraftingTable;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
-import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.blocks.BlockDecorCraftingTable;
-import wile.engineersdecor.detail.ModConfig;
-import wile.engineersdecor.ModContent;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.block.Block;
@@ -23,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import java.util.ArrayList;
 import java.util.List;
+
 
 @mezz.jei.api.JeiPlugin
 public class JEIPlugin implements mezz.jei.api.IModPlugin
@@ -37,7 +36,7 @@ public class JEIPlugin implements mezz.jei.api.IModPlugin
     if(!ModConfig.without_crafting_table) {
       try {
         registration.addRecipeTransferHandler(
-          BlockDecorCraftingTable.BContainer.class,
+          EdCraftingTable.CraftingTableContainer.class,
           VanillaRecipeCategoryUid.CRAFTING,
           1, 9, 10, 44
         );
@@ -65,4 +64,3 @@ public class JEIPlugin implements mezz.jei.api.IModPlugin
     }
   }
 }
-*/

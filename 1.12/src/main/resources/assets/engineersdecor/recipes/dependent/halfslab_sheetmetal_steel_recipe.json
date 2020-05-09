@@ -1,7 +1,7 @@
 {
   "conditions": [
     {
-      "type": "engineersdecor:grc",
+      "type": "engineersdecor:optional",
       "result": "engineersdecor:halfslab_sheetmetal_steel",
       "required": ["immersiveengineering:stone_decoration"]
     }

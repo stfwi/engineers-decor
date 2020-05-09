@@ -14,6 +14,7 @@ import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.blocks.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.block.Block;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
@@ -77,6 +78,11 @@ public class ModConfig
     @Config.Name("Without rebar concrete")
     @Config.RequiresMcRestart
     public boolean without_rebar_concrete = false;
+
+    @Config.Comment({"Disable gas concrete and derived blocks."})
+    @Config.Name("Without gas concrete")
+    @Config.RequiresMcRestart
+    public boolean without_gas_concrete = false;
 
     @Config.Comment({"Disable all mod wall blocks."})
     @Config.Name("Without walls")
@@ -554,6 +560,7 @@ public class ModConfig
     if(optout.without_clinker_bricks && (rn.startsWith("clinker_brick_"))) return true;
     if(optout.without_slag_bricks && rn.startsWith("slag_brick_")) return true;
     if(optout.without_rebar_concrete && rn.startsWith("rebar_concrete")) return true;
+    if(optout.without_gas_concrete && rn.startsWith("gas_concrete")) return true;
     if(optout.without_ie_concrete_wall && rn.startsWith("concrete_wall")) return true;
     if(optout.without_panzer_glass && rn.startsWith("panzerglass_")) return true;
     if(optout.without_light_sources && rn.endsWith("_light")) return true;
@@ -561,8 +568,11 @@ public class ModConfig
     if(optout.without_treated_wood_furniture) {
       if(block instanceof BlockDecorChair) return true;
       if(rn.equals("treated_wood_table")) return true;
+      if(rn.equals("treated_wood_side_table")) return true;
       if(rn.equals("treated_wood_stool")) return true;
       if(rn.equals("treated_wood_windowsill")) return true;
+      if(rn.equals("treated_wood_broad_windowsill")) return true;
+      if(rn.equals("steel_table")) return true;
     }
     return false;
   }
@@ -570,6 +580,7 @@ public class ModConfig
   public static final boolean isOptedOut(final @Nullable Item item)
   {
     if((item == null) || (optout == null)) return true;
+    if(item instanceof ItemBlock) return isOptedOut(((ItemBlock)item).getBlock());
     return false;
   }
 
@@ -606,7 +617,7 @@ public class ModConfig
     BlockDecorLadder.on_config(optout.without_ladder_speed_boost);
     BlockDecorCraftingTable.on_config(optout.without_crafting_table_history, false, tweaks.with_crafting_quickmove_buttons, tweaks.without_crafting_mouse_scrolling);
     BlockDecorPipeValve.on_config(tweaks.pipevalve_max_flowrate, tweaks.pipevalve_redstone_slope);
-    BlockDecorFurnaceElectrical.BTileEntity.on_config(tweaks.e_furnace_speed_percent, tweaks.e_furnace_power_consumption);
+    BlockDecorFurnaceElectrical.BTileEntity.on_config(tweaks.e_furnace_speed_percent, tweaks.e_furnace_power_consumption, false);
     BlockDecorSolarPanel.BTileEntity.on_config(tweaks.solar_panel_peak_power);
     BlockDecorBreaker.BTileEntity.on_config(tweaks.block_breaker_power_consumption, tweaks.block_breaker_reluctance, tweaks.block_breaker_min_breaking_time, tweaks.block_breaker_requires_power);
     BlockDecorTreeCutter.BTileEntity.on_config(tweaks.tree_cuttter_energy_consumption, tweaks.tree_cuttter_cutting_time_needed, tweaks.tree_cuttter_requires_power);

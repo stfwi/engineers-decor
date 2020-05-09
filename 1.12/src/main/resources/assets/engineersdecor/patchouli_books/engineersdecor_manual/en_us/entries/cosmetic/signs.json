@@ -1,0 +1,18 @@
+{
+  "name": "Signs",
+  "icon": "engineersdecor:sign_hotwire",
+  "category": "cosmetic",
+  "sortnum": 3020,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "Signs",
+      "item": "engineersdecor:sign_hotwire",
+      "text": "You can craft some sign plates that can be attached to walls, and shall help people not loosing their orientation in larger factories. Similarly, there are signs which are simply placed for the sake of health and safety. E.g. do not forget to place a Hot Wire warning sign close to HV wire cables. If someone gets hurt you'll be responible otherwise."
+    },
+    {
+      "type": "text",
+      "text": "Also Exit Signs over the doors are helpful for the next fire drill."
+    }
+  ]
+}

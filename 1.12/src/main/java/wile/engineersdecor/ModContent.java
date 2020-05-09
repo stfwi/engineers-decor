@@ -22,7 +22,6 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
@@ -31,7 +30,9 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -211,6 +212,13 @@ public class ModContent
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   );
 
+  public static final BlockDecorLabeledCrate.DecorLabeledCrateBlock LABELED_CRATE = new BlockDecorLabeledCrate.DecorLabeledCrateBlock(
+    "labeled_crate",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+    Material.WOOD, 0.5f, 128f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+  );
+
   //--------------------------------------------------------------------------------------------------------------------
 
   public static final BlockDecorStraightPole TREATED_WOOD_POLE = new BlockDecorStraightPole(
@@ -273,7 +281,14 @@ public class ModContent
 
   public static final BlockDecorFence STEEL_MESH_FENCE = new BlockDecorFence(
     "steel_mesh_fence",
-    BlockDecor.CFG_DEFAULT, Material.IRON, 2f, 15f, SoundType.METAL
+    BlockDecor.CFG_CUTOUT, Material.IRON, 2f, 15f, SoundType.METAL
+  );
+
+  public static final BlockDecorDoubleGate STEEL_MESH_FENCE_GATE = new BlockDecorDoubleGate(
+    "steel_mesh_fence_gate",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_LOOK_PLACEMENT,
+    Material.IRON, 2f, 15f, SoundType.METAL,
+    ModAuxiliaries.getPixeledAABB(0,0,6.5, 16,16,9.5)
   );
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -338,7 +353,7 @@ public class ModContent
     "steel_floor_grating",
     BlockDecor.CFG_CUTOUT,
     Material.IRON, 1.0f, 15f, SoundType.METAL,
-    ModAuxiliaries.getPixeledAABB(0,14,0, 16,16,16)
+    ModAuxiliaries.getPixeledAABB(0,14,0, 16,15.9,16)
   );
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -473,56 +488,62 @@ public class ModContent
   {
     public final Class<? extends TileEntity> clazz;
     public final ResourceLocation key;
-    public TileEntityRegistrationData(Class<? extends TileEntity> c, String k) { clazz=c; key = new ResourceLocation(ModEngineersDecor.MODID, k); }
+    public final Block[] blocks;
+
+    public TileEntityRegistrationData(Class<? extends TileEntity> c, String k, Block... b)
+    { clazz=c; key = new ResourceLocation(ModEngineersDecor.MODID, k); blocks=b; }
   }
 
   private static final TileEntityRegistrationData TREATED_WOOD_CRAFTING_TABLE_TEI = new TileEntityRegistrationData(
-    BlockDecorCraftingTable.BTileEntity.class, "te_crafting_table"
+    BlockDecorCraftingTable.BTileEntity.class, "te_crafting_table", TREATED_WOOD_CRAFTING_TABLE
+  );
+  private static final TileEntityRegistrationData LABELED_CRATE_TEI = new TileEntityRegistrationData(
+    BlockDecorLabeledCrate.LabeledCrateTileEntity.class, "te_labeled_crate", LABELED_CRATE
   );
   private static final TileEntityRegistrationData SMALL_LAB_FURNACE_TEI = new TileEntityRegistrationData(
-    BlockDecorFurnace.BTileEntity.class, "te_small_lab_furnace"
+    BlockDecorFurnace.BTileEntity.class, "te_small_lab_furnace", SMALL_ELECTRICAL_FURNACE
   );
   private static final TileEntityRegistrationData SMALL_ELECTRICAL_FURNACE_TEI = new TileEntityRegistrationData(
-    BlockDecorFurnaceElectrical.BTileEntity.class, "te_electrical_lab_furnace"
+    BlockDecorFurnaceElectrical.BTileEntity.class, "te_electrical_lab_furnace", SMALL_ELECTRICAL_FURNACE
   );
   private static final TileEntityRegistrationData STRAIGHT_PIPE_VALVE_TEI = new TileEntityRegistrationData(
-    BlockDecorPipeValve.BTileEntity.class, "te_pipe_valve"
+    BlockDecorPipeValve.BTileEntity.class, "te_pipe_valve", STRAIGHT_CHECK_VALVE,STRAIGHT_REDSTONE_ANALOG_VALVE,STRAIGHT_REDSTONE_VALVE
   );
   private static final TileEntityRegistrationData PASSIVE_FLUID_ACCUMULATOR_TEI = new TileEntityRegistrationData(
-    BlockDecorPassiveFluidAccumulator.BTileEntity.class, "te_passive_fluid_accumulator"
+    BlockDecorPassiveFluidAccumulator.BTileEntity.class, "te_passive_fluid_accumulator", PASSIVE_FLUID_ACCUMULATOR
   );
   private static final TileEntityRegistrationData SMALL_FLUID_FUNNEL_TEI = new TileEntityRegistrationData(
-    BlockDecorFluidFunnel.BTileEntity.class, "te_small_fluid_funnel"
+    BlockDecorFluidFunnel.BTileEntity.class, "te_small_fluid_funnel", SMALL_FLUID_FUNNEL
   );
   private static final TileEntityRegistrationData WASTE_INCINERATOR_TEI = new TileEntityRegistrationData(
-    BlockDecorWasteIncinerator.BTileEntity.class, "te_small_waste_incinerator"
+    BlockDecorWasteIncinerator.BTileEntity.class, "te_small_waste_incinerator", SMALL_WASTE_INCINERATOR
   );
   private static final TileEntityRegistrationData FACTORY_DROPPER_TEI = new TileEntityRegistrationData(
-    BlockDecorDropper.BTileEntity.class, "te_factory_dropper"
+    BlockDecorDropper.BTileEntity.class, "te_factory_dropper", FACTORY_DROPPER
   );
   private static final TileEntityRegistrationData FACTORY_HOPPER_TEI = new TileEntityRegistrationData(
-    BlockDecorHopper.BTileEntity.class, "te_factory_hopper"
+    BlockDecorHopper.BTileEntity.class, "te_factory_hopper", FACTORY_HOPPER
   );
   private static final TileEntityRegistrationData FACTORY_PLACER_TEI = new TileEntityRegistrationData(
-    BlockDecorPlacer.BTileEntity.class, "te_factory_placer"
+    BlockDecorPlacer.BTileEntity.class, "te_factory_placer", FACTORY_PLACER
   );
   private static final TileEntityRegistrationData SMALL_MINERAL_SMELTER_TEI = new TileEntityRegistrationData(
-    BlockDecorMineralSmelter.BTileEntity.class, "te_small_mineral_smelter"
+    BlockDecorMineralSmelter.BTileEntity.class, "te_small_mineral_smelter", SMALL_MINERAL_SMELTER
   );
   private static final TileEntityRegistrationData SMALL_MILKING_MACHINE_TEI = new TileEntityRegistrationData(
-    BlockDecorMilker.BTileEntity.class, "te_small_milking_machine"
+    BlockDecorMilker.BTileEntity.class, "te_small_milking_machine", SMALL_MILKING_MACHINE
   );
   private static final TileEntityRegistrationData SMALL_SOLAR_PANEL_TEI = new TileEntityRegistrationData(
-    BlockDecorSolarPanel.BTileEntity.class, "te_small_solar_panel"
+    BlockDecorSolarPanel.BTileEntity.class, "te_small_solar_panel", SMALL_SOLAR_PANEL
   );
   private static final TileEntityRegistrationData SMALL_TREE_CUTTER_TEI = new TileEntityRegistrationData(
-    BlockDecorTreeCutter.BTileEntity.class, "te_small_tree_cutter"
+    BlockDecorTreeCutter.BTileEntity.class, "te_small_tree_cutter", SMALL_TREE_CUTTER
   );
   private static final TileEntityRegistrationData SMALL_BLOCK_BREAKER_TEI = new TileEntityRegistrationData(
-    BlockDecorBreaker.BTileEntity.class, "te_small_block_breaker"
+    BlockDecorBreaker.BTileEntity.class, "te_small_block_breaker", SMALL_BLOCK_BREAKER
   );
   private static final TileEntityRegistrationData TEST_BLOCK_TEI = new TileEntityRegistrationData(
-    BlockDecorTest.BTileEntity.class, "te_testblock"
+    BlockDecorTest.BTileEntity.class, "te_testblock", TEST_BLOCK
   );
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -531,6 +552,7 @@ public class ModContent
 
   private static final Object content[] = {
     TREATED_WOOD_CRAFTING_TABLE, TREATED_WOOD_CRAFTING_TABLE_TEI,
+    LABELED_CRATE, LABELED_CRATE_TEI,
     SMALL_LAB_FURNACE, SMALL_LAB_FURNACE_TEI,
     SMALL_ELECTRICAL_FURNACE, SMALL_ELECTRICAL_FURNACE_TEI,
     FACTORY_HOPPER,FACTORY_HOPPER_TEI,
@@ -591,6 +613,7 @@ public class ModContent
     STEEL_DOUBLE_T_SUPPORT,
     STEEL_FLOOR_GRATING,
     STEEL_MESH_FENCE,
+    STEEL_MESH_FENCE_GATE,
     SIGN_HOTWIRE, SIGN_DANGER, SIGN_DEFENSE, SIGN_FACTORY_AREA, SIGN_EXIT, SIGN_MODLOGO,
     TREATED_WOOD_SIDE_TABLE,
     HALFSLAB_REBARCONCRETE, HALFSLAB_CONCRETE, HALFSLAB_GAS_CONCRETE, HALFSLAB_TREATEDWOOD,
@@ -672,6 +695,7 @@ public class ModContent
         }
         registeredBlocks.add((Block) e);
       } else if(e instanceof TileEntityRegistrationData) {
+        if((woor) && Arrays.stream(((TileEntityRegistrationData)e).blocks).allMatch(ModConfig::isOptedOut)) continue;
         registeredTileEntityInits.add((TileEntityRegistrationData)e);
       }
     }
@@ -705,6 +729,9 @@ public class ModContent
       if(!ModConfig.isOptedOut(TREATED_WOOD_CRAFTING_TABLE)) {
         ClientRegistry.bindTileEntitySpecialRenderer(BlockDecorCraftingTable.BTileEntity.class, new ModTesrs.TesrDecorCraftingTable());
       }
+      if(!ModConfig.isOptedOut(LABELED_CRATE)) {
+        ClientRegistry.bindTileEntitySpecialRenderer(BlockDecorLabeledCrate.LabeledCrateTileEntity.class, new ModTesrs.TesrDecorLabeledCrate());
+      }
       if(!ModConfig.isOptedOut(TEST_BLOCK)) {
         ClientRegistry.bindTileEntitySpecialRenderer(BlockDecorTest.BTileEntity.class, new ModTesrs.TesrDecorTest());
       }
@@ -714,13 +741,7 @@ public class ModContent
   // Invoked from CommonProxy.registerItems()
   public static final void registerItemBlocks(RegistryEvent.Register<Item> event)
   {
-    int n = 0;
-    for(Block e:registeredBlocks) {
-      ResourceLocation rl = e.getRegistryName();
-      if(rl == null) continue;
-      event.getRegistry().register(new ItemBlock(e).setRegistryName(rl));
-      ++n;
-    }
+    for(Block e:registeredBlocks) event.getRegistry().register(new ItemDecor(e));
   }
 
 }

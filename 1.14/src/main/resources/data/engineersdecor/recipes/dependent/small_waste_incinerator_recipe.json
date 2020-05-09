@@ -1,0 +1,57 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:small_waste_incinerator",
+          "required": ["#forge:plates/iron"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "HPP",
+          "PHP",
+          "PLP"
+        ],
+        "key": {
+          "P": { "tag" : "forge:plates/iron" },
+          "L": { "item": "minecraft:lava_bucket" },
+          "H": { "item": "minecraft:hopper" }
+        },
+        "result": {
+          "item": "engineersdecor:small_waste_incinerator",
+          "count": 1
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:small_waste_incinerator",
+          "missing": ["#forge:plates/iron"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "HPP",
+          "PHP",
+          "PLP"
+        ],
+        "key": {
+          "H": { "item": "minecraft:hopper" },
+          "P": { "item": "minecraft:iron_ingot" },
+          "L": { "item": "minecraft:lava_bucket" }
+        },
+        "result": {
+          "item": "engineersdecor:small_waste_incinerator",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

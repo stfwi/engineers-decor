@@ -1,0 +1,20 @@
+{
+  "name": "Inset Lights",
+  "icon": "engineersdecor:iron_inset_light",
+  "category": "illumination",
+  "sortnum": 4010,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "Inset Spotlight",
+      "item": "engineersdecor:iron_inset_light",
+      "text": "This passive light source can be placed on ceilings or walls, and comes in handy where proper electrical illumination is not an option. For instance, stairways, narrow corridors, small inspection chambers, as well as air shafts are such problematic locations.$(br)Light level is 15, you will need Glowstone for crafting."
+    },
+    {
+      "type": "spotlight",
+      "title": "Floor Edge Light",
+      "item": "engineersdecor:iron_floor_edge_light",
+      "text": "Edge lights are useful for orientation, as well as for lighting up spaces between larger machines.$(br)Big machines may block the light cones of flood lights, causing dangerously dark spots (see the 'Health and Safety' handbook, chapter 'Explosion Hazzard')."
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "conditions": [
     {
-      "type": "engineersdecor:grc",
+      "type": "engineersdecor:optional",
       "result": "engineersdecor:concrete_wall",
       "required": ["immersiveengineering:stone_decoration"]
     }

@@ -2,6 +2,8 @@
 (function(constants){
   var me = {};
 
+  const clone = function(o) { return JSON.parse(JSON.stringify(o)); }
+
   /**
    * Loads the raw data of the lang file.
    * @returns {object}
@@ -115,7 +117,75 @@
    * Applies to the CWD and 1.12.2 lang files.
    * @returns {void}
    */
-  me.sync_languages = function(reflang_code) {};
+  me.sync_languages = function(reflang_code) {
+    const modid = constants.mod_registry_name();
+    if(reflang_code===undefined) reflang_code = "en_us";
+    reflang_code = reflang_code.trim().toLowerCase();
+    function load() {
+      const lang_data = {};
+      fs.find("./src/main/resources/assets/"+ modid +"/lang", '*.json', function(f){
+        const r = me.load_raw(f);
+        lang_data[r.code] = r.data;
+        return false;
+      });
+      return lang_data;
+    }
+    function sync_lang_data(lang_data, reflang_code) {
+      const lang_outputs = clone(lang_data);
+      const reflang = lang_data[reflang_code];
+      for(var name in lang_data) {
+        if(name == reflang_code) continue;
+        const lang = lang_outputs[name];
+        for(var key in reflang) {
+          if(lang[key] === undefined) {
+            lang[key] = clone(reflang[key]);
+            print("[warn] Lang: Added default language for missing entry in " + name + ": '" + key + "'");
+          }
+        }
+        for(var key in lang) {
+          if((reflang[key] === undefined) && (lang[key].search(/^_/)<0)) {
+            lang["_"+key] = lang[key];
+            print("[warn] Lang: Commented out obsolete entry in " + name + ": '" + key + "'");
+          }
+        }
+      }
+      return lang_outputs;
+    }
+
+    const sort_entries = function(data) {
+      data = clone(data);
+      const out = {};
+      const move = function(key) { out[key] = data[key]; data[key] = undefined; delete data[key]; };
+      move("language");
+      move("language.code");
+      move("language.region");
+      move("itemGroup.tab"+modid);
+      move(modid+".config.title");
+      const keys = Object.keys(data);
+      keys.sort(function(a, b) {
+        if((a.search(modid+".config.")==0) && (b.search(modid+".config.")<0) ) return -1;
+        if((b.search(modid+".config.")==0) && (a.search(modid+".config.")<0) ) return +1;
+        if((a.search(modid+".tooltip.")==0) && (b.search(modid+".tooltip.")<0) ) return -1;
+        if((b.search(modid+".tooltip.")==0) && (a.search(modid+".tooltip.")<0) ) return +1;
+        if((a.search("block."+modid+".")==0) && (b.search("block."+modid+".")<0) ) return -1;
+        if((b.search("block."+modid+".")==0) && (a.search("block."+modid+".")<0) ) return +1;
+        if((a.search("item."+modid+".")==0) && (b.search("item."+modid+".")<0) ) return -1;
+        if((b.search("item."+modid+".")==0) && (a.search("item."+modid+".")<0) ) return +1;
+        return (a>b ? 1 : (a<b ? -1 : 0));
+      });
+      for(var i in keys) move(keys[i]);
+      return out;
+    };
+
+    const output_data = sync_lang_data(load(), reflang_code);
+    for(var name in output_data) {
+      var data = sort_entries(output_data[name]);
+      data = JSON.stringify(data, null, 2);
+      fs.writefile("./src/main/resources/assets/" + modid + "/lang/" + name + ".json", data);
+      // print("--------------------------------------------------------------------------------");
+      // print(output_data[name]);
+    }
+  };
 
   Object.freeze(me);
   return me;

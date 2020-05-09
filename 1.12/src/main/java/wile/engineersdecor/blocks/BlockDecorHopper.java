@@ -612,6 +612,7 @@ public class BlockDecorHopper extends BlockDecorDirected
     // ISidedInventory ----------------------------------------------------------------------------
 
     private final IItemHandler item_handler_ = new SidedInvWrapper(this, EnumFacing.UP);
+    private final IItemHandler down_item_handler_ = new SidedInvWrapper(this, EnumFacing.DOWN);
     private static final int[] SIDED_INV_SLOTS;
     static {
       SIDED_INV_SLOTS = new int[NUM_OF_SLOTS];
@@ -628,7 +629,7 @@ public class BlockDecorHopper extends BlockDecorDirected
 
     @Override
     public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
-    { return false; }
+    { return direction==EnumFacing.DOWN; }
 
     // Capability export ----------------------------------------------------------------------------
 
@@ -641,7 +642,9 @@ public class BlockDecorHopper extends BlockDecorDirected
     @Nullable
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
     {
-      if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return (T)item_handler_;
+      if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        return (facing == EnumFacing.DOWN) ? ((T)down_item_handler_) : ((T)item_handler_);
+      }
       return super.getCapability(capability, facing);
     }
 

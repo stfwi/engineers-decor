@@ -1,6 +1,18 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
-  "1.15.1": {
+  "1.15.2": {
+    "1.0.20-b7": "[A] Dense Grit Sand added.\n[!] Variant Slab compatibility fix. *This may alter placed slabs of this mod, data fixers don't work yet unfortunately*.",
+    "1.0.20-b6": "[M] Slab Slice placement improved.\n[M] Quite some naming/refractoring under the hood.",
+    "1.0.20-b5": "[A] Electrical Furnace can draw in smelting input items from an adjacent inventory when a Hopper is placed in the auxiliary slot.\n[M] Wrapped Labeled Crate label slot to prevent sorting mods from altering the label.",
+    "1.0.20-b4": "[F] Fixed Mineral Smelter fluid voiding on external draining (issue #92, thx papaworld, pupnewfster).",
+    "1.0.20-b3": "[M] Labeled Crate: GUI quick-move-all (ctrl-shift click) smart move tweaked, Manual page added.\n[F] Fixed IE ingredients based default recipes for Factory Dropper and Small Electrical Furnace.\n[M] Factory Hopper: GUI quick-move-all added.\n[M] Code structure, simplifications, cap invalidation fixes.\n[M] Valves: Removed performance caching for testing purposes.",
+    "1.0.20-b2": "[A] Added Labeled Crate (storage crate with built-in item frame).",
+    "1.0.20-b1": "[A] Electrical Furnace: Added four-position speed switch (off, 100%, 150%, 200%), power consumption increases at higher rate (off, 100%, 200%, 400%).\n[A] Added Steel Mesh Fence Gate (single or double height gate fitting to the Steel Mesh Fence).\n[M] Waste Incinerator processing speed tweaked.\n[F] Fixed steel table visual glitch (thx Urbanxx001).\n[M] MCP/Forge mappings updated.",
+    "1.0.19-b5": "[A] Added right-click display of power and progress information for Block Breaker, Solar Panel, and Tree Cutter.\n[A] Solar Panel power curve tuned.\n[A] Mod manual 1st edition release recipe added.\n[A] Factory Hopper: Resetting NBT when breaking with empty inventory (for stacking), enabled item cap for all sides.\n[M] Electrical Furnace model polished.",
+    "1.0.19-b4": "[A] Ported primary Immersive Engineering dependent recipes (alternative recipes will still work if IE is not installed).\n[F] Blacklisted Treated Wood Crafting Table in inventorysorter mod (issue #88, thx Nachtflame).\n[M] Furni comparator output overrides reflect input slots and empty fuel state/power-cutoff.\n[M] Solar Panel config: Default value for internal battery capacity increased.\n[F] Block Placer: Shifted GUI player slots 1px to the right.\n[A] Added mod block tags for slabs, stairs, and walls (PR#89, thanks CrudeAustin for the data).\n[A] Added experimental Patchouli manual (creative only).",
+    "1.0.19-b3": "[M] Config tweaks: Value limit ranges increased to facilitate modpacking.\n[A] Factory Hopper: Added bottom item handler (CR#227).\n[M] Block shapes refined.\n[F] Fixed duping bug (issue #87, thx Nachtflame)",
+    "1.0.19-b2": "[F] Fixed Floor Grating item pass-through jitters (thx Cid).\n[M] Removed obsolete recipe collision testing recipes.\n[F] Fixed missing Block Breaker dynamic block drops.\n[F] Block Placer planting race condition issue fixed (issue #83, thx jcardii).\n[F] Factory Hopper: Added second standard insertion run after smart-insert to circumcent compat issues (issue #84, thx NillerMedDild).\n[A] Enabled JEI plugin (issue #85, thx ProsperCraft/Goshen).",
+    "1.0.19-b1": "[U] Update to 1.15.2.\n[F] Fixed Tree Cutter / Block Breaker not accepting small energy transfers (thx WindFox, issue #82).",
     "1.0.18-b4": "[A] Ported Treated Wood Crafting Table item rendering.\n[F] Fixed Milking machine cow path issue, added milking delay cow tracking.\n[F] Slab / Slab Slice placement adapted to vanilla standard.\n[M] Lang update ru_ru (PR#77, thanks Smollet777).",
     "1.0.18-b3": "[A] Added Treated Wood Crafting Table tweaks (ctrl-shift moves all same stacks from the inventory, mouse wheel over crafting slot increases/decreases crafting grid stacks).\n[F] EN Lang file fixed (issue #76, thx Riverstar907).\n[F] Fixed Tree Cutter not respecting power-required config (thx federsavo, issue #77).\n[F] Fixed Small Solar Panel not exposing energy capability (thx MatthiasMann, issue #78).",
     "1.0.18-b2": "[M] Lang ru_ru updated (Smollet777).",
@@ -8,7 +20,7 @@
     "1.0.17-b2": "[A] Initial port."
   },
   "promos": {
-    "1.15.1-recommended": "",
-    "1.15.1-latest": "1.0.18-b4"
+    "1.15.2-recommended": "",
+    "1.15.2-latest": "1.0.20-b7"
   }
 }

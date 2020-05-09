@@ -1,0 +1,28 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:steel_mesh_fence_gate",
+      "required": ["engineersdecor:thin_steel_pole", "engineersdecor:steel_mesh_fence"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PFP"
+  ],
+  "key": {
+    "P": {
+      "item": "engineersdecor:thin_steel_pole",
+      "data": 0
+    },
+    "F": {
+      "item": "engineersdecor:steel_mesh_fence",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "engineersdecor:steel_mesh_fence_gate",
+    "data": 0,
+    "count": 2
+  }
+}

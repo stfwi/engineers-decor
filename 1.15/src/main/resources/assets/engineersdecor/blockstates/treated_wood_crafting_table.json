@@ -3,8 +3,6 @@
     "facing=north": { "model": "engineersdecor:block/crafting_table/treated_wood_crafting_table_model"          },
     "facing=south": { "model": "engineersdecor:block/crafting_table/treated_wood_crafting_table_model", "y":180 },
     "facing=west":  { "model": "engineersdecor:block/crafting_table/treated_wood_crafting_table_model", "y":270 },
-    "facing=east":  { "model": "engineersdecor:block/crafting_table/treated_wood_crafting_table_model", "y":90  },
-    "facing=up":    { "model": "engineersdecor:block/crafting_table/treated_wood_crafting_table_model" },
-    "facing=down":  { "model": "engineersdecor:block/crafting_table/treated_wood_crafting_table_model" }
+    "facing=east":  { "model": "engineersdecor:block/crafting_table/treated_wood_crafting_table_model", "y":90  }
   }
 }

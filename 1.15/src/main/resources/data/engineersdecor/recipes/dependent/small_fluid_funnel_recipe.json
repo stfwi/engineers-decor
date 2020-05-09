@@ -1,0 +1,57 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:small_fluid_funnel",
+          "required": ["#forge:plates/iron", "immersiveengineering:metal_barrel"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "HHH",
+          "PBP",
+          "PPP"
+        ],
+        "key": {
+          "P": { "tag" : "forge:plates/iron" },
+          "B": { "item": "immersiveengineering:metal_barrel" },
+          "H": { "item": "minecraft:hopper"}
+        },
+        "result": {
+          "item": "engineersdecor:small_fluid_funnel",
+          "count": 1
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:small_fluid_funnel",
+          "missing": ["#forge:plates/iron", "immersiveengineering:metal_barrel"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "HHH",
+          "IBI",
+          "III"
+        ],
+        "key": {
+          "B": { "item": "minecraft:bucket" },
+          "I": { "item": "minecraft:iron_ingot" },
+          "H": { "item": "minecraft:hopper" }
+        },
+        "result": {
+          "item": "engineersdecor:small_fluid_funnel",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

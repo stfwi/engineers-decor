@@ -3,6 +3,11 @@
 "use strict";
 
 (function(constants){
+
+  const note = function() { var args = ["[note]"]; for(var i in arguments) args.push(arguments[i]); print.apply(this, args); }
+  const warn = function() { var args = ["[warn]"]; for(var i in arguments) args.push(arguments[i]); print.apply(this, args); }
+  const pass = function() { var args = ["[pass]"]; for(var i in arguments) args.push(arguments[i]); print.apply(this, args); }
+  const fail = function() { var args = ["[fail]"]; for(var i in arguments) args.push(arguments[i]); print.apply(this, args); }
   const me = {'tasks':{}, 'parsing':{},'sanatizing':{}};
 
   /**
@@ -181,6 +186,29 @@
   };
 
   /**
+   * Fixes "\\n" to "\n" in lang json files.
+   */
+  me.sanatizing.lang_json_newline_fixes = function() {
+    var file_list = (function() {
+      var ls = [];
+      const dir = "./" + constants.local_assets_root() + "/lang";
+      if(fs.isdir(dir)) {
+        ls = ls.concat(fs.find(dir, '*.json'));
+        for(var i in ls) ls[i] = ls[i].replace(/\\/g,"/");
+      }
+      ls.sort();
+      return ls;
+    })();
+    for(var file_i in file_list) {
+      var file = file_list[file_i];
+      var txt = fs.readfile(file);
+      if(txt===undefined) throw new Error("Failed to read '" + file + "'");
+      txt = txt.replace(/\\\\n/g,"\\n");
+      fs.writefile(file, txt);
+    }
+  };
+
+  /**
    * Checks the versions specified in the gradle.properties against
    * the last readme.md changelog version. Applies to the CWD.
    * @returns {object}
@@ -233,15 +261,10 @@
     const expected_commit_version = modversion.replace(/[-]/g,"") + "-mc" + mcversion;
     if(!gittags.filter(function(s){return s.indexOf(expected_commit_version)>=0}).length) fails.push("No tag version on this commit matching the gradle properties version (should be v" + expected_commit_version + ").");
     if(((!constants.options.without_ref_repository_check)) && (git_remote.replace(/[\s]/g,"").indexOf(constants.reference_repository() + "(push)") < 0)) fails.push("Not the reference repository.");
-    if((git_branch != "develop") && (git_branch != "master")) {
-      fails.push("No valid branch for dist. (branch:'"+git_branch+"')");
-    } else if((git_branch == "develop") && (modversion.replace(/[^ab]/g,"")=="")) {
-      fails.push("Cannot make release dist on develop branch.");
-    } else if((git_branch == "master") && (modversion.replace(/[^ab]/g,"")!="")) {
-      fails.push("Cannot make beta dist on master branch.");
+    if(git_branch != "develop") {
+      fails.push("Not a valid branch for dist. (branch:'"+git_branch+"', must be 'develop')");
     }
     if(git_diff !== "") fails.push("Not everything committed to the GIT repository.");
-    // if((!fs.isfile("signing.jks")) || (!fs.isfile("signing.properties"))) fails.push("Jar signing files missing.");
     return fails;
   };
 
@@ -341,15 +364,10 @@
     const html = "<pre>\n" + (hist.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;")) + "\n</pre>";
     fs.writefile("dist/" + modid + "-" + version + ".html", html);
   };
-  stdtasks["tabs-to-spaces"] = function() {
-    me.sanatizing.tabs_to_spaces(['java','lang']);
-  };
-  stdtasks["trailing-whitespaces"] = function() {
-    me.sanatizing.remove_trailing_whitespaces(['java','json','lang']);
-  };
   stdtasks["sanatize"] = function() {
-    stdtasks["trailing-whitespaces"]();
-    stdtasks["tabs-to-spaces"]();
+    me.sanatizing.remove_trailing_whitespaces(['java','json','lang']);
+    me.sanatizing.tabs_to_spaces(['java','lang']);
+    me.sanatizing.lang_json_newline_fixes();
   }
   stdtasks["dist"] = function() {
     stdtasks["version-html"]();
@@ -360,7 +378,6 @@
     fs.mkdir("./meta");
     fs.writefile("./meta/update.json", JSON.stringify(json, null, 2));
   };
-
   stdtasks["dump-languages"] = function() {
     const lang_version = (me.parsing.gradle_properties("gradle.properties").version_minecraft.search("1.12.")==0) ? "1.12" : "1.13";
     const lang_extension = (lang_version == "1.12") ? ("lang") : ("json");
@@ -374,7 +391,34 @@
     });
     print(JSON.stringify(lang_files,null,1));
   };
-
+  stdtasks["datagen"] = function() {
+    sys.exec("gradlew.bat", ["--no-daemon", "runData"]);
+    // double check and really only copy json files.
+    const dst = fs.realpath("src/main/resources/data/" + constants.modid);
+    const src = fs.realpath("src/generated/resources/data/" + constants.modid);
+    if(!dst || !src) throw "Source or destination directory not found.";
+    const src_files = fs.find(src, "*.json");
+    const upath = function(s) { return s.replace(/[\\]/g,"/").replace(/^[\/]/,""); } // for correct display on win32
+    if(src_files===undefined) return 1;
+    for(var i in src_files) {
+      const srcfile = src_files[i];
+      const dstfile = srcfile.replace(src, dst);
+      const dstdir = fs.dirname(dstfile);
+      if(!fs.isdir(dstdir)) fs.mkdir(dstdir);
+      if(!fs.isfile(dstfile)) {
+        print("[copy] ", upath(srcfile.replace(src,"")));
+        fs.copy(srcfile, dstdir);
+      } else if(sys.hash.sha1(srcfile,true) != sys.hash.sha1(dstfile,true)) {
+        print("[edit] ", upath(srcfile.replace(src,"")));
+        fs.unlink(dstfile);
+        fs.copy(srcfile, dstdir);
+      }
+    }
+  };
+  stdtasks["sync-languages"] = function() {
+    const liblang = include( (me.parsing.version_data().minecraft == "1.12.2") ? ("../meta/lib/liblang.1.12.js") : ("../meta/lib/liblang.1.13.js"))(constants);
+    liblang.sync_languages();
+  };
 
   /**
    * Task main

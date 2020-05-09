@@ -344,7 +344,6 @@ public class BlockDecorFluidFunnel extends BlockDecor
         if(trail.isEmpty()) break; // reset search
         if(num_adjacent==0) pos = trail.pop();
       }
-      //println("FAIL=" + steps + " - " + (pos.subtract(collection_pos))); String s = new String(); for(BlockPos p:checked) s += "\n" + p; System.out.println(s);
       if(intensive_search_counter_ > 2) world.setBlockToAir(pos);
       last_pick_pos_ = collection_pos;
       search_offsets_ = null; // try other search order

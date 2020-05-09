@@ -1,7 +1,7 @@
 {
   "conditions": [
     {
-      "type": "engineersdecor:grc",
+      "type": "engineersdecor:optional",
       "result": "engineersdecor:small_waste_incinerator",
       "missing": ["immersiveengineering:material"]
     }

@@ -1,7 +1,7 @@
 {
   "conditions": [
     {
-      "type": "engineersdecor:grc",
+      "type": "engineersdecor:optional",
       "result": "engineersdecor:clinker_brick_stained_block",
       "required": ["engineersdecor:clinker_brick_stained_slab"]
     }

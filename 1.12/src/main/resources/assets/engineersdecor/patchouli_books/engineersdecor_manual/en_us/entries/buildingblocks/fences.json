@@ -1,0 +1,30 @@
+{
+  "name": "Fences and Walls",
+  "icon": "engineersdecor:steel_mesh_fence",
+  "category": "buildingblocks",
+  "sortnum": 1050,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "Steel Mesh Fence",
+      "item": "engineersdecor:steel_mesh_fence",
+      "text": "An industrial fence type, known from protection barriers of transformer stations, or robot enclosures.$(br2)They connect to compatible fences or walls (means the walls shown on these pages), and intentionally not to vanilla walls and fences."
+    },
+    {
+      "type": "text",
+      "text": "They also do not connect to other blocks, except if that block continues a straight line of Mesh Fences. That way you can connect the fences to building walls, but do not have to bother that fence parts may connect unexpectedly to chests or other blocks placed next to the your fence."
+    },
+    {
+      "type": "spotlight",
+      "title": "Concrete Walls",
+      "item": "engineersdecor:rebar_concrete_wall",
+      "text": "This wall type has a different look than vanilla walls, and comes also with varying textures. It connects in the same way as the $(o)Steel Mesh Fence$().$(br)$(o)Rebar Concrete$() walls are also Creeper proof."
+    },
+    {
+      "type": "spotlight",
+      "title": "Brick Walls",
+      "item": "engineersdecor:clinker_brick_wall",
+      "text": "Similar to the Concrete Walls, Brick Walls have an individual look, and connect only to compatible fences and walls."
+    }
+  ]
+}

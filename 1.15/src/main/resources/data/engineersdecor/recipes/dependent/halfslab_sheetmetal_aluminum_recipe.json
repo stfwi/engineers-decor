@@ -1,0 +1,28 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:halfslab_sheetmetal_aluminum",
+          "required": ["immersiveengineering:slab_sheetmetal_aluminum"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "SS",
+          "SS"
+        ],
+        "key": {
+          "S": { "item": "immersiveengineering:slab_sheetmetal_aluminum" }
+        },
+        "result": {
+          "item": "engineersdecor:halfslab_sheetmetal_aluminum",
+          "count": 16
+        }
+      }
+    }
+  ]
+}

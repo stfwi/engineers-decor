@@ -30,7 +30,7 @@ default: mod
 
 all: clean clean-all mod | install
 
-mod: data
+mod:
 	@echo "[1.14] Building mod using gradle ..."
 	@$(GRADLE) build $(GRADLE_OPTS)
 
@@ -66,9 +66,7 @@ init:
 
 sanatize:
 	@echo "[1.14] Running sanatising tasks ..."
-	@djs tasks.js trailing-whitespaces
-	@djs tasks.js tabs-to-spaces
-	@djs tasks.js lang-json-fixes
+	@djs tasks.js sanatize
 	@djs tasks.js sync-languages
 	@djs tasks.js version-check
 	@djs tasks.js update-json
@@ -78,7 +76,7 @@ dist-check:
 	@echo "[1.14] Running dist checks ..."
 	@djs tasks.js dist-check
 
-dist-files: clean-all init mod
+dist-files: clean-all init data mod
 	@echo "[1.14] Distribution files ..."
 	@mkdir -p dist
 	@cp build/libs/$(MOD_JAR_PREFIX)* dist/

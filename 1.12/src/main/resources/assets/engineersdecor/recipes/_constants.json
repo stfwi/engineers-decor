@@ -281,7 +281,7 @@
   },
   {
     "conditions": [
-      { "type": "engineersdecor:grc", "missing": ["immersiveengineering:stone_decoration"] }
+      { "type": "engineersdecor:optional", "missing": ["immersiveengineering:stone_decoration"] }
     ],
     "ingredient": [
       { "item": "minecraft:concrete", "data": 32767 },

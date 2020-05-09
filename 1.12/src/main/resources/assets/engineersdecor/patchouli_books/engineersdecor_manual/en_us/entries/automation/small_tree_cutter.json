@@ -1,0 +1,18 @@
+{
+  "name": "Small Tree Cutter",
+  "icon": "engineersdecor:small_tree_cutter",
+  "category": "automation",
+  "sortnum": 6050,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "Small Tree Cutter",
+      "item": "engineersdecor:small_tree_cutter",
+      "text": "A minimalistic circular saw with protection frame and wood sensor, which automatically cuts trees including leaves.$(br2)It does not collect or store the dropped wood or fruits, and requires about one minute when running from the internal passive environmental Redstone generator. By providing RF"
+    },
+    {
+      "type": "text",
+      "text": "$(t:... for the sake of style please from underneath the cutter using a capacitor ...)power externally$(), this process is accelerated to about 10 seconds.$(br)You can disable the cutter by applying a Redstone signal.$(br2) $(br2) $(br2) $(br2)$(o)[notice: The pack configuration may enforce that the device needs power. You can see that it is working when the saw rotates]$()"
+    }
+  ]
+}

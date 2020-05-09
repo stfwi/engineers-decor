@@ -9,6 +9,7 @@
 package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.detail.ModAuxiliaries;
 import wile.engineersdecor.detail.TreeCutting;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
@@ -17,18 +18,19 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.world.World;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.*;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -86,6 +88,16 @@ public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
     }
   }
 
+  @Override
+  public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+  {
+    if(world.isRemote) return true;
+    TileEntity te = world.getTileEntity(pos);
+    if(!(te instanceof BTileEntity)) return true;
+    ((BTileEntity)te).state_message(player);
+    return true;
+  }
+
   //--------------------------------------------------------------------------------------------------------------------
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
@@ -97,6 +109,7 @@ public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
     public static final int BOOST_FACTOR = 6;
     public static final int DEFAULT_BOOST_ENERGY = 64;
     public static final int DEFAULT_CUTTING_TIME_NEEDED = 60; // 60 secs, so that people don't come to the bright idea to carry one with them.
+    private static int energy_max = DEFAULT_BOOST_ENERGY * 20;
     private static int boost_energy_consumption = DEFAULT_BOOST_ENERGY;
     private static int cutting_time_needed = 20 * DEFAULT_CUTTING_TIME_NEEDED;
     private static boolean requires_power = false;
@@ -104,11 +117,12 @@ public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
     private int tick_timer_;
     private int active_timer_;
     private int proc_time_elapsed_; // small, not saved in nbt.
-    private int boost_energy_;      // small, not saved in nbt.
+    private int energy_;            // small, not saved in nbt.
 
     public static void on_config(int boost_energy_per_tick, int cutting_time_seconds, boolean power_required)
     {
       boost_energy_consumption = TICK_INTERVAL * MathHelper.clamp(boost_energy_per_tick, 16, 512);
+      energy_max = Math.max(boost_energy_consumption * 10, 10000);
       cutting_time_needed = 20 * MathHelper.clamp(cutting_time_seconds, 10, 240);
       requires_power = power_required;
       ModEngineersDecor.logger.info("Config tree cutter: Boost energy consumption:" + boost_energy_consumption + "rf/t" + (requires_power?" (power required for operation) ":"") + ", cutting time " + cutting_time_needed + "t." );
@@ -117,11 +131,35 @@ public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
     public BTileEntity()
     {}
 
+    public void state_message(EntityPlayer player)
+    {
+      String soc = Integer.toString(MathHelper.clamp((energy_*100/energy_max),0,100));
+      String progress = "";
+      if((active_timer_ > 0) && (cutting_time_needed > 0)) {
+        progress = " | " + Integer.toString((int)MathHelper.clamp((((double)proc_time_elapsed_) / ((double)cutting_time_needed) * 100), 0, 100)) + "%%";
+      }
+      ModAuxiliaries.playerChatMessage(player, soc + "%%/" + energy_max + "RF" + progress);
+    }
+
+    public void readnbt(NBTTagCompound nbt)
+    { energy_ = nbt.getInteger("energy"); }
+
+    private void writenbt(NBTTagCompound nbt)
+    { nbt.setInteger("energy", energy_); }
+
     // TileEntity ------------------------------------------------------------------------------
 
     @Override
     public boolean shouldRefresh(World world, BlockPos pos, IBlockState os, IBlockState ns)
     { return (os.getBlock() != ns.getBlock()) || (!(ns.getBlock() instanceof BlockDecorTreeCutter)); }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbt)
+    { super.readFromNBT(nbt); readnbt(nbt); }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+    { super.writeToNBT(nbt); writenbt(nbt); return nbt; }
 
     // IEnergyStorage ----------------------------------------------------------------------------
 
@@ -135,11 +173,11 @@ public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
 
     @Override
     public int getMaxEnergyStored()
-    { return boost_energy_consumption; }
+    { return boost_energy_consumption*2; }
 
     @Override
     public int getEnergyStored()
-    { return boost_energy_; }
+    { return energy_; }
 
     @Override
     public int extractEnergy(int maxExtract, boolean simulate)
@@ -147,10 +185,10 @@ public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
 
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate)
-    { // only speedup support, no buffering, not in nbt -> no markdirty
-      if((boost_energy_ >= boost_energy_consumption) || (maxReceive < boost_energy_consumption)) return 0;
-      if(!simulate) boost_energy_ = boost_energy_consumption;
-      return boost_energy_consumption;
+    {
+      maxReceive = MathHelper.clamp(maxReceive, 0, Math.max((energy_max) - energy_, 0));
+      if(!simulate) energy_ += maxReceive;
+      return maxReceive;
     }
 
     // Capability export ----------------------------------------------------------------------------
@@ -197,8 +235,8 @@ public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
           return;
         }
         proc_time_elapsed_ += TICK_INTERVAL;
-        if(boost_energy_ >= boost_energy_consumption) {
-          boost_energy_ = 0;
+        if(energy_ >= boost_energy_consumption) {
+          energy_ -= boost_energy_consumption;
           proc_time_elapsed_ += TICK_INTERVAL*BOOST_FACTOR;
           active_timer_ = 2;
         } else if(!requires_power) {

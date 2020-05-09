@@ -1,0 +1,42 @@
+{
+  "name": "Factory Hopper",
+  "icon": "engineersdecor:factory_hopper",
+  "category": "automation",
+  "sortnum": 6010,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "Factory Hopper",
+      "item": "engineersdecor:factory_hopper",
+      "text": "A Hopper device facilitating item collection and advanced automation.$(br)With additional $(t:... that is also for the sake of style: When you attach a lever or Redstone Probe Connector, these will not hang in thin air)support plates$() on the sides and an increased outlet diameter, it can insert and store more items. Sliders and Redstone controls in the GUI allow to tune the device functional behaviour."
+    },
+    {
+      "type": "text",
+      "text": "The hopper can be placed in all directions including up, in the latter case the device collects or draws items from below.$(br)When you break and relocate the hopper, stored items will stay in place, and settings will be preserved.$(br2)$(l)Collection$()$(br)The Hopper collects items from inventories or in-world into its eighteen internal storage slots, preferring to fill up existing stacks first."
+    },
+    {
+      "type": "text",
+      "text": "Vertical collection range is up to about 2.5 blocks above, or when placed upwards about 3 blocks below. The horizontal area is by default 1 (only directly above/below), and can be increased up to 4 in each direction. You can do this with the topmost slider in the GUI (the symbols shall represent a cross-section of the collection area).$(br)Unless items fall directly into the funnel, the hopper will wait until they $(t:... so called 'pickup delay'. The hopper actually waits a little bit longer)can be picked$() up, giving you precedence."
+    },
+    {
+      "type": "text",
+      "text": "$(l)Insertion$()$(br)From its internal storage the hopper frequently transfers item stacks to inventories or devices it is directed to, by default one item at a time. It tries to replenish existing stacks before filling empty slots. In case the item in the currently selected slot (marked in the GUI with a red frame) cannot be inserted, the next possible slot will be selected (round robin).$(br)The slider in the middle of the GUI (icons shall represent a"
+    },
+    {
+      "type": "text",
+      "text": "dog and a snail) can be used enforce a delay between 0.5s and 10s after inserting. When the delay has not expired yet, a yellow LED above the slider is blinking.$(br)Clicking at the bottom slider (labeled with one to five dots), the insertion stack size can be set between 1 to 32 items at a time. Only the currently selected stack is inserted, even if it contains less items than the configured count."
+    },
+    {
+      "type": "text",
+      "text": "$(l)Redstone Controls$()$(br)In the lower right area of the GUI, there is a red LED (with arrow) and two circuit elements wired up. The LED is lit when the device sees an external Redstone signal, and can also be used as test-trigger button. Connected to that input are an analog inverter, followed by a trigger control logic.$(br)By default the curve shown for the inversion control is going down, meaning that this control $(t:Input 0..15 -> output 15..0)inverts the signal$(). Click it to change this to 'not inverted'."
+    },
+    {
+      "type": "text",
+      "text": "Now the hopper will operate only $(o)when$() a Redstone signal is applied.$(br)The trigger control specifies weather the hopper operates $(o)continuously$() or $(o)(edge detection triggered) pulse$() mode. Continuous means 'Operate as long as the input is active', pulse means 'Insert only one time when the Redstone signal changes from OFF to ON'."
+    },
+    {
+      "type": "text",
+      "text": "$(l)Details$()$(br)$(li)The insertion stack size slider also defines how many items are drawn from the inventory above.$(li)The Factory Hopper does $(t:Unneeded server CPU waste)not insert$() into opposed Hoppers."
+    }
+  ]
+}

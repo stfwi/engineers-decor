@@ -1,7 +1,7 @@
 {
   "conditions": [
     {
-      "type": "engineersdecor:grc",
+      "type": "engineersdecor:optional",
       "result": "immersiveengineering:stone_decoration",
       "required": ["engineersdecor:halfslab_concrete"]
     }

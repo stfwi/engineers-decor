@@ -1,0 +1,55 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:rebar_concrete",
+          "required": ["#forge:rods/steel", "immersiveengineering:concrete"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "SCS",
+          "CSC",
+          "SCS"
+        ],
+        "key": {
+          "C": { "item": "immersiveengineering:concrete"},
+          "S": { "tag" : "forge:rods/steel"}
+        },
+        "result": {
+          "item": "engineersdecor:rebar_concrete",
+          "count": 4
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:rebar_concrete",
+          "missing": ["#forge:rods/steel", "immersiveengineering:concrete"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "SCS",
+          "CSC",
+          "SCS"
+        ],
+        "key": {
+          "C": { "tag": "engineersdecor:plain_concretes" },
+          "S": { "item": "minecraft:iron_ingot" }
+        },
+        "result": {
+          "item": "engineersdecor:rebar_concrete",
+          "count": 4
+        }
+      }
+    }
+  ]
+}

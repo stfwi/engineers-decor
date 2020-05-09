@@ -3,7 +3,6 @@
 // Note for reviewers/clones: This file is a auxiliary script for my setup. It's not needed to build the mod.
 const constants = include("meta/lib/constants.js")();
 const libtask = include("meta/lib/libtask.js")(constants);
-const libassets = include("meta/lib/libassets.js")(constants);
 const modid = constants.mod_registry_name();
 var tasks = {};
 
@@ -80,83 +79,6 @@ tasks["sync-main-repository"] = function() {
   cd_main();
   print("Main repository changes:");
   print(sys.shell("git status -s"))
-};
-
-tasks["compare-textures"] = function(args) {
-  if(args.length==0) args.push("");
-  // const verbose = (args.find("-v")) || (args.find("--verbose"));   //// NO ARRAY.FIND???? --> fix in JS engine
-  const verbose = (args[0]=="-v") || (args[0]=="-verbose");   //// NO ARRAY.FIND???? --> fix in JS engine
-  function compare(va, vb) {
-    const cmp = libassets.compare_textures(
-      va+"/src/main/resources/assets",
-      vb+"/src/main/resources/assets"
-    );
-    const n_diff = Object.keys(cmp.differ).length;
-    const n_match = Object.keys(cmp.match).length;
-    const n_onlya = Object.keys(cmp.onlyin_a).length;
-    const n_onlyb = Object.keys(cmp.onlyin_b).length;
-    if(!verbose) {
-      if((n_diff==0) && (n_onlya==0) && (n_onlyb==0)) return true;
-      print("[warn] Textures of " + va + "<->" + vb + " differ: " + n_match + " matching, " + n_diff +
-                    " different, " + n_onlya + " only in " + va + ", " + n_onlyb + " only in " + vb +
-                    ". (--verbose for details)");
-      return false;
-    } else {
-      if((n_diff==0) && (n_onlya==0) && (n_onlyb==0)) {
-        print("[pass] Textures of " + va + "<->" + vb + " all match.");
-        return true;
-      }
-      for(var key in cmp.differ) {
-        print("[warn] Texture of " + va + "<->" + vb + " differs: '" + key + "'.");
-      }
-      for(var key in cmp.onlyin_a) {
-        print("[warn] Texture only in " + va + ": '" + key + "'.");
-      }
-      for(var key in cmp.onlyin_b) {
-        print("[warn] Texture only in " + vb + ": '" + key + "'.");
-      }
-      return false;
-    }
-  }
-  var ok = true;
-  if(!compare("1.12", "1.14")) ok = false;
-  return ok;
-};
-
-tasks["migrate-textures"] = function(args) {
-  if(args.length==0) args.push("");
-  const verbose = (args[0]=="-v") || (args[0]=="-verbose");
-  throw new Error("Migration is WIP");
-}
-
-tasks["compare-blockstates"] = function(args) {
-  if(args.length==0) args.push("");
-  const verbose = (args[0]=="-v") || (args[0]=="-verbose");
-  const compare = function(va, vb) {
-    const cmp = libassets.compare_blockstates(va+"/src/main/resources/assets/"+modid, vb+"/src/main/resources/assets/"+modid);
-    const n_onlya = Object.keys(cmp.onlyin_a).length;
-    const n_onlyb = Object.keys(cmp.onlyin_b).length;
-    if(!verbose) {
-      if((n_onlya==0) && (n_onlyb==0)) return true;
-      print("[warn] Block states of " + va + "<->" + vb + " differ: " + n_onlya + " only in " + va + ", " + n_onlyb + " only in " + vb + ". (--verbose for details)");
-      return false;
-    } else {
-      if((n_onlya==0) && (n_onlyb==0)) {
-        print("[pass] Block states of " + va + "<->" + vb + " all match.");
-        return true;
-      }
-      for(var key in cmp.onlyin_a) {
-        print("[warn] Block states only in " + va + ", not " + vb + ": '" + key + "'.");
-      }
-      for(var key in cmp.onlyin_b) {
-        print("[warn] Block states only in " + vb + ", not " + va + ": '" + key + "'.");
-      }
-      return false;
-    }
-  }
-  var ok = true;
-  if(!compare("1.12", "1.14")) ok = false;
-  return ok;
 };
 
 libtask.run(tasks, sys.args, true, ".");

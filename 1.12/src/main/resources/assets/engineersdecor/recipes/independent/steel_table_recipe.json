@@ -1,7 +1,7 @@
 {
   "conditions": [
     {
-      "type": "engineersdecor:grc",
+      "type": "engineersdecor:optional",
       "result": "engineersdecor:steel_table",
       "required": ["engineersdecor:steel_floor_grating", "engineersdecor:thin_steel_pole"]
     }

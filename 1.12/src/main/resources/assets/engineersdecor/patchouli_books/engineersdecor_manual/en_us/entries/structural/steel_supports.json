@@ -1,0 +1,20 @@
+{
+  "name": "Steel Supports",
+  "icon": "engineersdecor:thick_steel_pole_head",
+  "category": "structural",
+  "sortnum": 2020,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "Steel Poles",
+      "item": "engineersdecor:thick_steel_pole",
+      "text": "Hollow steel poles (like the one shown above) have an 'O' cross section to save weight and material whilst providing a good structural integrity.$(br)There is a thick and a thin variant, depending on your needs. Unlike fence posts, they do not connect to blocks at the side, and can be placed vertically or horizontally."
+    },
+    {
+      "type": "spotlight",
+      "title": "Double-T Support",
+      "item": "engineersdecor:steel_double_t_support",
+      "text": "Named by the look of its cross section (two 'T's), this is a commonly used tradeoff between material/weight and maximum load.$(br)Double-T supports are placed only horizontally (top aligned), connect to adjacent Double-T supports, and also to $(o)Steel Poles$() below."
+    }
+  ]
+}
