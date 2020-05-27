@@ -1,5 +1,6 @@
 {
-	"parent": "block/block",
+  "parent": "block/block",
+  "gui_light": "front",
 	"textures": {
 		"f": "engineersdecor:block/misc/labeled_crate_front_texture",
 		"particle": "engineersdecor:block/misc/labeled_crate_side_texture",

@@ -11,7 +11,11 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
-    ~ v1.1.0-b1   [M]
+    - v1.1.0-b1   [F] Fixed Electrical Furnace speed sanitizing bug (issue #97, thx therobotmenace).
+                  [A] Sheet Metal Slab Slices added (only available if IE is installed).
+                  [M] Config options extended/updated.
+                  [M] Dense Grit Sand textures altered to get slightly more visible structure
+                      from distance.
 
     - v1.0.20-b7  [A] Dense Grit Sand added.
                   [!] Variant Slab compatibility fix. *This may alter placed slabs of this mod,

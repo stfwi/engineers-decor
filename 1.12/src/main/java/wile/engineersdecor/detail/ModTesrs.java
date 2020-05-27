@@ -28,7 +28,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import wile.engineersdecor.blocks.BlockDecorLabeledCrate;
-import wile.engineersdecor.blocks.BlockDecorLabeledCrate.DecorLabeledCrateBlock;
 import wile.engineersdecor.blocks.BlockDecorTest;
 
 public class ModTesrs
@@ -114,7 +113,7 @@ public class ModTesrs
       try {
         final ItemStack stack = te.getItemFrameStack();
         if(stack.isEmpty()) return;
-        final int di = MathHelper.clamp(te.getWorld().getBlockState(te.getPos()).getValue(DecorLabeledCrateBlock.FACING).getHorizontalIndex(), 0, 3);
+        final int di = MathHelper.clamp(te.getWorld().getBlockState(te.getPos()).getValue(BlockDecorLabeledCrate.FACING).getHorizontalIndex(), 0, 3);
         double ox = tr[di][0], oy = tr[di][1], oz = tr[di][2], ry = tr[di][3];
         GlStateManager.pushMatrix();
         GlStateManager.disableLighting();

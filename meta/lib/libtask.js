@@ -364,7 +364,7 @@
     const html = "<pre>\n" + (hist.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;")) + "\n</pre>";
     fs.writefile("dist/" + modid + "-" + version + ".html", html);
   };
-  stdtasks["sanatize"] = function() {
+  stdtasks["sanitize"] = function() {
     me.sanatizing.remove_trailing_whitespaces(['java','json','lang']);
     me.sanatizing.tabs_to_spaces(['java','lang']);
     me.sanatizing.lang_json_newline_fixes();
@@ -419,14 +419,17 @@
     const liblang = include( (me.parsing.version_data().minecraft == "1.12.2") ? ("../meta/lib/liblang.1.12.js") : ("../meta/lib/liblang.1.13.js"))(constants);
     liblang.sync_languages();
   };
+  stdtasks["install"] = function() {
+  };
+  stdtasks["start-server"] = function() {
+  };
 
   /**
    * Task main
    */
-  me.run = function(tasks, args, no_std_tasks, rel_root_path) {
-    if(rel_root_path===undefined) rel_root_path = "..";
-    if(!fs.chdir(fs.dirname(fs.realpath(sys.script)))) throw new Error("Failed to switch to mod source directory.");
-    if(!fs.isdir(rel_root_path+"/.git")) throw new Error("Missing git repository in parent directory of mod source.");
+  me.run = function(tasks, args, no_std_tasks) {
+    const root_dir = fs.realpath(fs.dirname(sys.script)+"/../..");
+    if(!fs.isdir(root_dir+"/.git")) throw new Error("Missing git repository in parent directory of mod source.");
     if(!no_std_tasks) {
       for(var key in stdtasks) {
         if(tasks[key]===undefined) tasks[key] = stdtasks[key];
@@ -441,7 +444,12 @@
       alert("No task '" + task_name + "' defined.");
       exit(1);
     } else {
-      tasks[task_name](task_args);
+      const pwd = fs.cwd();
+      try {
+        tasks[task_name](task_args);
+      } finally {
+        fs.chdir(pwd);
+      }
     }
   };
 

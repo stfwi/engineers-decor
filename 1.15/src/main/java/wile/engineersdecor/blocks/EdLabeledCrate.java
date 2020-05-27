@@ -80,9 +80,9 @@ public class EdLabeledCrate
   // Block
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class DecorLabeledCrateBlock extends StandardBlocks.Horizontal implements IDecorBlock
+  public static class LabeledCrateBlock extends StandardBlocks.Horizontal implements IDecorBlock
   {
-    public DecorLabeledCrateBlock(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
+    public LabeledCrateBlock(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
     { super(config, builder, unrotatedAABB); }
 
     @Override

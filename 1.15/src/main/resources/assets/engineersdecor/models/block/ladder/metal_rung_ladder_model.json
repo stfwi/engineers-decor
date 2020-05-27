@@ -1,5 +1,6 @@
 {
   "parent": "block/block",
+  "gui_light": "front",
 	"textures": {
     "particle": "engineersdecor:block/iestyle/steel_texture",
 		"o": "engineersdecor:block/iestyle/steel_texture"

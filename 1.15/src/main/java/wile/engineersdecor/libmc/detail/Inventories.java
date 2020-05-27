@@ -10,10 +10,12 @@ package wile.engineersdecor.libmc.detail;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.inventory.IInventory;
@@ -88,6 +90,8 @@ public class Inventories
   private static ItemStack checked(ItemStack stack)
   { return stack.isEmpty() ? ItemStack.EMPTY : stack; } // explicit EMPTY return
 
+  //--------------------------------------------------------------------------------------------------------------------
+
   public static class SlotRange
   {
     public final IInventory inventory;
@@ -138,7 +142,7 @@ public class Inventories
       for(int i = start_slot; i < end_slot; ++i) {
         final int sno = reverse ? (end_slot-1-i) : (i);
         final ItemStack stack = inventory.getStackInSlot(sno);
-        if(stack.isEmpty() || (!inventory.isItemValidForSlot(sno, mvstack))) {
+        if(stack.isEmpty()) {
           empties[sno] = true;
         } else if(areItemStacksIdentical(stack, mvstack)) {
           matches[sno] = true;
@@ -148,7 +152,7 @@ public class Inventories
       // first iteration: fillup existing stacks
       for(int i = start_slot; i < end_slot; ++i) {
         final int sno = reverse ? (end_slot-1-i) : (i);
-        if(empties[sno] || !matches[sno]) continue;
+        if((empties[sno]) || (!matches[sno])) continue;
         final ItemStack stack = inventory.getStackInSlot(sno);
         int nmax = Math.min(limit_left, stack.getMaxStackSize() - stack.getCount());
         if(mvstack.getCount() <= nmax) {
@@ -180,7 +184,7 @@ public class Inventories
           }
           for(i=insert_start;i < insert_end; ++i) {
             final int sno = reverse ? (end_slot-1-i) : (i);
-            if(!empties[sno]) continue;
+            if((!empties[sno]) || (!inventory.isItemValidForSlot(sno, mvstack))) continue;
             int nmax = Math.min(limit_left, mvstack.getCount());
             ItemStack moved = mvstack.copy();
             moved.setCount(nmax);
@@ -195,7 +199,7 @@ public class Inventories
             final int sno = reverse ? (end_slot-1-i) : (i);
             if(!matches[sno]) continue;
             int ii = (empties[sno-1]) ? (sno-1) : (empties[sno+1] ? (sno+1) : -1);
-            if(ii >= 0) {
+            if((ii >= 0) && (inventory.isItemValidForSlot(ii, mvstack))) {
               int nmax = Math.min(limit_left, mvstack.getCount());
               ItemStack moved = mvstack.copy();
               moved.setCount(nmax);
@@ -209,7 +213,7 @@ public class Inventories
       // third iteration: use any empty slots
       for(int i = start_slot; i < end_slot; ++i) {
         final int sno = reverse ? (end_slot-1-i) : (i);
-        if(!empties[sno]) continue;
+        if((!empties[sno]) || (!inventory.isItemValidForSlot(sno, mvstack))) continue;
         int nmax = Math.min(limit_left, mvstack.getCount());
         ItemStack placed = mvstack.copy();
         placed.setCount(nmax);
@@ -302,5 +306,34 @@ public class Inventories
     public boolean isItemValidForSlot(int index, ItemStack stack)
     { return inventory.isItemValidForSlot(offset+index, stack); }
   }
+
+  //--------------------------------------------------------------------------------------------------------------------
+
+  public static NonNullList<ItemStack> readNbtStacks(CompoundNBT nbt, String key, int size)
+  {
+    NonNullList<ItemStack> stacks = NonNullList.withSize(size, ItemStack.EMPTY);
+    if((nbt == null) || (!nbt.contains(key,10))) return stacks;
+    CompoundNBT stacknbt = nbt.getCompound(key);
+    ItemStackHelper.loadAllItems(stacknbt, stacks);
+    return stacks;
+  }
+
+  public static CompoundNBT writeNbtStacks(CompoundNBT nbt, String key, NonNullList<ItemStack> stacks, boolean omit_trailing_empty)
+  {
+    CompoundNBT stacknbt = new CompoundNBT();
+    if(omit_trailing_empty) {
+      for(int i=stacks.size()-1; i>=0; --i) {
+        if(!stacks.get(i).isEmpty()) break;
+        stacks.remove(i);
+      }
+    }
+    ItemStackHelper.saveAllItems(stacknbt, stacks);
+    if(nbt == null) nbt = new CompoundNBT();
+    nbt.put(key, stacknbt);
+    return nbt;
+  }
+
+  public static CompoundNBT writeNbtStacks(CompoundNBT nbt, String key, NonNullList<ItemStack> stacks)
+  { return writeNbtStacks(nbt, key, stacks, false); }
 
 }

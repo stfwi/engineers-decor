@@ -123,7 +123,7 @@ public class EdElectricalFurnace
     public static final int HEAT_INCREMENT = 20;
     public static final int MAX_ENERGY_TRANSFER = 1024;
     public static final int MAX_ENERGY_BUFFER = 32000;
-    public static final int MAX_SPEED_SETTING = 2;
+    public static final int MAX_SPEED_SETTING = 3;
     public static final int NUM_OF_SLOTS = 7;
     public static final int SMELTING_INPUT_SLOT_NO = 0;
     public static final int SMELTING_AUX_SLOT_NO = 1;
@@ -196,7 +196,7 @@ public class EdElectricalFurnace
       proc_time_needed_ = nbt.getInt("CookTimeTotal");
       energy_stored_ = nbt.getInt("Energy");
       speed_ = nbt.getInt("SpeedSetting");
-      speed_ = (speed_ < 0) ? (1) : ((speed_>3) ? 3 : speed_);
+      speed_ = (speed_ < 0) ? (1) : ((speed_>MAX_SPEED_SETTING) ? MAX_SPEED_SETTING : speed_);
     }
 
     protected void writenbt(CompoundNBT nbt)
@@ -492,7 +492,7 @@ public class EdElectricalFurnace
       } else if(energy_stored_ >= (MAX_ENERGY_BUFFER/2)) {
         enabled_ = true;
       }
-      if((!(stacks_.get(SMELTING_INPUT_SLOT_NO)).isEmpty()) && (enabled_) && (speed_>0) && (speed_<4)) {
+      if((!(stacks_.get(SMELTING_INPUT_SLOT_NO)).isEmpty()) && (enabled_) && (speed_>0) && (speed_<=MAX_SPEED_SETTING)) {
         IRecipe last_recipe = currentRecipe();
         updateCurrentRecipe();
         if(currentRecipe() != last_recipe) {
@@ -768,7 +768,7 @@ public class EdElectricalFurnace
     {
       if(!(inventory_ instanceof ElectricalFurnaceTileEntity)) return;
       ElectricalFurnaceTileEntity te = (ElectricalFurnaceTileEntity)inventory_;
-      if(nbt.contains("speed")) te.speed_  = MathHelper.clamp(nbt.getInt("speed"), 0, 3);
+      if(nbt.contains("speed")) te.speed_ = MathHelper.clamp(nbt.getInt("speed"), 0, ElectricalFurnaceTileEntity.MAX_SPEED_SETTING);
       te.markDirty();
     }
   }

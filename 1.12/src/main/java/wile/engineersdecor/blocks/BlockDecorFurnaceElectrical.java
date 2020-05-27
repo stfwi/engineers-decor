@@ -9,10 +9,8 @@
 package wile.engineersdecor.blocks;
 
 
-import net.minecraft.init.Blocks;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
-
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -32,6 +30,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.*;
 import net.minecraft.stats.StatList;
+import net.minecraft.init.Blocks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -316,7 +315,7 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
     public static final int HEAT_INCREMENT = 20;
     public static final int MAX_ENERGY_TRANSFER = 256;
     public static final int MAX_ENERGY_BUFFER = 32000;
-    public static final int MAX_SPEED_SETTING = 2;
+    public static final int MAX_SPEED_SETTING = 3;
     public static final int NUM_OF_SLOTS = 7;
     public static final int SMELTING_INPUT_SLOT_NO  = 0;
     public static final int SMELTING_AUX_SLOT_NO    = 1;
@@ -382,7 +381,7 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
       proc_time_needed_ = compound.getInteger("CookTimeTotal");
       energy_stored_ = compound.getInteger("Energy");
       speed_ = compound.getInteger("SpeedSetting");
-      speed_ = (speed_ < 0) ? (1) : ((speed_>3) ? 3 : speed_);
+      speed_ = (speed_ < 0) ? (1) : ((speed_>MAX_SPEED_SETTING) ? MAX_SPEED_SETTING : speed_);
     }
 
     protected void writenbt(NBTTagCompound compound)
@@ -391,7 +390,7 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
       compound.setInteger("CookTime", MathHelper.clamp(proc_time_elapsed_, 0, MAX_BURNTIME));
       compound.setInteger("CookTimeTotal", MathHelper.clamp(proc_time_needed_, 0, MAX_BURNTIME));
       compound.setInteger("Energy", MathHelper.clamp(energy_stored_,0 , MAX_ENERGY_BUFFER));
-      compound.setInteger("SpeedSetting", MathHelper.clamp(speed_, -1, MAX_SPEED_SETTING));
+      compound.setInteger("SpeedSetting", MathHelper.clamp(speed_, 0, MAX_SPEED_SETTING));
       ItemStackHelper.saveAllItems(compound, stacks_);
     }
 
@@ -655,7 +654,7 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
     @Override
     public void onClientPacketReceived(EntityPlayer player, NBTTagCompound nbt)
     {
-      if(nbt.hasKey("speed")) speed_ = MathHelper.clamp(nbt.getInteger("speed"), 0, 3);
+      if(nbt.hasKey("speed")) speed_ = MathHelper.clamp(nbt.getInteger("speed"), 0, MAX_SPEED_SETTING);
       markDirty();
     }
 
@@ -761,7 +760,7 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
       }
       final ItemStack last_inp_stack = current_smelting_input_stack_;
       current_smelting_input_stack_ = stacks_.get(SMELTING_INPUT_SLOT_NO);
-      if((!current_smelting_input_stack_.isEmpty()) && (enabled_) && (speed_>0) && (speed_<4)) {
+      if((!current_smelting_input_stack_.isEmpty()) && (enabled_) && (speed_>0) && (speed_<=MAX_SPEED_SETTING)) {
         if(!current_smelting_input_stack_.isItemEqual(current_smelting_input_stack_)) {
           proc_time_elapsed_ = 0;
           proc_time_needed_ = getCookTime(current_smelting_input_stack_);

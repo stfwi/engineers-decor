@@ -18,6 +18,7 @@ import wile.engineersdecor.blocks.EdFurnace.FurnaceContainer;
 import wile.engineersdecor.blocks.EdFurnace.FurnaceGui;
 import wile.engineersdecor.blocks.EdFurnace.FurnaceTileEntity;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.blocks.StandardBlocks.BaseBlock;
 import wile.engineersdecor.libmc.blocks.StandardBlocks.IStandardBlock;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import net.minecraft.block.material.MaterialColor;
@@ -49,6 +50,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.Collections;
 import javax.annotation.Nonnull;
 
@@ -603,7 +605,7 @@ public class ModContent
     }
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "small_fluid_funnel"));
 
-  public static final EdLabeledCrate.DecorLabeledCrateBlock LABELED_CRATE = (EdLabeledCrate.DecorLabeledCrateBlock)(new EdLabeledCrate.DecorLabeledCrateBlock(
+  public static final EdLabeledCrate.LabeledCrateBlock LABELED_CRATE = (EdLabeledCrate.LabeledCrateBlock)(new EdLabeledCrate.LabeledCrateBlock(
     DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(0.5f, 128f).sound(SoundType.METAL).notSolid(),
     Auxiliaries.getPixeledAABB(0,0,0, 16,16,16)
@@ -720,12 +722,12 @@ public class ModContent
     HALFSLAB_REBARCONCRETE,
     HALFSLAB_GASCONCRETE,
     HALFSLAB_CONCRETE,
-    //HALFSLAB_TREATEDWOOD,
-    //HALFSLAB_SHEETMETALIRON
-    //HALFSLAB_SHEETMETALSTEEL,
-    //HALFSLAB_SHEETMETALCOPPER,
-    //HALFSLAB_SHEETMETALGOLD,
-    //HALFSLAB_SHEETMETALALUMINIUM,
+    HALFSLAB_TREATEDWOOD,
+    HALFSLAB_SHEETMETALIRON,
+    HALFSLAB_SHEETMETALSTEEL,
+    HALFSLAB_SHEETMETALCOPPER,
+    HALFSLAB_SHEETMETALGOLD,
+    HALFSLAB_SHEETMETALALUMINIUM,
     CONCRETE_WALL,
     PANZERGLASS_BLOCK,
     PANZERGLASS_SLAB,
@@ -958,10 +960,25 @@ public class ModContent
   public static List<Block> getRegisteredBlocks()
   { return Collections.unmodifiableList(registeredBlocks); }
 
+  @Nonnull
+  public static List<Item> getRegisteredItems()
+  { return new ArrayList<>(); }
+
   public static final void registerBlocks(final RegistryEvent.Register<Block> event)
   {
-    if(Auxiliaries.isModLoaded("immersiveengineering")) Auxiliaries.logInfo("Immersive Engineering also installed ...");
-    registeredBlocks.addAll(allBlocks());
+    boolean ie_available = Auxiliaries.isModLoaded("immersiveengineering");
+    if(ie_available) {
+      Auxiliaries.logInfo("Immersive Engineering also installed ...");
+      registeredBlocks.addAll(allBlocks());
+    } else {
+      registeredBlocks.addAll(allBlocks().stream()
+        .filter(block->
+          ((!(block instanceof BaseBlock)) || ((((BaseBlock)block).config & DecorBlock.CFG_HARD_IE_DEPENDENT)==0))
+          || (block == HALFSLAB_CONCRETE)
+        )
+        .collect(Collectors.toList())
+      );
+    }
     for(Block e:registeredBlocks) event.getRegistry().register(e);
     Auxiliaries.logInfo("Registered " + Integer.toString(registeredBlocks.size()) + " blocks.");
   }

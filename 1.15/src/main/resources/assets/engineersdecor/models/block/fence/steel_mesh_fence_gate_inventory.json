@@ -1,6 +1,6 @@
 {
 	"parent": "block/block",
-	"ambientocclusion": false,
+  "gui_light": "front",
 	"textures": {
 		"particle": "engineersdecor:block/fence/steel_mesh_fence",
 		"s": "engineersdecor:block/fence/steel_mesh_fence",

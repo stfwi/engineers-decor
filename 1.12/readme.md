@@ -10,7 +10,9 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
-    ~ v1.1.0-b1   [M]
+    - v1.1.0-b1   [F] Fixed Electrical Furnace speed sanitizing bug (issue #97, thx therobotmenace).
+                  [M] Changed Labeled Crate Nesting to circumvent server crashing
+                      in combination with the Sponge mod.
 
                   -------------------------------------------------------------------
     - v1.0.20     [R] Release based on v1.0.20-b6. Release-to-release changes:
