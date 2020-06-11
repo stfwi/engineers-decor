@@ -12,6 +12,8 @@ import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
 import wile.engineersdecor.libmc.detail.Networking;
+import wile.engineersdecor.libmc.detail.TooltipDisplay;
+import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
 import net.minecraft.block.*;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -32,9 +34,10 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.util.*;
-import net.minecraft.util.math.*;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.math.*;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -689,25 +692,38 @@ public class EdPlacer
   public static class PlacerGui extends ContainerScreen<PlacerContainer>
   {
     protected final PlayerEntity player_;
+    protected final TooltipDisplay tooltip_ = new TooltipDisplay();
 
     public PlacerGui(PlacerContainer container, PlayerInventory player_inventory, ITextComponent title)
     { super(container, player_inventory, title); this.player_ = player_inventory.player; }
 
     @Override
     public void init()
-    { super.init(); }
+    {
+      super.init();
+      {
+        final String prefix = ModContent.FACTORY_PLACER.getTranslationKey() + ".tooltips.";
+        final int x0 = getGuiLeft(), y0 = getGuiTop();
+        tooltip_.init(
+          new TipRange(x0+133, y0+49,  9,  9, new TranslationTextComponent(prefix + "rssignal")),
+          new TipRange(x0+145, y0+49,  9,  9, new TranslationTextComponent(prefix + "inversion")),
+          new TipRange(x0+159, y0+49,  9,  9, new TranslationTextComponent(prefix + "triggermode"))
+        );
+      }
+    }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks)
     {
       renderBackground();
       super.render(mouseX, mouseY, partialTicks);
-      renderHoveredToolTip(mouseX, mouseY);
+      if(!tooltip_.render(this, mouseX, mouseY)) renderHoveredToolTip(mouseX, mouseY);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
+      tooltip_.resetTimer();
       PlacerContainer container = (PlacerContainer)getContainer();
       int mx = (int)(mouseX - getGuiLeft() + .5), my = (int)(mouseY - getGuiTop() + .5);
       if((!isPointInRegion(126, 1, 49, 60, mouseX, mouseY))) {

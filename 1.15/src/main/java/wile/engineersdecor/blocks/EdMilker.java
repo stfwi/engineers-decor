@@ -8,6 +8,9 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.Inventories;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.ModContent;
@@ -46,6 +49,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import wile.engineersdecor.libmc.detail.Overlay;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
@@ -106,26 +111,32 @@ public class EdMilker
       if(te==null) return ActionResultType.FAIL;
       final ItemStack in_stack = player.getHeldItem(hand);
       final ItemStack out_stack = MilkerTileEntity.milk_filled_container_item(in_stack);
-      if(out_stack.isEmpty() && (te.fluid_handler()!=null)) return FluidUtil.interactWithFluidHandler(player, hand, te.fluid_handler()) ? ActionResultType.SUCCESS : ActionResultType.FAIL;
-      boolean drained = false;
-      IItemHandler player_inventory = new PlayerMainInvWrapper(player.inventory);
-      if(te.fluid_level() >= MilkerTileEntity.BUCKET_SIZE) {
-        final ItemStack insert_stack = out_stack.copy();
-        ItemStack remainder = ItemHandlerHelper.insertItemStacked(player_inventory, insert_stack, false);
-        if(remainder.getCount() < insert_stack.getCount()) {
-          te.drain(MilkerTileEntity.BUCKET_SIZE);
-          in_stack.shrink(1);
-          drained = true;
-          if(remainder.getCount() > 0) {
-            final ItemEntity ei = new ItemEntity(world, player.getPosition().getX(), player.getPosition().getY()+0.5, player.getPosition().getZ(), remainder);
-            ei.setPickupDelay(40);
-            ei.setMotion(0,0,0);
-            world.addEntity(ei);
+      if(in_stack.isEmpty()) {
+        te.state_message(player);
+        return ActionResultType.SUCCESS;
+      } else if(out_stack.isEmpty() && (te.fluid_handler()!=null)) {
+        return FluidUtil.interactWithFluidHandler(player, hand, te.fluid_handler()) ? ActionResultType.SUCCESS : ActionResultType.FAIL;
+      } else {
+        boolean drained = false;
+        IItemHandler player_inventory = new PlayerMainInvWrapper(player.inventory);
+        if(te.fluid_level() >= MilkerTileEntity.BUCKET_SIZE) {
+          final ItemStack insert_stack = out_stack.copy();
+          ItemStack remainder = ItemHandlerHelper.insertItemStacked(player_inventory, insert_stack, false);
+          if(remainder.getCount() < insert_stack.getCount()) {
+            te.drain(MilkerTileEntity.BUCKET_SIZE);
+            in_stack.shrink(1);
+            drained = true;
+            if(remainder.getCount() > 0) {
+              final ItemEntity ei = new ItemEntity(world, player.getPosition().getX(), player.getPosition().getY()+0.5, player.getPosition().getZ(), remainder);
+              ei.setPickupDelay(40);
+              ei.setMotion(0,0,0);
+              world.addEntity(ei);
+            }
           }
         }
-      }
-      if(drained) {
-        world.playSound(null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 0.8f, 1f);
+        if(drained) {
+          world.playSound(null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 0.8f, 1f);
+        }
       }
       return ActionResultType.SUCCESS;
     }
@@ -181,7 +192,7 @@ public class EdMilker
         if(ExternalObjects.BOTTLED_MILK_BOTTLE_DRINKLABLE!=null) milk_containers_.put(new ItemStack(Items.GLASS_BOTTLE), new ItemStack(ExternalObjects.BOTTLED_MILK_BOTTLE_DRINKLABLE));
       }
       ModEngineersDecor.logger().info(
-        "Config milker energy consumption:" + energy_consumption + "rf/t"
+        "Config milker: energy consumption:" + energy_consumption + "rf/t"
           + ((milk_fluid_==null)?"":" [milk fluid available]")
           + ((ExternalObjects.BOTTLED_MILK_BOTTLE_DRINKLABLE==null)?"":" [bottledmilk mod available]")
       );
@@ -233,6 +244,12 @@ public class EdMilker
 
     private void drain(int amount)
     { tank_level_ = MathHelper.clamp(tank_level_-BUCKET_SIZE, 0, TANK_CAPACITY); markDirty(); }
+
+    public void state_message(PlayerEntity player)
+    {
+      ITextComponent rf = (energy_consumption <= 0) ? (new StringTextComponent("")) : (Auxiliaries.localizable("block.engineersdecor.small_milking_machine.status.rf", null, new Object[]{energy_stored_}));
+      Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.small_milking_machine.status", null, new Object[]{tank_level_, rf}));
+    }
 
     // TileEntity ------------------------------------------------------------------------------
 
@@ -366,6 +383,7 @@ public class EdMilker
           Inventories.extract(src, e.getKey(), 1, false);
           tank_level_ -= BUCKET_SIZE;
           inserted = true;
+          break;
         }
         if(!inserted) break;
       }

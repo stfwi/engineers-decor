@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.15.1.
 
 ## Version history
 
+    - v1.1.0-b2   [A] Added tooltips for buttons/settings in device GUIs (1.5s display delay).
+                  [U] Updated Forge/Mappings.
+
     - v1.1.0-b1   [F] Fixed Electrical Furnace speed sanitizing bug (issue #97, thx therobotmenace).
                   [A] IE Sheet Metal Slab Slices added (only available if IE is installed).
                   [M] Config options extended/updated.

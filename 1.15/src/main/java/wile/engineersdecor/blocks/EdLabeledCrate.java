@@ -281,7 +281,7 @@ public class EdLabeledCrate
 
     @OnlyIn(Dist.CLIENT)
     public double getMaxRenderDistanceSquared()
-    { return 400; }
+    { return 1600; }
 
     // INameable  ---------------------------------------------------------------------------
 

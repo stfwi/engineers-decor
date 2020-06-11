@@ -212,10 +212,15 @@ public class ModContent
 
   // -------------------------------------------------------------------------------------------------------------------
 
-  public static final DecorBlock.Normal DENSE_GRIT_SAND = (DecorBlock.Normal)(new DecorBlock.Normal(
+  public static final EdGroundBlock DENSE_GRIT_SAND = (EdGroundBlock)(new EdGroundBlock(
     DecorBlock.CFG_DEFAULT,
     Block.Properties.create(Material.EARTH, MaterialColor.DIRT).hardnessAndResistance(0.5f, 3f).sound(SoundType.GROUND).harvestTool(ToolType.SHOVEL)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "dense_grit_sand_block"));
+
+  public static final EdGroundBlock DENSE_GRIT_DIRT = (EdGroundBlock)(new EdGroundBlock(
+    DecorBlock.CFG_DEFAULT,
+    Block.Properties.create(Material.EARTH, MaterialColor.DIRT).hardnessAndResistance(0.5f, 3f).sound(SoundType.GROUND).harvestTool(ToolType.SHOVEL)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "dense_grit_dirt_block"));
 
   // -------------------------------------------------------------------------------------------------------------------
 
@@ -764,6 +769,7 @@ public class ModContent
   };
 
   private static final Block devBlocks[] = {
+    DENSE_GRIT_DIRT // texture needs improvments, looks too blurry yet.
     //TEST_BLOCK
   };
 

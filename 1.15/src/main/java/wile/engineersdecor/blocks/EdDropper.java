@@ -11,37 +11,41 @@ package wile.engineersdecor.blocks;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.detail.Inventories;
+import wile.engineersdecor.libmc.detail.Inventories.SlotRange;
 import wile.engineersdecor.libmc.detail.Networking;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.block.DoorBlock;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
+import wile.engineersdecor.libmc.detail.TooltipDisplay;
+import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.math.*;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.block.DoorBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.world.World;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.item.*;
 import net.minecraft.inventory.*;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.*;
+import net.minecraft.util.math.*;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.SoundEvents;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -51,14 +55,24 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import com.mojang.blaze3d.systems.RenderSystem;
+
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
 public class EdDropper
 {
+  private static boolean with_adjacent_item_insertion = false;
+
+  public static void on_config(boolean with_item_insertion)
+  {
+    with_adjacent_item_insertion = with_item_insertion;
+    ModEngineersDecor.logger().info("Config dropper: item-insertion:" + with_adjacent_item_insertion);
+  }
+
   //--------------------------------------------------------------------------------------------------------------------
   // Block
   //--------------------------------------------------------------------------------------------------------------------
@@ -224,6 +238,7 @@ public class EdDropper
     private int drop_slot_index_ = 0;
     private int tick_timer_ = 0;
     protected NonNullList<ItemStack> stacks_;
+    protected final SlotRange slot_range_ = new SlotRange(this, INPUT_SLOTS_FIRST, INPUT_SLOTS_FIRST+INPUT_SLOTS_SIZE);
 
     public static void on_config(int cooldown_ticks)
     {
@@ -515,6 +530,34 @@ public class EdDropper
       world.addEntity(ei);
     }
 
+    private static Tuple<Boolean, List<ItemStack>> try_eject(World world, BlockPos pos, Direction facing, ItemStack[] stacks, int speed_percent, int xdeviation, int ydeviation, int noise_percent)
+    {
+      if(Arrays.stream(stacks).allMatch(e->e.isEmpty())) return new Tuple<>(false, Arrays.asList(stacks));
+      if(with_adjacent_item_insertion) {
+        final TileEntity te = world.getTileEntity(pos.offset(facing));
+        if(te != null) {
+          final IItemHandler ih = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, (facing==null)?(null):(facing.getOpposite())).orElse(null);
+          if(ih != null) {
+            boolean inserted = false;
+            List<ItemStack> remaining = new ArrayList<>();
+            for(int i = 0; i < stacks.length; ++i) {
+              ItemStack rs = Inventories.insert(ih, stacks[i].copy(), false);
+              if(rs.getCount() < stacks[i].getCount()) inserted = true;
+              if(!rs.isEmpty()) remaining.add(rs);
+            }
+            return new Tuple<>(inserted, remaining);
+          } else {
+            // The TE could also be small, so that dropping over it is intended.
+          }
+        }
+      }
+      for(int i = 0; i < stacks.length; ++i) {
+        if(stacks[i].isEmpty()) continue;
+        drop(world, pos, facing, stacks[i], speed_percent, xdeviation, ydeviation, noise_percent);
+      }
+      return new Tuple<>(true, Collections.emptyList());
+    }
+
     @Nullable
     BlockState update_blockstate()
     {
@@ -653,13 +696,13 @@ public class EdDropper
           }
         }
         // drop action
-        boolean dropped = false;
-        for(int i = 0; i < drop_stacks.length; ++i) {
-          if(drop_stacks[i].isEmpty()) continue;
-          dirty = true;
-          drop(world, pos, state.get(DropperBlock.FACING), drop_stacks[i], drop_speed_, drop_xdev_, drop_ydev_, drop_noise_);
-          dropped = true;
+        Tuple<Boolean, List<ItemStack>> res = try_eject(world, pos, state.get(DropperBlock.FACING), drop_stacks, drop_speed_, drop_xdev_, drop_ydev_, drop_noise_);
+        final boolean dropped = res.getA();
+        final List<ItemStack> remaining = res.getB();
+        for(ItemStack st:remaining) {
+          if(!slot_range_.insert(st).isEmpty()) ModEngineersDecor.logger().debug("NOT ALL NON-DROPPED ITEMS PUT BACK:" + st);
         }
+        if(dropped || (!remaining.isEmpty())) dirty = true;
         // cooldown
         if(dropped) drop_timer_ = DROP_PERIOD_OFFSET + drop_period_ * 2; // 0.1s time base -> 100%===10s
         // drop sound
@@ -800,25 +843,43 @@ public class EdDropper
   public static class DropperGui extends ContainerScreen<DropperContainer>
   {
     protected final PlayerEntity player_;
+    protected final TooltipDisplay tooltip_ = new TooltipDisplay();
 
     public DropperGui(DropperContainer container, PlayerInventory player_inventory, ITextComponent title)
     { super(container, player_inventory, title); this.player_ = player_inventory.player; }
 
     @Override
     public void init()
-    { super.init(); }
+    {
+      super.init();
+      {
+        final String prefix = ModContent.FACTORY_DROPPER.getTranslationKey() + ".tooltips.";
+        final int x0 = getGuiLeft(), y0 = getGuiTop();
+        tooltip_.init(
+          new TipRange(x0+130, y0+10, 12, 25, new TranslationTextComponent(prefix + "velocity")),
+          new TipRange(x0+145, y0+10, 25, 25, new TranslationTextComponent(prefix + "direction")),
+          new TipRange(x0+129, y0+40, 44, 10, new TranslationTextComponent(prefix + "dropcount")),
+          new TipRange(x0+129, y0+50, 44, 10, new TranslationTextComponent(prefix + "period")),
+          new TipRange(x0+114, y0+51, 9, 9, new TranslationTextComponent(prefix + "rssignal")),
+          new TipRange(x0+162, y0+66, 7, 9, new TranslationTextComponent(prefix + "triggermode")),
+          new TipRange(x0+132, y0+66, 9, 9, new TranslationTextComponent(prefix + "filtergate")),
+          new TipRange(x0+148, y0+66, 9, 9, new TranslationTextComponent(prefix + "externgate"))
+        );
+      }
+    }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks)
     {
       renderBackground();
       super.render(mouseX, mouseY, partialTicks);
-      renderHoveredToolTip(mouseX, mouseY);
+      if(!tooltip_.render(this, mouseX, mouseY)) renderHoveredToolTip(mouseX, mouseY);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
+      tooltip_.resetTimer();
       DropperContainer container = (DropperContainer)getContainer();
       int mx = (int)(mouseX - getGuiLeft() + .5), my = (int)(mouseY - getGuiTop() + .5);
       if((!isPointInRegion(114, 1, 61, 79, mouseX, mouseY))) {

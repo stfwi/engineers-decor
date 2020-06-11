@@ -8,6 +8,7 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.util.text.TranslationTextComponent;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.detail.Networking;
@@ -48,6 +49,9 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.fml.network.NetworkHooks;
 import com.mojang.blaze3d.systems.RenderSystem;
+import wile.engineersdecor.libmc.detail.TooltipDisplay;
+import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
+
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -687,25 +691,38 @@ public class EdPlacer
   public static class PlacerGui extends ContainerScreen<PlacerContainer>
   {
     protected final PlayerEntity player_;
+    protected final TooltipDisplay tooltip_ = new TooltipDisplay();
 
     public PlacerGui(PlacerContainer container, PlayerInventory player_inventory, ITextComponent title)
     { super(container, player_inventory, title); this.player_ = player_inventory.player; }
 
     @Override
     public void init()
-    { super.init(); }
+    {
+      super.init();
+      {
+        final String prefix = ModContent.FACTORY_PLACER.getTranslationKey() + ".tooltips.";
+        final int x0 = getGuiLeft(), y0 = getGuiTop();
+        tooltip_.init(
+          new TipRange(x0+133, y0+49,  9,  9, new TranslationTextComponent(prefix + "rssignal")),
+          new TipRange(x0+145, y0+49,  9,  9, new TranslationTextComponent(prefix + "inversion")),
+          new TipRange(x0+159, y0+49,  9,  9, new TranslationTextComponent(prefix + "triggermode"))
+        );
+      }
+    }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks)
     {
       renderBackground();
       super.render(mouseX, mouseY, partialTicks);
-      renderHoveredToolTip(mouseX, mouseY);
+      if(!tooltip_.render(this, mouseX, mouseY)) renderHoveredToolTip(mouseX, mouseY);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
+      tooltip_.resetTimer();
       PlacerContainer container = (PlacerContainer)getContainer();
       int mx = (int)(mouseX - getGuiLeft() + .5), my = (int)(mouseY - getGuiTop() + .5);
       if((!isPointInRegion(126, 1, 49, 60, mouseX, mouseY))) {

@@ -13,6 +13,8 @@ import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
 import wile.engineersdecor.libmc.detail.Inventories;
 import wile.engineersdecor.libmc.detail.Networking;
+import wile.engineersdecor.libmc.detail.TooltipDisplay;
+import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.block.DoorBlock;
@@ -23,10 +25,11 @@ import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.*;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -52,6 +55,7 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
+
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -802,25 +806,43 @@ public class EdDropper
   public static class DropperGui extends ContainerScreen<DropperContainer>
   {
     protected final PlayerEntity player_;
+    protected final TooltipDisplay tooltip_ = new TooltipDisplay();
 
     public DropperGui(DropperContainer container, PlayerInventory player_inventory, ITextComponent title)
     { super(container, player_inventory, title); this.player_ = player_inventory.player; }
 
     @Override
     public void init()
-    { super.init(); }
+    {
+      super.init();
+      {
+        final String prefix = ModContent.FACTORY_DROPPER.getTranslationKey() + ".tooltips.";
+        final int x0 = getGuiLeft(), y0 = getGuiTop();
+        tooltip_.init(
+          new TipRange(x0+130, y0+10, 12, 25, new TranslationTextComponent(prefix + "velocity")),
+          new TipRange(x0+145, y0+10, 25, 25, new TranslationTextComponent(prefix + "direction")),
+          new TipRange(x0+129, y0+40, 44, 10, new TranslationTextComponent(prefix + "dropcount")),
+          new TipRange(x0+129, y0+50, 44, 10, new TranslationTextComponent(prefix + "period")),
+          new TipRange(x0+114, y0+51, 9, 9, new TranslationTextComponent(prefix + "rssignal")),
+          new TipRange(x0+162, y0+66, 7, 9, new TranslationTextComponent(prefix + "triggermode")),
+          new TipRange(x0+132, y0+66, 9, 9, new TranslationTextComponent(prefix + "filtergate")),
+          new TipRange(x0+148, y0+66, 9, 9, new TranslationTextComponent(prefix + "externgate"))
+        );
+      }
+    }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks)
     {
       renderBackground();
       super.render(mouseX, mouseY, partialTicks);
-      renderHoveredToolTip(mouseX, mouseY);
+      if(!tooltip_.render(this, mouseX, mouseY)) renderHoveredToolTip(mouseX, mouseY);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
+      tooltip_.resetTimer();
       DropperContainer container = (DropperContainer)getContainer();
       int mx = (int)(mouseX - getGuiLeft() + .5), my = (int)(mouseY - getGuiTop() + .5);
       if((!isPointInRegion(114, 1, 61, 79, mouseX, mouseY))) {

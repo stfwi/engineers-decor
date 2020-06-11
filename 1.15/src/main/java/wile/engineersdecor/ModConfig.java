@@ -697,7 +697,10 @@ public class ModConfig
     EdMilker.MilkerTileEntity.on_config(COMMON.milking_machine_energy_consumption.get(), COMMON.milking_machine_milking_delay.get());
     EdSlabBlock.on_config(!COMMON.without_direct_slab_pickup.get());
     EdSlabSliceBlock.on_config(!COMMON.without_direct_slab_pickup.get());
+    // currently no file config planned
     EdLabeledCrate.on_config(false);
+    EdFluidFunnel.on_config(with_experimental_features_); // @todo: double check for abuse as pump first
+    EdDropper.on_config(with_experimental_features_); // @todo: double check handler cross-mod-compat first
     // -----------------------------------------------------------------------------------------------------------------
     {
       // Check if the config is already synchronized or has to be synchronised.

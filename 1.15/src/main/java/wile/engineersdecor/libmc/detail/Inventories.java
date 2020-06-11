@@ -50,8 +50,8 @@ public class Inventories
     return null;
   }
 
-  public static ItemStack insert(IItemHandler inventory, ItemStack stack , boolean simulate)
-  { return ItemHandlerHelper.insertItemStacked(inventory, stack, simulate); }
+  public static ItemStack insert(IItemHandler handler, ItemStack stack , boolean simulate)
+  { return ItemHandlerHelper.insertItemStacked(handler, stack, simulate); }
 
   public static ItemStack insert(TileEntity te, @Nullable Direction side, ItemStack stack, boolean simulate)
   {
@@ -64,8 +64,11 @@ public class Inventories
     } else if(te instanceof IInventory) {
       hnd = new InvWrapper((IInventory)te);
     }
-    return (hnd==null) ? stack : ItemHandlerHelper.insertItemStacked(hnd, stack, simulate);
+    return (hnd==null) ? stack : insert(hnd, stack, simulate);
   }
+
+  public static ItemStack insert(World world, BlockPos pos, @Nullable Direction side, ItemStack stack, boolean simulate)
+  { return insert(world.getTileEntity(pos), side, stack, simulate); }
 
   public static ItemStack extract(IItemHandler inventory, @Nullable ItemStack match, int amount, boolean simulate)
   {
@@ -128,9 +131,6 @@ public class Inventories
      * to stacks that have that item already, and last uses any empty slot that can be found.
      * Returns the stack that is still remaining in the referenced `stack`.
      */
-    public ItemStack insert(final ItemStack stack_to_move, boolean only_fillup, int limit)
-    { return insert(stack_to_move, only_fillup, limit, false, false); }
-
     public ItemStack insert(final ItemStack stack_to_move, boolean only_fillup, int limit, boolean reverse, boolean force_group_stacks)
     {
       final ItemStack mvstack = stack_to_move.copy();
@@ -223,6 +223,15 @@ public class Inventories
       }
       return checked(mvstack);
     }
+
+    public ItemStack insert(final ItemStack stack_to_move, boolean only_fillup, int limit)
+    { return insert(stack_to_move, only_fillup, limit, false, false); }
+
+    public ItemStack insert(final ItemStack stack_to_move, boolean only_fillup)
+    { return insert(stack_to_move, only_fillup, 0, false, false); }
+
+    public ItemStack insert(final ItemStack stack_to_move)
+    { return insert(stack_to_move, false, 0, false, false); }
 
     /**
      * Moves as much items from the slots in range [start_slot, end_slot] of the inventory into a new stack.

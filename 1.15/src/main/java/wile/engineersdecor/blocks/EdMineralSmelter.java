@@ -116,7 +116,7 @@ public class EdMineralSmelter
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
     {
-      if(player.isShiftKeyDown()) return ActionResultType.PASS;
+      if(player.isSneaking()) return ActionResultType.PASS;
       if(world.isRemote) return ActionResultType.SUCCESS;
       MineralSmelterTileEntity te = getTe(world, pos);
       if(te==null) return ActionResultType.FAIL;

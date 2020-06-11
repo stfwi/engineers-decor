@@ -12,6 +12,8 @@ import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.detail.Inventories;
 import wile.engineersdecor.libmc.detail.Networking;
+import wile.engineersdecor.libmc.detail.TooltipDisplay;
+import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.block.BlockState;
@@ -32,6 +34,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -782,20 +785,32 @@ public class EdElectricalFurnace
   public static class ElectricalFurnaceGui extends ContainerScreen<ElectricalFurnaceContainer>
   {
     protected final PlayerEntity player_;
+    protected final TooltipDisplay tooltip_ = new TooltipDisplay();
 
     public ElectricalFurnaceGui(ElectricalFurnaceContainer container, PlayerInventory player_inventory, ITextComponent title)
     { super(container, player_inventory, title); this.player_ = player_inventory.player; }
 
     @Override
     public void init()
-    { super.init(); }
+    {
+      super.init();
+      {
+        final String prefix = ModContent.SMALL_ELECTRICAL_FURNACE.getTranslationKey() + ".tooltips.";
+        final int x0 = getGuiLeft(), y0 = getGuiTop();
+        final Slot aux = container.getSlot(ElectricalFurnaceTileEntity.SMELTING_AUX_SLOT_NO);
+        tooltip_.init(
+          new TipRange(x0+135, y0+50, 25, 25, new TranslationTextComponent(prefix + "speed")),
+          new TipRange(x0+aux.xPos, y0+aux.yPos, 16, 16, new TranslationTextComponent(prefix + "auxslot"))
+        );
+      }
+    }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks)
     {
       renderBackground();
       super.render(mouseX, mouseY, partialTicks);
-      renderHoveredToolTip(mouseX, mouseY);
+      if(!tooltip_.render(this, mouseX, mouseY)) renderHoveredToolTip(mouseX, mouseY);
     }
 
     @Override
@@ -825,6 +840,7 @@ public class EdElectricalFurnace
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
+      tooltip_.resetTimer();
       ElectricalFurnaceContainer container = (ElectricalFurnaceContainer)getContainer();
       int mx = (int)(mouseX - getGuiLeft() + .5), my = (int)(mouseY - getGuiTop() + .5);
       if((!isPointInRegion(136, 48, 28, 28, mouseX, mouseY))) {

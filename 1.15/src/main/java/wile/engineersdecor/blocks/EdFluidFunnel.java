@@ -37,6 +37,8 @@ import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import wile.engineersdecor.ModEngineersDecor;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
@@ -44,6 +46,15 @@ import java.util.*;
 
 public class EdFluidFunnel
 {
+
+  private static boolean with_device_fluid_handler_collection = false;
+
+  public static void on_config(boolean with_tank_fluid_collection)
+  {
+    with_device_fluid_handler_collection = with_tank_fluid_collection;
+    ModEngineersDecor.logger().info("Config fluid funnel: tank-fluid-collection:"+with_device_fluid_handler_collection);
+  }
+
   //--------------------------------------------------------------------------------------------------------------------
   // Block
   //--------------------------------------------------------------------------------------------------------------------
@@ -407,10 +418,28 @@ public class EdFluidFunnel
       boolean dirty = false;
       // Collection
       if((collection_timer_ >= COLLECTION_INTERVAL) && ((tank_==null) || (tank_.getAmount() <= (TANK_CAPACITY-1000)))) {
-      collection_timer_ = 0;
+        collection_timer_ = 0;
         if(!world.isBlockPowered(pos)) { // redstone disable feature
           if(last_pick_pos_==null) last_pick_pos_ = pos.up();
-          if(try_collect(pos.up())) dirty = true;
+          TileEntity te = with_device_fluid_handler_collection ? (world.getTileEntity(pos.up())) : (null);
+          if(te != null) {
+            IFluidHandler fh = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN).orElse(null);
+            if(fh == null) {
+              te = null;
+            } else if(tank_.isEmpty()) {
+              FluidStack fs = fh.drain(1000, FluidAction.EXECUTE);
+              if((fs!=null) && (!fs.isEmpty())) tank_ = fs.copy();
+              dirty = true;
+            } else {
+              FluidStack todrain = new FluidStack(tank_.getFluid(), 1000);
+              FluidStack fs = fh.drain(todrain, FluidAction.EXECUTE);
+              if((fs!=null) && (!fs.isEmpty())) tank_.setAmount(tank_.getAmount()+fs.getAmount());
+              dirty = true;
+            }
+          }
+          if(te==null) {
+            if(try_collect(pos.up())) dirty = true;
+          }
         }
       }
       // Gravity fluid transfer

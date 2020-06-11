@@ -22,6 +22,8 @@ import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.Inventories;
 import wile.engineersdecor.libmc.detail.Inventories.SlotRange;
 import wile.engineersdecor.libmc.detail.Networking;
+import wile.engineersdecor.libmc.detail.TooltipDisplay;
+import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
 import net.minecraft.inventory.container.*;
 import net.minecraft.network.play.server.SSetSlotPacket;
 import net.minecraft.network.NetworkManager;
@@ -59,6 +61,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.google.common.collect.ImmutableList;
+
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -1106,6 +1109,7 @@ public class EdCraftingTable
     protected final PlayerEntity player;
     protected final ArrayList<Button> buttons = new ArrayList<Button>();
     protected final boolean history_slot_tooltip[] = {false,false,false,false,false,false,false,false,false,false};
+    protected final TooltipDisplay tooltip = new TooltipDisplay();
 
     public CraftingTableGui(CraftingTableContainer container, PlayerInventory playerInventory, ITextComponent title)
     {
@@ -1131,6 +1135,16 @@ public class EdCraftingTable
           buttons.add(addButton(new ImageButton(x0+59, y0+71, 17, 9, 180,71,  9, BACKGROUND, (bt)->action(CraftingTableContainer.BUTTON_TO_PLAYER))));
         }
       }
+      {
+        List<TipRange> tooltips = new ArrayList<>();
+        final String prefix = ModContent.TREATED_WOOD_CRAFTING_TABLE.getTranslationKey() + ".tooltips.";
+        String[] translation_keys = { "next", "prev", "clear", "nextcollisionrecipe", "fromstorage", "tostorage", "fromplayer", "toplayer" };
+        for(int i=0; (i<buttons.size()) && (i<translation_keys.length); ++i) {
+          Button bt = buttons.get(i);
+          tooltips.add(new TipRange(bt.x,bt.y, bt.getWidth(), bt.getHeight(), Auxiliaries.localizable(prefix+translation_keys[i])));
+        }
+        tooltip.init(tooltips);
+      }
     }
 
     @Override
@@ -1143,7 +1157,7 @@ public class EdCraftingTable
       }
       renderBackground();
       super.render(mouseX, mouseY, partialTicks);
-      renderHoveredToolTip(mouseX, mouseY);
+      if(!tooltip.render(this,mouseX,mouseY)) renderHoveredToolTip(mouseX, mouseY);
     }
 
     @Override
@@ -1229,11 +1243,12 @@ public class EdCraftingTable
     { action(message, new CompoundNBT()); }
 
     protected void action(String message, CompoundNBT nbt)
-    { getContainer().onGuiAction(message, nbt); }
+    { getContainer().onGuiAction(message, nbt); tooltip.resetTimer(); }
 
     @Override
     protected void handleMouseClick(Slot slot, int slotId, int mouseButton, ClickType type)
     {
+      tooltip.resetTimer();
       if(type == ClickType.PICKUP) {
         boolean place_refab = (slot instanceof CraftingResultSlot) && (!slot.getHasStack());
         if(place_refab && with_assist_direct_history_refab) on_history_item_placement(); // place before crafting -> direct item pick
@@ -1281,6 +1296,7 @@ public class EdCraftingTable
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double wheel_inc)
     {
+      tooltip.resetTimer();
       final Slot resultSlot = this.getSlotUnderMouse();
       if((!with_crafting_slot_mouse_scrolling) || (!(resultSlot instanceof CraftingResultSlot))) {
         return this.func_212930_a(mouseX, mouseY).filter((evl) -> {

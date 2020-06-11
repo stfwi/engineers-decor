@@ -11,6 +11,8 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
+    - v1.1.0-b2   [A] Added tooltips for buttons/settings in device GUIs (1.5s display delay).
+
     - v1.1.0-b1   [F] Fixed Electrical Furnace speed sanitizing bug (issue #97, thx therobotmenace).
                   [A] Sheet Metal Slab Slices added (only available if IE is installed).
                   [M] Config options extended/updated.
