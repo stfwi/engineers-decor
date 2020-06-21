@@ -831,12 +831,12 @@ public class BlockDecorHopper extends BlockDecorDirected
       if((delay_timer_ > 0) && ((--delay_timer_) == 0)) markDirty();
       if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
+      final IBlockState state = world.getBlockState(pos);
+      if(!(state.getBlock() instanceof BlockDecorHopper)) { block_power_signal_= false; return; }
       // Cycle init
       boolean dirty = block_power_updated_;
       boolean rssignal = ((logic_ & LOGIC_INVERTED)!=0)==(!block_power_signal_);
       boolean trigger = (rssignal && ((block_power_updated_) || ((logic_ & LOGIC_CONTINUOUS)!=0)));
-      final IBlockState state = world.getBlockState(pos);
-      if(state == null) { block_power_signal_= false; return; }
       final EnumFacing hopper_facing = state.getValue(FACING);
       // Trigger edge detection for next cycle
       {

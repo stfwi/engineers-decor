@@ -212,10 +212,10 @@ public class EdFluidAccumulator
     {
       if((world.isRemote) || (--tick_timer_ > 0)) return;
       tick_timer_ = tick_idle_interval;
+      BlockState state = world.getBlockState(pos);
+      if(!(state.getBlock() instanceof FluidAccumulatorBlock)) return;
       if(!initialized_) {
         initialized_ = true;
-        BlockState state = world.getBlockState(pos);
-        if((state==null) || (!(state.getBlock() instanceof FluidAccumulatorBlock))) return;
         block_facing_ = state.get(FluidAccumulatorBlock.FACING);
       }
       int n_requested = last_drain_request_amount_;

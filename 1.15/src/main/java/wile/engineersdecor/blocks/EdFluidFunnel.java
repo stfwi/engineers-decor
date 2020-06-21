@@ -415,6 +415,8 @@ public class EdFluidFunnel
       if((world.isRemote) || (--tick_timer_ > 0)) return;
       tick_timer_ = TICK_INTERVAL;
       collection_timer_ += TICK_INTERVAL;
+      final BlockState funnel_state = world.getBlockState(pos);
+      if(!(funnel_state.getBlock() instanceof FluidFunnelBlock)) return;
       boolean dirty = false;
       // Collection
       if((collection_timer_ >= COLLECTION_INTERVAL) && ((tank_==null) || (tank_.getAmount() <= (TANK_CAPACITY-1000)))) {
@@ -454,7 +456,6 @@ public class EdFluidFunnel
       }
       // Block state
       int fill_level = (tank_==null) ? 0 : (MathHelper.clamp(tank_.getAmount()/1000,0, FluidFunnelBlock.FILL_LEVEL_MAX));
-      final BlockState funnel_state = world.getBlockState(pos);
       if(funnel_state.get(FluidFunnelBlock.FILL_LEVEL) != fill_level) world.setBlockState(pos, funnel_state.with(FluidFunnelBlock.FILL_LEVEL, fill_level), 2|16);
       if(dirty) markDirty();
     }

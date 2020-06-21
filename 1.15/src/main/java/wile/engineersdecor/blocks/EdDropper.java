@@ -589,6 +589,7 @@ public class EdDropper
       if((drop_timer_ > 0) && ((--drop_timer_) == 0)) markDirty();
       if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
+      if(!(world.getBlockState(pos).getBlock() instanceof DropperBlock)) return;
       final boolean continuous_mode = (drop_logic_ & DROPLOGIC_CONTINUOUS)!=0;
       boolean dirty = block_power_updated_;
       boolean redstone_trigger = (block_power_signal_ && ((block_power_updated_) || (continuous_mode)));

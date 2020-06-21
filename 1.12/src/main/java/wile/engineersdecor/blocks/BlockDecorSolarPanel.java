@@ -167,6 +167,8 @@ public class BlockDecorSolarPanel extends BlockDecor
     {
       if((world.isRemote) || (--tick_timer_ > 0)) return;
       tick_timer_ = TICK_INTERVAL;
+      final IBlockState state = world.getBlockState(pos);
+      if(!(state.getBlock() instanceof BlockDecorSolarPanel)) return;
       current_feedin_ = 0;
       if(accumulated_power_ > 0) {
         for(int i=0; (i<transfer_directions_.length) && (accumulated_power_>0); ++i) {
@@ -184,13 +186,11 @@ public class BlockDecorSolarPanel extends BlockDecor
       if(!world.canSeeSky(pos)) {
         tick_timer_ = TICK_INTERVAL * 5;
         current_production_ = 0;
-        IBlockState state = world.getBlockState(pos);
         if(state.getValue((EXPOSITION))!=2) world.setBlockState(pos, state.withProperty(EXPOSITION, 2));
         return;
       }
       if(--recalc_timer_ > 0) return;
       recalc_timer_ = ACCUMULATION_INTERVAL + ((int)(Math.random()+.5));
-      IBlockState state = world.getBlockState(pos);
       int theta = ((((int)(world.getCelestialAngleRadians(1f) * (180.0/Math.PI)))+90) % 360);
       int e = 2;
       if(theta > 340)      e = 2;
@@ -199,7 +199,7 @@ public class BlockDecorSolarPanel extends BlockDecor
       else if(theta < 100) e = 2;
       else if(theta < 135) e = 3;
       else if(theta < 190) e = 4;
-      IBlockState nstate = state.withProperty(EXPOSITION, e);
+      final IBlockState nstate = state.withProperty(EXPOSITION, e);
       if(nstate != state) world.setBlockState(pos, nstate, 1|2);
       final double eff = (1.0-((world.getRainStrength(1f)*0.6)+(world.getThunderStrength(1f)*0.3)));
       final double rf = Math.sin((Math.PI/2) * Math.sqrt(((double)(((theta<0)||(theta>180))?(0):((theta>90)?(180-theta):(theta))))/90));

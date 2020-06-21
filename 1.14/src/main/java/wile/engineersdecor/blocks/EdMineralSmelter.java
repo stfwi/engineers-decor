@@ -566,6 +566,8 @@ public class EdMineralSmelter
       if(world.isRemote) return;
       if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
+      BlockState state = world.getBlockState(pos);
+      if(!(state.getBlock() instanceof MineralSmelterBlock)) return;
       boolean dirty = false;
       final int last_phase = phase();
       final ItemStack istack = stacks_.get(0);
@@ -655,8 +657,7 @@ public class EdMineralSmelter
         }
       }
       // Block state
-      BlockState state = world.getBlockState(pos);
-      if((state.getBlock() instanceof MineralSmelterBlock) && (force_block_update_ || (state.get(MineralSmelterBlock.PHASE) != new_phase))) {
+      if(force_block_update_ || (state.get(MineralSmelterBlock.PHASE) != new_phase)) {
         state = state.with(MineralSmelterBlock.PHASE, new_phase);
         world.setBlockState(pos, state,3|16);
         world.notifyNeighborsOfStateChange(getPos(), state.getBlock());

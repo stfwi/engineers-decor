@@ -266,15 +266,16 @@ public class BlockDecorBreaker extends BlockDecorDirectedHorizontal
     public void update()
     {
       if(--tick_timer_ > 0) return;
+      final IBlockState device_state = world.getBlockState(pos);
+      if(!(device_state.getBlock() instanceof BlockDecorBreaker)) { tick_timer_ = TICK_INTERVAL; return; }
       if(world.isRemote) {
-        IBlockState state = world.getBlockState(pos);
-        if(!state.getValue(ACTIVE)) {
+        if(!device_state.getValue(ACTIVE)) {
           tick_timer_ = TICK_INTERVAL;
         } else {
           tick_timer_ = 1;
           // not sure if is so cool to do this each tick ... may be simplified/removed again.
           SoundEvent sound = SoundEvents.BLOCK_WOOD_HIT;
-          SoundType stype = world.getBlockState(pos.offset(state.getValue(FACING))).getBlock().getSoundType();
+          SoundType stype = world.getBlockState(pos.offset(device_state.getValue(FACING))).getBlock().getSoundType();
           if((stype == SoundType.CLOTH) || (stype == SoundType.PLANT) || (stype == SoundType.SNOW)) {
             sound = SoundEvents.BLOCK_CLOTH_HIT;
           } else if((stype == SoundType.GROUND) || (stype == SoundType.SAND)) {
@@ -284,7 +285,6 @@ public class BlockDecorBreaker extends BlockDecorDirectedHorizontal
         }
       } else {
         tick_timer_ = TICK_INTERVAL;
-        final IBlockState device_state = world.getBlockState(pos);
         final BlockPos target_pos = pos.offset(device_state.getValue(FACING));
         final IBlockState target_state = world.getBlockState(target_pos);
         if((world.isBlockPowered(pos)) || (!isBreakable(target_state, target_pos, world))) {

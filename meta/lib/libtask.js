@@ -397,6 +397,7 @@
     const dst = fs.realpath("src/main/resources/data/" + constants.modid);
     const src = fs.realpath("src/generated/resources/data/" + constants.modid);
     if(!dst || !src) throw "Source or destination directory not found.";
+    if(!fs.isdir(src)) return;
     const src_files = fs.find(src, "*.json");
     const upath = function(s) { return s.replace(/[\\]/g,"/").replace(/^[\/]/,""); } // for correct display on win32
     if(src_files===undefined) return 1;

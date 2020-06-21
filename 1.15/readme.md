@@ -11,6 +11,12 @@ Mod sources for Minecraft version 1.15.1.
 
 ## Version history
 
+    - v1.1.0-b3   [!] Forge update, requires Forge 1.15.2-31.2.20.
+                  [F] Block Placer defers placements if collidable entities are in the way (issue #98, thx DrakoAlcarus).
+                  [M] Block Breaker item drop trajectories have lower speed (fall slightly straighter down).
+                  [M] Pipe Valves redstone connector also shown if the adjacent block can connect redstone in general.
+                  [F] Added Block verification during TE ticking in case devices are moved (issue #101, thx D0CTOR-ZED).
+
     - v1.1.0-b2   [A] Added tooltips for buttons/settings in device GUIs (1.5s display delay).
                   [U] Updated Forge/Mappings.
 

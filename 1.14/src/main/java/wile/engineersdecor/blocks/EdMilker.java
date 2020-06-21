@@ -529,6 +529,7 @@ public class EdMilker
       tick_timer_ = TICK_INTERVAL;
       boolean dirty = false;
       final BlockState block_state = world.getBlockState(pos);
+      if(!(block_state.getBlock() instanceof MilkerBlock)) return;
       if(!world.isBlockPowered(pos) || (state_ != MilkingState.IDLE)) {
         if(energy_consumption > 0) {
           if(energy_stored_ <= 0) return;

@@ -619,13 +619,13 @@ public class EdHopper
       if((delay_timer_ > 0) && ((--delay_timer_) == 0)) markDirty();
       if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
+      final BlockState state = world.getBlockState(pos);
+      if(!(state.getBlock() instanceof HopperBlock)) { block_power_signal_= false; return; }
       // Cycle init
       boolean dirty = block_power_updated_;
       final boolean rssignal = ((logic_ & LOGIC_INVERTED)!=0)==(!block_power_signal_);
       final boolean pulse_mode = ((logic_ & LOGIC_CONTINUOUS)==0);
       boolean trigger = (rssignal && ((block_power_updated_) || (!pulse_mode)));
-      final BlockState state = world.getBlockState(pos);
-      if(state == null) { block_power_signal_= false; return; }
       final Direction hopper_facing = state.get(HopperBlock.FACING);
       // Trigger edge detection for next cycle
       {

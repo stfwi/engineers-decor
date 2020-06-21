@@ -627,6 +627,8 @@ public class BlockDecorMineralSmelter extends BlockDecorDirectedHorizontal
       if(world.isRemote) return;
       if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
+      IBlockState state = world.getBlockState(pos);
+      if(!(state.getBlock() instanceof BlockDecorMineralSmelter)) return;
       boolean dirty = false;
       final int last_phase = phase();
       final ItemStack istack = stacks_.get(0);
@@ -702,8 +704,7 @@ public class BlockDecorMineralSmelter extends BlockDecorDirectedHorizontal
           }
         }
       }
-      IBlockState state = world.getBlockState(pos);
-      if((state.getBlock() instanceof BlockDecorMineralSmelter) && (force_block_update_ || (state.getValue(PHASE) != new_phase))) {
+      if(force_block_update_ || (state.getValue(PHASE) != new_phase)) {
         state = state.withProperty(PHASE, new_phase);
         world.setBlockState(pos, state,3|16);
         world.notifyNeighborsOfStateChange(pos, state.getBlock(),false);

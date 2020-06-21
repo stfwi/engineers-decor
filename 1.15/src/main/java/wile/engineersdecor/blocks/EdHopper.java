@@ -623,7 +623,7 @@ public class EdHopper
       final boolean pulse_mode = ((logic_ & LOGIC_CONTINUOUS)==0);
       boolean trigger = (rssignal && ((block_power_updated_) || (!pulse_mode)));
       final BlockState state = world.getBlockState(pos);
-      if(state == null) { block_power_signal_= false; return; }
+      if(!(state.getBlock() instanceof HopperBlock)) { block_power_signal_= false; return; }
       final Direction hopper_facing = state.get(HopperBlock.FACING);
       // Trigger edge detection for next cycle
       {

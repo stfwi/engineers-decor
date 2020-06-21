@@ -475,6 +475,7 @@ public class EdElectricalFurnace
     {
       if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
+      if(!(world.getBlockState(pos).getBlock() instanceof ElectricalFurnaceBlock)) return;
       final boolean was_burning = burning();
       if(was_burning) burntime_left_ -= TICK_INTERVAL;
       if(burntime_left_ < 0) burntime_left_ = 0;

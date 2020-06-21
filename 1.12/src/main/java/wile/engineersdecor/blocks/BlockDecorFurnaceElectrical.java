@@ -738,6 +738,7 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
     {
       if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
+      if(!(world.getBlockState(pos).getBlock() instanceof BlockDecorFurnaceElectrical)) return;
       final boolean was_burning = isBurning();
       if(was_burning) burntime_left_ -= TICK_INTERVAL;
       if(burntime_left_ < 0) burntime_left_ = 0;

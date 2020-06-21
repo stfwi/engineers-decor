@@ -195,12 +195,12 @@ public class ModContent
 
   public static final EdGlassBlock PANZERGLASS_BLOCK = (EdGlassBlock)(new EdGlassBlock(
     DecorBlock.CFG_TRANSLUCENT,
-    Block.Properties.create(Material.GLASS, MaterialColor.AIR).hardnessAndResistance(5f, 2000f).sound(SoundType.METAL)
+    Block.Properties.create(Material.GLASS, MaterialColor.AIR).hardnessAndResistance(0.7f, 2000f).sound(SoundType.METAL)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "panzerglass_block"));
 
   public static final EdSlabBlock PANZERGLASS_SLAB = (EdSlabBlock)(new EdSlabBlock(
     DecorBlock.CFG_TRANSLUCENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(5f, 2000f).sound(SoundType.METAL)
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(0.7f, 2000f).sound(SoundType.METAL)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "panzerglass_slab"));
 
   // -------------------------------------------------------------------------------------------------------------------

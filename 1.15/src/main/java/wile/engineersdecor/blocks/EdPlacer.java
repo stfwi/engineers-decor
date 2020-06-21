@@ -8,7 +8,6 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.util.text.TranslationTextComponent;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.detail.Networking;
@@ -19,6 +18,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.LivingEntity;
@@ -34,6 +34,7 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -489,7 +490,10 @@ public class EdPlacer
             placement_pos = placement_pos.up();
           }
         }
-      } else if(!world.getBlockState(placement_pos).getMaterial().isReplaceable()) {
+      } else if(
+        (!world.getBlockState(placement_pos).getMaterial().isReplaceable()) ||
+        (!world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(placement_pos), Entity::canBeCollidedWith).isEmpty())
+      ) {
         block = Blocks.AIR;
         no_space = true;
       }
@@ -559,11 +563,11 @@ public class EdPlacer
       if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
       // Cycle init
+      final BlockState state = world.getBlockState(pos);
+      if(!(state.getBlock() instanceof PlacerBlock)) { block_power_signal_= false; return; }
       boolean dirty = block_power_updated_;
       boolean rssignal = ((logic_ & LOGIC_INVERTED)!=0)==(!block_power_signal_);
       boolean trigger = (rssignal && ((block_power_updated_) || ((logic_ & LOGIC_CONTINUOUS)!=0)));
-      final BlockState state = world.getBlockState(pos);
-      if(state == null) { block_power_signal_= false; return; }
       final Direction placer_facing = state.get(PlacerBlock.FACING);
       // Trigger edge detection for next cycle
       {

@@ -531,6 +531,7 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
       if((world.isRemote) || ((--tick_timer_ > 0))) return;
       tick_timer_ = TICK_INTERVAL;
       final IBlockState block_state = world.getBlockState(pos);
+      if(!(block_state.getBlock() instanceof BlockDecorMilker)) return;
       boolean dirty = false;
       if(energy_consumption > 0) {
         if(energy_stored_ <= 0) return;

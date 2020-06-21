@@ -10,7 +10,8 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
-    ~ v1.1.0-b2   [F]
+    - v1.1.0-b2   [F] Block Placer defers placements if collidable entities are in the way (issue #98, thx DrakoAlcarus).
+                  [F] Added Block verification during TE ticking in case devices are moved (issue #101, thx D0CTOR-ZED).
 
     - v1.1.0-b1   [F] Fixed Electrical Furnace speed sanitizing bug (issue #97, thx therobotmenace).
                   [M] Changed Labeled Crate Nesting to circumvent server crashing

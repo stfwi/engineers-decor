@@ -63,7 +63,7 @@ run:
 	@$(GRADLE) runClient
 
 sanitize:
-	@echo "[1.12] Running sanatising tasks ..."
+	@echo "[1.12] Running sanitising tasks ..."
 	@$(TASK) sanitize
 	@$(TASK) sync-languages
 	@$(TASK) version-check

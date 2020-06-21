@@ -70,7 +70,7 @@ init:
 	@$(GRADLE) eclipse
 
 sanitize:
-	@echo "[1.14] Running sanatising tasks ..."
+	@echo "[1.14] Running sanitising tasks ..."
 	@$(TASK) sanitize
 	@$(TASK) sync-languages
 	@$(TASK) version-check

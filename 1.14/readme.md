@@ -11,6 +11,11 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
+    - v1.1.0-b3   [F] Block Placer defers placements if collidable entities are in the way (issue #98, thx DrakoAlcarus).
+                  [M] Block Breaker item drop trajectories have lower speed (fall slightly straighter down).
+                  [M] Pipe Valves redstone connector also shown if the adjacent block can connect redstone in general.
+                  [F] Added Block verification during TE ticking in case devices are moved (issue #101, thx D0CTOR-ZED).
+
     - v1.1.0-b2   [A] Added tooltips for buttons/settings in device GUIs (1.5s display delay).
 
     - v1.1.0-b1   [F] Fixed Electrical Furnace speed sanitizing bug (issue #97, thx therobotmenace).

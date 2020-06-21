@@ -11,6 +11,7 @@ package wile.engineersdecor.blocks;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.Fluidics;
 import wile.engineersdecor.libmc.detail.Inventories;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.ModContent;
@@ -291,20 +292,7 @@ public class EdMilker
 
     // IFluidHandler ---------------------------------------------------------------------------------------
 
-    private LazyOptional<IFluidHandler> fluid_handler_ = LazyOptional.of(() -> (IFluidHandler)new BFluidHandler(this));
-
-    private static class BFluidHandler implements IFluidHandler
-    {
-      private final MilkerTileEntity te;
-      BFluidHandler(MilkerTileEntity te) { this.te = te; }
-      @Override public int getTanks() { return 1; }
-      @Override public FluidStack getFluidInTank(int tank) { return te.getFluid(); }
-      @Override public int getTankCapacity(int tank) { return te.getCapacity(); }
-      @Override public boolean isFluidValid(int tank, @Nonnull FluidStack stack) { return te.isFluidValid(stack); }
-      @Override public int fill(FluidStack resource, FluidAction action)  { return 0; }
-      @Override public FluidStack drain(FluidStack resource, FluidAction action) { return te.drain(resource, action); }
-      @Override public FluidStack drain(int maxDrain, FluidAction action) { return te.drain(maxDrain, action); }
-    }
+    private LazyOptional<IFluidHandler> fluid_handler_ = LazyOptional.of(() -> (IFluidHandler)new Fluidics.SingleTankFluidHandler(this));
 
     // IFluidTank ------------------------------------------------------------------------------------------
 
@@ -368,13 +356,14 @@ public class EdMilker
     private static ItemStack milk_filled_container_item(ItemStack stack)
     { return milk_containers_.entrySet().stream().filter(e->Inventories.areItemStacksIdentical(e.getKey(), stack)).map(Map.Entry::getValue).findFirst().orElse(ItemStack.EMPTY); }
 
-    private void fill_adjacent_inventory_item_containers(Direction block_facing)
+    private boolean fill_adjacent_inventory_item_containers(Direction block_facing)
     {
       // Check inventory existence, back to down is preferred, otherwise sort back into same inventory.
       IItemHandler src = Inventories.itemhandler(world, pos.offset(block_facing), block_facing.getOpposite());
       IItemHandler dst = Inventories.itemhandler(world, pos.down(), Direction.UP);
       if(src==null) { src = dst; } else if(dst==null) { dst = src; }
-      if((src==null) || (dst==null)) return;
+      if((src==null) || (dst==null)) return false;
+      boolean dirty = false;
       while((tank_level_ >= BUCKET_SIZE)) {
         boolean inserted = false;
         for(Entry<ItemStack,ItemStack> e:milk_containers_.entrySet()) {
@@ -383,10 +372,12 @@ public class EdMilker
           Inventories.extract(src, e.getKey(), 1, false);
           tank_level_ -= BUCKET_SIZE;
           inserted = true;
+          dirty = true;
           break;
         }
         if(!inserted) break;
       }
+      return dirty;
     }
 
     private void release_cow(CowEntity cow)
@@ -546,6 +537,7 @@ public class EdMilker
       tick_timer_ = TICK_INTERVAL;
       boolean dirty = false;
       final BlockState block_state = world.getBlockState(pos);
+      if(!(block_state.getBlock() instanceof MilkerBlock)) return;
       if(!world.isBlockPowered(pos) || (state_ != MilkingState.IDLE)) {
         if(energy_consumption > 0) {
           if(energy_stored_ <= 0) return;
@@ -570,9 +562,9 @@ public class EdMilker
           }
         }
         // Adjacent inventory update, only done just after milking to prevent waste of server cpu.
-        if(dirty && (fluid_level() >= BUCKET_SIZE)) {
+        if((!dirty) && (fluid_level() >= BUCKET_SIZE)) {
           log("Try item transfer");
-          fill_adjacent_inventory_item_containers(block_state.get(MilkerBlock.HORIZONTAL_FACING));
+          if(fill_adjacent_inventory_item_containers(block_state.get(MilkerBlock.HORIZONTAL_FACING))) dirty = true;
         }
       }
       // State update

@@ -21,6 +21,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.LivingEntity;
@@ -490,7 +491,10 @@ public class EdPlacer
             placement_pos = placement_pos.up();
           }
         }
-      } else if(!world.getBlockState(placement_pos).getMaterial().isReplaceable()) {
+      } else if(
+        (!world.getBlockState(placement_pos).getMaterial().isReplaceable()) ||
+          (!world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(placement_pos), Entity::canBeCollidedWith).isEmpty())
+      ) {
         block = Blocks.AIR;
         no_space = true;
       }
@@ -559,12 +563,12 @@ public class EdPlacer
       if(world.isRemote) return;
       if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
+      final BlockState state = world.getBlockState(pos);
+      if(!(state.getBlock() instanceof PlacerBlock)) { block_power_signal_= false; return; }
       // Cycle init
       boolean dirty = block_power_updated_;
       boolean rssignal = ((logic_ & LOGIC_INVERTED)!=0)==(!block_power_signal_);
       boolean trigger = (rssignal && ((block_power_updated_) || ((logic_ & LOGIC_CONTINUOUS)!=0)));
-      final BlockState state = world.getBlockState(pos);
-      if(state == null) { block_power_signal_= false; return; }
       final Direction placer_facing = state.get(PlacerBlock.FACING);
       // Trigger edge detection for next cycle
       {
