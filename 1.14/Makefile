@@ -18,13 +18,14 @@ GRADLE=./gradlew --no-daemon
 GRADLE_STOP=./gradlew --stop
 DJS=djs
 endif
+TASK=$(DJS) ../meta/lib/tasks.js
 
 wildcardr=$(foreach d,$(wildcard $1*),$(call wildcardr,$d/,$2) $(filter $(subst *,%,$2),$d))
 
 #
 # Targets
 #
-.PHONY: default mod data init clean clean-all mrproper all run install sanatize dist-check dist start-server assets
+.PHONY: default mod data init clean clean-all mrproper all run install sanitize dist-check dist start-server assets
 
 default: mod
 
@@ -34,9 +35,13 @@ mod:
 	@echo "[1.14] Building mod using gradle ..."
 	@$(GRADLE) build $(GRADLE_OPTS)
 
+assets:
+	@echo "[1.14] Running asset generators ..."
+	@$(TASK) assets
+
 data:
 	@echo "[1.14] Running data generators ..."
-	@djs tasks.js datagen
+	@$(TASK) datagen
 
 clean:
 	@echo "[1.14] Cleaning ..."
@@ -64,28 +69,28 @@ init:
 	@echo "[1.14] Initialising eclipse workspace using gradle ..."
 	@$(GRADLE) eclipse
 
-sanatize:
-	@echo "[1.14] Running sanatising tasks ..."
-	@djs tasks.js sanatize
-	@djs tasks.js sync-languages
-	@djs tasks.js version-check
-	@djs tasks.js update-json
+sanitize:
+	@echo "[1.14] Running sanitising tasks ..."
+	@$(TASK) sanitize
+	@$(TASK) sync-languages
+	@$(TASK) version-check
+	@$(TASK) update-json
 	@git status -s .
+
+install: $(MOD_JAR) |
+	@$(TASK) install
+
+start-server: install
+	@$(TASK) start-server
 
 dist-check:
 	@echo "[1.14] Running dist checks ..."
-	@djs tasks.js dist-check
+	@$(TASK) dist-check
 
 dist-files: clean-all init data mod
 	@echo "[1.14] Distribution files ..."
 	@mkdir -p dist
 	@cp build/libs/$(MOD_JAR_PREFIX)* dist/
-	@djs tasks.js dist
+	@$(TASK) dist
 
-dist: sanatize dist-check dist-files
-
-assets:
-	@echo "[1.14] Running asset generators ..."
-	@djs tasks.js create-slab-assets
-	@djs tasks.js create-half-slab-assets
-	@djs tasks.js assets
+dist: sanitize dist-check dist-files

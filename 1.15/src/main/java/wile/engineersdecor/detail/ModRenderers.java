@@ -145,7 +145,7 @@ public class ModRenderers
       try {
         final ItemStack stack = te.getItemFrameStack();
         if(stack.isEmpty()) return;
-        final int di = MathHelper.clamp(te.getWorld().getBlockState(te.getPos()).get(EdLabeledCrate.DecorLabeledCrateBlock.HORIZONTAL_FACING).getHorizontalIndex(), 0, 3);
+        final int di = MathHelper.clamp(te.getWorld().getBlockState(te.getPos()).get(EdLabeledCrate.LabeledCrateBlock.HORIZONTAL_FACING).getHorizontalIndex(), 0, 3);
         double ox = tr[di][0], oy = tr[di][1], oz = tr[di][2];
         float ry = (float)tr[di][3];
         mxs.push();

@@ -207,10 +207,10 @@ public class BlockDecorPassiveFluidAccumulator extends BlockDecorDirected
     {
       if((world.isRemote) || (--tick_timer_ > 0)) return;
       tick_timer_ = tick_idle_interval;
+      final IBlockState state = world.getBlockState(pos);
+      if(!(state.getBlock() instanceof BlockDecorPassiveFluidAccumulator)) return;
       if(!initialized_) {
         initialized_ = true;
-        IBlockState state = world.getBlockState(pos);
-        if((state==null) || (!(state.getBlock() instanceof BlockDecorPassiveFluidAccumulator))) return;
         block_facing_ = state.getValue(FACING);
       }
       int n_requested = last_drain_request_amount_;

@@ -302,7 +302,7 @@ public class StandardBlocks
         // default: placement on the face the player clicking
       }
       if((config & CFG_OPPOSITE_PLACEMENT)!=0) facing = facing.getOpposite();
-      if(((config & CFG_FLIP_PLACEMENT_SHIFTCLICK) != 0) && (context.getPlayer().isShiftKeyDown())) facing = facing.getOpposite();
+      if(((config & CFG_FLIP_PLACEMENT_SHIFTCLICK) != 0) && (context.getPlayer().isSneaking())) facing = facing.getOpposite();
       return super.getStateForPlacement(context).with(FACING, facing);
     }
   }
@@ -363,7 +363,7 @@ public class StandardBlocks
         facing = ((facing==Direction.UP)||(facing==Direction.DOWN)) ? (context.getPlacementHorizontalFacing()) : facing;
       }
       if((config & CFG_OPPOSITE_PLACEMENT)!=0) facing = facing.getOpposite();
-      if(((config & CFG_FLIP_PLACEMENT_SHIFTCLICK) != 0) && (context.getPlayer().isShiftKeyDown())) facing = facing.getOpposite();
+      if(((config & CFG_FLIP_PLACEMENT_SHIFTCLICK) != 0) && (context.getPlayer().isSneaking())) facing = facing.getOpposite();
       return super.getStateForPlacement(context).with(HORIZONTAL_FACING, facing);
     }
 

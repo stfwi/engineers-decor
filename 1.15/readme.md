@@ -11,7 +11,34 @@ Mod sources for Minecraft version 1.15.1.
 
 ## Version history
 
-    ~ v1.1.0-b1   [M]
+                  -------------------------------------------------------------------
+    - v1.1.0      [R] Release build v1.1.0. Changes:
+                    * GUI button/slider tooltips added (1.5s delay).
+                    * IE Sheet Metal Slab Slices added.
+                    * Config options extended/updated.
+                    * Block Placer improvements.
+                    * Block Breaker drop trajectory improved.
+                    * Dense Grit Sand textures enhanced.
+                    * Pipe Valve redstone connector display fixes.
+                    * Compatibility bug fixes.
+                  -------------------------------------------------------------------
+                  [F] Block Placer also defers placements if falling item stacks are in front of it (thx Cid).
+
+    - v1.1.0-b3   [!] Forge update, requires Forge 1.15.2-31.2.20.
+                  [F] Block Placer defers placements if collidable entities are in the way (issue #98, thx DrakoAlcarus).
+                  [M] Block Breaker item drop trajectories have lower speed (fall slightly straighter down).
+                  [M] Pipe Valves redstone connector also shown if the adjacent block can connect redstone in general.
+                  [F] Added Block verification during TE ticking in case devices are moved (issue #101, thx D0CTOR-ZED).
+
+    - v1.1.0-b2   [A] Added tooltips for buttons/settings in device GUIs (1.5s display delay).
+                  [U] Updated Forge/Mappings.
+
+    - v1.1.0-b1   [F] Fixed Electrical Furnace speed sanitizing bug (issue #97, thx therobotmenace).
+                  [A] IE Sheet Metal Slab Slices added (only available if IE is installed).
+                  [M] Config options extended/updated.
+                  [M] GUI models updated to circumvent too dark representations.
+                  [M] Dense Grit Sand textures altered to get slightly more visible structure
+                      from distance.
 
     - v1.0.20-b7  [A] Dense Grit Sand added.
                   [!] Variant Slab compatibility fix. *This may alter placed slabs of this mod,

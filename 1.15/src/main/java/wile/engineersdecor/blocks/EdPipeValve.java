@@ -81,14 +81,13 @@ public class EdPipeValve
     {
       if((valve_config & (CFG_REDSTONE_CONTROLLED_VALVE))==0) return state;
       Direction.Axis bfa = state.get(FACING).getAxis();
-      int bfi = state.get(FACING).getIndex();
       for(Direction f:Direction.values()) {
         boolean cn = (f.getAxis() != bfa);
         if(cn) {
           BlockPos nbp = pos.offset(f);
           if((fromPos != null) && (!nbp.equals(fromPos))) continue; // do not change connectors except form the frompos.
           BlockState nbs = world.getBlockState(nbp);
-          if(!nbs.canProvidePower()) cn = false; // @todo check if there is a direction selective canProvidePower().
+          if((!nbs.canProvidePower()) && (!nbs.canConnectRedstone(world, nbp, f.getOpposite()))) cn = false;
         }
         switch(f) {
           case NORTH: state = state.with(RS_CN_N, cn); break;
@@ -236,7 +235,7 @@ public class EdPipeValve
     {
       private PipeValveTileEntity te;
       public MainFlowHandler(PipeValveTileEntity te)  { this.te = te; }
-      @Override public int getTanks() { return 0; }
+      @Override public int getTanks() { return 1; }
       @Override public FluidStack getFluidInTank(int tank) { return FluidStack.EMPTY; }
       @Override public int getTankCapacity(int tank) { return fluid_maxflow_mb; }
       @Override public boolean isFluidValid(int tank, @Nonnull FluidStack stack) { return true; }
@@ -266,7 +265,7 @@ public class EdPipeValve
 
     private static class BackFlowHandler implements IFluidHandler
     {
-      @Override public int getTanks() { return 0; }
+      @Override public int getTanks() { return 1; }
       @Override public FluidStack getFluidInTank(int tank) { return FluidStack.EMPTY; }
       @Override public int getTankCapacity(int tank) { return 0; }
       @Override public boolean isFluidValid(int tank, @Nonnull FluidStack stack) { return false; }

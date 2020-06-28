@@ -39,7 +39,7 @@ public class EdChair
     sitting_enabled = (!without_sitting);
     sitting_probability = (without_sitting||without_mob_sitting) ? 0.0 : MathHelper.clamp(sitting_probability_percent/100, 0, 0.9);
     standup_probability = (without_sitting||without_mob_sitting) ? 1.0 : MathHelper.clamp(standup_probability_percent/100, 1e-6, 1e-2);
-    ModEngineersDecor.logger().info("Config chairs: " + sitting_enabled + ", sit: " + sitting_probability, ", stand up: " + standup_probability);
+    ModEngineersDecor.logger().info("Config chairs sit:" + sitting_enabled + ", mob-sit: " + (sitting_probability*100) + "%, stand up: " + (standup_probability)+"%");
   }
 
   //--------------------------------------------------------------------------------------------------------------------

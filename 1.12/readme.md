@@ -10,7 +10,21 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
-    ~ v1.1.0-b1   [M]
+                  -------------------------------------------------------------------
+    - v1.1.0      [R] Maintenance Release build v1.1.0. Changes:
+                    * Compatibility fixes.
+                    * E-Furnace speed selection bug fixed.
+                    * Block Placer improvements.
+                  -------------------------------------------------------------------
+
+    ~ v1.1.0-b3   [/] Version skipped for 1.12.2.
+
+    - v1.1.0-b2   [F] Block Placer defers placements if collidable entities are in the way (issue #98, thx DrakoAlcarus).
+                  [F] Added Block verification during TE ticking in case devices are moved (issue #101, thx D0CTOR-ZED).
+
+    - v1.1.0-b1   [F] Fixed Electrical Furnace speed sanitizing bug (issue #97, thx therobotmenace).
+                  [M] Changed Labeled Crate Nesting to circumvent server crashing
+                      in combination with the Sponge mod.
 
                   -------------------------------------------------------------------
     - v1.0.20     [R] Release based on v1.0.20-b6. Release-to-release changes:

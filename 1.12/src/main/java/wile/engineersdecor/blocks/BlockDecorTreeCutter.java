@@ -215,8 +215,10 @@ public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
     public void update()
     {
       if(--tick_timer_ > 0) return;
+      final IBlockState device_state = world.getBlockState(pos);
+      if(!(device_state.getBlock() instanceof BlockDecorTreeCutter)) { tick_timer_ = TICK_INTERVAL; return; }
       if(world.isRemote) {
-        if(!world.getBlockState(pos).getValue(ACTIVE)) {
+        if(!device_state.getValue(ACTIVE)) {
           tick_timer_ = TICK_INTERVAL;
         } else {
           tick_timer_ = 1;
@@ -224,7 +226,6 @@ public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
         }
       } else {
         tick_timer_ = TICK_INTERVAL;
-        final IBlockState device_state = world.getBlockState(pos);
         final BlockPos tree_pos = pos.offset(device_state.getValue(FACING));
         final IBlockState tree_state = world.getBlockState(tree_pos);
         if(!TreeCutting.canChop(tree_state) || (world.isBlockPowered(pos))) {

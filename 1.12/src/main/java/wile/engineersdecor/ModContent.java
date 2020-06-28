@@ -212,7 +212,7 @@ public class ModContent
     ModAuxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   );
 
-  public static final BlockDecorLabeledCrate.DecorLabeledCrateBlock LABELED_CRATE = new BlockDecorLabeledCrate.DecorLabeledCrateBlock(
+  public static final BlockDecorLabeledCrate LABELED_CRATE = new BlockDecorLabeledCrate(
     "labeled_crate",
     BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_LOOK_PLACEMENT|BlockDecor.CFG_OPPOSITE_PLACEMENT,
     Material.WOOD, 0.5f, 128f, SoundType.METAL,

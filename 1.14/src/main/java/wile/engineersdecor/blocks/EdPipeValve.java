@@ -77,14 +77,13 @@ public class EdPipeValve
     {
       if((valve_config & (CFG_REDSTONE_CONTROLLED_VALVE))==0) return state;
       Direction.Axis bfa = state.get(FACING).getAxis();
-      int bfi = state.get(FACING).getIndex();
       for(Direction f:Direction.values()) {
         boolean cn = (f.getAxis() != bfa);
         if(cn) {
           BlockPos nbp = pos.offset(f);
           if((fromPos != null) && (!nbp.equals(fromPos))) continue; // do not change connectors except form the frompos.
           BlockState nbs = world.getBlockState(nbp);
-          if(!nbs.canProvidePower()) cn = false; // @todo check if there is a direction selective canProvidePower().
+          if((!nbs.canProvidePower()) && (!nbs.canConnectRedstone(world, nbp, f.getOpposite()))) cn = false;
         }
         switch(f) {
           case NORTH: state = state.with(RS_CN_N, cn); break;

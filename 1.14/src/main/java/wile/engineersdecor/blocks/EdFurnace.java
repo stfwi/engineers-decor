@@ -546,6 +546,8 @@ public class EdFurnace
     {
       if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
+      final BlockState state = world.getBlockState(pos);
+      if(!(state.getBlock() instanceof FurnaceBlock)) return;
       final boolean was_burning = burning();
       if(was_burning) burntime_left_ -= TICK_INTERVAL;
       if(burntime_left_ < 0) burntime_left_ = 0;
@@ -602,10 +604,7 @@ public class EdFurnace
       }
       if(was_burning != burning()) {
         dirty = true;
-        final BlockState state = world.getBlockState(pos);
-        if(state.getBlock() instanceof FurnaceBlock) {
-          world.setBlockState(pos, state.with(FurnaceBlock.LIT, burning()));
-        }
+        world.setBlockState(pos, state.with(FurnaceBlock.LIT, burning()));
       }
       if(dirty) {
         markDirty();

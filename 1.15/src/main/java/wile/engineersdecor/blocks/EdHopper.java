@@ -50,6 +50,9 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import com.mojang.blaze3d.systems.RenderSystem;
+import wile.engineersdecor.libmc.detail.TooltipDisplay;
+import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
+
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -620,7 +623,7 @@ public class EdHopper
       final boolean pulse_mode = ((logic_ & LOGIC_CONTINUOUS)==0);
       boolean trigger = (rssignal && ((block_power_updated_) || (!pulse_mode)));
       final BlockState state = world.getBlockState(pos);
-      if(state == null) { block_power_signal_= false; return; }
+      if(!(state.getBlock() instanceof HopperBlock)) { block_power_signal_= false; return; }
       final Direction hopper_facing = state.get(HopperBlock.FACING);
       // Trigger edge detection for next cycle
       {
@@ -833,25 +836,42 @@ public class EdHopper
   public static class HopperGui extends ContainerScreen<HopperContainer>
   {
     protected final PlayerEntity player_;
+    protected final TooltipDisplay tooltip_ = new TooltipDisplay();
 
     public HopperGui(HopperContainer container, PlayerInventory player_inventory, ITextComponent title)
     { super(container, player_inventory, title); this.player_ = player_inventory.player; }
 
     @Override
     public void init()
-    { super.init(); }
+    {
+      super.init();
+      {
+        final String prefix = ModContent.FACTORY_HOPPER.getTranslationKey() + ".tooltips.";
+        final int x0 = getGuiLeft(), y0 = getGuiTop();
+        tooltip_.init(
+          new TipRange(x0+148, y0+22,  3,  3, new TranslationTextComponent(prefix + "delayindicator")),
+          new TipRange(x0+130, y0+ 9, 40, 10, new TranslationTextComponent(prefix + "range")),
+          new TipRange(x0+130, y0+22, 40, 10, new TranslationTextComponent(prefix + "period")),
+          new TipRange(x0+130, y0+35, 40, 10, new TranslationTextComponent(prefix + "count")),
+          new TipRange(x0+133, y0+49,  9,  9, new TranslationTextComponent(prefix + "rssignal")),
+          new TipRange(x0+145, y0+49,  9,  9, new TranslationTextComponent(prefix + "inversion")),
+          new TipRange(x0+159, y0+49,  9,  9, new TranslationTextComponent(prefix + "triggermode"))
+        );
+      }
+    }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks)
     {
       renderBackground();
       super.render(mouseX, mouseY, partialTicks);
-      renderHoveredToolTip(mouseX, mouseY);
+      if(!tooltip_.render(this, mouseX, mouseY)) renderHoveredToolTip(mouseX, mouseY);
     }
 
     @Override
     protected void handleMouseClick(Slot slot, int slotId, int button, ClickType type)
     {
+      tooltip_.resetTimer();
       if((type == ClickType.QUICK_MOVE) && (slot!=null) && slot.getHasStack() && Auxiliaries.isShiftDown() && Auxiliaries.isCtrlDown()) {
         CompoundNBT nbt = new CompoundNBT();
         nbt.putInt("slot", slotId);
@@ -864,6 +884,7 @@ public class EdHopper
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
+      tooltip_.resetTimer();
       HopperContainer container = (HopperContainer)getContainer();
       int mx = (int)(mouseX - getGuiLeft() + .5), my = (int)(mouseY - getGuiTop() + .5);
       if((!isPointInRegion(126, 1, 49, 60, mouseX, mouseY))) {

@@ -8,6 +8,7 @@
  */
 package wile.engineersdecor.blocks;
 
+import wile.engineersdecor.ModEngineersDecor;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -40,13 +41,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import wile.engineersdecor.ModEngineersDecor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 
-public class BlockDecorLabeledCrate
+public class BlockDecorLabeledCrate extends BlockDecorDirectedHorizontal
 {
   public static void on_config(int stack_limit)
   {
@@ -56,94 +56,129 @@ public class BlockDecorLabeledCrate
   // Block
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class DecorLabeledCrateBlock extends BlockDecorDirectedHorizontal
+  public BlockDecorLabeledCrate(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound, @Nonnull AxisAlignedBB unrotatedAABB)
+  { super(registryName, config, material, hardness, resistance, sound, unrotatedAABB); }
+
+  @Override
+  public boolean hasTileEntity(IBlockState state)
+  { return true; }
+
+  @Override
+  @Nullable
+  public TileEntity createTileEntity(World world, IBlockState state)
+  { return new LabeledCrateTileEntity(); }
+
+  @Override
+  public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
   {
-    public DecorLabeledCrateBlock(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound, @Nonnull AxisAlignedBB unrotatedAABB)
-    { super(registryName, config, material, hardness, resistance, sound, unrotatedAABB); }
+    if(world.isRemote) return true;
+    player.openGui(ModEngineersDecor.instance, ModEngineersDecor.GuiHandler.GUIID_LABELED_CRATE, world, pos.getX(), pos.getY(), pos.getZ());
+    return true;
+  }
 
-    @Override
-    public boolean hasTileEntity(IBlockState state)
-    { return true; }
+  @Override
+  public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
+  {
+    if(world.isRemote) return;
+    if((!stack.hasTagCompound()) || (!stack.getTagCompound().hasKey("inventory"))) return;
+    NBTTagCompound inventory_nbt = stack.getTagCompound().getCompoundTag("inventory");
+    if(inventory_nbt.isEmpty()) return;
+    final TileEntity te = world.getTileEntity(pos);
+    if(!(te instanceof LabeledCrateTileEntity)) return;
+    ((LabeledCrateTileEntity)te).readnbt(inventory_nbt);
+    ((LabeledCrateTileEntity)te).markDirty();
+  }
 
-    @Override
-    @Nullable
-    public TileEntity createTileEntity(World world, IBlockState state)
-    { return new LabeledCrateTileEntity(); }
+  private ItemStack itemize_with_inventory(World world, BlockPos pos)
+  {
+    TileEntity te = world.getTileEntity(pos);
+    if(!(te instanceof LabeledCrateTileEntity)) return ItemStack.EMPTY;
+    ItemStack stack = new ItemStack(this, 1);
+    NBTTagCompound inventory_nbt = new NBTTagCompound();
+    ItemStackHelper.saveAllItems(inventory_nbt, ((LabeledCrateTileEntity)te).stacks_, false);
+    if(!inventory_nbt.isEmpty()) {
+      NBTTagCompound nbt = new NBTTagCompound();
+      nbt.setTag("inventory", inventory_nbt);
+      stack.setTagCompound(nbt);
+    }
+    return stack;
+  }
 
-    @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+  @Override
+  public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
+  {
+    if(world.isRemote) return true;
+    final ItemStack stack = itemize_with_inventory(world, pos);
+    if(stack != ItemStack.EMPTY) {
+      world.spawnEntity(new EntityItem(world, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, stack));
+      world.setBlockToAir(pos);
+      world.removeTileEntity(pos);
+      return false;
+    } else {
+      return super.removedByPlayer(state, world, pos, player, willHarvest);
+    }
+  }
+
+  @Override
+  public void onBlockExploded(World world, BlockPos pos, Explosion explosion)
+  {
+    if(world.isRemote) return;
+    TileEntity te = world.getTileEntity(pos);
+    if(!(te instanceof LabeledCrateTileEntity)) return;
+    for(ItemStack stack: ((LabeledCrateTileEntity)te).stacks_) {
+      if(!stack.isEmpty()) world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), stack));
+    }
+    ((LabeledCrateTileEntity)te).reset();
+    super.onBlockExploded(world, pos, explosion);
+  }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  public boolean hasComparatorInputOverride(IBlockState state)
+  { return true; }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  public int getComparatorInputOverride(IBlockState blockState, World world, BlockPos pos)
+  { return Container.calcRedstone(world.getTileEntity(pos)); }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // GUI
+  //--------------------------------------------------------------------------------------------------------------------
+
+  @SideOnly(Side.CLIENT)
+  private static class BGui extends GuiContainer
+  {
+    private final LabeledCrateTileEntity te;
+
+    public BGui(InventoryPlayer playerInventory, World world, BlockPos pos, LabeledCrateTileEntity te)
     {
-      if(world.isRemote) return true;
-      player.openGui(ModEngineersDecor.instance, ModEngineersDecor.GuiHandler.GUIID_LABELED_CRATE, world, pos.getX(), pos.getY(), pos.getZ());
-      return true;
+      super(new BContainer(playerInventory, world, pos, te));
+      this.te = te;
+      xSize = 213;
+      ySize = 206;
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
-    {
-      if(world.isRemote) return;
-      if((!stack.hasTagCompound()) || (!stack.getTagCompound().hasKey("inventory"))) return;
-      NBTTagCompound inventory_nbt = stack.getTagCompound().getCompoundTag("inventory");
-      if(inventory_nbt.isEmpty()) return;
-      final TileEntity te = world.getTileEntity(pos);
-      if(!(te instanceof LabeledCrateTileEntity)) return;
-      ((LabeledCrateTileEntity)te).readnbt(inventory_nbt);
-      ((LabeledCrateTileEntity)te).markDirty();
-    }
+    public void initGui()
+    { super.initGui(); }
 
-    private ItemStack itemize_with_inventory(World world, BlockPos pos)
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-      TileEntity te = world.getTileEntity(pos);
-      if(!(te instanceof LabeledCrateTileEntity)) return ItemStack.EMPTY;
-      ItemStack stack = new ItemStack(this, 1);
-      NBTTagCompound inventory_nbt = new NBTTagCompound();
-      ItemStackHelper.saveAllItems(inventory_nbt, ((LabeledCrateTileEntity)te).stacks_, false);
-      if(!inventory_nbt.isEmpty()) {
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setTag("inventory", inventory_nbt);
-        stack.setTagCompound(nbt);
-      }
-      return stack;
+      drawDefaultBackground();
+      super.drawScreen(mouseX, mouseY, partialTicks);
+      renderHoveredToolTip(mouseX, mouseY);
     }
 
     @Override
-    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
+    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
     {
-      if(world.isRemote) return true;
-      final ItemStack stack = itemize_with_inventory(world, pos);
-      if(stack != ItemStack.EMPTY) {
-        world.spawnEntity(new EntityItem(world, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, stack));
-        world.setBlockToAir(pos);
-        world.removeTileEntity(pos);
-        return false;
-      } else {
-        return super.removedByPlayer(state, world, pos, player, willHarvest);
-      }
+      GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+      mc.getTextureManager().bindTexture(new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/labeled_crate_gui.png"));
+      final int x0=guiLeft, y0=guiTop, w=xSize, h=ySize;
+      drawTexturedModalRect(x0, y0, 0, 0, w, h);
     }
-
-    @Override
-    public void onBlockExploded(World world, BlockPos pos, Explosion explosion)
-    {
-      if(world.isRemote) return;
-      TileEntity te = world.getTileEntity(pos);
-      if(!(te instanceof LabeledCrateTileEntity)) return;
-      for(ItemStack stack: ((LabeledCrateTileEntity)te).stacks_) {
-        if(!stack.isEmpty()) world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), stack));
-      }
-      ((LabeledCrateTileEntity)te).reset();
-      super.onBlockExploded(world, pos, explosion);
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public boolean hasComparatorInputOverride(IBlockState state)
-    { return true; }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public int getComparatorInputOverride(IBlockState blockState, World world, BlockPos pos)
-    { return Container.calcRedstone(world.getTileEntity(pos)); }
-
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -184,7 +219,7 @@ public class BlockDecorLabeledCrate
 
     @Override
     public boolean shouldRefresh(World world, BlockPos pos, IBlockState os, IBlockState ns)
-    { return (os.getBlock()!=ns.getBlock())||(!(ns.getBlock() instanceof DecorLabeledCrateBlock));}
+    { return (os.getBlock()!=ns.getBlock())||(!(ns.getBlock() instanceof BlockDecorLabeledCrate));}
 
     @Override
     public void readFromNBT(NBTTagCompound compound)
@@ -446,45 +481,6 @@ public class BlockDecorLabeledCrate
   }
 
   //--------------------------------------------------------------------------------------------------------------------
-  // GUI
-  //--------------------------------------------------------------------------------------------------------------------
-
-  @SideOnly(Side.CLIENT)
-  private static class BGui extends GuiContainer
-  {
-    private final LabeledCrateTileEntity te;
-
-    public BGui(InventoryPlayer playerInventory, World world, BlockPos pos, LabeledCrateTileEntity te)
-    {
-      super(new BContainer(playerInventory, world, pos, te));
-      this.te = te;
-      xSize = 213;
-      ySize = 206;
-    }
-
-    @Override
-    public void initGui()
-    { super.initGui(); }
-
-    @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
-    {
-      drawDefaultBackground();
-      super.drawScreen(mouseX, mouseY, partialTicks);
-      renderHoveredToolTip(mouseX, mouseY);
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
-    {
-      GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-      mc.getTextureManager().bindTexture(new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/labeled_crate_gui.png"));
-      final int x0=guiLeft, y0=guiTop, w=xSize, h=ySize;
-      drawTexturedModalRect(x0, y0, 0, 0, w, h);
-    }
-  }
-
-  //--------------------------------------------------------------------------------------------------------------------
   // Container
   //--------------------------------------------------------------------------------------------------------------------
 
@@ -542,7 +538,7 @@ public class BlockDecorLabeledCrate
 
     @Override
     public boolean canInteractWith(EntityPlayer player)
-    { return (world.getBlockState(pos).getBlock() instanceof DecorLabeledCrateBlock) && (player.getDistanceSq(pos) <= 64); }
+    { return (world.getBlockState(pos).getBlock() instanceof BlockDecorLabeledCrate) && (player.getDistanceSq(pos) <= 64); }
 
     @Override
     public boolean canMergeSlot(ItemStack stack, Slot slot)

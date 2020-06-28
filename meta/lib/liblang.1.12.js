@@ -197,7 +197,7 @@
     for(var name in output_data) output_data[name] = output_data[name].trim() + "\n";
 
     for(var name in output_data) {
-      fs.writefile("./src/main/resources/assets/engineersdecor/lang/" + name + ".lang", output_data[name]);
+      fs.writefile("./src/main/resources/assets/"+ constants.mod_registry_name() +"/lang/" + name + ".lang", output_data[name]);
     }
   };
 

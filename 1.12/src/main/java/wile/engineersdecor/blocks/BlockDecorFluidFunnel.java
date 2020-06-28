@@ -356,10 +356,12 @@ public class BlockDecorFluidFunnel extends BlockDecor
       if((world.isRemote) || (--tick_timer_ > 0)) return;
       tick_timer_ = TICK_INTERVAL;
       collection_timer_ += TICK_INTERVAL;
+      final IBlockState funnel_state = world.getBlockState(pos);
+      if(!(funnel_state.getBlock() instanceof BlockDecorFluidFunnel)) return;
       boolean dirty = false;
       // Collection
       if((collection_timer_ >= COLLECTION_INTERVAL) && ((tank_==null) || (tank_.amount <= (TANK_CAPACITY-1000)))) {
-      collection_timer_ = 0;
+        collection_timer_ = 0;
         if(!world.isBlockPowered(pos)) { // redstone disable feature
           if(last_pick_pos_==null) last_pick_pos_ = pos.up();
           if(try_collect(pos.up())) dirty = true;
@@ -378,7 +380,6 @@ public class BlockDecorFluidFunnel extends BlockDecor
       }
       // Block state
       int fill_level = (tank_==null) ? 0 : (MathHelper.clamp(tank_.amount/1000,0,FILL_LEVEL_MAX));
-      final IBlockState funnel_state = world.getBlockState(pos);
       if(funnel_state.getValue(FILL_LEVEL) != fill_level) world.setBlockState(pos, funnel_state.withProperty(FILL_LEVEL, fill_level), 2|16);
       if(dirty) markDirty();
     }

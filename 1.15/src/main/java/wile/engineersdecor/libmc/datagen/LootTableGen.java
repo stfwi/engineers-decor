@@ -1,5 +1,5 @@
 /*
- * @file ModLootTables.java
+ * @file LootTableGen.java
  * @author Stefan Wilhelm (wile)
  * @copyright (C) 2019 Stefan Wilhelm
  * @license MIT (see https://opensource.org/licenses/MIT)

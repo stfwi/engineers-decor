@@ -193,6 +193,8 @@ public class EdSolarPanel
     {
       if((world.isRemote) || (--tick_timer_ > 0)) return;
       tick_timer_ = TICK_INTERVAL;
+      final BlockState state = world.getBlockState(pos);
+      if(!(state.getBlock() instanceof SolarPanelBlock)) return;
       current_feedin_ = 0;
       if(output_enabled_) {
         for(int i=0; (i<transfer_directions_.length) && (accumulated_power_>0); ++i) {
@@ -211,13 +213,11 @@ public class EdSolarPanel
       if(!world.canBlockSeeSky(pos)) {
         tick_timer_ = TICK_INTERVAL * 5;
         current_production_ = 0;
-        BlockState state = world.getBlockState(pos);
         if(state.get((SolarPanelBlock.EXPOSITION))!=2) world.setBlockState(pos, state.with(SolarPanelBlock.EXPOSITION, 2));
         return;
       }
       if(--recalc_timer_ > 0) return;
       recalc_timer_ = ACCUMULATION_INTERVAL + ((int)(Math.random()+.5));
-      BlockState state = world.getBlockState(pos);
       int theta = ((((int)(world.getCelestialAngleRadians(1f) * (180.0/Math.PI)))+90) % 360);
       int e = 2;
       if(theta > 340)      e = 2;

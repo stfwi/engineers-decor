@@ -809,6 +809,8 @@ public class BlockDecorFurnace extends BlockDecorDirected
     {
       if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
+      final IBlockState state = world.getBlockState(pos);
+      if(!(state.getBlock() instanceof BlockDecorFurnace)) return;
       final boolean was_burning = isBurning();
       if(was_burning) burntime_left_ -= TICK_INTERVAL;
       if(fuel_burntime_ < 0) fuel_burntime_ = getItemBurnTime(stacks_.get(SMELTING_FUEL_SLOT_NO));
@@ -866,10 +868,7 @@ public class BlockDecorFurnace extends BlockDecorDirected
       }
       if(was_burning != isBurning()) {
         dirty = true;
-        final IBlockState state = world.getBlockState(pos);
-        if(state.getBlock() instanceof BlockDecorFurnace) {
-          world.setBlockState(pos, state.withProperty(LIT, isBurning()));
-        }
+        world.setBlockState(pos, state.withProperty(LIT, isBurning()));
       }
       if(dirty) markDirty();
     }

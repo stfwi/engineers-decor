@@ -1,15 +1,14 @@
 #!/usr/bin/djs
 "use strict";
-// Note for reviewers/clones: This file is a auxiliary script for my setup. It's not needed to build the mod.
-const constants = include("meta/lib/constants.js")();
-const libtask = include("meta/lib/libtask.js")(constants);
+const root_dir = fs.realpath(fs.dirname(sys.script)+"/../..");
+const constants = include(fs.dirname(fs.realpath(sys.script)) + "/constants.js")();
+const libtask = include(fs.dirname(fs.realpath(sys.script)) + "/libtask.js")(constants);
 const modid = constants.mod_registry_name();
 var tasks = {};
 
-tasks["update-json"] = function() {
-  const root_dir = fs.realpath(fs.dirname(sys.script));
+tasks["combined-update-json"] = function() {
   const update_json = {
-    homepage: "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
+    homepage: constants.project_download_inet_page(),
     promos: {}
   };
   var update_json_src = [];
@@ -37,11 +36,11 @@ tasks["update-json"] = function() {
 
 tasks["sync-main-repository"] = function() {
   // step-by-step-verbose operations, as the code bases and copy data are different.
-  if((!fs.chdir(fs.dirname(fs.realpath(sys.script)))) || (!fs.isdir(".git"))) throw new Error("Failed to switch to mod source directory.");
+  if((!fs.chdir(fs.dirname(fs.realpath(sys.script))+"/../..")) || (!fs.isdir(".git"))) throw new Error("Failed to switch to mod source directory.");
   if(sys.shell("git remote -v") != "") throw new Error("Dev repository has a remote set.");
   if(main_repo_local == "") throw new Error("Main repository (real) path not found.");
   const test_repo_local = fs.cwd();
-  const main_repo_local = fs.realpath("../engineersdecor-github");
+  const main_repo_local = fs.realpath("../"+ constants.mod_registry_name() + "-github");
   if(main_repo_local == fs.realpath(test_repo_local)) throw new Error("This is already the main repository");
   const cd_dev = function(subdir) {
     if((!fs.chdir(test_repo_local)) || (!fs.isdir(".git"))) throw new Error("Failed to switch to mod source directory.");
@@ -81,4 +80,4 @@ tasks["sync-main-repository"] = function() {
   print(sys.shell("git status -s"))
 };
 
-libtask.run(tasks, sys.args, true, ".");
+libtask.run(tasks, sys.args);

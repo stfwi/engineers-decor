@@ -1,6 +1,9 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.12.2": {
+    "1.1.0": "[R] Maintenance Release build v1.1.0. Changes: * Compatibility fixes. * E-Furnace speed selection bug fixed. * Block Placer improvements. ~ v1.1.0-b3   [/] Version skipped for 1.12.2.",
+    "1.1.0-b2": "[F] Block Placer defers placements if collidable entities are in the way (issue #98, thx DrakoAlcarus).\n[F] Added Block verification during TE ticking in case devices are moved (issue #101, thx D0CTOR-ZED).",
+    "1.1.0-b1": "[F] Fixed Electrical Furnace speed sanitizing bug (issue #97, thx therobotmenace).\n[M] Changed Labeled Crate Nesting to circumvent server crashing in combination with the Sponge mod.",
     "1.0.20": "[R] Release based on v1.0.20-b6. Release-to-release changes: * Manual back ported. * Steel Mesh Fence Gate back ported. * E-Furnace speed selection switch back ported. * Labeled Crate back ported. * Minor bug fixes, compatibility changes.",
     "1.0.20-b6": "[F] Implemented compat related to issue #91.",
     "1.0.20-b5": "[A] Back-ported Patchouli based Manual (you need to install Vazkii_'s Patchouli, too).\n[A] Back-ported Steel Mesh Fence Gate.\n[M] Minor back-porting compatibility refractoring.",
@@ -88,7 +91,7 @@
     "1.0.0-b1": "[A] Initial structure.\n[A] Added clinker bricks and clinker brick stairs.\n[A] Added slag bricks and slag brick stairs.\n[A] Added metal rung ladder.\n[A] Added staggered metal steps ladder.\n[A] Added treated wood ladder.\n[A] Added treated wood pole.\n[A] Added treated wood table."
   },
   "promos": {
-    "1.12.2-recommended": "1.0.20",
-    "1.12.2-latest": "1.0.20"
+    "1.12.2-recommended": "1.1.0",
+    "1.12.2-latest": "1.1.0"
   }
 }

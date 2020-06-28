@@ -12,8 +12,9 @@ import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.Overlay;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
@@ -25,6 +26,7 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
@@ -269,6 +271,19 @@ public class EdBreaker
       return true;
     }
 
+    private static void spawnBlockAsEntity(World world, BlockPos pos, ItemStack stack) {
+      if(world.isRemote || stack.isEmpty() || (!world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS)) || world.restoringBlockSnapshots) return;
+      ItemEntity e = new ItemEntity(world,
+        ((world.rand.nextFloat()*0.1)+0.5) + pos.getX(),
+        ((world.rand.nextFloat()*0.1)+0.5) + pos.getY(),
+        ((world.rand.nextFloat()*0.1)+0.5) + pos.getZ(),
+        stack
+      );
+      e.setDefaultPickupDelay();
+      e.setMotion((world.rand.nextFloat()*0.1-0.05), (world.rand.nextFloat()*0.1-0.03), (world.rand.nextFloat()*0.1-0.05));
+      world.addEntity(e);
+    }
+
     private boolean breakBlock(BlockState state, BlockPos pos, World world)
     {
       if(world.isRemote  || (!(world instanceof ServerWorld)) || world.restoringBlockSnapshots) return false; // retry next cycle
@@ -276,7 +291,7 @@ public class EdBreaker
       final Block block = state.getBlock();
       drops = Block.getDrops(state, (ServerWorld)world, pos, world.getTileEntity(pos));
       world.removeBlock(pos, false);
-      for(ItemStack drop:drops) Block.spawnAsEntity(world, pos, drop);
+      for(ItemStack drop:drops) spawnBlockAsEntity(world, pos, drop);
       SoundType stype = state.getBlock().getSoundType(state, world, pos, null);
       if(stype != null) world.playSound(null, pos, stype.getPlaceSound(), SoundCategory.BLOCKS, stype.getVolume()*0.6f, stype.getPitch());
       return true;
@@ -287,15 +302,16 @@ public class EdBreaker
     public void tick()
     {
       if(--tick_timer_ > 0) return;
+      final BlockState device_state = world.getBlockState(pos);
+      if(!(device_state.getBlock() instanceof BreakerBlock)) return;
       if(world.isRemote) {
-        BlockState state = world.getBlockState(pos);
-        if(!state.get(BreakerBlock.ACTIVE)) {
+        if(!device_state.get(BreakerBlock.ACTIVE)) {
           tick_timer_ = TICK_INTERVAL;
         } else {
           tick_timer_ = 1;
           // not sure if is so cool to do this each tick ... may be simplified/removed again.
           SoundEvent sound = SoundEvents.BLOCK_WOOD_HIT;
-          BlockState target_state = world.getBlockState(pos.offset(state.get(BreakerBlock.HORIZONTAL_FACING)));
+          BlockState target_state = world.getBlockState(pos.offset(device_state.get(BreakerBlock.HORIZONTAL_FACING)));
           SoundType stype = target_state.getBlock().getSoundType(target_state);
           if((stype == SoundType.CLOTH) || (stype == SoundType.PLANT) || (stype == SoundType.SNOW)) {
             sound = SoundEvents.BLOCK_WOOL_HIT;
@@ -306,7 +322,6 @@ public class EdBreaker
         }
       } else {
         tick_timer_ = TICK_INTERVAL;
-        final BlockState device_state = world.getBlockState(pos);
         final BlockPos target_pos = pos.offset(device_state.get(BreakerBlock.HORIZONTAL_FACING));
         final BlockState target_state = world.getBlockState(target_pos);
         if((world.isBlockPowered(pos)) || (!isBreakable(target_state, target_pos, world))) {

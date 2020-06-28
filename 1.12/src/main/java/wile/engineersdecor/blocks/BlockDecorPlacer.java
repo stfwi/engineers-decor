@@ -720,7 +720,7 @@ public class BlockDecorPlacer extends BlockDecorDirected
         }
         return spit_out(facing);
       }
-      if(world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(placement_pos)).size() > 0) return false;
+      if(world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(placement_pos), Entity::canBeCollidedWith).size() > 0) return false;
       if(!world.getBlockState(placement_pos).getBlock().isReplaceable(world, placement_pos)) return false;
       try {
         final FakePlayer placer = net.minecraftforge.common.util.FakePlayerFactory.getMinecraft((net.minecraft.world.WorldServer)world);
@@ -748,12 +748,12 @@ public class BlockDecorPlacer extends BlockDecorDirected
       if(world.isRemote) return;
       if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
+      final IBlockState state = world.getBlockState(pos);
+      if(!(state.getBlock() instanceof BlockDecorPlacer)) { block_power_signal_= false; return; }
       // Cycle init
       boolean dirty = block_power_updated_;
       boolean rssignal = ((logic_ & LOGIC_INVERTED)!=0)==(!block_power_signal_);
       boolean trigger = (rssignal && ((block_power_updated_) || ((logic_ & LOGIC_CONTINUOUS)!=0)));
-      final IBlockState state = world.getBlockState(pos);
-      if(state == null) { block_power_signal_= false; return; }
       final EnumFacing placer_facing = state.getValue(FACING);
       // Trigger edge detection for next cycle
       {

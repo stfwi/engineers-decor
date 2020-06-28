@@ -8,6 +8,7 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.util.text.TranslationTextComponent;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.detail.Inventories;
@@ -52,6 +53,8 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
+import wile.engineersdecor.libmc.detail.TooltipDisplay;
+import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -123,7 +126,7 @@ public class EdElectricalFurnace
     public static final int HEAT_INCREMENT = 20;
     public static final int MAX_ENERGY_TRANSFER = 1024;
     public static final int MAX_ENERGY_BUFFER = 32000;
-    public static final int MAX_SPEED_SETTING = 2;
+    public static final int MAX_SPEED_SETTING = 3;
     public static final int NUM_OF_SLOTS = 7;
     public static final int SMELTING_INPUT_SLOT_NO = 0;
     public static final int SMELTING_AUX_SLOT_NO = 1;
@@ -196,7 +199,7 @@ public class EdElectricalFurnace
       proc_time_needed_ = nbt.getInt("CookTimeTotal");
       energy_stored_ = nbt.getInt("Energy");
       speed_ = nbt.getInt("SpeedSetting");
-      speed_ = (speed_ < 0) ? (1) : ((speed_>3) ? 3 : speed_);
+      speed_ = (speed_ < 0) ? (1) : ((speed_>MAX_SPEED_SETTING) ? MAX_SPEED_SETTING : speed_);
     }
 
     protected void writenbt(CompoundNBT nbt)
@@ -472,6 +475,7 @@ public class EdElectricalFurnace
     {
       if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
+      if(!(world.getBlockState(pos).getBlock() instanceof ElectricalFurnaceBlock)) return;
       final boolean was_burning = burning();
       if(was_burning) burntime_left_ -= TICK_INTERVAL;
       if(burntime_left_ < 0) burntime_left_ = 0;
@@ -492,7 +496,7 @@ public class EdElectricalFurnace
       } else if(energy_stored_ >= (MAX_ENERGY_BUFFER/2)) {
         enabled_ = true;
       }
-      if((!(stacks_.get(SMELTING_INPUT_SLOT_NO)).isEmpty()) && (enabled_) && (speed_>0) && (speed_<4)) {
+      if((!(stacks_.get(SMELTING_INPUT_SLOT_NO)).isEmpty()) && (enabled_) && (speed_>0) && (speed_<=MAX_SPEED_SETTING)) {
         IRecipe last_recipe = currentRecipe();
         updateCurrentRecipe();
         if(currentRecipe() != last_recipe) {
@@ -768,7 +772,7 @@ public class EdElectricalFurnace
     {
       if(!(inventory_ instanceof ElectricalFurnaceTileEntity)) return;
       ElectricalFurnaceTileEntity te = (ElectricalFurnaceTileEntity)inventory_;
-      if(nbt.contains("speed")) te.speed_  = MathHelper.clamp(nbt.getInt("speed"), 0, 3);
+      if(nbt.contains("speed")) te.speed_ = MathHelper.clamp(nbt.getInt("speed"), 0, ElectricalFurnaceTileEntity.MAX_SPEED_SETTING);
       te.markDirty();
     }
   }
@@ -781,20 +785,32 @@ public class EdElectricalFurnace
   public static class ElectricalFurnaceGui extends ContainerScreen<ElectricalFurnaceContainer>
   {
     protected final PlayerEntity player_;
+    protected final TooltipDisplay tooltip_ = new TooltipDisplay();
 
     public ElectricalFurnaceGui(ElectricalFurnaceContainer container, PlayerInventory player_inventory, ITextComponent title)
     { super(container, player_inventory, title); this.player_ = player_inventory.player; }
 
     @Override
     public void init()
-    { super.init(); }
+    {
+      super.init();
+      {
+        final String prefix = ModContent.SMALL_ELECTRICAL_FURNACE.getTranslationKey() + ".tooltips.";
+        final int x0 = getGuiLeft(), y0 = getGuiTop();
+        final Slot aux = container.getSlot(ElectricalFurnaceTileEntity.SMELTING_AUX_SLOT_NO);
+        tooltip_.init(
+          new TipRange(x0+135, y0+50, 25, 25, new TranslationTextComponent(prefix + "speed")),
+          new TipRange(x0+aux.xPos, y0+aux.yPos, 16, 16, new TranslationTextComponent(prefix + "auxslot"))
+        );
+      }
+    }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks)
     {
       renderBackground();
       super.render(mouseX, mouseY, partialTicks);
-      renderHoveredToolTip(mouseX, mouseY);
+      if(!tooltip_.render(this, mouseX, mouseY)) renderHoveredToolTip(mouseX, mouseY);
     }
 
     @Override
@@ -826,6 +842,7 @@ public class EdElectricalFurnace
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
+      tooltip_.resetTimer();
       ElectricalFurnaceContainer container = (ElectricalFurnaceContainer)getContainer();
       int mx = (int)(mouseX - getGuiLeft() + .5), my = (int)(mouseY - getGuiTop() + .5);
       if((!isPointInRegion(136, 48, 28, 28, mouseX, mouseY))) {

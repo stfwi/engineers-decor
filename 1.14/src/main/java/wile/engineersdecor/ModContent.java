@@ -14,6 +14,7 @@ package wile.engineersdecor;
 
 
 import wile.engineersdecor.blocks.*;
+import wile.engineersdecor.libmc.blocks.StandardBlocks.BaseBlock;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
 import net.minecraft.util.Direction;
@@ -44,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Collections;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 
 @SuppressWarnings("unused")
@@ -193,12 +195,12 @@ public class ModContent
 
   public static final EdGlassBlock PANZERGLASS_BLOCK = (EdGlassBlock)(new EdGlassBlock(
     DecorBlock.CFG_TRANSLUCENT,
-    Block.Properties.create(Material.GLASS, MaterialColor.AIR).hardnessAndResistance(5f, 2000f).sound(SoundType.METAL)
+    Block.Properties.create(Material.GLASS, MaterialColor.AIR).hardnessAndResistance(0.7f, 2000f).sound(SoundType.METAL)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "panzerglass_block"));
 
   public static final EdSlabBlock PANZERGLASS_SLAB = (EdSlabBlock)(new EdSlabBlock(
     DecorBlock.CFG_TRANSLUCENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(5f, 2000f).sound(SoundType.METAL)
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(0.7f, 2000f).sound(SoundType.METAL)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "panzerglass_slab"));
 
   // -------------------------------------------------------------------------------------------------------------------
@@ -713,12 +715,12 @@ public class ModContent
     HALFSLAB_REBARCONCRETE,
     HALFSLAB_GASCONCRETE,
     HALFSLAB_CONCRETE,
-    //HALFSLAB_TREATEDWOOD,
-    //HALFSLAB_SHEETMETALIRON,
-    //HALFSLAB_SHEETMETALSTEEL,
-    //HALFSLAB_SHEETMETALCOPPER,
-    //HALFSLAB_SHEETMETALGOLD,
-    //HALFSLAB_SHEETMETALALUMINIUM,
+    HALFSLAB_TREATEDWOOD,
+    HALFSLAB_SHEETMETALIRON,
+    HALFSLAB_SHEETMETALSTEEL,
+    HALFSLAB_SHEETMETALCOPPER,
+    HALFSLAB_SHEETMETALGOLD,
+    HALFSLAB_SHEETMETALALUMINIUM,
     CONCRETE_WALL,
     PANZERGLASS_BLOCK,
     PANZERGLASS_SLAB,
@@ -949,10 +951,25 @@ public class ModContent
   public static List<Block> getRegisteredBlocks()
   { return Collections.unmodifiableList(registeredBlocks); }
 
+  @Nonnull
+  public static List<Item> getRegisteredItems()
+  { return new ArrayList<>(); }
+
   public static final void registerBlocks(final RegistryEvent.Register<Block> event)
   {
-    if(Auxiliaries.isModLoaded("immersiveengineering")) Auxiliaries.logInfo("Immersive Engineering also installed ...");
-    registeredBlocks.addAll(allBlocks());
+    boolean ie_available = Auxiliaries.isModLoaded("immersiveengineering");
+    if(ie_available) {
+      Auxiliaries.logInfo("Immersive Engineering also installed ...");
+      registeredBlocks.addAll(allBlocks());
+    } else {
+      registeredBlocks.addAll(allBlocks().stream()
+        .filter(block->
+          ((!(block instanceof BaseBlock)) || ((((BaseBlock)block).config & DecorBlock.CFG_HARD_IE_DEPENDENT)==0))
+          || (block == HALFSLAB_CONCRETE) // special case for 1.14 to prevent mod update issues
+        )
+        .collect(Collectors.toList())
+      );
+    }
     for(Block e:registeredBlocks) event.getRegistry().register(e);
     Auxiliaries.logInfo("Registered " + Integer.toString(registeredBlocks.size()) + " blocks.");
   }

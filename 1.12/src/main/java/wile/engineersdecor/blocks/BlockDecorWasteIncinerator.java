@@ -656,6 +656,8 @@ public class BlockDecorWasteIncinerator extends BlockDecor
       if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
       if(world.isRemote) return;
+      final IBlockState state = world.getBlockState(pos);
+      if(!(state.getBlock() instanceof BlockDecorWasteIncinerator)) return;
       boolean dirty = false;
       ItemStack processing_stack = stacks_.get(BURN_SLOT_NO);
       final boolean was_processing = !processing_stack.isEmpty();
@@ -694,10 +696,7 @@ public class BlockDecorWasteIncinerator extends BlockDecor
       }
       if((was_processing != is_processing) || (new_stack_processing)) {
         if(new_stack_processing) world.playSound(null, pos, SoundEvents.BLOCK_LAVA_AMBIENT, SoundCategory.BLOCKS, 0.05f, 2.4f);
-        final IBlockState state = world.getBlockState(pos);
-        if(state.getBlock() instanceof BlockDecorWasteIncinerator) {
-          world.setBlockState(pos, state.withProperty(LIT, is_processing), 2|16);
-        }
+        world.setBlockState(pos, state.withProperty(LIT, is_processing), 2|16);
       }
       if(dirty) markDirty();
     }

@@ -18,6 +18,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.LivingEntity;
@@ -33,6 +34,7 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -48,6 +50,9 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.fml.network.NetworkHooks;
 import com.mojang.blaze3d.systems.RenderSystem;
+import wile.engineersdecor.libmc.detail.TooltipDisplay;
+import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
+
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -437,7 +442,7 @@ public class EdPlacer
       return true;
     }
 
-    private boolean try_place(Direction facing)
+    private boolean try_place(Direction facing, boolean triggered)
     {
       if(world.isRemote) return false;
       BlockPos placement_pos = pos.offset(facing);
@@ -485,7 +490,18 @@ public class EdPlacer
             placement_pos = placement_pos.up();
           }
         }
-      } else if(!world.getBlockState(placement_pos).getMaterial().isReplaceable()) {
+      } else if(
+        (!world.getBlockState(placement_pos).getMaterial().isReplaceable()) ||
+        (!world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(placement_pos), (Entity e)->{
+          if(e.canBeCollidedWith()) return true;
+          if(triggered) return false;
+          if((e instanceof ItemEntity)) {
+            if((e.getMotion().getY() > 0) || (e.getMotion().getY() < -0.5)) return true; // not falling or falling by
+            if(Math.abs(e.getMotion().getX())+Math.abs(e.getMotion().getZ()) > 0) return true; // not straight
+          }
+          return false;
+        }).isEmpty())
+      ) {
         block = Blocks.AIR;
         no_space = true;
       }
@@ -555,12 +571,13 @@ public class EdPlacer
       if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
       // Cycle init
-      boolean dirty = block_power_updated_;
-      boolean rssignal = ((logic_ & LOGIC_INVERTED)!=0)==(!block_power_signal_);
-      boolean trigger = (rssignal && ((block_power_updated_) || ((logic_ & LOGIC_CONTINUOUS)!=0)));
       final BlockState state = world.getBlockState(pos);
-      if(state == null) { block_power_signal_= false; return; }
+      if(!(state.getBlock() instanceof PlacerBlock)) { block_power_signal_= false; return; }
+      final boolean updated = block_power_updated_;
+      final boolean rssignal = ((logic_ & LOGIC_INVERTED)!=0)==(!block_power_signal_);
+      final boolean trigger = (rssignal && ((updated) || ((logic_ & LOGIC_CONTINUOUS)!=0)));
       final Direction placer_facing = state.get(PlacerBlock.FACING);
+      boolean dirty = updated;
       // Trigger edge detection for next cycle
       {
         boolean tr = world.isBlockPowered(pos);
@@ -569,7 +586,7 @@ public class EdPlacer
         if(block_power_updated_) dirty = true;
       }
       // Placing
-      if(trigger && try_place(placer_facing)) dirty = true;
+      if(trigger && try_place(placer_facing, rssignal && updated)) dirty = true;
       if(dirty) markDirty();
       if(trigger && (tick_timer_ > TICK_INTERVAL)) tick_timer_ = TICK_INTERVAL;
     }
@@ -687,25 +704,38 @@ public class EdPlacer
   public static class PlacerGui extends ContainerScreen<PlacerContainer>
   {
     protected final PlayerEntity player_;
+    protected final TooltipDisplay tooltip_ = new TooltipDisplay();
 
     public PlacerGui(PlacerContainer container, PlayerInventory player_inventory, ITextComponent title)
     { super(container, player_inventory, title); this.player_ = player_inventory.player; }
 
     @Override
     public void init()
-    { super.init(); }
+    {
+      super.init();
+      {
+        final String prefix = ModContent.FACTORY_PLACER.getTranslationKey() + ".tooltips.";
+        final int x0 = getGuiLeft(), y0 = getGuiTop();
+        tooltip_.init(
+          new TipRange(x0+133, y0+49,  9,  9, new TranslationTextComponent(prefix + "rssignal")),
+          new TipRange(x0+145, y0+49,  9,  9, new TranslationTextComponent(prefix + "inversion")),
+          new TipRange(x0+159, y0+49,  9,  9, new TranslationTextComponent(prefix + "triggermode"))
+        );
+      }
+    }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks)
     {
       renderBackground();
       super.render(mouseX, mouseY, partialTicks);
-      renderHoveredToolTip(mouseX, mouseY);
+      if(!tooltip_.render(this, mouseX, mouseY)) renderHoveredToolTip(mouseX, mouseY);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
+      tooltip_.resetTimer();
       PlacerContainer container = (PlacerContainer)getContainer();
       int mx = (int)(mouseX - getGuiLeft() + .5), my = (int)(mouseY - getGuiTop() + .5);
       if((!isPointInRegion(126, 1, 49, 60, mouseX, mouseY))) {

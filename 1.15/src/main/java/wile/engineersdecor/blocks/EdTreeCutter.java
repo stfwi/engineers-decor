@@ -212,8 +212,10 @@ public class EdTreeCutter
     public void tick()
     {
       if(--tick_timer_ > 0) return;
+      final BlockState device_state = world.getBlockState(pos);
+      if(!(device_state.getBlock() instanceof TreeCutterBlock)) { tick_timer_ = TICK_INTERVAL; return; }
       if(world.isRemote) {
-        if(!world.getBlockState(pos).get(TreeCutterBlock.ACTIVE)) {
+        if(!device_state.get(TreeCutterBlock.ACTIVE)) {
           tick_timer_ = TICK_INTERVAL;
         } else {
           tick_timer_ = 1;
@@ -221,7 +223,6 @@ public class EdTreeCutter
         }
       } else {
         tick_timer_ = TICK_INTERVAL;
-        final BlockState device_state = world.getBlockState(pos);
         final BlockPos tree_pos = pos.offset(device_state.get(TreeCutterBlock.HORIZONTAL_FACING));
         final BlockState tree_state = world.getBlockState(tree_pos);
         if(!TreeCutting.canChop(tree_state) || (world.isBlockPowered(pos))) {
