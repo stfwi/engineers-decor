@@ -10,6 +10,15 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+                  -------------------------------------------------------------------
+    - v1.1.0      [R] Maintenance Release build v1.1.0. Changes:
+                    * Compatibility fixes.
+                    * E-Furnace speed selection bug fixed.
+                    * Block Placer improvements.
+                  -------------------------------------------------------------------
+
+    ~ v1.1.0-b3   [/] Version skipped for 1.12.2.
+
     - v1.1.0-b2   [F] Block Placer defers placements if collidable entities are in the way (issue #98, thx DrakoAlcarus).
                   [F] Added Block verification during TE ticking in case devices are moved (issue #101, thx D0CTOR-ZED).
 

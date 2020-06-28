@@ -11,6 +11,19 @@ Mod sources for Minecraft version 1.15.1.
 
 ## Version history
 
+                  -------------------------------------------------------------------
+    - v1.1.0      [R] Release build v1.1.0. Changes:
+                    * GUI button/slider tooltips added (1.5s delay).
+                    * IE Sheet Metal Slab Slices added.
+                    * Config options extended/updated.
+                    * Block Placer improvements.
+                    * Block Breaker drop trajectory improved.
+                    * Dense Grit Sand textures enhanced.
+                    * Pipe Valve redstone connector display fixes.
+                    * Compatibility bug fixes.
+                  -------------------------------------------------------------------
+                  [F] Block Placer also defers placements if falling item stacks are in front of it (thx Cid).
+
     - v1.1.0-b3   [!] Forge update, requires Forge 1.15.2-31.2.20.
                   [F] Block Placer defers placements if collidable entities are in the way (issue #98, thx DrakoAlcarus).
                   [M] Block Breaker item drop trajectories have lower speed (fall slightly straighter down).

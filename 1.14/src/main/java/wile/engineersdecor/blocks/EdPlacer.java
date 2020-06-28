@@ -443,7 +443,7 @@ public class EdPlacer
       return true;
     }
 
-    private boolean try_place(Direction facing)
+    private boolean try_place(Direction facing, boolean triggered)
     {
       if(world.isRemote) return false;
       BlockPos placement_pos = pos.offset(facing);
@@ -493,7 +493,15 @@ public class EdPlacer
         }
       } else if(
         (!world.getBlockState(placement_pos).getMaterial().isReplaceable()) ||
-          (!world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(placement_pos), Entity::canBeCollidedWith).isEmpty())
+        (!world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(placement_pos), (Entity e)->{
+          if(e.canBeCollidedWith()) return true;
+          if(triggered) return false;
+          if((e instanceof ItemEntity)) {
+            if((e.getMotion().getY() > 0) || (e.getMotion().getY() < -0.5)) return true; // not falling or falling by
+            if(Math.abs(e.getMotion().getX())+Math.abs(e.getMotion().getZ()) > 0) return true; // not straight
+          }
+          return false;
+        }).isEmpty())
       ) {
         block = Blocks.AIR;
         no_space = true;
@@ -566,10 +574,11 @@ public class EdPlacer
       final BlockState state = world.getBlockState(pos);
       if(!(state.getBlock() instanceof PlacerBlock)) { block_power_signal_= false; return; }
       // Cycle init
-      boolean dirty = block_power_updated_;
-      boolean rssignal = ((logic_ & LOGIC_INVERTED)!=0)==(!block_power_signal_);
-      boolean trigger = (rssignal && ((block_power_updated_) || ((logic_ & LOGIC_CONTINUOUS)!=0)));
+      final boolean updated = block_power_updated_;
+      final boolean rssignal = ((logic_ & LOGIC_INVERTED)!=0)==(!block_power_signal_);
+      final boolean trigger = (rssignal && ((updated) || ((logic_ & LOGIC_CONTINUOUS)!=0)));
       final Direction placer_facing = state.get(PlacerBlock.FACING);
+      boolean dirty = updated;
       // Trigger edge detection for next cycle
       {
         boolean tr = world.isBlockPowered(pos);
@@ -578,7 +587,7 @@ public class EdPlacer
         if(block_power_updated_) dirty = true;
       }
       // Placing
-      if(trigger && try_place(placer_facing)) dirty = true;
+      if(trigger && try_place(placer_facing, rssignal && updated)) dirty = true;
       if(dirty) markDirty();
       if(trigger && (tick_timer_ > TICK_INTERVAL)) tick_timer_ = TICK_INTERVAL;
     }

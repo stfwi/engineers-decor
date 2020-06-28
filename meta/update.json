@@ -1,14 +1,15 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "promos": {
-    "1.12.2-recommended": "1.0.20",
-    "1.12.2-latest": "1.1.0-b2",
-    "1.14.4-recommended": "",
-    "1.14.4-latest": "1.1.0-b3",
-    "1.15.2-recommended": "",
-    "1.15.2-latest": "1.1.0-b3"
+    "1.12.2-recommended": "1.1.0",
+    "1.12.2-latest": "1.1.0",
+    "1.14.4-recommended": "1.1.0",
+    "1.14.4-latest": "1.1.0",
+    "1.15.2-recommended": "1.1.0",
+    "1.15.2-latest": "1.1.0"
   },
   "1.12.2": {
+    "1.1.0": "[R] Maintenance Release build v1.1.0. Changes: * Compatibility fixes. * E-Furnace speed selection bug fixed. * Block Placer improvements. ~ v1.1.0-b3   [/] Version skipped for 1.12.2.",
     "1.1.0-b2": "[F] Block Placer defers placements if collidable entities are in the way (issue #98, thx DrakoAlcarus).\n[F] Added Block verification during TE ticking in case devices are moved (issue #101, thx D0CTOR-ZED).",
     "1.1.0-b1": "[F] Fixed Electrical Furnace speed sanitizing bug (issue #97, thx therobotmenace).\n[M] Changed Labeled Crate Nesting to circumvent server crashing in combination with the Sponge mod.",
     "1.0.20": "[R] Release based on v1.0.20-b6. Release-to-release changes: * Manual back ported. * Steel Mesh Fence Gate back ported. * E-Furnace speed selection switch back ported. * Labeled Crate back ported. * Minor bug fixes, compatibility changes.",
@@ -98,6 +99,7 @@
     "1.0.0-b1": "[A] Initial structure.\n[A] Added clinker bricks and clinker brick stairs.\n[A] Added slag bricks and slag brick stairs.\n[A] Added metal rung ladder.\n[A] Added staggered metal steps ladder.\n[A] Added treated wood ladder.\n[A] Added treated wood pole.\n[A] Added treated wood table."
   },
   "1.14.4": {
+    "1.1.0": "[R] Release build v1.1.0. Changes: * GUI button/slider tooltips added (1.5s delay). * IE Sheet Metal Slab Slices added. * Config options extended/updated. * Block Placer improvements. * Block Breaker drop trajectory improved. * Dense Grit Sand textures enhanced. * Pipe Valve redstone connector display fixes. * Compatibility bug fixes.\n[F] Block Placer also defers placements if falling item stacks are in front of it (thx Cid).",
     "1.1.0-b3": "[F] Block Placer defers placements if collidable entities are in the way (issue #98, thx DrakoAlcarus).\n[M] Block Breaker item drop trajectories have lower speed (fall slightly straighter down).\n[M] Pipe Valves redstone connector also shown if the adjacent block can connect redstone in general.\n[F] Added Block verification during TE ticking in case devices are moved (issue #101, thx D0CTOR-ZED).",
     "1.1.0-b2": "[A] Added tooltips for buttons/settings in device GUIs (1.5s display delay).",
     "1.1.0-b1": "[F] Fixed Electrical Furnace speed sanitizing bug (issue #97, thx therobotmenace).\n[A] Sheet Metal Slab Slices added (only available if IE is installed).\n[M] Config options extended/updated.\n[M] Dense Grit Sand textures altered to get slightly more visible structure from distance.",
@@ -155,6 +157,7 @@
     "1.0.7-b3": "[A] Initial 1.14.2 port of decorative blocks."
   },
   "1.15.2": {
+    "1.1.0": "[R] Release build v1.1.0. Changes: * GUI button/slider tooltips added (1.5s delay). * IE Sheet Metal Slab Slices added. * Config options extended/updated. * Block Placer improvements. * Block Breaker drop trajectory improved. * Dense Grit Sand textures enhanced. * Pipe Valve redstone connector display fixes. * Compatibility bug fixes.\n[F] Block Placer also defers placements if falling item stacks are in front of it (thx Cid).",
     "1.1.0-b3": "[!] Forge update, requires Forge 1.15.2-31.2.20.\n[F] Block Placer defers placements if collidable entities are in the way (issue #98, thx DrakoAlcarus).\n[M] Block Breaker item drop trajectories have lower speed (fall slightly straighter down).\n[M] Pipe Valves redstone connector also shown if the adjacent block can connect redstone in general.\n[F] Added Block verification during TE ticking in case devices are moved (issue #101, thx D0CTOR-ZED).",
     "1.1.0-b2": "[A] Added tooltips for buttons/settings in device GUIs (1.5s display delay).\n[U] Updated Forge/Mappings.",
     "1.1.0-b1": "[F] Fixed Electrical Furnace speed sanitizing bug (issue #97, thx therobotmenace).\n[A] IE Sheet Metal Slab Slices added (only available if IE is installed).\n[M] Config options extended/updated.\n[M] GUI models updated to circumvent too dark representations.\n[M] Dense Grit Sand textures altered to get slightly more visible structure from distance.",
