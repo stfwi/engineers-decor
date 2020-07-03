@@ -10,6 +10,9 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    - v1.1.1-b1   [F] Fixed java related startup problem (issue #103, thx madmax3004, erebus42,
+                      StormbringerGTX, teagan75).
+
                   -------------------------------------------------------------------
     - v1.1.0      [R] Maintenance Release build v1.1.0. Changes:
                     * Compatibility fixes.

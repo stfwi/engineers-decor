@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.12.2": {
+    "1.1.1-b1": "[F] Fixed java related startup problem (issue #103, thx madmax3004, erebus42, StormbringerGTX, teagan75).",
     "1.1.0": "[R] Maintenance Release build v1.1.0. Changes: * Compatibility fixes. * E-Furnace speed selection bug fixed. * Block Placer improvements. ~ v1.1.0-b3   [/] Version skipped for 1.12.2.",
     "1.1.0-b2": "[F] Block Placer defers placements if collidable entities are in the way (issue #98, thx DrakoAlcarus).\n[F] Added Block verification during TE ticking in case devices are moved (issue #101, thx D0CTOR-ZED).",
     "1.1.0-b1": "[F] Fixed Electrical Furnace speed sanitizing bug (issue #97, thx therobotmenace).\n[M] Changed Labeled Crate Nesting to circumvent server crashing in combination with the Sponge mod.",
@@ -92,6 +93,6 @@
   },
   "promos": {
     "1.12.2-recommended": "1.1.0",
-    "1.12.2-latest": "1.1.0"
+    "1.12.2-latest": "1.1.1-b1"
   }
 }

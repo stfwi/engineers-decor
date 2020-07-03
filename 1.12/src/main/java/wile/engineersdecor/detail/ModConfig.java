@@ -22,7 +22,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import wile.engineersdecor.blocks.BlockDecorMilker.BTileEntity;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -400,7 +399,7 @@ public class ModConfig
     })
     @Config.Name("Block Breaker: Power consumption")
     @Config.RangeInt(min=16, max=512)
-    public int block_breaker_power_consumption = BlockDecorBreaker.BTileEntity.DEFAULT_BOOST_ENERGY;
+    public int block_breaker_power_consumption = BlockDecorBreaker.DEFAULT_BOOST_ENERGY;
 
     @Config.Comment({
       "Defines how much time the Small Block Breaker needs per block hardness, " +
@@ -410,7 +409,7 @@ public class ModConfig
     })
     @Config.Name("Block Breaker: Breaking reluctance")
     @Config.RangeInt(min=5, max=50)
-    public int block_breaker_reluctance = BlockDecorBreaker.BTileEntity.DEFAULT_BREAKING_RELUCTANCE;
+    public int block_breaker_reluctance = BlockDecorBreaker.DEFAULT_BREAKING_RELUCTANCE;
 
     @Config.Comment({
       "Defines how much time the Small Block Breaker needs at least, better said it's an offset: " +
@@ -420,7 +419,7 @@ public class ModConfig
     })
     @Config.Name("Block Breaker: Min breaking time")
     @Config.RangeInt(min=10, max=100)
-    public int block_breaker_min_breaking_time = BlockDecorBreaker.BTileEntity.DEFAULT_MIN_BREAKING_TIME;
+    public int block_breaker_min_breaking_time = BlockDecorBreaker.DEFAULT_MIN_BREAKING_TIME;
 
     @Config.Comment({
       "Defines if the Small Block Breaker does not work without RF power."
@@ -434,7 +433,7 @@ public class ModConfig
     })
     @Config.Name("Tree Cutter: Power consumption")
     @Config.RangeInt(min=16, max=512)
-    public int tree_cuttter_energy_consumption = BlockDecorTreeCutter.BTileEntity.DEFAULT_BOOST_ENERGY;
+    public int tree_cuttter_energy_consumption = BlockDecorTreeCutter.DEFAULT_BOOST_ENERGY;
 
     @Config.Comment({
       "Defines how much time the Small Tree Cutter needs to cut a tree without RF power. " +
@@ -443,7 +442,7 @@ public class ModConfig
     })
     @Config.Name("Tree Cutter: Cutting time")
     @Config.RangeInt(min=10, max=240)
-    public int tree_cuttter_cutting_time_needed = BlockDecorTreeCutter.BTileEntity.DEFAULT_CUTTING_TIME_NEEDED;
+    public int tree_cuttter_cutting_time_needed = BlockDecorTreeCutter.DEFAULT_CUTTING_TIME_NEEDED;
 
     @Config.Comment({
       "Defines if the Small Tree Cutter does not work without RF power."
@@ -459,7 +458,7 @@ public class ModConfig
     })
     @Config.Name("Milker: Power consumption")
     @Config.RangeInt(min=0, max=128)
-    public int milker_energy_consumption = BTileEntity.DEFAULT_ENERGY_CONSUMPTION;
+    public int milker_energy_consumption = BlockDecorMilker.DEFAULT_ENERGY_CONSUMPTION;
   }
 
   @SuppressWarnings("unused")
@@ -612,16 +611,16 @@ public class ModConfig
 
   public static final void apply()
   {
-    BlockDecorFurnace.BTileEntity.on_config(tweaks.furnace_smelting_speed_percent, tweaks.furnace_fuel_efficiency_percent, tweaks.furnace_boost_energy_consumption);
+    BlockDecorFurnace.on_config(tweaks.furnace_smelting_speed_percent, tweaks.furnace_fuel_efficiency_percent, tweaks.furnace_boost_energy_consumption);
     BlockDecorChair.on_config(optout.without_chair_sitting, optout.without_mob_chair_sitting, tweaks.chair_mob_sitting_probability_percent, tweaks.chair_mob_standup_probability_percent);
     BlockDecorLadder.on_config(optout.without_ladder_speed_boost);
     BlockDecorCraftingTable.on_config(optout.without_crafting_table_history, false, tweaks.with_crafting_quickmove_buttons, tweaks.without_crafting_mouse_scrolling);
     BlockDecorPipeValve.on_config(tweaks.pipevalve_max_flowrate, tweaks.pipevalve_redstone_slope);
-    BlockDecorFurnaceElectrical.BTileEntity.on_config(tweaks.e_furnace_speed_percent, tweaks.e_furnace_power_consumption, false);
-    BlockDecorSolarPanel.BTileEntity.on_config(tweaks.solar_panel_peak_power);
-    BlockDecorBreaker.BTileEntity.on_config(tweaks.block_breaker_power_consumption, tweaks.block_breaker_reluctance, tweaks.block_breaker_min_breaking_time, tweaks.block_breaker_requires_power);
-    BlockDecorTreeCutter.BTileEntity.on_config(tweaks.tree_cuttter_energy_consumption, tweaks.tree_cuttter_cutting_time_needed, tweaks.tree_cuttter_requires_power);
-    BlockDecorMilker.BTileEntity.on_config(tweaks.milker_energy_consumption);
+    BlockDecorFurnaceElectrical.on_config(tweaks.e_furnace_speed_percent, tweaks.e_furnace_power_consumption, false);
+    BlockDecorSolarPanel.on_config(tweaks.solar_panel_peak_power, 128);
+    BlockDecorBreaker.on_config(tweaks.block_breaker_power_consumption, tweaks.block_breaker_reluctance, tweaks.block_breaker_min_breaking_time, tweaks.block_breaker_requires_power);
+    BlockDecorTreeCutter.on_config(tweaks.tree_cuttter_energy_consumption, tweaks.tree_cuttter_cutting_time_needed, tweaks.tree_cuttter_requires_power);
+    BlockDecorMilker.on_config(tweaks.milker_energy_consumption);
     BlockDecorPlacer.BTileEntity.on_config();
     {
       // Check if the config is already synchronized or has to be synchronised.

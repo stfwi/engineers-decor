@@ -30,6 +30,10 @@ import java.util.Random;
 
 public class BlockDecorChair extends BlockDecorDirected
 {
+  //--------------------------------------------------------------------------------------------------------------------
+  // Config
+  //--------------------------------------------------------------------------------------------------------------------
+
   private static boolean sitting_enabled = true;
   private static double sitting_probability = 0.1;
   private static double standup_probability = 0.01;
@@ -41,6 +45,10 @@ public class BlockDecorChair extends BlockDecorDirected
     standup_probability = (without_sitting||without_mob_sitting) ? 1.0 : MathHelper.clamp(standup_probability_percent/100, 1e-6, 1e-2);
     ModEngineersDecor.logger.info("Config chairs: " + sitting_enabled + ", sit: " + sitting_probability, ", stand up: " + standup_probability);
   }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Block
+  //--------------------------------------------------------------------------------------------------------------------
 
   public BlockDecorChair(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound, @Nonnull AxisAlignedBB unrotatedAABB)
   { super(registryName, config, material, hardness, resistance, sound, unrotatedAABB); setLightOpacity(0); setTickRandomly(true); }

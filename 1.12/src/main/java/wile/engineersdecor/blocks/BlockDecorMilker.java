@@ -60,6 +60,45 @@ import java.util.Map;
 
 public class BlockDecorMilker extends BlockDecorDirectedHorizontal
 {
+  //--------------------------------------------------------------------------------------------------------------------
+  // Config
+  //--------------------------------------------------------------------------------------------------------------------
+  public static final int BUCKET_SIZE = 1000;
+  public static final int TICK_INTERVAL = 80;
+  public static final int PROCESSING_TICK_INTERVAL = 20;
+  public static final int TANK_CAPACITY = BUCKET_SIZE * 12;
+  public static final int MAX_MILKING_TANK_LEVEL = TANK_CAPACITY-500;
+  public static final int FILLED_INDICATION_THRESHOLD = BUCKET_SIZE;
+  public static final int MAX_ENERGY_BUFFER = 16000;
+  public static final int MAX_ENERGY_TRANSFER = 512;
+  public static final int DEFAULT_ENERGY_CONSUMPTION = 0;
+
+  private static FluidStack milk_fluid_ = new FluidStack(FluidRegistry.WATER, 0);
+  private static HashMap<ItemStack, ItemStack> milk_containers_ = new HashMap<>();
+  private static int energy_consumption = DEFAULT_ENERGY_CONSUMPTION;
+
+  public static void on_config(int energy_consumption_per_tick)
+  {
+    energy_consumption = MathHelper.clamp(energy_consumption_per_tick, 0, 128);
+    {
+      Fluid milk = FluidRegistry.getFluid("milk");
+      if(milk != null) milk_fluid_ = new FluidStack(milk, BUCKET_SIZE);
+    }
+    {
+      milk_containers_.put(new ItemStack(Items.BUCKET), new ItemStack(Items.MILK_BUCKET));
+      if(ExtItems.BOTTLED_MILK_BOTTLE_DRINKLABLE!=null) milk_containers_.put(new ItemStack(Items.GLASS_BOTTLE), new ItemStack(ExtItems.BOTTLED_MILK_BOTTLE_DRINKLABLE));
+    }
+    ModEngineersDecor.logger.info(
+      "Config milker energy consumption:" + energy_consumption + "rf/t"
+        + ((milk_fluid_==null)?"":" [milk fluid available]")
+        + ((ExtItems.BOTTLED_MILK_BOTTLE_DRINKLABLE==null)?"":" [bottledmilk mod available]")
+    );
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Block
+  //--------------------------------------------------------------------------------------------------------------------
+
   public static final PropertyBool FILLED = PropertyBool.create("filled");
   public static final PropertyBool ACTIVE = PropertyBool.create("active");
 
@@ -103,7 +142,7 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
   public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos)
   {
     BTileEntity te = getTe(world, pos);
-    return (te==null) ? 0 : MathHelper.clamp((16 * te.fluid_level())/BTileEntity.TANK_CAPACITY, 0, 15);
+    return (te==null) ? 0 : MathHelper.clamp((16 * te.fluid_level())/TANK_CAPACITY, 0, 15);
   }
 
   @Override
@@ -149,11 +188,11 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
     if(out_stack.isEmpty()) return FluidUtil.interactWithFluidHandler(player, hand, te.fluid_handler());
     boolean drained = false;
     IItemHandler player_inventory = new PlayerMainInvWrapper(player.inventory);
-    if(te.fluid_level() >= BTileEntity.BUCKET_SIZE) {
+    if(te.fluid_level() >= BUCKET_SIZE) {
       final ItemStack insert_stack = out_stack.copy();
       ItemStack remainder = ItemHandlerHelper.insertItemStacked(player_inventory, insert_stack, false);
       if(remainder.getCount() < insert_stack.getCount()) {
-        te.drain(BTileEntity.BUCKET_SIZE);
+        te.drain(BUCKET_SIZE);
         in_stack.shrink(1);
         drained = true;
         if(remainder.getCount() > 0) {
@@ -181,21 +220,9 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
 
   public static class BTileEntity extends TileEntity implements ITickable, ICapabilityProvider, IEnergyStorage
   {
-    public static final int BUCKET_SIZE = 1000;
-    public static final int TICK_INTERVAL = 80;
-    public static final int PROCESSING_TICK_INTERVAL = 20;
-    public static final int TANK_CAPACITY = BUCKET_SIZE * 12;
-    public static final int MAX_MILKING_TANK_LEVEL = TANK_CAPACITY-500;
-    public static final int FILLED_INDICATION_THRESHOLD = BUCKET_SIZE;
-    public static final int MAX_ENERGY_BUFFER = 16000;
-    public static final int MAX_ENERGY_TRANSFER = 512;
-    public static final int DEFAULT_ENERGY_CONSUMPTION = 0;
     private static final EnumFacing FLUID_TRANSFER_DIRECTRIONS[] = {EnumFacing.DOWN,EnumFacing.EAST,EnumFacing.SOUTH,EnumFacing.WEST,EnumFacing.NORTH};
     private enum MilkingState { IDLE, PICKED, COMING, POSITIONING, MILKING, LEAVING, WAITING }
 
-    private static FluidStack milk_fluid_ = new FluidStack(FluidRegistry.WATER, 0);
-    private static HashMap<ItemStack, ItemStack> milk_containers_ = new HashMap<>();
-    private static int energy_consumption = DEFAULT_ENERGY_CONSUMPTION;
     private int tick_timer_;
     private int energy_stored_;
     private int tank_level_ = 0;
@@ -204,24 +231,6 @@ public class BlockDecorMilker extends BlockDecorDirectedHorizontal
     private int state_timeout_ = 0;
     private int state_timer_ = 0;
     private BlockPos tracked_cow_original_position_ = null;
-
-    public static void on_config(int energy_consumption_per_tick)
-    {
-      energy_consumption = MathHelper.clamp(energy_consumption_per_tick, 0, 128);
-      {
-        Fluid milk = FluidRegistry.getFluid("milk");
-        if(milk != null) milk_fluid_ = new FluidStack(milk, BUCKET_SIZE);
-      }
-      {
-        milk_containers_.put(new ItemStack(Items.BUCKET), new ItemStack(Items.MILK_BUCKET));
-        if(ExtItems.BOTTLED_MILK_BOTTLE_DRINKLABLE!=null) milk_containers_.put(new ItemStack(Items.GLASS_BOTTLE), new ItemStack(ExtItems.BOTTLED_MILK_BOTTLE_DRINKLABLE));
-      }
-      ModEngineersDecor.logger.info(
-        "Config milker energy consumption:" + energy_consumption + "rf/t"
-          + ((milk_fluid_==null)?"":" [milk fluid available]")
-          + ((ExtItems.BOTTLED_MILK_BOTTLE_DRINKLABLE==null)?"":" [bottledmilk mod available]")
-      );
-    }
 
     public BTileEntity()
     { reset(); }

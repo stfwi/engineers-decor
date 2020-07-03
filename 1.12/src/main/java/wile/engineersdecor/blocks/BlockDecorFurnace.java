@@ -58,6 +58,34 @@ import java.util.Random;
 
 public class BlockDecorFurnace extends BlockDecorDirected
 {
+  //--------------------------------------------------------------------------------------------------------------------
+  // Config
+  //--------------------------------------------------------------------------------------------------------------------
+
+  public static final int TICK_INTERVAL = 4;
+  public static final int FIFO_INTERVAL = 20;
+  public static final int MAX_BURNTIME = 0x7fff;
+  public static final int DEFAULT_BOOST_ENERGY = 32;
+  public static final int VANILLA_FURNACE_SPEED_INTERVAL = 200;
+  public static final int DEFAULT_SPEED_INTERVAL  = 150;
+
+  private static double proc_fuel_efficiency_ = 1.0;
+  private static int proc_speed_interval_ = DEFAULT_SPEED_INTERVAL;
+  private static int boost_energy_consumption = DEFAULT_BOOST_ENERGY * TICK_INTERVAL;
+
+  public static void on_config(int speed_percent, int fuel_efficiency_percent, int boost_energy_per_tick)
+  {
+    double ratio = (100.0 / MathHelper.clamp(speed_percent, 10, 500)) ;
+    proc_speed_interval_ = MathHelper.clamp((int)(ratio * VANILLA_FURNACE_SPEED_INTERVAL), 20, 400);
+    proc_fuel_efficiency_ = ((double) MathHelper.clamp(fuel_efficiency_percent, 10, 500)) / 100;
+    boost_energy_consumption = TICK_INTERVAL * MathHelper.clamp(boost_energy_per_tick, 16, 512);
+    ModEngineersDecor.logger.info("Config lab furnace interval:" + proc_speed_interval_ + ", efficiency:" + proc_fuel_efficiency_);
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Block
+  //--------------------------------------------------------------------------------------------------------------------
+
   public static final PropertyBool LIT = PropertyBool.create("lit");
 
   public BlockDecorFurnace(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound, @Nonnull AxisAlignedBB unrotatedAABB)
@@ -226,7 +254,7 @@ public class BlockDecorFurnace extends BlockDecorDirected
     { final int tc=te.getField(2), T=te.getField(3); return ((T>0) && (tc>0)) ? (tc * pixels / T) : (0); }
 
     private int flame_px(int pixels)
-    { int ibt = te.getField(1); return ((te.getField(0) * pixels) / ((ibt>0) ? (ibt) : (BTileEntity.proc_speed_interval_))); }
+    { int ibt = te.getField(1); return ((te.getField(0) * pixels) / ((ibt>0) ? (ibt) : (proc_speed_interval_))); }
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -434,12 +462,6 @@ public class BlockDecorFurnace extends BlockDecorDirected
 
   public static class BTileEntity extends TileEntity implements ITickable, ISidedInventory, IEnergyStorage
   {
-    public static final int TICK_INTERVAL = 4;
-    public static final int FIFO_INTERVAL = 20;
-    public static final int MAX_BURNTIME = 0x7fff;
-    public static final int DEFAULT_BOOST_ENERGY = 32;
-    public static final int VANILLA_FURNACE_SPEED_INTERVAL = 200;
-    public static final int DEFAULT_SPEED_INTERVAL  = 150;
     public static final int NUM_OF_SLOTS = 11;
     public static final int SMELTING_INPUT_SLOT_NO  = 0;
     public static final int SMELTING_FUEL_SLOT_NO   = 1;
@@ -453,10 +475,6 @@ public class BlockDecorFurnace extends BlockDecorDirected
     public static final int AUX_0_SLOT_NO           = 9;
     public static final int AUX_1_SLOT_NO           =10;
 
-    private static double proc_fuel_efficiency_ = 1.0;
-    private static int proc_speed_interval_ = DEFAULT_SPEED_INTERVAL;
-    private static int boost_energy_consumption = DEFAULT_BOOST_ENERGY * TICK_INTERVAL;
-
     private int tick_timer_;
     private int fifo_timer_;
     private int burntime_left_;
@@ -467,15 +485,6 @@ public class BlockDecorFurnace extends BlockDecorDirected
     private boolean heater_inserted_ = false;
     protected ItemStack current_smelting_input_stack_ = ItemStack.EMPTY;
     protected NonNullList<ItemStack> stacks_;
-
-    public static void on_config(int speed_percent, int fuel_efficiency_percent, int boost_energy_per_tick)
-    {
-      double ratio = (100.0 / MathHelper.clamp(speed_percent, 10, 500)) ;
-      proc_speed_interval_ = MathHelper.clamp((int)(ratio * VANILLA_FURNACE_SPEED_INTERVAL), 20, 400);
-      proc_fuel_efficiency_ = ((double) MathHelper.clamp(fuel_efficiency_percent, 10, 500)) / 100;
-      boost_energy_consumption = TICK_INTERVAL * MathHelper.clamp(boost_energy_per_tick, 16, 512);
-      ModEngineersDecor.logger.info("Config lab furnace interval:" + proc_speed_interval_ + ", efficiency:" + proc_fuel_efficiency_);
-    }
 
     public BTileEntity()
     { reset(); }
@@ -809,8 +818,7 @@ public class BlockDecorFurnace extends BlockDecorDirected
     {
       if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
-      final IBlockState state = world.getBlockState(pos);
-      if(!(state.getBlock() instanceof BlockDecorFurnace)) return;
+      if(!((world.getBlockState(getPos()).getBlock()) instanceof BlockDecorFurnace)) return;
       final boolean was_burning = isBurning();
       if(was_burning) burntime_left_ -= TICK_INTERVAL;
       if(fuel_burntime_ < 0) fuel_burntime_ = getItemBurnTime(stacks_.get(SMELTING_FUEL_SLOT_NO));
@@ -868,7 +876,7 @@ public class BlockDecorFurnace extends BlockDecorDirected
       }
       if(was_burning != isBurning()) {
         dirty = true;
-        world.setBlockState(pos, state.withProperty(LIT, isBurning()));
+        world.setBlockState(pos, world.getBlockState(pos).withProperty(LIT, isBurning()));
       }
       if(dirty) markDirty();
     }

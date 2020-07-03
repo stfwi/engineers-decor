@@ -10,7 +10,7 @@
   c.gradle_property_version_forge = function() { return "version_forge"; }
   c.project_download_inet_page = function() { return "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/"; }
   c.options = {
-    // without_ref_repository_check: true
+    without_ref_repository_check: true
   };
   c.languages = {
     "en_us": { code:"en_us", name:"English", region:"United States" },

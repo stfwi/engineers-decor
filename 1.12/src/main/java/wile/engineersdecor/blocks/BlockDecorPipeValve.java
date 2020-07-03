@@ -42,14 +42,25 @@ import javax.annotation.Nullable;
 
 public class BlockDecorPipeValve extends BlockDecorDirected
 {
-  public static final PropertyInteger RS_CONNECTION_DIR = PropertyInteger.create("rsdir", 0,4);
+  //--------------------------------------------------------------------------------------------------------------------
+  // Config
+  //--------------------------------------------------------------------------------------------------------------------
+
+  private static int fluid_maxflow_mb = 1000;
+  private static int redstone_flow_slope_mb = 1000/15;
 
   public static void on_config(int container_size_decl, int redstone_slope)
   {
-    BTileEntity.fluid_maxflow_mb = MathHelper.clamp(container_size_decl, 1, 10000);
-    BTileEntity.redstone_flow_slope_mb = MathHelper.clamp(redstone_slope, 1, 10000);
-    ModEngineersDecor.logger.info("Config pipe valve: maxflow:" + BTileEntity.fluid_maxflow_mb + "mb, redstone amp:" + BTileEntity.redstone_flow_slope_mb + "mb/sig");
+    fluid_maxflow_mb = MathHelper.clamp(container_size_decl, 1, 10000);
+    redstone_flow_slope_mb = MathHelper.clamp(redstone_slope, 1, 10000);
+    ModEngineersDecor.logger.info("Config pipe valve: maxflow:" + fluid_maxflow_mb + "mb, redstone amp:" + redstone_flow_slope_mb + "mb/sig");
   }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Block
+  //--------------------------------------------------------------------------------------------------------------------
+
+  public static final PropertyInteger RS_CONNECTION_DIR = PropertyInteger.create("rsdir", 0,4);
 
   public BlockDecorPipeValve(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound, @Nonnull AxisAlignedBB unrotatedAABB)
   { super(registryName, config, material, hardness, resistance, sound, unrotatedAABB); }
@@ -131,8 +142,6 @@ public class BlockDecorPipeValve extends BlockDecorDirected
   public static class BTileEntity extends TileEntity implements IFluidHandler, IFluidTankProperties, ICapabilityProvider, IFluidPipe
   {
     private static final BackFlowHandler back_flow_handler_ = new BackFlowHandler();
-    protected static int fluid_maxflow_mb = 1000;
-    protected static int redstone_flow_slope_mb = 1000/15;
     private final IFluidTankProperties[] fluid_props_ = {this};
     private EnumFacing block_facing_ = EnumFacing.NORTH;
     private boolean filling_ = false;
