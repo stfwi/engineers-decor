@@ -56,7 +56,7 @@ public class BlockDecorFence extends BlockDecorWall
 
   @Override
   public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face)
-  { return (face==EnumFacing.UP) ? (BlockFaceShape.SOLID) : ((face!=EnumFacing.DOWN) ? (BlockFaceShape.MIDDLE_POLE_THIN) : (BlockFaceShape.CENTER_SMALL)); }
+  { return (face==EnumFacing.UP) ? (BlockFaceShape.CENTER) : ((face!=EnumFacing.DOWN) ? (BlockFaceShape.MIDDLE_POLE_THIN) : (BlockFaceShape.CENTER_SMALL)); }
 
   @Override
   protected BlockStateContainer createBlockState()

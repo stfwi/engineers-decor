@@ -10,6 +10,9 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    - v1.1.1      [R] Maintenance release.
+                  [F] Fixed Snow laying on Steel Mesh Fence (issue #107, thx TheTinyPebble).
+
     - v1.1.1-b1   [F] Fixed java related startup problem (issue #103, thx madmax3004, erebus42,
                       StormbringerGTX, teagan75).
 
