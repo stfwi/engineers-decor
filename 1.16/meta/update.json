@@ -1,0 +1,13 @@
+{
+  "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
+  "1.16.1": {
+    "1.1.1-b3": "[A] Ceiling Edge Light added.\n[A] Iron Bulb Light added.\n[A] Iron Hatch added.\n[A] Fluid Barrel added.\n[M] Gas Concrete texture made slightly darker.",
+    "1.1.1-b2": "[M] Nerfed Solar Panel output default config value from 45RF/t to 40RF/t.\n[F] Fixed conditional IE tag dependency of alternative/standalone recipes.",
+    "1.1.1-b1": "[A] JEI integration ported.\n[M] Logical server side config moved from COMMON to SERVER (world/serverconfig).\n[F] Labeled Crate recipe condition for missing Immersive Engineering fixed.\n[F] Mouse scrolling works for Labeled Crate and TW Crafting Table.",
+    "1.1.1-a1": "[A] Initial port."
+  },
+  "promos": {
+    "1.16.1-recommended": "1.1.1-b3",
+    "1.16.1-latest": "1.1.1-b3"
+  }
+}

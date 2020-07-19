@@ -13,6 +13,7 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.block.BlockSnow;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.detail.ModAuxiliaries;
 import net.minecraft.block.SoundType;

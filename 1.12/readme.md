@@ -10,6 +10,8 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    ~ v1.1.2-b1   [F]
+
     - v1.1.1      [R] Maintenance release.
                   [F] Fixed Snow laying on Steel Mesh Fence (issue #107, thx TheTinyPebble).
 
