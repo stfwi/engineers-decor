@@ -324,6 +324,7 @@
     var latest_beta = "";
     for(var ver in history) { latest_beta=ver; break; }
     for(var ver in history) if(ver.search(/(rc|b|a)/) < 0) { latest_release=ver; break; }
+    if(latest_release=="") latest_release = latest_beta;
     var update_json = {}
     update_json["homepage"] = constants.project_download_inet_page();
     update_json[mc_version] = history;

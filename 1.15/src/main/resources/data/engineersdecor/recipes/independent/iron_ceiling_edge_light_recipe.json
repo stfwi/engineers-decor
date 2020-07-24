@@ -1,0 +1,16 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:iron_ceiling_edge_light",
+      "required": ["engineersdecor:iron_floor_edge_light"]
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    { "item": "engineersdecor:iron_floor_edge_light" }
+  ],
+  "result": {
+    "item": "engineersdecor:iron_ceiling_edge_light"
+  }
+}

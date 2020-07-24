@@ -288,6 +288,26 @@ public class ModContent
     Auxiliaries.getPixeledAABB(5,0,0, 11,2,0.5)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "iron_floor_edge_light"));
 
+  public static final DecorBlock.DirectedWaterLoggable CEILING_EDGE_LIGHT_IRON = (DecorBlock.DirectedWaterLoggable)(new DecorBlock.DirectedWaterLoggable(
+    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_HORIZIONTAL,
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).lightValue(15).notSolid(),
+    new AxisAlignedBB[]{
+      Auxiliaries.getPixeledAABB( 0,15.5,0, 16,16,2.0),
+      Auxiliaries.getPixeledAABB( 0,14.0,0, 16,16,0.5),
+      Auxiliaries.getPixeledAABB( 0,14.0,0,  1,16,2.0),
+      Auxiliaries.getPixeledAABB(15,14.0,0, 16,16,2.0),
+    }
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "iron_ceiling_edge_light"));
+
+  public static final DecorBlock.DirectedWaterLoggable BULB_LIGHT_IRON = (DecorBlock.DirectedWaterLoggable)(new DecorBlock.DirectedWaterLoggable(
+    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT,
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).lightValue(15).notSolid(),
+    new AxisAlignedBB[]{
+      Auxiliaries.getPixeledAABB(6.5,6.5,1, 9.5,9.5,4),
+      Auxiliaries.getPixeledAABB(6.0,6.0,0, 10.0,10.0,1.0)
+    }
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "iron_bulb_light"));
+
   public static final DecorBlock.WaterLoggable STEEL_TABLE = (DecorBlock.WaterLoggable)(new DecorBlock.WaterLoggable(
     DecorBlock.CFG_CUTOUT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
@@ -702,6 +722,7 @@ public class ModContent
     PASSIVE_FLUID_ACCUMULATOR,
     SMALL_FLUID_FUNNEL,
     DENSE_GRIT_SAND,
+    DENSE_GRIT_DIRT,
     CLINKER_BRICK_BLOCK,
     CLINKER_BRICK_SLAB,
     CLINKER_BRICK_STAIRS,
@@ -749,6 +770,8 @@ public class ModContent
     STEEL_TABLE,
     INSET_LIGHT_IRON,
     FLOOR_EDGE_LIGHT_IRON,
+    CEILING_EDGE_LIGHT_IRON,
+    BULB_LIGHT_IRON,
     STEEL_FLOOR_GRATING,
     STEEL_MESH_FENCE,
     STEEL_MESH_FENCE_GATE,
@@ -769,7 +792,6 @@ public class ModContent
   };
 
   private static final Block devBlocks[] = {
-    DENSE_GRIT_DIRT // texture needs improvments, looks too blurry yet.
     //TEST_BLOCK
   };
 
