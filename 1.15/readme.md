@@ -11,6 +11,13 @@ Mod sources for Minecraft version 1.15.1.
 
 ## Version history
 
+                  -------------------------------------------------------------------
+    - v1.1.1      [R] Release build v1.1.1. Changes:
+                    * Dense Grit Dirt added.
+                    * Ceiling Edge Light added.
+                    * Iron Bulb Light added.
+                  -------------------------------------------------------------------
+
     - v1.1.1-b1   [A] Dense Grit Dirt added.
                   [A] Ceiling Edge Light added.
                   [A] Iron Bulb Light added.

@@ -5,8 +5,8 @@
     "1.12.2-latest": "1.1.1",
     "1.14.4-recommended": "1.1.0",
     "1.14.4-latest": "1.1.0",
-    "1.15.2-recommended": "1.1.0",
-    "1.15.2-latest": "1.1.1-b1"
+    "1.15.2-recommended": "1.1.1",
+    "1.15.2-latest": "1.1.1"
   },
   "1.12.2": {
     "1.1.1": "[R] Maintenance release.\n[F] Fixed Snow laying on Steel Mesh Fence (issue #107, thx TheTinyPebble).",
@@ -159,6 +159,7 @@
     "1.0.7-b3": "[A] Initial 1.14.2 port of decorative blocks."
   },
   "1.15.2": {
+    "1.1.1": "[R] Release build v1.1.1. Changes: * Dense Grit Dirt added. * Ceiling Edge Light added. * Iron Bulb Light added.",
     "1.1.1-b1": "[A] Dense Grit Dirt added.\n[A] Ceiling Edge Light added.\n[A] Iron Bulb Light added.",
     "1.1.0": "[R] Release build v1.1.0. Changes: * GUI button/slider tooltips added (1.5s delay). * IE Sheet Metal Slab Slices added. * Config options extended/updated. * Block Placer improvements. * Block Breaker drop trajectory improved. * Dense Grit Sand textures enhanced. * Pipe Valve redstone connector display fixes. * Compatibility bug fixes.\n[F] Block Placer also defers placements if falling item stacks are in front of it (thx Cid).",
     "1.1.0-b3": "[!] Forge update, requires Forge 1.15.2-31.2.20.\n[F] Block Placer defers placements if collidable entities are in the way (issue #98, thx DrakoAlcarus).\n[M] Block Breaker item drop trajectories have lower speed (fall slightly straighter down).\n[M] Pipe Valves redstone connector also shown if the adjacent block can connect redstone in general.\n[F] Added Block verification during TE ticking in case devices are moved (issue #101, thx D0CTOR-ZED).",
