@@ -1,9 +1,0 @@
-{
-  "name": "Engineer's Decor",
-  "creative_tab": "tabengineersdecor",
-  "subtitle": "Reference manual",
-  "version": 0,
-  "model": "engineersdecor:manual",
-  "show_progress": false,
-  "landing_text": "Tip in advance: To get a short tooltip help text for a block or device, press the CONTRTOL and SHIFT keys at the same time while hovering. That way you do not need to carry this heavy manual with you all the time. The more detailed descriptions in this book are helpful if the features are new for you, or if you like to read up about background aspects."
-}

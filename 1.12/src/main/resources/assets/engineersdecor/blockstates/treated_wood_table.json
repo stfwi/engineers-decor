@@ -1,8 +1,0 @@
-{
-  "forge_marker": 1,
-  "defaults": { "model": "engineersdecor:furniture/treated_wood_table_model" },
-  "variants": {
-    "normal": [{}],
-    "inventory": [{}]
-  }
-}

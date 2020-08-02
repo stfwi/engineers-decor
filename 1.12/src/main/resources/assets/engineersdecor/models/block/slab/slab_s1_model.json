@@ -1,8 +1,0 @@
-{
-	"parent": "engineersdecor:block/slab/halfslab_sb_model",
-	"textures": {
-    "particle": "#all",
-    "side": "#all",
-		"all": "engineersdecor:blocks/iestyle/treated_wood_framed_nailed_texture"
-	}
-}

@@ -1,8 +1,0 @@
-{
-  "parent": "engineersdecor:block/pole/straight_pole_support_model",
-  "textures": {
-    "particle": "engineersdecor:block/pole/treated_wood_pole_side_texture",
-    "side": "engineersdecor:block/pole/treated_wood_pole_side_texture",
-    "top": "engineersdecor:block/pole/treated_wood_pole_top_texture"
-  }
-}

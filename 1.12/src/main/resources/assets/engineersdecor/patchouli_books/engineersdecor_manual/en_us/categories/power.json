@@ -1,6 +1,0 @@
-{
-	"name": "Power",
-	"description": "Devices related to RF power.",
-  "icon": "engineersdecor:small_solar_panel",
-  "sortnum": 8000
-}
