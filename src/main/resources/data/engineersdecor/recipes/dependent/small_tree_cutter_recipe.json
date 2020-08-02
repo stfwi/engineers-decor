@@ -1,0 +1,59 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:small_tree_cutter",
+          "required": ["#forge:plates/iron", "immersiveengineering:component_iron"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "PPP",
+          "PAO",
+          "CRC"
+        ],
+        "key": {
+          "P": { "tag" : "forge:plates/iron" },
+          "O": { "item": "minecraft:observer" },
+          "A": { "item": "minecraft:iron_axe" },
+          "R": { "item": "minecraft:redstone_block" },
+          "C": { "item": "immersiveengineering:component_iron" }
+        },
+        "result": {
+          "item": "engineersdecor:small_tree_cutter",
+          "count": 1
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:small_tree_cutter"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "PPP",
+          "PAO",
+          "PRP"
+        ],
+        "key": {
+          "O": { "item": "minecraft:observer" },
+          "P": { "item": "minecraft:iron_ingot" },
+          "A": { "item": "minecraft:iron_axe" },
+          "R": { "item": "minecraft:redstone_block" }
+        },
+        "result": {
+          "item": "engineersdecor:small_tree_cutter",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

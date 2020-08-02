@@ -1,0 +1,25 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:treated_wood_pole_support",
+          "required": ["engineersdecor:treated_wood_pole_head"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "ingredients": [
+          {
+            "item": "engineersdecor:treated_wood_pole_head"
+          }
+        ],
+        "result": {
+          "item": "engineersdecor:treated_wood_pole_support"
+        }
+      }
+    }
+  ]
+}

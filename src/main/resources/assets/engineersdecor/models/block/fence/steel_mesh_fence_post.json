@@ -1,0 +1,22 @@
+{
+	"textures": {
+		"postside": "engineersdecor:block/fence/steel_mesh_pole_side",
+		"top": "engineersdecor:block/fence/steel_mesh_top",
+		"particle": "engineersdecor:block/fence/steel_mesh_top"
+	},
+	"elements": [
+		{
+			"name": "Center post",
+			"from": [6.5, 0, 6.5],
+			"to": [9.5, 16, 9.5],
+			"faces": {
+				"north": {"texture": "#postside"},
+				"east": {"texture": "#postside"},
+				"south": {"texture": "#postside"},
+				"west": {"texture": "#postside"},
+				"up": {"texture": "#top", "cullface": "up"},
+				"down": {"texture": "#top"}
+			}
+		}
+	]
+}

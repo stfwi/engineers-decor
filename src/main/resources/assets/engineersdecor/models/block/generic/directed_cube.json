@@ -1,0 +1,39 @@
+{
+	"parent": "block/block",
+	"textures": {
+		"top": "engineersdecor:block/furnace/small_electrical_furnace_top",
+		"particle": "engineersdecor:block/furnace/small_electrical_furnace_top",
+		"bottom": "engineersdecor:block/furnace/small_electrical_furnace_bottom",
+		"left": "engineersdecor:block/furnace/small_electrical_furnace_left",
+		"right": "engineersdecor:block/furnace/small_electrical_furnace_right",
+		"front": "engineersdecor:block/furnace/small_electrical_furnace_front",
+		"back": "engineersdecor:block/furnace/small_electrical_furnace_back"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"texture": "#front"},
+				"east": {"texture": "#right"},
+				"south": {"texture": "#back"},
+				"west": {"texture": "#left"},
+				"up": {"texture": "#top"},
+				"down": {"texture": "#bottom"}
+			}
+		}
+	],
+	"display": {
+		"ground": {
+			"translation": [0, 1.75, 0],
+			"scale": [0.2, 0.2, 0.2]
+		},
+		"gui": {
+			"rotation": [30, 225, 0],
+			"scale": [0.625, 0.625, 0.625]
+		},
+		"fixed": {
+			"scale": [0.5, 0.5, 0.5]
+		}
+	}
+}

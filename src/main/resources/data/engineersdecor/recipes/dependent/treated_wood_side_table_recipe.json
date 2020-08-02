@@ -1,0 +1,56 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:treated_wood_side_table",
+          "required": ["#forge:treated_wood_slab", "engineersdecor:treated_wood_pole"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "SSS",
+          " P ",
+          "PPP"
+        ],
+        "key": {
+          "S": { "tag" : "forge:treated_wood_slab" },
+          "P": { "item": "engineersdecor:treated_wood_pole" }
+        },
+        "result": {
+          "item": "engineersdecor:treated_wood_side_table",
+          "count": 1
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:treated_wood_side_table",
+          "missing": ["#forge:treated_wood_slab"],
+          "required": ["engineersdecor:treated_wood_pole"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "SSS",
+          " P ",
+          "PPP"
+        ],
+        "key": {
+          "S": { "tag": "minecraft:wooden_slabs" },
+          "P": { "item": "engineersdecor:treated_wood_pole" }
+        },
+        "result": {
+          "item": "engineersdecor:treated_wood_side_table",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

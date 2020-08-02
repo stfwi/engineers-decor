@@ -1,0 +1,18 @@
+{
+  "name": "Redstone Fluid Valve",
+  "icon": "engineersdecor:straight_pipe_valve_redstone",
+  "category": "fluidics",
+  "sortnum": 7020,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "Redstone Fluid Valve",
+      "item": "engineersdecor:straight_pipe_valve_redstone",
+      "text": "Similar to $(o)Fluid Pipe Check Valves$(), $(o)Redstone Fluid Valves$() allow liquids to pass through only in the forward direction. An additional redstone-mechanical mechanism also inhibits forward flows by locking the prestressed spring plate, unless a Redstone signal is applied."
+    },
+    {
+      "type": "text",
+      "text": "This valve type is useful if you need to enable or disable fluid replenishments of devices, or e.g. if you like to switch between process fluids in an automated system."
+    }
+  ]
+}

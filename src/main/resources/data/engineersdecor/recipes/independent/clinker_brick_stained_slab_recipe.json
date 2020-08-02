@@ -1,0 +1,29 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:clinker_brick_stained_slab",
+          "required": ["engineersdecor:clinker_brick_stained_block"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "CCC"
+        ],
+        "key": {
+          "C": {
+            "item": "engineersdecor:clinker_brick_stained_block"
+          }
+        },
+        "result": {
+          "item": "engineersdecor:clinker_brick_stained_slab",
+          "count": 6
+        }
+      }
+    }
+  ]
+}

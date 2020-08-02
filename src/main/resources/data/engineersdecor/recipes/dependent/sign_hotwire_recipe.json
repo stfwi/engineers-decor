@@ -1,0 +1,55 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:sign_hotwire",
+          "required": ["#forge:rods/treated_wood"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "SSS",
+          "SPS",
+          "SSS"
+        ],
+        "key": {
+          "S": { "tag" : "forge:rods/treated_wood" },
+          "P": { "item": "minecraft:paper" }
+        },
+        "result": {
+          "item": "engineersdecor:sign_hotwire",
+          "count": 1
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:sign_hotwire"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "NSN",
+          "SPS",
+          "NSN"
+        ],
+        "key": {
+          "S": { "item": "minecraft:stick" },
+          "P": { "item": "minecraft:paper" },
+          "N": { "item": "minecraft:iron_nugget" }
+        },
+        "result": {
+          "item": "engineersdecor:sign_hotwire",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

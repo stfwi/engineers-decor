@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "parts=0":  { "model": "engineersdecor:block/slab/specific/halfslab_sheetmetal_aluminum_s0_model" },
+    "parts=1":  { "model": "engineersdecor:block/slab/specific/halfslab_sheetmetal_aluminum_s1_model" },
+    "parts=2":  { "model": "engineersdecor:block/slab/specific/halfslab_sheetmetal_aluminum_s2_model" },
+    "parts=3":  { "model": "engineersdecor:block/slab/specific/halfslab_sheetmetal_aluminum_s3_model" },
+    "parts=4":  { "model": "engineersdecor:block/slab/specific/halfslab_sheetmetal_aluminum_s4_model" },
+    "parts=5":  { "model": "engineersdecor:block/slab/specific/halfslab_sheetmetal_aluminum_s5_model" },
+    "parts=6":  { "model": "engineersdecor:block/slab/specific/halfslab_sheetmetal_aluminum_s6_model" },
+    "parts=7":  { "model": "engineersdecor:block/slab/specific/halfslab_sheetmetal_aluminum_s7_model" },
+    "parts=8":  { "model": "engineersdecor:block/slab/specific/halfslab_sheetmetal_aluminum_s8_model" },
+    "parts=9":  { "model": "engineersdecor:block/slab/specific/halfslab_sheetmetal_aluminum_s9_model" },
+    "parts=10": { "model": "engineersdecor:block/slab/specific/halfslab_sheetmetal_aluminum_sa_model" },
+    "parts=11": { "model": "engineersdecor:block/slab/specific/halfslab_sheetmetal_aluminum_sb_model" },
+    "parts=12": { "model": "engineersdecor:block/slab/specific/halfslab_sheetmetal_aluminum_sc_model" },
+    "parts=13": { "model": "engineersdecor:block/slab/specific/halfslab_sheetmetal_aluminum_sd_model" },
+    "parts=14": { "model": "engineersdecor:block/slab/specific/halfslab_sheetmetal_aluminum_se_model" }
+  }
+}

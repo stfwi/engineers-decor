@@ -1,0 +1,12 @@
+{
+  "variants": {
+    "active=false,facing=north": { "model": "engineersdecor:block/device/small_block_breaker_model"          },
+    "active=false,facing=south": { "model": "engineersdecor:block/device/small_block_breaker_model", "y":180 },
+    "active=false,facing=west":  { "model": "engineersdecor:block/device/small_block_breaker_model", "y":270 },
+    "active=false,facing=east":  { "model": "engineersdecor:block/device/small_block_breaker_model", "y":90  },
+    "active=true,facing=north":  { "model": "engineersdecor:block/device/small_block_breaker_model_active"          },
+    "active=true,facing=south":  { "model": "engineersdecor:block/device/small_block_breaker_model_active", "y":180 },
+    "active=true,facing=west":   { "model": "engineersdecor:block/device/small_block_breaker_model_active", "y":270 },
+    "active=true,facing=east":   { "model": "engineersdecor:block/device/small_block_breaker_model_active", "y":90  }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:factory_dropper",
+          "required": ["#forge:treated_wood", "#forge:plates/iron"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "WWW",
+          "WDW",
+          "WPW"
+        ],
+        "key": {
+          "D": { "item": "minecraft:dropper" },
+          "P": { "tag" : "forge:plates/iron" },
+          "W": { "tag" : "forge:treated_wood" }
+        },
+        "result": {
+          "item": "engineersdecor:factory_dropper",
+          "count": 1
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:factory_dropper"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "WWW",
+          "WDW",
+          "WPW"
+        ],
+        "key": {
+          "D": { "item": "minecraft:dropper" },
+          "P": { "item": "minecraft:iron_ingot" },
+          "W": { "tag": "minecraft:planks" }
+        },
+        "result": {
+          "item": "engineersdecor:factory_dropper",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

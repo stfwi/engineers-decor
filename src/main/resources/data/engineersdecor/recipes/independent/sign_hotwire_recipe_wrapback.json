@@ -1,0 +1,23 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:sign_hotwire",
+          "required": ["engineersdecor:sign_exit"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "ingredients": [
+          { "item": "engineersdecor:sign_exit" }
+        ],
+        "result": {
+          "item": "engineersdecor:sign_hotwire"
+        }
+      }
+    }
+  ]
+}

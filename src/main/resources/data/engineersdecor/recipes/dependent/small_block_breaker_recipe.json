@@ -1,0 +1,59 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:small_block_breaker",
+          "required": ["immersiveengineering:component_iron", "#forge:plates/iron"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "PPP",
+          "PAO",
+          "CRC"
+        ],
+        "key": {
+          "O": { "item": "minecraft:observer" },
+          "P": { "tag" : "forge:plates/iron" },
+          "A": { "item": "minecraft:iron_pickaxe" },
+          "R": { "item": "minecraft:redstone_block" },
+          "C": { "item": "immersiveengineering:component_iron" }
+        },
+        "result": {
+          "item": "engineersdecor:small_block_breaker",
+          "count": 1
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:small_block_breaker"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "PPP",
+          "PAO",
+          "PRP"
+        ],
+        "key": {
+          "O": { "item": "minecraft:observer" },
+          "P": { "item": "minecraft:iron_ingot" },
+          "A": { "item": "minecraft:iron_pickaxe" },
+          "R": { "item": "minecraft:redstone_block" }
+        },
+        "result": {
+          "item": "engineersdecor:small_block_breaker",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

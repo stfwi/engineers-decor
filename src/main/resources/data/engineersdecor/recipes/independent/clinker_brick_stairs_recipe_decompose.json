@@ -1,0 +1,30 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:clinker_brick_block",
+          "required": ["engineersdecor:clinker_brick_stairs"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "SS",
+          "SS"
+        ],
+        "key": {
+          "S": {
+            "item": "engineersdecor:clinker_brick_stairs"
+          }
+        },
+        "result": {
+          "item": "engineersdecor:clinker_brick_block",
+          "count": 4
+        }
+      }
+    }
+  ]
+}

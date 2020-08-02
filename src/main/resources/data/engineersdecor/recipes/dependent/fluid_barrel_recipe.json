@@ -1,0 +1,56 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:fluid_barrel",
+          "required": ["#forge:plates/iron"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "PPP",
+          "PBP",
+          "RPP"
+        ],
+        "key": {
+          "B": { "item": "minecraft:barrel" },
+          "R": { "item": "minecraft:redstone" },
+          "P": { "tag": "forge:plates/iron" }
+        },
+        "result": {
+          "item": "engineersdecor:fluid_barrel",
+          "count": 1
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:fluid_barrel"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "PPP",
+          "PBP",
+          "RPP"
+        ],
+        "key": {
+          "B": { "item": "minecraft:barrel" },
+          "R": { "item": "minecraft:redstone" },
+          "P": { "item": "minecraft:iron_ingot" }
+        },
+        "result": {
+          "item": "engineersdecor:fluid_barrel",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

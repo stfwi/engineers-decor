@@ -1,0 +1,23 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:dense_grit_sand_block",
+      "required": ["minecraft:sand", "minecraft:gravel", "minecraft:dirt"]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SG",
+    "DD"
+  ],
+  "key": {
+    "S": { "item": "minecraft:sand" },
+    "G": { "item": "minecraft:gravel" },
+    "D": { "item": "minecraft:dirt" }
+  },
+  "result": {
+    "item": "engineersdecor:dense_grit_sand_block",
+    "count": 4
+  }
+}

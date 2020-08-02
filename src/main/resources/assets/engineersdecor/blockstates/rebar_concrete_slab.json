@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "tvariant=0,type=bottom": { "model": "engineersdecor:block/slab/specific/rebar_concrete_slab_s0v0_model" },
+    "tvariant=1,type=bottom": { "model": "engineersdecor:block/slab/specific/rebar_concrete_slab_s0v1_model" },
+    "tvariant=2,type=bottom": { "model": "engineersdecor:block/slab/specific/rebar_concrete_slab_s0v2_model" },
+    "tvariant=3,type=bottom": { "model": "engineersdecor:block/slab/specific/rebar_concrete_slab_s0v3_model" },
+    "tvariant=0,type=top": { "model": "engineersdecor:block/slab/specific/rebar_concrete_slab_s1v0_model" },
+    "tvariant=1,type=top": { "model": "engineersdecor:block/slab/specific/rebar_concrete_slab_s1v1_model" },
+    "tvariant=2,type=top": { "model": "engineersdecor:block/slab/specific/rebar_concrete_slab_s1v2_model" },
+    "tvariant=3,type=top": { "model": "engineersdecor:block/slab/specific/rebar_concrete_slab_s1v3_model" },
+    "tvariant=0,type=double": { "model": "engineersdecor:block/slab/specific/rebar_concrete_slab_s2v0_model" },
+    "tvariant=1,type=double": { "model": "engineersdecor:block/slab/specific/rebar_concrete_slab_s2v1_model" },
+    "tvariant=2,type=double": { "model": "engineersdecor:block/slab/specific/rebar_concrete_slab_s2v2_model" },
+    "tvariant=3,type=double": { "model": "engineersdecor:block/slab/specific/rebar_concrete_slab_s2v3_model" }
+  }
+}

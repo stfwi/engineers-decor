@@ -1,0 +1,56 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:iron_inset_light",
+          "required": ["#forge:plates/iron", "#forge:glass_panes", "#engineersdecor:luminescent_blocks"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "GGG",
+          "PLP"
+        ],
+        "key": {
+          "L": { "tag": "engineersdecor:luminescent_blocks" },
+          "P": { "tag": "forge:plates/iron" },
+          "G": { "tag": "forge:glass_panes" }
+        },
+        "result": {
+          "item": "engineersdecor:iron_inset_light",
+          "count": 8
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:iron_inset_light",
+          "required": ["#engineersdecor:luminescent_blocks"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "   ",
+          "GGG",
+          "PLP"
+        ],
+        "key": {
+          "P": { "item": "minecraft:iron_ingot" },
+          "L": { "tag" : "engineersdecor:luminescent_blocks" },
+          "G": { "tag" : "engineersdecor:plain_glass_panes" }
+        },
+        "result": {
+          "item": "engineersdecor:iron_inset_light",
+          "count": 8
+        }
+      }
+    }
+  ]
+}

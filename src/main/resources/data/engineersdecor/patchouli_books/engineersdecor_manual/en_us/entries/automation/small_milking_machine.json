@@ -1,0 +1,26 @@
+{
+  "name": "Small Milking Machine",
+  "icon": "engineersdecor:small_milking_machine",
+  "category": "automation",
+  "sortnum": 6070,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "Milking Machine",
+      "item": "engineersdecor:small_milking_machine",
+      "text": "A device dedicated to gather milk from cows in an animal welfare manner.$(br)As a modern milking robot, the decision when to milk is left to the individual cows, which occasionally pass by for 'unloading'. They only do this however when there is enough space in the cattle pen, and when it is not too crowded."
+    },
+    {
+      "type": "text",
+      "text": "The area in which cows go to the machine is 7x7 blocks in front of the milker (font is where the arm is located). Each milking process, the device fetches one bucket and stores the liquid in its internal tank. From there it can be retrieved with buckets or fluid transfer (the latter only if milk exists as fluid). Also automated item transfer is possible using $(o)Buckets$() (or compatible bottles):$(br)Place a $(o)Crate$() or $(o)Chest$() with empty buckets behind or below the machine."
+    },
+    {
+      "type": "text",
+      "text": "It will then draw these empty buckets in, and place filled buckets back into the crate, preferring to take from the back and inserting to the bottom.$(br)"
+    },
+    {
+      "type": "text",
+      "text": "Important notice: Mod packers can configure that this machine needs power, so you may have to provide that, too. $(o)(I don't have implemented a visual indication yet, greetings, the lazy mod author)$()"
+    }
+  ]
+}

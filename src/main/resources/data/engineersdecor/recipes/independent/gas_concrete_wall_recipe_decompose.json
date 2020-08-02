@@ -1,0 +1,30 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:gas_concrete",
+          "required": ["engineersdecor:gas_concrete_wall"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "SS",
+          "SS"
+        ],
+        "key": {
+          "S": {
+            "item": "engineersdecor:gas_concrete_wall"
+          }
+        },
+        "result": {
+          "item": "engineersdecor:gas_concrete",
+          "count": 4
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "name": "Metal Crafting Table",
+  "icon": "engineersdecor:treated_wood_crafting_table",
+  "category": "crafting",
+  "sortnum": 5010,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "Crafting Table",
+      "item": "engineersdecor:treated_wood_crafting_table",
+      "text": "This engineering themed workbench allows manual 3x3 crafting. It comes with some convenience tweaks, which are not visible at the first look. These features will be explained on the next pages."
+    },
+    {
+      "title": "Storage",
+      "type": "text",
+      "text": "There are eight storage slots for frequently used materials at the left side of the crafting grid.$(br)All items remain in the table when you break it, and their positions are restored when you place it again. However, the items are dropped when the table is destroyed in a explosion.$(br)Items that are placed in the crafting grid are also visible on the top face of the block (outside the GUI, in-world)."
+    },
+    {
+      "title": "Crafting History",
+      "type": "text",
+      "text": "The $(o)up/down$() arrow buttons at the right side of the crafting grid allow you to quickly select recipes that you have recently used. The $(o)cross$() button clears the selection and moves already placed ingredients back into your inventory.$(br)Placement and crafting result will be displayed dark shaded. When you have found the right recipe click the result slot once, so that the items are automatically placed in the"
+    },
+    {
+      "type": "text",
+      "text": "crafting grid (exactly where you placed them before).$(br)If you do not have the exact ingredients in your inventory, replacements will be searched and placed instead (e.g. Spruce Planks instead of Oak Planks for a recipe that just needs any planks).$(br)Only one item of each ingredient is placed when clicking the result slot, no matter if you have crafted more the last time. You can easily increase the stack sizes (read section $(o)Item Transfer Tweaks$())."
+    },
+    {
+      "title": "Quick Refabrication",
+      "type": "text",
+      "text": "If you have an item in your inventory and like to craft more of it, simply drag this item into the (empty) result slot. A recipe for this item will be searched and shown. Click again to automatically place the needed materials from your inventory, and a third time to craft. Done. The first recipe for which you have all ingredients will be preferred; so are recipes in your crafting history."
+    },
+    {
+      "title": "Item Transfer Tweaks",
+      "type": "text",
+      "text": "To speed up manual crafting and also keeping your inventory organized, there are several tweaks for the 'advanced crafter':$(br2)$(l)Balanced Quick Move:$() You can quickly fill up stacks in the crafting grid by $(o)SHIFT$()-clicking stacks in your inventory. The clicked stacks are distributed in a way that all stacks in the crafting grid have the same size."
+    },
+    {
+      "type": "text",
+      "text": "$(l)Mouse Wheel:$() You can use the mouse wheel while hovering the result slot to quickly increase or decrease the crafting grid stacks. Normal increment is 1, while holding $(o)SHIFT$() 2, $(o)CTRL$() 4, and $(o)SHIFT-CTRL$() 8. Stacks in your own inventory will be used up first (from the smallest to the largest stack to keep the inventory clean). Then the storage slots will be accessed. Items will always be placed back in your inventory, filling up existing stacks first. Empty slots close to the"
+    },
+    {
+      "type": "text",
+      "text": "existing stacks will be preferred next.$(br2)$(l)Storage Quick Move:$() When the crafting grid is empty, you can quickly move stacks from or to the storage slots by $(o)SHIFT-clicking$().$(br2)$(l)Quick Move Buttons:$() You can enable small arrow buttons in the Mod (client) config. They are disabled by default to keep the GUI simple and clean."
+    }
+  ]
+}

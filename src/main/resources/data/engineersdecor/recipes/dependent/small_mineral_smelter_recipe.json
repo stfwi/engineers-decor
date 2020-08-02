@@ -1,0 +1,60 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:small_mineral_smelter",
+          "required": ["#forge:storage_blocks/steel", "immersiveengineering:metal_barrel", "immersiveengineering:furnace_heater", "engineersdecor:panzerglass_block"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "SOS",
+          "GBO",
+          "HOH"
+        ],
+        "key": {
+          "H": { "item": "immersiveengineering:furnace_heater" },
+          "G": { "item": "engineersdecor:panzerglass_block" },
+          "S": { "tag" : "forge:storage_blocks/steel" },
+          "B": { "item": "immersiveengineering:metal_barrel" },
+          "O": { "item": "minecraft:obsidian" }
+        },
+        "result": {
+          "item": "engineersdecor:small_mineral_smelter",
+          "count": 1
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:small_mineral_smelter",
+          "required": ["engineersdecor:panzerglass_block"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "SOS",
+          "GFO",
+          "SOS"
+        ],
+        "key": {
+          "G": { "item": "engineersdecor:panzerglass_block" },
+          "F": { "item": "minecraft:furnace" },
+          "S": { "item": "minecraft:iron_ingot" },
+          "O": { "item": "minecraft:obsidian" }
+        },
+        "result": {
+          "item": "engineersdecor:small_mineral_smelter",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

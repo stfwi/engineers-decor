@@ -1,0 +1,31 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:slag_brick_slab",
+          "required": ["engineersdecor:slag_brick_block"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "   ",
+          "   ",
+          "CCC"
+        ],
+        "key": {
+          "C": {
+            "item": "engineersdecor:slag_brick_block"
+          }
+        },
+        "result": {
+          "item": "engineersdecor:slag_brick_slab",
+          "count": 6
+        }
+      }
+    }
+  ]
+}

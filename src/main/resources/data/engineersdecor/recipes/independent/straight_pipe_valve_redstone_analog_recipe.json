@@ -1,0 +1,24 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:straight_pipe_valve_redstone_analog",
+          "required": ["engineersdecor:straight_pipe_valve_redstone"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "ingredients": [
+          { "item": "engineersdecor:straight_pipe_valve_redstone" }
+        ],
+        "result": {
+          "item": "engineersdecor:straight_pipe_valve_redstone_analog",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

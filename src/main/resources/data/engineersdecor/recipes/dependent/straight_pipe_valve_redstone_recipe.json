@@ -1,0 +1,44 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:straight_pipe_valve_redstone",
+          "required": ["engineersdecor:straight_pipe_valve", "immersiveengineering:connector_redstone"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "ingredients": [
+          { "item": "engineersdecor:straight_pipe_valve" },
+          { "item": "immersiveengineering:connector_redstone" }
+        ],
+        "result": {
+          "item": "engineersdecor:straight_pipe_valve_redstone"
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:straight_pipe_valve",
+          "required": ["engineersdecor:straight_pipe_valve"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "ingredients": [
+          { "item": "engineersdecor:straight_pipe_valve" },
+          { "item": "minecraft:repeater" }
+        ],
+        "result": {
+          "item": "engineersdecor:straight_pipe_valve_redstone",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

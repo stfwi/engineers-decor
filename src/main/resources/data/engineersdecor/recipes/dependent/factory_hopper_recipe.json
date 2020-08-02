@@ -1,0 +1,56 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:factory_hopper",
+          "required": ["#forge:plates/iron", "#forge:treated_wood"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "WWW",
+          "WDW",
+          "WPW"
+        ],
+        "key": {
+          "D": { "item": "minecraft:hopper" },
+          "P": { "tag" : "forge:plates/iron" },
+          "W": { "tag" : "forge:treated_wood" }
+        },
+        "result": {
+          "item": "engineersdecor:factory_hopper",
+          "count": 1
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:factory_hopper"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "WWW",
+          "WHW",
+          "WPW"
+        ],
+        "key": {
+          "H": { "item": "minecraft:hopper" },
+          "P": { "item": "minecraft:iron_ingot" },
+          "W": { "tag": "minecraft:planks" }
+        },
+        "result": {
+          "item": "engineersdecor:factory_hopper",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

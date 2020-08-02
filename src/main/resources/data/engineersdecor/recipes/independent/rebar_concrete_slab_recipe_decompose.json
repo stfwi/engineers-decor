@@ -1,0 +1,30 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:rebar_concrete",
+          "required": ["engineersdecor:rebar_concrete_slab"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "C",
+          "C"
+        ],
+        "key": {
+          "C": {
+            "item": "engineersdecor:rebar_concrete_slab"
+          }
+        },
+        "result": {
+          "item": "engineersdecor:rebar_concrete",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

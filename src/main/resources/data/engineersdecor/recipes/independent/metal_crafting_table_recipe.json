@@ -1,0 +1,28 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:treated_wood_crafting_table"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "PP",
+          "PC"
+        ],
+        "key": {
+          "P": { "item": "minecraft:iron_ingot" },
+          "C": { "item": "minecraft:crafting_table" }
+        },
+        "result": {
+          "item": "engineersdecor:treated_wood_crafting_table",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

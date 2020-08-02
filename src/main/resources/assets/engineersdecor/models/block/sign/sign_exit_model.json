@@ -1,0 +1,46 @@
+{
+  "parent": "block/block",
+  "gui_light": "front",
+	"textures": {
+		"s": "engineersdecor:block/material/treated_wood_rough_texture",
+		"particle": "engineersdecor:block/material/treated_wood_rough_texture",
+		"f": "engineersdecor:block/sign/sign_exit_texture"
+	},
+	"elements": [
+		{
+			"from": [3, 7, 0],
+			"to": [13, 13, 0.5],
+			"faces": {
+				"north": {"uv": [3, 3, 13, 9], "texture": "#s"},
+				"east": {"uv": [15.5, 3, 16, 9], "texture": "#s"},
+				"south": {"uv": [0, 2, 16, 12], "texture": "#f"},
+				"west": {"uv": [0, 3, 0.5, 9], "texture": "#s"},
+				"up": {"uv": [3, 0, 13, 0.5], "texture": "#s"},
+				"down": {"uv": [3, 15.5, 13, 16], "texture": "#s"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [27, -68, 7],
+			"translation": [-3, -1, -0.75],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"firstperson_righthand": {
+			"rotation": [1, -58, 7],
+			"translation": [0.5, 0, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"ground": {
+			"translation": [0, 1.75, 2.75],
+			"scale": [0.35, 0.35, 0.35]
+		},
+		"gui": {
+			"translation": [0, 0.5, 0]
+		},
+		"fixed": {
+			"rotation": [0, 180, 0],
+			"translation": [0, 0, -7.8]
+		}
+	}
+}

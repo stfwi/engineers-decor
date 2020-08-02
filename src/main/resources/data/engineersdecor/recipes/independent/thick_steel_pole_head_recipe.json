@@ -1,0 +1,25 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:thick_steel_pole_head",
+          "required": ["engineersdecor:thick_steel_pole"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "ingredients": [
+          {
+            "item": "engineersdecor:thick_steel_pole"
+          }
+        ],
+        "result": {
+          "item": "engineersdecor:thick_steel_pole_head"
+        }
+      }
+    }
+  ]
+}
