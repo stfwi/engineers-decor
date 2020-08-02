@@ -1,7 +1,0 @@
-{
-  "parent":"engineersdecor:block/wall/concrete_wall_inventory",
-	"textures": {
-    "wall": "engineersdecor:block/ieoriginal/ie_stone_decoration_concrete",
-    "particle": "engineersdecor:block/ieoriginal/ie_stone_decoration_concrete"
-	}
-}

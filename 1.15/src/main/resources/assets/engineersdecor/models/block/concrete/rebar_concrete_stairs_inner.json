@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/inner_stairs",
-  "textures": {
-    "bottom": "engineersdecor:block/concrete/rebar_concrete_texture0",
-    "top": "engineersdecor:block/concrete/rebar_concrete_texture1",
-    "side": "engineersdecor:block/concrete/rebar_concrete_texture2"
-  }
-}

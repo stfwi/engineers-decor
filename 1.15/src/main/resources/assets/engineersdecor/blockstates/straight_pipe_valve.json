@@ -1,8 +1,0 @@
-{ "multipart": [
-  { "when": { "facing":"north" }, "apply": { "model": "engineersdecor:block/pipe/straight_pipe_valve_model", "y":   0 } },
-  { "when": { "facing":"south" }, "apply": { "model": "engineersdecor:block/pipe/straight_pipe_valve_model", "y": 180 } },
-  { "when": { "facing":"west"  }, "apply": { "model": "engineersdecor:block/pipe/straight_pipe_valve_model", "y": 270 } },
-  { "when": { "facing":"east"  }, "apply": { "model": "engineersdecor:block/pipe/straight_pipe_valve_model", "y":  90 } },
-  { "when": { "facing":"up"    }, "apply": { "model": "engineersdecor:block/pipe/straight_pipe_valve_model", "x": -90 } },
-  { "when": { "facing":"down"  }, "apply": { "model": "engineersdecor:block/pipe/straight_pipe_valve_model", "x":  90 } }
-]}

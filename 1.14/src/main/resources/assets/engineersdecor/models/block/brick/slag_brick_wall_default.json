@@ -1,7 +1,0 @@
-{
-  "parent":"engineersdecor:block/wall/brick_wall_default",
-	"textures": {
-    "wall": "engineersdecor:block/slag_brick/slag_brick_texture0",
-    "particle": "engineersdecor:block/slag_brick/slag_brick_texture0"
-	}
-}
