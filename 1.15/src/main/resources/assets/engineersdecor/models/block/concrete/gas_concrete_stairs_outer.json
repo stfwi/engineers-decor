@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/outer_stairs",
-  "textures": {
-    "bottom": "engineersdecor:block/concrete/gas_concrete_texture0",
-    "top": "engineersdecor:block/concrete/gas_concrete_texture1",
-    "side": "engineersdecor:block/concrete/gas_concrete_texture2"
-  }
-}

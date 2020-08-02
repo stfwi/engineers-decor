@@ -1,9 +1,0 @@
-{
-  "variants": {
-    "exposition=0": { "model": "engineersdecor:block/device/small_solar_panel_model_exp0" },
-    "exposition=1": { "model": "engineersdecor:block/device/small_solar_panel_model_exp1" },
-    "exposition=2": { "model": "engineersdecor:block/device/small_solar_panel_model_exp2" },
-    "exposition=3": { "model": "engineersdecor:block/device/small_solar_panel_model_exp3" },
-    "exposition=4": { "model": "engineersdecor:block/device/small_solar_panel_model_exp4" }
-  }
-}

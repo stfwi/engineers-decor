@@ -1,4 +1,0 @@
-{
-  "parent": "engineersdecor:block/glass/panzerglass_block_model",
-  "textures": { "all": "engineersdecor:block/glass/panzerglass_block_texture_inventory" }
-}
