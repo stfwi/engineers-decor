@@ -64,6 +64,10 @@ import java.util.List;
 
 public class BlockDecorCraftingTable extends BlockDecorDirected
 {
+  //--------------------------------------------------------------------------------------------------------------------
+  // Config
+  //--------------------------------------------------------------------------------------------------------------------
+
   public static boolean with_assist = true;
   public static boolean with_assist_direct_history_refab = false;
   public static boolean with_assist_quickmove_buttons = false;
@@ -78,6 +82,10 @@ public class BlockDecorCraftingTable extends BlockDecorDirected
     with_crafting_slot_mouse_scrolling = !without_crafting_slot_mouse_scrolling;
     CraftingHistory.max_history_size(32);
   }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Block
+  //--------------------------------------------------------------------------------------------------------------------
 
   public BlockDecorCraftingTable(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound, @Nonnull AxisAlignedBB unrotatedAABB)
   {

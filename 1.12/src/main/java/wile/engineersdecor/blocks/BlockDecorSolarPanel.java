@@ -38,6 +38,25 @@ import javax.annotation.Nullable;
 
 public class BlockDecorSolarPanel extends BlockDecor
 {
+  //--------------------------------------------------------------------------------------------------------------------
+  // Config
+  //--------------------------------------------------------------------------------------------------------------------
+
+  private static int peak_power_per_tick_ = BTileEntity.DEFAULT_PEAK_POWER;
+  private static int max_power_storage_ = 10000;
+  private static int max_feed_power = 128;
+
+  public static void on_config(int peak_power_per_tick, int max_feed_power_per_tick)
+  {
+    peak_power_per_tick_ = peak_power_per_tick;
+    max_feed_power = max_feed_power_per_tick;
+    ModEngineersDecor.logger.info("Config small solar panel: Peak production:" + peak_power_per_tick_ + "/tick");
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Block
+  //--------------------------------------------------------------------------------------------------------------------
+
   public static final PropertyInteger EXPOSITION = PropertyInteger.create("exposition", 0, 4);
 
   public BlockDecorSolarPanel(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound, @Nonnull AxisAlignedBB unrotatedAABB)
@@ -116,20 +135,11 @@ public class BlockDecorSolarPanel extends BlockDecor
     public static final int TICK_INTERVAL = 8;
     public static final int ACCUMULATION_INTERVAL = 4;
     private static final EnumFacing transfer_directions_[] = {EnumFacing.DOWN, EnumFacing.EAST, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.NORTH };
-    private static int peak_power_per_tick_ = DEFAULT_PEAK_POWER;
-    private static int max_power_storage_ = 10000;
-    private static int max_feed_power = 128;
     private int current_production_ = 0;
     private int tick_timer_ = 0;
     private int recalc_timer_ = 0;
     private int accumulated_power_ = 0;
     private int current_feedin_ = 0;
-
-    public static void on_config(int peak_power_per_tick)
-    {
-      peak_power_per_tick_ = peak_power_per_tick;
-      ModEngineersDecor.logger.info("Config small solar panel: Peak production:" + peak_power_per_tick_ + "/tick");
-    }
 
     //------------------------------------------------------------------------------------------------------------------
 

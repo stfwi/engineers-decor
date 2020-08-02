@@ -219,7 +219,7 @@ public class BlockDecorWall extends BlockDecor
 
   @Override
   public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face)
-  { return (face==EnumFacing.UP) ? (BlockFaceShape.SOLID) : ((face!=EnumFacing.DOWN) ? (BlockFaceShape.MIDDLE_POLE_THICK) : (BlockFaceShape.CENTER_BIG)); }
+  { return (face==EnumFacing.UP) ? (BlockFaceShape.CENTER) : ((face!=EnumFacing.DOWN) ? (BlockFaceShape.MIDDLE_POLE_THICK) : (BlockFaceShape.CENTER_BIG)); }
 
   @Override
   public boolean canBeConnectedTo(IBlockAccess world, BlockPos pos, EnumFacing facing)

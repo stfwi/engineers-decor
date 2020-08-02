@@ -40,6 +40,37 @@ import java.util.Random;
 
 public class BlockDecorBreaker extends BlockDecorDirectedHorizontal
 {
+  //--------------------------------------------------------------------------------------------------------------------
+  // Config
+  //--------------------------------------------------------------------------------------------------------------------
+
+  public static final int IDLE_TICK_INTERVAL = 40;
+  public static final int TICK_INTERVAL = 5;
+  public static final int BOOST_FACTOR = 8;
+  public static final int DEFAULT_BOOST_ENERGY = 64;
+  public static final int DEFAULT_BREAKING_RELUCTANCE = 17;
+  public static final int DEFAULT_MIN_BREAKING_TIME = 15;
+  public static final int MAX_BREAKING_TIME = 800;
+  private static int boost_energy_consumption = DEFAULT_BOOST_ENERGY;
+  private static int energy_max = 10000;
+  private static int breaking_reluctance = DEFAULT_BREAKING_RELUCTANCE;
+  private static int min_breaking_time = DEFAULT_MIN_BREAKING_TIME;
+  private static boolean requires_power = false;
+
+  public static void on_config(int boost_energy_per_tick, int breaking_time_per_hardness, int min_breaking_time_ticks, boolean power_required)
+  {
+    boost_energy_consumption = TICK_INTERVAL * MathHelper.clamp(boost_energy_per_tick, 16, 512);
+    energy_max = Math.max(boost_energy_consumption * 10, 10000);
+    breaking_reluctance = MathHelper.clamp(breaking_time_per_hardness, 5, 50);
+    min_breaking_time = MathHelper.clamp(min_breaking_time_ticks, 10, 100);
+    requires_power = power_required;
+    ModEngineersDecor.logger.info("Config block breaker: Boost energy consumption:" + (boost_energy_consumption/TICK_INTERVAL) + "rf/t, reluctance=" + breaking_reluctance + "t/hrdn, break time offset=" + min_breaking_time + "t");
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Block
+  //--------------------------------------------------------------------------------------------------------------------
+
   public static final PropertyBool ACTIVE = PropertyBool.create("active");
 
   public BlockDecorBreaker(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound, @Nonnull AxisAlignedBB unrotatedAABB)
@@ -115,33 +146,11 @@ public class BlockDecorBreaker extends BlockDecorDirectedHorizontal
 
   public static class BTileEntity extends TileEntity implements ITickable, IEnergyStorage
   {
-    public static final int IDLE_TICK_INTERVAL = 40;
-    public static final int TICK_INTERVAL = 5;
-    public static final int BOOST_FACTOR = 8;
-    public static final int DEFAULT_BOOST_ENERGY = 64;
-    public static final int DEFAULT_BREAKING_RELUCTANCE = 17;
-    public static final int DEFAULT_MIN_BREAKING_TIME = 15;
-    public static final int MAX_BREAKING_TIME = 800;
-    private static int boost_energy_consumption = DEFAULT_BOOST_ENERGY;
-    private static int energy_max = 10000;
-    private static int breaking_reluctance = DEFAULT_BREAKING_RELUCTANCE;
-    private static int min_breaking_time = DEFAULT_MIN_BREAKING_TIME;
-    private static boolean requires_power = false;
     private int tick_timer_;
     private int active_timer_;
     private int proc_time_elapsed_;
     private int time_needed_;
     private int energy_;
-
-    public static void on_config(int boost_energy_per_tick, int breaking_time_per_hardness, int min_breaking_time_ticks, boolean power_required)
-    {
-      boost_energy_consumption = TICK_INTERVAL * MathHelper.clamp(boost_energy_per_tick, 16, 512);
-      energy_max = Math.max(boost_energy_consumption * 10, 10000);
-      breaking_reluctance = MathHelper.clamp(breaking_time_per_hardness, 5, 50);
-      min_breaking_time = MathHelper.clamp(min_breaking_time_ticks, 10, 100);
-      requires_power = power_required;
-      ModEngineersDecor.logger.info("Config block breaker: Boost energy consumption:" + (boost_energy_consumption/TICK_INTERVAL) + "rf/t, reluctance=" + breaking_reluctance + "t/hrdn, break time offset=" + min_breaking_time + "t");
-    }
 
     public BTileEntity()
     {}

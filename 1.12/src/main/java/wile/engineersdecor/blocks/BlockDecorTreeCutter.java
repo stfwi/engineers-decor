@@ -38,6 +38,34 @@ import java.util.Random;
 
 public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
 {
+  //--------------------------------------------------------------------------------------------------------------------
+  // Config
+  //--------------------------------------------------------------------------------------------------------------------
+
+  public static final int IDLE_TICK_INTERVAL = 40;
+  public static final int TICK_INTERVAL = 5;
+  public static final int BOOST_FACTOR = 6;
+  public static final int DEFAULT_BOOST_ENERGY = 64;
+  public static final int DEFAULT_CUTTING_TIME_NEEDED = 60; // 60 secs, so that people don't come to the bright idea to carry one with them.
+
+  private static int energy_max = DEFAULT_BOOST_ENERGY * 20;
+  private static int boost_energy_consumption = DEFAULT_BOOST_ENERGY;
+  private static int cutting_time_needed = 20 * DEFAULT_CUTTING_TIME_NEEDED;
+  private static boolean requires_power = false;
+
+  public static void on_config(int boost_energy_per_tick, int cutting_time_seconds, boolean power_required)
+  {
+    boost_energy_consumption = TICK_INTERVAL * MathHelper.clamp(boost_energy_per_tick, 16, 512);
+    energy_max = Math.max(boost_energy_consumption * 10, 10000);
+    cutting_time_needed = 20 * MathHelper.clamp(cutting_time_seconds, 10, 240);
+    requires_power = power_required;
+    ModEngineersDecor.logger.info("Config tree cutter: Boost energy consumption:" + boost_energy_consumption + "rf/t" + (requires_power?" (power required for operation) ":"") + ", cutting time " + cutting_time_needed + "t." );
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Block
+  //--------------------------------------------------------------------------------------------------------------------
+
   public static final PropertyBool ACTIVE = PropertyBool.create("active");
 
   public BlockDecorTreeCutter(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound, @Nonnull AxisAlignedBB unrotatedAABB)
@@ -104,29 +132,10 @@ public class BlockDecorTreeCutter extends BlockDecorDirectedHorizontal
 
   public static class BTileEntity extends TileEntity implements ITickable, IEnergyStorage
   {
-    public static final int IDLE_TICK_INTERVAL = 40;
-    public static final int TICK_INTERVAL = 5;
-    public static final int BOOST_FACTOR = 6;
-    public static final int DEFAULT_BOOST_ENERGY = 64;
-    public static final int DEFAULT_CUTTING_TIME_NEEDED = 60; // 60 secs, so that people don't come to the bright idea to carry one with them.
-    private static int energy_max = DEFAULT_BOOST_ENERGY * 20;
-    private static int boost_energy_consumption = DEFAULT_BOOST_ENERGY;
-    private static int cutting_time_needed = 20 * DEFAULT_CUTTING_TIME_NEEDED;
-    private static boolean requires_power = false;
-
     private int tick_timer_;
     private int active_timer_;
     private int proc_time_elapsed_; // small, not saved in nbt.
     private int energy_;            // small, not saved in nbt.
-
-    public static void on_config(int boost_energy_per_tick, int cutting_time_seconds, boolean power_required)
-    {
-      boost_energy_consumption = TICK_INTERVAL * MathHelper.clamp(boost_energy_per_tick, 16, 512);
-      energy_max = Math.max(boost_energy_consumption * 10, 10000);
-      cutting_time_needed = 20 * MathHelper.clamp(cutting_time_seconds, 10, 240);
-      requires_power = power_required;
-      ModEngineersDecor.logger.info("Config tree cutter: Boost energy consumption:" + boost_energy_consumption + "rf/t" + (requires_power?" (power required for operation) ":"") + ", cutting time " + cutting_time_needed + "t." );
-    }
 
     public BTileEntity()
     {}

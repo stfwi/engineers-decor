@@ -11,6 +11,7 @@ package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.detail.Networking;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -39,7 +40,6 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import wile.engineersdecor.detail.Networking;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -48,6 +48,29 @@ import java.util.Random;
 
 public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
 {
+  //--------------------------------------------------------------------------------------------------------------------
+  // Config
+  //--------------------------------------------------------------------------------------------------------------------
+
+  private static int energy_consumption_ = BTileEntity.DEFAULT_SCALED_ENERGY_CONSUMPTION;
+  private static int transfer_energy_consumption_ = BTileEntity.DEFAULT_SCALED_ENERGY_CONSUMPTION/8;
+  private static int proc_speed_percent_ = BTileEntity.DEFAULT_SPEED_PERCENT;
+  private static double speed_setting_factor_[] = {0.0, 1.0, 1.5, 2.0};
+  private static boolean with_automatic_inventory_pulling_ = false;
+
+  public static void on_config(int speed_percent, int standard_energy_per_tick, boolean with_automatic_inventory_pulling)
+  {
+    proc_speed_percent_ = MathHelper.clamp(speed_percent, 10, 500);
+    energy_consumption_ = MathHelper.clamp(standard_energy_per_tick, 10, 256) * BTileEntity.HEAT_INCREMENT * proc_speed_percent_ / 100;
+    transfer_energy_consumption_ = MathHelper.clamp(energy_consumption_/8, 8, BTileEntity.HEAT_INCREMENT);
+    with_automatic_inventory_pulling_ = with_automatic_inventory_pulling;
+    ModEngineersDecor.logger.info("Config electrical furnace speed:" + proc_speed_percent_ + ", power consumption:" + energy_consumption_);
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Block
+  //--------------------------------------------------------------------------------------------------------------------
+
   public BlockDecorFurnaceElectrical(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound, @Nonnull AxisAlignedBB unrotatedAABB)
   {
     super(registryName, config, material, hardness, resistance, sound, unrotatedAABB);
@@ -327,23 +350,6 @@ public class BlockDecorFurnaceElectrical extends BlockDecorFurnace
     public static final int DEFAULT_SPEED_PERCENT   = 200;
     public static final int DEFAULT_ENERGY_CONSUMPTION = 16 ;
     public static final int DEFAULT_SCALED_ENERGY_CONSUMPTION = DEFAULT_ENERGY_CONSUMPTION * HEAT_INCREMENT * DEFAULT_SPEED_PERCENT/100;
-
-    // Config ----------------------------------------------------------------------------------
-
-    private static int energy_consumption_ = DEFAULT_SCALED_ENERGY_CONSUMPTION;
-    private static int transfer_energy_consumption_ = DEFAULT_SCALED_ENERGY_CONSUMPTION/8;
-    private static int proc_speed_percent_ = DEFAULT_SPEED_PERCENT;
-    private static double speed_setting_factor_[] = {0.0, 1.0, 1.5, 2.0};
-    private static boolean with_automatic_inventory_pulling_ = false;
-
-    public static void on_config(int speed_percent, int standard_energy_per_tick, boolean with_automatic_inventory_pulling)
-    {
-      proc_speed_percent_ = MathHelper.clamp(speed_percent, 10, 500);
-      energy_consumption_ = MathHelper.clamp(standard_energy_per_tick, 10, 256) * HEAT_INCREMENT * proc_speed_percent_ / 100;
-      transfer_energy_consumption_ = MathHelper.clamp(energy_consumption_/8, 8, HEAT_INCREMENT);
-      with_automatic_inventory_pulling_ = with_automatic_inventory_pulling;
-      ModEngineersDecor.logger.info("Config electrical furnace speed:" + proc_speed_percent_ + ", power consumption:" + energy_consumption_);
-    }
 
     // BTileEntity ------------------------------------------------------------------------------
 

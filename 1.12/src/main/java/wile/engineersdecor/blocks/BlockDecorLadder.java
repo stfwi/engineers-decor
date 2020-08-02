@@ -40,15 +40,26 @@ import java.util.List;
 
 public class BlockDecorLadder extends BlockLadder
 {
-  protected static final AxisAlignedBB EDLADDER_SOUTH_AABB = ModAuxiliaries.getPixeledAABB(3, 0, 0, 13, 16, 3);
-  protected static final AxisAlignedBB EDLADDER_EAST_AABB  = ModAuxiliaries.getRotatedAABB(EDLADDER_SOUTH_AABB, EnumFacing.EAST, false);
-  protected static final AxisAlignedBB EDLADDER_WEST_AABB  = ModAuxiliaries.getRotatedAABB(EDLADDER_SOUTH_AABB, EnumFacing.WEST, false);
-  protected static final AxisAlignedBB EDLADDER_NORTH_AABB = ModAuxiliaries.getRotatedAABB(EDLADDER_SOUTH_AABB, EnumFacing.NORTH, false);
+  //--------------------------------------------------------------------------------------------------------------------
+  // Config
+  //--------------------------------------------------------------------------------------------------------------------
+
   protected static final double ladder_speed = 0.7;
   protected static boolean with_ladder_speed_boost = true;
 
   public static final void on_config(boolean without_ladder_speed_boost)
-  { with_ladder_speed_boost = !without_ladder_speed_boost; }
+  {
+    with_ladder_speed_boost = !without_ladder_speed_boost;
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Block
+  //--------------------------------------------------------------------------------------------------------------------
+
+  protected static final AxisAlignedBB EDLADDER_SOUTH_AABB = ModAuxiliaries.getPixeledAABB(3, 0, 0, 13, 16, 3);
+  protected static final AxisAlignedBB EDLADDER_EAST_AABB  = ModAuxiliaries.getRotatedAABB(EDLADDER_SOUTH_AABB, EnumFacing.EAST, false);
+  protected static final AxisAlignedBB EDLADDER_WEST_AABB  = ModAuxiliaries.getRotatedAABB(EDLADDER_SOUTH_AABB, EnumFacing.WEST, false);
+  protected static final AxisAlignedBB EDLADDER_NORTH_AABB = ModAuxiliaries.getRotatedAABB(EDLADDER_SOUTH_AABB, EnumFacing.NORTH, false);
 
   public BlockDecorLadder(@Nonnull String registryName, long config, @Nullable Material material, float hardness, float resistance, @Nullable SoundType sound)
   {

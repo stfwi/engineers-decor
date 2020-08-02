@@ -11,6 +11,8 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
+    ~ v1.1.1-b1   [F]
+
                   -------------------------------------------------------------------
     - v1.1.0      [R] Release build v1.1.0. Changes:
                     * GUI button/slider tooltips added (1.5s delay).
