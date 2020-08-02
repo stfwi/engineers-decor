@@ -1,9 +1,0 @@
-{
-	"textures": {
-    "wall": "engineersdecor:blocks/fence/steel_mesh_fence",
-    "particle": "engineersdecor:blocks/fence/steel_mesh_fence"
-	},
-	"elements": [{
-    "from": [7.9, 7.9, 7.9], "to": [8, 8, 8], "faces": { "down": {"texture": "#wall"} }
-  }]
-}

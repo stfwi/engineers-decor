@@ -1,9 +1,0 @@
-{
-	"textures": {
-    "wall": "engineersdecor:blocks/concrete/rebar_concrete_texture0",
-    "particle": "engineersdecor:blocks/concrete/rebar_concrete_texture0"
-	},
-	"elements": [{
-    "from": [7.9, 7.9, 7.9], "to": [8, 8, 8], "faces": { "down": {"texture": "#wall"} }
-  }]
-}
