@@ -1,9 +1,0 @@
-{
-	"textures": {
-    "wall": "engineersdecor:blocks/slag_brick/slag_brick_texture0",
-    "particle": "engineersdecor:blocks/slag_brick/slag_brick_texture0"
-	},
-	"elements": [{
-    "from": [7.9, 7.9, 7.9], "to": [8, 8, 8], "faces": { "down": {"texture": "#wall"} }
-  }]
-}

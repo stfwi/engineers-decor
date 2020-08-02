@@ -1,4 +1,0 @@
-{
-  "parent": "engineersdecor:block/sign/sign_decor_model",
-  "textures": { "f": "engineersdecor:blocks/sign/sign_defense_texture" }
-}

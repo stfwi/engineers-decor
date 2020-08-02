@@ -6,46 +6,91 @@
 # Note for reviewers/clones: This file is a auxiliary script for my setup.
 # It's not needed to build the mod.
 #
-.PHONY: default init clean clean-all mrproper sanitize dist dist-all combined-update-json sync-main-repo
+MOD_JAR_PREFIX=engineersdecor-
+MOD_JAR=$(filter-out %-sources.jar,$(wildcard build/libs/${MOD_JAR_PREFIX}*.jar))
 
-default:	;	@echo "First change to specific version directory."
-dist: default
+ifeq ($(OS),Windows_NT)
+GRADLE=gradlew.bat --no-daemon
+GRADLE_STOP=gradlew.bat --stop
+DJS=djs
+else
+GRADLE=./gradlew --no-daemon
+GRADLE_STOP=./gradlew --stop
+DJS=djs
+endif
+TASK=$(DJS) ../meta/lib/tasks.js
+
+wildcardr=$(foreach d,$(wildcard $1*),$(call wildcardr,$d/,$2) $(filter $(subst *,%,$2),$d))
+
+#
+# Targets
+#
+.PHONY: default mod data init clean clean-all mrproper all run install sanitize dist-check dist start-server assets
+
+default: mod
+
+all: clean clean-all mod | install
+
+mod:
+	@echo "[1.15] Building mod using gradle ..."
+	@$(GRADLE) build $(GRADLE_OPTS)
+
+assets:
+	@echo "[1.15] Running asset generators ..."
+	@$(TASK) assets
+
+data:
+	@echo "[1.15] Running data generators ..."
+	@$(TASK) datagen
 
 clean:
-	-@cd 1.12; make -s clean
-	-@cd 1.14; make -s clean
-	-@cd 1.15; make -s clean
+	@echo "[1.15] Cleaning ..."
+	@rm -rf src/generated
+	@rm -rf mcmodsrepo
+	@rm -f build/libs/*
+	@$(GRADLE) clean
 
 clean-all:
-	-@cd 1.12; make -s clean-all
-	-@cd 1.14; make -s clean-all
-	-@cd 1.15; make -s clean-all
+	@echo "[1.15] Cleaning using gradle ..."
+	@rm -rf mcmodsrepo
+	@rm -f dist/*
+	@rm -rf run/logs/
+	@rm -rf run/crash-reports/
+	@$(GRADLE) clean
 
-mrproper:
-	-@cd 1.12; make -s mrproper
-	-@cd 1.14; make -s mrproper
-	-@cd 1.15; make -s mrproper
-
-combined-update-json:
-	@echo "[main] Update update.json ..."
-	@djs meta/lib/tasks.js combined-update-json
-
-sanitize:
-	@cd 1.12; make -s sanitize
-	@cd 1.14; make -s sanitize
-	@cd 1.15; make -s sanitize
-	@make -s combined-update-json
+mrproper: clean-all
+	@rm -f meta/*.*
+	@rm -rf run/
+	@rm -rf out/
+	@rm -f .project
+	@rm -f .classpath
 
 init:
-	-@cd 1.12; make -s init
-	-@cd 1.14; make -s init
-	-@cd 1.15; make -s init
+	@echo "[1.15] Initialising eclipse workspace using gradle ..."
+	@$(GRADLE) eclipse
 
-dist-all: clean-all init
-	-@cd 1.12; make -s dist
-	-@cd 1.14; make -s dist
-	-@cd 1.15; make -s dist
+sanitize:
+	@echo "[1.15] Running sanitising tasks ..."
+	@$(TASK) sanitize
+	@$(TASK) sync-languages
+	@$(TASK) version-check
+	@$(TASK) update-json
+	@git status -s .
 
-sync-main-repo: sanitize
-	@echo "[main] Synchronising to github repository working tree ..."
-	@djs meta/lib/tasks.js sync-main-repository
+install: $(MOD_JAR) |
+	@$(TASK) install
+
+start-server: install
+	@$(TASK) start-server
+
+dist-check:
+	@echo "[1.15] Running dist checks ..."
+	@$(TASK) dist-check
+
+dist-files: clean-all init mod
+	@echo "[1.15] Distribution files ..."
+	@mkdir -p dist
+	@cp build/libs/$(MOD_JAR_PREFIX)* dist/
+	@$(TASK) dist
+
+dist: sanitize dist-check dist-files

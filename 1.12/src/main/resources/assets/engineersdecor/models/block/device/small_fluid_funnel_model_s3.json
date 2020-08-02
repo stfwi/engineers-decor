@@ -1,4 +1,0 @@
-{
-	"parent": "engineersdecor:block/device/small_fluid_funnel_model_s0",
-	"textures": { "side": "engineersdecor:blocks/device/small_fluid_funnel_side_s3" }
-}

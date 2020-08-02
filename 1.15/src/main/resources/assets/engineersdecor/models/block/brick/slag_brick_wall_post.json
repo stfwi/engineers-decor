@@ -1,8 +1,0 @@
-{
-  "parent":"engineersdecor:block/wall/brick_wall_post",
-	"textures": {
-		"postside": "engineersdecor:block/slag_brick/slag_brick_pole_side",
-		"top": "engineersdecor:block/slag_brick/slag_brick_top",
-		"particle": "engineersdecor:block/slag_brick/slag_brick_top"
-	}
-}
