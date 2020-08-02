@@ -205,12 +205,12 @@ More to come slowly but steadily.
   - Bug reports: Yes, please let me know. Drop a mail or better open an issue
     for the repository.
 
-  - Translations: Please translate the 1.12 lang files if possible (because the
-    1.13+ JSON language files are automatically generated from these `.lang`
-    files - saves me a bit of work).
+  - Translations: Please translate the 1.12 `lang` files in the branch `1.12`,
+    and the 1.13+ JSON language files in the latest Mincraft version branch.
 
-  - Pull requests: Happily accepted. Please make sure that use the ***develop
-    branch*** for pull requests. The master branch is for release versions only.
+  - Pull requests: Happily accepted. The branches on the github correspond to
+    the Minecraft versions, normally the latest revision (e.g. branch `1.16`
+    is the latest 1.16.x version, branch `1.12` is 1.12.2).
     I might merge the pull request locally if I'm ahead of the github repository,
     we will communicate this in the pull request thread then.
 
