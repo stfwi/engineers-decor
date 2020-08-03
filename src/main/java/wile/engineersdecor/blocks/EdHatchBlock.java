@@ -62,7 +62,7 @@ public class EdHatchBlock extends DecorBlock.HorizontalWaterLoggable implements 
   @Override
   @SuppressWarnings("deprecation")
   public boolean allowsMovement(BlockState state, IBlockReader world, BlockPos pos, PathType type)
-  { return state.get(OPEN); }
+  { return !state.get(OPEN); }
 
   @Override
   public boolean isLadder(BlockState state, IWorldReader world, BlockPos pos, LivingEntity entity)

@@ -1,0 +1,30 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:dark_shingle_roof_slab",
+          "required": ["engineersdecor:dark_shingle_roof_slabslice"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "SS",
+          "SS"
+        ],
+        "key": {
+          "S": {
+            "item": "engineersdecor:dark_shingle_roof_slabslice"
+          }
+        },
+        "result": {
+          "item": "engineersdecor:dark_shingle_roof_slab",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

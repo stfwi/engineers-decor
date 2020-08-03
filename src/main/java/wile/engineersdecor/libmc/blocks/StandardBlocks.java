@@ -13,6 +13,7 @@
 package wile.engineersdecor.libmc.blocks;
 
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
+import net.minecraft.pathfinding.PathType;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import net.minecraft.block.*;
 import net.minecraft.entity.EntityType;
@@ -66,6 +67,7 @@ public class StandardBlocks
   public static final long CFG_FLIP_PLACEMENT_IF_SAME     = 0x0000000000000100L; // placement direction flipped if an instance of the same class was clicked
   public static final long CFG_FLIP_PLACEMENT_SHIFTCLICK  = 0x0000000000000200L; // placement direction flipped if player is sneaking
   public static final long CFG_STRICT_CONNECTIONS         = 0x0000000000000400L; // blocks do not connect to similar blocks around (implementation details may vary a bit)
+  public static final long CFG_AI_PASSABLE                = 0x0000000000000800L; // does not block movement path for AI, needed for non-opaque blocks with collision shapes not thin at the bottom or one side.
 
   public interface IStandardBlock
   {
@@ -94,7 +96,7 @@ public class StandardBlocks
   {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public final long config;
-    public final VoxelShape vshape;
+    private final VoxelShape vshape;
 
     public BaseBlock(long conf, Block.Properties properties)
     { this(conf, properties, Auxiliaries.getPixeledAABB(0, 0, 0, 16, 16,16 )); }
@@ -134,7 +136,12 @@ public class StandardBlocks
 
     @Override
     public RenderTypeHint getRenderTypeHint()
-    { return ((config & CFG_CUTOUT)!=0) ? RenderTypeHint.CUTOUT : RenderTypeHint.SOLID; }
+    {
+      if((config & CFG_CUTOUT)!=0) return RenderTypeHint.CUTOUT;
+      if((config & CFG_MIPPED)!=0) return RenderTypeHint.CUTOUT_MIPPED;
+      if((config & CFG_TRANSLUCENT)!=0) return RenderTypeHint.TRANSLUCENT;
+      return RenderTypeHint.SOLID;
+    }
 
     @Override
     @SuppressWarnings("deprecation")
@@ -145,6 +152,11 @@ public class StandardBlocks
     @SuppressWarnings("deprecation")
     public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos,  ISelectionContext selectionContext)
     { return vshape; }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public boolean allowsMovement(BlockState state, IBlockReader world, BlockPos pos, PathType type)
+    { return ((config & CFG_AI_PASSABLE)==0) ? false : super.allowsMovement(state, world, pos, type); }
 
     @Override
     @Nullable

@@ -51,6 +51,31 @@
           "count": 8
         }
       }
+    },
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:iron_inset_light"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "   ",
+          "GGG",
+          "PLP"
+        ],
+        "key": {
+          "P": { "item": "minecraft:iron_ingot" },
+          "L": { "item" : "minecraft:glowstone" },
+          "G": { "item" : "minecraft:glass_pane" }
+        },
+        "result": {
+          "item": "engineersdecor:iron_inset_light",
+          "count": 8
+        }
+      }
     }
   ]
 }

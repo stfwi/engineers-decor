@@ -1,0 +1,31 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:dark_shingle_roof",
+          "required": ["engineersdecor:dark_shingle_roof_block"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "B  ",
+          "BB ",
+          "BBB"
+        ],
+        "key": {
+          "B": {
+            "item": "engineersdecor:dark_shingle_roof_block"
+          }
+        },
+        "result": {
+          "item": "engineersdecor:dark_shingle_roof",
+          "count": 8
+        }
+      }
+    }
+  ]
+}

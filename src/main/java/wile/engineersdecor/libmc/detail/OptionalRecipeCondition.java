@@ -59,7 +59,6 @@ public class OptionalRecipeCondition implements ICondition
     item_optouts = item_optout_provider;
   }
 
-
   public OptionalRecipeCondition(ResourceLocation result, List<ResourceLocation> required, List<ResourceLocation> missing, List<ResourceLocation> required_tags, List<ResourceLocation> missing_tags, boolean isexperimental, boolean result_is_tag)
   {
     all_required = required;

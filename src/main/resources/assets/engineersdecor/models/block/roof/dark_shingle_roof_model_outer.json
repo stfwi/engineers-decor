@@ -1,0 +1,56 @@
+{
+	"textures": {
+		"particle": "engineersdecor:block/roof/dark_shingle_roof",
+		"s": "engineersdecor:block/roof/dark_shingle_roof"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 4, 16],
+			"faces": {
+				"north": {"texture": "#s"},
+				"east": {"texture": "#s"},
+				"south": {"texture": "#s"},
+				"west": {"texture": "#s"},
+				"up": {"texture": "#s"},
+				"down": {"texture": "#s"}
+			}
+		},
+		{
+			"from": [4, 4, 4],
+			"to": [16, 8, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 12, 8]},
+			"faces": {
+				"north": {"texture": "#s"},
+				"east": {"texture": "#s"},
+				"south": {"texture": "#s"},
+				"west": {"texture": "#s"},
+				"up": {"texture": "#s"},
+				"down": {"texture": "#s"}
+			}
+		},
+		{
+			"from": [8, 8, 8],
+			"to": [16, 12, 16],
+			"faces": {
+				"north": {"texture": "#s"},
+				"east": {"texture": "#s"},
+				"south": {"texture": "#s"},
+				"west": {"texture": "#s"},
+				"up": {"texture": "#s"}
+			}
+		},
+		{
+			"from": [12, 12, 12],
+			"to": [16, 16, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 12, 8]},
+			"faces": {
+				"north": {"texture": "#s"},
+				"east": {"texture": "#s"},
+				"south": {"texture": "#s"},
+				"west": {"texture": "#s"},
+				"up": {"texture": "#s"}
+			}
+		}
+	]
+}

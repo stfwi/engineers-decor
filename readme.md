@@ -11,6 +11,10 @@ Mod sources for Minecraft version 1.15.1.
 
 ## Version history
 
+    - v1.1.1-b7  [F] Fixed AI-open-path bug (issue #116, ty KrAzYGEEK32, desht).
+                 [F] Conditional recipes extended to additional vanilla ingredients in case of oredict tag issues.
+                 [M] Lang file update zh_cn (PR#117, Moonisky).
+
     - v1.1.1-b6  [F] Iron Hatch rendering fixed (issue #113, ty KrAzYGEEK32).
                  [F] Hotfix of UI tooltip crash for versions Forge < 32.0.97 mapping issue.
 

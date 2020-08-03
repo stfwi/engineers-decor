@@ -29,8 +29,7 @@
       "conditions": [
         {
           "type": "engineersdecor:optional",
-          "result": "engineersdecor:gas_concrete",
-          "missing": ["immersiveengineering:concrete", "#forge:sand"]
+          "result": "engineersdecor:gas_concrete"
         }
       ],
       "recipe": {

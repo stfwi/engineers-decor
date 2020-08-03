@@ -12,6 +12,7 @@ import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.SharedConstants;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -262,15 +263,47 @@ public class Auxiliaries
 
   public static final AxisAlignedBB[] getRotatedAABB(AxisAlignedBB[] bbs, Direction new_facing, boolean horizontal_rotation)
   {
-    AxisAlignedBB[] transformed = new AxisAlignedBB[bbs.length];
+    final AxisAlignedBB[] transformed = new AxisAlignedBB[bbs.length];
     for(int i=0; i<bbs.length; ++i) transformed[i] = getRotatedAABB(bbs[i], new_facing, horizontal_rotation);
     return transformed;
   }
 
-  public static final VoxelShape getUnionShape(AxisAlignedBB[] aabbs)
+  public static final AxisAlignedBB getYRotatedAABB(AxisAlignedBB bb, int clockwise_90deg_steps)
+  {
+    final Direction direction_map[] = new Direction[]{Direction.NORTH,Direction.EAST,Direction.SOUTH,Direction.WEST};
+    return getRotatedAABB(bb, direction_map[(clockwise_90deg_steps+4096) & 0x03], true);
+  }
+
+  public static final AxisAlignedBB[] getYRotatedAABB(AxisAlignedBB[] bbs, int clockwise_90deg_steps)
+  {
+    final AxisAlignedBB[] transformed = new AxisAlignedBB[bbs.length];
+    for(int i=0; i<bbs.length; ++i) transformed[i] = getYRotatedAABB(bbs[i], clockwise_90deg_steps);
+    return transformed;
+  }
+
+  public static final AxisAlignedBB getMirroredAABB(AxisAlignedBB bb, Axis axis)
+  {
+    switch(axis) {
+      case X: return new AxisAlignedBB(1-bb.maxX, bb.minY, bb.minZ, 1-bb.minX, bb.maxY, bb.maxZ);
+      case Y: return new AxisAlignedBB(bb.minX, 1-bb.maxY, bb.minZ, bb.maxX, 1-bb.minY, bb.maxZ);
+      case Z: return new AxisAlignedBB(bb.minX, bb.minY, 1-bb.maxZ, bb.maxX, bb.maxY, 1-bb.minZ);
+      default: return bb;
+    }
+  }
+
+  public static final AxisAlignedBB[] getMirroredAABB(AxisAlignedBB[] bbs, Axis axis)
+  {
+    final AxisAlignedBB[] transformed = new AxisAlignedBB[bbs.length];
+    for(int i=0; i<bbs.length; ++i) transformed[i] = getMirroredAABB(bbs[i], axis);
+    return transformed;
+  }
+
+  public static final VoxelShape getUnionShape(AxisAlignedBB[] ... aabb_list)
   {
     VoxelShape shape = VoxelShapes.empty();
-    for(AxisAlignedBB aabb: aabbs) shape = VoxelShapes.combine(shape, VoxelShapes.create(aabb), IBooleanFunction.OR);
+    for(AxisAlignedBB[] aabbs:aabb_list) {
+      for(AxisAlignedBB aabb: aabbs) shape = VoxelShapes.combine(shape, VoxelShapes.create(aabb), IBooleanFunction.OR);
+    }
     return shape;
   }
 
