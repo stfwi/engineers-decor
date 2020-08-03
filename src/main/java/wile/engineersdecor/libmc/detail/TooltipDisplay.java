@@ -53,6 +53,7 @@ public class TooltipDisplay
   private int max_deviation = default_max_deviation;
   private int x_last, y_last;
   private long t;
+  private static boolean had_render_exception = false;
 
   public TooltipDisplay()
   { t = System.currentTimeMillis(); }
@@ -77,6 +78,7 @@ public class TooltipDisplay
 
   public <T extends Container> boolean render(MatrixStack mx, final ContainerScreen<T> gui, int x, int y)
   {
+    if(had_render_exception) return false;
     if((Math.abs(x-x_last) > max_deviation) || (Math.abs(y-y_last) > max_deviation)) {
       x_last = x;
       y_last = y;
@@ -89,7 +91,13 @@ public class TooltipDisplay
         if((x<tip.x0) || (x>tip.x1) || (y<tip.y0) || (y>tip.y1)) return false;
         String text = tip.text.getString();
         if(!text.isEmpty() && (!text.startsWith("block."))) {
-          gui.renderToolTip(mx, Collections.singletonList(tip.text), x, y, Minecraft.getInstance().fontRenderer);
+          try {
+            gui.renderToolTip(mx, Collections.singletonList(tip.text), x, y, Minecraft.getInstance().fontRenderer);
+          } catch(Exception ex) {
+            had_render_exception = true;
+            Auxiliaries.logError("Tooltip rendering disabled due to exception: '" + ex.getMessage() + "'");
+            return false;
+          }
         }
         return true;
       })

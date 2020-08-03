@@ -11,7 +11,8 @@ Mod sources for Minecraft version 1.15.1.
 
 ## Version history
 
-    ~ v1.1.1-b6  [F] Iron Hatch rendering fixed (issue #113, ty KrAzYGEEK32).
+    - v1.1.1-b6  [F] Iron Hatch rendering fixed (issue #113, ty KrAzYGEEK32).
+                 [F] Hot of for UI tooltip crash for versions Forge < 32.0.97.
 
     - v1.1.1-b5  [M] Transmuted the "Treated Wood Crafting Table" to a "Metal Crafting Table"
                      to de-duplicate the new Immersive Engineering "Engineer's Crafting Table".
