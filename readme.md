@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.15.1.
 
 ## Version history
 
+    - v1.1.2      [R] Maintenance release v1.1.2.
+                  [F] Fixed metal pole culling (issue #109).
+
                   -------------------------------------------------------------------
     - v1.1.1      [R] Release build v1.1.1. Changes:
                     * Dense Grit Dirt added.

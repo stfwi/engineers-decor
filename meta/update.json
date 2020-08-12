@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.15.2": {
+    "1.1.2": "[R] Maintenance release v1.1.2.\n[F] Fixed metal pole culling (issue #109).",
     "1.1.1": "[R] Release build v1.1.1. Changes: * Dense Grit Dirt added. * Ceiling Edge Light added. * Iron Bulb Light added.",
     "1.1.1-b1": "[A] Dense Grit Dirt added.\n[A] Ceiling Edge Light added.\n[A] Iron Bulb Light added.",
     "1.1.0": "[R] Release build v1.1.0. Changes: * GUI button/slider tooltips added (1.5s delay). * IE Sheet Metal Slab Slices added. * Config options extended/updated. * Block Placer improvements. * Block Breaker drop trajectory improved. * Dense Grit Sand textures enhanced. * Pipe Valve redstone connector display fixes. * Compatibility bug fixes.\n[F] Block Placer also defers placements if falling item stacks are in front of it (thx Cid).",
@@ -26,7 +27,7 @@
     "1.0.17-b2": "[A] Initial port."
   },
   "promos": {
-    "1.15.2-recommended": "1.1.1",
-    "1.15.2-latest": "1.1.1"
+    "1.15.2-recommended": "1.1.2",
+    "1.15.2-latest": "1.1.2"
   }
 }
