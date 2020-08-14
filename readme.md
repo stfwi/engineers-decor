@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.15.1.
 
 ## Version history
 
+    - v1.1.3      [M] Lang file update zh_cn (PR#117, Moonisky).
+                  [F] Fixed missing Dense Grit Dirt loot table (issue #124, thx vaelzan).
+
     - v1.1.2      [R] Maintenance release v1.1.2.
                   [F] Fixed metal pole culling (issue #109).
 
