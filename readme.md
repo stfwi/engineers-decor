@@ -11,7 +11,8 @@ Mod sources for Minecraft version 1.14.4.
 
 ## Version history
 
-    ~ v1.1.1-b1   [F]
+    - v1.1.1      [R] Maintenance Release v1.1.1.
+                  [M] Lang file update zh_cn (PR#117, Moonisky).
 
                   -------------------------------------------------------------------
     - v1.1.0      [R] Release build v1.1.0. Changes:

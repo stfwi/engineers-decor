@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.14.4": {
+    "1.1.1": "[R] Maintenance Release v1.1.1.\n[M] Lang file update zh_cn (PR#117, Moonisky).",
     "1.1.0": "[R] Release build v1.1.0. Changes: * GUI button/slider tooltips added (1.5s delay). * IE Sheet Metal Slab Slices added. * Config options extended/updated. * Block Placer improvements. * Block Breaker drop trajectory improved. * Dense Grit Sand textures enhanced. * Pipe Valve redstone connector display fixes. * Compatibility bug fixes.\n[F] Block Placer also defers placements if falling item stacks are in front of it (thx Cid).",
     "1.1.0-b3": "[F] Block Placer defers placements if collidable entities are in the way (issue #98, thx DrakoAlcarus).\n[M] Block Breaker item drop trajectories have lower speed (fall slightly straighter down).\n[M] Pipe Valves redstone connector also shown if the adjacent block can connect redstone in general.\n[F] Added Block verification during TE ticking in case devices are moved (issue #101, thx D0CTOR-ZED).",
     "1.1.0-b2": "[A] Added tooltips for buttons/settings in device GUIs (1.5s display delay).",
@@ -59,7 +60,7 @@
     "1.0.7-b3": "[A] Initial 1.14.2 port of decorative blocks."
   },
   "promos": {
-    "1.14.4-recommended": "1.1.0",
-    "1.14.4-latest": "1.1.0"
+    "1.14.4-recommended": "1.1.1",
+    "1.14.4-latest": "1.1.1"
   }
 }
