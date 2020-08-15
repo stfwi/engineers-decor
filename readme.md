@@ -10,6 +10,8 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    ~ v1.1.3      [R]
+
     - v1.1.2      [R] Maintenance release.
                   [M] Lang file update zh_cn (PR#117, Moonisky).
 
