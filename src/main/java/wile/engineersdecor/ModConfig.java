@@ -521,8 +521,7 @@ public class ModConfig
   // Cache
   //--------------------------------------------------------------------------------------------------------------------
 
-                                                    @Deprecated
-  private static String const_exclude_patterns = "dark_shingle_*"; // experimental
+  private static String const_exclude_patterns = "";
   private static final CompoundNBT server_config_ = new CompoundNBT();
   private static HashSet<String> optouts_ = new HashSet<>();
   private static boolean with_experimental_features_ = false;

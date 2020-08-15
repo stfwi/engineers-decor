@@ -466,7 +466,6 @@ public class ModContent
 
   // -------------------------------------------------------------------------------------------------------------------
 
-  @Deprecated // @todo: rename to "crafting_table" in 1.16.2 or 1.17
   public static final EdCraftingTable.CraftingTableBlock CRAFTING_TABLE = (EdCraftingTable.CraftingTableBlock)(new EdCraftingTable.CraftingTableBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 15f).sound(SoundType.METAL).notSolid(),
@@ -474,7 +473,7 @@ public class ModContent
       Auxiliaries.getPixeledAABB(0,15,0, 16,16,16),
       Auxiliaries.getPixeledAABB(1, 0,1, 15,16,15)
     }
-  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "treated_wood_crafting_table"));
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "metal_crafting_table"));
 
   public static final FurnaceBlock SMALL_LAB_FURNACE = (FurnaceBlock)(new FurnaceBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT,
@@ -693,18 +692,6 @@ public class ModContent
 
   // -------------------------------------------------------------------------------------------------------------------
 
-  //todo: REMOVE IN 1.17/1.16.2
-  @Deprecated
-  public static final EdWallBlock CONCRETE_WALL = (EdWallBlock)(new EdWallBlock(
-    DecorBlock.CFG_CUTOUT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 50f).sound(SoundType.STONE).notSolid()
-  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "concrete_wall"));
-
-  public static final EdSlabSliceBlock HALFSLAB_CONCRETE = (EdSlabSliceBlock)(new EdSlabSliceBlock(
-    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HARD_IE_DEPENDENT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1f, 10f).sound(SoundType.STONE).notSolid()
-  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "halfslab_concrete"));
-
   public static final EdSlabSliceBlock HALFSLAB_TREATEDWOOD = (EdSlabSliceBlock)(new EdSlabSliceBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HARD_IE_DEPENDENT,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 4f).sound(SoundType.WOOD).notSolid()
@@ -805,14 +792,12 @@ public class ModContent
     GAS_CONCRETE_WALL,
     HALFSLAB_REBARCONCRETE,
     HALFSLAB_GASCONCRETE,
-    HALFSLAB_CONCRETE,
     HALFSLAB_TREATEDWOOD,
     HALFSLAB_SHEETMETALIRON,
     HALFSLAB_SHEETMETALSTEEL,
     HALFSLAB_SHEETMETALCOPPER,
     HALFSLAB_SHEETMETALGOLD,
     HALFSLAB_SHEETMETALALUMINIUM,
-    CONCRETE_WALL,
     PANZERGLASS_BLOCK,
     PANZERGLASS_SLAB,
     DARK_CERAMIC_SHINGLE_ROOF,

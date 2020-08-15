@@ -135,7 +135,7 @@ public class StandardFenceBlock extends WallBlock implements StandardBlocks.ISta
     if((block instanceof FenceGateBlock) || (block instanceof StandardFenceBlock) || (block instanceof VariantWallBlock)) return true;
     final BlockState oppositeState = world.getBlockState(facingPos.offset(side, 2));
     if(!(oppositeState.getBlock() instanceof StandardFenceBlock)) return false;
-    return facingState.isNormalCube(world, facingPos) && hasSolidSide(facingState, world, facingPos, side);
+    return facingState.isNormalCube(world, facingPos) && hasEnoughSolidSide(world, facingPos, side);
   }
 
   protected WallHeight selectWallHeight(IWorldReader world, BlockPos pos, Direction direction)
