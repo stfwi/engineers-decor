@@ -212,24 +212,29 @@ public class ModContent
   // -------------------------------------------------------------------------------------------------------------------
 
   public static final EdRoofBlock DARK_CERAMIC_SHINGLE_ROOF = (EdRoofBlock)(new EdRoofBlock(
-    DecorBlock.CFG_DEFAULT,
+    DecorBlock.CFG_DEFAULT|DecorBlock.CFG_EXPERIMENTAL,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "dark_shingle_roof"));
 
   public static final DecorBlock.Normal DARK_CERAMIC_SHINGLE_ROOF_BLOCK = (DecorBlock.Normal)(new DecorBlock.Normal(
-    DecorBlock.CFG_DEFAULT,
+    DecorBlock.CFG_DEFAULT|DecorBlock.CFG_EXPERIMENTAL,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "dark_shingle_roof_block"));
 
   public static final EdSlabBlock DARK_CERAMIC_SHINGLE_ROOF_SLAB = (EdSlabBlock)(new EdSlabBlock(
-    DecorBlock.CFG_DEFAULT,
+    DecorBlock.CFG_DEFAULT|DecorBlock.CFG_EXPERIMENTAL,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "dark_shingle_roof_slab"));
 
   public static final EdSlabSliceBlock HALFSLAB_DARK_CERAMIC_SHINGLE_ROOF = (EdSlabSliceBlock)(new EdSlabSliceBlock(
-    DecorBlock.CFG_CUTOUT,
+    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_EXPERIMENTAL,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "dark_shingle_roof_slabslice"));
+
+  public static final EdRoofBlock DARK_CERAMIC_SHINGLE_ROOF_METALIZED = (EdRoofBlock)(new EdRoofBlock(
+    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_EXPERIMENTAL,
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "dark_shingle_roof_metallized"));
 
   // -------------------------------------------------------------------------------------------------------------------
 
@@ -816,6 +821,7 @@ public class ModContent
     PANZERGLASS_BLOCK,
     PANZERGLASS_SLAB,
     DARK_CERAMIC_SHINGLE_ROOF,
+    DARK_CERAMIC_SHINGLE_ROOF_METALIZED,
     DARK_CERAMIC_SHINGLE_ROOF_BLOCK,
     DARK_CERAMIC_SHINGLE_ROOF_SLAB,
     HALFSLAB_DARK_CERAMIC_SHINGLE_ROOF,
@@ -1050,8 +1056,9 @@ public class ModContent
     return blocks;
   }
 
+  @SuppressWarnings("deprecation")
   public static boolean isExperimentalBlock(Block block)
-  { return ArrayUtils.contains(devBlocks, block); }
+  { return ArrayUtils.contains(devBlocks, block) || ((block instanceof IDecorBlock) && ((((IDecorBlock)block).config() & DecorBlock.CFG_EXPERIMENTAL))!=0); }
 
   @Nonnull
   public static List<Block> getRegisteredBlocks()

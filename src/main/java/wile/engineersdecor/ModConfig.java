@@ -521,8 +521,6 @@ public class ModConfig
   // Cache
   //--------------------------------------------------------------------------------------------------------------------
 
-                                                    @Deprecated
-  private static String const_exclude_patterns = "dark_shingle_*"; // experimental
   private static final CompoundNBT server_config_ = new CompoundNBT();
   private static HashSet<String> optouts_ = new HashSet<>();
   private static boolean with_experimental_features_ = false;
@@ -553,7 +551,6 @@ public class ModConfig
     {
       String exc = SERVER.pattern_excludes.get().toLowerCase().replaceAll(MODID+":", "").replaceAll("[^*_,a-z0-9]", "");
       if(!exc.isEmpty()) LOGGER.info("Config pattern excludes: '" + exc + "'");
-      if(!const_exclude_patterns.isEmpty()) exc += "," + const_exclude_patterns;
       String[] excl = exc.split(",");
       excludes_.clear();
       for(int i=0; i< excl.length; ++i) {

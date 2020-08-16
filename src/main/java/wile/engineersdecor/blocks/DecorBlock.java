@@ -39,6 +39,7 @@ public class DecorBlock
   public static final long CFG_STRICT_CONNECTIONS         = StandardBlocks.CFG_STRICT_CONNECTIONS;
   public static final long CFG_AI_PASSABLE                = StandardBlocks.CFG_AI_PASSABLE;
   public static final long CFG_HARD_IE_DEPENDENT          = 0x8000000000000000L;
+  @Deprecated public static final long CFG_EXPERIMENTAL   = 0x4000000000000000L;
 
   public static class Normal extends StandardBlocks.BaseBlock implements IDecorBlock
   {
