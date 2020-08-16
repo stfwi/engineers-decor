@@ -1,0 +1,33 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:dark_shingle_roof_chimneytrunk",
+          "required": [ "engineersdecor:dark_shingle_roof", "engineersdecor:thick_steel_pole" ]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "P",
+          "R"
+        ],
+        "key": {
+          "R": {
+            "item": "engineersdecor:dark_shingle_roof"
+          },
+          "P": {
+            "item": "engineersdecor:thick_steel_pole"
+          }
+        },
+        "result": {
+          "item": "engineersdecor:dark_shingle_roof_chimneytrunk",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

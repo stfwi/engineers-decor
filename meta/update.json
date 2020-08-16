@@ -1,17 +1,11 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
-  "1.16.1": {
-    "1.1.1-b7": "[F] Fixed AI-open-path bug (issue #116, ty KrAzYGEEK32, desht).\n[F] Conditional recipes extended to additional vanilla ingredients in case of oredict tag issues.\n[M] Lang file update zh_cn (PR#117, Moonisky).",
-    "1.1.1-b6": "[F] Iron Hatch rendering fixed (issue #113, ty KrAzYGEEK32).\n[F] Hotfix of UI tooltip crash for versions Forge < 32.0.97 mapping issue.",
-    "1.1.1-b5": "[M] Transmuted the \"Treated Wood Crafting Table\" to a \"Metal Crafting Table\" to de-duplicate the new Immersive Engineering \"Engineer's Crafting Table\".\n[F] Fixed metal pole culling (issue #109, thx Alsett).",
-    "1.1.1-b4": "[F] Fixed Fluid Barrel tooltip text duplicate.\n[F] Fixed IE hard-dependency opt-out.\n[M] Side Table model and shape refined.\n[A] Dense Grit Dirt added.\n[M] Wood textures slightly darker, obsolete textures removed.",
-    "1.1.1-b3": "[A] Ceiling Edge Light added.\n[A] Iron Bulb Light added.\n[A] Iron Hatch added.\n[A] Fluid Barrel added.\n[M] Gas Concrete texture made slightly darker.",
-    "1.1.1-b2": "[M] Nerfed Solar Panel output default config value from 45RF/t to 40RF/t.\n[F] Fixed conditional IE tag dependency of alternative/standalone recipes.",
-    "1.1.1-b1": "[A] JEI integration ported.\n[M] Logical server side config moved from COMMON to SERVER (world/serverconfig).\n[F] Labeled Crate recipe condition for missing Immersive Engineering fixed.\n[F] Mouse scrolling works for Labeled Crate and TW Crafting Table.",
-    "1.1.1-a1": "[A] Initial port."
+  "1.16.2": {
+    "1.1.2-b2": "[A] Dark Ceramic Root added.",
+    "1.1.2-b1": "[U] Ported to MC1.16.2."
   },
   "promos": {
-    "1.16.1-recommended": "1.1.1-b7",
-    "1.16.1-latest": "1.1.1-b7"
+    "1.16.2-recommended": "1.1.2-b2",
+    "1.16.2-latest": "1.1.2-b2"
   }
 }

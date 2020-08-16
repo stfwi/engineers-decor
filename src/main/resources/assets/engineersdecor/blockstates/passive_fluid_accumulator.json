@@ -1,10 +1,1 @@
-{
-  "variants": {
-    "facing=north": { "model": "engineersdecor:block/pipe/passive_fluid_accumulator_model"          },
-    "facing=south": { "model": "engineersdecor:block/pipe/passive_fluid_accumulator_model", "y":180 },
-    "facing=west":  { "model": "engineersdecor:block/pipe/passive_fluid_accumulator_model", "y":270 },
-    "facing=east":  { "model": "engineersdecor:block/pipe/passive_fluid_accumulator_model", "y":90  },
-    "facing=up":    { "model": "engineersdecor:block/pipe/passive_fluid_accumulator_model", "x":270 },
-    "facing=down":  { "model": "engineersdecor:block/pipe/passive_fluid_accumulator_model", "x":90  }
-  }
-}
+{ "variants": { "": { "model": "minecraft:block/barrier" } } }

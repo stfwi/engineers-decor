@@ -2,7 +2,8 @@
 	"parent": "block/block",
 	"textures": {
 		"particle": "engineersdecor:block/roof/dark_shingle_roof",
-		"s": "engineersdecor:block/roof/dark_shingle_roof"
+		"s": "engineersdecor:block/roof/dark_shingle_roof",
+		"f": "engineersdecor:block/material/steel_texture"
 	},
 	"elements": [
 		{
@@ -220,6 +221,41 @@
 				"south": {"uv": [12, 0, 16, 0.5], "texture": "#s"},
 				"west": {"uv": [8, 0, 12, 0.5], "texture": "#s"},
 				"up": {"uv": [12, 8, 16, 12], "texture": "#s"}
+			}
+		},
+		{
+			"from": [0, 3.5, 0],
+			"to": [1, 6, 1],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 11.5, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 1, 2.5], "texture": "#f"},
+				"east": {"uv": [0, 0, 1, 2.5], "texture": "#f"},
+				"south": {"uv": [0, 0, 1, 2.5], "texture": "#f"},
+				"west": {"uv": [0, 0, 1, 2.5], "texture": "#f"},
+				"up": {"uv": [0, 0, 1, 1], "texture": "#f"}
+			}
+		},
+		{
+			"from": [0, 4, 15],
+			"to": [1, 6, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 12, 23]},
+			"faces": {
+				"north": {"uv": [0, 0, 1, 2], "texture": "#f"},
+				"east": {"uv": [0, 0, 1, 2], "texture": "#f"},
+				"south": {"uv": [0, 0, 1, 2], "texture": "#f"},
+				"west": {"uv": [0, 0, 1, 2], "texture": "#f"},
+				"up": {"uv": [0, 0, 1, 1], "texture": "#f"}
+			}
+		},
+		{
+			"from": [0, 5, 1],
+			"to": [1, 6, 15],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 12, 22]},
+			"faces": {
+				"east": {"uv": [0, 0, 14, 1], "texture": "#f"},
+				"west": {"uv": [0, 0, 14, 1], "texture": "#f"},
+				"up": {"uv": [0, 0, 1, 14], "texture": "#f"},
+				"down": {"uv": [0, 0, 1, 14], "texture": "#f"}
 			}
 		}
 	],

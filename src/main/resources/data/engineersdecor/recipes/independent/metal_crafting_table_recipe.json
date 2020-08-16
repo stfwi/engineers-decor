@@ -5,7 +5,7 @@
       "conditions": [
         {
           "type": "engineersdecor:optional",
-          "result": "engineersdecor:treated_wood_crafting_table"
+          "result": "engineersdecor:metal_crafting_table"
         }
       ],
       "recipe": {
@@ -19,7 +19,7 @@
           "C": { "item": "minecraft:crafting_table" }
         },
         "result": {
-          "item": "engineersdecor:treated_wood_crafting_table",
+          "item": "engineersdecor:metal_crafting_table",
           "count": 1
         }
       }

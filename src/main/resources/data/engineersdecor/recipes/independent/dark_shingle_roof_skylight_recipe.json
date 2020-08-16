@@ -1,0 +1,33 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:dark_shingle_roof_skylight",
+          "required": [ "engineersdecor:dark_shingle_roof" ]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "R ",
+          "PR"
+        ],
+        "key": {
+          "P": {
+            "item": "minecraft:glass_pane"
+          },
+          "R": {
+            "item": "engineersdecor:dark_shingle_roof"
+          }
+        },
+        "result": {
+          "item": "engineersdecor:dark_shingle_roof_skylight",
+          "count": 3
+        }
+      }
+    }
+  ]
+}

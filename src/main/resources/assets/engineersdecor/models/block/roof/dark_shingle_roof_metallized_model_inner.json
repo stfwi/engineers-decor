@@ -1,7 +1,8 @@
 {
 	"textures": {
 		"particle": "engineersdecor:block/roof/dark_shingle_roof",
-		"s": "engineersdecor:block/roof/dark_shingle_roof"
+		"s": "engineersdecor:block/roof/dark_shingle_roof",
+		"f": "engineersdecor:block/material/steel_texture"
 	},
 	"elements": [
 		{
@@ -222,6 +223,18 @@
 				"west": {"uv": [0, 12, 4, 16], "texture": "#s"},
 				"up": {"uv": [0, 0, 4, 4], "texture": "#s"},
 				"down": {"uv": [0, 12, 4, 16], "texture": "#s"}
+			}
+		},
+		{
+			"from": [0, 4, 0],
+			"to": [1, 6, 1],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 12, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 1, 2], "texture": "#f"},
+				"east": {"uv": [0, 0, 1, 2], "texture": "#f"},
+				"south": {"uv": [0, 0, 1, 2], "texture": "#f"},
+				"west": {"uv": [0, 0, 1, 2], "texture": "#f"},
+				"up": {"uv": [0, 0, 1, 1], "texture": "#f"}
 			}
 		}
 	]

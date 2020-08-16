@@ -108,8 +108,8 @@ public class OptionalRecipeCondition implements ICondition
     }
     if(!all_required_tags.isEmpty()) {
       for(ResourceLocation rl:all_required_tags) {
-        if(!ItemTags.getCollection().getTagMap().containsKey(rl)) return false;
-        if(ItemTags.getCollection().getTagMap().get(rl).func_230236_b_().isEmpty()) return false;
+        if(!ItemTags.getCollection().func_241833_a()/*getTagMap()*/.containsKey(rl)) return false;
+        if(ItemTags.getCollection().func_241833_a()/*getTagMap()*/.get(rl).func_230236_b_().isEmpty()) return false;
       }
     }
     if(!any_missing.isEmpty()) {
@@ -120,8 +120,8 @@ public class OptionalRecipeCondition implements ICondition
     }
     if(!any_missing_tags.isEmpty()) {
       for(ResourceLocation rl:any_missing_tags) {
-        if(!ItemTags.getCollection().getTagMap().containsKey(rl)) return true;
-        if(ItemTags.getCollection().getTagMap().get(rl).func_230236_b_().isEmpty()) return true;
+        if(!ItemTags.getCollection().func_241833_a()/*getTagMap()*/.containsKey(rl)) return true;
+        if(ItemTags.getCollection().func_241833_a()/*getTagMap()*/.get(rl).func_230236_b_().isEmpty()) return true;
       }
       return false;
     }

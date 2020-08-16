@@ -46,6 +46,8 @@ public class ModEngineersDecor
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onSendImc);
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRecvImc);
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientSetup);
+    FMLJavaModLoadingContext.get().getModEventBus().addListener(ForgeEvents::onConfigLoad);
+    FMLJavaModLoadingContext.get().getModEventBus().addListener(ForgeEvents::onConfigReload);
     ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.SERVER, ModConfig.SERVER_CONFIG_SPEC);
     ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.CLIENT, ModConfig.CLIENT_CONFIG_SPEC);
     MinecraftForge.EVENT_BUS.register(this);
@@ -119,11 +121,9 @@ public class ModEngineersDecor
     public static void onServerStarting(FMLServerStartingEvent event)
     {}
 
-    @SubscribeEvent
     public static void onConfigLoad(net.minecraftforge.fml.config.ModConfig.Loading configEvent)
     { config_loaded = true; }
 
-    @SubscribeEvent
     public static void onConfigReload(net.minecraftforge.fml.config.ModConfig.Reloading configEvent)
     {
       try {

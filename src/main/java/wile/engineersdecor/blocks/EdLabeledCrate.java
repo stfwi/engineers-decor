@@ -123,7 +123,7 @@ public class EdLabeledCrate
     { return true; }
 
     @Override
-    public List<ItemStack> dropList(BlockState state, World world, BlockPos pos, final TileEntity te, boolean explosion)
+    public List<ItemStack> dropList(BlockState state, World world, final TileEntity te, boolean explosion)
     {
       final List<ItemStack> stacks = new ArrayList<ItemStack>();
       if(world.isRemote) return stacks;

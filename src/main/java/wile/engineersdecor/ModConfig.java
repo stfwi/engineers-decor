@@ -114,7 +114,6 @@ public class ModConfig
     public final ForgeConfigSpec.BooleanValue without_lab_furnace;
     public final ForgeConfigSpec.BooleanValue without_electrical_furnace;
     public final ForgeConfigSpec.BooleanValue without_valves;
-    public final ForgeConfigSpec.BooleanValue without_passive_fluid_accumulator;
     public final ForgeConfigSpec.BooleanValue without_waste_incinerator;
     public final ForgeConfigSpec.BooleanValue without_factory_dropper;
     public final ForgeConfigSpec.BooleanValue without_factory_hopper;
@@ -267,10 +266,6 @@ public class ModConfig
           .translation(MODID + ".config.without_valves")
           .comment("Disable check valve, and redstone controlled valves.")
           .define("without_valves", false);
-        without_passive_fluid_accumulator = builder
-          .translation(MODID + ".config.without_passive_fluid_accumulator")
-          .comment("Disable the passive fluid accumulator.")
-          .define("without_passive_fluid_accumulator", false);
         without_waste_incinerator = builder
           .translation(MODID + ".config.without_waste_incinerator")
           .comment("Disable item disposal/trash/void incinerator device.")
@@ -521,8 +516,6 @@ public class ModConfig
   // Cache
   //--------------------------------------------------------------------------------------------------------------------
 
-                                                    @Deprecated
-  private static String const_exclude_patterns = "dark_shingle_*"; // experimental
   private static final CompoundNBT server_config_ = new CompoundNBT();
   private static HashSet<String> optouts_ = new HashSet<>();
   private static boolean with_experimental_features_ = false;
@@ -553,7 +546,6 @@ public class ModConfig
     {
       String exc = SERVER.pattern_excludes.get().toLowerCase().replaceAll(MODID+":", "").replaceAll("[^*_,a-z0-9]", "");
       if(!exc.isEmpty()) LOGGER.info("Config pattern excludes: '" + exc + "'");
-      if(!const_exclude_patterns.isEmpty()) exc += "," + const_exclude_patterns;
       String[] excl = exc.split(",");
       excludes_.clear();
       for(int i=0; i< excl.length; ++i) {
@@ -574,9 +566,9 @@ public class ModConfig
       ModContent.getRegisteredBlocks().stream().filter((Block block) -> {
         if(block==null) return true;
         if(block==ModContent.SIGN_MODLOGO) return true;
-        if(COMMON==null) return false;
+        if(SERVER==null) return false;
         try {
-          if(!SERVER.with_experimental.get()) {
+          if(!with_experimental_features_) {
             if(block instanceof Auxiliaries.IExperimentalFeature) return true;
             if(ModContent.isExperimentalBlock(block)) return true;
           }
@@ -610,7 +602,6 @@ public class ModConfig
           if(block instanceof EdCraftingTable.CraftingTableBlock) return SERVER.without_crafting_table.get();
           if(block instanceof EdElectricalFurnace.ElectricalFurnaceBlock) return SERVER.without_electrical_furnace.get();
           if((block instanceof EdFurnace.FurnaceBlock)&&(!(block instanceof EdElectricalFurnace.ElectricalFurnaceBlock))) return SERVER.without_lab_furnace.get();
-          if(block instanceof EdFluidAccumulator.FluidAccumulatorBlock) return SERVER.without_passive_fluid_accumulator.get();
           if(block instanceof EdWasteIncinerator.WasteIncineratorBlock) return SERVER.without_waste_incinerator.get();
           if(block instanceof EdDropper.DropperBlock) return SERVER.without_factory_dropper.get();
           if(block instanceof EdPlacer.PlacerBlock) return SERVER.without_factory_placer.get();

@@ -77,7 +77,7 @@ public class StandardBlocks
     default boolean hasDynamicDropList()
     { return false; }
 
-    default List<ItemStack> dropList(BlockState state, World world, BlockPos pos, @Nullable TileEntity te, boolean explosion)
+    default List<ItemStack> dropList(BlockState state, World world, @Nullable TileEntity te, boolean explosion)
     { return Collections.singletonList((!world.isRemote()) ? (new ItemStack(state.getBlock().asItem())) : (ItemStack.EMPTY)); }
 
     enum RenderTypeHint { SOLID,CUTOUT,CUTOUT_MIPPED,TRANSLUCENT,TRANSLUCENT_NO_CRUMBLING }
@@ -193,13 +193,12 @@ public class StandardBlocks
     @SuppressWarnings("deprecation")
     public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
     {
-      final BlockPos pos = builder.get(LootParameters.POSITION);
       final ServerWorld world = builder.getWorld();
       final Float explosion_radius = builder.get(LootParameters.EXPLOSION_RADIUS);
       final TileEntity te = builder.get(LootParameters.BLOCK_ENTITY);
-      if((!hasDynamicDropList()) || (pos==null) || (world==null)) return super.getDrops(state, builder);
+      if((!hasDynamicDropList()) || (world==null)) return super.getDrops(state, builder);
       boolean is_explosion = (explosion_radius!=null) && (explosion_radius > 0);
-      return dropList(state, world, pos, te, is_explosion);
+      return dropList(state, world, te, is_explosion);
     }
 
     @Override

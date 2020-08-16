@@ -41,10 +41,15 @@ public class EdRoofBlock extends StandardBlocks.HorizontalWaterLoggable implemen
   public EdRoofBlock(long config, Block.Properties properties)
   {
     super(config,
-      properties.func_235838_a_((state)->1), // .notSolid() shade rendering again messed up
+      properties,//.func_235838_a_((state)->1).notSolid(), //shade rendering again messed up
       Auxiliaries.getPixeledAABB(0, 0,0,16, 8, 16));
     setDefaultState(stateContainer.getBaseState().with(HORIZONTAL_FACING, Direction.NORTH).with(SHAPE, StairsShape.STRAIGHT).with(WATERLOGGED, false));
   }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  public boolean isTransparent(BlockState state)
+  { return true; }
 
   @Override
   public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)
