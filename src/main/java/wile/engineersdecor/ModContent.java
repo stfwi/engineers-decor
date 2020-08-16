@@ -212,7 +212,7 @@ public class ModContent
   // -------------------------------------------------------------------------------------------------------------------
 
   public static final EdRoofBlock DARK_CERAMIC_SHINGLE_ROOF = (EdRoofBlock)(new EdRoofBlock(
-    DecorBlock.CFG_DEFAULT|DecorBlock.CFG_EXPERIMENTAL,
+    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_EXPERIMENTAL,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "dark_shingle_roof"));
 
