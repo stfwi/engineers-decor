@@ -138,7 +138,7 @@ public class VariantWallBlock extends WallBlock implements StandardBlocks.IStand
     if((block instanceof FenceGateBlock) || (block instanceof WallBlock)) return true;
     final BlockState oppositeState = world.getBlockState(facingPos.offset(side, 2));
     if(!(oppositeState.getBlock() instanceof VariantWallBlock)) return false;
-    return facingState.isNormalCube(world, facingPos) && hasSolidSide(facingState, world, facingPos, side);
+    return facingState.isNormalCube(world, facingPos) && Block.hasEnoughSolidSide(world, facingPos, side);
   }
 
   protected WallHeight selectWallHeight(IWorldReader world, BlockPos pos, Direction direction)

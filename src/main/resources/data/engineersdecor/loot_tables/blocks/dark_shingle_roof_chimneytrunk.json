@@ -2,7 +2,7 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "name": "concrete_wall_dlt",
+      "name": "dark_shingle_roof_chimneytrunk_dlt",
       "rolls": 1,
       "entries": [
         {
@@ -13,7 +13,7 @@
               "source": "block_entity"
             }
           ],
-          "name": "engineersdecor:concrete_wall"
+          "name": "engineersdecor:dark_shingle_roof_chimneytrunk"
         }
       ]
     }

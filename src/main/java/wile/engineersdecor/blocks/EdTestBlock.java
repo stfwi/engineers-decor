@@ -77,7 +77,7 @@ public class EdTestBlock
     { return true; }
 
     @Override
-    public List<ItemStack> dropList(BlockState state, World world, BlockPos pos, TileEntity te, boolean explosion)
+    public List<ItemStack> dropList(BlockState state, World world, TileEntity te, boolean explosion)
     {
       ArrayList<ItemStack> list = new ArrayList<ItemStack>();
       list.add(new ItemStack(this, 1));

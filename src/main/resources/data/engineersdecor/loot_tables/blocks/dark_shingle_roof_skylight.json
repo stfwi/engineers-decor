@@ -2,7 +2,7 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "name": "passive_fluid_accumulator_dlt",
+      "name": "dark_shingle_roof_skylight_dlt",
       "rolls": 1,
       "entries": [
         {
@@ -11,14 +11,9 @@
             {
               "function": "minecraft:copy_name",
               "source": "block_entity"
-            },
-            {
-              "function": "minecraft:copy_nbt",
-              "source": "block_entity",
-              "ops": []
             }
           ],
-          "name": "engineersdecor:passive_fluid_accumulator"
+          "name": "engineersdecor:dark_shingle_roof_skylight"
         }
       ]
     }

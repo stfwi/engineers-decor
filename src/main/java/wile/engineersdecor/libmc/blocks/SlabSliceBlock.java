@@ -162,7 +162,7 @@ public class SlabSliceBlock extends StandardBlocks.WaterLoggable implements Stan
   { return true; }
 
   @Override
-  public List<ItemStack> dropList(BlockState state, World world, BlockPos pos, TileEntity te, boolean explosion)
+  public List<ItemStack> dropList(BlockState state, World world, TileEntity te, boolean explosion)
   { return new ArrayList<ItemStack>(Collections.singletonList(new ItemStack(this.asItem(), num_slabs_contained_in_parts_[state.get(PARTS) & 0xf]))); }
 
   @Override

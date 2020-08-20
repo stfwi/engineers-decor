@@ -212,29 +212,39 @@ public class ModContent
   // -------------------------------------------------------------------------------------------------------------------
 
   public static final EdRoofBlock DARK_CERAMIC_SHINGLE_ROOF = (EdRoofBlock)(new EdRoofBlock(
-    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_EXPERIMENTAL,
+    DecorBlock.CFG_CUTOUT,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "dark_shingle_roof"));
 
   public static final DecorBlock.Normal DARK_CERAMIC_SHINGLE_ROOF_BLOCK = (DecorBlock.Normal)(new DecorBlock.Normal(
-    DecorBlock.CFG_DEFAULT|DecorBlock.CFG_EXPERIMENTAL,
+    DecorBlock.CFG_CUTOUT,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "dark_shingle_roof_block"));
 
   public static final EdSlabBlock DARK_CERAMIC_SHINGLE_ROOF_SLAB = (EdSlabBlock)(new EdSlabBlock(
-    DecorBlock.CFG_DEFAULT|DecorBlock.CFG_EXPERIMENTAL,
+    DecorBlock.CFG_CUTOUT,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "dark_shingle_roof_slab"));
 
   public static final EdSlabSliceBlock HALFSLAB_DARK_CERAMIC_SHINGLE_ROOF = (EdSlabSliceBlock)(new EdSlabSliceBlock(
-    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_EXPERIMENTAL,
+    DecorBlock.CFG_CUTOUT,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "dark_shingle_roof_slabslice"));
 
   public static final EdRoofBlock DARK_CERAMIC_SHINGLE_ROOF_METALIZED = (EdRoofBlock)(new EdRoofBlock(
-    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_EXPERIMENTAL,
+    DecorBlock.CFG_CUTOUT,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "dark_shingle_roof_metallized"));
+
+  public static final EdRoofBlock DARK_CERAMIC_SHINGLE_ROOF_SKYLIGHT = (EdRoofBlock)(new EdRoofBlock(
+    DecorBlock.CFG_TRANSLUCENT,
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE).notSolid()
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "dark_shingle_roof_skylight"));
+
+  public static final EdRoofBlock DARK_CERAMIC_SHINGLE_ROOF_CHIMNEYTRUNK = (EdRoofBlock)(new EdRoofBlock(
+    DecorBlock.CFG_CUTOUT,
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "dark_shingle_roof_chimneytrunk"));
 
   // -------------------------------------------------------------------------------------------------------------------
 
@@ -471,7 +481,6 @@ public class ModContent
 
   // -------------------------------------------------------------------------------------------------------------------
 
-  @Deprecated // @todo: rename to "crafting_table" in 1.16.2 or 1.17
   public static final EdCraftingTable.CraftingTableBlock CRAFTING_TABLE = (EdCraftingTable.CraftingTableBlock)(new EdCraftingTable.CraftingTableBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 15f).sound(SoundType.METAL).notSolid(),
@@ -479,7 +488,7 @@ public class ModContent
       Auxiliaries.getPixeledAABB(0,15,0, 16,16,16),
       Auxiliaries.getPixeledAABB(1, 0,1, 15,16,15)
     }
-  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "treated_wood_crafting_table"));
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "metal_crafting_table"));
 
   public static final FurnaceBlock SMALL_LAB_FURNACE = (FurnaceBlock)(new FurnaceBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT,
@@ -659,13 +668,10 @@ public class ModContent
     }
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "straight_pipe_valve_redstone_analog"));
 
-  public static final EdFluidAccumulator.FluidAccumulatorBlock PASSIVE_FLUID_ACCUMULATOR = (EdFluidAccumulator.FluidAccumulatorBlock)(new EdFluidAccumulator.FluidAccumulatorBlock(
-    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
-    new AxisAlignedBB[]{
-      Auxiliaries.getPixeledAABB(3,3,0, 13,13, 1),
-      Auxiliaries.getPixeledAABB(0,0,1, 16,16,16)
-    }
+  @Deprecated // remove in 1.17/1.16.3, not needed by anyone
+  public static final DecorBlock.Normal PASSIVE_FLUID_ACCUMULATOR = (DecorBlock.Normal)(new DecorBlock.Normal(
+    DecorBlock.CFG_EXPERIMENTAL,
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "passive_fluid_accumulator"));
 
   public static final EdFluidBarrel.FluidBarrelBlock FLUID_BARREL = (EdFluidBarrel.FluidBarrelBlock)(new EdFluidBarrel.FluidBarrelBlock(
@@ -697,18 +703,6 @@ public class ModContent
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "labeled_crate"));
 
   // -------------------------------------------------------------------------------------------------------------------
-
-  //todo: REMOVE IN 1.17/1.16.2
-  @Deprecated
-  public static final EdWallBlock CONCRETE_WALL = (EdWallBlock)(new EdWallBlock(
-    DecorBlock.CFG_CUTOUT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 50f).sound(SoundType.STONE).notSolid()
-  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "concrete_wall"));
-
-  public static final EdSlabSliceBlock HALFSLAB_CONCRETE = (EdSlabSliceBlock)(new EdSlabSliceBlock(
-    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HARD_IE_DEPENDENT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1f, 10f).sound(SoundType.STONE).notSolid()
-  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "halfslab_concrete"));
 
   public static final EdSlabSliceBlock HALFSLAB_TREATEDWOOD = (EdSlabSliceBlock)(new EdSlabSliceBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HARD_IE_DEPENDENT,
@@ -810,18 +804,18 @@ public class ModContent
     GAS_CONCRETE_WALL,
     HALFSLAB_REBARCONCRETE,
     HALFSLAB_GASCONCRETE,
-    HALFSLAB_CONCRETE,
     HALFSLAB_TREATEDWOOD,
     HALFSLAB_SHEETMETALIRON,
     HALFSLAB_SHEETMETALSTEEL,
     HALFSLAB_SHEETMETALCOPPER,
     HALFSLAB_SHEETMETALGOLD,
     HALFSLAB_SHEETMETALALUMINIUM,
-    CONCRETE_WALL,
     PANZERGLASS_BLOCK,
     PANZERGLASS_SLAB,
     DARK_CERAMIC_SHINGLE_ROOF,
     DARK_CERAMIC_SHINGLE_ROOF_METALIZED,
+    DARK_CERAMIC_SHINGLE_ROOF_SKYLIGHT,
+    DARK_CERAMIC_SHINGLE_ROOF_CHIMNEYTRUNK,
     DARK_CERAMIC_SHINGLE_ROOF_BLOCK,
     DARK_CERAMIC_SHINGLE_ROOF_SLAB,
     HALFSLAB_DARK_CERAMIC_SHINGLE_ROOF,
@@ -918,11 +912,6 @@ public class ModContent
     .build(null)
     .setRegistryName(ModEngineersDecor.MODID, "te_pipe_valve");
 
-  public static final TileEntityType<?> TET_PASSIVE_FLUID_ACCUMULATOR = TileEntityType.Builder
-    .create(EdFluidAccumulator.FluidAccumulatorTileEntity::new, PASSIVE_FLUID_ACCUMULATOR)
-    .build(null)
-    .setRegistryName(ModEngineersDecor.MODID, "te_passive_fluid_accumulator");
-
   public static final TileEntityType<?> TET_FLUID_BARREL = TileEntityType.Builder
     .create(EdFluidBarrel.FluidBarrelTileEntity::new, FLUID_BARREL)
     .build(null)
@@ -974,7 +963,6 @@ public class ModContent
     TET_SMALL_MILKING_MACHINE,
     TET_STRAIGHT_PIPE_VALVE,
     TET_FLUID_BARREL,
-    TET_PASSIVE_FLUID_ACCUMULATOR,
     TET_SMALL_FLUID_FUNNEL,
     TET_TEST_BLOCK
   };
