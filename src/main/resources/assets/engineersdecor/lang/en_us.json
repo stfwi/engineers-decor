@@ -116,6 +116,7 @@
   "block.engineersdecor.gas_concrete_stairs.help": "§6Low hardness concrete stairs.§r Easy to break decorative concrete.",
   "block.engineersdecor.gas_concrete_wall": "Gas Concrete Wall",
   "block.engineersdecor.gas_concrete_wall.help": "§6Low hardness concrete wall.§r Easy to break decorative concrete.",
+  "block.engineersdecor.halfslab_concrete": "Concrete Slab Slice",
   "block.engineersdecor.halfslab_gas_concrete": "Gas Concrete Slice",
   "block.engineersdecor.halfslab_gas_concrete.help": "§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.",
   "block.engineersdecor.halfslab_rebar_concrete": "Rebar Concrete Slice",
