@@ -1,7 +1,7 @@
 
-## Engineer's Decor (MC1.15.1)
+## Engineer's Decor (MC1.16.1)
 
-Mod sources for Minecraft version 1.15.1.
+Mod sources for Minecraft version 1.16.1.
 
 - Description, credits, and features: Please see the readme in the repository root.
 
@@ -10,6 +10,8 @@ Mod sources for Minecraft version 1.15.1.
 ----
 
 ## Version history
+
+    ~ v1.1.1     [R] Intial 1.16.1 release.
 
     - v1.1.1-b7  [F] Fixed AI-open-path bug (issue #116, ty KrAzYGEEK32, desht).
                  [F] Conditional recipes extended to additional vanilla ingredients in case of oredict tag issues.

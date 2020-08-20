@@ -153,7 +153,6 @@
   "block.engineersdecor.panzerglass_slab": "Плита из бронированного стекла",
   "block.engineersdecor.panzerglass_slab.help": "§6Усиленная стеклянная плита.§r Дорогая, взрывоустойчивая. Имеет тёмно-серый оттенок, слегка видны структурные линии.",
   "block.engineersdecor.passive_fluid_accumulator": "Пассивный жидкостный накопитель",
-  "block.engineersdecor.passive_fluid_accumulator.help": "§6Вакуумный всасывающий жидкостный коллектор.§r Имеет один выход, все остальные стороны входные. Сливает жидкости из соседних резервуаров при выкачивании жидкости из выходного порта.",
   "block.engineersdecor.rebar_concrete": "Железобетон",
   "block.engineersdecor.rebar_concrete.help": "§6Стальной железобетонный блок.§r Дорогой, но взрывоустойчивый, как обсидиан.",
   "block.engineersdecor.rebar_concrete_slab": "Железобетонная плита",

@@ -217,12 +217,12 @@ public class ModContent
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "dark_shingle_roof"));
 
   public static final DecorBlock.Normal DARK_CERAMIC_SHINGLE_ROOF_BLOCK = (DecorBlock.Normal)(new DecorBlock.Normal(
-    DecorBlock.CFG_DEFAULT|DecorBlock.CFG_EXPERIMENTAL,
+    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_EXPERIMENTAL,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "dark_shingle_roof_block"));
 
   public static final EdSlabBlock DARK_CERAMIC_SHINGLE_ROOF_SLAB = (EdSlabBlock)(new EdSlabBlock(
-    DecorBlock.CFG_DEFAULT|DecorBlock.CFG_EXPERIMENTAL,
+    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_EXPERIMENTAL,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "dark_shingle_roof_slab"));
 
@@ -236,8 +236,17 @@ public class ModContent
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "dark_shingle_roof_metallized"));
 
-  // -------------------------------------------------------------------------------------------------------------------
+  public static final EdRoofBlock DARK_CERAMIC_SHINGLE_ROOF_SKYLIGHT = (EdRoofBlock)(new EdRoofBlock(
+    DecorBlock.CFG_TRANSLUCENT|DecorBlock.CFG_EXPERIMENTAL,
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE).notSolid()
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "dark_shingle_roof_skylight"));
 
+  public static final EdRoofBlock DARK_CERAMIC_SHINGLE_ROOF_CHIMNEYTRUNK = (EdRoofBlock)(new EdRoofBlock(
+    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_EXPERIMENTAL,
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "dark_shingle_roof_chimneytrunk"));
+
+  // -------------------------------------------------------------------------------------------------------------------
   public static final EdGroundBlock DENSE_GRIT_SAND = (EdGroundBlock)(new EdGroundBlock(
     DecorBlock.CFG_DEFAULT,
     Block.Properties.create(Material.EARTH, MaterialColor.DIRT).hardnessAndResistance(0.5f, 3f).sound(SoundType.GROUND).harvestTool(ToolType.SHOVEL)
@@ -471,7 +480,6 @@ public class ModContent
 
   // -------------------------------------------------------------------------------------------------------------------
 
-  @Deprecated // @todo: rename to "crafting_table" in 1.16.2 or 1.17
   public static final EdCraftingTable.CraftingTableBlock CRAFTING_TABLE = (EdCraftingTable.CraftingTableBlock)(new EdCraftingTable.CraftingTableBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 15f).sound(SoundType.METAL).notSolid(),
@@ -660,7 +668,7 @@ public class ModContent
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "straight_pipe_valve_redstone_analog"));
 
   public static final EdFluidAccumulator.FluidAccumulatorBlock PASSIVE_FLUID_ACCUMULATOR = (EdFluidAccumulator.FluidAccumulatorBlock)(new EdFluidAccumulator.FluidAccumulatorBlock(
-    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT,
+    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT|DecorBlock.CFG_EXPERIMENTAL,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
     new AxisAlignedBB[]{
       Auxiliaries.getPixeledAABB(3,3,0, 13,13, 1),
@@ -698,8 +706,6 @@ public class ModContent
 
   // -------------------------------------------------------------------------------------------------------------------
 
-  //todo: REMOVE IN 1.17/1.16.2
-  @Deprecated
   public static final EdWallBlock CONCRETE_WALL = (EdWallBlock)(new EdWallBlock(
     DecorBlock.CFG_CUTOUT,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 50f).sound(SoundType.STONE).notSolid()
@@ -822,6 +828,8 @@ public class ModContent
     PANZERGLASS_SLAB,
     DARK_CERAMIC_SHINGLE_ROOF,
     DARK_CERAMIC_SHINGLE_ROOF_METALIZED,
+    DARK_CERAMIC_SHINGLE_ROOF_SKYLIGHT,
+    DARK_CERAMIC_SHINGLE_ROOF_CHIMNEYTRUNK,
     DARK_CERAMIC_SHINGLE_ROOF_BLOCK,
     DARK_CERAMIC_SHINGLE_ROOF_SLAB,
     HALFSLAB_DARK_CERAMIC_SHINGLE_ROOF,
