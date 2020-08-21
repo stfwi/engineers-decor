@@ -11,6 +11,8 @@ Mod sources for Minecraft version 1.16.2.
 
 ## Version history
 
+    - v1.1.2-b3  [F] Mapping adaption to Forge 1.16.2-33.0.20.
+
     - v1.1.2-b2  [A] Dark Ceramic Root added.
 
     - v1.1.2-b1  [U] Ported to MC1.16.2.
