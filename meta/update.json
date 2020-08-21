@@ -1,11 +1,12 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.16.2": {
+    "1.1.2-b3": "[F] Mapping adaption to Forge 1.16.2-33.0.20.",
     "1.1.2-b2": "[A] Dark Ceramic Root added.",
     "1.1.2-b1": "[U] Ported to MC1.16.2."
   },
   "promos": {
-    "1.16.2-recommended": "1.1.2-b2",
-    "1.16.2-latest": "1.1.2-b2"
+    "1.16.2-recommended": "1.1.2-b3",
+    "1.16.2-latest": "1.1.2-b3"
   }
 }

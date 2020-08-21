@@ -1104,7 +1104,7 @@ public class EdCraftingTable
         String[] translation_keys = { "next", "prev", "clear", "nextcollisionrecipe", "fromstorage", "tostorage", "fromplayer", "toplayer" };
         for(int i=0; (i<buttons.size()) && (i<translation_keys.length); ++i) {
           Button bt = buttons.get(i);
-          tooltips.add(new TipRange(bt.field_230690_l_/*x*/,bt.field_230691_m_/*y*/, bt.func_230998_h_/*getWidth*/(), bt.getHeight(), Auxiliaries.localizable(prefix+translation_keys[i])));
+          tooltips.add(new TipRange(bt.field_230690_l_/*x*/,bt.field_230691_m_/*y*/, bt.func_230998_h_/*getWidth*/(), bt.func_238483_d_/*getHeight*/(), Auxiliaries.localizable(prefix+translation_keys[i])));
         }
         tooltip.init(tooltips);
       }
