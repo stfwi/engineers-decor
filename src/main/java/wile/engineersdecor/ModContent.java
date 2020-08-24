@@ -333,19 +333,19 @@ public class ModContent
 
   public static final DecorBlock.DirectedWaterLoggable INSET_LIGHT_IRON = (DecorBlock.DirectedWaterLoggable)(new DecorBlock.DirectedWaterLoggable(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT|DecorBlock.CFG_AI_PASSABLE,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).func_235838_a_((state)->15).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).setLightLevel((state)->15).notSolid(),
     Auxiliaries.getPixeledAABB(5.2,5.2,0, 10.8,10.8,0.3)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "iron_inset_light"));
 
   public static final DecorBlock.DirectedWaterLoggable FLOOR_EDGE_LIGHT_IRON = (DecorBlock.DirectedWaterLoggable)(new DecorBlock.DirectedWaterLoggable(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_AI_PASSABLE,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).func_235838_a_((state)->15).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).setLightLevel((state)->15).notSolid(),
     Auxiliaries.getPixeledAABB(5,0,0, 11,2,0.5)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "iron_floor_edge_light"));
 
   public static final DecorBlock.DirectedWaterLoggable CEILING_EDGE_LIGHT_IRON = (DecorBlock.DirectedWaterLoggable)(new DecorBlock.DirectedWaterLoggable(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_AI_PASSABLE,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).func_235838_a_((state)->15).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).setLightLevel((state)->15).notSolid(),
     new AxisAlignedBB[]{
       Auxiliaries.getPixeledAABB( 0,15.5,0, 16,16,2.0),
       Auxiliaries.getPixeledAABB( 0,14.0,0, 16,16,0.5),
@@ -356,7 +356,7 @@ public class ModContent
 
   public static final DecorBlock.DirectedWaterLoggable BULB_LIGHT_IRON = (DecorBlock.DirectedWaterLoggable)(new DecorBlock.DirectedWaterLoggable(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT|DecorBlock.CFG_AI_PASSABLE,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).func_235838_a_((state)->15).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).setLightLevel((state)->15).notSolid(),
     new AxisAlignedBB[]{
       Auxiliaries.getPixeledAABB(6.5,6.5,1, 9.5,9.5,4),
       Auxiliaries.getPixeledAABB(6.0,6.0,0, 10.0,10.0,1.0)
@@ -445,7 +445,7 @@ public class ModContent
 
   public static final DecorBlock.DirectedWaterLoggable SIGN_MODLOGO = (DecorBlock.DirectedWaterLoggable)(new DecorBlock.DirectedWaterLoggable(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_AI_PASSABLE,
-    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1000f).sound(SoundType.WOOD).func_235838_a_((state)->1).notSolid(),
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1000f).sound(SoundType.WOOD).setLightLevel((state)->1).notSolid(),
     Auxiliaries.getPixeledAABB(0,0,15.6, 16,16,16.0)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_decor"));
 

@@ -322,8 +322,8 @@ public class EdDropper
     // TileEntity ------------------------------------------------------------------------------
 
     @Override
-    public void func_230337_a_(BlockState state, CompoundNBT nbt)
-    { super.func_230337_a_(state, nbt); readnbt(nbt, false); }
+    public void read(BlockState state, CompoundNBT nbt)
+    { super.read(state, nbt); readnbt(nbt, false); }
 
     @Override
     public CompoundNBT write(CompoundNBT nbt)
@@ -401,7 +401,7 @@ public class EdDropper
 
     @Override
     public boolean isUsableByPlayer(PlayerEntity player)
-    { return getPos().distanceSq(player.func_233580_cy_()) < 36; }
+    { return getPos().distanceSq(player.getPosition()) < 36; }
 
     @Override
     public void openInventory(PlayerEntity player)
@@ -672,6 +672,14 @@ public class EdDropper
             drop_slot_index_ = next_slot(drop_slot_index_);
             ItemStack ds = stacks_.get(ic);
             if((!ds.isEmpty()) && (ds.getCount() >= drop_count_)) {
+              {
+                boolean skip_stack = false;
+                for(int ci = 0; (ci<CTRL_SLOTS_SIZE)&&(!skip_stack); ++ci) {
+                  final ItemStack cmp_stack = stacks_.get(CTRL_SLOTS_FIRST+ci);
+                  if(Inventories.areItemStacksIdentical(ds, cmp_stack)) skip_stack = true;
+                }
+                if(skip_stack) continue;
+              }
               drop_stacks[0] = ds.split(drop_count_);
               stacks_.set(ic, ds);
               break;
@@ -852,9 +860,9 @@ public class EdDropper
     { super(container, player_inventory, title); this.player_ = player_inventory.player; }
 
     @Override
-    public void func_231160_c_/*init*/()
+    public void init()
     {
-      super.func_231160_c_();
+      super.init();
       {
         final String prefix = ModContent.FACTORY_DROPPER.getTranslationKey() + ".tooltips.";
         final int x0 = getGuiLeft(), y0 = getGuiTop();
@@ -872,25 +880,25 @@ public class EdDropper
     }
 
     @Override
-    public void func_230430_a_/*render*/(MatrixStack mx, int mouseX, int mouseY, float partialTicks)
+    public void render(MatrixStack mx, int mouseX, int mouseY, float partialTicks)
     {
-      func_230446_a_/*renderBackground*/(mx);
-      super.func_230430_a_(mx, mouseX, mouseY, partialTicks);
-      if(!tooltip_.render(mx, this, mouseX, mouseY)) func_230459_a_/*renderHoveredToolTip*/(mx, mouseX, mouseY);
+      renderBackground/*renderBackground*/(mx);
+      super.render(mx, mouseX, mouseY, partialTicks);
+      if(!tooltip_.render(mx, this, mouseX, mouseY)) func_230459_a_/*func_230459_a_*/(mx, mouseX, mouseY);
     }
 
     @Override
-    protected void func_230451_b_(MatrixStack mx, int x, int y)
+    protected void drawGuiContainerForegroundLayer(MatrixStack mx, int x, int y)
     {}
 
     @Override
-    public boolean func_231044_a_/*mouseClicked*/(double mouseX, double mouseY, int mouseButton)
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
       tooltip_.resetTimer();
       DropperContainer container = (DropperContainer)getContainer();
       int mx = (int)(mouseX - getGuiLeft() + .5), my = (int)(mouseY - getGuiTop() + .5);
       if((!isPointInRegion(114, 1, 61, 79, mouseX, mouseY))) {
-        return super.func_231044_a_(mouseX, mouseY, mouseButton);
+        return super.mouseClicked(mouseX, mouseY, mouseButton);
       } else if(isPointInRegion(130, 10, 12, 25, mouseX, mouseY)) {
         int force_percent = 100 - MathHelper.clamp(((my-10)*100)/25, 0, 100);
         container.onGuiAction("drop_speed", force_percent);
@@ -938,13 +946,13 @@ public class EdDropper
 
     @Override
     @SuppressWarnings("deprecation")
-    protected void func_230450_a_/*drawGuiContainerBackgroundLayer*/(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
+    protected void drawGuiContainerBackgroundLayer(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
     {
       RenderSystem.enableBlend();
       RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
       getMinecraft().getTextureManager().bindTexture(new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/factory_dropper_gui.png"));
       final int x0=getGuiLeft(), y0=getGuiTop(), w=getXSize(), h=getYSize();
-      func_238474_b_(mx, x0, y0, 0, 0, w, h);
+      blit(mx, x0, y0, 0, 0, w, h);
       DropperContainer container = (DropperContainer)getContainer();
       // active drop slot
       {
@@ -952,14 +960,14 @@ public class EdDropper
         if((drop_slot_index < 0) || (drop_slot_index >= 16)) drop_slot_index = 0;
         int x = (x0+9+((drop_slot_index % 6) * 18));
         int y = (y0+5+((drop_slot_index / 6) * 17));
-        func_238474_b_(mx, x, y, 180, 45, 18, 18);
+        blit(mx, x, y, 180, 45, 18, 18);
       }
       // filter LEDs
       {
         for(int i=0; i<3; ++i) {
           int xt = 180 + (6 * container.field(12+i)), yt = 38;
           int x = x0 + 31 + (i * 36), y = y0 + 65;
-          func_238474_b_(mx, x, y, xt, yt, 6, 6);
+          blit(mx, x, y, xt, yt, 6, 6);
         }
       }
       // force adjustment
@@ -967,31 +975,31 @@ public class EdDropper
         int hy = 2 + (((100-container.field(0)) * 21) / 100);
         int x = x0+135, y = y0+12, xt = 181;
         int yt = 4 + (23-hy);
-        func_238474_b_(mx, x, y, xt, yt, 3, hy);
+        blit(mx, x, y, xt, yt, 3, hy);
       }
       // angle adjustment
       {
         int x = x0 + 157 - 3 + ((container.field(1) * 12) / 100);
         int y = y0 +  22 - 3 - ((container.field(2) * 12) / 100);
-        func_238474_b_(mx, x, y, 180, 30, 7, 7);
+        blit(mx, x, y, 180, 30, 7, 7);
       }
       // drop count
       {
         int x = x0 + 134 - 2 + (container.field(4));
         int y = y0 + 45;
-        func_238474_b_(mx, x, y, 190, 31, 5, 5);
+        blit(mx, x, y, 190, 31, 5, 5);
       }
       // drop period
       {
         int px = (int)Math.round(((33.0 * container.field(6)) / 100) + 1);
         int x = x0 + 134 - 2 + MathHelper.clamp(px, 0, 33);
         int y = y0 + 56;
-        func_238474_b_(mx, x, y, 190, 31, 5, 5);
+        blit(mx, x, y, 190, 31, 5, 5);
       }
       // redstone input
       {
         if(container.field(11) != 0) {
-          func_238474_b_(mx, x0+114, y0+51, 189, 18, 9, 9);
+          blit(mx, x0+114, y0+51, 189, 18, 9, 9);
         }
       }
       // trigger logic
@@ -999,14 +1007,14 @@ public class EdDropper
         int filter_gate_offset = ((container.field(5) & DropperTileEntity.DROPLOGIC_FILTER_ANDGATE) != 0) ? 11 : 0;
         int extern_gate_offset = ((container.field(5) & DropperTileEntity.DROPLOGIC_EXTERN_ANDGATE) != 0) ? 11 : 0;
         int pulse_mode_offset  = ((container.field(5) & DropperTileEntity.DROPLOGIC_CONTINUOUS    ) != 0) ? 10 : 0;
-        func_238474_b_(mx, x0+132, y0+66, 179+filter_gate_offset, 66, 9, 9);
-        func_238474_b_(mx, x0+148, y0+66, 179+extern_gate_offset, 66, 9, 9);
-        func_238474_b_(mx, x0+162, y0+66, 200+pulse_mode_offset, 66, 9, 9);
+        blit(mx, x0+132, y0+66, 179+filter_gate_offset, 66, 9, 9);
+        blit(mx, x0+148, y0+66, 179+extern_gate_offset, 66, 9, 9);
+        blit(mx, x0+162, y0+66, 200+pulse_mode_offset, 66, 9, 9);
       }
       // drop timer running indicator
       {
         if((container.field(9) > DropperTileEntity.DROP_PERIOD_OFFSET) && ((System.currentTimeMillis() % 1000) < 500)) {
-          func_238474_b_(mx, x0+149, y0+51, 201, 39, 3, 3);
+          blit(mx, x0+149, y0+51, 201, 39, 3, 3);
         }
       }
       RenderSystem.disableBlend();

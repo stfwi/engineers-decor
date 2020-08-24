@@ -136,7 +136,7 @@ public class EdChair
       boolean on_top_of_block_position = true;
       boolean use_next_negative_y_position = false;
       EntityChair chair = new EntityChair(world);
-      BlockPos chair_pos = chair.func_233580_cy_();
+      BlockPos chair_pos = chair.getPosition();
       chair.chair_pos = pos;
       chair.t_sit = 5;
       chair.prevPosX = chair_pos.getX();

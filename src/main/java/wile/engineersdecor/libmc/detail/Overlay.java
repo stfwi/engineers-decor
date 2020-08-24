@@ -99,12 +99,12 @@ public class Overlay
         final int cy = (int)(win.getScaledHeight() * overlay_y_);
         final int w = fr.getStringWidth(txt);
         final int h = fr.FONT_HEIGHT;
-        func_238468_a_(mxs,cx-(w/2)-3, cy-2, cx+(w/2)+2, cy+h+2, 0xaa333333, 0xaa444444);
-        func_238465_a_(mxs,cx-(w/2)-3, cx+(w/2)+2, cy-2, 0xaa333333);
-        func_238465_a_(mxs,cx-(w/2)-3, cx+(w/2)+2, cy+h+2, 0xaa333333);
-        func_238473_b_(mxs,cx-(w/2)-3, cy-2, cy+h+2, 0xaa333333);
-        func_238473_b_(mxs,cx+(w/2)+2, cy-2, cy+h+2, 0xaa333333);
-        func_238471_a_(mxs, fr, txt, cx , cy+1, 0x00ffaa00); // drawCenteredString
+        fillGradient(mxs, cx-(w/2)-3, cy-2, cx+(w/2)+2, cy+h+2, 0xaa333333, 0xaa444444);
+        hLine(mxs, cx-(w/2)-3, cx+(w/2)+2, cy-2, 0xaa333333);
+        hLine(mxs, cx-(w/2)-3, cx+(w/2)+2, cy+h+2, 0xaa333333);
+        vLine(mxs, cx-(w/2)-3, cy-2, cy+h+2, 0xaa333333);
+        vLine(mxs, cx+(w/2)+2, cy-2, cy+h+2, 0xaa333333);
+        drawCenteredString(mxs, fr, txt, cx , cy+1, 0x00ffaa00);
       } finally {
         ; // fr.setBidiFlag(was_unicode);
       }

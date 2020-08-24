@@ -200,9 +200,9 @@ public class EdTestBlock
     // TileEntity ------------------------------------------------------------------------------
 
     @Override
-    public void func_230337_a_(BlockState state, CompoundNBT nbt)
+    public void read(BlockState state, CompoundNBT nbt)
     {
-      super.func_230337_a_(state, nbt);
+      super.read(state, nbt);
       if(nbt.contains("passive_tank")) passive_tank_ = FluidStack.loadFluidStackFromNBT(nbt.getCompound("passive_tank"));
       if(nbt.contains("passive_drain")) passive_drain_fluidstack_ = FluidStack.loadFluidStackFromNBT(nbt.getCompound("passive_drain"));
       if(nbt.contains("active")) active_fill_fluidstack_ = FluidStack.loadFluidStackFromNBT(nbt.getCompound("active"));

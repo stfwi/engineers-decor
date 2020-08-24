@@ -166,8 +166,8 @@ public class EdSolarPanel
     // TileEntity ------------------------------------------------------------------------------
 
     @Override
-    public void func_230337_a_(BlockState state, CompoundNBT nbt)
-    { super.func_230337_a_(state, nbt); readnbt(nbt, false); }
+    public void read(BlockState state, CompoundNBT nbt)
+    { super.read(state, nbt); readnbt(nbt, false); }
 
     @Override
     public CompoundNBT write(CompoundNBT nbt)

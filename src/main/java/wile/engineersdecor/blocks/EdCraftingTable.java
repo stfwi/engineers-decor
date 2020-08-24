@@ -188,8 +188,8 @@ public class EdCraftingTable
     // TileEntity ------------------------------------------------------------------------------
 
     @Override
-    public void func_230337_a_(BlockState state, CompoundNBT nbt)
-    { super.func_230337_a_(state, nbt); readnbt(nbt); }
+    public void read(BlockState state, CompoundNBT nbt)
+    { super.read(state, nbt); readnbt(nbt); }
 
     @Override
     public CompoundNBT write(CompoundNBT nbt)
@@ -214,7 +214,7 @@ public class EdCraftingTable
 
     @Override
     public void handleUpdateTag(BlockState state, CompoundNBT tag) // on client
-    { func_230337_a_/*read*/(state, tag); }
+    { read(state, tag); }
 
     @OnlyIn(Dist.CLIENT)
     public double getMaxRenderDistanceSquared()
@@ -280,7 +280,7 @@ public class EdCraftingTable
 
     @Override
     public boolean isUsableByPlayer(PlayerEntity player)
-    { return getPos().distanceSq(player.func_233580_cy_()) < 36; }
+    { return getPos().distanceSq(player.getPosition()) < 36; }
 
     @Override
     public void openInventory(PlayerEntity player)
@@ -1086,17 +1086,16 @@ public class EdCraftingTable
     }
 
     @Override
-    public void func_231160_c_/*init*/()
+    public void init()
     {
-      super.func_231160_c_();
+      super.init();
       final int x0=guiLeft, y0=guiTop;
       buttons.clear();
       if(with_assist) {
-        // func_230480_a_() === addButton(), now more addWidget()
-        buttons.add(func_230480_a_(new ImageButton(x0+158,y0+30, 12,12, 194,44, 12, BACKGROUND, (bt)->action(CraftingTableContainer.BUTTON_NEXT))));
-        buttons.add(func_230480_a_(new ImageButton(x0+158,y0+16, 12,12, 180,30, 12, BACKGROUND, (bt)->action(CraftingTableContainer.BUTTON_PREV))));
-        buttons.add(func_230480_a_(new ImageButton(x0+158,y0+44, 12,12, 194,8,  12, BACKGROUND, (bt)->action(CraftingTableContainer.BUTTON_CLEAR_GRID))));
-        buttons.add(func_230480_a_(new ImageButton(x0+116,y0+10, 20,10, 183,95, 12, BACKGROUND, (bt)->action(CraftingTableContainer.BUTTON_NEXT_COLLISION_RECIPE))));
+        buttons.add(addButton(new ImageButton(x0+158,y0+30, 12,12, 194,44, 12, BACKGROUND, (bt)->action(CraftingTableContainer.BUTTON_NEXT))));
+        buttons.add(addButton(new ImageButton(x0+158,y0+16, 12,12, 180,30, 12, BACKGROUND, (bt)->action(CraftingTableContainer.BUTTON_PREV))));
+        buttons.add(addButton(new ImageButton(x0+158,y0+44, 12,12, 194,8,  12, BACKGROUND, (bt)->action(CraftingTableContainer.BUTTON_CLEAR_GRID))));
+        buttons.add(addButton(new ImageButton(x0+116,y0+10, 20,10, 183,95, 12, BACKGROUND, (bt)->action(CraftingTableContainer.BUTTON_NEXT_COLLISION_RECIPE))));
       }
       {
         List<TipRange> tooltips = new ArrayList<>();
@@ -1104,31 +1103,31 @@ public class EdCraftingTable
         String[] translation_keys = { "next", "prev", "clear", "nextcollisionrecipe", "fromstorage", "tostorage", "fromplayer", "toplayer" };
         for(int i=0; (i<buttons.size()) && (i<translation_keys.length); ++i) {
           Button bt = buttons.get(i);
-          tooltips.add(new TipRange(bt.field_230690_l_/*x*/,bt.field_230691_m_/*y*/, bt.func_230998_h_/*getWidth*/(), bt.func_238483_d_/*getHeight*/(), Auxiliaries.localizable(prefix+translation_keys[i])));
+          tooltips.add(new TipRange(bt.x,bt.y, bt.getWidth(), bt.getWidth_CLASH/*getHeight*/(), Auxiliaries.localizable(prefix+translation_keys[i])));
         }
         tooltip.init(tooltips);
       }
     }
 
     @Override
-    public void func_230430_a_/*render*/(MatrixStack mx, int mouseX, int mouseY, float partialTicks)
+    public void render(MatrixStack mx, int mouseX, int mouseY, float partialTicks)
     {
       if(with_assist) {
         boolean is_collision = getContainer().has_recipe_collision();
-        buttons.get(3).field_230693_o_/*visible*/ = is_collision;
-        buttons.get(3).field_230694_p_/*active*/ = is_collision;
+        buttons.get(3).visible = is_collision;
+        buttons.get(3).active = is_collision;
       }
-      func_230446_a_/*renderBackground*/(mx);
-      super.func_230430_a_(mx, mouseX, mouseY, partialTicks);
+      renderBackground(mx);
+      super.render(mx, mouseX, mouseY, partialTicks);
       if(!tooltip.render(mx,this, mouseX, mouseY)) func_230459_a_/*renderHoveredToolTip*/(mx, mouseX, mouseY);
     }
 
     @Override
-    protected void func_230459_a_(MatrixStack mx, int mouseX, int mouseY)
+    protected void func_230459_a_/*renderHoveredToolTip*/(MatrixStack mx, int mouseX, int mouseY)
     {
       if((!player.inventory.getItemStack().isEmpty()) || (getSlotUnderMouse() == null)) return;
       final Slot slot = getSlotUnderMouse();
-      if(!slot.getStack().isEmpty()) { func_230457_a_/*renderTooltip*/(mx, slot.getStack(), mouseX, mouseY); return; }
+      if(!slot.getStack().isEmpty()) { renderTooltip(mx, slot.getStack(), mouseX, mouseY); return; }
       if(with_assist) {
         int hist_index = -1;
         if(slot instanceof CraftingResultSlot) {
@@ -1139,22 +1138,22 @@ public class EdCraftingTable
         if((hist_index < 0) || (hist_index >= history_slot_tooltip.length)) return;
         if(!history_slot_tooltip[hist_index]) return;
         ItemStack hist_stack = getContainer().history().current().get(hist_index);
-        if(!hist_stack.isEmpty()) func_230457_a_/*renderTooltip*/(mx, hist_stack, mouseX, mouseY);
+        if(!hist_stack.isEmpty()) renderTooltip(mx, hist_stack, mouseX, mouseY);
       }
     }
 
     @Override
-    protected void func_230451_b_(MatrixStack mx, int x, int y)
+    protected void drawGuiContainerForegroundLayer(MatrixStack mx, int x, int y)
     {}
 
     @Override
     @SuppressWarnings("deprecation")
-    protected void func_230450_a_/*drawGuiContainerBackgroundLayer*/(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
+    protected void drawGuiContainerBackgroundLayer(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
     {
       RenderSystem.color3f(1.0F, 1.0F, 1.0F);
       getMinecraft().getTextureManager().bindTexture(BACKGROUND);
       final int x0=guiLeft, y0=guiTop;
-      func_238474_b_(mx, x0, y0, 0, 0, xSize, ySize);
+      blit(mx, x0, y0, 0, 0, xSize, ySize);
       if(with_assist) {
         for(int i=0; i<history_slot_tooltip.length; ++i) history_slot_tooltip[i] = false;
         final List<ItemStack> crafting_template = getContainer().history().current();
@@ -1192,8 +1191,8 @@ public class EdCraftingTable
     @SuppressWarnings("deprecation")
     protected void draw_template_item_at(MatrixStack mx, ItemStack stack, int x0, int y0, int x, int y)
     {
-      ItemRenderer ir = this.field_230707_j_;
-      final int main_zl = func_230927_p_/*getBlitOffset*/();
+      ItemRenderer ir = this.itemRenderer;
+      final int main_zl = getBlitOffset();
       final float zl = ir.zLevel;
       ir.zLevel = -80;
       RenderSystem.enableRescaleNormal();
@@ -1205,13 +1204,13 @@ public class EdCraftingTable
       RenderSystem.defaultAlphaFunc();
       RenderSystem.enableBlend();
       ir.zLevel = zl;
-      func_230926_e_/*setBlitOffset*/(100);
+      setBlitOffset(100);
       RenderSystem.colorMask(true, true, true, true);
       RenderSystem.color4f(0.7f, 0.7f, 0.7f, 0.8f);
       getMinecraft().getTextureManager().bindTexture(BACKGROUND);
-      func_238474_b_(mx, x0+x, y0+y, x, y, 16, 16);
+      blit(mx, x0+x, y0+y, x, y, 16, 16);
       RenderSystem.color4f(1f, 1f, 1f, 1f);
-      func_230926_e_/*setBlitOffset*/(main_zl);
+      setBlitOffset(main_zl);
     }
 
     protected void action(String message)
@@ -1269,13 +1268,13 @@ public class EdCraftingTable
     }
 
     @Override
-    public boolean func_231043_a_/*mouseScrolled*/(double mouseX, double mouseY, double wheel_inc)
+    public boolean mouseScrolled(double mouseX, double mouseY, double wheel_inc)
     {
       tooltip.resetTimer();
       final Slot resultSlot = this.getSlotUnderMouse();
       if((!with_crafting_slot_mouse_scrolling) || (!(resultSlot instanceof CraftingResultSlot))) {
         return this.getEventListenerForPos(mouseX, mouseY).filter((evl) -> {
-          return evl.func_231043_a_/*mouseScrolled*/(mouseX, mouseY, wheel_inc);
+          return evl.mouseScrolled(mouseX, mouseY, wheel_inc);
         }).isPresent();
       }
       int count = resultSlot.getStack().getCount();

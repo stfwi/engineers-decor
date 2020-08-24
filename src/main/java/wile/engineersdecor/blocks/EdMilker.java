@@ -256,8 +256,8 @@ public class EdMilker
     // TileEntity ------------------------------------------------------------------------------
 
     @Override
-    public void func_230337_a_(BlockState state, CompoundNBT nbt)
-    { super.func_230337_a_(state, nbt); readnbt(nbt, false); }
+    public void read(BlockState state, CompoundNBT nbt)
+    { super.read(state, nbt); readnbt(nbt, false); }
 
     @Override
     public CompoundNBT write(CompoundNBT nbt)
@@ -401,7 +401,7 @@ public class EdMilker
     {
       if((tracked_cow_ == null) && (fluid_level() >= MAX_MILKING_TANK_LEVEL)) return false; // nothing to do
       final Direction facing = world.getBlockState(getPos()).get(MilkerBlock.HORIZONTAL_FACING).getOpposite();
-      final Vector3d target_pos = Vector3d.func_237489_a_(getPos().offset(facing)).add(0.5,0,0.5);
+      final Vector3d target_pos = Vector3d.copy(getPos().offset(facing)).add(0.5,0,0.5);
       CowEntity cow = null;
       {
         AxisAlignedBB aabb = new AxisAlignedBB(pos.offset(facing, 3)).grow(4, 2, 4);
@@ -439,23 +439,23 @@ public class EdMilker
               BlockPos p = getPos().offset(facing,2);
               log("Idle: Shove off");
               blocker.setNoAI(false);
-              SingleMoveGoal.startFor(blocker, p, 2, 1.0, (goal, world, pos)->(pos.distanceSq(goal.getCreature().func_233580_cy_())>100));
+              SingleMoveGoal.startFor(blocker, p, 2, 1.0, (goal, world, pos)->(pos.distanceSq(goal.getCreature().getPosition())>100));
             }
             return false;
           }
-          if(cow.getLeashed() || cow.isChild() || cow.isInLove() || (!cow.func_233570_aj_()/*onGround*/) || cow.isBeingRidden() || cow.isSprinting()) return false;
+          if(cow.getLeashed() || cow.isChild() || cow.isInLove() || (!cow.isOnGround()) || cow.isBeingRidden() || cow.isSprinting()) return false;
           tracked_cows_.put(cow.getEntityId(), cow.getEntityWorld().getGameTime());
           tracked_cow_ = cow.getUniqueID();
           state_ = MilkingState.PICKED;
           state_timeout_ = 200;
-          tracked_cow_original_position_ = cow.func_233580_cy_();
+          tracked_cow_original_position_ = cow.getPosition();
           log("Idle: Picked cow " + tracked_cow_);
           return false;
         }
         case PICKED: {
           SingleMoveGoal.startFor(
             cow, target_pos, 2, 1.0,
-            (goal, world, pos)->(pos.distanceSq(goal.getCreature().func_233580_cy_())>100),
+            (goal, world, pos)->(pos.distanceSq(goal.getCreature().getPosition())>100),
             (goal, world, pos)->{
               log("move: position reached");
               goal.getCreature().setLocationAndAngles(goal.getTargetPosition().getX(), goal.getTargetPosition().getY(), goal.getTargetPosition().getZ(), facing.getHorizontalAngle(), 0);
@@ -505,7 +505,7 @@ public class EdMilker
         }
         case LEAVING: {
           BlockPos p = (tracked_cow_original_position_ != null) ? (tracked_cow_original_position_) : getPos().offset(facing,2).offset(facing.rotateYCCW());
-          SingleMoveGoal.startFor(cow, p, 2, 1.0, (goal, world, pos)->(pos.distanceSq(goal.getCreature().func_233580_cy_())>100));
+          SingleMoveGoal.startFor(cow, p, 2, 1.0, (goal, world, pos)->(pos.distanceSq(goal.getCreature().getPosition())>100));
           state_timeout_ = 600;
           state_timer_ = 500;
           tick_timer_ = TICK_INTERVAL;

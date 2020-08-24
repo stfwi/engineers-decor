@@ -313,8 +313,8 @@ public class EdFurnace
     // TileEntity ------------------------------------------------------------------------------
 
     @Override
-    public void func_230337_a_(BlockState state, CompoundNBT nbt)
-    { super.func_230337_a_(state, nbt); readnbt(nbt); }
+    public void read(BlockState state, CompoundNBT nbt)
+    { super.read(state, nbt); readnbt(nbt); }
 
     @Override
     public CompoundNBT write(CompoundNBT nbt)
@@ -398,7 +398,7 @@ public class EdFurnace
 
     @Override
     public boolean isUsableByPlayer(PlayerEntity player)
-    { return getPos().distanceSq(player.func_233580_cy_()) < 36; }
+    { return getPos().distanceSq(player.getPosition()) < 36; }
 
     @Override
     public void openInventory(PlayerEntity player)
@@ -815,7 +815,7 @@ public class EdFurnace
           while(xp > 0) {
             int k = ExperienceOrbEntity.getXPSplit(xp);
             xp -= k;
-            player_.world.addEntity((new ExperienceOrbEntity(player_.world, player_.func_233580_cy_().getX(), player_.func_233580_cy_().getY()+0.5, player_.func_233580_cy_().getZ()+0.5, k)));
+            player_.world.addEntity((new ExperienceOrbEntity(player_.world, player_.getPosition().getX(), player_.getPosition().getY()+0.5, player_.getPosition().getZ()+0.5, k)));
           }
         }
         removeCount = 0;
@@ -985,35 +985,35 @@ public class EdFurnace
     { super(container, player_inventory, title); this.player_ = player_inventory.player; }
 
     @Override
-    public void func_231160_c_/*init*/()
-    { super.func_231160_c_(); }
+    public void init()
+    { super.init(); }
 
     @Override
-    public void func_230430_a_/*render*/(MatrixStack mx, int mouseX, int mouseY, float partialTicks)
+    public void render(MatrixStack mx, int mouseX, int mouseY, float partialTicks)
     {
-      func_230446_a_/*renderBackground*/(mx);
-      super.func_230430_a_(mx, mouseX, mouseY, partialTicks);
-      func_230459_a_/*renderHoveredToolTip*/(mx, mouseX, mouseY);
+      renderBackground/*renderBackground*/(mx);
+      super.render(mx, mouseX, mouseY, partialTicks);
+      func_230459_a_/*func_230459_a_*/(mx, mouseX, mouseY);
     }
 
     @Override
-    protected void func_230451_b_(MatrixStack mx, int x, int y)
+    protected void drawGuiContainerForegroundLayer(MatrixStack mx, int x, int y)
     {}
 
     @Override
     @SuppressWarnings("deprecation")
-    protected void func_230450_a_/*drawGuiContainerBackgroundLayer*/(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
+    protected void drawGuiContainerBackgroundLayer(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
     {
       RenderSystem.enableBlend();
       RenderSystem.color3f(1.0F, 1.0F, 1.0F);
       getMinecraft().getTextureManager().bindTexture(new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/small_lab_furnace_gui.png"));
       final int x0=guiLeft, y0=guiTop, w=xSize, h=ySize;
-      func_238474_b_(mx, x0, y0, 0, 0, w, h);
+      blit(mx, x0, y0, 0, 0, w, h);
       if(getContainer().field(4) != 0) {
         final int k = flame_px(13);
-        func_238474_b_(mx, x0+59, y0+36+12-k, 176, 12-k, 14, k+1);
+        blit(mx, x0+59, y0+36+12-k, 176, 12-k, 14, k+1);
       }
-      func_238474_b_(mx, x0+79, y0+36, 176, 15, 1+progress_px(17), 15);
+      blit(mx, x0+79, y0+36, 176, 15, 1+progress_px(17), 15);
       RenderSystem.disableBlend();
     }
 

@@ -44,10 +44,10 @@ import java.util.Map;
 public class VariantWallBlock extends WallBlock implements StandardBlocks.IStandardBlock
 {
   public static final BooleanProperty UP = BlockStateProperties.UP;
-  public static final EnumProperty<WallHeight> WALL_EAST = BlockStateProperties.field_235908_S_;
-  public static final EnumProperty<WallHeight> WALL_NORTH = BlockStateProperties.field_235909_T_;
-  public static final EnumProperty<WallHeight> WALL_SOUTH = BlockStateProperties.field_235910_U_;
-  public static final EnumProperty<WallHeight> WALL_WEST = BlockStateProperties.field_235911_V_;
+  public static final EnumProperty<WallHeight> WALL_EAST = BlockStateProperties.WALL_HEIGHT_EAST;
+  public static final EnumProperty<WallHeight> WALL_NORTH = BlockStateProperties.WALL_HEIGHT_NORTH;
+  public static final EnumProperty<WallHeight> WALL_SOUTH = BlockStateProperties.WALL_HEIGHT_SOUTH;
+  public static final EnumProperty<WallHeight> WALL_WEST = BlockStateProperties.WALL_HEIGHT_WEST;
   public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
   public static final IntegerProperty TEXTURE_VARIANT = IntegerProperty.create("tvariant", 0, 7);
   private final Map<BlockState, VoxelShape> shape_voxels;

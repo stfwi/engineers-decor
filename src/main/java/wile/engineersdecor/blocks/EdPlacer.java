@@ -261,8 +261,8 @@ public class EdPlacer
     // TileEntity ------------------------------------------------------------------------------
 
     @Override
-    public void func_230337_a_(BlockState state, CompoundNBT nbt)
-    { super.func_230337_a_(state, nbt); readnbt(nbt, false); }
+    public void read(BlockState state, CompoundNBT nbt)
+    { super.read(state, nbt); readnbt(nbt, false); }
 
     @Override
     public CompoundNBT write(CompoundNBT nbt)
@@ -341,7 +341,7 @@ public class EdPlacer
 
     @Override
     public boolean isUsableByPlayer(PlayerEntity player)
-    { return getPos().distanceSq(player.func_233580_cy_()) < 36; }
+    { return getPos().distanceSq(player.getPosition()) < 36; }
 
     @Override
     public void openInventory(PlayerEntity player)
@@ -712,9 +712,9 @@ public class EdPlacer
     { super(container, player_inventory, title); this.player_ = player_inventory.player; }
 
     @Override
-    public void func_231160_c_/*init*/()
+    public void init()
     {
-      super.func_231160_c_();
+      super.init();
       {
         final String prefix = ModContent.FACTORY_PLACER.getTranslationKey() + ".tooltips.";
         final int x0 = getGuiLeft(), y0 = getGuiTop();
@@ -727,25 +727,25 @@ public class EdPlacer
     }
 
     @Override
-    public void func_230430_a_/*render*/(MatrixStack mx, int mouseX, int mouseY, float partialTicks)
+    public void render/*render*/(MatrixStack mx, int mouseX, int mouseY, float partialTicks)
     {
-      func_230446_a_/*renderBackground*/(mx);
-      super.func_230430_a_(mx, mouseX, mouseY, partialTicks);
-      if(!tooltip_.render(mx, this, mouseX, mouseY)) func_230459_a_/*renderHoveredToolTip*/(mx, mouseX, mouseY);
+      renderBackground/*renderBackground*/(mx);
+      super.render(mx, mouseX, mouseY, partialTicks);
+      if(!tooltip_.render(mx, this, mouseX, mouseY)) func_230459_a_/*func_230459_a_*/(mx, mouseX, mouseY);
     }
 
     @Override
-    protected void func_230451_b_(MatrixStack mx, int x, int y)
+    protected void drawGuiContainerForegroundLayer(MatrixStack mx, int x, int y)
     {}
 
     @Override
-    public boolean func_231044_a_/*mouseClicked*/(double mouseX, double mouseY, int mouseButton)
+    public boolean mouseClicked/*mouseClicked*/(double mouseX, double mouseY, int mouseButton)
     {
       tooltip_.resetTimer();
       PlacerContainer container = (PlacerContainer)getContainer();
       int mx = (int)(mouseX - getGuiLeft() + .5), my = (int)(mouseY - getGuiTop() + .5);
       if((!isPointInRegion(126, 1, 49, 60, mouseX, mouseY))) {
-        return super.func_231044_a_(mouseX, mouseY, mouseButton);
+        return super.mouseClicked(mouseX, mouseY, mouseButton);
       } else if(isPointInRegion(133, 49, 9, 9, mouseX, mouseY)) {
         container.onGuiAction("manual_trigger", 1);
       } else if(isPointInRegion(145, 49, 9, 9, mouseX, mouseY)) {
@@ -758,13 +758,13 @@ public class EdPlacer
 
     @Override
     @SuppressWarnings("deprecation")
-    protected void func_230450_a_/*drawGuiContainerBackgroundLayer*/(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
+    protected void drawGuiContainerBackgroundLayer/*drawGuiContainerBackgroundLayer*/(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
     {
       RenderSystem.enableBlend();
       RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
       this.getMinecraft().getTextureManager().bindTexture(new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/factory_placer_gui.png"));
       final int x0=getGuiLeft(), y0=getGuiTop(), w=getXSize(), h=getYSize();
-      func_238474_b_(mx, x0, y0, 0, 0, w, h);
+      blit(mx, x0, y0, 0, 0, w, h);
       PlacerContainer container = (PlacerContainer)getContainer();
       // active slot
       {
@@ -772,20 +772,20 @@ public class EdPlacer
         if((slot_index < 0) || (slot_index >= PlacerTileEntity.NUM_OF_SLOTS)) slot_index = 0;
         int x = (x0+10+((slot_index % 6) * 18));
         int y = (y0+8+((slot_index / 6) * 17));
-        func_238474_b_(mx, x, y, 200, 8, 18, 18);
+        blit(mx, x, y, 200, 8, 18, 18);
       }
       // redstone input
       {
         if(container.field(1) != 0) {
-          func_238474_b_(mx, x0+133, y0+49, 217, 49, 9, 9);
+          blit(mx, x0+133, y0+49, 217, 49, 9, 9);
         }
       }
       // trigger logic
       {
         int inverter_offset = ((container.field(0) & PlacerTileEntity.LOGIC_INVERTED) != 0) ? 11 : 0;
-        func_238474_b_(mx, x0+145, y0+49, 177+inverter_offset, 49, 9, 9);
+        blit(mx, x0+145, y0+49, 177+inverter_offset, 49, 9, 9);
         int pulse_mode_offset  = ((container.field(0) & PlacerTileEntity.LOGIC_CONTINUOUS    ) != 0) ? 9 : 0;
-        func_238474_b_(mx, x0+159, y0+49, 199+pulse_mode_offset, 49, 9, 9);
+        blit(mx, x0+159, y0+49, 199+pulse_mode_offset, 49, 9, 9);
       }
       RenderSystem.disableBlend();
     }

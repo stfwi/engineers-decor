@@ -270,7 +270,7 @@ public class Networking
     { data_ = new TranslationTextComponent("[unset]"); }
 
     public OverlayTextMessage(final ITextComponent tct, int delay)
-    { data_ = (ITextComponent)tct.func_230532_e_(); delay_ = delay; }
+    { data_ = (ITextComponent)tct.deepCopy(); delay_ = delay; }
 
     public static OverlayTextMessage parse(final PacketBuffer buf)
     {

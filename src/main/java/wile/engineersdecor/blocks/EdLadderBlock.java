@@ -85,10 +85,10 @@ public class EdLadderBlock extends LadderBlock implements IDecorBlock
   // Player update event, forwarded from the main mod instance.
   public static void onPlayerUpdateEvent(final PlayerEntity player)
   {
-    if((without_speed_boost_) || (player.func_233570_aj_()/*onGround*/) || (!player.isOnLadder()) || (player.isSteppingCarefully()) || (player.isSpectator())) return;
+    if((without_speed_boost_) || (player.isOnGround()) || (!player.isOnLadder()) || (player.isSteppingCarefully()) || (player.isSpectator())) return;
     double lvy = player.getLookVec().y;
     if(Math.abs(lvy) < 0.94) return;
-    final BlockPos pos = player.func_233580_cy_();
+    final BlockPos pos = player.getPosition();
     final BlockState state = player.world.getBlockState(pos);
     if(!(state.getBlock() instanceof EdLadderBlock)) return;
     player.fallDistance = 0;

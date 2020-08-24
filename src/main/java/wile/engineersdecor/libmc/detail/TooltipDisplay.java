@@ -92,7 +92,7 @@ public class TooltipDisplay
         String text = tip.text.getString();
         if(!text.isEmpty() && (!text.startsWith("block."))) {
           try {
-            gui.func_243308_b(mx, Collections.singletonList(tip.text), x, y);
+            gui.renderTooltip(mx, tip.text, x, y); //gui.func_243308_b(mx, Collections.singletonList(tip.text), x, y);
           } catch(Exception ex) {
             had_render_exception = true;
             Auxiliaries.logError("Tooltip rendering disabled due to exception: '" + ex.getMessage() + "'");

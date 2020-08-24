@@ -249,8 +249,8 @@ public class EdLabeledCrate
     // TileEntity ------------------------------------------------------------------------------
 
     @Override
-    public void func_230337_a_(BlockState state, CompoundNBT nbt)
-    { super.func_230337_a_(state, nbt); readnbt(nbt); }
+    public void read(BlockState state, CompoundNBT nbt)
+    { super.read(state, nbt); readnbt(nbt); }
 
     @Override
     public CompoundNBT write(CompoundNBT nbt)
@@ -282,7 +282,7 @@ public class EdLabeledCrate
 
     @Override
     public void handleUpdateTag(BlockState state, CompoundNBT tag) // on client
-    { func_230337_a_/*read*/(state, tag); }
+    { read(state, tag); }
 
     @OnlyIn(Dist.CLIENT)
     public double getMaxRenderDistanceSquared()
@@ -357,7 +357,7 @@ public class EdLabeledCrate
 
     @Override
     public boolean isUsableByPlayer(PlayerEntity player)
-    { return getPos().distanceSq(player.func_233580_cy_()) < 36; }
+    { return getPos().distanceSq(player.getPosition()) < 36; }
 
     @Override
     public void openInventory(PlayerEntity player)
@@ -720,29 +720,29 @@ public class EdLabeledCrate
     }
 
     @Override
-    public void func_231160_c_/*init*/()
-    { super.func_231160_c_(); }
+    public void init()
+    { super.init(); }
 
     @Override
-    public void func_230430_a_/*render*/(MatrixStack mx, int mouseX, int mouseY, float partialTicks)
+    public void render/*render*/(MatrixStack mx, int mouseX, int mouseY, float partialTicks)
     {
-      func_230446_a_/*renderBackground*/(mx);
-      super.func_230430_a_(mx, mouseX, mouseY, partialTicks);
-      func_230459_a_/*renderHoveredToolTip*/(mx, mouseX, mouseY);
+      renderBackground/*renderBackground*/(mx);
+      super.render(mx, mouseX, mouseY, partialTicks);
+      func_230459_a_/*func_230459_a_*/(mx, mouseX, mouseY);
     }
 
     @Override
-    protected void func_230451_b_(MatrixStack mx, int x, int y)
+    protected void drawGuiContainerForegroundLayer(MatrixStack mx, int x, int y)
     {}
 
     @Override
     @SuppressWarnings("deprecation")
-    protected void func_230450_a_/*drawGuiContainerBackgroundLayer*/(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
+    protected void drawGuiContainerBackgroundLayer(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
     {
       GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
       getMinecraft().getTextureManager().bindTexture(new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/labeled_crate_gui.png"));
       final int x0=guiLeft, y0=this.guiTop, w=xSize, h=ySize;
-      func_238474_b_(mx, x0, y0, 0, 0, w, h);
+      blit(mx, x0, y0, 0, 0, w, h);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -768,9 +768,9 @@ public class EdLabeledCrate
     }
 
     @Override
-    public boolean func_231043_a_/*mouseScrolled*/(double mouseX, double mouseY, double wheel_inc)
+    public boolean mouseScrolled(double mouseX, double mouseY, double wheel_inc)
     {
-      if(!with_gui_mouse_handling) return super.func_231043_a_/*mouseScrolled*/(mouseX, mouseY, wheel_inc);
+      if(!with_gui_mouse_handling) return super.mouseScrolled(mouseX, mouseY, wheel_inc);
       final Slot slot = getSlotUnderMouse();
       if(!slot.getHasStack()) return true;
       final int count = slot.getStack().getCount();
