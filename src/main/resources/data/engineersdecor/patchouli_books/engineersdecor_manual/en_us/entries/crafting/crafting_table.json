@@ -1,13 +1,13 @@
 {
   "name": "Metal Crafting Table",
-  "icon": "engineersdecor:metal_crafting_table",
+  "icon": "engineersdecor:treated_wood_crafting_table",
   "category": "crafting",
   "sortnum": 5010,
   "pages": [
     {
       "type": "spotlight",
       "title": "Crafting Table",
-      "item": "engineersdecor:metal_crafting_table",
+      "item": "engineersdecor:treated_wood_crafting_table",
       "text": "This engineering themed workbench allows manual 3x3 crafting. It comes with some convenience tweaks, which are not visible at the first look. These features will be explained on the next pages."
     },
     {

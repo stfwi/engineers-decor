@@ -11,6 +11,8 @@ Mod sources for Minecraft version 1.16.1.
 
 ## Version history
 
+    - v1.1.2     [F] Fixed Crafting Table Patchouli manual entry.
+
     - v1.1.1     [R] Intial 1.16.1 release.
 
     - v1.1.1-b7  [F] Fixed AI-open-path bug (issue #116, ty KrAzYGEEK32, desht).
