@@ -119,7 +119,7 @@ public class EdSolarPanel
     public void state_message(PlayerEntity player)
     {
       String soc = Integer.toString(MathHelper.clamp((accumulated_power_*100/max_power_storage_),0,100));
-      Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.small_solar_panel.status", null, new Object[]{soc, max_power_storage_, current_production_, current_feedin_ }));
+      Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.small_solar_panel.status", new Object[]{soc, max_power_storage_, current_production_, current_feedin_ }));
     }
 
     // IEnergyStorage --------------------------------------------------------------------------

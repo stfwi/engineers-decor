@@ -14,6 +14,7 @@ import wile.engineersdecor.libmc.detail.Inventories;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.detail.ExternalObjects;
+import wile.engineersdecor.libmc.detail.Overlay;
 import net.minecraft.world.World;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.IBlockReader;
@@ -51,7 +52,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import wile.engineersdecor.libmc.detail.Overlay;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -186,8 +187,11 @@ public class EdMilker
       energy_consumption = MathHelper.clamp(energy_consumption_per_tick, 0, 1024);
       min_milking_delay_per_cow_ticks = MathHelper.clamp(min_milking_delay_per_cow, 1000, 24000);
       {
-        Fluid milk = null; // FluidRe.getFluid("milk");
-        if(milk != null) milk_fluid_ = new FluidStack(milk, BUCKET_SIZE);
+        ResourceLocation milk_rl = ForgeRegistries.FLUIDS.getKeys().stream().filter(rl->rl.getPath().equals("milk")).findFirst().orElse(null);
+        if(milk_rl != null) {
+          Fluid milk = ForgeRegistries.FLUIDS.getValue(milk_rl);
+          if(milk != null) milk_fluid_ = new FluidStack(milk, BUCKET_SIZE);
+        }
       }
       {
         milk_containers_.put(new ItemStack(Items.BUCKET), new ItemStack(Items.MILK_BUCKET));
@@ -195,7 +199,7 @@ public class EdMilker
       }
       ModEngineersDecor.logger().info(
         "Config milker: energy consumption:" + energy_consumption + "rf/t"
-          + ((milk_fluid_==null)?"":" [milk fluid available]")
+          + ((milk_fluid_==NO_MILK_FLUID)?"":" [milk fluid available]")
           + ((ExternalObjects.BOTTLED_MILK_BOTTLE_DRINKLABLE==null)?"":" [bottledmilk mod available]")
       );
     }
@@ -249,8 +253,8 @@ public class EdMilker
 
     public void state_message(PlayerEntity player)
     {
-      ITextComponent rf = (energy_consumption <= 0) ? (new StringTextComponent("")) : (Auxiliaries.localizable("block.engineersdecor.small_milking_machine.status.rf", null, new Object[]{energy_stored_}));
-      Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.small_milking_machine.status", null, new Object[]{tank_level_, rf}));
+      ITextComponent rf = (energy_consumption <= 0) ? (new StringTextComponent("")) : (Auxiliaries.localizable("block.engineersdecor.small_milking_machine.status.rf", new Object[]{energy_stored_}));
+      Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.small_milking_machine.status", new Object[]{tank_level_, rf}));
     }
 
     // TileEntity ------------------------------------------------------------------------------
@@ -379,6 +383,20 @@ public class EdMilker
         if(!inserted) break;
       }
       return dirty;
+    }
+
+    private boolean fill_adjacent_tank()
+    {
+      if((fluid_level()<=0) || (!has_milk_fluid())) return false;
+      final FluidStack fs = new FluidStack(milk_fluid_, Math.max(fluid_level(), BUCKET_SIZE));
+      for(Direction dir:Direction.values()) {
+        int amount = Fluidics.fill(getWorld(), getPos().offset(dir), dir.getOpposite(), fs);
+        if(amount > 0) {
+          tank_level_ = Math.max(fluid_level() - amount, 0);
+          return true;
+        }
+      }
+      return false;
     }
 
     private void release_cow(CowEntity cow)
@@ -565,7 +583,7 @@ public class EdMilker
         // Adjacent inventory update, only done just after milking to prevent waste of server cpu.
         if((!dirty) && (fluid_level() >= BUCKET_SIZE)) {
           log("Try item transfer");
-          if(fill_adjacent_inventory_item_containers(block_state.get(MilkerBlock.HORIZONTAL_FACING))) dirty = true;
+          if(fill_adjacent_tank() || fill_adjacent_inventory_item_containers(block_state.get(MilkerBlock.HORIZONTAL_FACING))) dirty = true;
         }
       }
       // State update

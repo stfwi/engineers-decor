@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.16.2.
 
 ## Version history
 
+    ~ v1.1.2-b5  [A] Sandstone Ornamented Clinker Brick added.
+                 [F] Milking Machine fluid transfer re-added (thx gebcrafter).
+
     - v1.1.2-b4  [F] Mapping adaption to Forge 1.16.2-33.0.22/20200723-1.16.1.
                  [F] Fixed conditional recipe tag dependency (thx Blu, Cyborgmas).
 

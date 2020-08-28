@@ -82,8 +82,6 @@ public class ModContent
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "clinker_brick_wall"));
 
-  // -------------------------------------------------------------------------------------------------------------------
-
   public static final DecorBlock.Normal CLINKER_BRICK_STAINED_BLOCK = (DecorBlock.Normal)(new DecorBlock.Normal(
     DecorBlock.CFG_DEFAULT,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE)
@@ -99,6 +97,12 @@ public class ModContent
     CLINKER_BRICK_BLOCK.getDefaultState(),
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "clinker_brick_stained_stairs"));
+
+  public static final EdCornerOrnamentedBlock CLINKER_BRICK_SASTOR_CORNER = (EdCornerOrnamentedBlock)(new EdCornerOrnamentedBlock(
+    DecorBlock.CFG_DEFAULT,
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE),
+    new Block[]{CLINKER_BRICK_BLOCK, CLINKER_BRICK_STAINED_BLOCK, CLINKER_BRICK_SLAB, CLINKER_BRICK_STAIRS, CLINKER_BRICK_STAINED_SLAB, CLINKER_BRICK_STAINED_STAIRS}
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "clinker_brick_sastor_corner_block"));
 
   // -------------------------------------------------------------------------------------------------------------------
 
@@ -784,6 +788,7 @@ public class ModContent
     CLINKER_BRICK_SLAB,
     CLINKER_BRICK_STAIRS,
     CLINKER_BRICK_WALL,
+    CLINKER_BRICK_SASTOR_CORNER,
     CLINKER_BRICK_STAINED_BLOCK,
     CLINKER_BRICK_STAINED_SLAB,
     CLINKER_BRICK_STAINED_STAIRS,

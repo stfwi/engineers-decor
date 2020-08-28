@@ -185,7 +185,7 @@ public class EdBreaker
         progress = Integer.toString((int)MathHelper.clamp((((double)proc_time_elapsed_) / ((double)time_needed_) * 100), 0, 100));
       }
       String soc = Integer.toString(MathHelper.clamp((energy_*100/energy_max),0,100));
-      Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.small_block_breaker.status", null, new Object[]{soc, energy_max, progress }));
+      Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.small_block_breaker.status", new Object[]{soc, energy_max, progress }));
     }
 
     // TileEntity ------------------------------------------------------------------------------

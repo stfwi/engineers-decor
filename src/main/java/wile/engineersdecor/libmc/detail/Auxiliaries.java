@@ -113,15 +113,13 @@ public class Auxiliaries
    * Text localisation wrapper, implicitly prepends `MODID` to the
    * translation keys. Forces formatting argument, nullable if no special formatting shall be applied..
    */
-  public static TranslationTextComponent localizable(String modtrkey, @Nullable TextFormatting color, Object... args)
+  public static TranslationTextComponent localizable(String modtrkey, Object... args)
   {
-    TranslationTextComponent tr = new TranslationTextComponent((modtrkey.startsWith("block.") || (modtrkey.startsWith("item."))) ? (modtrkey) : (modid+"."+modtrkey), args);
-    if(color!=null) tr.mergeStyle(color);
-    return tr;
+    return new TranslationTextComponent((modtrkey.startsWith("block.") || (modtrkey.startsWith("item."))) ? (modtrkey) : (modid+"."+modtrkey), args);
   }
 
   public static TranslationTextComponent localizable(String modtrkey)
-  { return localizable(modtrkey, null); }
+  { return localizable(modtrkey, new Object[]{}); }
 
   public static TranslationTextComponent localizable_block_key(String blocksubkey)
   { return new TranslationTextComponent("block."+modid+"."+blocksubkey); }
@@ -187,8 +185,7 @@ public class Auxiliaries
     @OnlyIn(Dist.CLIENT)
     public static boolean addInformation(@Nullable String advancedTooltipTranslationKey, @Nullable String helpTranslationKey, List<ITextComponent> tooltip, ITooltipFlag flag, boolean addAdvancedTooltipHints)
     {
-      // Note: intentionally not using keybinding here, this must be `control` or `shift`. MC uses lwjgl Keyboard,
-      //       so using this also here should be ok.
+      // Note: intentionally not using keybinding here, this must be `control` or `shift`.
       final boolean help_available = (helpTranslationKey != null) && Auxiliaries.hasTranslation(helpTranslationKey + ".help");
       final boolean tip_available = (advancedTooltipTranslationKey != null) && Auxiliaries.hasTranslation(helpTranslationKey + ".tip");
       if((!help_available) && (!tip_available)) return false;
@@ -196,7 +193,7 @@ public class Auxiliaries
         if(!help_available) return false;
         String s = localize(helpTranslationKey + ".help");
         if(s.isEmpty()) return false;
-        tooltip.add(new StringTextComponent(s)); // @todo: check how to optimise that (to use TranslationTextComponent directly without compat losses)
+        tooltip.add(new StringTextComponent(s));
         return true;
       } else if(extendedTipCondition()) {
         if(!tip_available) return false;

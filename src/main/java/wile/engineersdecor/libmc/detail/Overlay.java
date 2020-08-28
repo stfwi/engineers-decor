@@ -15,6 +15,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -46,6 +47,7 @@ public class Overlay
   @OnlyIn(Dist.CLIENT)
   public static class TextOverlayGui extends AbstractGui
   {
+    private static final ITextComponent EMPTY_TEXT = new StringTextComponent("");
     private static double overlay_y_ = 0.75;
     private static int text_color_ = 0x00ffaa00;
     private static int border_color_ = 0xaa333333;
@@ -53,7 +55,7 @@ public class Overlay
     private static int background_color2_ = 0xaa444444;
     private final Minecraft mc;
     private static long deadline_;
-    private static String text_;
+    private static ITextComponent text_;
 
     public static void on_config(double overlay_y)
     {
@@ -65,20 +67,20 @@ public class Overlay
       background_color2_ = 0xaa444444;
     }
 
-    public static synchronized String text()
+    public static synchronized ITextComponent text()
     { return text_; }
 
     public static synchronized long deadline()
     { return deadline_; }
 
     public static synchronized void hide()
-    { deadline_ = 0; text_ = ""; }
+    { deadline_ = 0; text_ = EMPTY_TEXT; }
 
     public static synchronized void show(ITextComponent s, int displayTimeoutMs)
-    { text_ = (s==null)?(""):(s.getString()); deadline_ = System.currentTimeMillis() + displayTimeoutMs; }
+    { text_ = (s==null)?(EMPTY_TEXT):(s.deepCopy()); deadline_ = System.currentTimeMillis() + displayTimeoutMs; }
 
     public static synchronized void show(String s, int displayTimeoutMs)
-    { text_ = (s == null) ? ("") : (s); deadline_ = System.currentTimeMillis() + displayTimeoutMs; }
+    { text_ = ((s==null)||(s.isEmpty()))?(EMPTY_TEXT):(new StringTextComponent(s)); deadline_ = System.currentTimeMillis() + displayTimeoutMs; }
 
     TextOverlayGui()
     { super(); mc = SidedProxy.mc(); }
@@ -88,9 +90,10 @@ public class Overlay
     {
       if(event.getType() != RenderGameOverlayEvent.ElementType.CHAT) return;
       if(deadline() < System.currentTimeMillis()) return;
-      String txt = text();
-      MatrixStack mxs = event.getMatrixStack();
+      if(text()==EMPTY_TEXT) return;
+      String txt = text().getString();
       if(txt.isEmpty()) return;
+      MatrixStack mxs = event.getMatrixStack();
       final MainWindow win = mc.getMainWindow();
       final FontRenderer fr = mc.fontRenderer;
       final boolean was_unicode = fr.getBidiFlag();
@@ -104,12 +107,11 @@ public class Overlay
         hLine(mxs, cx-(w/2)-3, cx+(w/2)+2, cy+h+2, 0xaa333333);
         vLine(mxs, cx-(w/2)-3, cy-2, cy+h+2, 0xaa333333);
         vLine(mxs, cx+(w/2)+2, cy-2, cy+h+2, 0xaa333333);
-        drawCenteredString(mxs, fr, txt, cx , cy+1, 0x00ffaa00);
+        drawCenteredString(mxs, fr, text(), cx , cy+1, 0x00ffaa00);
       } finally {
         ; // fr.setBidiFlag(was_unicode);
       }
     }
-
   }
 
 }

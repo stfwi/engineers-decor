@@ -196,6 +196,8 @@
   "block.engineersdecor.slag_brick_stairs.help": "§6Gray-brown brick stairs.",
   "block.engineersdecor.slag_brick_wall": "Slag Brick Wall",
   "block.engineersdecor.slag_brick_wall.help": "§6Simplistic Slag Brick Wall.",
+  "block.engineersdecor.clinker_brick_sastor_corner_block": "Sandstone Ornamented Clinker Brick Corner",
+  "block.engineersdecor.clinker_brick_sastor_corner_block.help": "§6Quoin decoration for clinker wall accentuation.",
   "block.engineersdecor.small_block_breaker": "Small Block Breaker",
   "block.engineersdecor.small_block_breaker.help": "§6Breaks blocks in front of it.§r\nCan be disabled by applying a redstone signal. The time needed to destroy a block depends on the hardness of that block. ${!block_breaker_requires_power?engineersdecor.tooltip.massive_speed_boost_with_rf_power} ${block_breaker_requires_power?engineersdecor.tooltip.requires_rf_power}",
   "block.engineersdecor.small_block_breaker.status": "SOC: %1$s%% of %2$sRF§r | progress: %3$s%%",

@@ -145,7 +145,7 @@ public class EdTreeCutter
         progress = Integer.toString((int)MathHelper.clamp((((double)proc_time_elapsed_) / ((double)cutting_time_needed) * 100), 0, 100));
       }
       String soc = Integer.toString(MathHelper.clamp((energy_*100/energy_max),0,100));
-      Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.small_tree_cutter.status", null, new Object[]{soc, energy_max, progress, (cutting_time_needed/20) }));
+      Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.small_tree_cutter.status", new Object[]{soc, energy_max, progress, (cutting_time_needed/20) }));
     }
 
     // TileEntity ------------------------------------------------------------------------------

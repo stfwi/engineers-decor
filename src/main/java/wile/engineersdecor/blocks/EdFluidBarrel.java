@@ -130,13 +130,13 @@ public class EdFluidBarrel
       }
       FluidStack fs = FluidBarrelItem.getFluid(stack);
       if(!fs.isEmpty()) {
-        tooltip.add(Auxiliaries.localizable(getTranslationKey()+".status.tip", null, new Object[] {
+        tooltip.add(Auxiliaries.localizable(getTranslationKey()+".status.tip", new Object[] {
           Integer.toString(fs.getAmount()),
           Integer.toString(capacity_),
           new TranslationTextComponent(fs.getTranslationKey())
         }));
       } else {
-        tooltip.add(Auxiliaries.localizable(getTranslationKey()+".status.tip.empty", null, new Object[] {
+        tooltip.add(Auxiliaries.localizable(getTranslationKey()+".status.tip.empty", new Object[] {
           "0",
           Integer.toString(capacity_),
         }));
@@ -241,11 +241,11 @@ public class EdFluidBarrel
         int cap = tank_.getCapacity();
         String name = Auxiliaries.localizable(tank_.getFluid().getTranslationKey()).getString();
         if((vol>0) && (cap>0)) {
-          Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.fluid_barrel.status", null, new Object[]{
+          Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.fluid_barrel.status", new Object[]{
             Integer.toString(vol), Integer.toString(cap), name
           }));
         } else {
-          Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.fluid_barrel.status.empty", null, new Object[]{
+          Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.fluid_barrel.status.empty", new Object[]{
             Integer.toString(vol), Integer.toString(cap)
           }));
         }

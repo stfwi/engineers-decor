@@ -185,7 +185,7 @@ public class EdLabeledCrate
       }
       int num_free_slots = LabeledCrateTileEntity.ITEMFRAME_SLOTNO - num_used_slots;
       ItemStack frameStack = items.get(LabeledCrateTileEntity.ITEMFRAME_SLOTNO);
-      tooltip.add(Auxiliaries.localizable(getTranslationKey()+".tip", null, new Object[] {
+      tooltip.add(Auxiliaries.localizable(getTranslationKey()+".tip", new Object[] {
         (frameStack.isEmpty() ? (new StringTextComponent("-/-")) : (new TranslationTextComponent(frameStack.getTranslationKey()))),
         num_used_slots,
         num_free_slots,
