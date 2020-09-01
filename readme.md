@@ -11,6 +11,10 @@ Mod sources for Minecraft version 1.16.1.
 
 ## Version history
 
+    - v1.1.4     [F] Milking Machine fluid transfer re-added (thx gebcrafter).
+                 [F] Fluid Barrel status overlay message format fixed.
+                 [F] Fixed missing Dense Grit Dirt loot table (issue #124, thx vaelzan).
+
     - v1.1.3     [F] Fixed conditional recipe tag dependency (thx Blu, Cyborgmas).
 
     - v1.1.2     [F] Fixed Crafting Table Patchouli manual entry.

@@ -72,8 +72,14 @@ public class Fluidics
     public Tank readnbt(CompoundNBT nbt)
     { setFluid(FluidStack.loadFluidStackFromNBT(nbt)); return this; }
 
+    public CompoundNBT writenbt()
+    { return writenbt(new CompoundNBT()); }
+
     public CompoundNBT writenbt(CompoundNBT nbt)
     { fluid_.writeToNBT(nbt); return nbt; }
+
+    public void reset()
+    { setFluid(null); }
 
     public int getCapacity()
     { return capacity_; }
@@ -150,12 +156,26 @@ public class Fluidics
     }
   }
 
-
   /**
    * Fills or drains items with fluid handlers from or into tile blocks with fluid handlers.
    */
   public static boolean manualFluidHandlerInteraction(World world, BlockPos pos, @Nullable Direction side, PlayerEntity player, Hand hand)
   { return manualTrackedFluidHandlerInteraction(world, pos, side, player, hand) != null; }
+
+  /**
+   * If possible and applicable, fills a tank or device using its sided fluid handler, optionally simulated.
+   */
+  public static int fill(World world, BlockPos pos, Direction side, FluidStack fs, FluidAction action)
+  {
+    IFluidHandler fh = FluidUtil.getFluidHandler(world, pos, side).orElse(null);
+    return (fh==null) ? (0) : (fh.fill(fs, action));
+  }
+
+  /**
+   * If possible and applicable, fills a tank or device using its sided fluid handler.
+   */
+  public static int fill(World world, BlockPos pos, Direction side, FluidStack fs)
+  { return fill(world, pos, side, fs, FluidAction.EXECUTE); }
 
   /**
    * Fills or drains items with fluid handlers from or into tile blocks with fluid handlers.

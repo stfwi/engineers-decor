@@ -325,7 +325,7 @@ public class EdCraftingTable
     public static final int CRAFTING_SLOTS_BEGIN = 0;
     public static final int NUM_OF_CRAFTING_SLOTS = 9;
     public static final int STORAGE_SLOTS_BEGIN = NUM_OF_CRAFTING_SLOTS;
-    public static final int NUM_OF_STORAGE_SLOTS = CraftingTableTileEntity.NUM_OF_SLOTS - NUM_OF_CRAFTING_SLOTS;
+    public static final int NUM_OF_STORAGE_SLOTS = (CraftingTableTileEntity.NUM_OF_SLOTS+1) - (NUM_OF_CRAFTING_SLOTS+1);
 
     public final ImmutableList<Tuple<Integer,Integer>> CRAFTING_SLOT_COORDINATES;
     private final PlayerEntity player_;
@@ -456,8 +456,8 @@ public class EdCraftingTable
         if(!this.mergeItemStack(slotstack, 10, 46, true)) return ItemStack.EMPTY;
         slot.onSlotChange(slotstack, stack);
       } else if(index >= 10 && (index < 46)) {
-        if(!this.mergeItemStack(slotstack, 46, 54, false)) return ItemStack.EMPTY;
-      } else if((index >= 46) && (index < 54)) {
+        if(!this.mergeItemStack(slotstack, 46, 46+NUM_OF_STORAGE_SLOTS, false)) return ItemStack.EMPTY;
+      } else if((index >= 46) && (index < 46+NUM_OF_STORAGE_SLOTS)) {
         if(!this.mergeItemStack(slotstack, 10, 46, false)) return ItemStack.EMPTY;
       } else if(!this.mergeItemStack(slotstack, 10, 46, false)) {
         return ItemStack.EMPTY;
