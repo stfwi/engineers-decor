@@ -1,0 +1,4 @@
+{
+	"parent": "engineersdecor:block/device/fluid_barrel_model0",
+	"textures": { "s" : "engineersdecor:block/pipe/fluid_barrel_side4" }
+}

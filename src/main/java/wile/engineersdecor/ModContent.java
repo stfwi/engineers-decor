@@ -288,6 +288,34 @@ public class ModContent
 
   // -------------------------------------------------------------------------------------------------------------------
 
+  public static final DecorBlock.Normal OLD_INDUSTRIAL_PLANKS = (DecorBlock.Normal)(new DecorBlock.Normal(
+    DecorBlock.CFG_DEFAULT,
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1.5f, 8f).sound(SoundType.WOOD)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "old_industrial_wood_planks"));
+
+  public static final EdSlabBlock OLD_INDUSTRIAL_SLAB = (EdSlabBlock)(new EdSlabBlock(
+    DecorBlock.CFG_DEFAULT,
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1.5f, 8f).sound(SoundType.WOOD)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "old_industrial_wood_slab"));
+
+  public static final EdStairsBlock OLD_INDUSTRIAL_STAIRS = (EdStairsBlock)(new EdStairsBlock(
+    DecorBlock.CFG_DEFAULT,
+    OLD_INDUSTRIAL_PLANKS.getDefaultState(),
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1.5f, 8f).sound(SoundType.WOOD)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "old_industrial_wood_stairs"));
+
+  public static final EdSlabSliceBlock OLD_INDUSTRIAL_SLABSLICE = (EdSlabSliceBlock)(new EdSlabSliceBlock(
+    DecorBlock.CFG_CUTOUT,
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1.5f, 8f).sound(SoundType.WOOD).notSolid()
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "old_industrial_wood_slabslice"));
+
+  public static final EdDoorBlock OLD_INDUSTRIAL_WOOD_DOOR = (EdDoorBlock)(new EdDoorBlock(
+    DecorBlock.CFG_DEFAULT,
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1.5f, 12f).sound(SoundType.WOOD).notSolid()
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "old_industrial_wood_door"));
+
+  // -------------------------------------------------------------------------------------------------------------------
+
   public static final DecorBlock.WaterLoggable TREATED_WOOD_TABLE = (DecorBlock.WaterLoggable)(new DecorBlock.WaterLoggable(
     DecorBlock.CFG_CUTOUT,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD).notSolid(),
@@ -828,6 +856,11 @@ public class ModContent
     METAL_RUNG_STEPS,
     TREATED_WOOD_LADDER,
     IRON_HATCH,
+    OLD_INDUSTRIAL_PLANKS,
+    OLD_INDUSTRIAL_SLAB,
+    OLD_INDUSTRIAL_STAIRS,
+    OLD_INDUSTRIAL_SLABSLICE,
+    OLD_INDUSTRIAL_WOOD_DOOR,
     TREATED_WOOD_TABLE,
     TREATED_WOOD_STOOL,
     TREATED_WOOD_SIDE_TABLE,

@@ -1,8 +1,8 @@
 {
   "variants": {
-    "facing=north": { "model": "engineersdecor:block/misc/labeled_crate_model"          },
-    "facing=south": { "model": "engineersdecor:block/misc/labeled_crate_model", "y":180 },
-    "facing=west":  { "model": "engineersdecor:block/misc/labeled_crate_model", "y":270 },
-    "facing=east":  { "model": "engineersdecor:block/misc/labeled_crate_model", "y":90  }
+    "facing=north": { "model": "engineersdecor:block/device/labeled_crate_model"          },
+    "facing=south": { "model": "engineersdecor:block/device/labeled_crate_model", "y":180 },
+    "facing=west":  { "model": "engineersdecor:block/device/labeled_crate_model", "y":270 },
+    "facing=east":  { "model": "engineersdecor:block/device/labeled_crate_model", "y":90  }
   }
 }

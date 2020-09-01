@@ -1,6 +1,6 @@
 {
   "variants": {
-    "lit=false": { "model": "engineersdecor:block/furnace/small_waste_incinerator_model" },
-    "lit=true" : { "model": "engineersdecor:block/furnace/small_waste_incinerator_model_lit" }
+    "lit=false": { "model": "engineersdecor:block/device/small_waste_incinerator_model" },
+    "lit=true" : { "model": "engineersdecor:block/device/small_waste_incinerator_model_lit" }
   }
 }

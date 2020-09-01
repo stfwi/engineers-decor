@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "": [
+      { "model": "engineersdecor:block/wood/old_industrial_planks_model0" },
+      { "model": "engineersdecor:block/wood/old_industrial_planks_model1" },
+      { "model": "engineersdecor:block/wood/old_industrial_planks_model2" },
+      { "model": "engineersdecor:block/wood/old_industrial_planks_model3" }
+    ]
+  }
+}

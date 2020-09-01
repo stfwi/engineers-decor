@@ -1,0 +1,28 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:old_industrial_wood_slabslice",
+          "required": ["engineersdecor:old_industrial_wood_slab"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "SS",
+          "SS"
+        ],
+        "key": {
+          "S": { "item": "engineersdecor:old_industrial_wood_slab" }
+        },
+        "result": {
+          "item": "engineersdecor:old_industrial_wood_slabslice",
+          "count": 16
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+	"parent": "engineersdecor:block/device/small_electrical_furnace_model",
+	"textures": {
+    "front": "engineersdecor:block/furnace/small_electrical_furnace_front_lit",
+    "back": "engineersdecor:block/furnace/small_electrical_furnace_back_lit"
+	}
+}

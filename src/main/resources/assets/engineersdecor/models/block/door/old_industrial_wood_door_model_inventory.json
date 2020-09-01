@@ -1,0 +1,59 @@
+{
+	"parent": "block/block",
+	"ambientocclusion": false,
+	"textures": {
+		"bottom": "engineersdecor:block/door/old_industrial_door_texture_bottom",
+		"top": "engineersdecor:block/door/old_industrial_door_texture_top",
+		"particle": "engineersdecor:block/door/old_industrial_door_texture_side"
+	},
+	"elements": [
+		{
+			"from": [7.25, 8, 3.5],
+			"to": [8.75, 16, 11.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 7.5]},
+			"faces": {
+				"north": {"uv": [0, 0, 3, 16], "texture": "#particle"},
+				"east": {"uv": [16, 0, 0, 16], "texture": "#top"},
+				"south": {"uv": [13, 0, 16, 16], "texture": "#particle"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#top"},
+				"up": {"uv": [0, 0, 16, 3], "rotation": 270, "texture": "#particle"}
+			}
+		},
+		{
+			"from": [7.25, 0, 3.5],
+			"to": [8.75, 8, 11.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 7.5]},
+			"faces": {
+				"north": {"uv": [0, 0, 3, 16], "texture": "#particle"},
+				"east": {"uv": [16, 0, 0, 16], "texture": "#bottom"},
+				"south": {"uv": [13, 0, 16, 16], "texture": "#particle"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#bottom"},
+				"down": {"uv": [0, 13, 16, 16], "rotation": 90, "texture": "#particle"}
+			}
+		}
+	],
+	"gui_light": "front",
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [6, 88, 39],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"firstperson_righthand": {
+			"rotation": [-4, 27, 0],
+			"translation": [2.25, 0, 0],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"ground": {
+			"translation": [0, 1.75, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"gui": {
+			"rotation": [0, 90, 0],
+			"translation": [0, 0.25, 0],
+			"scale": [0.9, 0.9, 0.9]
+		},
+		"fixed": {
+			"rotation": [0, 90, 0]
+		}
+	}
+}

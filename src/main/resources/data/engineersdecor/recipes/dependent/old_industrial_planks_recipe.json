@@ -1,0 +1,52 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:old_industrial_wood_planks",
+          "required": ["#forge:treated_wood"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "WC",
+          "WW"
+        ],
+        "key": {
+          "C": { "item": "minecraft:charcoal" },
+          "W": { "tag" : "forge:treated_wood" }
+        },
+        "result": {
+          "item": "engineersdecor:old_industrial_wood_planks",
+          "count": 4
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:old_industrial_wood_planks"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "WW",
+          "WC"
+        ],
+        "key": {
+          "C": { "item": "minecraft:charcoal" },
+          "W": { "tag": "minecraft:planks" }
+        },
+        "result": {
+          "item": "engineersdecor:old_industrial_wood_planks",
+          "count": 4
+        }
+      }
+    }
+  ]
+}

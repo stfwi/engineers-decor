@@ -11,7 +11,7 @@ package wile.engineersdecor.libmc.datagen;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
-import net.minecraftforge.client.model.generators.*;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraft.data.*;
 
 public class AssetsDataGen

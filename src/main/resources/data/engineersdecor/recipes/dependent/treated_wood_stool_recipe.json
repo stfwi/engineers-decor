@@ -30,8 +30,7 @@
         {
           "type": "engineersdecor:optional",
           "result": "engineersdecor:treated_wood_stool",
-          "missing": ["#forge:treated_wood_slab"],
-          "required": ["engineersdecor:treated_wood_pole"]
+          "required": ["engineersdecor:treated_wood_pole", "engineersdecor:old_industrial_wood_slab"]
         }
       ],
       "recipe": {
@@ -42,7 +41,7 @@
           " S "
         ],
         "key": {
-          "W": { "tag": "minecraft:wooden_slabs" },
+          "W": { "item": "engineersdecor:old_industrial_wood_slab" },
           "S": { "item": "engineersdecor:treated_wood_pole" }
         },
         "result": {

@@ -31,7 +31,8 @@
       "conditions": [
         {
           "type": "engineersdecor:optional",
-          "result": "engineersdecor:factory_hopper"
+          "result": "engineersdecor:factory_hopper",
+          "required": ["engineersdecor:old_industrial_wood_planks"]
         }
       ],
       "recipe": {
@@ -44,7 +45,7 @@
         "key": {
           "H": { "item": "minecraft:hopper" },
           "P": { "item": "minecraft:iron_ingot" },
-          "W": { "tag": "minecraft:planks" }
+          "W": { "item": "engineersdecor:old_industrial_wood_planks" }
         },
         "result": {
           "item": "engineersdecor:factory_hopper",

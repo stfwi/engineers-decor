@@ -30,22 +30,22 @@
         {
           "type": "engineersdecor:optional",
           "result": "engineersdecor:treated_wood_ladder",
-          "missing": ["#forge:rods/treated_wood"]
+          "required": ["engineersdecor:old_industrial_wood_planks"]
         }
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
         "pattern": [
-          "LL",
-          "LL",
-          "LL"
+          "S S",
+          "SSS",
+          "S S"
         ],
         "key": {
-          "L": { "item": "minecraft:ladder" }
+          "S": { "item": "engineersdecor:old_industrial_wood_planks" }
         },
         "result": {
           "item": "engineersdecor:treated_wood_ladder",
-          "count": 4
+          "count": 6
         }
       }
     }

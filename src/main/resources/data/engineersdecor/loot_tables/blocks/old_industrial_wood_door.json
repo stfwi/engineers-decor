@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:block",
+  "pools": [{
+    "name": "old_industrial_wood_door_dlt",
+    "rolls": 1,
+    "conditions": [
+      { "condition": "minecraft:survives_explosion" }
+    ],
+    "entries": [{
+      "name": "engineersdecor:old_industrial_wood_door",
+      "type": "minecraft:item",
+      "conditions": [{
+        "block": "engineersdecor:old_industrial_wood_door",
+        "condition": "minecraft:block_state_property",
+        "properties": { "half": "lower" }
+        }
+      ]
+    }]
+  }]
+}

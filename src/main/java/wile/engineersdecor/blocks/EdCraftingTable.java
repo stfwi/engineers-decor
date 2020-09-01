@@ -8,14 +8,6 @@
  */
 package wile.engineersdecor.blocks;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.ItemRenderer;
-import wile.engineersdecor.ModContent;
-import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.libmc.detail.Inventories;
-import wile.engineersdecor.libmc.detail.Inventories.SlotRange;
-import wile.engineersdecor.libmc.detail.Networking;
 import net.minecraft.inventory.container.*;
 import net.minecraft.network.play.server.SSetSlotPacket;
 import net.minecraft.network.NetworkManager;
@@ -45,6 +37,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.button.ImageButton;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -52,6 +45,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import wile.engineersdecor.ModContent;
+import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.Inventories;
+import wile.engineersdecor.libmc.detail.Inventories.SlotRange;
+import wile.engineersdecor.libmc.detail.Networking;
 import wile.engineersdecor.libmc.detail.TooltipDisplay;
 import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
 
@@ -456,8 +456,8 @@ public class EdCraftingTable
         if(!this.mergeItemStack(slotstack, 10, 46, true)) return ItemStack.EMPTY;
         slot.onSlotChange(slotstack, stack);
       } else if(index >= 10 && (index < 46)) {
-        if(!this.mergeItemStack(slotstack, 46, 54, false)) return ItemStack.EMPTY;
-      } else if((index >= 46) && (index < 54)) {
+        if(!this.mergeItemStack(slotstack, 46, 46+NUM_OF_STORAGE_SLOTS, false)) return ItemStack.EMPTY;
+      } else if((index >= 46) && (index < 46+NUM_OF_STORAGE_SLOTS)) {
         if(!this.mergeItemStack(slotstack, 10, 46, false)) return ItemStack.EMPTY;
       } else if(!this.mergeItemStack(slotstack, 10, 46, false)) {
         return ItemStack.EMPTY;

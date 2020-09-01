@@ -3,7 +3,7 @@
 	"textures": {
     "particle": "#all",
     "side": "#all",
-    "all": "engineersdecor:block/material/treated_wood_framed_texture"
+    "all": "engineersdecor:block/material/wood_framed_texture"
 	},
 	"elements": [
 		{

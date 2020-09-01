@@ -1,0 +1,30 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:steel_framed_window",
+          "required": ["#engineersdecor:plain_glass_panes", "engineersdecor:thin_steel_pole"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "WGW",
+          "GGG",
+          "WGW"
+        ],
+        "key": {
+          "W": { "item": "engineersdecor:thin_steel_pole" },
+          "G": { "tag": "engineersdecor:plain_glass_panes" }
+        },
+        "result": {
+          "item": "engineersdecor:steel_framed_window",
+          "count": 9
+        }
+      }
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 {
+ "ambientocclusion": false,
  "textures": {
 		"particle": "engineersdecor:block/roof/dark_shingle_roof",
 		"s": "engineersdecor:block/roof/dark_shingle_roof"

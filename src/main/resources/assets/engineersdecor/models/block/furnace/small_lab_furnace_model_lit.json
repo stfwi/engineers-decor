@@ -1,4 +1,0 @@
-{
-	"parent": "engineersdecor:block/furnace/small_lab_furnace_model",
-	"textures": { "gloom": "engineersdecor:block/furnace/small_lab_furnace_front_gloom_on" }
-}

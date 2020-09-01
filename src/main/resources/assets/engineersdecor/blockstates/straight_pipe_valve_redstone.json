@@ -1,14 +1,14 @@
 { "multipart": [
-  { "when": { "facing":"north" }, "apply": { "model": "engineersdecor:block/pipe/straight_pipe_valve_redstone_model", "y":   0 } },
-  { "when": { "facing":"south" }, "apply": { "model": "engineersdecor:block/pipe/straight_pipe_valve_redstone_model", "y": 180 } },
-  { "when": { "facing":"west"  }, "apply": { "model": "engineersdecor:block/pipe/straight_pipe_valve_redstone_model", "y": 270 } },
-  { "when": { "facing":"east"  }, "apply": { "model": "engineersdecor:block/pipe/straight_pipe_valve_redstone_model", "y":  90 } },
-  { "when": { "facing":"up"    }, "apply": { "model": "engineersdecor:block/pipe/straight_pipe_valve_redstone_model", "x": -90 } },
-  { "when": { "facing":"down"  }, "apply": { "model": "engineersdecor:block/pipe/straight_pipe_valve_redstone_model", "x":  90 } },
-  { "when": { "rs_n":"true"    }, "apply": { "model": "engineersdecor:block/pipe/straight_pipe_valve_rs_connector_submodel", "y":   0 } },
-  { "when": { "rs_s":"true"    }, "apply": { "model": "engineersdecor:block/pipe/straight_pipe_valve_rs_connector_submodel", "y": 180 } },
-  { "when": { "rs_w":"true"    }, "apply": { "model": "engineersdecor:block/pipe/straight_pipe_valve_rs_connector_submodel", "y": 270 } },
-  { "when": { "rs_e":"true"    }, "apply": { "model": "engineersdecor:block/pipe/straight_pipe_valve_rs_connector_submodel", "y":  90 } },
-  { "when": { "rs_u":"true"    }, "apply": { "model": "engineersdecor:block/pipe/straight_pipe_valve_rs_connector_submodel", "x": -90 } },
-  { "when": { "rs_d":"true"    }, "apply": { "model": "engineersdecor:block/pipe/straight_pipe_valve_rs_connector_submodel", "x":  90 } }
+  { "when": { "facing":"north" }, "apply": { "model": "engineersdecor:block/device/straight_pipe_valve_redstone_model", "y":   0 } },
+  { "when": { "facing":"south" }, "apply": { "model": "engineersdecor:block/device/straight_pipe_valve_redstone_model", "y": 180 } },
+  { "when": { "facing":"west"  }, "apply": { "model": "engineersdecor:block/device/straight_pipe_valve_redstone_model", "y": 270 } },
+  { "when": { "facing":"east"  }, "apply": { "model": "engineersdecor:block/device/straight_pipe_valve_redstone_model", "y":  90 } },
+  { "when": { "facing":"up"    }, "apply": { "model": "engineersdecor:block/device/straight_pipe_valve_redstone_model", "x": -90 } },
+  { "when": { "facing":"down"  }, "apply": { "model": "engineersdecor:block/device/straight_pipe_valve_redstone_model", "x":  90 } },
+  { "when": { "rs_n":"true"    }, "apply": { "model": "engineersdecor:block/device/straight_pipe_valve_rs_connector_submodel", "y":   0 } },
+  { "when": { "rs_s":"true"    }, "apply": { "model": "engineersdecor:block/device/straight_pipe_valve_rs_connector_submodel", "y": 180 } },
+  { "when": { "rs_w":"true"    }, "apply": { "model": "engineersdecor:block/device/straight_pipe_valve_rs_connector_submodel", "y": 270 } },
+  { "when": { "rs_e":"true"    }, "apply": { "model": "engineersdecor:block/device/straight_pipe_valve_rs_connector_submodel", "y":  90 } },
+  { "when": { "rs_u":"true"    }, "apply": { "model": "engineersdecor:block/device/straight_pipe_valve_rs_connector_submodel", "x": -90 } },
+  { "when": { "rs_d":"true"    }, "apply": { "model": "engineersdecor:block/device/straight_pipe_valve_rs_connector_submodel", "x":  90 } }
 ]}

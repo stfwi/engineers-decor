@@ -1,0 +1,31 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:old_industrial_wood_door",
+          "required": ["engineersdecor:old_industrial_wood_planks"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "PP",
+          "PP",
+          "PP"
+        ],
+        "key": {
+          "P": {
+            "item": "engineersdecor:old_industrial_wood_planks"
+          }
+        },
+        "result": {
+          "item": "engineersdecor:old_industrial_wood_door",
+          "count": 2
+        }
+      }
+    }
+  ]
+}

@@ -97,7 +97,6 @@ public class ModConfig
     public final ForgeConfigSpec.BooleanValue without_gas_concrete;
     public final ForgeConfigSpec.BooleanValue without_walls;
     public final ForgeConfigSpec.BooleanValue without_stairs;
-    public final ForgeConfigSpec.BooleanValue without_ie_concrete_wall;
     public final ForgeConfigSpec.BooleanValue without_panzer_glass;
     public final ForgeConfigSpec.BooleanValue without_ladders;
     public final ForgeConfigSpec.BooleanValue without_treated_wood_furniture;
@@ -206,10 +205,6 @@ public class ModConfig
           .translation(MODID + ".config.without_stairs")
           .comment("Disable all mod stairs blocks.")
           .define("without_stairs", false);
-        without_ie_concrete_wall = builder
-          .translation(MODID + ".config.without_ie_concrete_wall")
-          .comment("Disable IE concrete wall.")
-          .define("without_ie_concrete_wall", false);
         without_panzer_glass = builder
           .translation(MODID + ".config.without_panzer_glass")
           .comment("Disable panzer glass and derived blocks.")
@@ -629,7 +624,6 @@ public class ModConfig
           if(SERVER.without_slag_bricks.get()&&rn.startsWith("slag_brick_")) return true;
           if(SERVER.without_rebar_concrete.get()&&rn.startsWith("rebar_concrete")) return true;
           if(SERVER.without_gas_concrete.get()&&rn.startsWith("gas_concrete")) return true;
-          if(SERVER.without_ie_concrete_wall.get()&&rn.startsWith("ie_concrete_wall")) return true;
           if(SERVER.without_panzer_glass.get()&&rn.startsWith("panzerglass_")) return true;
           if(SERVER.without_light_sources.get()&&rn.endsWith("_light")) return true;
           if(SERVER.without_sign_plates.get()&&rn.startsWith("sign_")) return true;

@@ -2,8 +2,8 @@
   "parent": "block/block",
   "gui_light": "front",
 	"textures": {
-		"s": "engineersdecor:block/material/treated_wood_rough_texture",
-		"particle": "engineersdecor:block/material/treated_wood_rough_texture",
+		"s": "engineersdecor:block/material/wood_rough_texture",
+		"particle": "engineersdecor:block/material/wood_rough_texture",
 		"f": "engineersdecor:block/sign/sign_exit_texture"
 	},
 	"elements": [

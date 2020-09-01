@@ -2,8 +2,8 @@
 	"parent": "block/block",
 	"ambientocclusion": false,
 	"textures": {
-		"frame": "engineersdecor:block/material/treated_wood_rough_texture",
-		"particle": "engineersdecor:block/material/treated_wood_rough_texture"
+		"frame": "engineersdecor:block/material/wood_sanded_texture",
+		"particle": "engineersdecor:block/material/wood_sanded_texture"
 	},
 	"elements": [
 		{

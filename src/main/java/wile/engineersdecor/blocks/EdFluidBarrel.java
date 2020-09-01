@@ -239,7 +239,7 @@ public class EdFluidBarrel
       {
         int vol = tank_.getFluidAmount();
         int cap = tank_.getCapacity();
-        String name = Auxiliaries.localizable(tank_.getFluid().getTranslationKey()).getString();
+        String name = (new TranslationTextComponent(tank_.getFluid().getTranslationKey())).getString();
         if((vol>0) && (cap>0)) {
           Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.fluid_barrel.status", new Object[]{
             Integer.toString(vol), Integer.toString(cap), name

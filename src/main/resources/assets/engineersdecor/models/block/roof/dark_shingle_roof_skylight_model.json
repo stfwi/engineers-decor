@@ -1,4 +1,5 @@
 {
+  "ambientocclusion": false,
   "parent": "block/block",
 	"textures": {
 		"2": "engineersdecor:block/material/steel_texture",

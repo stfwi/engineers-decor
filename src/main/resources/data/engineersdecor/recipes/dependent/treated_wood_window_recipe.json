@@ -31,7 +31,7 @@
         {
           "type": "engineersdecor:optional",
           "result": "engineersdecor:treated_wood_window",
-          "missing": ["#forge:treated_wood_slab", "#forge:glass_panes"]
+          "required": ["engineersdecor:old_industrial_wood_slab"]
         }
       ],
       "recipe": {
@@ -42,7 +42,7 @@
           "WGW"
         ],
         "key": {
-          "W": { "tag": "minecraft:wooden_slabs" },
+          "W": { "item": "engineersdecor:old_industrial_wood_slab" },
           "G": { "tag": "engineersdecor:plain_glass_panes" }
         },
         "result": {

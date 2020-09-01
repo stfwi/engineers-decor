@@ -1,13 +1,14 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.16.2": {
+    "1.1.2-b5": "[A] Sandstone Ornamented Clinker Brick added.\n[A] Old Industrial Wood Planks/Stairs/Slabs/Slab Slices added.\n[A] Old Industrial Wood Door added.\n[M] Wood textures made slightly darker.\n[F] Milking Machine fluid transfer re-added (thx gebcrafter).\n[F] Fluid Barrel status overlay message format fixed.\n[F] Fixed missing Dense Grit Dirt loot table (issue #124, thx vaelzan).",
     "1.1.2-b4": "[F] Mapping adaption to Forge 1.16.2-33.0.22/20200723-1.16.1.\n[F] Fixed conditional recipe tag dependency (thx Blu, Cyborgmas).",
     "1.1.2-b3": "[F] Mapping adaption to Forge 1.16.2-33.0.20.",
     "1.1.2-b2": "[A] Dark Shingle Roof added.",
     "1.1.2-b1": "[U] Ported to MC1.16.2."
   },
   "promos": {
-    "1.16.2-recommended": "1.1.2-b4",
-    "1.16.2-latest": "1.1.2-b4"
+    "1.16.2-recommended": "1.1.2-b5",
+    "1.16.2-latest": "1.1.2-b5"
   }
 }

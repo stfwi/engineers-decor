@@ -1,0 +1,31 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:old_industrial_wood_stairs",
+          "required": ["engineersdecor:old_industrial_wood_planks"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "C  ",
+          "CC ",
+          "CCC"
+        ],
+        "key": {
+          "C": {
+            "item": "engineersdecor:old_industrial_wood_planks"
+          }
+        },
+        "result": {
+          "item": "engineersdecor:old_industrial_wood_stairs",
+          "count": 6
+        }
+      }
+    }
+  ]
+}
