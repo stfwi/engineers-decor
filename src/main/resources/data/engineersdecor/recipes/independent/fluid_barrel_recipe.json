@@ -1,0 +1,30 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:fluid_barrel",
+          "required": ["engineersdecor:metal_bar"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "PPP",
+          "PBP",
+          "PPP"
+        ],
+        "key": {
+          "B": { "item": "minecraft:barrel" },
+          "P": { "item": "engineersdecor:metal_bar" }
+        },
+        "result": {
+          "item": "engineersdecor:fluid_barrel",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

@@ -87,12 +87,22 @@ public class EdLadderBlock extends LadderBlock implements IDecorBlock
   {
     if((without_speed_boost_) || (player.isOnGround()) || (!player.isOnLadder()) || (player.isSteppingCarefully()) || (player.isSpectator())) return;
     double lvy = player.getLookVec().y;
-    if(Math.abs(lvy) < 0.94) return;
+    if(Math.abs(lvy) < 0.92) return;
     final BlockPos pos = player.getPosition();
     final BlockState state = player.world.getBlockState(pos);
     if(!(state.getBlock() instanceof EdLadderBlock)) return;
     player.fallDistance = 0;
-    player.setMotionMultiplier(state, new Vector3d(0.2, (lvy>0)?(3):(6), 0.2));
+    if((player.getMotion().getY() < 0) == (player.getLookVec().y < 0)) {
+      player.setMotionMultiplier(state, new Vector3d(0.2, (lvy>0)?(3):(6), 0.2));
+      if(Math.abs(player.getMotion().getY()) > 0.1) {
+        Vector3d vdiff = Vector3d.copyCenteredHorizontally(pos).subtract(player.getPositionVec()).scale(1);
+        vdiff.add(Vector3d.copyCenteredHorizontally(state.get(FACING).getDirectionVec()).scale(0.5));
+        vdiff = new Vector3d(vdiff.x, player.getMotion().y, vdiff.z);
+        player.setMotion(vdiff);
+      }
+    } else if(player.getLookVec().y > 0) {
+      player.setMotionMultiplier(state, new Vector3d(1, 0.05, 1));
+    }
   }
 
 }

@@ -1,0 +1,23 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:sign_magichazard",
+          "required": ["engineersdecor:sign_caution"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "ingredients": [
+          { "item": "engineersdecor:sign_caution" }
+        ],
+        "result": {
+          "item": "engineersdecor:sign_magichazard"
+        }
+      }
+    }
+  ]
+}

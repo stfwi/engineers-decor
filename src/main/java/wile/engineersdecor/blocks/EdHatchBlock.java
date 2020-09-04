@@ -10,9 +10,7 @@ package wile.engineersdecor.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntitySpawnPlacementRegistry;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.BooleanProperty;
@@ -24,6 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -66,7 +65,7 @@ public class EdHatchBlock extends DecorBlock.HorizontalWaterLoggable implements 
 
   @Override
   public boolean isLadder(BlockState state, IWorldReader world, BlockPos pos, LivingEntity entity)
-  { return state.get(OPEN); }
+  { return state.get(OPEN) && world.getBlockState(pos.up()).isLadder(world, pos, entity); }
 
   @Override
   public boolean canCreatureSpawn(BlockState state, IBlockReader world, BlockPos pos, EntitySpawnPlacementRegistry.PlacementType type, @Nullable EntityType<?> entityType)
@@ -97,4 +96,19 @@ public class EdHatchBlock extends DecorBlock.HorizontalWaterLoggable implements 
     world.setBlockState(pos, state.with(OPEN, powered).with(POWERED, powered), 1|2);
   }
 
+  @Override
+  @SuppressWarnings("deprecation")
+  public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity)
+  {
+    if((!state.get(OPEN)) || (!(entity instanceof PlayerEntity))) return;
+    final PlayerEntity player = (PlayerEntity)entity;
+    if(entity.getLookVec().getY() > -0.75) return;
+    if(player.getHorizontalFacing() != state.get(HORIZONTAL_FACING)) return;
+    Vector3d ppos = player.getPositionVec();
+    Vector3d centre = Vector3d.copyCenteredHorizontally(pos);
+    Vector3d v = centre.subtract(ppos);
+    if(ppos.getY() < (centre.getY()-0.1) || (v.lengthSquared() > 0.3)) return;
+    v = v.scale(0.3);
+    player.addVelocity(v.x, 0, v.z);
+  }
 }

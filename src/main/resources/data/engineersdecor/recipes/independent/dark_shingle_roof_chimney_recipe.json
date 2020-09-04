@@ -1,0 +1,33 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:dark_shingle_roof_chimney",
+          "required": [ "engineersdecor:thick_steel_pole" ]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "P",
+          "F"
+        ],
+        "key": {
+          "P": {
+            "item": "engineersdecor:thick_steel_pole"
+          },
+          "F": {
+            "item": "minecraft:campfire"
+          }
+        },
+        "result": {
+          "item": "engineersdecor:dark_shingle_roof_chimney",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

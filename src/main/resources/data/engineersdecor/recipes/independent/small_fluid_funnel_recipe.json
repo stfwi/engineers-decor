@@ -1,0 +1,31 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:small_fluid_funnel",
+          "required": ["engineersdecor:fluid_barrel", "engineersdecor:metal_bar"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "HHH",
+          "PBP",
+          "PPP"
+        ],
+        "key": {
+          "P": { "item": "engineersdecor:metal_bar" },
+          "B": { "item": "engineersdecor:fluid_barrel" },
+          "H": { "item": "minecraft:hopper"}
+        },
+        "result": {
+          "item": "engineersdecor:small_fluid_funnel",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

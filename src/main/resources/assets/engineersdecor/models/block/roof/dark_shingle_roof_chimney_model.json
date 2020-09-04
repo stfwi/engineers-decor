@@ -1,0 +1,81 @@
+{
+	"parent": "block/block",
+	"ambientocclusion": false,
+	"textures": {
+		"particle": "engineersdecor:block/pole/thick_steel_pole_top_texture",
+		"t": "engineersdecor:block/pole/thick_steel_pole_top_texture"
+	},
+	"elements": [
+		{
+			"from": [3, 0, 3],
+			"to": [13, 6, 5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [12, 11.5, 7]},
+			"faces": {
+				"north": {"uv": [3, 10, 13, 16], "texture": "#t"},
+				"east": {"uv": [11, 10, 13, 16], "texture": "#t"},
+				"south": {"uv": [3, 10, 13, 16], "texture": "#t"},
+				"west": {"uv": [3, 10, 5, 16], "texture": "#t"},
+				"up": {"uv": [3, 3, 13, 5], "texture": "#t"},
+				"down": {"uv": [3, 11, 13, 13], "texture": "#t"}
+			}
+		},
+		{
+			"from": [3, 0, 11],
+			"to": [13, 6, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [12, 11.5, 15]},
+			"faces": {
+				"north": {"uv": [3, 10, 13, 16], "texture": "#t"},
+				"east": {"uv": [3, 10, 5, 16], "texture": "#t"},
+				"south": {"uv": [3, 10, 13, 16], "texture": "#t"},
+				"west": {"uv": [11, 10, 13, 16], "texture": "#t"},
+				"up": {"uv": [3, 11, 13, 13], "texture": "#t"},
+				"down": {"uv": [3, 3, 13, 5], "texture": "#t"}
+			}
+		},
+		{
+			"from": [11, 0, 5],
+			"to": [13, 6, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [13, 11.5, 12]},
+			"faces": {
+				"east": {"uv": [5, 10, 11, 16], "texture": "#t"},
+				"west": {"uv": [5, 10, 11, 16], "texture": "#t"},
+				"up": {"uv": [11, 5, 13, 11], "texture": "#t"},
+				"down": {"uv": [11, 5, 13, 11], "texture": "#t"}
+			}
+		},
+		{
+			"from": [3, 0, 5],
+			"to": [5, 6, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [5, 11.5, 12]},
+			"faces": {
+				"east": {"uv": [5, 10, 11, 16], "texture": "#t"},
+				"west": {"uv": [5, 10, 11, 16], "texture": "#t"},
+				"up": {"uv": [3, 5, 5, 11], "texture": "#t"},
+				"down": {"uv": [3, 5, 5, 11], "texture": "#t"}
+			}
+		},
+		{
+			"from": [5, 0, 5],
+			"to": [11, 1, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 11.5, 12]},
+			"faces": {
+				"up": {"uv": [5, 5, 11, 11], "texture": "#t"},
+				"down": {"uv": [5, 5, 11, 11], "texture": "#t"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_lefthand": {
+			"rotation": [75, -135, 0],
+			"translation": [0, 2.5, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"gui": {
+			"rotation": [30, 135, 0],
+			"scale": [0.625, 0.625, 0.625]
+		},
+		"head": {
+			"rotation": [0, -90, 0]
+		}
+	}
+}

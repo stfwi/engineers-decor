@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.16.2": {
+    "1.1.2-b6": "[A] Signs added: Generic Caution, Magical Hazard, Radioactive Hazard, Laser Hazard, Fire Hazard, Caution Hot Surface, Magnetic Field Caution, Frost Warning.\n[A] Water Freezer added (generates Ice, Packed Ice, Blue Ice from water).\n[F] Mineral Smelter GUI model facing fixed.\n[M] Hatch handling improved.\n[M] Ladder fast-move improved.\n[F] Roof Chimney Trunk shape hollow to allow feeding IE Wire power over the roof into the building.\n[A] Roof Chimney added (smoking offset for Dark Shingle Roof Chimney Trunk block).\n[A] Metal Bar (ingredient item) added to circumvent recipe collisions with other mods.\n[M] Recipes for metallic blocks modified accordingly to depend on Metal Bars.",
     "1.1.2-b5": "[A] Sandstone Ornamented Clinker Brick added.\n[A] Old Industrial Wood Planks/Stairs/Slabs/Slab Slices added.\n[A] Old Industrial Wood Door added.\n[M] Wood textures made slightly darker.\n[F] Milking Machine fluid transfer re-added (thx gebcrafter).\n[F] Fluid Barrel status overlay message format fixed.\n[F] Fixed missing Dense Grit Dirt loot table (issue #124, thx vaelzan).",
     "1.1.2-b4": "[F] Mapping adaption to Forge 1.16.2-33.0.22/20200723-1.16.1.\n[F] Fixed conditional recipe tag dependency (thx Blu, Cyborgmas).",
     "1.1.2-b3": "[F] Mapping adaption to Forge 1.16.2-33.0.20.",
@@ -8,7 +9,7 @@
     "1.1.2-b1": "[U] Ported to MC1.16.2."
   },
   "promos": {
-    "1.16.2-recommended": "1.1.2-b5",
-    "1.16.2-latest": "1.1.2-b5"
+    "1.16.2-recommended": "1.1.2-b6",
+    "1.16.2-latest": "1.1.2-b6"
   }
 }

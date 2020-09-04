@@ -1,0 +1,31 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:factory_placer",
+          "required": ["engineersdecor:old_industrial_wood_planks", "engineersdecor:metal_bar"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "WWW",
+          "WDP",
+          "WWW"
+        ],
+        "key": {
+          "D": { "item": "minecraft:dispenser" },
+          "P": { "item": "engineersdecor:metal_bar" },
+          "W": { "item": "engineersdecor:old_industrial_wood_planks" }
+        },
+        "result": {
+          "item": "engineersdecor:factory_placer",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

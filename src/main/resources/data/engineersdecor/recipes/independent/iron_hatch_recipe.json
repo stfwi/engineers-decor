@@ -1,0 +1,29 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:iron_hatch",
+          "required": ["engineersdecor:metal_bar"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "III",
+          "ITI"
+        ],
+        "key": {
+          "T": { "item": "minecraft:iron_trapdoor" },
+          "I": { "item": "engineersdecor:metal_bar" }
+        },
+        "result": {
+          "item": "engineersdecor:iron_hatch",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

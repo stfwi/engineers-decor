@@ -1,0 +1,29 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:factory_hopper",
+          "required": ["engineersdecor:metal_bar"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "PHP",
+          "PPP"
+        ],
+        "key": {
+          "H": { "item": "minecraft:hopper" },
+          "P": { "item": "engineersdecor:metal_bar" }
+        },
+        "result": {
+          "item": "engineersdecor:factory_hopper",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

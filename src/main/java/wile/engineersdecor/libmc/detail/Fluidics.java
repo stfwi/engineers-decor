@@ -69,6 +69,9 @@ public class Fluidics
     public Tank(int capacity)
     { capacity_ = capacity; }
 
+    public Tank(int capacity, Predicate<FluidStack> validator)
+    { capacity_ = capacity; setValidator(validator); }
+
     public Tank readnbt(CompoundNBT nbt)
     { setFluid(FluidStack.loadFluidStackFromNBT(nbt)); return this; }
 
@@ -135,6 +138,10 @@ public class Fluidics
         return amount;
       }
     }
+
+    @Nonnull
+    public FluidStack drain(int maxDrain)
+    { return drain(maxDrain, FluidAction.EXECUTE); }
 
     @Nonnull
     @Override

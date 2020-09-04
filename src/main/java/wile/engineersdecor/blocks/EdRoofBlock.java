@@ -21,6 +21,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -36,14 +37,16 @@ public class EdRoofBlock extends StandardBlocks.HorizontalWaterLoggable implemen
 {
   public static final EnumProperty<StairsShape> SHAPE = BlockStateProperties.STAIRS_SHAPE;
   public static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
-  private static final VoxelShape[][][] SHAPE_CACHE = makeShapes();
+  private final VoxelShape[][][] shape_cache_;
 
   public EdRoofBlock(long config, Block.Properties properties)
+  { this(config, properties, VoxelShapes.empty(), VoxelShapes.empty()); }
+
+  public EdRoofBlock(long config, Block.Properties properties, VoxelShape add, VoxelShape cut)
   {
-    super(config,
-      properties,//.func_235838_a_((state)->1).notSolid(), //shade rendering again messed up
-      Auxiliaries.getPixeledAABB(0, 0,0,16, 8, 16));
+    super(config, properties, Auxiliaries.getPixeledAABB(0, 0,0,16, 8, 16));
     setDefaultState(stateContainer.getBaseState().with(HORIZONTAL_FACING, Direction.NORTH).with(SHAPE, StairsShape.STRAIGHT).with(WATERLOGGED, false));
+    shape_cache_ = makeShapes(add, cut);
   }
 
   @Override
@@ -53,7 +56,7 @@ public class EdRoofBlock extends StandardBlocks.HorizontalWaterLoggable implemen
 
   @Override
   public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)
-  { return SHAPE_CACHE[state.get(HALF).ordinal()][state.get(HORIZONTAL_FACING).getIndex()][state.get(SHAPE).ordinal()]; }
+  { return shape_cache_[state.get(HALF).ordinal()][state.get(HORIZONTAL_FACING).getIndex()][state.get(SHAPE).ordinal()]; }
 
   @Override
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
@@ -123,13 +126,22 @@ public class EdRoofBlock extends StandardBlocks.HorizontalWaterLoggable implemen
     return (!isRoofBlock(st)) || (st.get(HORIZONTAL_FACING) != state.get(HORIZONTAL_FACING));
   }
 
-  private static VoxelShape[][][] makeShapes()
+  private static VoxelShape[][][] makeShapes(VoxelShape add, VoxelShape cut)
   {
     VoxelShape[][][] shapes = new VoxelShape[2][6][5];
     for(int half_index=0; half_index<Half.values().length; ++half_index) {
       for(int direction_index=0; direction_index<Direction.values().length; ++direction_index) {
         for(int stairs_shape_index=0; stairs_shape_index<StairsShape.values().length; ++stairs_shape_index) {
-          shapes[half_index][direction_index][stairs_shape_index] = makeShape(half_index, direction_index, stairs_shape_index);
+          VoxelShape shape = makeShape(half_index, direction_index, stairs_shape_index);
+          try {
+            // Only in case something changes and this fails, log but do not prevent the game from starting.
+            // Roof shapes are not the most important thing in the world.
+            if(!add.isEmpty()) shape = VoxelShapes.combine(shape, add, IBooleanFunction.OR);
+            if(!cut.isEmpty()) shape = VoxelShapes.combine(shape, cut, IBooleanFunction.ONLY_FIRST);
+          } catch(Throwable ex) {
+            Auxiliaries.logError("Failed to cut shape using Boolean function. This is bug.");
+          }
+          shapes[half_index][direction_index][stairs_shape_index] = shape;
         }
       }
     }

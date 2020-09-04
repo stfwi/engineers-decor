@@ -6,7 +6,7 @@
         {
           "type": "engineersdecor:optional",
           "result": "engineersdecor:steel_framed_window",
-          "required": ["#engineersdecor:plain_glass_panes", "engineersdecor:thin_steel_pole"]
+          "required": ["#engineersdecor:plain_glass_panes", "engineersdecor:metal_bar"]
         }
       ],
       "recipe": {
@@ -17,12 +17,12 @@
           "WGW"
         ],
         "key": {
-          "W": { "item": "engineersdecor:thin_steel_pole" },
+          "W": { "item": "engineersdecor:metal_bar" },
           "G": { "tag": "engineersdecor:plain_glass_panes" }
         },
         "result": {
           "item": "engineersdecor:steel_framed_window",
-          "count": 9
+          "count": 8
         }
       }
     }

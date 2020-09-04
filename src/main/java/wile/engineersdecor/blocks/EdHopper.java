@@ -9,6 +9,7 @@
 package wile.engineersdecor.blocks;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.world.IWorldReader;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
@@ -172,6 +173,10 @@ public class EdHopper
       if(!(te instanceof HopperTileEntity)) return;
       ((HopperTileEntity)te).collection_timer_ = 0;
     }
+
+    @Override
+    public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+    { return false; }
 
     @Override
     @SuppressWarnings("deprecation")

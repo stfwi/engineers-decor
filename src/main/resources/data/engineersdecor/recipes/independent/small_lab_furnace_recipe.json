@@ -1,0 +1,31 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:small_lab_furnace",
+          "required": ["engineersdecor:metal_bar"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "HPP",
+          "PFP",
+          "PPP"
+        ],
+        "key": {
+          "P": { "item" : "engineersdecor:metal_bar"},
+          "F": { "item": "minecraft:furnace"},
+          "H": { "item": "minecraft:hopper"}
+        },
+        "result": {
+          "item": "engineersdecor:small_lab_furnace",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

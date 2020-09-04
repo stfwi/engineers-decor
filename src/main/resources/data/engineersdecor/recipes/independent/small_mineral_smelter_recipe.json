@@ -1,0 +1,32 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:small_mineral_smelter",
+          "required": ["engineersdecor:panzerglass_block", "engineersdecor:fluid_barrel", "engineersdecor:metal_bar"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "SSS",
+          "GFS",
+          "SBS"
+        ],
+        "key": {
+          "G": { "item": "engineersdecor:panzerglass_block" },
+          "F": { "item": "minecraft:lava_bucket" },
+          "S": { "item": "engineersdecor:metal_bar" },
+          "B": { "item": "engineersdecor:fluid_barrel" }
+        },
+        "result": {
+          "item": "engineersdecor:small_mineral_smelter",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

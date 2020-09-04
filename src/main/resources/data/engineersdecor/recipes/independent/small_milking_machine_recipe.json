@@ -1,0 +1,33 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:small_milking_machine",
+          "required": ["engineersdecor:fluid_barrel", "engineersdecor:metal_bar"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "PPP",
+          "PAO",
+          "PBC"
+        ],
+        "key": {
+          "P": { "item": "engineersdecor:metal_bar"},
+          "O": { "item": "minecraft:observer"},
+          "A": { "item": "minecraft:milk_bucket"},
+          "B": { "item": "engineersdecor:fluid_barrel"},
+          "C": { "item": "minecraft:redstone"}
+        },
+        "result": {
+          "item": "engineersdecor:small_milking_machine",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:factory_dropper",
+          "required": ["engineersdecor:old_industrial_wood_planks", "engineersdecor:metal_bar"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "WWW",
+          "WDW",
+          "WPW"
+        ],
+        "key": {
+          "D": { "item": "minecraft:dropper" },
+          "P": { "item": "engineersdecor:metal_bar" },
+          "W": { "item": "engineersdecor:old_industrial_wood_planks" }
+        },
+        "result": {
+          "item": "engineersdecor:factory_dropper",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

@@ -11,6 +11,17 @@ Mod sources for Minecraft version 1.16.2.
 
 ## Version history
 
+    - v1.1.2-b6  [A] Signs added: Generic Caution, Magical Hazard, Radioactive Hazard, Laser Hazard,
+                     Fire Hazard, Caution Hot Surface, Magnetic Field Caution, Frost Warning.
+                 [A] Water Freezer added (generates Ice, Packed Ice, Blue Ice from water).
+                 [F] Mineral Smelter GUI model facing fixed.
+                 [M] Hatch handling improved.
+                 [M] Ladder fast-move improved.
+                 [F] Roof Chimney Trunk shape hollow to allow feeding IE Wire power over the roof into the building.
+                 [A] Roof Chimney added (smoking offset for Dark Shingle Roof Chimney Trunk block).
+                 [A] Metal Bar (ingredient item) added to circumvent recipe collisions with other mods.
+                 [M] Recipes for metallic blocks modified accordingly to depend on Metal Bars.
+
     - v1.1.2-b5  [A] Sandstone Ornamented Clinker Brick added.
                  [A] Old Industrial Wood Planks/Stairs/Slabs/Slab Slices added.
                  [A] Old Industrial Wood Door added.

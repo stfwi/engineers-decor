@@ -1,0 +1,10 @@
+{
+	"parent": "engineersdecor:block/device/small_mineral_smelter_model",
+	"textures": {
+		"front": "engineersdecor:block/furnace/small_freezer_front_s0",
+		"top": "engineersdecor:block/furnace/small_freezer_top",
+		"particle": "engineersdecor:block/furnace/small_freezer_side",
+		"side": "engineersdecor:block/furnace/small_freezer_side",
+		"bottom": "engineersdecor:block/furnace/small_freezer_bottom"
+	}
+}

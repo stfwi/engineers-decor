@@ -6,7 +6,7 @@
         {
           "type": "engineersdecor:optional",
           "result": "engineersdecor:steel_mesh_fence",
-          "required": ["engineersdecor:thin_steel_pole"]
+          "required": ["engineersdecor:thin_steel_pole", "engineersdecor:metal_bar"]
         }
       ],
       "recipe": {
@@ -20,7 +20,7 @@
             "item": "engineersdecor:thin_steel_pole"
           },
           "N": {
-            "item": "minecraft:iron_nugget"
+            "item": "engineersdecor:metal_bar"
           }
         },
         "result": {

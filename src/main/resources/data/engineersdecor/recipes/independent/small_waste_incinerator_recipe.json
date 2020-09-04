@@ -1,0 +1,31 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:small_waste_incinerator",
+          "required": ["engineersdecor:metal_bar"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "HPP",
+          "PHP",
+          "PLP"
+        ],
+        "key": {
+          "H": { "item": "minecraft:hopper" },
+          "P": { "item": "engineersdecor:metal_bar" },
+          "L": { "item": "minecraft:lava_bucket" }
+        },
+        "result": {
+          "item": "engineersdecor:small_waste_incinerator",
+          "count": 1
+        }
+      }
+    }
+  ]
+}

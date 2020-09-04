@@ -103,7 +103,7 @@ public class ModEngineersDecor
 
     @SubscribeEvent
     public static void onItemRegistry(final RegistryEvent.Register<Item> event)
-    { ModContent.registerBlockItems(event); }
+    { ModContent.registerItems(event); ModContent.registerBlockItems(event); }
 
     @SubscribeEvent
     public static void onTileEntityRegistry(final RegistryEvent.Register<TileEntityType<?>> event)

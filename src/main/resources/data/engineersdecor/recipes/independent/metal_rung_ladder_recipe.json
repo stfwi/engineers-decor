@@ -1,0 +1,29 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:metal_rung_ladder",
+          "required": ["engineersdecor:metal_bar"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "S S",
+          "SSS",
+          "   "
+        ],
+        "key": {
+          "S": { "item": "engineersdecor:metal_bar" }
+        },
+        "result": {
+          "item": "engineersdecor:metal_rung_ladder",
+          "count": 4
+        }
+      }
+    }
+  ]
+}

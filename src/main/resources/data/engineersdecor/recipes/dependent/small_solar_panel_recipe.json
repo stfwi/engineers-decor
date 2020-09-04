@@ -6,7 +6,7 @@
         {
           "type": "engineersdecor:optional",
           "result": "engineersdecor:small_solar_panel",
-          "required": ["#forge:ingots/steel", "#forge:storage_blocks/lead"]
+          "required": ["engineersdecor:metal_bar", "#forge:storage_blocks/lead"]
         }
       ],
       "recipe": {
@@ -19,7 +19,7 @@
         "key": {
           "Q": { "item": "minecraft:quartz" },
           "R": { "item": "minecraft:redstone_block" },
-          "S": { "tag" : "forge:ingots/steel" },
+          "S": { "item" : "engineersdecor:metal_bar" },
           "L": { "tag" : "forge:storage_blocks/lead" }
         },
         "result": {
@@ -32,7 +32,8 @@
       "conditions": [
         {
           "type": "engineersdecor:optional",
-          "result": "engineersdecor:small_solar_panel"
+          "result": "engineersdecor:small_solar_panel",
+          "required": ["engineersdecor:metal_bar"]
         }
       ],
       "recipe": {
@@ -44,7 +45,7 @@
         ],
         "key": {
           "Q": { "item": "minecraft:quartz" },
-          "S": { "item": "minecraft:iron_ingot" },
+          "S": { "item": "engineersdecor:metal_bar" },
           "R": { "item": "minecraft:redstone_block" }
         },
         "result": {

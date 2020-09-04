@@ -1,0 +1,30 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:panzerglass_block",
+          "required": ["engineersdecor:metal_bar", "#engineersdecor:plain_glass_blocks"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "SGS",
+          "GSG",
+          "SGS"
+        ],
+        "key": {
+          "G": { "tag": "engineersdecor:plain_glass_blocks" },
+          "S": { "item": "engineersdecor:metal_bar" }
+        },
+        "result": {
+          "item": "engineersdecor:panzerglass_block",
+          "count": 8
+        }
+      }
+    }
+  ]
+}

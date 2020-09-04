@@ -29,7 +29,7 @@
         {
           "type": "engineersdecor:optional",
           "result": "engineersdecor:straight_pipe_valve",
-          "required": ["engineersdecor:thick_steel_pole"]
+          "required": ["engineersdecor:thick_steel_pole", "engineersdecor:metal_bar"]
         }
       ],
       "recipe": {
@@ -39,7 +39,7 @@
         ],
         "key": {
           "P": { "item": "engineersdecor:thick_steel_pole" },
-          "I": { "item": "minecraft:iron_ingot" }
+          "I": { "item": "engineersdecor:metal_bar" }
         },
         "result": {
           "item": "engineersdecor:straight_pipe_valve",

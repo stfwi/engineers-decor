@@ -6,7 +6,7 @@
         {
           "type": "engineersdecor:optional",
           "result": "engineersdecor:steel_table",
-          "required": ["engineersdecor:steel_floor_grating", "engineersdecor:thin_steel_pole"]
+          "required": ["engineersdecor:metal_bar", "engineersdecor:thin_steel_pole"]
         }
       ],
       "recipe": {
@@ -18,7 +18,7 @@
         ],
         "key": {
           "W": {
-            "item": "engineersdecor:steel_floor_grating"
+            "item": "engineersdecor:metal_bar"
           },
           "S": {
             "item": "engineersdecor:thin_steel_pole"
@@ -26,7 +26,7 @@
         },
         "result": {
           "item": "engineersdecor:steel_table",
-          "count": 6
+          "count": 2
         }
       }
     }

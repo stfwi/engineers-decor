@@ -6,7 +6,7 @@
         {
           "type": "engineersdecor:optional",
           "result": "engineersdecor:dark_shingle_roof_metallized",
-          "required": [ "engineersdecor:dark_shingle_roof" ]
+          "required": [ "engineersdecor:dark_shingle_roof", "engineersdecor:metal_bar" ]
         }
       ],
       "recipe": {
@@ -17,7 +17,7 @@
         ],
         "key": {
           "N": {
-            "item": "minecraft:iron_nugget"
+            "item": "engineersdecor:metal_bar"
           },
           "R": {
             "item": "engineersdecor:dark_shingle_roof"

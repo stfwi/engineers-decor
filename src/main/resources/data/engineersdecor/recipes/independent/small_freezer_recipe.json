@@ -1,0 +1,32 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:small_freezer",
+          "required": ["engineersdecor:panzerglass_block", "engineersdecor:fluid_barrel", "engineersdecor:metal_bar"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "SSS",
+          "GFS",
+          "SBS"
+        ],
+        "key": {
+          "G": { "item": "engineersdecor:panzerglass_block" },
+          "F": { "item": "minecraft:water_bucket" },
+          "B": { "item": "engineersdecor:fluid_barrel" },
+          "S": { "item": "engineersdecor:metal_bar" }
+        },
+        "result": {
+          "item": "engineersdecor:small_freezer",
+          "count": 1
+        }
+      }
+    }
+  ]
+}
