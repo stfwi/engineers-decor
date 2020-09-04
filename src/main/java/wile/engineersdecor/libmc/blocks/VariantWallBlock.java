@@ -132,7 +132,7 @@ public class VariantWallBlock extends WallBlock implements StandardBlocks.IStand
   protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
   { super.fillStateContainer(builder); builder.add(TEXTURE_VARIANT); }
 
-  private boolean attachesTo(BlockState facingState, IWorldReader world, BlockPos facingPos, Direction side)
+  protected boolean attachesTo(BlockState facingState, IWorldReader world, BlockPos facingPos, Direction side)
   {
     final Block block = facingState.getBlock();
     if((block instanceof FenceGateBlock) || (block instanceof WallBlock)) return true;

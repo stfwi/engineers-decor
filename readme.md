@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.16.1.
 
 ## Version history
 
+    - v1.1.5     [F] Fixed Double-T support thick steel pole connection (thx @CastCrafter).
+                 [A] Concrete and Clinker Walls connect to windows and glass panes.
+
     - v1.1.4     [F] Milking Machine fluid transfer re-added (thx gebcrafter).
                  [F] Fluid Barrel status overlay message format fixed.
                  [F] Fixed missing Dense Grit Dirt loot table (issue #124, thx vaelzan).
