@@ -11,6 +11,10 @@ Mod sources for Minecraft version 1.15.1.
 
 ## Version history
 
+    - v1.1.4      [R] Back-Porting Release
+                  [A] Signs backported from 1.16.4.
+                  [A] Solar Panel balancing backported from 1.16.4.
+
     - v1.1.3      [M] Lang file update zh_cn (PR#117, Moonisky).
                   [F] Fixed missing Dense Grit Dirt loot table (issue #124, thx vaelzan).
 

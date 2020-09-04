@@ -1,16 +1,23 @@
 {
-  "conditions": [
+  "type": "forge:conditional",
+  "recipes": [
     {
-      "type": "engineersdecor:optional",
-      "result": "engineersdecor:sign_factoryarea",
-      "required": ["engineersdecor:sign_defense"]
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:sign_factoryarea",
+          "required": ["engineersdecor:sign_defense"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "ingredients": [
+          { "item": "engineersdecor:sign_defense" }
+        ],
+        "result": {
+          "item": "engineersdecor:sign_factoryarea"
+        }
+      }
     }
-  ],
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    { "item": "engineersdecor:sign_defense" }
-  ],
-  "result": {
-    "item": "engineersdecor:sign_factoryarea"
-  }
+  ]
 }

@@ -422,6 +422,54 @@ public class ModContent
     Auxiliaries.getPixeledAABB(3,7,15.6, 13,13,16)
   )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_exit"));
 
+  public static final DecorBlock.DirectedWaterLoggable SIGN_RADIOACTIVE = (DecorBlock.DirectedWaterLoggable)(new DecorBlock.DirectedWaterLoggable(
+    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_HORIZIONTAL,
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1f).sound(SoundType.WOOD).notSolid(),
+    Auxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_radioactive"));
+
+  public static final DecorBlock.DirectedWaterLoggable SIGN_LASER = (DecorBlock.DirectedWaterLoggable)(new DecorBlock.DirectedWaterLoggable(
+    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_HORIZIONTAL,
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1f).sound(SoundType.WOOD).notSolid(),
+    Auxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_laser"));
+
+  public static final DecorBlock.DirectedWaterLoggable SIGN_CAUTION = (DecorBlock.DirectedWaterLoggable)(new DecorBlock.DirectedWaterLoggable(
+    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_HORIZIONTAL,
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1f).sound(SoundType.WOOD).notSolid(),
+    Auxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_caution"));
+
+  public static final DecorBlock.DirectedWaterLoggable SIGN_MAGIC_HAZARD = (DecorBlock.DirectedWaterLoggable)(new DecorBlock.DirectedWaterLoggable(
+    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_HORIZIONTAL,
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1f).sound(SoundType.WOOD).notSolid(),
+    Auxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_magichazard"));
+
+  public static final DecorBlock.DirectedWaterLoggable SIGN_FIRE_HAZARD = (DecorBlock.DirectedWaterLoggable)(new DecorBlock.DirectedWaterLoggable(
+    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_HORIZIONTAL,
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1f).sound(SoundType.WOOD).notSolid(),
+    Auxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_firehazard"));
+
+  public static final DecorBlock.DirectedWaterLoggable SIGN_HOT_SURFACE = (DecorBlock.DirectedWaterLoggable)(new DecorBlock.DirectedWaterLoggable(
+    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_HORIZIONTAL,
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1f).sound(SoundType.WOOD).notSolid(),
+    Auxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_hotsurface"));
+
+  public static final DecorBlock.DirectedWaterLoggable SIGN_MAGNETIC_FIELD = (DecorBlock.DirectedWaterLoggable)(new DecorBlock.DirectedWaterLoggable(
+    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_HORIZIONTAL,
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1f).sound(SoundType.WOOD).notSolid(),
+    Auxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_magneticfield"));
+
+  public static final DecorBlock.DirectedWaterLoggable SIGN_FROST_WARNING = (DecorBlock.DirectedWaterLoggable)(new DecorBlock.DirectedWaterLoggable(
+    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_HORIZIONTAL,
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1f, 1f).sound(SoundType.WOOD).notSolid(),
+    Auxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
+  )).setRegistryName(new ResourceLocation(ModEngineersDecor.MODID, "sign_frost"));
+
   // -------------------------------------------------------------------------------------------------------------------
 
   public static final EdCraftingTable.CraftingTableBlock TREATED_WOOD_CRAFTING_TABLE = (EdCraftingTable.CraftingTableBlock)(new EdCraftingTable.CraftingTableBlock(
@@ -788,6 +836,14 @@ public class ModContent
     SIGN_DEFENSE,
     SIGN_FACTORY_AREA,
     SIGN_EXIT,
+    SIGN_RADIOACTIVE,
+    SIGN_LASER,
+    SIGN_CAUTION,
+    SIGN_MAGIC_HAZARD,
+    SIGN_FIRE_HAZARD,
+    SIGN_HOT_SURFACE,
+    SIGN_MAGNETIC_FIELD,
+    SIGN_FROST_WARNING,
     SIGN_MODLOGO,
   };
 

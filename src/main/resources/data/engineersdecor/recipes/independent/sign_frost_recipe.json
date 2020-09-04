@@ -5,17 +5,17 @@
       "conditions": [
         {
           "type": "engineersdecor:optional",
-          "result": "engineersdecor:sign_hotwire",
-          "required": ["engineersdecor:sign_frost"]
+          "result": "engineersdecor:sign_frost",
+          "required": ["engineersdecor:sign_magneticfield"]
         }
       ],
       "recipe": {
         "type": "minecraft:crafting_shapeless",
         "ingredients": [
-          { "item": "engineersdecor:sign_frost" }
+          { "item": "engineersdecor:sign_magneticfield" }
         ],
         "result": {
-          "item": "engineersdecor:sign_hotwire"
+          "item": "engineersdecor:sign_frost"
         }
       }
     }

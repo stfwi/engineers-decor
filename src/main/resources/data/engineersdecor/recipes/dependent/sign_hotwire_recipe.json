@@ -30,8 +30,7 @@
       "conditions": [
         {
           "type": "engineersdecor:optional",
-          "result": "engineersdecor:sign_hotwire",
-          "missing": ["#forge:rods/treated_wood"]
+          "result": "engineersdecor:sign_hotwire"
         }
       ],
       "recipe": {

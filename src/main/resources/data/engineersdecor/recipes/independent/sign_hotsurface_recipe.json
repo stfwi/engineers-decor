@@ -5,17 +5,17 @@
       "conditions": [
         {
           "type": "engineersdecor:optional",
-          "result": "engineersdecor:sign_hotwire",
-          "required": ["engineersdecor:sign_frost"]
+          "result": "engineersdecor:sign_hotsurface",
+          "required": ["engineersdecor:sign_firehazard"]
         }
       ],
       "recipe": {
         "type": "minecraft:crafting_shapeless",
         "ingredients": [
-          { "item": "engineersdecor:sign_frost" }
+          { "item": "engineersdecor:sign_firehazard" }
         ],
         "result": {
-          "item": "engineersdecor:sign_hotwire"
+          "item": "engineersdecor:sign_hotsurface"
         }
       }
     }

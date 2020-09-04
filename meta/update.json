@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.15.2": {
+    "1.1.4": "[R] Back-Porting Release\n[A] Signs backported from 1.16.4.\n[A] Solar Panel balancing backported from 1.16.4.",
     "1.1.3": "[M] Lang file update zh_cn (PR#117, Moonisky).\n[F] Fixed missing Dense Grit Dirt loot table (issue #124, thx vaelzan).",
     "1.1.2": "[R] Maintenance release v1.1.2.\n[F] Fixed metal pole culling (issue #109).",
     "1.1.1": "[R] Release build v1.1.1. Changes: * Dense Grit Dirt added. * Ceiling Edge Light added. * Iron Bulb Light added.",
@@ -28,7 +29,7 @@
     "1.0.17-b2": "[A] Initial port."
   },
   "promos": {
-    "1.15.2-recommended": "1.1.3",
-    "1.15.2-latest": "1.1.3"
+    "1.15.2-recommended": "1.1.4",
+    "1.15.2-latest": "1.1.4"
   }
 }
