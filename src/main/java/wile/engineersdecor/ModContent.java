@@ -1,7 +1,7 @@
 /*
  * @file ModContent.java
  * @author Stefan Wilhelm (wile)
- * @copyright (C) 2018 Stefan Wilhelm
+ * @copyright (C) 2020 Stefan Wilhelm
  * @license MIT (see https://opensource.org/licenses/MIT)
  *
  * Definition and initialisation of blocks of this
@@ -219,37 +219,39 @@ public class ModContent
   // -------------------------------------------------------------------------------------------------------------------
 
   public static final EdRoofBlock DARK_CERAMIC_SHINGLE_ROOF = (EdRoofBlock)(new EdRoofBlock(
-    DecorBlock.CFG_CUTOUT,
+    DecorBlock.CFG_DEFAULT,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof"));
 
   public static final DecorBlock.Normal DARK_CERAMIC_SHINGLE_ROOF_BLOCK = (DecorBlock.Normal)(new DecorBlock.Normal(
-    DecorBlock.CFG_CUTOUT,
+    DecorBlock.CFG_DEFAULT,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
+         .notSolid().variableOpacity().setEmmisiveRendering((s,w,p)->true).variableOpacity()
   )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof_block"));
 
   public static final EdSlabBlock DARK_CERAMIC_SHINGLE_ROOF_SLAB = (EdSlabBlock)(new EdSlabBlock(
-    DecorBlock.CFG_CUTOUT,
+    DecorBlock.CFG_DEFAULT,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
+         .notSolid().variableOpacity().setEmmisiveRendering((s,w,p)->true).variableOpacity()
   )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof_slab"));
 
   public static final EdSlabSliceBlock HALFSLAB_DARK_CERAMIC_SHINGLE_ROOF = (EdSlabSliceBlock)(new EdSlabSliceBlock(
-    DecorBlock.CFG_CUTOUT,
+    DecorBlock.CFG_DEFAULT,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof_slabslice"));
 
   public static final EdRoofBlock DARK_CERAMIC_SHINGLE_ROOF_METALIZED = (EdRoofBlock)(new EdRoofBlock(
-    DecorBlock.CFG_CUTOUT,
+    DecorBlock.CFG_DEFAULT,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof_metallized"));
 
   public static final EdRoofBlock DARK_CERAMIC_SHINGLE_ROOF_SKYLIGHT = (EdRoofBlock)(new EdRoofBlock(
     DecorBlock.CFG_TRANSLUCENT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE).notSolid()
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof_skylight"));
 
   public static final EdRoofBlock DARK_CERAMIC_SHINGLE_ROOF_CHIMNEYTRUNK = (EdRoofBlock)(new EdRoofBlock(
-    DecorBlock.CFG_CUTOUT,
+    DecorBlock.CFG_DEFAULT,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE),
     VoxelShapes.create(Auxiliaries.getPixeledAABB(3, 0, 3, 13, 16, 13)),
     VoxelShapes.create(Auxiliaries.getPixeledAABB(5, 0, 5, 11, 16, 11))
@@ -424,7 +426,8 @@ public class ModContent
 
   public static final EdWindowBlock TREATED_WOOD_WINDOW = (EdWindowBlock)(new EdWindowBlock(
     DecorBlock.CFG_LOOK_PLACEMENT,
-    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.GLASS).notSolid(),
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f)
+      .sound(SoundType.GLASS).notSolid().setBlocksVision((s,w,p)->false),
     Auxiliaries.getPixeledAABB(0,0,7, 16,16,9)
   )).setRegistryName(new ResourceLocation(MODID, "treated_wood_window"));
 
@@ -765,12 +768,6 @@ public class ModContent
     }
   )).setRegistryName(new ResourceLocation(MODID, "straight_pipe_valve_redstone_analog"));
 
-  @Deprecated // remove in 1.17/1.16.3, not needed by anyone
-  public static final DecorBlock.Normal PASSIVE_FLUID_ACCUMULATOR = (DecorBlock.Normal)(new DecorBlock.Normal(
-    DecorBlock.CFG_EXPERIMENTAL,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL)
-  )).setRegistryName(new ResourceLocation(MODID, "passive_fluid_accumulator"));
-
   public static final EdFluidBarrel.FluidBarrelBlock FLUID_BARREL = (EdFluidBarrel.FluidBarrelBlock)(new EdFluidBarrel.FluidBarrelBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
@@ -874,7 +871,6 @@ public class ModContent
     STRAIGHT_CHECK_VALVE,
     STRAIGHT_REDSTONE_VALVE,
     STRAIGHT_REDSTONE_ANALOG_VALVE,
-    PASSIVE_FLUID_ACCUMULATOR,
     SMALL_FLUID_FUNNEL,
     DENSE_GRIT_SAND,
     DENSE_GRIT_DIRT,

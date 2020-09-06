@@ -1,7 +1,7 @@
 /*
  * @file EdRoofBlock.java
  * @author Stefan Wilhelm (wile)
- * @copyright (C) 2019 Stefan Wilhelm
+ * @copyright (C) 2020 Stefan Wilhelm
  * @license MIT (see https://opensource.org/licenses/MIT)
  *
  * Roof blocks.
@@ -29,6 +29,8 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.block.*;
 import net.minecraft.block.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 
@@ -40,7 +42,7 @@ public class EdRoofBlock extends StandardBlocks.HorizontalWaterLoggable implemen
   private final VoxelShape[][][] shape_cache_;
 
   public EdRoofBlock(long config, Block.Properties properties)
-  { this(config, properties, VoxelShapes.empty(), VoxelShapes.empty()); }
+  { this(config, properties.variableOpacity(), VoxelShapes.empty(), VoxelShapes.empty()); }
 
   public EdRoofBlock(long config, Block.Properties properties, VoxelShape add, VoxelShape cut)
   {
@@ -52,7 +54,17 @@ public class EdRoofBlock extends StandardBlocks.HorizontalWaterLoggable implemen
   @Override
   @SuppressWarnings("deprecation")
   public boolean isTransparent(BlockState state)
-  { return true; }
+  { return false; }
+
+  @OnlyIn(Dist.CLIENT)
+  @SuppressWarnings("deprecation")
+  public float getAmbientOcclusionLightValue(BlockState state, IBlockReader world, BlockPos pos)
+  { return 0.98f; }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  public int getOpacity(BlockState state, IBlockReader world, BlockPos pos)
+  { return 1; }
 
   @Override
   public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)

@@ -1,7 +1,7 @@
 /*
  * @file EdMilker.java
  * @author Stefan Wilhelm (wile)
- * @copyright (C) 2019 Stefan Wilhelm
+ * @copyright (C) 2020 Stefan Wilhelm
  * @license MIT (see https://opensource.org/licenses/MIT)
  *
  * Frequently attracts and milks nearby cows

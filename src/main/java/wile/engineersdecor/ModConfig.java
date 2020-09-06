@@ -1,7 +1,7 @@
 /*
  * @file ModConfig.java
  * @author Stefan Wilhelm (wile)
- * @copyright (C) 2018 Stefan Wilhelm
+ * @copyright (C) 2020 Stefan Wilhelm
  * @license MIT (see https://opensource.org/licenses/MIT)
  *
  * Main class for module settings. Handles reading and
