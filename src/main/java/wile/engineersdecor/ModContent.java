@@ -484,7 +484,10 @@ public class ModContent
   public static final EdHorizontalSupportBlock STEEL_DOUBLE_T_SUPPORT = (EdHorizontalSupportBlock)(new EdHorizontalSupportBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
-    Auxiliaries.getPixeledAABB(5,11,0, 11,16,16)
+    Auxiliaries.getPixeledAABB( 5,11,0, 11,16,16), // main beam
+    Auxiliaries.getPixeledAABB(10,11,5, 16,16,11), // east beam (also for west 180deg)
+    Auxiliaries.getPixeledAABB( 6, 0,6, 10,16,10), // down thin
+    Auxiliaries.getPixeledAABB( 5, 0,5, 11,16,11)  // down thick
   )).setRegistryName(new ResourceLocation(MODID, "steel_double_t_support"));
 
   // -------------------------------------------------------------------------------------------------------------------
