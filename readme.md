@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.16.3.
 
 ## Version history
 
+    ~ v1.1.2-b8  [F] Fixed Double-T support thick steel pole connection (thx @CastCrafter).
+                 [A] Concrete and Clinker walls connect to windows and glass panes.
+
     - v1.1.2-b7  [U] Ported to MC1.16.3.
                  [F] Roof lighting improved.
 

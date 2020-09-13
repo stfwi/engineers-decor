@@ -9,12 +9,9 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.entity.EntitySpawnPlacementRegistry;
-import wile.engineersdecor.ModContent;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import net.minecraft.entity.EntityType;
-import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntitySpawnPlacementRegistry;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.IntegerProperty;
@@ -22,15 +19,20 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.util.*;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.shapes.IBooleanFunction;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import wile.engineersdecor.ModContent;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class EdHorizontalSupportBlock extends DecorBlock.WaterLoggable implements IDecorBlock
@@ -39,19 +41,29 @@ public class EdHorizontalSupportBlock extends DecorBlock.WaterLoggable implement
   public static final BooleanProperty LEFTBEAM  = BooleanProperty.create("leftbeam");
   public static final BooleanProperty RIGHTBEAM = BooleanProperty.create("rightbeam");
   public static final IntegerProperty DOWNCONNECT = IntegerProperty.create("downconnect", 0, 2);
-  protected final ArrayList<VoxelShape> AABBs;
+  protected final Map<BlockState, VoxelShape> AABBs;
 
-  public EdHorizontalSupportBlock(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
+  public EdHorizontalSupportBlock(long config, Block.Properties builder, final AxisAlignedBB mainBeamAABB, final AxisAlignedBB eastBeamAABB, final AxisAlignedBB thinDownBeamAABB, final AxisAlignedBB thickDownBeamAABB)
   {
     super(config|DecorBlock.CFG_HORIZIONTAL, builder);
-    AABBs = new ArrayList<VoxelShape>(Arrays.asList(
-      // Effective bounding box
-      VoxelShapes.create(Auxiliaries.getRotatedAABB(unrotatedAABB.grow(2.0/16, 0, 0), Direction.NORTH, true)),
-      VoxelShapes.create(Auxiliaries.getRotatedAABB(unrotatedAABB.grow(2.0/16, 0, 0), Direction.WEST, true)),
-      // Displayed bounding box
-      VoxelShapes.create(Auxiliaries.getRotatedAABB(unrotatedAABB, Direction.NORTH, true)),
-      VoxelShapes.create(Auxiliaries.getRotatedAABB(unrotatedAABB, Direction.WEST, true))
-    ));
+    Map<BlockState, VoxelShape> aabbs = new HashMap<>();
+    for(boolean eastwest:EASTWEST.getAllowedValues()) {
+      for(boolean leftbeam:LEFTBEAM.getAllowedValues()) {
+        for(boolean rightbeam:RIGHTBEAM.getAllowedValues()) {
+          for(int downconnect:DOWNCONNECT.getAllowedValues()) {
+            final BlockState state = getDefaultState().with(EASTWEST, eastwest).with(LEFTBEAM, leftbeam).with(RIGHTBEAM, rightbeam).with(DOWNCONNECT, downconnect);
+            VoxelShape shape = VoxelShapes.create(Auxiliaries.getRotatedAABB(mainBeamAABB, eastwest?Direction.EAST:Direction.NORTH, true));
+            if(rightbeam) shape = VoxelShapes.combine(shape, VoxelShapes.create(Auxiliaries.getRotatedAABB(eastBeamAABB, eastwest?Direction.EAST:Direction.NORTH, true)), IBooleanFunction.OR);
+            if(leftbeam) shape = VoxelShapes.combine(shape, VoxelShapes.create(Auxiliaries.getRotatedAABB(eastBeamAABB, eastwest?Direction.WEST:Direction.SOUTH, true)), IBooleanFunction.OR);
+            if(downconnect==1) shape = VoxelShapes.combine(shape, VoxelShapes.create(thinDownBeamAABB), IBooleanFunction.OR);
+            if(downconnect==2) shape = VoxelShapes.combine(shape, VoxelShapes.create(thickDownBeamAABB), IBooleanFunction.OR);
+            aabbs.put(state.with(WATERLOGGED, false), shape);
+            aabbs.put(state.with(WATERLOGGED, true), shape);
+          }
+        }
+      }
+    }
+    AABBs = aabbs;
   }
 
   @Override
@@ -68,7 +80,7 @@ public class EdHorizontalSupportBlock extends DecorBlock.WaterLoggable implement
 
   @Override
   public VoxelShape getShape(BlockState state, IBlockReader source, BlockPos pos, ISelectionContext selectionContext)
-  { return AABBs.get(state.get(EASTWEST) ? 0x1 : 0x0); }
+  { return AABBs.get(state); }
 
   @Override
   public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext)

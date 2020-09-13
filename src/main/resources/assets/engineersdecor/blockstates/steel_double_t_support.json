@@ -14,6 +14,6 @@
   },{ "when": { "downconnect" : "1"  },
               "apply": { "model": "engineersdecor:block/hsupport/steel_double_t_support_xconnect_thin_pole_model" }
   },{ "when": { "downconnect" : "2"  },
-              "apply": { "model": "engineersdecor:block/hsupport/steel_double_t_support_xconnect_thin_pole_model" }
+              "apply": { "model": "engineersdecor:block/hsupport/steel_double_t_support_xconnect_thick_pole_model" }
   }
 ]}
