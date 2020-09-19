@@ -8,6 +8,7 @@
  */
 package wile.engineersdecor.libmc.detail;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -49,6 +50,12 @@ public class Inventories
     if(te instanceof IInventory) return new InvWrapper((IInventory)te);
     return null;
   }
+
+  public static IItemHandler itemhandler(Entity entity)
+  { return (entity instanceof IInventory) ? (new InvWrapper((IInventory)entity)) : null; }
+
+  public static IItemHandler itemhandler(Entity entity, @Nullable Direction side)
+  { return (entity instanceof IInventory) ? (new InvWrapper((IInventory)entity)) : null; } // in case a sided entity insertion pops up.
 
   public static ItemStack insert(IItemHandler handler, ItemStack stack , boolean simulate)
   { return ItemHandlerHelper.insertItemStacked(handler, stack, simulate); }

@@ -8,14 +8,7 @@
  */
 package wile.engineersdecor.blocks;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.world.IWorldReader;
-import wile.engineersdecor.ModContent;
-import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.libmc.detail.Inventories;
-import wile.engineersdecor.libmc.detail.Networking;
-import wile.engineersdecor.libmc.detail.Inventories.SlotRange;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.block.Block;
@@ -52,7 +45,14 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import wile.engineersdecor.ModContent;
+import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.Inventories;
+import wile.engineersdecor.libmc.detail.Networking;
+import wile.engineersdecor.libmc.detail.Inventories.SlotRange;
 import wile.engineersdecor.libmc.detail.TooltipDisplay;
 import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
 
@@ -459,6 +459,12 @@ public class EdHopper
 
     // ITickable and aux methods ---------------------------------------------------------------------
 
+    private IItemHandler inventory_entity_handler(BlockPos where)
+    {
+      final List<Entity> entities = world.getEntitiesInAABBexcluding(null, (new AxisAlignedBB(where)), EntityPredicates.HAS_INVENTORY);
+      return entities.isEmpty() ? null : Inventories.itemhandler(entities.get(0));
+    }
+
     private static int next_slot(int i)
     { return (i<NUM_OF_SLOTS-1) ? (i+1) : 0; }
 
@@ -505,42 +511,54 @@ public class EdHopper
         current_slot_index_ = 0;
         return false;
       }
-      final TileEntity te = world.getTileEntity(pos.offset(facing));
-      if(te == null) { delay_timer_ = TICK_INTERVAL+2; return false; } // no reason to recalculate this all the time if there is nothere to insert.
-      final IItemHandler ih = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing.getOpposite()).orElse(null);
-      if(ih == null) { delay_timer_ = TICK_INTERVAL+2; return false; }
-      if(te instanceof net.minecraft.tileentity.HopperTileEntity) {
-        Direction f = world.getBlockState(pos.offset(facing)).get(net.minecraft.block.HopperBlock.FACING);
-        if(f==facing.getOpposite()) return false; // no back transfer
-      } else if(te instanceof EdHopper.HopperTileEntity) {
-        Direction f = world.getBlockState(pos.offset(facing)).get(EdHopper.HopperBlock.FACING);
-        if(f==facing.getOpposite()) return false;
+      final BlockPos facing_pos = pos.offset(facing);
+      IItemHandler ih = null;
+      // Tile entity insertion check
+      {
+        final TileEntity te = world.getTileEntity(facing_pos);
+        if(te != null) {
+          ih = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing.getOpposite()).orElse(null);
+          if(ih == null) { delay_timer_ = TICK_INTERVAL+2; return false; }
+          if(te instanceof net.minecraft.tileentity.HopperTileEntity) {
+            Direction f = world.getBlockState(facing_pos).get(net.minecraft.block.HopperBlock.FACING);
+            if(f==facing.getOpposite()) return false; // no back transfer
+          } else if(te instanceof EdHopper.HopperTileEntity) {
+            Direction f = world.getBlockState(facing_pos).get(EdHopper.HopperBlock.FACING);
+            if(f==facing.getOpposite()) return false;
+          }
+        }
       }
-      ItemStack insert_stack = current_stack.copy();
-      if(insert_stack.getCount() > transfer_count_) insert_stack.setCount(transfer_count_);
-      final int initial_insert_stack_size = insert_stack.getCount();
-      if((ih == null) || ih.getSlots() <= 0) return false;
-      // First stack comletion insert run.
-      for(int i=0; i<ih.getSlots(); ++i) {
-        final ItemStack target_stack = ih.getStackInSlot(i);
-        if(Inventories.areItemStacksDifferent(target_stack, insert_stack)) continue;
-        insert_stack = ih.insertItem(i, insert_stack.copy(), false);
-        if(insert_stack.isEmpty()) break;
-      }
-      // First-available insert run.
-      if(!insert_stack.isEmpty()) {
+      // Entity insertion check
+      if(ih == null) ih = inventory_entity_handler(facing_pos);
+      if(ih == null) { delay_timer_ = TICK_INTERVAL+2; return false; } // no reason to recalculate this all the time if there is nowhere to insert.
+      // Handler insertion
+      {
+        ItemStack insert_stack = current_stack.copy();
+        if(insert_stack.getCount() > transfer_count_) insert_stack.setCount(transfer_count_);
+        final int initial_insert_stack_size = insert_stack.getCount();
+        if((ih == null) || ih.getSlots() <= 0) return false;
+        // First stack comletion insert run.
         for(int i=0; i<ih.getSlots(); ++i) {
+          final ItemStack target_stack = ih.getStackInSlot(i);
+          if(Inventories.areItemStacksDifferent(target_stack, insert_stack)) continue;
           insert_stack = ih.insertItem(i, insert_stack.copy(), false);
           if(insert_stack.isEmpty()) break;
         }
+        // First-available insert run.
+        if(!insert_stack.isEmpty()) {
+          for(int i=0; i<ih.getSlots(); ++i) {
+            insert_stack = ih.insertItem(i, insert_stack.copy(), false);
+            if(insert_stack.isEmpty()) break;
+          }
+        }
+        final int num_inserted = initial_insert_stack_size-insert_stack.getCount();
+        if(num_inserted > 0) {
+          current_stack.shrink(num_inserted);
+          stacks_.set(current_slot_index_, current_stack);
+        }
+        if(!insert_stack.isEmpty()) current_slot_index_ = next_slot(current_slot_index_);
+        return (num_inserted > 0);
       }
-      final int num_inserted = initial_insert_stack_size-insert_stack.getCount();
-      if(num_inserted > 0) {
-        current_stack.shrink(num_inserted);
-        stacks_.set(current_slot_index_, current_stack);
-      }
-      if(!insert_stack.isEmpty()) current_slot_index_ = next_slot(current_slot_index_);
-      return (num_inserted > 0);
     }
 
     private boolean try_item_handler_extract(final IItemHandler ih)
@@ -643,15 +661,20 @@ public class EdHopper
       if(rssignal || pulse_mode) {
         Direction hopper_input_facing = (hopper_facing==Direction.UP) ? Direction.DOWN : Direction.UP;
         TileEntity te = world.getTileEntity(pos.offset(hopper_input_facing));
-        final IItemHandler ih = (te==null) ? (null) : (te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, hopper_input_facing.getOpposite()).orElse(null));
+        IItemHandler ih = (te==null) ? (null) : (te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, hopper_input_facing.getOpposite()).orElse(null));
         if((ih != null) || (te instanceof ISidedInventory)) {
-          // IItemHandler pulling
+          // Tile Entity pulling
           if((ih != null)) {
             if(try_item_handler_extract(ih)) dirty = true;
           } else {
             if(try_inventory_extract((IInventory)te)) dirty = true;
           }
-        } else if((collection_timer_ -= TICK_INTERVAL) <= 0) {
+        }
+        if(ih==null) {
+          ih = inventory_entity_handler(pos.offset(hopper_input_facing));
+          if((ih!=null) && (try_item_handler_extract(ih))) dirty = true;
+        }
+        if((ih==null) && (collection_timer_ -= TICK_INTERVAL) <= 0) {
           // Ranged collection
           collection_timer_ = COLLECTION_INTERVAL;
           if(try_collect(hopper_input_facing)) dirty = true;

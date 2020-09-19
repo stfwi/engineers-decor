@@ -7,6 +7,7 @@
     "engineersdecor:rebar_concrete_slab",
     "engineersdecor:rebar_concrete_tile_slab",
     "engineersdecor:gas_concrete_slab",
-    "engineersdecor:panzerglass_slab"
+    "engineersdecor:panzerglass_slab",
+    "engineersdecor:old_industrial_wood_slab"
   ]
 }

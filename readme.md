@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.16.3.
 
 ## Version history
 
+    - v1.1.2     [U] Updated to Forge 1.16.3-34.1.0.
+                 [A] Added Factory Hopper insertion/extraction for entities like Minecarts (issue #125, ty boneskull).
+
     - v1.1.2-b8  [F] Fixed Double-T support thick steel pole connection (thx @CastCrafter).
                  [A] Concrete and Clinker walls connect to windows and glass panes.
 
