@@ -771,6 +771,12 @@ public class ModContent
     }
   )).setRegistryName(new ResourceLocation(MODID, "straight_pipe_valve_redstone_analog"));
 
+  @Deprecated // remove in 1.17/1.16.3, not needed by anyone
+  public static final DecorBlock.Normal PASSIVE_FLUID_ACCUMULATOR = (DecorBlock.Normal)(new DecorBlock.Normal(
+    DecorBlock.CFG_EXPERIMENTAL,
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL)
+  )).setRegistryName(new ResourceLocation(MODID, "passive_fluid_accumulator"));
+
   public static final EdFluidBarrel.FluidBarrelBlock FLUID_BARREL = (EdFluidBarrel.FluidBarrelBlock)(new EdFluidBarrel.FluidBarrelBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
@@ -874,6 +880,7 @@ public class ModContent
     STRAIGHT_CHECK_VALVE,
     STRAIGHT_REDSTONE_VALVE,
     STRAIGHT_REDSTONE_ANALOG_VALVE,
+    PASSIVE_FLUID_ACCUMULATOR,
     SMALL_FLUID_FUNNEL,
     DENSE_GRIT_SAND,
     DENSE_GRIT_DIRT,

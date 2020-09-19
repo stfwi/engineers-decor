@@ -1,7 +1,7 @@
 
-## Engineer's Decor (MC1.16.3)
+## Engineer's Decor (MC1.16.2)
 
-Mod sources for Minecraft version 1.16.3.
+Mod sources for Minecraft version 1.16.2.
 
 - Description, credits, and features: Please see the readme in the repository root.
 
@@ -11,11 +11,10 @@ Mod sources for Minecraft version 1.16.3.
 
 ## Version history
 
-    ~ v1.1.2-b8  [F] Fixed Double-T support thick steel pole connection (thx @CastCrafter).
+    - v1.1.2     [F] Fixed Double-T support thick steel pole connection (thx @CastCrafter).
                  [A] Concrete and Clinker walls connect to windows and glass panes.
 
-    - v1.1.2-b7  [U] Ported to MC1.16.3.
-                 [F] Roof lighting improved.
+    - v1.1.2-b7  [F] Roof lighting improved.
 
     - v1.1.2-b6  [A] Signs added: Generic Caution, Magical Hazard, Radioactive Hazard, Laser Hazard,
                      Fire Hazard, Caution Hot Surface, Magnetic Field Caution, Frost Warning.
