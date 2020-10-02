@@ -11,6 +11,8 @@ Mod sources for Minecraft version 1.16.3.
 
 ## Version history
 
+    ~ v1.1.3-b1  [A] The Factory Block Breaker can insert items into Hoppers underneath it (issue #121, winsrp).
+
     - v1.1.2     [U] Updated to Forge 1.16.3-34.1.0.
                  [A] Added Factory Hopper insertion/extraction for entities like Minecarts (issue #125, ty boneskull).
 

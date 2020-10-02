@@ -11,6 +11,7 @@ package wile.engineersdecor.blocks;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.Inventories;
 import wile.engineersdecor.libmc.detail.Overlay;
 import net.minecraft.world.World;
 import net.minecraft.world.IBlockReader;
@@ -284,14 +285,30 @@ public class EdBreaker
       world.addEntity(e);
     }
 
+    private static boolean canInsertInto(World world, BlockPos pos)
+    {
+      // Maybe make a tag for that. The question is if it is actually worth it, or if that would be only
+      // tag spamming the game. So for now only FH and VH.
+      final BlockState state = world.getBlockState(pos);
+      return (state.getBlock() == ModContent.FACTORY_HOPPER) || (state.getBlock() == Blocks.HOPPER);
+    }
+
     private boolean breakBlock(BlockState state, BlockPos pos, World world)
     {
       if(world.isRemote  || (!(world instanceof ServerWorld)) || world.restoringBlockSnapshots) return false; // retry next cycle
       List<ItemStack> drops;
       final Block block = state.getBlock();
+      final boolean insert = canInsertInto(world, getPos().down());
       drops = Block.getDrops(state, (ServerWorld)world, pos, world.getTileEntity(pos));
       world.removeBlock(pos, false);
-      for(ItemStack drop:drops) spawnBlockAsEntity(world, pos, drop);
+      for(ItemStack drop:drops) {
+        if(!insert) {
+          spawnBlockAsEntity(world, pos, drop);
+        } else {
+          final ItemStack remaining = Inventories.insert(world, getPos().down(), Direction.UP, drop, false);
+          if(!remaining.isEmpty()) spawnBlockAsEntity(world, pos, remaining);
+        }
+      }
       SoundType stype = state.getBlock().getSoundType(state, world, pos, null);
       if(stype != null) world.playSound(null, pos, stype.getPlaceSound(), SoundCategory.BLOCKS, stype.getVolume()*0.6f, stype.getPitch());
       return true;

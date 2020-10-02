@@ -62,11 +62,11 @@ public class Inventories
 
   public static ItemStack insert(TileEntity te, @Nullable Direction side, ItemStack stack, boolean simulate)
   {
-    if(te==null) return stack;
+    if(te == null) return stack;
     IItemHandler hnd = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).orElse(null);
-    if(hnd != null) {
+    if(hnd == null) {
       hnd = (IItemHandler)te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
-    } else if((side!=null) &&  (te instanceof ISidedInventory)) {
+    } else if((side!=null) && (te instanceof ISidedInventory)) {
       hnd = new SidedInvWrapper((ISidedInventory)te, side);
     } else if(te instanceof IInventory) {
       hnd = new InvWrapper((IInventory)te);
