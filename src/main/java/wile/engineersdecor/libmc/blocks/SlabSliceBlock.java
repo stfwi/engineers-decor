@@ -81,7 +81,7 @@ public class SlabSliceBlock extends StandardBlocks.WaterLoggable implements Stan
   public void addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
   {
     if(!Auxiliaries.Tooltip.addInformation(stack, world, tooltip, flag, true)) return;
-    if(with_pickup) Auxiliaries.Tooltip.addInformation("engineersdecor.tooltip.slabpickup", "engineersdecor.tooltip.slabpickup", tooltip, flag, true);
+    if(with_pickup) Auxiliaries.Tooltip.addInformation("engineersdecor.tooltip.slabpickup", tooltip);
   }
 
   @Override

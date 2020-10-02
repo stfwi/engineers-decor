@@ -189,25 +189,21 @@ public class Auxiliaries
       final boolean help_available = (helpTranslationKey != null) && Auxiliaries.hasTranslation(helpTranslationKey + ".help");
       final boolean tip_available = (advancedTooltipTranslationKey != null) && Auxiliaries.hasTranslation(helpTranslationKey + ".tip");
       if((!help_available) && (!tip_available)) return false;
+      String tip_text = "";
       if(helpCondition()) {
-        if(!help_available) return false;
-        String s = localize(helpTranslationKey + ".help");
-        if(s.isEmpty()) return false;
-        tooltip.add(new StringTextComponent(s));
-        return true;
+        if(help_available) tip_text = localize(helpTranslationKey + ".help");
       } else if(extendedTipCondition()) {
-        if(!tip_available) return false;
-        String s = localize(advancedTooltipTranslationKey + ".tip");
-        if(s.isEmpty()) return false;
-        tooltip.add(new StringTextComponent(s));
-        return true;
+        if(tip_available) tip_text = localize(advancedTooltipTranslationKey + ".tip");
       } else if(addAdvancedTooltipHints) {
-        String s = "";
-        if(tip_available) s += localize(modid + ".tooltip.hint.extended") + (help_available ? " " : "");
-        if(help_available) s += localize(modid + ".tooltip.hint.help");
-        tooltip.add(new StringTextComponent(s));
+        if(tip_available) tip_text += localize(modid + ".tooltip.hint.extended") + (help_available ? " " : "");
+        if(help_available) tip_text += localize(modid + ".tooltip.hint.help");
       }
-      return false;
+      if(tip_text.isEmpty()) return false;
+      String[] tip_list = tip_text.split("\\r?\\n");
+      for(String tip:tip_list) {
+        tooltip.add(new StringTextComponent(tip.replaceAll("\\s+$","").replaceAll("^\\s+", "")).mergeStyle(TextFormatting.GRAY));
+      }
+      return true;
     }
 
     /**
@@ -218,6 +214,15 @@ public class Auxiliaries
     @OnlyIn(Dist.CLIENT)
     public static boolean addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag, boolean addAdvancedTooltipHints)
     { return addInformation(stack.getTranslationKey(), stack.getTranslationKey(), tooltip, flag, addAdvancedTooltipHints); }
+
+    @OnlyIn(Dist.CLIENT)
+    public static boolean addInformation(String translation_key, List<ITextComponent> tooltip)
+    {
+      if(!Auxiliaries.hasTranslation(translation_key)) return false;
+      tooltip.add(new StringTextComponent(localize(translation_key).replaceAll("\\s+$","").replaceAll("^\\s+", "")).mergeStyle(TextFormatting.GRAY));
+      return true;
+    }
+
   }
 
   @SuppressWarnings("unused")
