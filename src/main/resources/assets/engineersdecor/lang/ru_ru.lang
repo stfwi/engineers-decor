@@ -108,8 +108,8 @@ tile.engineersdecor.treated_wood_crafting_table.help=§6Прочный и уст
                                                         очистить сетку крафта и историю. Shift-клик по стеку: передача стека от игрока в хранилище при создании \
                                                       если сетка пуста, в противном случае перенос от игрока в сетку. Автоматически распределяет кликаемый стек.  \
                                                       Shift-Ctrl-клик по стаку: перемещает одинаковые стаки. Колёсико мыши: добавляет/отнимает предметы в сетке.
-tile.engineersdecor.labeled_crate.name=Labeled Crate
-tile.engineersdecor.labeled_crate.help=§6§6A storage crate with 9x6 slots and a built-in item frame at the front.§r\nPlace an item into the frame slot at the bottom right of the GUI to define the shown label.
+tile.engineersdecor.labeled_crate.name=Ящик с рамкой
+tile.engineersdecor.labeled_crate.help=§6§6Ящик для хранения со слотами 9x6 и встроенной рамкой для предмета спереди.§r\nПоместите предмет в слот рамки в правом нижнем углу GUI, чтобы обозначить ящик.
 tile.engineersdecor.treated_wood_side_table.name=Столик из обработанного дерева
 tile.engineersdecor.treated_wood_side_table.help=§6Нужен после того, как работа выполнена.
 tile.engineersdecor.iron_inset_light.name=Встраиваемый осветитель
@@ -128,8 +128,8 @@ tile.engineersdecor.steel_framed_window.name=Окно со стальной ра
 tile.engineersdecor.steel_framed_window.help=§6Стальной каркас окна с тройным остеклением. Хорошо изолирует. §r Не подключается к смежным блокам, таким как стеклянные панели.
 tile.engineersdecor.steel_mesh_fence.name=Забор из стальной сетки
 tile.engineersdecor.steel_mesh_fence.help=§6Забор в индустриальном стиле.§r\nНе стыкуется с обычными заборами.
-tile.engineersdecor.steel_mesh_fence_gate.name=Steel Mesh Fence Gate
-tile.engineersdecor.steel_mesh_fence_gate.help=§6Industrial style fence gate that fits well to the Steel Mesh Fence.§r\nCan be placed as single or double size gate.
+tile.engineersdecor.steel_mesh_fence_gate.name=Калитка из стальной сетки
+tile.engineersdecor.steel_mesh_fence_gate.help=§6Калитка в индустриальном стиле, которая хорошо подходит к забору из стальной сетки.§r\nВозможна установка одинарных или двойных по высоте ворот.
 
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.small_lab_furnace.name=Компактная лабораторная печь
