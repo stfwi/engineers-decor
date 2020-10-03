@@ -302,7 +302,7 @@ public class BlockDecorBreaker extends BlockDecorDirectedHorizontal
           tick_timer_ = IDLE_TICK_INTERVAL;
           return;
         }
-        time_needed_ = MathHelper.clamp((int)(target_state.getBlockHardness(world, pos) * breaking_reluctance) + min_breaking_time, min_breaking_time, MAX_BREAKING_TIME);
+        time_needed_ = MathHelper.clamp((int)(target_state.getBlockHardness(world, target_pos) * breaking_reluctance) + min_breaking_time, min_breaking_time, MAX_BREAKING_TIME);
         if(energy_ >= boost_energy_consumption) {
           energy_ -= boost_energy_consumption;
           proc_time_elapsed_ += TICK_INTERVAL * (1+BOOST_FACTOR);
