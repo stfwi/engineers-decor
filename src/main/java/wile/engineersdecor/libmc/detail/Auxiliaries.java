@@ -11,6 +11,7 @@ package wile.engineersdecor.libmc.detail;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.SharedConstants;
@@ -230,6 +231,45 @@ public class Auxiliaries
   {
     String s = message.trim();
     if(!s.isEmpty()) player.sendMessage(new TranslationTextComponent(s), new UUID(0,0));
+  }
+
+  public static @Nullable ITextComponent unserializeTextComponent(String serialized)
+  { return ITextComponent.Serializer.func_240643_a_(serialized); }
+
+  public static String serializeTextComponent(ITextComponent tc)
+  { return (tc==null) ? ("") : (ITextComponent.Serializer.toJson(tc)); }
+
+  // -------------------------------------------------------------------------------------------------------------------
+  // Item NBT data
+  // -------------------------------------------------------------------------------------------------------------------
+
+  /**
+   * Equivalent to getDisplayName(), returns null if no custom name is set.
+   */
+  public static @Nullable ITextComponent getItemLabel(ItemStack stack)
+  {
+    CompoundNBT nbt = stack.getChildTag("display");
+    if(nbt != null && nbt.contains("Name", 8)) {
+      try {
+        ITextComponent tc = unserializeTextComponent(nbt.getString("Name"));
+        if(tc != null) return tc;
+        nbt.remove("Name");
+      } catch(Exception e) {
+        nbt.remove("Name");
+      }
+    }
+    return null;
+  }
+
+  public static ItemStack setItemLabel(ItemStack stack, @Nullable ITextComponent name)
+  {
+    if(name != null) {
+      CompoundNBT nbt = stack.getOrCreateChildTag("display");
+      nbt.putString("Name", serializeTextComponent(name));
+    } else {
+      if(stack.hasTag()) stack.removeChildTag("display");
+    }
+    return stack;
   }
 
   // -------------------------------------------------------------------------------------------------------------------

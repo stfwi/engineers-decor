@@ -8,7 +8,6 @@
  */
 package wile.engineersdecor.blocks;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
@@ -48,6 +47,7 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -55,6 +55,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -108,13 +109,15 @@ public class EdLabeledCrate
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
     {
-      if(world.isRemote) return;
-      if((!stack.hasTag()) || (!stack.getTag().contains("tedata"))) return;
-      CompoundNBT te_nbt = stack.getTag().getCompound("tedata");
-      if(te_nbt.isEmpty()) return;
+      if((world.isRemote) || (!stack.hasTag())) return;
       final TileEntity te = world.getTileEntity(pos);
       if(!(te instanceof LabeledCrateTileEntity)) return;
-      ((LabeledCrateTileEntity)te).readnbt(te_nbt);
+      final CompoundNBT nbt = stack.getTag();
+      if(nbt.contains("tedata")) {
+        CompoundNBT te_nbt = nbt.getCompound("tedata");
+        if(!te_nbt.isEmpty()) ((LabeledCrateTileEntity)te).readnbt(te_nbt);
+      }
+      ((LabeledCrateTileEntity)te).setCustomName(Auxiliaries.getItemLabel(stack));
       ((LabeledCrateTileEntity)te).markDirty();
     }
 
@@ -130,12 +133,11 @@ public class EdLabeledCrate
       if(!(te instanceof LabeledCrateTileEntity)) return stacks;
       if(!explosion) {
         ItemStack stack = new ItemStack(this, 1);
-        CompoundNBT te_nbt = ((LabeledCrateTileEntity) te).reset_getnbt();
-        if(!te_nbt.isEmpty()) {
-          CompoundNBT nbt = new CompoundNBT();
-          nbt.put("tedata", te_nbt);
-          stack.setTag(nbt);
-        }
+        CompoundNBT te_nbt = ((LabeledCrateTileEntity)te).reset_getnbt();
+        CompoundNBT nbt = new CompoundNBT();
+        if(!te_nbt.isEmpty()) nbt.put("tedata", te_nbt);
+        if(!nbt.isEmpty()) stack.setTag(nbt);
+        Auxiliaries.setItemLabel(stack, ((LabeledCrateTileEntity)te).getCustomName());
         stacks.add(stack);
       } else {
         for(ItemStack stack: ((LabeledCrateTileEntity)te).stacks_) stacks.add(stack);
@@ -185,12 +187,15 @@ public class EdLabeledCrate
       }
       int num_free_slots = LabeledCrateTileEntity.ITEMFRAME_SLOTNO - num_used_slots;
       ItemStack frameStack = items.get(LabeledCrateTileEntity.ITEMFRAME_SLOTNO);
-      tooltip.add(Auxiliaries.localizable(getTranslationKey()+".tip", new Object[] {
+      String[] lines =  Auxiliaries.localize(getTranslationKey()+".tip", new Object[] {
         (frameStack.isEmpty() ? (new StringTextComponent("-/-")) : (new TranslationTextComponent(frameStack.getTranslationKey()))),
         num_used_slots,
         num_free_slots,
         total_items
-      }));
+      }).split("\n");
+      for(String line:lines) {
+        tooltip.add(new StringTextComponent(line.trim()));
+      }
     }
   }
 
@@ -207,6 +212,7 @@ public class EdLabeledCrate
     // BTileEntity -----------------------------------------------------------------------------
 
     protected NonNullList<ItemStack> stacks_ = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
+    private @Nullable ITextComponent custom_name_;
 
     public LabeledCrateTileEntity()
     { this(ModContent.TET_LABELED_CRATE); }
@@ -227,17 +233,19 @@ public class EdLabeledCrate
       stacks_ = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
     }
 
-    public void readnbt(CompoundNBT compound)
+    public void readnbt(CompoundNBT nbt)
     {
       NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
-      if(!compound.isEmpty()) ItemStackHelper.loadAllItems(compound, stacks);
+      if(!nbt.isEmpty()) ItemStackHelper.loadAllItems(nbt, stacks);
       while(stacks.size() < NUM_OF_SLOTS) stacks.add(ItemStack.EMPTY);
+      if(nbt.contains("name", NBT.TAG_STRING)) custom_name_ = Auxiliaries.unserializeTextComponent(nbt.getString("name"));
       stacks_ = stacks;
     }
 
-    protected void writenbt(CompoundNBT compound)
+    protected void writenbt(CompoundNBT nbt)
     {
-      if(!stacks_.stream().allMatch(ItemStack::isEmpty)) ItemStackHelper.saveAllItems(compound, stacks_);
+      if(custom_name_ != null) nbt.putString("name", Auxiliaries.serializeTextComponent(custom_name_));
+      if(!stacks_.stream().allMatch(ItemStack::isEmpty)) ItemStackHelper.saveAllItems(nbt, stacks_);
     }
 
     public ItemStack getItemFrameStack()
@@ -292,15 +300,24 @@ public class EdLabeledCrate
 
     @Override
     public ITextComponent getName()
-    { final Block block=getBlockState().getBlock(); return new StringTextComponent((block!=null) ? block.getTranslationKey() : "Small Waste Incinerator"); }
+    {
+      if(custom_name_ != null) return custom_name_;
+      final Block block = getBlockState().getBlock();
+      if(block!=null) return new TranslationTextComponent(block.getTranslationKey());
+      return new StringTextComponent("Labeled Crate");
+    }
+
+    @Override
+    @Nullable
+    public ITextComponent getCustomName()
+    { return custom_name_; }
 
     @Override
     public boolean hasCustomName()
-    { return false; }
+    { return (custom_name_ != null); }
 
-    @Override
-    public ITextComponent getCustomName()
-    { return getName(); }
+    public void setCustomName(ITextComponent name)
+    { custom_name_ = name; }
 
     // IContainerProvider ----------------------------------------------------------------------
 
@@ -717,6 +734,8 @@ public class EdLabeledCrate
       player_ = player_inventory.player;
       xSize = 213;
       ySize = 206;
+      titleX = 23;
+      titleY = -10;
     }
 
     @Override
@@ -724,7 +743,7 @@ public class EdLabeledCrate
     { super.init(); }
 
     @Override
-    public void render/*render*/(MatrixStack mx, int mouseX, int mouseY, float partialTicks)
+    public void render(MatrixStack mx, int mouseX, int mouseY, float partialTicks)
     {
       renderBackground/*renderBackground*/(mx);
       super.render(mx, mouseX, mouseY, partialTicks);
@@ -733,7 +752,10 @@ public class EdLabeledCrate
 
     @Override
     protected void drawGuiContainerForegroundLayer(MatrixStack mx, int x, int y)
-    {}
+    {
+      font.func_243248_b(mx, title, (float)titleX+1, (float)titleY+1, 0x303030);
+      font.func_243248_b(mx, title, (float)titleX, (float)titleY, 0x707070);
+    }
 
     @Override
     @SuppressWarnings("deprecation")
