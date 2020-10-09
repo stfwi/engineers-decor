@@ -11,7 +11,7 @@ Mod sources for Minecraft version 1.16.3.
 
 ## Version history
 
-    ~ v1.1.3-b1  [A] The Factory Block Breaker can insert items into Hoppers underneath it (issue #121, winsrp).
+    - v1.1.3-b1  [A] The Factory Block Breaker can insert items into Hoppers underneath it (issue #121, winsrp).
                  [F] Help tooltips manually wrapped.
                  [F] Fixed Labeled Crate item name persistence (issue #127, ty inqie).
                  [F] Help text typo fixed (issue #129, ty Smollet777).

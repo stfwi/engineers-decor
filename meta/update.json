@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.16.3": {
+    "1.1.3-b1": "[A] The Factory Block Breaker can insert items into Hoppers underneath it (issue #121, winsrp).\n[F] Help tooltips manually wrapped.\n[F] Fixed Labeled Crate item name persistence (issue #127, ty inqie).\n[F] Help text typo fixed (issue #129, ty Smollet777).",
     "1.1.2": "[U] Updated to Forge 1.16.3-34.1.0.\n[A] Added Factory Hopper insertion/extraction for entities like Minecarts (issue #125, ty boneskull).",
     "1.1.2-b8": "[F] Fixed Double-T support thick steel pole connection (thx @CastCrafter).\n[A] Concrete and Clinker walls connect to windows and glass panes.",
     "1.1.2-b7": "[U] Ported to MC1.16.3.\n[F] Roof lighting improved.",
@@ -13,6 +14,6 @@
   },
   "promos": {
     "1.16.3-recommended": "1.1.2",
-    "1.16.3-latest": "1.1.2"
+    "1.16.3-latest": "1.1.3-b1"
   }
 }
