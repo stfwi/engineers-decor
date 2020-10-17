@@ -36,7 +36,6 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.*;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -49,6 +48,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.libmc.client.ContainerGui;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.Inventories;
 import wile.engineersdecor.libmc.detail.Networking;
@@ -837,7 +837,7 @@ public class EdHopper
   //--------------------------------------------------------------------------------------------------------------------
 
   @OnlyIn(Dist.CLIENT)
-  public static class HopperGui extends ContainerScreen<HopperContainer>
+  public static class HopperGui extends ContainerGui<HopperContainer>
   {
     protected final PlayerEntity player_;
     protected final TooltipDisplay tooltip_ = new TooltipDisplay();

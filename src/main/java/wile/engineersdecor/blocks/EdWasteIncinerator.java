@@ -9,10 +9,6 @@
 package wile.engineersdecor.blocks;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import wile.engineersdecor.ModContent;
-import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.blocks.EdFurnace.FurnaceBlock;
-import wile.engineersdecor.libmc.detail.Inventories;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -36,7 +32,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.item.*;
 import net.minecraft.inventory.*;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -53,6 +48,12 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
+import wile.engineersdecor.ModContent;
+import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.blocks.EdFurnace.FurnaceBlock;
+import wile.engineersdecor.libmc.client.ContainerGui;
+import wile.engineersdecor.libmc.detail.Inventories;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -687,7 +688,7 @@ public class EdWasteIncinerator
   //--------------------------------------------------------------------------------------------------------------------
 
   @OnlyIn(Dist.CLIENT)
-  public static class WasteIncineratorGui extends ContainerScreen<WasteIncineratorContainer>
+  public static class WasteIncineratorGui extends ContainerGui<WasteIncineratorContainer>
   {
     protected final PlayerEntity player_;
 

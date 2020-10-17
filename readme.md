@@ -11,6 +11,12 @@ Mod sources for Minecraft version 1.16.3.
 
 ## Version history
 
+    - v1.1.3-b3  [A] Metal Sliding Door added (double door wing style).
+                 [A] Doors implicitly open/close adjacent wings of double doors.
+                 [A] Disabled injected buttons from other mods in container GUIs.
+                 [A] Mob spawning on Rebar/Gas Concrete inhibited (IE Concrete Compliancy).
+                 [M] Small Tree Cutter chopping improved (loosened tree volume search restrictions).
+
     - v1.1.3-b2  [A] Crafting table shift/ctrl click item move actions tweaked to new metal slot design.
                  [A] Factory Dropper and Block Placer now also support quick-move-all (shift-ctrl-click).
                  [F] Fixed Small Lab Furnace speed boost factor (with IE Heater in aux slot).

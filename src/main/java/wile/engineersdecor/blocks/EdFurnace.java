@@ -12,6 +12,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.detail.ExternalObjects;
+import wile.engineersdecor.libmc.client.ContainerGui;
 import wile.engineersdecor.libmc.detail.Inventories;
 import wile.engineersdecor.libmc.detail.Networking;
 import net.minecraft.tileentity.*;
@@ -19,7 +20,6 @@ import net.minecraft.inventory.container.*;
 import net.minecraft.item.crafting.AbstractCookingRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.block.RedstoneTorchBlock;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.item.crafting.FurnaceRecipe;
 import net.minecraft.item.crafting.IRecipe;
@@ -980,7 +980,7 @@ public class EdFurnace
   //--------------------------------------------------------------------------------------------------------------------
 
   @OnlyIn(Dist.CLIENT)
-  public static class FurnaceGui extends ContainerScreen<FurnaceContainer>
+  public static class FurnaceGui extends ContainerGui<FurnaceContainer>
   {
     protected final PlayerEntity player_;
 

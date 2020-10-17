@@ -160,6 +160,7 @@
   "block.engineersdecor.metal_rung_ladder.help": "Typical industrial wall ladder,\n consisting of horizontal metal\n rod rungs. Look up/down to climb\n faster.",
   "block.engineersdecor.metal_rung_steps": "Staggered Metal Steps",
   "block.engineersdecor.metal_rung_steps.help": "Staggered rod rungs affixed to a\n wall, allowing to climb up, fall\n down, and so on. Look up/down\n to climb faster.",
+  "block.engineersdecor.metal_sliding_door": "Metal Sliding Door",
   "block.engineersdecor.old_industrial_wood_door": "Old Industrial Wood Door",
   "block.engineersdecor.old_industrial_wood_planks": "Old Industrial Wood Planks",
   "block.engineersdecor.old_industrial_wood_slab": "Old Industrial Wood Slab",

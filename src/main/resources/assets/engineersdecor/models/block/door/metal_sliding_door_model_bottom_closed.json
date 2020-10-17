@@ -1,0 +1,66 @@
+{
+	"ambientocclusion": false,
+	"textures": {
+		"bottom": "engineersdecor:block/door/metal_sliding_door_texture_bottom",
+		"particle": "engineersdecor:block/door/metal_sliding_door_texture_side"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 7],
+			"to": [16, 16, 9],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#bottom"},
+				"east": {"uv": [14, 0, 16, 16], "texture": "#particle"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#bottom"},
+				"west": {"uv": [14, 0, 16, 16], "texture": "#particle"},
+				"down": {"uv": [0, 1, 16, 3], "texture": "#particle"}
+			}
+		},
+		{
+			"from": [15, 0, 6],
+			"to": [16, 16, 7],
+			"faces": {
+				"north": {"uv": [0, 0, 1, 16], "texture": "#bottom"},
+				"east": {"uv": [15, 0, 16, 16], "texture": "#particle"},
+				"west": {"uv": [0, 0, 1, 16], "texture": "#bottom"},
+				"down": {"uv": [15, 9, 16, 10], "rotation": 270, "texture": "#particle"}
+			}
+		},
+		{
+			"from": [0, 0, 6],
+			"to": [15, 0.25, 7],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 8, 8]},
+			"faces": {
+				"north": {"uv": [1, 15, 16, 16], "texture": "#bottom"},
+				"east": {"uv": [9, 15, 10, 16], "texture": "#particle"},
+				"south": {"uv": [0, 15, 15, 16], "texture": "#particle"},
+				"west": {"uv": [6, 15, 7, 16], "texture": "#bottom"},
+				"up": {"uv": [0, 1, 15, 2], "texture": "#particle"},
+				"down": {"uv": [0, 15, 15, 16], "texture": "#particle"}
+			}
+		},
+		{
+			"from": [0, 0, 9],
+			"to": [15, 0.25, 10],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 8, 11]},
+			"faces": {
+				"north": {"uv": [1, 15, 16, 16], "texture": "#bottom"},
+				"east": {"uv": [9, 15, 10, 16], "texture": "#particle"},
+				"south": {"uv": [0, 15, 15, 16], "texture": "#particle"},
+				"west": {"uv": [6, 15, 7, 16], "texture": "#bottom"},
+				"up": {"uv": [0, 1, 15, 2], "texture": "#particle"},
+				"down": {"uv": [0, 15, 15, 16], "texture": "#particle"}
+			}
+		},
+		{
+			"from": [15, 0, 9],
+			"to": [16, 16, 10],
+			"faces": {
+				"east": {"uv": [13, 0, 14, 16], "texture": "#particle"},
+				"south": {"uv": [15, 0, 16, 16], "texture": "#bottom"},
+				"west": {"uv": [14, 0, 15, 16], "texture": "#particle"},
+				"down": {"uv": [15, 6, 16, 7], "rotation": 270, "texture": "#particle"}
+			}
+		}
+	]
+}

@@ -160,6 +160,7 @@
   "block.engineersdecor.metal_rung_ladder.help": "§6典型的工业墙梯，由水平的金属杆蹬组成。§r往上/下看会爬得更快。",
   "block.engineersdecor.metal_rung_steps": "交错金属台阶",
   "block.engineersdecor.metal_rung_steps.help": "§6贴在墙上的交错金属杆蹬，能够爬上或爬下。§r往上/下看会爬得更快。",
+  "block.engineersdecor.metal_sliding_door": "Metal Sliding Door",
   "block.engineersdecor.old_industrial_wood_door": "Old Industrial Wood Door",
   "block.engineersdecor.old_industrial_wood_planks": "Old Industrial Wood Planks",
   "block.engineersdecor.old_industrial_wood_slab": "Old Industrial Wood Slab",

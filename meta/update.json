@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.16.3": {
+    "1.1.3-b3": "[A] Metal Sliding Door added (double door wing style).\n[A] Doors implicitly open/close adjacent wings of double doors.\n[A] Disabled injected buttons from other mods in container GUIs.\n[A] Mob spawning on Rebar/Gas Concrete inhibited (IE Concrete Compliancy).\n[M] Small Tree Cutter chopping improved (loosened tree volume search restrictions).",
     "1.1.3-b2": "[A] Crafting table shift/ctrl click item move actions tweaked to new metal slot design.\n[A] Factory Dropper and Block Placer now also support quick-move-all (shift-ctrl-click).\n[F] Fixed Small Lab Furnace speed boost factor (with IE Heater in aux slot).",
     "1.1.3-b1": "[A] The Factory Block Breaker can insert items into Hoppers underneath it (issue #121, winsrp).\n[F] Help tooltips manually wrapped.\n[F] Fixed Labeled Crate item name persistence (issue #127, ty inqie).\n[F] Help text typo fixed (issue #129, ty Smollet777).",
     "1.1.2": "[U] Updated to Forge 1.16.3-34.1.0.\n[A] Added Factory Hopper insertion/extraction for entities like Minecarts (issue #125, ty boneskull).",
@@ -15,6 +16,6 @@
   },
   "promos": {
     "1.16.3-recommended": "1.1.2",
-    "1.16.3-latest": "1.1.3-b2"
+    "1.16.3-latest": "1.1.3-b3"
   }
 }

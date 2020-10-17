@@ -83,7 +83,15 @@ public class StandardBlocks
     enum RenderTypeHint { SOLID,CUTOUT,CUTOUT_MIPPED,TRANSLUCENT,TRANSLUCENT_NO_CRUMBLING }
 
     default RenderTypeHint getRenderTypeHint()
-    { return RenderTypeHint.SOLID; }
+    { return getRenderTypeHint(config()); }
+
+    default RenderTypeHint getRenderTypeHint(long config)
+    {
+      if((config & CFG_CUTOUT)!=0) return RenderTypeHint.CUTOUT;
+      if((config & CFG_MIPPED)!=0) return RenderTypeHint.CUTOUT_MIPPED;
+      if((config & CFG_TRANSLUCENT)!=0) return RenderTypeHint.TRANSLUCENT;
+      return RenderTypeHint.SOLID;
+    }
   }
 
   public interface IBlockItemFactory
@@ -136,12 +144,7 @@ public class StandardBlocks
 
     @Override
     public RenderTypeHint getRenderTypeHint()
-    {
-      if((config & CFG_CUTOUT)!=0) return RenderTypeHint.CUTOUT;
-      if((config & CFG_MIPPED)!=0) return RenderTypeHint.CUTOUT_MIPPED;
-      if((config & CFG_TRANSLUCENT)!=0) return RenderTypeHint.TRANSLUCENT;
-      return RenderTypeHint.SOLID;
-    }
+    { return getRenderTypeHint(config); }
 
     @Override
     @SuppressWarnings("deprecation")

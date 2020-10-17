@@ -160,6 +160,7 @@
   "block.engineersdecor.metal_rung_ladder.help": "§6Типичная промышленная настенная лестница, состоящая из горизонтальных металлических стержней.§r Смотри вверх/вниз, чтобы подняться быстрее.",
   "block.engineersdecor.metal_rung_steps": "Настенные металлические ступеньки",
   "block.engineersdecor.metal_rung_steps.help": "§6Металлические ступеньки, крепятся к стене. Позволяют подниматься/спускаться.§r Смотри вверх/вниз, чтобы подняться быстрее.",
+  "block.engineersdecor.metal_sliding_door": "Metal Sliding Door",
   "block.engineersdecor.old_industrial_wood_door": "Old Industrial Wood Door",
   "block.engineersdecor.old_industrial_wood_planks": "Old Industrial Wood Planks",
   "block.engineersdecor.old_industrial_wood_slab": "Old Industrial Wood Slab",

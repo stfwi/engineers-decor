@@ -31,7 +31,6 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -53,6 +52,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.libmc.client.ContainerGui;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.Inventories;
 import wile.engineersdecor.libmc.detail.Inventories.InventoryRange;
@@ -885,7 +885,7 @@ public class EdDropper
   //--------------------------------------------------------------------------------------------------------------------
 
   @OnlyIn(Dist.CLIENT)
-  public static class DropperGui extends ContainerScreen<DropperContainer>
+  public static class DropperGui extends ContainerGui<DropperContainer>
   {
     protected final PlayerEntity player_;
     protected final TooltipDisplay tooltip_ = new TooltipDisplay();

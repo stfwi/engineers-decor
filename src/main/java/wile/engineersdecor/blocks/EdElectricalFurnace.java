@@ -10,10 +10,6 @@ package wile.engineersdecor.blocks;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.util.text.TranslationTextComponent;
-import wile.engineersdecor.ModContent;
-import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.libmc.detail.Inventories;
-import wile.engineersdecor.libmc.detail.Networking;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.block.BlockState;
@@ -41,7 +37,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.inventory.*;
 import net.minecraft.inventory.container.*;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.stats.Stats;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -54,8 +49,13 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
+import wile.engineersdecor.ModContent;
+import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.detail.TooltipDisplay;
 import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
+import wile.engineersdecor.libmc.client.ContainerGui;
+import wile.engineersdecor.libmc.detail.Inventories;
+import wile.engineersdecor.libmc.detail.Networking;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -782,7 +782,7 @@ public class EdElectricalFurnace
   //--------------------------------------------------------------------------------------------------------------------
 
   @OnlyIn(Dist.CLIENT)
-  public static class ElectricalFurnaceGui extends ContainerScreen<ElectricalFurnaceContainer>
+  public static class ElectricalFurnaceGui extends ContainerGui<ElectricalFurnaceContainer>
   {
     protected final PlayerEntity player_;
     protected final TooltipDisplay tooltip_ = new TooltipDisplay();

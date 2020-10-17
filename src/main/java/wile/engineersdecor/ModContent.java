@@ -12,15 +12,10 @@
  */
 package wile.engineersdecor;
 
-import wile.engineersdecor.blocks.*;
-import wile.engineersdecor.blocks.EdFurnace.FurnaceBlock;
-import wile.engineersdecor.blocks.EdFurnace.FurnaceContainer;
-import wile.engineersdecor.blocks.EdFurnace.FurnaceGui;
-import wile.engineersdecor.blocks.EdFurnace.FurnaceTileEntity;
-import wile.engineersdecor.items.EdItem;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
-import wile.engineersdecor.libmc.blocks.StandardBlocks.IStandardBlock;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
+import net.minecraft.block.BlockState;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -47,6 +42,16 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.commons.lang3.ArrayUtils;
+import wile.engineersdecor.blocks.*;
+import wile.engineersdecor.blocks.EdFurnace.FurnaceBlock;
+import wile.engineersdecor.blocks.EdFurnace.FurnaceContainer;
+import wile.engineersdecor.blocks.EdFurnace.FurnaceGui;
+import wile.engineersdecor.blocks.EdFurnace.FurnaceTileEntity;
+import wile.engineersdecor.items.EdItem;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.blocks.StandardBlocks.IStandardBlock;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -59,6 +64,10 @@ import javax.annotation.Nonnull;
 public class ModContent
 {
   private static final String MODID = ModEngineersDecor.MODID;
+
+  //--------------------------------------------------------------------------------------------------------------------
+
+  private static Boolean disallowSpawn(BlockState state, IBlockReader reader, BlockPos pos, EntityType<?> entity) { return false; }
 
   //--------------------------------------------------------------------------------------------------------------------
   // Blocks
@@ -134,86 +143,86 @@ public class ModContent
 
   public static final DecorBlock.Normal REBAR_CONCRETE_BLOCK = (DecorBlock.Normal)(new DecorBlock.Normal(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 2000f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 2000f).sound(SoundType.STONE).setAllowsSpawn(ModContent::disallowSpawn)
   )).setRegistryName(new ResourceLocation(MODID, "rebar_concrete"));
 
   public static final EdSlabBlock REBAR_CONCRETE_SLAB = (EdSlabBlock)(new EdSlabBlock(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 2000f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 2000f).sound(SoundType.STONE).setAllowsSpawn(ModContent::disallowSpawn)
   )).setRegistryName(new ResourceLocation(MODID, "rebar_concrete_slab"));
 
   public static final EdStairsBlock REBAR_CONCRETE_STAIRS = (EdStairsBlock)(new EdStairsBlock(
     DecorBlock.CFG_DEFAULT,
     REBAR_CONCRETE_BLOCK.getDefaultState(),
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 2000f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 2000f).sound(SoundType.STONE).setAllowsSpawn(ModContent::disallowSpawn)
   )).setRegistryName(new ResourceLocation(MODID, "rebar_concrete_stairs"));
 
   public static final EdWallBlock REBAR_CONCRETE_WALL = (EdWallBlock)(new EdWallBlock(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 2000f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 2000f).sound(SoundType.STONE).setAllowsSpawn(ModContent::disallowSpawn)
   )).setRegistryName(new ResourceLocation(MODID, "rebar_concrete_wall"));
 
   public static final EdSlabSliceBlock HALFSLAB_REBARCONCRETE = (EdSlabSliceBlock)(new EdSlabSliceBlock(
     DecorBlock.CFG_CUTOUT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 2000f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 2000f).sound(SoundType.STONE).setAllowsSpawn(ModContent::disallowSpawn)
   )).setRegistryName(new ResourceLocation(MODID, "halfslab_rebar_concrete"));
 
   // -------------------------------------------------------------------------------------------------------------------
 
   public static final DecorBlock.Normal GAS_CONCRETE_BLOCK = (DecorBlock.Normal)(new DecorBlock.Normal(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5f, 10f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5f, 10f).sound(SoundType.STONE).setAllowsSpawn(ModContent::disallowSpawn)
   )).setRegistryName(new ResourceLocation(MODID, "gas_concrete"));
 
   public static final EdSlabBlock GAS_CONCRETE_SLAB = (EdSlabBlock)(new EdSlabBlock(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5f, 10f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5f, 10f).sound(SoundType.STONE).setAllowsSpawn(ModContent::disallowSpawn)
   )).setRegistryName(new ResourceLocation(MODID, "gas_concrete_slab"));
 
   public static final EdStairsBlock GAS_CONCRETE_STAIRS = (EdStairsBlock)(new EdStairsBlock(
     DecorBlock.CFG_DEFAULT,
     REBAR_CONCRETE_BLOCK.getDefaultState(),
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5f, 10f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5f, 10f).sound(SoundType.STONE).setAllowsSpawn(ModContent::disallowSpawn)
   )).setRegistryName(new ResourceLocation(MODID, "gas_concrete_stairs"));
 
   public static final EdWallBlock GAS_CONCRETE_WALL = (EdWallBlock)(new EdWallBlock(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5f, 10f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5f, 10f).sound(SoundType.STONE).setAllowsSpawn(ModContent::disallowSpawn)
   )).setRegistryName(new ResourceLocation(MODID, "gas_concrete_wall"));
 
   public static final EdSlabSliceBlock HALFSLAB_GASCONCRETE = (EdSlabSliceBlock)(new EdSlabSliceBlock(
     DecorBlock.CFG_CUTOUT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5f, 10f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(1.5f, 10f).sound(SoundType.STONE).setAllowsSpawn(ModContent::disallowSpawn)
   )).setRegistryName(new ResourceLocation(MODID, "halfslab_gas_concrete"));
 
   // -------------------------------------------------------------------------------------------------------------------
 
   public static final DecorBlock.Normal REBAR_CONCRETE_TILE = (DecorBlock.Normal)(new DecorBlock.Normal(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 2000f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 2000f).sound(SoundType.STONE).setAllowsSpawn(ModContent::disallowSpawn)
   )).setRegistryName(new ResourceLocation(MODID, "rebar_concrete_tile"));
 
   public static final EdSlabBlock REBAR_CONCRETE_TILE_SLAB = (EdSlabBlock)(new EdSlabBlock(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 2000f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 2000f).sound(SoundType.STONE).setAllowsSpawn(ModContent::disallowSpawn)
   )).setRegistryName(new ResourceLocation(MODID, "rebar_concrete_tile_slab"));
 
   public static final EdStairsBlock REBAR_CONCRETE_TILE_STAIRS = (EdStairsBlock)(new EdStairsBlock(
     DecorBlock.CFG_DEFAULT,
     REBAR_CONCRETE_TILE.getDefaultState(),
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 2000f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 2000f).sound(SoundType.STONE).setAllowsSpawn(ModContent::disallowSpawn)
   )).setRegistryName(new ResourceLocation(MODID, "rebar_concrete_tile_stairs"));
 
   // -------------------------------------------------------------------------------------------------------------------
 
   public static final EdGlassBlock PANZERGLASS_BLOCK = (EdGlassBlock)(new EdGlassBlock(
     DecorBlock.CFG_TRANSLUCENT,
-    Block.Properties.create(Material.GLASS, MaterialColor.AIR).hardnessAndResistance(0.7f, 2000f).sound(SoundType.METAL).notSolid()
+    Block.Properties.create(Material.GLASS, MaterialColor.AIR).hardnessAndResistance(0.7f, 2000f).sound(SoundType.METAL).notSolid().setAllowsSpawn(ModContent::disallowSpawn)
   )).setRegistryName(new ResourceLocation(MODID, "panzerglass_block"));
 
   public static final EdSlabBlock PANZERGLASS_SLAB = (EdSlabBlock)(new EdSlabBlock(
     DecorBlock.CFG_TRANSLUCENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(0.7f, 2000f).sound(SoundType.METAL).notSolid()
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(0.7f, 2000f).sound(SoundType.METAL).notSolid().setAllowsSpawn(ModContent::disallowSpawn)
   )).setRegistryName(new ResourceLocation(MODID, "panzerglass_slab"));
 
   // -------------------------------------------------------------------------------------------------------------------
@@ -299,6 +308,14 @@ public class ModContent
     Auxiliaries.getPixeledAABB(0.5,1,0, 15.5,14.,2)
   )).setRegistryName(new ResourceLocation(MODID, "iron_hatch"));
 
+  public static final EdDoorBlock METAL_SLIDING_DOOR = (EdDoorBlock)(new EdDoorBlock(
+    DecorBlock.CFG_TRANSLUCENT|DecorBlock.CFG_HORIZIONTAL,
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1.5f, 12f).sound(SoundType.METAL).notSolid(),
+    Auxiliaries.getPixeledAABB(15,0,7, 16,16,9),
+    Auxiliaries.getPixeledAABB( 0,0,7, 16,16,9),
+    SoundEvents.BLOCK_IRON_DOOR_OPEN, SoundEvents.BLOCK_IRON_DOOR_CLOSE
+  )).setRegistryName(new ResourceLocation(MODID, "metal_sliding_door"));
+
   // -------------------------------------------------------------------------------------------------------------------
 
   public static final DecorBlock.Normal OLD_INDUSTRIAL_PLANKS = (DecorBlock.Normal)(new DecorBlock.Normal(
@@ -324,7 +341,8 @@ public class ModContent
 
   public static final EdDoorBlock OLD_INDUSTRIAL_WOOD_DOOR = (EdDoorBlock)(new EdDoorBlock(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1.5f, 12f).sound(SoundType.WOOD).notSolid()
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1.5f, 12f).sound(SoundType.WOOD).notSolid(),
+    SoundEvents.BLOCK_WOODEN_DOOR_OPEN, SoundEvents.BLOCK_WOODEN_DOOR_CLOSE
   )).setRegistryName(new ResourceLocation(MODID, "old_industrial_wood_door"));
 
   // -------------------------------------------------------------------------------------------------------------------
@@ -921,6 +939,7 @@ public class ModContent
     METAL_RUNG_LADDER,
     METAL_RUNG_STEPS,
     TREATED_WOOD_LADDER,
+    METAL_SLIDING_DOOR,
     IRON_HATCH,
     OLD_INDUSTRIAL_PLANKS,
     OLD_INDUSTRIAL_SLAB,

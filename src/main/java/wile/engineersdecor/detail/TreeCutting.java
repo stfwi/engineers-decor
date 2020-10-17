@@ -77,7 +77,7 @@ public class TreeCutting
   {
     if(world.isRemote || !isLog(broken_state)) return 0;
     final long ymin = startPos.getY();
-    final long max_leaf_distance = 6;
+    final long max_leaf_distance = 8;
     Set<BlockPos> checked = new HashSet<BlockPos>();
     ArrayList<BlockPos> to_break = new ArrayList<BlockPos>();
     ArrayList<BlockPos> to_decay = new ArrayList<BlockPos>();
@@ -89,7 +89,7 @@ public class TreeCutting
       LinkedList<BlockPos> upqueue = new LinkedList<BlockPos>();
       queue.add(startPos);
       int cutlevel = 0;
-      int steps_left = 64;
+      int steps_left = 128;
       while(!queue.isEmpty() && (--steps_left >= 0)) {
         final BlockPos pos = queue.removeFirst();
         // Vertical search
@@ -101,7 +101,7 @@ public class TreeCutting
             // Up is log
             upqueue.add(uppos);
             to_break.add(uppos);
-            steps_left = 64;
+            steps_left = 128;
           } else {
             boolean isleaf = isLeaves(upstate);
             if(isleaf || world.isAirBlock(uppos) || (upstate.getBlock() instanceof VineBlock)) {
@@ -128,13 +128,14 @@ public class TreeCutting
           final BlockPos p = pos.add(v);
           if(checked.contains(p)) continue;
           checked.add(p);
-          if(p.distanceSq(new BlockPos(startPos.getX(), p.getY(), startPos.getZ())) > (3+cutlevel*cutlevel)) continue;
+          if(p.distanceSq(new BlockPos(startPos.getX(), p.getY(), startPos.getZ())) > (cutlevel > 2 ? 256 : 9)) continue;
           final BlockState st = world.getBlockState(p);
           final Block bl = st.getBlock();
           if(isSameLog(st, broken_state)) {
             queue.add(p);
             to_break.add(p);
           } else if(isLeaves(st)) {
+            queue.add(p);
             to_decay.add(p);
           }
         }
@@ -157,7 +158,7 @@ public class TreeCutting
       final ArrayList<BlockPos> leafs = to_decay;
       to_decay = new ArrayList<BlockPos>();
       for(BlockPos pos:leafs) {
-        int dist = 2;
+        int dist = 3;
         to_decay.add(pos);
         to_decay.addAll(findBlocksAround(world, pos, leaf_type_state, checked, dist));
       }

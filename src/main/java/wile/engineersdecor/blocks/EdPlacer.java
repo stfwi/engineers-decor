@@ -11,11 +11,6 @@ package wile.engineersdecor.blocks;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.util.math.vector.Vector3d;
-import wile.engineersdecor.ModContent;
-import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.libmc.detail.Inventories.InventoryRange;
-import wile.engineersdecor.libmc.detail.Networking;
 import net.minecraft.block.*;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -35,7 +30,6 @@ import net.minecraft.inventory.*;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.ITextComponent;
@@ -57,6 +51,12 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import com.mojang.blaze3d.systems.RenderSystem;
 import wile.engineersdecor.libmc.detail.TooltipDisplay;
 import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
+import wile.engineersdecor.libmc.client.ContainerGui;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.Inventories.InventoryRange;
+import wile.engineersdecor.libmc.detail.Networking;
+import wile.engineersdecor.ModContent;
+import wile.engineersdecor.ModEngineersDecor;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -738,7 +738,7 @@ public class EdPlacer
   //--------------------------------------------------------------------------------------------------------------------
 
   @OnlyIn(Dist.CLIENT)
-  public static class PlacerGui extends ContainerScreen<PlacerContainer>
+  public static class PlacerGui extends ContainerGui<PlacerContainer>
   {
     protected final PlayerEntity player_;
     protected final TooltipDisplay tooltip_ = new TooltipDisplay();

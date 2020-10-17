@@ -1,0 +1,30 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:metal_sliding_door",
+          "required": ["engineersdecor:metal_bar", "minecraft:iron_door"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "BB",
+          "DD",
+          "BB"
+        ],
+        "key": {
+          "B": { "item": "engineersdecor:metal_bar" },
+          "D": { "item": "minecraft:iron_door" }
+        },
+        "result": {
+          "item": "engineersdecor:metal_sliding_door",
+          "count": 2
+        }
+      }
+    }
+  ]
+}
