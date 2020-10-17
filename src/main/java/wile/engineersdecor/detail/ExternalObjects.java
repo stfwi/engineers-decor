@@ -14,7 +14,7 @@ import net.minecraftforge.registries.ObjectHolder;
 public class ExternalObjects
 {
 
-  @ObjectHolder("immersiveengineering:external_heater")
+  @ObjectHolder("immersiveengineering:furnace_heater")
   public static final Item IE_EXTERNAL_HEATER = null;
 
   @ObjectHolder("bottledmilk:milk_bottle_drinkable")

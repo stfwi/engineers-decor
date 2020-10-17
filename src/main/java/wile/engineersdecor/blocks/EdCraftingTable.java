@@ -50,7 +50,7 @@ import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.Inventories;
-import wile.engineersdecor.libmc.detail.Inventories.SlotRange;
+import wile.engineersdecor.libmc.detail.Inventories.InventoryRange;
 import wile.engineersdecor.libmc.detail.Networking;
 import wile.engineersdecor.libmc.detail.TooltipDisplay;
 import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
@@ -158,7 +158,10 @@ public class EdCraftingTable
 
   public static class CraftingTableTileEntity extends TileEntity implements IInventory, INameable, INamedContainerProvider
   {
-    public static final int NUM_OF_SLOTS = 9+18;
+    public static final int NUM_OF_STORAGE_SLOTS = 18;
+    public static final int NUM_OF_STORAGE_ROWS = 2;
+    public static final int NUM_OF_SLOTS = 9+NUM_OF_STORAGE_SLOTS;
+
     protected NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
     protected CompoundNBT history = new CompoundNBT();
 
@@ -319,13 +322,15 @@ public class EdCraftingTable
     protected static final String ACTION_PLACE_CURRENT_HISTORY_SEL = "place-refab";
     protected static final String ACTION_PLACE_SHIFTCLICKED_STACK = "place-stack";
     protected static final String ACTION_MOVE_ALL_STACKS = "move-stacks";
+    protected static final String ACTION_MOVE_STACK = "move-stack";
     protected static final String ACTION_INCREASE_CRAFTING_STACKS = "inc-crafting-stacks";
     protected static final String ACTION_DECREASE_CRAFTING_STACKS = "dec-crafting-stacks";
 
     public static final int CRAFTING_SLOTS_BEGIN = 0;
     public static final int NUM_OF_CRAFTING_SLOTS = 9;
     public static final int STORAGE_SLOTS_BEGIN = NUM_OF_CRAFTING_SLOTS;
-    public static final int NUM_OF_STORAGE_SLOTS = CraftingTableTileEntity.NUM_OF_SLOTS - NUM_OF_CRAFTING_SLOTS;
+    public static final int NUM_OF_STORAGE_SLOTS = CraftingTableTileEntity.NUM_OF_STORAGE_SLOTS;
+    public static final int NUM_OF_STORAGE_ROWS = CraftingTableTileEntity.NUM_OF_STORAGE_ROWS;
 
     public final ImmutableList<Tuple<Integer,Integer>> CRAFTING_SLOT_COORDINATES;
     private final PlayerEntity player_;
@@ -336,6 +341,12 @@ public class EdCraftingTable
     private final CraftResultInventory result_;
     private boolean has_recipe_collision_;
     private boolean crafting_matrix_changed_now_;
+    private final InventoryRange crafting_grid_range_;
+    private final InventoryRange crafting_result_range_;
+    private final InventoryRange block_storage_range_;
+    private final InventoryRange player_storage_range_;
+    private final InventoryRange player_hotbar_range_;
+    private final InventoryRange player_inventory_range_;
 
     public CraftingTableContainer(int cid, PlayerInventory pinv)
     { this(cid, pinv, new Inventory(CraftingTableTileEntity.NUM_OF_SLOTS), IWorldPosCallable.DUMMY); }
@@ -352,6 +363,12 @@ public class EdCraftingTable
       result_ = new CraftResultInventory();
       matrix_ = new CraftingTableGrid(this, block_inventory);
       matrix_.openInventory(player_);
+      crafting_result_range_= new InventoryRange(result_, 0, 1, 1);
+      crafting_grid_range_  = new InventoryRange(matrix_, 0, 9, 3);
+      block_storage_range_  = new InventoryRange(inventory_, STORAGE_SLOTS_BEGIN, NUM_OF_STORAGE_SLOTS, NUM_OF_STORAGE_ROWS);
+      player_storage_range_ = InventoryRange.fromPlayerStorage(player_);
+      player_hotbar_range_  = InventoryRange.fromPlayerHotbar(player_);
+      player_inventory_range_= InventoryRange.fromPlayerInventory(player_);
       // container slotId 0 === crafting output
       addSlot(new CraftingOutputSlot(this, pinv.player, matrix_, result_, 0, 118, 27));
       ArrayList<Tuple<Integer,Integer>> slotpositions = new ArrayList<Tuple<Integer,Integer>>();
@@ -378,7 +395,7 @@ public class EdCraftingTable
       // container slotId 46..53 === TE slots 9..17 (storage)
       for(int y=0; y<2; ++y) {
         for(int x=0; x<9; ++x) {
-          addSlot(new Slot(matrix_, 9+x+y*9, 8+x*18, 65+y*18));
+          addSlot(new Slot(inventory_, 9+x+y*9, 8+x*18, 65+y*18));
         }
       }
       if((!player_.world.isRemote) && (inventory_ instanceof CraftingTableTileEntity)) {
@@ -522,39 +539,36 @@ public class EdCraftingTable
             history_.next();
             syncHistory();
             // implicitly clear the grid, so that the player can see the refab, and that no recipe is active.
-            if(clear_grid_to_player(player)) { changed = true; player_inventory_changed = true; }
             if(clear_grid_to_storage(player)) changed = true;
+            if(clear_grid_to_player(player)) { changed = true; player_inventory_changed = true; }
           } break;
           case BUTTON_PREV: {
             history_.prev();
             syncHistory();
-            if(clear_grid_to_player(player)) { changed = true; player_inventory_changed = true; }
             if(clear_grid_to_storage(player)) changed = true;
+            if(clear_grid_to_player(player)) { changed = true; player_inventory_changed = true; }
           } break;
           case BUTTON_CLEAR_GRID: {
             history_.reset_selection();
             syncHistory();
-            if(clear_grid_to_player(player)) { changed = true; player_inventory_changed = true; }
             if(clear_grid_to_storage(player)) changed = true;
+            if(clear_grid_to_player(player)) { changed = true; player_inventory_changed = true; }
           } break;
           case ACTION_PLACE_CURRENT_HISTORY_SEL: {
-            if(place_stacks(new SlotRange[]{
-              new SlotRange(player.inventory, 0, 9),
-              new SlotRange(player.inventory, 9, 36),
-              new SlotRange(inventory_, STORAGE_SLOTS_BEGIN, STORAGE_SLOTS_BEGIN+NUM_OF_STORAGE_SLOTS)
-            }, refab_crafting_stacks()) != PlacementResult.UNCHANGED) {
+            if(place_stacks(
+              new InventoryRange[]{block_storage_range_, player_storage_range_, player_hotbar_range_},
+              refab_crafting_stacks()) != PlacementResult.UNCHANGED) {
               changed = true;
             }
           } break;
           case ACTION_PLACE_SHIFTCLICKED_STACK: {
             final int container_slot_id = nbt.getInt("containerslot");
-            if((container_slot_id < 10) || (container_slot_id > 53)) {
+            if((container_slot_id < 10) || (container_slot_id > (46+NUM_OF_STORAGE_SLOTS))) {
               break; // out of range
             }
             if(container_slot_id >= 46) {
               // from storage
-              final int storage_slot = container_slot_id - 46 + STORAGE_SLOTS_BEGIN;
-              PlacementResult stat = distribute_stack(inventory_, storage_slot);
+              PlacementResult stat = distribute_stack(block_storage_range_, container_slot_id-46);
               if(stat != PlacementResult.UNCHANGED) changed = true;
             } else {
               // from player
@@ -573,6 +587,20 @@ public class EdCraftingTable
               }
             }
           } break;
+          case ACTION_MOVE_STACK: {
+            final int container_slot_id = nbt.getInt("containerslot");
+            if((container_slot_id < 1) || (container_slot_id >= (46+NUM_OF_STORAGE_SLOTS))) {
+              break; // out of range
+            } else if(container_slot_id < 10) {
+              int slot = container_slot_id;
+              ItemStack remaining = Inventories.insert(
+                new InventoryRange[] {block_storage_range_, player_storage_range_, player_hotbar_range_},
+                inventory_.getStackInSlot(slot-1)
+              );
+              changed = player_inventory_changed = (remaining.getCount()!=inventory_.getStackInSlot(slot-1).getCount());
+              inventory_.setInventorySlotContents(slot-1, remaining);
+            }
+          } break;
           case ACTION_MOVE_ALL_STACKS: {
             final int container_slot_id = nbt.getInt("containerslot");
             if((container_slot_id < 1) || (container_slot_id >= (46+NUM_OF_STORAGE_SLOTS))) {
@@ -580,23 +608,23 @@ public class EdCraftingTable
             } else if(container_slot_id < 10) {
               // from crafting grid to player inventory, we clear the grid here as this is most likely
               // what is wanted in the end. Saves clicking the other grid stacks.
-              if(clear_grid_to_player(player)) { changed = true; player_inventory_changed = true; }
               if(clear_grid_to_storage(player)) changed = true;
+              if(clear_grid_to_player(player)) { changed = true; player_inventory_changed = true; }
               break;
             }
             IInventory from_inventory;
-            SlotRange[] to_ranges;
+            InventoryRange[] to_ranges;
             int from_slot;
             if(container_slot_id >= 46) {
               // from storage to player inventory
               from_inventory = inventory_;
               from_slot = container_slot_id - 46 + STORAGE_SLOTS_BEGIN;
-              to_ranges = new SlotRange[] {new SlotRange(player.inventory, 9, 36), new SlotRange(player.inventory, 0, 9)};
+              to_ranges = new InventoryRange[] {player_storage_range_, player_hotbar_range_};
             } else {
               // from player to storage (otherwise ACTION_PLACE_SHIFTCLICKED_STACK would have been used)
               from_inventory = player.inventory;
               from_slot = (container_slot_id >= 37) ? (container_slot_id-37) : (container_slot_id-10+9);
-              to_ranges = new SlotRange[] {new SlotRange(inventory_, STORAGE_SLOTS_BEGIN, STORAGE_SLOTS_BEGIN+NUM_OF_STORAGE_SLOTS)};
+              to_ranges = new InventoryRange[]{block_storage_range_};
             }
             final ItemStack reference_stack = from_inventory.getStackInSlot(from_slot).copy();
             if(!reference_stack.isEmpty()) {
@@ -604,16 +632,8 @@ public class EdCraftingTable
               for(int i=0; (i < from_inventory.getSizeInventory()) && (!abort); ++i) {
                 final ItemStack stack = from_inventory.getStackInSlot(i);
                 if(Inventories.areItemStacksDifferent(reference_stack, stack)) continue;
-                ItemStack remaining = from_inventory.getStackInSlot(i);
-                for(SlotRange range:to_ranges) {
-                  remaining = range.insert(remaining, false, 0, false, true);
-                  if(!remaining.isEmpty()) {
-                    abort = true; // no space left
-                    break;
-                  } else {
-                    changed = player_inventory_changed = true;
-                  }
-                }
+                ItemStack remaining = Inventories.insert(to_ranges, from_inventory.getStackInSlot(i));
+                changed = player_inventory_changed = (remaining.getCount()!=from_inventory.getStackInSlot(i).getCount());
                 from_inventory.setInventorySlotContents(i, remaining);
               }
             }
@@ -622,18 +642,14 @@ public class EdCraftingTable
             select_next_collision_recipe(inventory_);
           } break;
           case ACTION_DECREASE_CRAFTING_STACKS: {
-            changed = player_inventory_changed = decrease_grid_stacks(new SlotRange[]{
-              new SlotRange(player.inventory, 9, 36),
-              new SlotRange(player.inventory, 0, 9),
-              new SlotRange(inventory_, STORAGE_SLOTS_BEGIN, STORAGE_SLOTS_BEGIN+NUM_OF_STORAGE_SLOTS)
-            }, MathHelper.clamp(nbt.getInt("limit"), 1, 8));
+            changed = player_inventory_changed = decrease_grid_stacks(
+              new InventoryRange[]{block_storage_range_, player_storage_range_, player_hotbar_range_},
+              MathHelper.clamp(nbt.getInt("limit"), 1, 8));
           } break;
           case ACTION_INCREASE_CRAFTING_STACKS: {
-            changed = player_inventory_changed = increase_grid_stacks(new SlotRange[]{
-              new SlotRange(player.inventory, 9, 36),
-              new SlotRange(player.inventory, 0, 9),
-              new SlotRange(inventory_, STORAGE_SLOTS_BEGIN, STORAGE_SLOTS_BEGIN+NUM_OF_STORAGE_SLOTS)
-            }, MathHelper.clamp(nbt.getInt("limit"), 1, 8));
+            changed = player_inventory_changed = increase_grid_stacks(
+              new InventoryRange[]{block_storage_range_, player_storage_range_, player_hotbar_range_},
+              MathHelper.clamp(nbt.getInt("limit"), 1, 8));
           } break;
         }
       }
@@ -717,26 +733,22 @@ public class EdCraftingTable
         .findFirst().orElse(null);
     }
 
-    private ItemStack search_inventory(ItemStack match_stack, ItemStack not_found_value) {
-      SlotRange search_ranges[] = new SlotRange[]{
-        new SlotRange(player_.inventory, 0, 36),
-        new SlotRange(inventory_, STORAGE_SLOTS_BEGIN, STORAGE_SLOTS_BEGIN+NUM_OF_STORAGE_SLOTS)
-      };
-      for(SlotRange range: search_ranges) {
-        for(int i=0; i<range.inventory.getSizeInventory(); ++i) {
-          ItemStack stack = range.inventory.getStackInSlot(i);
-          if(Inventories.areItemStacksIdentical(stack, match_stack)) return match_stack;
+    private Optional<ItemStack> search_inventory(ItemStack match_stack) {
+      InventoryRange search_ranges[] = new InventoryRange[]{block_storage_range_, player_storage_range_, player_hotbar_range_};
+      for(InventoryRange range: search_ranges) {
+        for(int i=0; i<range.getSizeInventory(); ++i) {
+          if(Inventories.areItemStacksIdentical(range.getStackInSlot(i), match_stack)) return Optional.of(match_stack);
         }
       }
-      return not_found_value;
+      return Optional.empty();
     }
 
-    private ItemStack search_inventory(ItemStack[] match_stacks, ItemStack not_found_value) {
+    private Optional<ItemStack> search_inventory(ItemStack[] match_stacks) {
       for(ItemStack match_stack: match_stacks) {
-        ItemStack stack = search_inventory(match_stack, ItemStack.EMPTY);
-        if(!stack.isEmpty()) return stack;
+        Optional<ItemStack> stack = search_inventory(match_stack);
+        if(stack.isPresent()) return stack;
       }
-      return not_found_value;
+      return Optional.empty();
     }
 
     private ArrayList<ItemStack> placement_stacks(ICraftingRecipe recipe)
@@ -756,7 +768,7 @@ public class EdCraftingTable
           if((w >= endw) || (ingredient_index >= recipe.getIngredients().size())) { grid.add(ItemStack.EMPTY); continue; }
           ItemStack[] match_stacks = recipe.getIngredients().get(ingredient_index++).getMatchingStacks();
           if(match_stacks.length == 0) { grid.add(ItemStack.EMPTY); continue; }
-          ItemStack preferred = search_inventory(match_stacks, match_stacks[0]);
+          ItemStack preferred = search_inventory(match_stacks).orElse(match_stacks[0]);
           if(preferred.isEmpty()) { grid.add(ItemStack.EMPTY); continue; }
           grid.add(preferred);
         }
@@ -765,7 +777,7 @@ public class EdCraftingTable
         for(int ingredient_index=0; ingredient_index<recipe.getIngredients().size(); ++ingredient_index) {
           ItemStack[] match_stacks = recipe.getIngredients().get(ingredient_index).getMatchingStacks();
           if(match_stacks.length == 0) { grid.add(ItemStack.EMPTY); continue; }
-          ItemStack preferred = search_inventory(match_stacks, match_stacks[0]);
+          ItemStack preferred = search_inventory(match_stacks).orElse(match_stacks[0]);
           if(preferred.isEmpty()) { grid.add(ItemStack.EMPTY); continue; }
           grid.add(preferred);
         }
@@ -781,11 +793,11 @@ public class EdCraftingTable
       for(int stack_index=0; stack_index < grid_stacks.size(); ++stack_index) {
         ItemStack to_replace = grid_stacks.get(stack_index);
         ItemStack replacement = to_replace;
-        if(to_replace.isEmpty() || (!search_inventory(to_replace, ItemStack.EMPTY).isEmpty())) continue; // no replacement needed
+        if(to_replace.isEmpty() || (search_inventory(to_replace).isPresent())) continue; // no replacement needed
         for(int ingredient_index=0; ingredient_index<recipe.getIngredients().size(); ++ingredient_index) {
           ItemStack[] match_stacks = recipe.getIngredients().get(ingredient_index).getMatchingStacks();
           if(Arrays.stream(match_stacks).anyMatch(s->Inventories.areItemStacksIdentical(s, to_replace))) {
-            replacement = search_inventory(match_stacks, to_replace);
+            replacement = search_inventory(match_stacks).orElse(to_replace);
             changed = true;
             break;
           }
@@ -889,7 +901,7 @@ public class EdCraftingTable
     {
       final ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
       for(int i=0; i<9; ++i) {
-        final ItemStack palced = inventory_.getStackInSlot(i+CRAFTING_SLOTS_BEGIN).copy();
+        final ItemStack palced = crafting_grid_range_.getStackInSlot(i).copy();
         if(!palced.isEmpty()) palced.setCount(count);
         stacks.add(palced);
       }
@@ -897,45 +909,22 @@ public class EdCraftingTable
     }
 
     private boolean clear_grid_to_storage(PlayerEntity player)
-    {
-      boolean changed = false;
-      for(int grid_i = CRAFTING_SLOTS_BEGIN; grid_i < (CRAFTING_SLOTS_BEGIN+NUM_OF_CRAFTING_SLOTS); ++grid_i) {
-        ItemStack stack = inventory_.getStackInSlot(grid_i);
-        if(stack.isEmpty()) continue;
-        ItemStack remaining = (new SlotRange(inventory_, STORAGE_SLOTS_BEGIN, STORAGE_SLOTS_BEGIN+NUM_OF_STORAGE_SLOTS)).insert(stack, false, 0);
-        inventory_.setInventorySlotContents(grid_i, remaining);
-        changed = true;
-      }
-      return changed;
-    }
+    { return crafting_grid_range_.move(block_storage_range_); }
 
     private boolean clear_grid_to_player(PlayerEntity player)
-    {
-      boolean changed = false;
-      for(int grid_i = CRAFTING_SLOTS_BEGIN; grid_i < (CRAFTING_SLOTS_BEGIN+NUM_OF_CRAFTING_SLOTS); ++grid_i) {
-        ItemStack remaining = inventory_.getStackInSlot(grid_i);
-        if(remaining.isEmpty()) continue;
-        remaining = (new SlotRange(player.inventory,9, 36)).insert(remaining,true, 0); // prefer filling up inventory stacks
-        remaining = (new SlotRange(player.inventory,0, 9)).insert(remaining, true, 0);  // then fill up the hotbar stacks
-        remaining = (new SlotRange(player.inventory,9, 36)).insert(remaining, false, 0); // then allow empty stacks in inventory
-        remaining = (new SlotRange(player.inventory,0, 9)).insert(remaining, false, 0);  // then new stacks in the hotbar
-        inventory_.setInventorySlotContents(grid_i, remaining);
-        changed = true;
-      }
-      return changed;
-    }
+    { return crafting_grid_range_.move(player_inventory_range_); }
 
-    private PlacementResult place_stacks(final SlotRange[] ranges, final List<ItemStack> to_fill)
+    private PlacementResult place_stacks(final InventoryRange[] ranges, final List<ItemStack> to_fill)
     {
       if(history_.current_recipe() != null) result_.setRecipeUsed(history_.current_recipe());
       boolean slots_changed = false;
       if(!to_fill.isEmpty()) {
-        for(SlotRange slot_range: ranges) {
+        for(InventoryRange slot_range: ranges) {
           for(int it_guard=63; it_guard>=0; --it_guard) {
             boolean slots_updated = false;
             for(int i = 0; i < 9; ++i) {
               if(to_fill.get(i).isEmpty()) continue;
-              ItemStack grid_stack = inventory_.getStackInSlot(i + CRAFTING_SLOTS_BEGIN).copy();
+              ItemStack grid_stack = crafting_grid_range_.getStackInSlot(i).copy();
               if(grid_stack.getCount() >= grid_stack.getMaxStackSize()) continue;
               final ItemStack req_stack = to_fill.get(i).copy();
               req_stack.setCount(1);
@@ -947,7 +936,7 @@ public class EdCraftingTable
               } else {
                 grid_stack.grow(mv_stack.getCount());
               }
-              inventory_.setInventorySlotContents(i + CRAFTING_SLOTS_BEGIN, grid_stack);
+              crafting_grid_range_.setInventorySlotContents(i, grid_stack);
               slots_changed = true;
               slots_updated = true;
             }
@@ -971,18 +960,18 @@ public class EdCraftingTable
       }
     }
 
-    private PlacementResult distribute_stack(IInventory inventory, final int slotno)
+    private PlacementResult distribute_stack(IInventory inventory, final int slot_index)
     {
       List<ItemStack> to_refab = refab_crafting_stacks();
       if(history_.current_recipe() != null) result_.setRecipeUsed(history_.current_recipe());
-      ItemStack to_distribute = inventory.getStackInSlot(slotno).copy();
+      ItemStack to_distribute = inventory.getStackInSlot(slot_index).copy();
       if(to_distribute.isEmpty()) return PlacementResult.UNCHANGED;
       int matching_grid_stack_sizes[] = {-1,-1,-1,-1,-1,-1,-1,-1,-1};
       int max_matching_stack_size = -1;
       int min_matching_stack_size = 65;
       int total_num_missing_stacks = 0;
       for(int i=0; i<9; ++i) {
-        final ItemStack grid_stack = inventory_.getStackInSlot(i+CRAFTING_SLOTS_BEGIN);
+        final ItemStack grid_stack = crafting_grid_range_.getStackInSlot(i);
         final ItemStack refab_stack = to_refab.isEmpty() ? ItemStack.EMPTY : to_refab.get(i).copy();
         if((!grid_stack.isEmpty()) && Inventories.areItemStacksIdentical(grid_stack, to_distribute)) {
           matching_grid_stack_sizes[i] = grid_stack.getCount();
@@ -1004,7 +993,7 @@ public class EdCraftingTable
         }
       }
       if(min_matching_stack_size < 0) return PlacementResult.UNCHANGED;
-      final int stack_limit_size = Math.min(to_distribute.getMaxStackSize(), inventory_.getInventoryStackLimit());
+      final int stack_limit_size = Math.min(to_distribute.getMaxStackSize(), crafting_grid_range_.getInventoryStackLimit());
       if(min_matching_stack_size >= stack_limit_size) return PlacementResult.UNCHANGED;
       int n_to_distribute = to_distribute.getCount();
       for(int it_guard=63; it_guard>=0; --it_guard) {
@@ -1026,40 +1015,40 @@ public class EdCraftingTable
       }
       if(n_to_distribute == to_distribute.getCount()) return PlacementResult.UNCHANGED; // was already full
       if(n_to_distribute <= 0) {
-        inventory.setInventorySlotContents(slotno, ItemStack.EMPTY);
+        inventory.setInventorySlotContents(slot_index, ItemStack.EMPTY);
       } else {
         to_distribute.setCount(n_to_distribute);
-        inventory.setInventorySlotContents(slotno, to_distribute);
+        inventory.setInventorySlotContents(slot_index, to_distribute);
       }
       for(int i=0; i<9; ++i) {
         if(matching_grid_stack_sizes[i] < 0) continue;
-        ItemStack grid_stack = inventory_.getStackInSlot(i + CRAFTING_SLOTS_BEGIN).copy();
+        ItemStack grid_stack = crafting_grid_range_.getStackInSlot(i).copy();
         if(grid_stack.isEmpty()) grid_stack = to_distribute.copy();
         grid_stack.setCount(matching_grid_stack_sizes[i]);
-        inventory_.setInventorySlotContents(i + CRAFTING_SLOTS_BEGIN, grid_stack);
+        crafting_grid_range_.setInventorySlotContents(i, grid_stack);
       }
       return PlacementResult.PLACED;
     }
 
-    private boolean decrease_grid_stacks(SlotRange[] ranges, int limit)
+    private boolean decrease_grid_stacks(InventoryRange[] ranges, int limit)
     {
       boolean changed = false;
       for(int i=0; i<9; ++i) {
-        ItemStack stack = inventory_.getStackInSlot(i+CRAFTING_SLOTS_BEGIN).copy();
+        ItemStack stack = crafting_grid_range_.getStackInSlot(i).copy();
         if(stack.isEmpty()) continue;
-        for(SlotRange range:ranges) {
-          ItemStack remaining = range.insert(stack, false, limit);
+        for(InventoryRange range:ranges) {
+          ItemStack remaining = range.insert(stack, false, limit, false, false);
           if(remaining.getCount() < stack.getCount()) changed = true;
           boolean stop = (remaining.getCount() <= Math.max(0, (stack.getCount()-limit)));
           stack = remaining;
           if(stop) break;
         }
-        inventory_.setInventorySlotContents(i+CRAFTING_SLOTS_BEGIN, stack.isEmpty() ? ItemStack.EMPTY : stack);
+        crafting_grid_range_.setInventorySlotContents(i, stack.isEmpty() ? ItemStack.EMPTY : stack);
       }
       return changed;
     }
 
-    private boolean increase_grid_stacks(SlotRange[] ranges, int limit)
+    private boolean increase_grid_stacks(InventoryRange[] ranges, int limit)
     { return place_stacks(ranges, incr_crafting_grid_stacks(limit)) != PlacementResult.UNCHANGED; }
 
   }
@@ -1258,6 +1247,12 @@ public class EdCraftingTable
             CompoundNBT nbt = new CompoundNBT();
             nbt.putInt("containerslot", slotId);
             action(CraftingTableContainer.ACTION_MOVE_ALL_STACKS, nbt);
+            return;
+          } else if((slotId > 0) && (slotId <= 9)) {
+            // Move from grid to storage or player inventory
+            CompoundNBT nbt = new CompoundNBT();
+            nbt.putInt("containerslot", slotId);
+            action(CraftingTableContainer.ACTION_MOVE_STACK, nbt);
             return;
           } else {
             // Let the normal slot click handle that.
@@ -1539,7 +1534,7 @@ public class EdCraftingTable
         final IRecipe recipe = ((CraftResultInventory)this.inventory).getRecipeUsed();
         final ArrayList<ItemStack> grid = new ArrayList<ItemStack>();
         grid.add(stack);
-        for(int i = 0; i < 9; ++i) grid.add(container.inventory_.getStackInSlot(i));
+        for(int i = 0; i<9; ++i) grid.add(container.inventory_.getStackInSlot(i));
         if(recipe instanceof ICraftingRecipe) {
           container.history().add(grid, (ICraftingRecipe)recipe);
           container.history().reset_current();

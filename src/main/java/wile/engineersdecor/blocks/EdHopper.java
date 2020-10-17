@@ -52,7 +52,7 @@ import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.Inventories;
 import wile.engineersdecor.libmc.detail.Networking;
-import wile.engineersdecor.libmc.detail.Inventories.SlotRange;
+import wile.engineersdecor.libmc.detail.Inventories.InventoryRange;
 import wile.engineersdecor.libmc.detail.TooltipDisplay;
 import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
 
@@ -703,8 +703,8 @@ public class EdHopper
     protected static final int STORAGE_SLOT_END = HopperTileEntity.NUM_OF_SLOTS;
     protected static final int PLAYER_SLOT_BEGIN = HopperTileEntity.NUM_OF_SLOTS;
     protected static final int PLAYER_SLOT_END = HopperTileEntity.NUM_OF_SLOTS+36;
-    private final SlotRange player_inventory_slot_range;
-    private final SlotRange hopper_slot_range;
+    private final InventoryRange player_inventory_range_;
+    private final InventoryRange block_storage_range_;
     private final PlayerEntity player_;
     private final IInventory inventory_;
     private final IWorldPosCallable wpc_;
@@ -722,8 +722,8 @@ public class EdHopper
       wpc_ = wpc;
       player_ = player_inventory.player;
       inventory_ = block_inventory;
-      hopper_slot_range = new SlotRange(inventory_, 0, HopperTileEntity.NUM_OF_SLOTS);
-      player_inventory_slot_range = new SlotRange(player_inventory, 0, 36);
+      block_storage_range_ = new InventoryRange(inventory_, 0, HopperTileEntity.NUM_OF_SLOTS);
+      player_inventory_range_ = InventoryRange.fromPlayerInventory(player_);
       int i=-1;
       // input slots (stacks 0 to 17)
       for(int y=0; y<3; ++y) {
@@ -816,35 +816,10 @@ public class EdHopper
         switch(nbt.getString("action")) {
           case QUICK_MOVE_ALL: {
             if((slotId >= STORAGE_SLOT_BEGIN) && (slotId < STORAGE_SLOT_END) && (getSlot(slotId).getHasStack())) {
-              final Slot slot = getSlot(slotId);
-              ItemStack remaining = slot.getStack();
-              slot.putStack(ItemStack.EMPTY);
-              final ItemStack ref_stack = remaining.copy();
-              ref_stack.setCount(ref_stack.getMaxStackSize());
-              for(int i=hopper_slot_range.end_slot-hopper_slot_range.start_slot; (i>0) && (!remaining.isEmpty()); --i) {
-                remaining = player_inventory_slot_range.insert(remaining, false, 0, true, true);
-                if(!remaining.isEmpty()) break;
-                remaining = hopper_slot_range.extract(ref_stack);
-              }
-              if(!remaining.isEmpty()) {
-                slot.putStack(remaining); // put back
-              }
+              changed = block_storage_range_.move(getSlot(slotId).getSlotIndex(), player_inventory_range_, true, false, true, true);
             } else if((slotId >= PLAYER_SLOT_BEGIN) && (slotId < PLAYER_SLOT_END) && (getSlot(slotId).getHasStack())) {
-              final Slot slot = getSlot(slotId);
-              ItemStack remaining = slot.getStack();
-              slot.putStack(ItemStack.EMPTY);
-              final ItemStack ref_stack = remaining.copy();
-              ref_stack.setCount(ref_stack.getMaxStackSize());
-              for(int i=player_inventory_slot_range.end_slot-player_inventory_slot_range.start_slot; (i>0) && (!remaining.isEmpty()); --i) {
-                remaining = hopper_slot_range.insert(remaining, false, 0, false, true);
-                if(!remaining.isEmpty()) break;
-                remaining = player_inventory_slot_range.extract(ref_stack);
-              }
-              if(!remaining.isEmpty()) {
-                slot.putStack(remaining); // put back
-              }
+              changed = player_inventory_range_.move(getSlot(slotId).getSlotIndex(), block_storage_range_, true, false, false, true);
             }
-            changed = true;
           } break;
         }
         if(changed) {
@@ -855,7 +830,6 @@ public class EdHopper
       }
       te.markDirty();
     }
-
   }
 
   //--------------------------------------------------------------------------------------------------------------------

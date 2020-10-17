@@ -11,6 +11,10 @@ Mod sources for Minecraft version 1.16.3.
 
 ## Version history
 
+    - v1.1.3-b2  [A] Crafting table shift/ctrl click item move actions tweaked to new metal slot design.
+                 [A] Factory Dropper and Block Placer now also support quick-move-all (shift-ctrl-click).
+                 [F] Fixed Small Lab Furnace speed boost factor (with IE Heater in aux slot).
+
     - v1.1.3-b1  [A] The Factory Block Breaker can insert items into Hoppers underneath it (issue #121, winsrp).
                  [F] Help tooltips manually wrapped.
                  [F] Fixed Labeled Crate item name persistence (issue #127, ty inqie).

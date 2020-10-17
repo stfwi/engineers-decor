@@ -586,7 +586,10 @@ public class EdFurnace
         }
         if(burning() && canSmeltCurrentItem()) {
           proc_time_elapsed_ += TICK_INTERVAL * proc_speed_;
-          if(heater_inserted_ && (boost_energy_ >= boost_energy_consumption)) { boost_energy_ = 0; proc_time_elapsed_ += TICK_INTERVAL; }
+          if(heater_inserted_ && (boost_energy_ >= boost_energy_consumption)) {
+            boost_energy_ = 0;
+            proc_time_elapsed_ += (TICK_INTERVAL * proc_speed_)*2;
+          }
           if(proc_time_elapsed_ >= proc_time_needed_) {
             proc_time_elapsed_ = 0;
             proc_time_needed_ = getSmeltingTimeNeeded(world, stacks_.get(SMELTING_INPUT_SLOT_NO));

@@ -9,9 +9,12 @@
 package wile.engineersdecor.blocks;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.inventory.container.ClickType;
 import net.minecraft.util.math.vector.Vector3d;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.Inventories.InventoryRange;
 import wile.engineersdecor.libmc.detail.Networking;
 import net.minecraft.block.*;
 import net.minecraft.world.IBlockReader;
@@ -600,11 +603,14 @@ public class EdPlacer
 
   public static class PlacerContainer extends Container implements Networking.INetworkSynchronisableContainer
   {
+    protected static final String QUICK_MOVE_ALL = "quick-move-all";
     private static final int PLAYER_INV_START_SLOTNO = PlacerTileEntity.NUM_OF_SLOTS;
     private final PlayerEntity player_;
     private final IInventory inventory_;
     private final IWorldPosCallable wpc_;
     private final IIntArray fields_;
+    private final InventoryRange player_inventory_range_;
+    private final InventoryRange block_storage_range_;
 
     public final int field(int index) { return fields_.get(index); }
 
@@ -618,6 +624,8 @@ public class EdPlacer
       wpc_ = wpc;
       player_ = player_inventory.player;
       inventory_ = block_inventory;
+      block_storage_range_ = new InventoryRange(inventory_, 0, PlacerTileEntity.NUM_OF_SLOTS);
+      player_inventory_range_ = InventoryRange.fromPlayerInventory(player_);
       int i=-1;
       // device slots (stacks 0 to 17)
       for(int y=0; y<3; ++y) {
@@ -683,6 +691,13 @@ public class EdPlacer
       Networking.PacketContainerSyncClientToServer.sendToServer(windowId, nbt);
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public void onGuiAction(String message, CompoundNBT nbt)
+    {
+      nbt.putString("action", message);
+      Networking.PacketContainerSyncClientToServer.sendToServer(windowId, nbt);
+    }
+
     @Override
     public void onServerPacketReceived(int windowId, CompoundNBT nbt)
     {}
@@ -691,10 +706,30 @@ public class EdPlacer
     public void onClientPacketReceived(int windowId, PlayerEntity player, CompoundNBT nbt)
     {
       if(!(inventory_ instanceof PlacerTileEntity)) return;
-      PlacerTileEntity te = (PlacerTileEntity)inventory_;
-      if(nbt.contains("logic")) te.logic_  = nbt.getInt("logic");
-      if(nbt.contains("manual_trigger") && (nbt.getInt("manual_trigger")!=0)) { te.block_power_signal_=true; te.block_power_updated_=true; te.tick_timer_=1; }
-      te.markDirty();
+      if(nbt.contains("action")) {
+        boolean changed = false;
+        final int slotId = nbt.contains("slot") ? nbt.getInt("slot") : -1;
+        switch(nbt.getString("action")) {
+          case QUICK_MOVE_ALL: {
+            if((slotId >= 0) && (slotId < PLAYER_INV_START_SLOTNO) && (getSlot(slotId).getHasStack())) {
+              changed = block_storage_range_.move(getSlot(slotId).getSlotIndex(), player_inventory_range_, true, false, true, true);
+            } else if((slotId >= PLAYER_INV_START_SLOTNO) && (slotId < PLAYER_INV_START_SLOTNO+36) && (getSlot(slotId).getHasStack())) {
+              changed = player_inventory_range_.move(getSlot(slotId).getSlotIndex(), block_storage_range_, true, false, false, true);
+            }
+          } break;
+        }
+        if(changed) {
+          inventory_.markDirty();
+          player.inventory.markDirty();
+          detectAndSendChanges();
+        }
+      } else {
+        PlacerTileEntity te = (PlacerTileEntity)inventory_;
+        if(nbt.contains("logic")) te.logic_  = nbt.getInt("logic");
+        if(nbt.contains("manual_trigger") && (nbt.getInt("manual_trigger")!=0)) { te.block_power_signal_=true; te.block_power_updated_=true; te.tick_timer_=1; }
+        te.markDirty();
+      }
+
     }
   }
 
@@ -754,6 +789,19 @@ public class EdPlacer
         container.onGuiAction("logic", container.field(0) ^ PlacerTileEntity.LOGIC_CONTINUOUS);
       }
       return true;
+    }
+
+    @Override
+    protected void handleMouseClick(Slot slot, int slotId, int button, ClickType type)
+    {
+      tooltip_.resetTimer();
+      if((type == ClickType.QUICK_MOVE) && (slot!=null) && slot.getHasStack() && Auxiliaries.isShiftDown() && Auxiliaries.isCtrlDown()) {
+        CompoundNBT nbt = new CompoundNBT();
+        nbt.putInt("slot", slotId);
+        container.onGuiAction(PlacerContainer.QUICK_MOVE_ALL, nbt);
+      } else {
+        super.handleMouseClick(slot, slotId, button, type);
+      }
     }
 
     @Override

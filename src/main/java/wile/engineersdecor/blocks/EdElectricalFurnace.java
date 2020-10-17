@@ -110,7 +110,6 @@ public class EdElectricalFurnace
     @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, World world, BlockPos pos, Random rnd)
     {}
-
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -136,7 +135,7 @@ public class EdElectricalFurnace
     public static final int FIFO_INPUT_1_SLOT_NO = 4;
     public static final int FIFO_OUTPUT_0_SLOT_NO = 5;
     public static final int FIFO_OUTPUT_1_SLOT_NO = 6;
-    public static final int DEFAULT_SPEED_PERCENT = 200;
+    public static final int DEFAULT_SPEED_PERCENT = 250;
     public static final int DEFAULT_ENERGY_CONSUMPTION = 16;
     public static final int DEFAULT_SCALED_ENERGY_CONSUMPTION = DEFAULT_ENERGY_CONSUMPTION * HEAT_INCREMENT * DEFAULT_SPEED_PERCENT / 100;
 

@@ -13,7 +13,6 @@ import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.Inventories.InventoryRange;
-import wile.engineersdecor.libmc.detail.Inventories.SlotRange;
 import wile.engineersdecor.libmc.detail.Networking;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.server.ServerWorld;
@@ -571,8 +570,9 @@ public class EdLabeledCrate
     protected final IInventory inventory_;
     protected final IWorldPosCallable wpc_;
     private final IIntArray fields_;
-    private final SlotRange player_inventory_slot_range;
-    private final SlotRange crate_slot_range;
+    private final InventoryRange player_inventory_range_;
+    private final InventoryRange block_storage_range_;
+    private final InventoryRange frame_slot_range_;
     //------------------------------------------------------------------------------------------------------------------
     public int field(int index) { return fields_.get(index); }
     public PlayerEntity player() { return player_ ; }
@@ -590,8 +590,9 @@ public class EdLabeledCrate
       inventory_ = block_inventory;
       wpc_ = wpc;
       fields_ = fields;
-      crate_slot_range = new SlotRange(inventory_, 0, LabeledCrateTileEntity.ITEMFRAME_SLOTNO);
-      player_inventory_slot_range = new SlotRange(player_inventory, 0, 36);
+      block_storage_range_ = new InventoryRange(inventory_, 0, LabeledCrateTileEntity.ITEMFRAME_SLOTNO);
+      player_inventory_range_ = new InventoryRange(player_inventory, 0, 36);
+      frame_slot_range_ = new InventoryRange(inventory_, 54, 1);
       int i=-1;
       // storage slots (stacks 0 to 53)
       for(int y=0; y<6; ++y) {
@@ -601,9 +602,7 @@ public class EdLabeledCrate
         }
       }
       // picture frame slot (54)
-      addSlot(new Slot(new InventoryRange(inventory_, 54, 1), 0, 191, 100) {
-        @Override public int getSlotStackLimit(){return 1;}
-      });
+      addSlot(new Slot(frame_slot_range_, 0, 191, 100) { @Override public int getSlotStackLimit(){return 1;} });
       // player slots
       for(int x=0; x<9; ++x) {
         addSlot(new Slot(player_inventory, x, 28+x*18, 183)); // player slots: 0..8
@@ -676,35 +675,10 @@ public class EdLabeledCrate
       switch(nbt.getString("action")) {
         case QUICK_MOVE_ALL: {
           if((slotId >= STORAGE_SLOT_BEGIN) && (slotId < STORAGE_SLOT_END) && (getSlot(slotId).getHasStack())) {
-            final Slot slot = getSlot(slotId);
-            ItemStack remaining = slot.getStack();
-            slot.putStack(ItemStack.EMPTY);
-            final ItemStack ref_stack = remaining.copy();
-            ref_stack.setCount(ref_stack.getMaxStackSize());
-            for(int i=crate_slot_range.end_slot-crate_slot_range.start_slot; (i>0) && (!remaining.isEmpty()); --i) {
-              remaining = player_inventory_slot_range.insert(remaining, false, 0, true, true);
-              if(!remaining.isEmpty()) break;
-              remaining = crate_slot_range.extract(ref_stack);
-            }
-            if(!remaining.isEmpty()) {
-              slot.putStack(remaining); // put back
-            }
+            changed = block_storage_range_.move(getSlot(slotId).getSlotIndex(), player_inventory_range_, true, false, true, true);
           } else if((slotId >= PLAYER_SLOT_BEGIN) && (slotId < PLAYER_SLOT_END) && (getSlot(slotId).getHasStack())) {
-            final Slot slot = getSlot(slotId);
-            ItemStack remaining = slot.getStack();
-            slot.putStack(ItemStack.EMPTY);
-            final ItemStack ref_stack = remaining.copy();
-            ref_stack.setCount(ref_stack.getMaxStackSize());
-            for(int i=player_inventory_slot_range.end_slot-player_inventory_slot_range.start_slot; (i>0) && (!remaining.isEmpty()); --i) {
-              remaining = crate_slot_range.insert(remaining, false, 0, false, true);
-              if(!remaining.isEmpty()) break;
-              remaining = player_inventory_slot_range.extract(ref_stack);
-            }
-            if(!remaining.isEmpty()) {
-              slot.putStack(remaining); // put back
-            }
+            changed = player_inventory_range_.move(getSlot(slotId).getSlotIndex(), block_storage_range_, true, false, false, true);
           }
-          changed = true;
         } break;
         case INCREASE_STACK: {
         } break;

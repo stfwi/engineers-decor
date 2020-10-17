@@ -8,15 +8,8 @@
  */
 package wile.engineersdecor.blocks;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.inventory.container.ClickType;
 import net.minecraft.util.math.vector.Vector3d;
-import wile.engineersdecor.ModContent;
-import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.libmc.detail.Inventories;
-import wile.engineersdecor.libmc.detail.Inventories.SlotRange;
-import wile.engineersdecor.libmc.detail.Networking;
-import wile.engineersdecor.libmc.detail.TooltipDisplay;
-import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.state.BooleanProperty;
@@ -57,6 +50,15 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import wile.engineersdecor.ModContent;
+import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.Inventories;
+import wile.engineersdecor.libmc.detail.Inventories.InventoryRange;
+import wile.engineersdecor.libmc.detail.Networking;
+import wile.engineersdecor.libmc.detail.TooltipDisplay;
+import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -240,7 +242,7 @@ public class EdDropper
     private int drop_slot_index_ = 0;
     private int tick_timer_ = 0;
     protected NonNullList<ItemStack> stacks_;
-    protected final SlotRange slot_range_ = new SlotRange(this, INPUT_SLOTS_FIRST, INPUT_SLOTS_FIRST+INPUT_SLOTS_SIZE);
+    protected final InventoryRange storage_slot_range_;
 
     public static void on_config(int cooldown_ticks)
     {
@@ -254,6 +256,7 @@ public class EdDropper
     {
       super(te_type);
       stacks_ = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
+      storage_slot_range_ = new InventoryRange(this, INPUT_SLOTS_FIRST, INPUT_SLOTS_SIZE);
       reset_rtstate();
     }
 
@@ -711,7 +714,7 @@ public class EdDropper
         final boolean dropped = res.getA();
         final List<ItemStack> remaining = res.getB();
         for(ItemStack st:remaining) {
-          if(!slot_range_.insert(st).isEmpty()) ModEngineersDecor.logger().debug("NOT ALL NON-DROPPED ITEMS PUT BACK:" + st);
+          if(!storage_slot_range_.insert(st).isEmpty()) ModEngineersDecor.logger().debug("NOT ALL NON-DROPPED ITEMS PUT BACK:" + st);
         }
         if(dropped || (!remaining.isEmpty())) dirty = true;
         // cooldown
@@ -737,11 +740,14 @@ public class EdDropper
 
   public static class DropperContainer extends Container implements Networking.INetworkSynchronisableContainer
   {
+    protected static final String QUICK_MOVE_ALL = "quick-move-all";
     private static final int PLAYER_INV_START_SLOTNO = DropperTileEntity.NUM_OF_SLOTS;
     private final PlayerEntity player_;
     private final IInventory inventory_;
     private final IWorldPosCallable wpc_;
     private final IIntArray fields_;
+    private final InventoryRange player_inventory_range_;
+    private final InventoryRange block_storage_range_;
 
     public final int field(int index) { return fields_.get(index); }
 
@@ -755,6 +761,8 @@ public class EdDropper
       wpc_ = wpc;
       player_ = player_inventory.player;
       inventory_ = block_inventory;
+      block_storage_range_ = new InventoryRange(inventory_, 0, DropperTileEntity.NUM_OF_SLOTS);
+      player_inventory_range_ = InventoryRange.fromPlayerInventory(player_);
       int i=-1;
       // input slots (stacks 0 to 11)
       for(int y=0; y<2; ++y) {
@@ -824,6 +832,13 @@ public class EdDropper
       Networking.PacketContainerSyncClientToServer.sendToServer(windowId, nbt);
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public void onGuiAction(String message, CompoundNBT nbt)
+    {
+      nbt.putString("action", message);
+      Networking.PacketContainerSyncClientToServer.sendToServer(windowId, nbt);
+    }
+
     @Override
     public void onServerPacketReceived(int windowId, CompoundNBT nbt)
     {}
@@ -832,16 +847,35 @@ public class EdDropper
     public void onClientPacketReceived(int windowId, PlayerEntity player, CompoundNBT nbt)
     {
       if(!(inventory_ instanceof DropperTileEntity)) return;
-      DropperTileEntity te = (DropperTileEntity)inventory_;
-      if(nbt.contains("drop_speed")) te.drop_speed_ = MathHelper.clamp(nbt.getInt("drop_speed"), 0, 100);
-      if(nbt.contains("drop_xdev"))  te.drop_xdev_  = MathHelper.clamp(nbt.getInt("drop_xdev"), -100, 100);
-      if(nbt.contains("drop_ydev"))  te.drop_ydev_  = MathHelper.clamp(nbt.getInt("drop_ydev"), -100, 100);
-      if(nbt.contains("drop_count")) te.drop_count_  = MathHelper.clamp(nbt.getInt("drop_count"), 1, DropperTileEntity.MAX_DROP_COUNT);
-      if(nbt.contains("drop_period")) te.drop_period_ = MathHelper.clamp(nbt.getInt("drop_period"),   0,  100);
-      if(nbt.contains("drop_logic")) te.drop_logic_  = nbt.getInt("drop_logic");
-      if(nbt.contains("manual_rstrigger") && (nbt.getInt("manual_rstrigger")!=0)) { te.block_power_signal_=true; te.block_power_updated_=true; te.tick_timer_=1; }
-      if(nbt.contains("manual_trigger") && (nbt.getInt("manual_trigger")!=0)) { te.tick_timer_ = 1; te.triggered_ = true; }
-      te.markDirty();
+      if(nbt.contains("action")) {
+        boolean changed = false;
+        final int slotId = nbt.contains("slot") ? nbt.getInt("slot") : -1;
+        switch(nbt.getString("action")) {
+          case QUICK_MOVE_ALL: {
+            if((slotId >= 0) && (slotId < PLAYER_INV_START_SLOTNO) && (getSlot(slotId).getHasStack())) {
+              changed = block_storage_range_.move(getSlot(slotId).getSlotIndex(), player_inventory_range_, true, false, true, true);
+            } else if((slotId >= PLAYER_INV_START_SLOTNO) && (slotId < PLAYER_INV_START_SLOTNO+36) && (getSlot(slotId).getHasStack())) {
+              changed = player_inventory_range_.move(getSlot(slotId).getSlotIndex(), block_storage_range_, true, false, false, true);
+            }
+          } break;
+        }
+        if(changed) {
+          inventory_.markDirty();
+          player.inventory.markDirty();
+          detectAndSendChanges();
+        }
+      } else {
+        DropperTileEntity te = (DropperTileEntity)inventory_;
+        if(nbt.contains("drop_speed")) te.drop_speed_ = MathHelper.clamp(nbt.getInt("drop_speed"), 0, 100);
+        if(nbt.contains("drop_xdev"))  te.drop_xdev_  = MathHelper.clamp(nbt.getInt("drop_xdev"), -100, 100);
+        if(nbt.contains("drop_ydev"))  te.drop_ydev_  = MathHelper.clamp(nbt.getInt("drop_ydev"), -100, 100);
+        if(nbt.contains("drop_count")) te.drop_count_  = MathHelper.clamp(nbt.getInt("drop_count"), 1, DropperTileEntity.MAX_DROP_COUNT);
+        if(nbt.contains("drop_period")) te.drop_period_ = MathHelper.clamp(nbt.getInt("drop_period"),   0,  100);
+        if(nbt.contains("drop_logic")) te.drop_logic_  = nbt.getInt("drop_logic");
+        if(nbt.contains("manual_rstrigger") && (nbt.getInt("manual_rstrigger")!=0)) { te.block_power_signal_=true; te.block_power_updated_=true; te.tick_timer_=1; }
+        if(nbt.contains("manual_trigger") && (nbt.getInt("manual_trigger")!=0)) { te.tick_timer_ = 1; te.triggered_ = true; }
+        te.markDirty();
+      }
     }
 
   }
@@ -942,6 +976,19 @@ public class EdDropper
         container.onGuiAction("drop_logic", container.field(5) ^ DropperTileEntity.DROPLOGIC_EXTERN_ANDGATE);
       }
       return true;
+    }
+
+    @Override
+    protected void handleMouseClick(Slot slot, int slotId, int button, ClickType type)
+    {
+      tooltip_.resetTimer();
+      if((type == ClickType.QUICK_MOVE) && (slot!=null) && slot.getHasStack() && Auxiliaries.isShiftDown() && Auxiliaries.isCtrlDown()) {
+        CompoundNBT nbt = new CompoundNBT();
+        nbt.putInt("slot", slotId);
+        container.onGuiAction(DropperContainer.QUICK_MOVE_ALL, nbt);
+      } else {
+        super.handleMouseClick(slot, slotId, button, type);
+      }
     }
 
     @Override
