@@ -5,7 +5,7 @@ A [Minecraft](https://minecraft.net) (Java Edition) mod based on
 [`Forge`](http://www.minecraftforge.net/), adding cosmetic blocks
 for the Engineer's factory, workshop, and home.
 
-![](documentation/engineers-decor-v103-summary.png)
+![](documentation/engineers-decor-v113-brief.png)
 
 [Screenshots in the documentation readme here](documentation/readme.md)
 
@@ -22,7 +22,7 @@ Main distribution channel for this mod is CurseForge:
 The mod has its focus decorative blocks and devices helping you to build nice
 looking manufacturing contraptions. Current feature set:
 
-- *Treated Wood Crafting Table*: 3x3 crafting table with IE style GUI and a model
+- *Metal Crafting Table*: 3x3 crafting table with IE style GUI and a model
   fitting better in the engineer's workshop. Keeps its inventory, has eight additional
   storage slots on the left side of the crafting grid. Crafting history for fast
   refabrication of previous recipes. Providesa a recipe collision resolver (selection
@@ -141,9 +141,8 @@ looking manufacturing contraptions. Current feature set:
   you look. Auto connects to adjacent beams if facing towards them. Auto connects to steel
   poles underneath. Note: When sneaking you can pass underneath it, not all mobs sneak.
 
-- *Inset Spot Light*: Small metal framed glowstone based light source for ceiling, wall,
-  or floor. Light level like a torch. Thin, hence not blocking the way. Allows illuminating
-  places where electrical light installations are problematic.
+- *Industrial Lights and Lamps*: Small metal framed glowstone based light sources for ceiling,
+  wall, or floor. Light level like a torch.
 
 - *Industrial Signs*: "Danger", "Electrical Hazard", "Exit", etc. Makes a factory looking
   more alive.
@@ -176,6 +175,9 @@ looking manufacturing contraptions. Current feature set:
 - *Small Mineral Smelter*: Device that slowly converts most stones or sands to magma blocks and
   finally to lava. Needs a lot of power. When the lava is cooled down in the smelter by removing
   the RF power, obsidian is generated.
+
+- *Small Water Freezer*: Device that slowly converts water into Ice, Packed Ice, and finally
+  Blue Ice. Needs RF power and time.
 
 - *Fluid Collection Funnel*: Collects fluids above it. Has an internal tank with three buckets
   capacity. Traces flowing fluids to nearby source blocks. The fluid can be obtained with fluid
@@ -227,10 +229,9 @@ into the `master` branch, while beta/alpha version tags link to `develop` branch
 commits.
 
   - [1.12](1.12/readme.md)
-
   - [1.14](1.14/readme.md)
-
   - [1.15](1.15/readme.md)
+  - [1.16](1.16/readme.md)
 
 ### Community references
 
@@ -258,10 +259,8 @@ Mods covering similar features, or may fit well together with IE and the decorat
 
 ### Screenshots
 
-![Concrete](documentation/engineers-decor-v100a-concrete-stuff.png)
+![Signs](documentation/engineers-decor-v113-signs.png)
 
-![v1.0.1 summary](documentation/engineers-decor-v101a-summary.png)
+![Crafting Table GUI](documentation/engineers-decor-v113-metal-crafting-table.png)
 
-![Crafting table GUI](documentation/engineers-decor-v104a-craftinggui.png)
-
-![Lab furnace GUI](documentation/engineers-decor-v103-labfurnacegui.png)
+![E-Furnace GUI](documentation/engineers-decor-v113-efurnace.png)
