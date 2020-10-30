@@ -387,6 +387,9 @@ public class EdFluidBarrel
       return (nbt.isEmpty()) ? (FluidStack.EMPTY) : (FluidStack.loadFluidStackFromNBT(nbt));
     }
 
+    public static ItemStack setFluid(ItemStack stack, FluidStack fs)
+    { write_fluid_nbt(stack, fs.writeToNBT(new CompoundNBT())); return stack; }
+
     @Override
     public int getItemStackLimit(ItemStack stack)
     { return (!getFluid(stack).isEmpty()) ? 1 : super.getItemStackLimit(stack); }
@@ -406,6 +409,18 @@ public class EdFluidBarrel
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt)
     { return new Fluidics.FluidContainerItemCapabilityWrapper(stack, capacity_, item_fluid_handler_transfer_rate_, (s)->read_fluid_nbt(s), (s,n)->write_fluid_nbt(s,n), e->true); }
+
+    @Override
+    public boolean hasContainerItem(ItemStack stack)
+    { return true; }
+
+    @Override
+    public ItemStack getContainerItem(ItemStack stack)
+    {
+      FluidStack fs = getFluid(stack);
+      fs.shrink(1000);
+      return setFluid(stack, fs);
+    }
   }
 
 }

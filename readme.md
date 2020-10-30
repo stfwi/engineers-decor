@@ -11,6 +11,8 @@ Mod sources for Minecraft version 1.16.3.
 
 ## Version history
 
+    - v1.1.3     [R] Release build v1.1.3.
+
     - v1.1.3-b3  [A] Metal Sliding Door added (double door wing style).
                  [A] Doors implicitly open/close adjacent wings of double doors.
                  [A] Disabled injected buttons from other mods in container GUIs.
