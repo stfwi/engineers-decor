@@ -864,14 +864,14 @@ public class ModContent
   )).setRegistryName(new ResourceLocation(MODID, "steel_mesh_fence_gate"));
 
   public static final EdRailingBlock STEEL_RAILING = (EdRailingBlock)(new EdRailingBlock(
-    DecorBlock.CFG_CUTOUT,
+    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_EXPERIMENTAL,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 20f).sound(SoundType.METAL).notSolid(),
     Auxiliaries.getPixeledAABB(0,0,0,  0, 0,0),
     Auxiliaries.getPixeledAABB(0,0,0, 16,15.9,1)
   )).setRegistryName(new ResourceLocation(MODID, "steel_railing"));
 
   public static final EdCatwalkBlock STEEL_CATWALK = (EdCatwalkBlock)(new EdCatwalkBlock(
-    DecorBlock.CFG_CUTOUT,
+    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_EXPERIMENTAL,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 20f).sound(SoundType.METAL).notSolid(),
     Auxiliaries.getPixeledAABB(0,0,0, 16, 2,16),
     Auxiliaries.getPixeledAABB(0,0,0, 16,15.9, 1),

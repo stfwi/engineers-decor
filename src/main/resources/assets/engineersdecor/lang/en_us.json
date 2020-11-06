@@ -236,6 +236,7 @@
   "block.engineersdecor.small_tree_cutter.status": "SOC: %1$s%% of %2$sRF§r | progress: %3$s%% (%4$ss)",
   "block.engineersdecor.small_waste_incinerator": "Small Waste Incinerator",
   "block.engineersdecor.small_waste_incinerator.help": "Trash with internal fifo slots.\n Items can be inserted on all sides,\n and are kept until there is no\n space left in the fifo. After that\n the oldest stack will be incinerated.\n Apply electrical RF/FE power to\n increase the processing speed.\n Keeps its inventory when being\n relocated.",
+  "block.engineersdecor.steel_catwalk": "Steel Catwalk",
   "block.engineersdecor.steel_double_t_support": "Steel Double T Support",
   "block.engineersdecor.steel_double_t_support.help": "Horizontal ceiling support beam fragment.",
   "block.engineersdecor.steel_floor_grating": "Steel Floor Grating",
@@ -246,6 +247,7 @@
   "block.engineersdecor.steel_mesh_fence.help": "Industrial style fence.\n Does not connect do regular fences.\n Connects to full blocks if in line\n with another mesh fence.",
   "block.engineersdecor.steel_mesh_fence_gate": "Steel Mesh Fence Gate",
   "block.engineersdecor.steel_mesh_fence_gate.help": "Industrial style fence gate that\n fits well to the Steel Mesh Fence.\n Can be placed as single or double\n size gate.",
+  "block.engineersdecor.steel_railing": "Steel Railing",
   "block.engineersdecor.steel_table": "Steel Table",
   "block.engineersdecor.steel_table.help": "Robust four-legged steel table.",
   "block.engineersdecor.straight_pipe_valve": "Fluid Pipe Check Valve",
@@ -286,7 +288,5 @@
   "block.engineersdecor.treated_wood_window.help": "Wood framed triple glazed window.\n Well insulating. Does not connect\n to adjacent blocks like glass\n panes.",
   "block.engineersdecor.treated_wood_windowsill": "Treated Wood Window Sill",
   "block.engineersdecor.treated_wood_windowsill.help": "Simple window decoration.",
-  "block.engineersdecor.steel_catwalk": "Steel Catwalk",
-  "block.engineersdecor.steel_railing": "Steel Railing",
   "item.engineersdecor.metal_bar": "Metal Bar"
 }

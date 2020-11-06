@@ -233,7 +233,7 @@ public class Auxiliaries
   }
 
   public static @Nullable ITextComponent unserializeTextComponent(String serialized)
-  { return ITextComponent.Serializer.func_240643_a_(serialized); }
+  { return ITextComponent.Serializer.getComponentFromJson(serialized); }
 
   public static String serializeTextComponent(ITextComponent tc)
   { return (tc==null) ? ("") : (ITextComponent.Serializer.toJson(tc)); }

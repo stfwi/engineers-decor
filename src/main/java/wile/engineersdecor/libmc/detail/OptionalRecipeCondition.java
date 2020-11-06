@@ -11,7 +11,6 @@ package wile.engineersdecor.libmc.detail;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.tags.ITag;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.JSONUtils;
@@ -98,7 +97,7 @@ public class OptionalRecipeCondition implements ICondition
     if(without_recipes) return false;
     if((experimental) && (!with_experimental)) return false;
     final IForgeRegistry<Item> item_registry = ForgeRegistries.ITEMS;
-    final Map<ResourceLocation, ITag<Item>> item_tags = TagCollectionManager.func_242178_a().func_241836_b().func_241833_a(); // ItemTags.getCollection().getTagMap() not set yet
+    final Map<ResourceLocation, ITag<Item>> item_tags = TagCollectionManager.getManager().getItemTags().getIDTagMap();
     if(result != null) {
       boolean item_registered = item_registry.containsKey(result);
       if(!item_registered) return false; // required result not registered

@@ -996,7 +996,7 @@ public class EdFurnace
     {
       renderBackground/*renderBackground*/(mx);
       super.render(mx, mouseX, mouseY, partialTicks);
-      func_230459_a_/*func_230459_a_*/(mx, mouseX, mouseY);
+      renderHoveredTooltip(mx, mouseX, mouseY);
     }
 
     @Override

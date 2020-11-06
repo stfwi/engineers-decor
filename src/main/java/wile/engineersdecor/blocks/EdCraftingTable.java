@@ -1092,7 +1092,7 @@ public class EdCraftingTable
         String[] translation_keys = { "next", "prev", "clear", "nextcollisionrecipe", "fromstorage", "tostorage", "fromplayer", "toplayer" };
         for(int i=0; (i<buttons.size()) && (i<translation_keys.length); ++i) {
           Button bt = buttons.get(i);
-          tooltips.add(new TipRange(bt.x,bt.y, bt.getWidth(), bt.getWidth_CLASH/*getHeight*/(), Auxiliaries.localizable(prefix+translation_keys[i])));
+          tooltips.add(new TipRange(bt.x,bt.y, bt.getWidth(), bt.getHeightRealms(), Auxiliaries.localizable(prefix+translation_keys[i])));
         }
         tooltip.init(tooltips);
       }
@@ -1108,11 +1108,10 @@ public class EdCraftingTable
       }
       renderBackground(mx);
       super.render(mx, mouseX, mouseY, partialTicks);
-      if(!tooltip.render(mx,this, mouseX, mouseY)) func_230459_a_/*renderHoveredToolTip*/(mx, mouseX, mouseY);
+      if(!tooltip.render(mx,this, mouseX, mouseY)) renderHoveredToolTip(mx, mouseX, mouseY);
     }
 
-    @Override
-    protected void func_230459_a_/*renderHoveredToolTip*/(MatrixStack mx, int mouseX, int mouseY)
+    protected void renderHoveredToolTip(MatrixStack mx, int mouseX, int mouseY)
     {
       if((!player.inventory.getItemStack().isEmpty()) || (getSlotUnderMouse() == null)) return;
       final Slot slot = getSlotUnderMouse();
