@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -384,6 +385,19 @@ public class Inventories
     public boolean move(final InventoryRange target_range)
     { return move(target_range, false, false, true); }
 
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+
+  public static void give(PlayerEntity entity, ItemStack stack)
+  { ItemHandlerHelper.giveItemToPlayer(entity, stack); }
+
+  public static void setItemInPlayerHand(PlayerEntity player, Hand hand, ItemStack stack) {
+    if(hand == Hand.MAIN_HAND) {
+      player.inventory.mainInventory.set(player.inventory.currentItem, stack);
+    } else {
+      player.inventory.offHandInventory.set(0, stack);
+    }
   }
 
   //--------------------------------------------------------------------------------------------------------------------

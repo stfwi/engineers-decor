@@ -118,4 +118,11 @@ public class DecorBlock
     public HorizontalWaterLoggable(long config, Block.Properties properties, final Supplier<ArrayList<VoxelShape>> shape_supplier)
     { super(config, properties, shape_supplier); }
   }
+
+  public static class HorizontalFourWayWaterLoggable extends StandardBlocks.HorizontalFourWayWaterLoggable implements IWaterLoggable
+  {
+    public HorizontalFourWayWaterLoggable(long config, Block.Properties properties, AxisAlignedBB base_aabb, AxisAlignedBB side_aabb)
+    { super(config, properties, base_aabb, side_aabb); }
+  }
+
 }

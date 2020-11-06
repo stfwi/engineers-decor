@@ -286,5 +286,7 @@
   "block.engineersdecor.treated_wood_window.help": "Wood framed triple glazed window.\n Well insulating. Does not connect\n to adjacent blocks like glass\n panes.",
   "block.engineersdecor.treated_wood_windowsill": "Treated Wood Window Sill",
   "block.engineersdecor.treated_wood_windowsill.help": "Simple window decoration.",
+  "block.engineersdecor.steel_catwalk": "Steel Catwalk",
+  "block.engineersdecor.steel_railing": "Steel Railing",
   "item.engineersdecor.metal_bar": "Metal Bar"
 }

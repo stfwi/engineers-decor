@@ -432,4 +432,74 @@ public class StandardBlocks
     { super.fillStateContainer(builder); builder.add(WATERLOGGED); }
   }
 
+  static public class HorizontalFourWayWaterLoggable extends WaterLoggable implements IStandardBlock
+  {
+    public static final BooleanProperty NORTH = SixWayBlock.NORTH;
+    public static final BooleanProperty EAST  = SixWayBlock.EAST;
+    public static final BooleanProperty SOUTH = SixWayBlock.SOUTH;
+    public static final BooleanProperty WEST  = SixWayBlock.WEST;
+    protected final Map<BlockState, VoxelShape> shapes;
+    protected final Map<BlockState, VoxelShape> collision_shapes;
+
+    public HorizontalFourWayWaterLoggable(long config, Block.Properties properties, AxisAlignedBB base_aabb, final AxisAlignedBB side_aabb)
+    {
+      super(config, properties, base_aabb);
+      Map<BlockState, VoxelShape> build_shapes = new HashMap<>();
+      Map<BlockState, VoxelShape> build_collision_shapes = new HashMap<>();
+      for(BlockState state:getStateContainer().getValidStates()) {
+        {
+          VoxelShape shape = ((base_aabb.getXSize()==0) || (base_aabb.getYSize()==0) || (base_aabb.getZSize()==0)) ? VoxelShapes.empty() : VoxelShapes.create(base_aabb);
+          if(state.get(NORTH)) shape = VoxelShapes.combine(shape,VoxelShapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.NORTH, true)), IBooleanFunction.OR);
+          if(state.get(EAST))  shape = VoxelShapes.combine(shape,VoxelShapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.EAST, true)), IBooleanFunction.OR);
+          if(state.get(SOUTH)) shape = VoxelShapes.combine(shape,VoxelShapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.SOUTH, true)), IBooleanFunction.OR);
+          if(state.get(WEST))  shape = VoxelShapes.combine(shape,VoxelShapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.WEST, true)), IBooleanFunction.OR);
+          if(shape.isEmpty()) shape = VoxelShapes.fullCube();
+          build_shapes.put(state.with(WATERLOGGED, false), shape);
+          build_shapes.put(state.with(WATERLOGGED, true), shape);
+        }
+        {
+          // how the hack to extend a shape, these are the above with y+4px.
+          VoxelShape shape = ((base_aabb.getXSize()==0) || (base_aabb.getYSize()==0) || (base_aabb.getZSize()==0)) ? VoxelShapes.empty() : VoxelShapes.create(base_aabb);
+          if(state.get(NORTH)) shape = VoxelShapes.combine(shape,VoxelShapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.NORTH, true).expand(0, 2, 0)), IBooleanFunction.OR);
+          if(state.get(EAST))  shape = VoxelShapes.combine(shape,VoxelShapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.EAST, true).expand(0, 2, 0)), IBooleanFunction.OR);
+          if(state.get(SOUTH)) shape = VoxelShapes.combine(shape,VoxelShapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.SOUTH, true).expand(0, 2, 0)), IBooleanFunction.OR);
+          if(state.get(WEST))  shape = VoxelShapes.combine(shape,VoxelShapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.WEST, true).expand(0, 2, 0)), IBooleanFunction.OR);
+          if(shape.isEmpty()) shape = VoxelShapes.fullCube();
+          build_collision_shapes.put(state.with(WATERLOGGED, false), shape);
+          build_collision_shapes.put(state.with(WATERLOGGED, true), shape);
+        }
+      }
+      shapes = build_shapes;
+      collision_shapes = build_collision_shapes;
+      setDefaultState(getStateContainer().getBaseState().with(NORTH, false).with(EAST, false).with(SOUTH, false).with(WEST, false).with(WATERLOGGED, false));
+    }
+
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+    { super.fillStateContainer(builder); builder.add(NORTH,EAST,SOUTH,WEST); }
+
+    @Override
+    @Nullable
+    public BlockState getStateForPlacement(BlockItemUseContext context)
+    { return super.getStateForPlacement(context).with(NORTH, false).with(EAST, false).with(SOUTH, false).with(WEST, false); }
+
+    @Override
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    { return shapes.getOrDefault(state, VoxelShapes.fullCube()); }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    { return collision_shapes.getOrDefault(state, VoxelShapes.fullCube()); }
+
+    public static BooleanProperty getDirectionProperty(Direction face)
+    {
+      switch(face) {
+        case EAST : return HorizontalFourWayWaterLoggable.EAST;
+        case SOUTH: return HorizontalFourWayWaterLoggable.SOUTH;
+        case WEST : return HorizontalFourWayWaterLoggable.WEST;
+        default   : return HorizontalFourWayWaterLoggable.NORTH;
+      }
+    }
+  }
+
 }

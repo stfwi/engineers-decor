@@ -853,15 +853,30 @@ public class ModContent
 
   public static final EdFenceBlock STEEL_MESH_FENCE = (EdFenceBlock)(new EdFenceBlock(
     DecorBlock.CFG_CUTOUT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 20f).sound(SoundType.METAL).notSolid(),
     1.5, 16, 0.25, 0, 16, 16
   )).setRegistryName(new ResourceLocation(MODID, "steel_mesh_fence"));
 
   public static final EdDoubleGateBlock STEEL_MESH_FENCE_GATE = (EdDoubleGateBlock)(new EdDoubleGateBlock(
     DecorBlock.CFG_CUTOUT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 20f).sound(SoundType.METAL).notSolid(),
     Auxiliaries.getPixeledAABB(0,0,6.5, 16,16,9.5)
   )).setRegistryName(new ResourceLocation(MODID, "steel_mesh_fence_gate"));
+
+  public static final EdRailingBlock STEEL_RAILING = (EdRailingBlock)(new EdRailingBlock(
+    DecorBlock.CFG_CUTOUT,
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 20f).sound(SoundType.METAL).notSolid(),
+    Auxiliaries.getPixeledAABB(0,0,0,  0, 0,0),
+    Auxiliaries.getPixeledAABB(0,0,0, 16,15.9,1)
+  )).setRegistryName(new ResourceLocation(MODID, "steel_railing"));
+
+  public static final EdCatwalkBlock STEEL_CATWALK = (EdCatwalkBlock)(new EdCatwalkBlock(
+    DecorBlock.CFG_CUTOUT,
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 20f).sound(SoundType.METAL).notSolid(),
+    Auxiliaries.getPixeledAABB(0,0,0, 16, 2,16),
+    Auxiliaries.getPixeledAABB(0,0,0, 16,15.9, 1),
+    STEEL_RAILING
+  )).setRegistryName(new ResourceLocation(MODID, "steel_catwalk"));
 
   // -------------------------------------------------------------------------------------------------------------------
 
@@ -961,6 +976,8 @@ public class ModContent
     STEEL_FLOOR_GRATING,
     STEEL_MESH_FENCE,
     STEEL_MESH_FENCE_GATE,
+    STEEL_CATWALK,
+    STEEL_RAILING,
     TREATED_WOOD_POLE,
     TREATED_WOOD_POLE_HEAD,
     TREATED_WOOD_POLE_SUPPORT,
