@@ -1,0 +1,37 @@
+{
+  "variants": {
+    "facing=east,left_railing=false,right_railing=false,waterlogged=false":  { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_model"   , "y": 90 },
+    "facing=east,left_railing=false,right_railing=true,waterlogged=false":   { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_rr_model", "y": 90 },
+    "facing=east,left_railing=true,right_railing=false,waterlogged=false":   { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_lr_model", "y": 90 },
+    "facing=east,left_railing=true,right_railing=true,waterlogged=false":    { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_br_model", "y": 90 },
+    "facing=north,left_railing=false,right_railing=false,waterlogged=false": { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_model"             },
+    "facing=north,left_railing=false,right_railing=true,waterlogged=false":  { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_rr_model"          },
+    "facing=north,left_railing=true,right_railing=false,waterlogged=false":  { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_lr_model"          },
+    "facing=north,left_railing=true,right_railing=true,waterlogged=false":   { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_br_model"          },
+    "facing=south,left_railing=false,right_railing=false,waterlogged=false": { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_model"   , "y":180 },
+    "facing=south,left_railing=false,right_railing=true,waterlogged=false":  { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_rr_model", "y":180 },
+    "facing=south,left_railing=true,right_railing=false,waterlogged=false":  { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_lr_model", "y":180 },
+    "facing=south,left_railing=true,right_railing=true,waterlogged=false":   { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_br_model", "y":180 },
+    "facing=west,left_railing=false,right_railing=false,waterlogged=false":  { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_model"   , "y":270 },
+    "facing=west,left_railing=false,right_railing=true,waterlogged=false":   { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_rr_model", "y":270 },
+    "facing=west,left_railing=true,right_railing=false,waterlogged=false":   { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_lr_model", "y":270 },
+    "facing=west,left_railing=true,right_railing=true,waterlogged=false":    { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_br_model", "y":270 },
+
+    "facing=east,left_railing=false,right_railing=false,waterlogged=true":  { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_model"   , "y": 90 },
+    "facing=east,left_railing=false,right_railing=true,waterlogged=true":   { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_rr_model", "y": 90 },
+    "facing=east,left_railing=true,right_railing=false,waterlogged=true":   { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_lr_model", "y": 90 },
+    "facing=east,left_railing=true,right_railing=true,waterlogged=true":    { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_br_model", "y": 90 },
+    "facing=north,left_railing=false,right_railing=false,waterlogged=true": { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_model"             },
+    "facing=north,left_railing=false,right_railing=true,waterlogged=true":  { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_rr_model"          },
+    "facing=north,left_railing=true,right_railing=false,waterlogged=true":  { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_lr_model"          },
+    "facing=north,left_railing=true,right_railing=true,waterlogged=true":   { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_br_model"          },
+    "facing=south,left_railing=false,right_railing=false,waterlogged=true": { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_model"   , "y":180 },
+    "facing=south,left_railing=false,right_railing=true,waterlogged=true":  { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_rr_model", "y":180 },
+    "facing=south,left_railing=true,right_railing=false,waterlogged=true":  { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_lr_model", "y":180 },
+    "facing=south,left_railing=true,right_railing=true,waterlogged=true":   { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_br_model", "y":180 },
+    "facing=west,left_railing=false,right_railing=false,waterlogged=true":  { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_model"   , "y":270 },
+    "facing=west,left_railing=false,right_railing=true,waterlogged=true":   { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_rr_model", "y":270 },
+    "facing=west,left_railing=true,right_railing=false,waterlogged=true":   { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_lr_model", "y":270 },
+    "facing=west,left_railing=true,right_railing=true,waterlogged=true":    { "model": "engineersdecor:block/furniture/steel_catwalk_stairs_br_model", "y":270 }
+  }
+}

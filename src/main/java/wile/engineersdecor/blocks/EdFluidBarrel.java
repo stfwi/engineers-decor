@@ -418,7 +418,7 @@ public class EdFluidBarrel
     public ItemStack getContainerItem(ItemStack stack)
     {
       FluidStack fs = getFluid(stack);
-      fs.shrink(1000);
+      if(fs.getAmount() > 1000) fs.shrink(1000); else fs = FluidStack.EMPTY;
       return setFluid(stack, fs);
     }
   }

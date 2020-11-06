@@ -441,7 +441,7 @@ public class StandardBlocks
     protected final Map<BlockState, VoxelShape> shapes;
     protected final Map<BlockState, VoxelShape> collision_shapes;
 
-    public HorizontalFourWayWaterLoggable(long config, Block.Properties properties, AxisAlignedBB base_aabb, final AxisAlignedBB side_aabb)
+    public HorizontalFourWayWaterLoggable(long config, Block.Properties properties, AxisAlignedBB base_aabb, final AxisAlignedBB side_aabb, int railing_height_extension)
     {
       super(config, properties, base_aabb);
       Map<BlockState, VoxelShape> build_shapes = new HashMap<>();
@@ -460,10 +460,10 @@ public class StandardBlocks
         {
           // how the hack to extend a shape, these are the above with y+4px.
           VoxelShape shape = ((base_aabb.getXSize()==0) || (base_aabb.getYSize()==0) || (base_aabb.getZSize()==0)) ? VoxelShapes.empty() : VoxelShapes.create(base_aabb);
-          if(state.get(NORTH)) shape = VoxelShapes.combine(shape,VoxelShapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.NORTH, true).expand(0, 2, 0)), IBooleanFunction.OR);
-          if(state.get(EAST))  shape = VoxelShapes.combine(shape,VoxelShapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.EAST, true).expand(0, 2, 0)), IBooleanFunction.OR);
-          if(state.get(SOUTH)) shape = VoxelShapes.combine(shape,VoxelShapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.SOUTH, true).expand(0, 2, 0)), IBooleanFunction.OR);
-          if(state.get(WEST))  shape = VoxelShapes.combine(shape,VoxelShapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.WEST, true).expand(0, 2, 0)), IBooleanFunction.OR);
+          if(state.get(NORTH)) shape = VoxelShapes.combine(shape,VoxelShapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.NORTH, true).expand(0, railing_height_extension, 0)), IBooleanFunction.OR);
+          if(state.get(EAST))  shape = VoxelShapes.combine(shape,VoxelShapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.EAST, true).expand(0, railing_height_extension, 0)), IBooleanFunction.OR);
+          if(state.get(SOUTH)) shape = VoxelShapes.combine(shape,VoxelShapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.SOUTH, true).expand(0, railing_height_extension, 0)), IBooleanFunction.OR);
+          if(state.get(WEST))  shape = VoxelShapes.combine(shape,VoxelShapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.WEST, true).expand(0, railing_height_extension, 0)), IBooleanFunction.OR);
           if(shape.isEmpty()) shape = VoxelShapes.fullCube();
           build_collision_shapes.put(state.with(WATERLOGGED, false), shape);
           build_collision_shapes.put(state.with(WATERLOGGED, true), shape);

@@ -1,0 +1,23 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:steel_catwalk",
+          "required": ["engineersdecor:steel_catwalk_ta"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "ingredients": [
+          { "item": "engineersdecor:steel_catwalk_ta" }
+        ],
+        "result": {
+          "item": "engineersdecor:steel_catwalk"
+        }
+      }
+    }
+  ]
+}

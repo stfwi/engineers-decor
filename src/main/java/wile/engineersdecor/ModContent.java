@@ -864,19 +864,70 @@ public class ModContent
   )).setRegistryName(new ResourceLocation(MODID, "steel_mesh_fence_gate"));
 
   public static final EdRailingBlock STEEL_RAILING = (EdRailingBlock)(new EdRailingBlock(
-    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_EXPERIMENTAL,
+    DecorBlock.CFG_CUTOUT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 20f).sound(SoundType.METAL).notSolid(),
     Auxiliaries.getPixeledAABB(0,0,0,  0, 0,0),
     Auxiliaries.getPixeledAABB(0,0,0, 16,15.9,1)
   )).setRegistryName(new ResourceLocation(MODID, "steel_railing"));
 
   public static final EdCatwalkBlock STEEL_CATWALK = (EdCatwalkBlock)(new EdCatwalkBlock(
-    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_EXPERIMENTAL,
+    DecorBlock.CFG_CUTOUT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 20f).sound(SoundType.METAL).notSolid(),
     Auxiliaries.getPixeledAABB(0,0,0, 16, 2,16),
     Auxiliaries.getPixeledAABB(0,0,0, 16,15.9, 1),
     STEEL_RAILING
   )).setRegistryName(new ResourceLocation(MODID, "steel_catwalk"));
+
+  public static final EdCatwalkTopAlignedBlock STEEL_CATWALK_TOP_ALIGNED = (EdCatwalkTopAlignedBlock)(new EdCatwalkTopAlignedBlock(
+    DecorBlock.CFG_CUTOUT,
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 20f).sound(SoundType.METAL).notSolid(),
+    new VoxelShape[]{
+      VoxelShapes.create(Auxiliaries.getPixeledAABB(0,14,0, 16, 16,16)), // only base
+      Auxiliaries.getUnionShape( // base with thick pole
+        Auxiliaries.getPixeledAABB(0,14,0, 16, 16,16),
+        Auxiliaries.getPixeledAABB(5, 0,5, 11,15, 11)
+      ),
+      Auxiliaries.getUnionShape( // base with thin pole
+        Auxiliaries.getPixeledAABB(0,14,0, 16, 16,16),
+        Auxiliaries.getPixeledAABB(6, 0,6, 10,15, 10)
+      ),
+      Auxiliaries.getUnionShape( // structure frame-like
+        Auxiliaries.getPixeledAABB( 0, 0, 0, 16,  2,16),
+        Auxiliaries.getPixeledAABB( 0,14, 0, 16, 16,16),
+        Auxiliaries.getPixeledAABB( 0, 0, 0,  1, 16, 1),
+        Auxiliaries.getPixeledAABB(15, 0, 0, 16, 16, 1),
+        Auxiliaries.getPixeledAABB(15, 0,15, 16, 16,16),
+        Auxiliaries.getPixeledAABB( 0, 0,15,  1, 16,16)
+      )
+    }
+  )).setRegistryName(new ResourceLocation(MODID, "steel_catwalk_ta"));
+
+  public static final EdCatwalkStairsBlock STEEL_CATWALK_STAIRS = (EdCatwalkStairsBlock)(new EdCatwalkStairsBlock(
+    DecorBlock.CFG_CUTOUT,
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 20f).sound(SoundType.METAL).notSolid(),
+    new AxisAlignedBB[] { // base
+      Auxiliaries.getPixeledAABB( 1, 2, 8, 15,  4,  16),
+      Auxiliaries.getPixeledAABB( 1,10, 0, 15, 12,   8),
+    },
+    new AxisAlignedBB[] { // railing left
+      Auxiliaries.getPixeledAABB(0.4,  0, 15, 0.6, 15, 16),
+      Auxiliaries.getPixeledAABB(0.4,  1, 14, 0.6, 16, 15),
+      Auxiliaries.getPixeledAABB(0.4,  2, 13, 0.6, 17, 14),
+      Auxiliaries.getPixeledAABB(0.4,  3, 12, 0.6, 18, 13),
+      Auxiliaries.getPixeledAABB(0.4,  4, 11, 0.6, 19, 12),
+      Auxiliaries.getPixeledAABB(0.4,  5, 10, 0.6, 20, 11),
+      Auxiliaries.getPixeledAABB(0.4,  6,  9, 0.6, 21, 10),
+      Auxiliaries.getPixeledAABB(0.4,  7,  8, 0.6, 22,  9),
+      Auxiliaries.getPixeledAABB(0.4,  8,  7, 0.6, 23,  8),
+      Auxiliaries.getPixeledAABB(0.4,  9,  6, 0.6, 24,  7),
+      Auxiliaries.getPixeledAABB(0.4, 10,  5, 0.6, 25,  6),
+      Auxiliaries.getPixeledAABB(0.4, 11,  4, 0.6, 26,  5),
+      Auxiliaries.getPixeledAABB(0.4, 12,  3, 0.6, 27,  4),
+      Auxiliaries.getPixeledAABB(0.4, 13,  2, 0.6, 28,  3),
+      Auxiliaries.getPixeledAABB(0.4, 14,  1, 0.6, 29,  2),
+      Auxiliaries.getPixeledAABB(0.4, 15,  0, 0.6, 30,  1)
+    }
+  )).setRegistryName(new ResourceLocation(MODID, "steel_catwalk_stairs"));
 
   // -------------------------------------------------------------------------------------------------------------------
 
@@ -978,6 +1029,8 @@ public class ModContent
     STEEL_MESH_FENCE_GATE,
     STEEL_CATWALK,
     STEEL_RAILING,
+    STEEL_CATWALK_TOP_ALIGNED,
+    STEEL_CATWALK_STAIRS,
     TREATED_WOOD_POLE,
     TREATED_WOOD_POLE_HEAD,
     TREATED_WOOD_POLE_SUPPORT,

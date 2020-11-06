@@ -32,7 +32,7 @@ import java.util.List;
 public class EdRailingBlock extends DecorBlock.HorizontalFourWayWaterLoggable implements IDecorBlock
 {
   public EdRailingBlock(long config, Block.Properties properties, final AxisAlignedBB base_aabb, final AxisAlignedBB railing_aabb)
-  { super(config, properties, base_aabb, railing_aabb); }
+  { super(config, properties, base_aabb, railing_aabb, 0); }
 
   @Override
   public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos)

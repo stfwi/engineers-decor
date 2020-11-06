@@ -121,8 +121,8 @@ public class DecorBlock
 
   public static class HorizontalFourWayWaterLoggable extends StandardBlocks.HorizontalFourWayWaterLoggable implements IWaterLoggable
   {
-    public HorizontalFourWayWaterLoggable(long config, Block.Properties properties, AxisAlignedBB base_aabb, AxisAlignedBB side_aabb)
-    { super(config, properties, base_aabb, side_aabb); }
+    public HorizontalFourWayWaterLoggable(long config, Block.Properties properties, AxisAlignedBB base_aabb, AxisAlignedBB side_aabb, int railing_height_extension)
+    { super(config, properties, base_aabb, side_aabb, railing_height_extension); }
   }
 
 }

@@ -339,6 +339,13 @@ public class Auxiliaries
     return transformed;
   }
 
+  public static final VoxelShape getUnionShape(AxisAlignedBB ... aabbs)
+  {
+    VoxelShape shape = VoxelShapes.empty();
+    for(AxisAlignedBB aabb: aabbs) shape = VoxelShapes.combine(shape, VoxelShapes.create(aabb), IBooleanFunction.OR);
+    return shape;
+  }
+
   public static final VoxelShape getUnionShape(AxisAlignedBB[] ... aabb_list)
   {
     VoxelShape shape = VoxelShapes.empty();

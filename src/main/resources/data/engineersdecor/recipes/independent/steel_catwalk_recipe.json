@@ -5,24 +5,25 @@
       "conditions": [
         {
           "type": "engineersdecor:optional",
-          "result": "engineersdecor:steel_floor_grating",
-          "required": ["engineersdecor:steel_catwalk"]
+          "result": "engineersdecor:steel_catwalk",
+          "required": ["engineersdecor:metal_bar"]
         }
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
         "pattern": [
-          "SS",
-          "SS"
+          "S S",
+          " S ",
+          "S S"
         ],
         "key": {
           "S": {
-            "item": "engineersdecor:steel_catwalk"
+            "item": "engineersdecor:metal_bar"
           }
         },
         "result": {
-          "item": "engineersdecor:steel_floor_grating",
-          "count": 2
+          "item": "engineersdecor:steel_catwalk",
+          "count": 4
         }
       }
     }

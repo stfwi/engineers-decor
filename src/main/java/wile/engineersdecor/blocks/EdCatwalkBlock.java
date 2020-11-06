@@ -38,7 +38,7 @@ public class EdCatwalkBlock extends DecorBlock.HorizontalFourWayWaterLoggable im
   final AxisAlignedBB base_aabb;
 
   public EdCatwalkBlock(long config, Block.Properties properties, final AxisAlignedBB base_aabb, final AxisAlignedBB railing_aabb, final Block railing_block)
-  { super(config, properties, base_aabb, railing_aabb); this.railing_block = railing_block; this.base_aabb=base_aabb; }
+  { super(config, properties, base_aabb, railing_aabb, 0); this.railing_block = railing_block; this.base_aabb=base_aabb; }
 
   @Override
   public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos)
@@ -53,7 +53,7 @@ public class EdCatwalkBlock extends DecorBlock.HorizontalFourWayWaterLoggable im
   {
     if(!world.setBlockState(pos, state, 1|2)) return false;
     world.playSound(player, pos, SoundEvents.BLOCK_METAL_PLACE, SoundCategory.BLOCKS, 1f, 1f);
-    if(!player.isCreative()) {
+    if((!player.isCreative()) && (!world.isRemote())) {
       ItemStack stack = player.getHeldItem(hand);
       if(shrink >= 0) {
         stack.shrink(shrink);
