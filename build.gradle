@@ -91,29 +91,17 @@ jar {
 def reobfFile = file("$buildDir/reobfJar/output.jar")
 def reobfArtifact = artifacts.add('default', reobfFile) { type 'jar'; builtBy 'reobfJar' }
 
-def signing = { ->
-  def sp = new Properties()
-  if(project.hasProperty("keystore_file")) {
-    sp.keystore_file = project.keystore_file
-    sp.keystore_alias = project.keystore_alias
-    sp.keystore_pass = project.keystore_pass
-    sp.keystore_keypass = project.keystore_keypass
-    sp.fingerprint_sha1 = project.fingerprint_sha1
-  } else {
-    logger.warn("[WARNING] No signing data available.")
-  }
-  if(file("signing.properties").exists()) file("signing.properties").withInputStream { sp.load(it) }
-  return sp
-}()
 task signJar(type: SignJar, dependsOn: jar) {
-  onlyIf { signing.hasProperty("keystore_file") }
-  if(signing.hasProperty("keystore_file")) {
-    keyStore = signing.getProperty("keystore_file")
-    alias = signing.getProperty("keystore_alias")
-    storePass = signing.getProperty("keystore_pass")
-    keyPass = signing.getProperty("keystore_keypass")
+  onlyIf { project.hasProperty("keystore_file") }
+  if(project.hasProperty("keystore_file")) {
+    keyStore = project.getProperty("keystore_file")
+    alias = project.getProperty("keystore_alias")
+    storePass = project.getProperty("keystore_pass")
+    keyPass = project.getProperty("keystore_keypass")
     inputFile = jar.archivePath
     outputFile = jar.archivePath
+  } else {
+    logger.warn("[WARNING] Signing skipped.")
   }
 }
 build.dependsOn signJar

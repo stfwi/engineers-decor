@@ -11,6 +11,12 @@ Mod sources for Minecraft version 1.16.3.
 
 ## Version history
 
+    - v1.1.4     [F] Fixed Empty Fluid Barrel crafting crash (ty inflamedsebi).
+                 [A] Added Solar Panel power balancing.
+                 [M] GUI Button tooltip delay reduced to 800ms.
+                 [M] Hopper and Placer: Added "Redstone ignored" mode, changed icons from signal-like to Redstone-Torch-like.
+                 [M] Treated Wood Ladder now crafted from Old Industrial Wood, as Treated Wood Sticks now count as normal Sticks.
+
     - v1.1.3     [R] Release build v1.1.3.
 
     - v1.1.3-b3  [A] Metal Sliding Door added (double door wing style).

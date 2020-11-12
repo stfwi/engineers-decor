@@ -1108,11 +1108,10 @@ public class EdCraftingTable
       }
       renderBackground(mx);
       super.render(mx, mouseX, mouseY, partialTicks);
-      if(!tooltip.render(mx,this, mouseX, mouseY)) func_230459_a_/*renderHoveredToolTip*/(mx, mouseX, mouseY);
+      if(!tooltip.render(mx,this, mouseX, mouseY)) renderHoveredToolTip(mx, mouseX, mouseY);
     }
 
-    @Override
-    protected void func_230459_a_/*renderHoveredToolTip*/(MatrixStack mx, int mouseX, int mouseY)
+    protected void renderHoveredToolTip(MatrixStack mx, int mouseX, int mouseY)
     {
       if((!player.inventory.getItemStack().isEmpty()) || (getSlotUnderMouse() == null)) return;
       final Slot slot = getSlotUnderMouse();
