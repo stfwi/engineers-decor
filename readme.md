@@ -11,11 +11,12 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
-    ~ v1.1.4-b2  [A] Steel Catwalks added (top and bottom aligned).
+    - v1.1.4-b2  [A] Steel Catwalks added (top and bottom aligned).
                  [A] Steel Railings added.
                  [F] Fixed Empty Fluid Barrel crafting crash (ty inflamedsebi).
                  [A] Added Solar Panel power balancing.
                  [M] GUI Button tooltip delay reduced to 800ms.
+                 [M] Hopper and Placer: Added "Redstone ignored" mode, changed icons from signal-like to Redstone-Torch-like.
 
     - v1.1.4-b1  [U] Ported to 1.16.4.
 

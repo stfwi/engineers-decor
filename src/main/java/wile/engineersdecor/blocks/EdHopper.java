@@ -209,8 +209,10 @@ public class EdHopper
     public static final int MAX_COLLECTION_RANGE = 4;
     public static final int PERIOD_OFFSET = 10;
     ///
-    public static final int LOGIC_INVERTED   = 0x01;
-    public static final int LOGIC_CONTINUOUS = 0x02;
+    public static final int LOGIC_NOT_INVERTED = 0x00;
+    public static final int LOGIC_INVERTED     = 0x01;
+    public static final int LOGIC_CONTINUOUS   = 0x02;
+    public static final int LOGIC_IGNORE_EXT   = 0x04;
     ///
     private boolean block_power_signal_ = false;
     private boolean block_power_updated_ = false;
@@ -644,9 +646,9 @@ public class EdHopper
       tick_timer_ = TICK_INTERVAL;
       // Cycle init
       boolean dirty = block_power_updated_;
-      final boolean rssignal = ((logic_ & LOGIC_INVERTED)!=0)==(!block_power_signal_);
-      final boolean pulse_mode = ((logic_ & LOGIC_CONTINUOUS)==0);
-      boolean trigger = (rssignal && ((block_power_updated_) || (!pulse_mode)));
+      final boolean rssignal = ((logic_ & LOGIC_IGNORE_EXT)!=0) || ((logic_ & LOGIC_INVERTED)!=0)==(!block_power_signal_);
+      final boolean pulse_mode = ((logic_ & (LOGIC_CONTINUOUS|LOGIC_IGNORE_EXT))==0);
+      boolean trigger = ((logic_ & LOGIC_IGNORE_EXT)!=0) || (rssignal && ((block_power_updated_) || (!pulse_mode)));
       final BlockState state = world.getBlockState(pos);
       if(!(state.getBlock() instanceof HopperBlock)) { block_power_signal_= false; return; }
       final Direction hopper_facing = state.get(HopperBlock.FACING);
@@ -932,7 +934,15 @@ public class EdHopper
       } else if(isPointInRegion(133, 49, 9, 9, mouseX, mouseY)) {
         container.onGuiAction("manual_trigger", 1);
       } else if(isPointInRegion(145, 49, 9, 9, mouseX, mouseY)) {
-        container.onGuiAction("logic", container.field(2) ^ HopperTileEntity.LOGIC_INVERTED);
+        final int mask = (HopperTileEntity.LOGIC_INVERTED|HopperTileEntity.LOGIC_IGNORE_EXT|HopperTileEntity.LOGIC_NOT_INVERTED);
+        int logic = (container.field(2) & mask);
+        switch(logic) {
+          case HopperTileEntity.LOGIC_NOT_INVERTED: logic = HopperTileEntity.LOGIC_INVERTED; break;
+          case HopperTileEntity.LOGIC_INVERTED:     logic = HopperTileEntity.LOGIC_IGNORE_EXT; break;
+          case HopperTileEntity.LOGIC_IGNORE_EXT:   logic = HopperTileEntity.LOGIC_NOT_INVERTED; break;
+          default: logic = HopperTileEntity.LOGIC_IGNORE_EXT;
+        }
+        container.onGuiAction("logic", (container.field(2) & (~mask)) | logic);
       } else if(isPointInRegion(159, 49, 7, 9, mouseX, mouseY)) {
         container.onGuiAction("logic", container.field(2) ^ HopperTileEntity.LOGIC_CONTINUOUS);
       }
@@ -986,8 +996,9 @@ public class EdHopper
       }
       // trigger logic
       {
-        int inverter_offset = ((container.field(2) & HopperTileEntity.LOGIC_INVERTED) != 0) ? 11 : 0;
-        blit(mx, x0+145, y0+49, 177+inverter_offset, 49, 9, 9);
+        int inverter_offset_x = ((container.field(2) & HopperTileEntity.LOGIC_INVERTED) != 0) ? 11 : 0;
+        int inverter_offset_y = ((container.field(2) & HopperTileEntity.LOGIC_IGNORE_EXT) != 0) ? 10 : 0;
+        blit(mx, x0+145, y0+49, 177+inverter_offset_x, 49+inverter_offset_y, 9, 9);
         int pulse_mode_offset  = ((container.field(2) & HopperTileEntity.LOGIC_CONTINUOUS    ) != 0) ? 9 : 0;
         blit(mx, x0+159, y0+49, 199+pulse_mode_offset, 49, 9, 9);
       }

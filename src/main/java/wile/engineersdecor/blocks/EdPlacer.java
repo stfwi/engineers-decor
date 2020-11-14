@@ -187,12 +187,14 @@ public class EdPlacer
     public static final int NUM_OF_SLOTS = 18;
     public static final int NUM_OF_FIELDS = 3;
     ///
-    public static final int LOGIC_INVERTED   = 0x01;
-    public static final int LOGIC_CONTINUOUS = 0x02;
+    public static final int LOGIC_NOT_INVERTED = 0x00;
+    public static final int LOGIC_INVERTED     = 0x01;
+    public static final int LOGIC_CONTINUOUS   = 0x02;
+    public static final int LOGIC_IGNORE_EXT   = 0x04;
     ///
     private boolean block_power_signal_ = false;
     private boolean block_power_updated_ = false;
-    private int logic_ = LOGIC_INVERTED|LOGIC_CONTINUOUS;
+    private int logic_ = LOGIC_IGNORE_EXT|LOGIC_CONTINUOUS;
     private int current_slot_index_ = 0;
     private int tick_timer_ = 0;
     protected NonNullList<ItemStack> stacks_;
@@ -579,8 +581,8 @@ public class EdPlacer
       final BlockState state = world.getBlockState(pos);
       if(!(state.getBlock() instanceof PlacerBlock)) { block_power_signal_= false; return; }
       final boolean updated = block_power_updated_;
-      final boolean rssignal = ((logic_ & LOGIC_INVERTED)!=0)==(!block_power_signal_);
-      final boolean trigger = (rssignal && ((updated) || ((logic_ & LOGIC_CONTINUOUS)!=0)));
+      final boolean rssignal = ((logic_ & LOGIC_IGNORE_EXT)!=0) || ((logic_ & LOGIC_INVERTED)!=0)==(!block_power_signal_);
+      final boolean trigger = ((logic_ & LOGIC_IGNORE_EXT)!=0) ||  (rssignal && ((updated) || ((logic_ & LOGIC_CONTINUOUS)!=0)));
       final Direction placer_facing = state.get(PlacerBlock.FACING);
       boolean dirty = updated;
       // Trigger edge detection for next cycle
@@ -762,9 +764,9 @@ public class EdPlacer
     }
 
     @Override
-    public void render/*render*/(MatrixStack mx, int mouseX, int mouseY, float partialTicks)
+    public void render(MatrixStack mx, int mouseX, int mouseY, float partialTicks)
     {
-      renderBackground/*renderBackground*/(mx);
+      renderBackground(mx);
       super.render(mx, mouseX, mouseY, partialTicks);
       if(!tooltip_.render(mx, this, mouseX, mouseY)) renderHoveredTooltip(mx, mouseX, mouseY);
     }
@@ -774,7 +776,7 @@ public class EdPlacer
     {}
 
     @Override
-    public boolean mouseClicked/*mouseClicked*/(double mouseX, double mouseY, int mouseButton)
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
       tooltip_.resetTimer();
       PlacerContainer container = (PlacerContainer)getContainer();
@@ -784,7 +786,15 @@ public class EdPlacer
       } else if(isPointInRegion(133, 49, 9, 9, mouseX, mouseY)) {
         container.onGuiAction("manual_trigger", 1);
       } else if(isPointInRegion(145, 49, 9, 9, mouseX, mouseY)) {
-        container.onGuiAction("logic", container.field(0) ^ PlacerTileEntity.LOGIC_INVERTED);
+        final int mask = (PlacerTileEntity.LOGIC_INVERTED|PlacerTileEntity.LOGIC_IGNORE_EXT|PlacerTileEntity.LOGIC_NOT_INVERTED);
+        int logic = (container.field(0) & mask);
+        switch(logic) {
+          case PlacerTileEntity.LOGIC_NOT_INVERTED: logic = PlacerTileEntity.LOGIC_INVERTED; break;
+          case PlacerTileEntity.LOGIC_INVERTED:     logic = PlacerTileEntity.LOGIC_IGNORE_EXT; break;
+          case PlacerTileEntity.LOGIC_IGNORE_EXT:   logic = PlacerTileEntity.LOGIC_NOT_INVERTED; break;
+          default: logic = PlacerTileEntity.LOGIC_IGNORE_EXT;
+        }
+        container.onGuiAction("logic", (container.field(0) & (~mask)) | logic);
       } else if(isPointInRegion(159, 49, 7, 9, mouseX, mouseY)) {
         container.onGuiAction("logic", container.field(0) ^ PlacerTileEntity.LOGIC_CONTINUOUS);
       }
@@ -806,7 +816,7 @@ public class EdPlacer
 
     @Override
     @SuppressWarnings("deprecation")
-    protected void drawGuiContainerBackgroundLayer/*drawGuiContainerBackgroundLayer*/(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
+    protected void drawGuiContainerBackgroundLayer(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
     {
       RenderSystem.enableBlend();
       RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -830,8 +840,9 @@ public class EdPlacer
       }
       // trigger logic
       {
-        int inverter_offset = ((container.field(0) & PlacerTileEntity.LOGIC_INVERTED) != 0) ? 11 : 0;
-        blit(mx, x0+145, y0+49, 177+inverter_offset, 49, 9, 9);
+        int inverter_offset_x = ((container.field(0) & PlacerTileEntity.LOGIC_INVERTED) != 0) ? 11 : 0;
+        int inverter_offset_y = ((container.field(0) & PlacerTileEntity.LOGIC_IGNORE_EXT) != 0) ? 10 : 0;
+        blit(mx, x0+145, y0+49, 177+inverter_offset_x, 49+inverter_offset_y, 9, 9);
         int pulse_mode_offset  = ((container.field(0) & PlacerTileEntity.LOGIC_CONTINUOUS    ) != 0) ? 9 : 0;
         blit(mx, x0+159, y0+49, 199+pulse_mode_offset, 49, 9, 9);
       }
