@@ -123,6 +123,24 @@ looking manufacturing contraptions. Current feature set:
 - *Panzer Glass*: Reinforced, dark gray tinted glass block. Explosion-proof. Faint
   structural lines are visible, multiple texture variations for seemless look.
 
+- *Thin and thick Steel Support Poles*: Hollow steel pole fragments, can be placed in all
+  directions. Also with head/food end components.
+
+- *Double-T Steel Support*: Horizontal top-aligned support beam, placed in the direction
+  you look. Auto connects to adjacent beams if facing towards them. Auto connects to steel
+  poles underneath. Note: When sneaking you can pass underneath it, not all mobs sneak.
+
+- *Steel Railings, Catwalks, Catwalk-Stairs*: Railings can be placed on every block with
+  a solid side  and easily be removed by clicking again with a Railing in your hand. There
+  are two craftable versions of Catwalks, top-aligned ("raised") and bottom-aligned (it
+  depends on the situation which one is better). Railings can also be placed on bottom-aligned
+  Catwalks. Right-clicking on the top surface of a Catwalk while holding another Catwalk
+  in your hand places that block horizontally in the direction you are looking (not on top;
+  makes it easier to place raised walkways in your factory - without sneaking and trying to
+  click the rather thin side). Catwalk Stairs have the same feature, except that they are
+  placed one block up or down in front of you when clicking on the top surface while holding
+  another stair in your hand.
+
 - *Tables*: *Treated Wood Table*: Four leg table made out of treated wood. *Steel table*:
   Metal table known from industrial assembly lines or Clean Rooms.
 
@@ -133,13 +151,6 @@ looking manufacturing contraptions. Current feature set:
   intentionally not connect to posts, fences, etc - just a straigt pole. Can be used e.g.
   for structural support or wire relay post, where the height of the IE wire posts does
   not match.
-
-- *Thin and thick Steel Support Poles*: Hollow steel pole fragments, can be placed in all
-  directions. Also with head/food end components.
-
-- *Double-T Steel Support*: Horizontal top-aligned support beam, placed in the direction
-  you look. Auto connects to adjacent beams if facing towards them. Auto connects to steel
-  poles underneath. Note: When sneaking you can pass underneath it, not all mobs sneak.
 
 - *Industrial Lights and Lamps*: Small metal framed glowstone based light sources for ceiling,
   wall, or floor. Light level like a torch.

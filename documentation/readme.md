@@ -1,15 +1,16 @@
 
 ## Engineer's Decor screenshots
 
-![](engineers-decor-v103-summary.png)
-![](engineers-decor-v104a-craftinggui.png)
-![](engineers-decor-crafting-table-items.png)
+![](engineers-decor-v113-brief.png)
+![](engineers-decor-steel-railings-and-catwalks.png)
+![](engineers-decor-v113-signs.png)
+![](engineers-decor-v113-metal-crafting-table.png)
 ![](engineers-decor-v103-labfurnacegui.png)
 ![](engineers-decor-v103-labfurnace-electrical-speedup.png)
 ![](engineers-decor-v100a-concrete-stuff.png)
 ![](engineers-decor-v102-panzerglass.png)
 ![](engineers-decor-v105a-e-furnace.png)
-![](engineers-decor-v105a-e-furnace-gui.png)
+![](engineers-decor-v113-efurnace.png)
 ![](engineers-decor-v103-windows.png)
 ![](engineers-decor-v103-treatedwood-pole.png)
 ![](engineers-decor-v104a-steelpoles.png)
