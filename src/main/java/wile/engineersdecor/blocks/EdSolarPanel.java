@@ -89,6 +89,7 @@ public class EdSolarPanel
     private static int peak_power_per_tick_ = DEFAULT_PEAK_POWER;
     private static int max_power_storage_ = 64000;
     private static int max_feed_power = 8192;
+    private static int feeding_threshold = max_power_storage_/5;
     private int tick_timer_ = 0;
     private int recalc_timer_ = 0;
     private int accumulated_power_ = 0;
@@ -99,6 +100,8 @@ public class EdSolarPanel
     public static void on_config(int peak_power_per_tick)
     {
       peak_power_per_tick_ = MathHelper.clamp(peak_power_per_tick, 2, 8192);
+      max_feed_power = MathHelper.clamp(peak_power_per_tick_ * 16, 10, 256);
+      feeding_threshold = Math.max(max_power_storage_/5, 1000);
       ModEngineersDecor.logger().info("Config small solar panel: Peak production:" + peak_power_per_tick_ + "/tick");
     }
 
@@ -194,8 +197,20 @@ public class EdSolarPanel
           TileEntity te = world.getTileEntity(pos.offset(f));
           if(te==null) continue;
           IEnergyStorage es = te.getCapability(CapabilityEnergy.ENERGY, f.getOpposite()).orElse(null);
-          if((es==null) || (!es.canReceive())) continue;
-          int fed = es.receiveEnergy(Math.min(accumulated_power_, max_feed_power * TICK_INTERVAL), false);
+          if(es==null) continue;
+          if(!es.canReceive()) {
+            // Ok, implemented power forwarding between panels because some people just don't get it.
+            if(accumulated_power_ < (feeding_threshold * 2)) continue;
+            if(!(te instanceof SolarPanelTileEntity)) continue;
+            SolarPanelTileEntity panel = (SolarPanelTileEntity)te;
+            if(panel.accumulated_power_ >= (accumulated_power_-feeding_threshold)) continue;
+            panel.accumulated_power_ += feeding_threshold;
+            accumulated_power_ -= feeding_threshold;
+            current_feedin_ += feeding_threshold/TICK_INTERVAL;
+            continue;
+          }
+          final int feed_power = (accumulated_power_ < (max_power_storage_/10)) ? Math.max((current_production_ * 2), (peak_power_per_tick_/5)) : max_feed_power;
+          int fed = es.receiveEnergy(Math.min(accumulated_power_, feed_power * TICK_INTERVAL), false);
           accumulated_power_ = MathHelper.clamp(accumulated_power_-fed,0, accumulated_power_);
           current_feedin_ += fed;
         }
@@ -225,7 +240,7 @@ public class EdSolarPanel
       final double rf = Math.sin((Math.PI/2) * Math.sqrt(((double)(((theta<0)||(theta>180))?(0):((theta>90)?(180-theta):(theta))))/90));
       current_production_ = (int)(Math.min(rf*rf*eff*ll, 1) * peak_power_per_tick_);
       accumulated_power_ = Math.min(accumulated_power_ + (current_production_*(TICK_INTERVAL*ACCUMULATION_INTERVAL)), max_power_storage_);
-      if(accumulated_power_ >= (max_power_storage_/5)) output_enabled_ = true;
+      if(accumulated_power_ >= (feeding_threshold)) output_enabled_ = true;
     }
   }
 }

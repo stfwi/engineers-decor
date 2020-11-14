@@ -25,7 +25,7 @@ import java.util.List;
 @OnlyIn(Dist.CLIENT)
 public class TooltipDisplay
 {
-  private static long default_delay = 1500;
+  private static long default_delay = 800;
   private static int default_max_deviation = 1;
 
   public static void config(long delay, int max_deviation)
