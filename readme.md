@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
+    ~ v1.1.4     [R] Release build v1.1.4.
+                 [F] Solar Panel balancing threshold tuned.
+
     - v1.1.4-b2  [A] Steel Catwalks added (top and bottom aligned).
                  [A] Steel Railings added.
                  [F] Fixed Empty Fluid Barrel crafting crash (ty inflamedsebi).

@@ -36,6 +36,8 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class EdSolarPanel
@@ -83,13 +85,14 @@ public class EdSolarPanel
   public static class SolarPanelTileEntity extends TileEntity implements ITickableTileEntity, ICapabilityProvider, IEnergyStorage
   {
     public static final int DEFAULT_PEAK_POWER = 40;
-    public static final int TICK_INTERVAL = 8;
-    public static final int ACCUMULATION_INTERVAL = 4;
+    public static final int TICK_INTERVAL = 4;
+    public static final int ACCUMULATION_INTERVAL = 8;
     private static final Direction transfer_directions_[] = {Direction.DOWN, Direction.EAST, Direction.SOUTH, Direction.WEST, Direction.NORTH };
     private static int peak_power_per_tick_ = DEFAULT_PEAK_POWER;
     private static int max_power_storage_ = 64000;
     private static int max_feed_power = 8192;
     private static int feeding_threshold = max_power_storage_/5;
+    private static int balancing_threshold = max_power_storage_/10;
     private int tick_timer_ = 0;
     private int recalc_timer_ = 0;
     private int accumulated_power_ = 0;
@@ -100,8 +103,8 @@ public class EdSolarPanel
     public static void on_config(int peak_power_per_tick)
     {
       peak_power_per_tick_ = MathHelper.clamp(peak_power_per_tick, 2, 8192);
-      max_feed_power = MathHelper.clamp(peak_power_per_tick_ * 16, 10, 256);
       feeding_threshold = Math.max(max_power_storage_/5, 1000);
+      balancing_threshold = Math.max(max_power_storage_/10, 1000);
       ModEngineersDecor.logger().info("Config small solar panel: Peak production:" + peak_power_per_tick_ + "/tick");
     }
 
@@ -191,6 +194,7 @@ public class EdSolarPanel
       BlockState state = world.getBlockState(pos);
       if(!(state.getBlock() instanceof SolarPanelBlock)) return;
       current_feedin_ = 0;
+      final List<SolarPanelTileEntity> adjacent_panels = new ArrayList<>();
       if(output_enabled_) {
         for(int i=0; (i<transfer_directions_.length) && (accumulated_power_>0); ++i) {
           final Direction f = transfer_directions_[i];
@@ -199,30 +203,33 @@ public class EdSolarPanel
           IEnergyStorage es = te.getCapability(CapabilityEnergy.ENERGY, f.getOpposite()).orElse(null);
           if(es==null) continue;
           if(!es.canReceive()) {
-            // Ok, implemented power forwarding between panels because some people just don't get it.
-            if(accumulated_power_ < (feeding_threshold * 2)) continue;
             if(!(te instanceof SolarPanelTileEntity)) continue;
-            SolarPanelTileEntity panel = (SolarPanelTileEntity)te;
-            if(panel.accumulated_power_ >= (accumulated_power_-feeding_threshold)) continue;
-            panel.accumulated_power_ += feeding_threshold;
-            accumulated_power_ -= feeding_threshold;
-            current_feedin_ += feeding_threshold/TICK_INTERVAL;
+            adjacent_panels.add((SolarPanelTileEntity)te);
             continue;
           }
-          final int feed_power = (accumulated_power_ < (max_power_storage_/10)) ? Math.max((current_production_ * 2), (peak_power_per_tick_/5)) : max_feed_power;
+          final int feed_power = (accumulated_power_ > (max_power_storage_/10)) ? max_feed_power : Math.max(current_production_*2, (peak_power_per_tick_/4));
           int fed = es.receiveEnergy(Math.min(accumulated_power_, feed_power * TICK_INTERVAL), false);
           accumulated_power_ = MathHelper.clamp(accumulated_power_-fed,0, accumulated_power_);
           current_feedin_ += fed;
         }
       }
       current_feedin_ /= TICK_INTERVAL;
-      if((accumulated_power_ <= 0) || (current_feedin_ <= 0)) output_enabled_ = false; // feed-in power: no need to waste CPU if noone needs power.
+      if((current_feedin_ <= 0) && ((accumulated_power_ >= balancing_threshold) || (current_production_ <= 0))) {
+        for(SolarPanelTileEntity panel: adjacent_panels) {
+          if(panel.accumulated_power_ >= (accumulated_power_-balancing_threshold)) continue;
+          panel.accumulated_power_ += balancing_threshold;
+          accumulated_power_ -= balancing_threshold;
+          if(accumulated_power_ < balancing_threshold) break;
+        }
+      }
       if(!world.canBlockSeeSky(pos)) {
-        tick_timer_ = TICK_INTERVAL * 5;
+        tick_timer_ = TICK_INTERVAL * 10;
         current_production_ = 0;
+        if((accumulated_power_ > 0)) output_enabled_ = true;
         if(state.get((SolarPanelBlock.EXPOSITION))!=2) world.setBlockState(pos, state.with(SolarPanelBlock.EXPOSITION, 2));
         return;
       }
+      if(accumulated_power_ <= 0) output_enabled_ = false;
       if(--recalc_timer_ > 0) return;
       recalc_timer_ = ACCUMULATION_INTERVAL + ((int)(Math.random()+.5));
       int theta = ((((int)(world.getCelestialAngleRadians(1f) * (180.0/Math.PI)))+90) % 360);
