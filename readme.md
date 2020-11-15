@@ -20,6 +20,7 @@ Mod sources for Minecraft version 1.16.x.
                  [A] Added Solar Panel power balancing.
                  [M] GUI Button tooltip delay reduced to 800ms.
                  [M] Hopper and Placer: Added "Redstone ignored" mode, changed icons from signal-like to Redstone-Torch-like.
+                 [M] Treated Wood Ladder now crafted from Old Industrial Wood, as Treated Wood Sticks now count as normal Sticks.
 
     - v1.1.4-b1  [U] Ported to 1.16.4.
 

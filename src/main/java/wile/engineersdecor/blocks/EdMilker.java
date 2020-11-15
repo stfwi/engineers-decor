@@ -581,9 +581,9 @@ public class EdMilker
           }
         }
         // Adjacent inventory update, only done just after milking to prevent waste of server cpu.
-        if((!dirty) && (fluid_level() >= BUCKET_SIZE)) {
+        if((!dirty) && (fluid_level() > 0)) {
           log("Try item transfer");
-          if(fill_adjacent_tank() || fill_adjacent_inventory_item_containers(block_state.get(MilkerBlock.HORIZONTAL_FACING))) dirty = true;
+          if(fill_adjacent_tank() || ((fluid_level() >= BUCKET_SIZE) && fill_adjacent_inventory_item_containers(block_state.get(MilkerBlock.HORIZONTAL_FACING)))) dirty = true;
         }
       }
       // State update

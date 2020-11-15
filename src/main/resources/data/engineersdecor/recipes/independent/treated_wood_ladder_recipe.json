@@ -6,30 +6,6 @@
         {
           "type": "engineersdecor:optional",
           "result": "engineersdecor:treated_wood_ladder",
-          "required": ["#forge:rods/treated_wood"]
-        }
-      ],
-      "recipe": {
-        "type": "minecraft:crafting_shaped",
-        "pattern": [
-          "S S",
-          "SSS",
-          "S S"
-        ],
-        "key": {
-          "S": { "tag": "forge:rods/treated_wood"}
-        },
-        "result": {
-          "item": "engineersdecor:treated_wood_ladder",
-          "count": 3
-        }
-      }
-    },
-    {
-      "conditions": [
-        {
-          "type": "engineersdecor:optional",
-          "result": "engineersdecor:treated_wood_ladder",
           "required": ["engineersdecor:old_industrial_wood_planks"]
         }
       ],
@@ -46,6 +22,30 @@
         "result": {
           "item": "engineersdecor:treated_wood_ladder",
           "count": 6
+        }
+      }
+    },
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:treated_wood_ladder",
+          "required": ["minecraft:ladder"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "S S",
+          "SSS",
+          "S S"
+        ],
+        "key": {
+          "S": { "item": "minecraft:ladder"}
+        },
+        "result": {
+          "item": "engineersdecor:treated_wood_ladder",
+          "count": 7
         }
       }
     }
