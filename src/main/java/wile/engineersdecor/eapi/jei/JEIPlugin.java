@@ -22,6 +22,8 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import wile.engineersdecor.blocks.EdCraftingTable.CraftingTableTileEntity;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,7 +44,7 @@ public class JEIPlugin implements mezz.jei.api.IModPlugin
         registration.addRecipeTransferHandler(
           EdCraftingTable.CraftingTableContainer.class,
           VanillaRecipeCategoryUid.CRAFTING,
-          1, 9, 10, 44
+          1, 9, 10, 36+CraftingTableTileEntity.NUM_OF_STORAGE_SLOTS
         );
       } catch(Throwable e) {
         ModEngineersDecor.logger().warn("Exception in JEI crafting table handler registration: '" + e.getMessage() + "'.");

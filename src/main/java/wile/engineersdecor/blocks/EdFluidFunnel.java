@@ -146,7 +146,7 @@ public class EdFluidFunnel
       if(world.isRemote) return ActionResultType.SUCCESS;
       TileEntity te = world.getTileEntity(pos);
       if(!(te instanceof FluidFunnelTileEntity)) return ActionResultType.FAIL;
-      return FluidUtil.interactWithFluidHandler(player, hand, world, pos, rayTraceResult.getFace()) ? ActionResultType.SUCCESS : ActionResultType.FAIL;
+      return FluidUtil.interactWithFluidHandler(player, hand, world, pos, rayTraceResult.getFace()) ? ActionResultType.CONSUME : ActionResultType.FAIL;
     }
 
     @Override

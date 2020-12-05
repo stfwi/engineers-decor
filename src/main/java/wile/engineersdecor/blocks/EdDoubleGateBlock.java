@@ -81,7 +81,7 @@ public class EdDoubleGateBlock extends DecorBlock.HorizontalWaterLoggable implem
   public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
   {
     if((rayTraceResult.getFace()==Direction.UP) || (rayTraceResult.getFace()==Direction.DOWN) && (player.getHeldItem(hand).getItem()==this.asItem())) return ActionResultType.PASS;
-    if(world.isRemote) return ActionResultType.SUCCESS;
+    if(world.isRemote()) return ActionResultType.SUCCESS;
     final boolean open = !state.get(OPEN);
     world.setBlockState(pos, state.with(OPEN, open),2|8|16);
     if(state.get(SEGMENT) == SEGMENT_UPPER) {
@@ -92,7 +92,7 @@ public class EdDoubleGateBlock extends DecorBlock.HorizontalWaterLoggable implem
       if(adjacent.getBlock()==this) world.setBlockState(pos.up(), adjacent.with(OPEN, open), 2|8|16);
     }
     world.playSound(null, pos, open?SoundEvents.BLOCK_IRON_DOOR_OPEN:SoundEvents.BLOCK_IRON_DOOR_CLOSE, SoundCategory.BLOCKS, 0.7f, 1.4f);
-    return ActionResultType.SUCCESS;
+    return ActionResultType.CONSUME;
   }
 
   @Override

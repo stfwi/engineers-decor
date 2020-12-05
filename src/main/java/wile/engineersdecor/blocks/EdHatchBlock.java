@@ -78,11 +78,11 @@ public class EdHatchBlock extends DecorBlock.HorizontalWaterLoggable implements 
   @Override
   public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
   {
-    if(world.isRemote) return ActionResultType.CONSUME;
+    if(world.isRemote()) return ActionResultType.SUCCESS;
     boolean open = !state.get(OPEN);
     world.setBlockState(pos, state.with(OPEN, open), 1|2);
     world.playSound(null, pos, open?SoundEvents.BLOCK_IRON_DOOR_OPEN:SoundEvents.BLOCK_IRON_DOOR_CLOSE, SoundCategory.BLOCKS, 0.7f, 1.4f);
-    return ActionResultType.SUCCESS;
+    return ActionResultType.CONSUME;
   }
 
   @Override

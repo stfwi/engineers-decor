@@ -57,8 +57,9 @@ public class EdChair
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
     {
       if(!sitting_enabled) return ActionResultType.PASS;
-      if(!world.isRemote) EntityChair.sit(world, player, pos);
-      return ActionResultType.SUCCESS;
+      if(world.isRemote()) return ActionResultType.SUCCESS;
+      EntityChair.sit(world, player, pos);
+      return ActionResultType.CONSUME;
     }
 
     @Override

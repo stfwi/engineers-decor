@@ -110,17 +110,17 @@ public class EdFreezer
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
     {
       if(player.isSneaking()) return ActionResultType.PASS;
-      if(world.isRemote) return ActionResultType.SUCCESS;
+      if(world.isRemote()) return ActionResultType.SUCCESS;
       FreezerTileEntity te = getTe(world, pos);
       if(te==null) return ActionResultType.FAIL;
       final ItemStack stack = player.getHeldItem(hand);
       boolean dirty = false;
       if(Fluidics.manualFluidHandlerInteraction(world, pos, null, player, hand)) {
         world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 0.5f, 1.4f);
-        return ActionResultType.SUCCESS;
+        return ActionResultType.CONSUME;
       }
       if(stack.getItem()==Items.WATER_BUCKET) {
-        return ActionResultType.SUCCESS; // would be already handled
+        return ActionResultType.CONSUME; // would be already handled
       } else if(stack.isEmpty()) {
         ItemStack ice = te.getIceItem(true);
         if(!ice.isEmpty()) {
@@ -129,7 +129,7 @@ public class EdFreezer
         } else {
           world.playSound(null, pos, SoundEvents.BLOCK_IRON_TRAPDOOR_OPEN, SoundCategory.BLOCKS, 0.2f, 0.02f);
         }
-        return ActionResultType.SUCCESS;
+        return ActionResultType.CONSUME;
       } else {
         return ActionResultType.PASS;
       }

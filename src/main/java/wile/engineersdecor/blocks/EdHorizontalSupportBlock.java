@@ -12,11 +12,15 @@ package wile.engineersdecor.blocks;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.DirectionalPlaceContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.*;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.shapes.IBooleanFunction;
@@ -29,6 +33,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.Inventories;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -123,10 +128,27 @@ public class EdHorizontalSupportBlock extends DecorBlock.WaterLoggable implement
   public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos pos, BlockPos facingPos)
   { return temp_block_update_until_better(state, world, pos); }
 
-  @Deprecated
-  @SuppressWarnings("deprecation")
-  public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos)
-  { world.setBlockState(pos, temp_block_update_until_better(state, world, pos)); }
+  @Override
+  public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
+  {
+    ItemStack held_stack = player.getHeldItem(hand);
+    if((held_stack.isEmpty()) || (held_stack.getItem() != this.asItem())) return ActionResultType.PASS;
+    if(!(hit.getFace().getAxis().isVertical())) return ActionResultType.PASS;
+    final Direction placement_direction = player.getHorizontalFacing();
+    final BlockPos adjacent_pos = pos.offset(placement_direction);
+    final BlockState adjacent = world.getBlockState(adjacent_pos);
+    final BlockItemUseContext ctx = new DirectionalPlaceContext(world, adjacent_pos, placement_direction, player.getHeldItem(hand), placement_direction.getOpposite());
+    if(!adjacent.isReplaceable(ctx)) return ActionResultType.func_233537_a_(world.isRemote());
+    final BlockState new_state = getStateForPlacement(ctx);
+    if(new_state == null) return ActionResultType.FAIL;
+    if(!world.setBlockState(adjacent_pos, new_state, 1|2)) return ActionResultType.FAIL;
+    world.playSound(player, pos, SoundEvents.BLOCK_METAL_PLACE, SoundCategory.BLOCKS, 1f, 1f);
+    if(!player.isCreative()) {
+      held_stack.shrink(1);
+      Inventories.setItemInPlayerHand(player, hand, held_stack);
+    }
+    return ActionResultType.func_233537_a_(world.isRemote());
+  }
 
   @Override
   @SuppressWarnings("deprecation")

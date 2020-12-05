@@ -393,6 +393,7 @@ public class Inventories
   { ItemHandlerHelper.giveItemToPlayer(entity, stack); }
 
   public static void setItemInPlayerHand(PlayerEntity player, Hand hand, ItemStack stack) {
+    if(stack.isEmpty()) stack = ItemStack.EMPTY;
     if(hand == Hand.MAIN_HAND) {
       player.inventory.mainInventory.set(player.inventory.currentItem, stack);
     } else {

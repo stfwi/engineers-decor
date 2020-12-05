@@ -11,6 +11,13 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
+    - v1.1.5     [F] Fixed Crafting Table JEI storage slot count.
+                 [F] Fixed Factory Hopper removed item collection dupe bug (issue #146, thx FatheredPuma81).
+                 [F] Increased device GUI access ranges beyond the player block selection range.
+                 [A] Window placement handling improved.
+                 [M] Steel/Wood Pole and Double-T support placement improved (issue #139, thx Biviho).
+                 [M] Metal Sliding Door bottom/top shape when opened added.
+
     - v1.1.4     [R] Release build v1.1.4.
                  [F] Solar Panel balancing threshold tuned.
                  [F] Fixed Catwalk default state (issue #140, thx hvdklauw).

@@ -117,7 +117,7 @@ public class EdMineralSmelter
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
     {
       if(player.isSneaking()) return ActionResultType.PASS;
-      if(world.isRemote) return ActionResultType.SUCCESS;
+      if(world.isRemote()) return ActionResultType.SUCCESS;
       MineralSmelterTileEntity te = getTe(world, pos);
       if(te==null) return ActionResultType.FAIL;
       final ItemStack stack = player.getHeldItem(hand);
@@ -163,7 +163,7 @@ public class EdMineralSmelter
         dirty = true;
       }
       if(dirty) player.inventory.markDirty();
-      return ActionResultType.SUCCESS;
+      return ActionResultType.CONSUME;
     }
 
     @Override
@@ -398,7 +398,7 @@ public class EdMineralSmelter
 
     @Override
     public boolean isUsableByPlayer(PlayerEntity player)
-    { return ((world.getTileEntity(pos) == this) && (player.getDistanceSq(pos.getX()+0.5d, pos.getY()+0.5d, pos.getZ()+0.5d) <= 64.0d)); }
+    { return ((getWorld().getTileEntity(getPos()) == this)) && (getPos().distanceSq(player.getPosition()) < 64); }
 
     @Override
     public void openInventory(PlayerEntity player)

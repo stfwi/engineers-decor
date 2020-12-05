@@ -57,7 +57,7 @@ public class EdChimneyBlock extends DecorBlock.Normal implements IDecorBlock
   @Override
   @SuppressWarnings("deprecation")
   public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
-  { world.setBlockState(pos, state.with(POWER, (state.get(POWER)+1) & 0xf), 1|2); return ActionResultType.SUCCESS; }
+  { world.setBlockState(pos, state.with(POWER, (state.get(POWER)+1) & 0xf), 1|2); return ActionResultType.func_233537_a_(world.isRemote()); }
 
   @Override
   @SuppressWarnings("deprecation")

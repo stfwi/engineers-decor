@@ -81,13 +81,13 @@ public class EdElectricalFurnace
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
     {
-      if(world.isRemote) return ActionResultType.SUCCESS;
+      if(world.isRemote()) return ActionResultType.SUCCESS;
       final TileEntity te = world.getTileEntity(pos);
       if(!(te instanceof EdElectricalFurnace.ElectricalFurnaceTileEntity)) return ActionResultType.FAIL;
       if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return ActionResultType.FAIL;
       NetworkHooks.openGui((ServerPlayerEntity)player,(INamedContainerProvider)te);
       player.addStat(Stats.INTERACT_WITH_FURNACE);
-      return ActionResultType.SUCCESS;
+      return ActionResultType.CONSUME;
     }
 
     @Override

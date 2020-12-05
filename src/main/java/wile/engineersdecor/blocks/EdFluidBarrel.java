@@ -187,12 +187,12 @@ public class EdFluidBarrel
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
     {
       if(player.getHeldItem(hand).getItem() == asItem()) return ActionResultType.PASS; // Pass that to block placement.
-      if(world.isRemote) return ActionResultType.SUCCESS;
+      if(world.isRemote()) return ActionResultType.SUCCESS;
       TileEntity te = world.getTileEntity(pos);
       if(!(te instanceof FluidBarrelTileEntity)) return ActionResultType.FAIL;
       if(!((FluidBarrelTileEntity)te).handlePlayerInteraction(state, world, pos, player, hand)) return ActionResultType.PASS;
       world.getPendingBlockTicks().scheduleTick(pos, this, 4);
-      return ActionResultType.SUCCESS;
+      return ActionResultType.CONSUME;
     }
 
     @Override

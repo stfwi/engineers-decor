@@ -10,13 +10,19 @@ package wile.engineersdecor.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.util.Direction;
+import net.minecraft.item.DirectionalPlaceContext;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 
 
 public class EdWindowBlock extends DecorBlock.DirectedWaterLoggable implements IDecorBlock
@@ -45,6 +51,27 @@ public class EdWindowBlock extends DecorBlock.DirectedWaterLoggable implements I
       }
     }
     return super.getStateForPlacement(context).with(FACING, facing);
+  }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
+  {
+    if(player.getHeldItem(hand).getItem() != asItem()) return ActionResultType.PASS;
+    final Direction facing = state.get(FACING);
+    if(facing.getAxis() != hit.getFace().getAxis()) return ActionResultType.PASS;
+    Arrays.stream(Direction.getFacingDirections(player))
+      .filter(d->d.getAxis() != facing.getAxis())
+      .filter(d->world.getBlockState(pos.offset(d)).isReplaceable((new DirectionalPlaceContext(world, pos.offset(d), facing.getOpposite(), player.getHeldItem(hand), facing))))
+      .findFirst().ifPresent((d)->{
+        BlockState st = getDefaultState()
+          .with(FACING, facing)
+          .with(WATERLOGGED,world.getBlockState(pos.offset(d)).getFluidState().getFluid()==Fluids.WATER);
+        world.setBlockState(pos.offset(d), st, 1|2);
+        world.playSound(player, pos, SoundEvents.BLOCK_METAL_PLACE, SoundCategory.BLOCKS, 1f, 1f);
+      }
+    );
+    return ActionResultType.func_233537_a_(world.isRemote());
   }
 
   @Override

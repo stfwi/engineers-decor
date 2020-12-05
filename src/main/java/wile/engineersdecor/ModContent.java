@@ -311,8 +311,20 @@ public class ModContent
   public static final EdDoorBlock METAL_SLIDING_DOOR = (EdDoorBlock)(new EdDoorBlock(
     DecorBlock.CFG_TRANSLUCENT|DecorBlock.CFG_HORIZIONTAL,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1.5f, 12f).sound(SoundType.METAL).notSolid(),
-    Auxiliaries.getPixeledAABB(15,0,7, 16,16,9),
-    Auxiliaries.getPixeledAABB( 0,0,7, 16,16,9),
+    new AxisAlignedBB[]{
+      Auxiliaries.getPixeledAABB(15, 0.0,6, 16,16.0,10),
+      Auxiliaries.getPixeledAABB( 0,15.5,6, 16,16.0,10),
+    },
+    new AxisAlignedBB[]{
+      Auxiliaries.getPixeledAABB(15, 0.0,6, 16,16.0,10),
+      Auxiliaries.getPixeledAABB( 0, 0.0,6, 16, 0.3,10),
+    },
+    new AxisAlignedBB[]{
+      Auxiliaries.getPixeledAABB( 0,0,7, 16,16,9)
+    },
+    new AxisAlignedBB[]{
+      Auxiliaries.getPixeledAABB( 0,0,7, 16,16,9)
+    },
     SoundEvents.BLOCK_IRON_DOOR_OPEN, SoundEvents.BLOCK_IRON_DOOR_CLOSE
   )).setRegistryName(new ResourceLocation(MODID, "metal_sliding_door"));
 
@@ -342,6 +354,8 @@ public class ModContent
   public static final EdDoorBlock OLD_INDUSTRIAL_WOOD_DOOR = (EdDoorBlock)(new EdDoorBlock(
     DecorBlock.CFG_DEFAULT,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1.5f, 12f).sound(SoundType.WOOD).notSolid(),
+    Auxiliaries.getPixeledAABB(15,0, 0, 16,16,16),
+    Auxiliaries.getPixeledAABB( 0,0,13, 16,16,16),
     SoundEvents.BLOCK_WOODEN_DOOR_OPEN, SoundEvents.BLOCK_WOODEN_DOOR_CLOSE
   )).setRegistryName(new ResourceLocation(MODID, "old_industrial_wood_door"));
 
@@ -444,14 +458,13 @@ public class ModContent
 
   public static final EdWindowBlock TREATED_WOOD_WINDOW = (EdWindowBlock)(new EdWindowBlock(
     DecorBlock.CFG_LOOK_PLACEMENT,
-    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f)
-      .sound(SoundType.GLASS).notSolid().setBlocksVision((s,w,p)->false),
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD).notSolid(),
     Auxiliaries.getPixeledAABB(0,0,7, 16,16,9)
   )).setRegistryName(new ResourceLocation(MODID, "treated_wood_window"));
 
   public static final EdWindowBlock STEEL_FRAMED_WINDOW = (EdWindowBlock)(new EdWindowBlock(
     DecorBlock.CFG_LOOK_PLACEMENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.GLASS).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
     Auxiliaries.getPixeledAABB(0,0,7.5, 16,16,8.5)
   )).setRegistryName(new ResourceLocation(MODID, "steel_framed_window"));
 
@@ -460,43 +473,50 @@ public class ModContent
   public static final EdStraightPoleBlock TREATED_WOOD_POLE = (EdStraightPoleBlock)(new EdStraightPoleBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_FLIP_PLACEMENT_IF_SAME,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD).notSolid(),
-    Auxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16)
+    Auxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16),
+    null
   )).setRegistryName(new ResourceLocation(MODID, "treated_wood_pole"));
 
   public static final EdStraightPoleBlock TREATED_WOOD_POLE_HEAD = (EdStraightPoleBlock)(new EdStraightPoleBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_FLIP_PLACEMENT_IF_SAME,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD).notSolid(),
-    Auxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16)
+    Auxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16),
+    TREATED_WOOD_POLE
   )).setRegistryName(new ResourceLocation(MODID, "treated_wood_pole_head"));
 
   public static final EdStraightPoleBlock TREATED_WOOD_POLE_SUPPORT = (EdStraightPoleBlock)(new EdStraightPoleBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_FLIP_PLACEMENT_IF_SAME,
     Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD).notSolid(),
-    Auxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16)
+    Auxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16),
+    TREATED_WOOD_POLE
   )).setRegistryName(new ResourceLocation(MODID, "treated_wood_pole_support"));
 
   public static final EdStraightPoleBlock THIN_STEEL_POLE = (EdStraightPoleBlock)(new EdStraightPoleBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
-    Auxiliaries.getPixeledAABB(6,6,0, 10,10,16)
+    Auxiliaries.getPixeledAABB(6,6,0, 10,10,16),
+    null
   )).setRegistryName(new ResourceLocation(MODID, "thin_steel_pole"));
 
   public static final EdStraightPoleBlock THIN_STEEL_POLE_HEAD = (EdStraightPoleBlock)(new EdStraightPoleBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_FLIP_PLACEMENT_IF_SAME,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
-    Auxiliaries.getPixeledAABB(6,6,0, 10,10,16)
+    Auxiliaries.getPixeledAABB(6,6,0, 10,10,16),
+    THIN_STEEL_POLE
   )).setRegistryName(new ResourceLocation(MODID, "thin_steel_pole_head"));
 
   public static final EdStraightPoleBlock THICK_STEEL_POLE = (EdStraightPoleBlock)(new EdStraightPoleBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
-    Auxiliaries.getPixeledAABB(5,5,0, 11,11,16)
+    Auxiliaries.getPixeledAABB(5,5,0, 11,11,16),
+    null
   )).setRegistryName(new ResourceLocation(MODID, "thick_steel_pole"));
 
   public static final EdStraightPoleBlock THICK_STEEL_POLE_HEAD = (EdStraightPoleBlock)(new EdStraightPoleBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_FLIP_PLACEMENT_IF_SAME,
     Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
-    Auxiliaries.getPixeledAABB(5,5,0, 11,11,16)
+    Auxiliaries.getPixeledAABB(5,5,0, 11,11,16),
+    THICK_STEEL_POLE
   )).setRegistryName(new ResourceLocation(MODID, "thick_steel_pole_head"));
 
   public static final EdHorizontalSupportBlock STEEL_DOUBLE_T_SUPPORT = (EdHorizontalSupportBlock)(new EdHorizontalSupportBlock(

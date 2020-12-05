@@ -72,9 +72,10 @@ public class EdSolarPanel
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
     {
+      if(world.isRemote()) return ActionResultType.SUCCESS;
       TileEntity te = world.getTileEntity(pos);
       if(te instanceof SolarPanelTileEntity) ((SolarPanelTileEntity)te).state_message(player);
-      return ActionResultType.SUCCESS;
+      return ActionResultType.CONSUME;
     }
   }
 

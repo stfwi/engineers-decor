@@ -60,7 +60,7 @@ public class EdRailingBlock extends DecorBlock.HorizontalFourWayWaterLoggable im
   {
     if(player.getHeldItem(hand).getItem() != asItem()) return ActionResultType.PASS;
     Direction face = hit.getFace();
-    if(!face.getAxis().isHorizontal()) return world.isRemote() ? ActionResultType.SUCCESS : ActionResultType.CONSUME;
+    if(!face.getAxis().isHorizontal()) return ActionResultType.func_233537_a_(world.isRemote());
     final Vector3d rhv = hit.getHitVec().subtract(Vector3d.copyCentered(hit.getPos()));
     if(rhv.mul(Vector3d.copy(face.getDirectionVec())).scale(2).lengthSquared() < 0.99) face = face.getOpposite(); // click on railing, not the outer side.
     BooleanProperty railing = getDirectionProperty(face);
@@ -72,7 +72,7 @@ public class EdRailingBlock extends DecorBlock.HorizontalFourWayWaterLoggable im
     } else {
       EdCatwalkBlock.place_consume(state, world, pos, player, hand, add ? 1 : -1);
     }
-    return world.isRemote() ? ActionResultType.SUCCESS : ActionResultType.CONSUME;
+    return ActionResultType.func_233537_a_(world.isRemote());
   }
 
   // -- IDecorBlock

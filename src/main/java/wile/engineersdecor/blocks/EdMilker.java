@@ -109,16 +109,16 @@ public class EdMilker
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
     {
-      if(world.isRemote) return ActionResultType.SUCCESS;
+      if(world.isRemote()) return ActionResultType.SUCCESS;
       MilkerTileEntity te = getTe(world, pos);
       if(te==null) return ActionResultType.FAIL;
       final ItemStack in_stack = player.getHeldItem(hand);
       final ItemStack out_stack = MilkerTileEntity.milk_filled_container_item(in_stack);
       if(in_stack.isEmpty()) {
         te.state_message(player);
-        return ActionResultType.SUCCESS;
+        return ActionResultType.CONSUME;
       } else if(out_stack.isEmpty() && (te.fluid_handler()!=null)) {
-        return FluidUtil.interactWithFluidHandler(player, hand, te.fluid_handler()) ? ActionResultType.SUCCESS : ActionResultType.FAIL;
+        return FluidUtil.interactWithFluidHandler(player, hand, te.fluid_handler()) ? ActionResultType.CONSUME : ActionResultType.FAIL;
       } else {
         boolean drained = false;
         IItemHandler player_inventory = new PlayerMainInvWrapper(player.inventory);
@@ -141,7 +141,7 @@ public class EdMilker
           world.playSound(null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 0.8f, 1f);
         }
       }
-      return ActionResultType.SUCCESS;
+      return ActionResultType.CONSUME;
     }
 
     @Nullable

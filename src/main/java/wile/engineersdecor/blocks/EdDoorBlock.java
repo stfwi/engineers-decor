@@ -16,6 +16,9 @@ import wile.engineersdecor.libmc.blocks.StandardDoorBlock;
 
 public class EdDoorBlock extends StandardDoorBlock implements IDecorBlock
 {
+  public EdDoorBlock(long config, Block.Properties properties, AxisAlignedBB[] open_aabbs_top, AxisAlignedBB[] open_aabbs_bottom, AxisAlignedBB[] closed_aabbs_top, AxisAlignedBB[] closed_aabbs_bottom, SoundEvent open_sound, SoundEvent close_sound)
+  { super(config, properties, open_aabbs_top, open_aabbs_bottom, closed_aabbs_top, closed_aabbs_bottom, open_sound, close_sound); }
+
   public EdDoorBlock(long config, Block.Properties properties, AxisAlignedBB open_aabb, AxisAlignedBB closed_aabb, SoundEvent open_sound, SoundEvent close_sound)
   { super(config, properties, open_aabb, closed_aabb, open_sound, close_sound); }
 
@@ -24,4 +27,9 @@ public class EdDoorBlock extends StandardDoorBlock implements IDecorBlock
 
   public EdDoorBlock(long config, Block.Properties properties)
   { super(config, properties); }
+
+  //@Override
+  //@SuppressWarnings("deprecation")
+  //public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)
+  //{ return state.get(OPEN) ? VoxelShapes.empty() : super.getCollisionShape(state, world, pos, context); }
 }

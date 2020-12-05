@@ -149,12 +149,12 @@ public class EdLabeledCrate
     @SuppressWarnings("deprecation")
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
     {
-      if(world.isRemote) return ActionResultType.SUCCESS;
+      if(world.isRemote()) return ActionResultType.SUCCESS;
       final TileEntity te = world.getTileEntity(pos);
-      if(!(te instanceof LabeledCrateTileEntity)) return ActionResultType.SUCCESS;
-      if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return ActionResultType.SUCCESS;
+      if(!(te instanceof LabeledCrateTileEntity)) return ActionResultType.FAIL;
+      if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return ActionResultType.FAIL;
       NetworkHooks.openGui((ServerPlayerEntity)player,(INamedContainerProvider)te);
-      return ActionResultType.SUCCESS;
+      return ActionResultType.CONSUME;
     }
 
     @Override
@@ -373,7 +373,7 @@ public class EdLabeledCrate
 
     @Override
     public boolean isUsableByPlayer(PlayerEntity player)
-    { return getPos().distanceSq(player.getPosition()) < 36; }
+    { return ((getWorld().getTileEntity(getPos()) == this)) && (getPos().distanceSq(player.getPosition()) < 64); }
 
     @Override
     public void openInventory(PlayerEntity player)

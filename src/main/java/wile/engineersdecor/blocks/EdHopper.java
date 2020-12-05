@@ -146,12 +146,12 @@ public class EdHopper
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
     {
-      if(world.isRemote) return ActionResultType.SUCCESS;
+      if(world.isRemote()) return ActionResultType.SUCCESS;
       final TileEntity te = world.getTileEntity(pos);
       if(!(te instanceof HopperTileEntity)) return ActionResultType.FAIL;
       if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return ActionResultType.FAIL;
       NetworkHooks.openGui((ServerPlayerEntity)player,(INamedContainerProvider)te);
-      return ActionResultType.SUCCESS;
+      return ActionResultType.CONSUME;
     }
 
     @Override
@@ -377,7 +377,7 @@ public class EdHopper
 
     @Override
     public boolean isUsableByPlayer(PlayerEntity player)
-    { return getPos().distanceSq(player.getPosition()) < 36; }
+    { return ((getWorld().getTileEntity(getPos()) == this)) && (getPos().distanceSq(player.getPosition()) < 64); }
 
     @Override
     public void openInventory(PlayerEntity player)
@@ -616,20 +616,24 @@ public class EdHopper
         rpos = new Vector3d(0.5+pos.getX(),-1.5+pos.getY(),0.5+pos.getZ());
         collection_volume = (new AxisAlignedBB(pos.down(2))).grow(0.1+collection_range_, 1, 0.1+collection_range_);
       }
-      final List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, collection_volume);
+      final List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, collection_volume, e->(e.isAlive() && e.isOnGround()));
       if(items.size() <= 0) return false;
       final int max_to_collect = 3;
       int n_collected = 0;
       for(ItemEntity ie:items) {
         boolean is_direct_collection_tange = ie.getDistanceSq(rpos)<0.7;
-        if(!is_direct_collection_tange && (ie.cannotPickup() || (!ie.isOnGround()))) continue;
+        if(!is_direct_collection_tange && (ie.cannotPickup())) continue;
         ItemStack stack = ie.getItem();
+        if(stack.isEmpty()) continue;
         int n_accepted = try_insert_into_hopper(stack);
         if(n_accepted <= 0) continue;
-        if(n_accepted == stack.getCount()) {
+        if(n_accepted >= stack.getCount()) {
+          stack.setCount(0);
+          ie.setItem(stack);
           ie.remove();
         } else {
           stack.shrink(n_accepted);
+          ie.setItem(stack);
         }
         if((!is_direct_collection_tange) && (++n_collected >= max_to_collect)) break;
       }
