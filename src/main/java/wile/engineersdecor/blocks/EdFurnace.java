@@ -9,12 +9,7 @@
 package wile.engineersdecor.blocks;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import wile.engineersdecor.ModContent;
-import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.detail.ExternalObjects;
-import wile.engineersdecor.libmc.client.ContainerGui;
-import wile.engineersdecor.libmc.detail.Inventories;
-import wile.engineersdecor.libmc.detail.Networking;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.tileentity.*;
 import net.minecraft.inventory.container.*;
 import net.minecraft.item.crafting.AbstractCookingRecipe;
@@ -59,7 +54,12 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
-import com.mojang.blaze3d.systems.RenderSystem;
+import wile.engineersdecor.ModContent;
+import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.detail.ExternalObjects;
+import wile.engineersdecor.libmc.client.ContainerGui;
+import wile.engineersdecor.libmc.detail.Inventories;
+import wile.engineersdecor.libmc.detail.Networking;
 import javax.annotation.Nullable;
 import java.util.*;
 

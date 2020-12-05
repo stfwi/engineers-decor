@@ -47,7 +47,7 @@ public class EdRoofBlock extends StandardBlocks.HorizontalWaterLoggable implemen
   public EdRoofBlock(long config, Block.Properties properties, VoxelShape add, VoxelShape cut)
   {
     super(config, properties, Auxiliaries.getPixeledAABB(0, 0,0,16, 8, 16));
-    setDefaultState(stateContainer.getBaseState().with(HORIZONTAL_FACING, Direction.NORTH).with(SHAPE, StairsShape.STRAIGHT).with(WATERLOGGED, false));
+    setDefaultState(super.getDefaultState().with(HORIZONTAL_FACING, Direction.NORTH).with(SHAPE, StairsShape.STRAIGHT));
     shape_cache_ = makeShapes(add, cut);
   }
 

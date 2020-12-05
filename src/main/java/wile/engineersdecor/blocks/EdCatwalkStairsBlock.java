@@ -71,7 +71,7 @@ public class EdCatwalkStairsBlock extends DecorBlock.HorizontalWaterLoggable imp
     y_rotations.put(Direction.WEST, 3);
     y_rotations.put(Direction.UP, 0);
     y_rotations.put(Direction.DOWN, 0);
-    setDefaultState(getStateContainer().getBaseState().with(LEFT_RAILING, false).with(RIGHT_RAILING, false));
+    setDefaultState(super.getDefaultState().with(LEFT_RAILING, false).with(RIGHT_RAILING, false));
   }
 
   @Override

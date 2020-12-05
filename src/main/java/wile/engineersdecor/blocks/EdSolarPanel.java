@@ -53,7 +53,7 @@ public class EdSolarPanel
     public SolarPanelBlock(long config, Block.Properties builder, final AxisAlignedBB[] unrotatedAABB)
     {
       super(config, builder, unrotatedAABB);
-      setDefaultState(stateContainer.getBaseState().with(EXPOSITION, 1));
+      setDefaultState(super.getDefaultState().with(EXPOSITION, 1));
     }
 
     @Override

@@ -225,6 +225,7 @@ public class EdDropper
     public static final int DROPLOGIC_SILENT_DROP    = 0x04;
     public static final int DROPLOGIC_SILENT_OPEN    = 0x08;
     public static final int DROPLOGIC_CONTINUOUS     = 0x10;
+    public static final int DROPLOGIC_IGNORE_EXT     = 0x20;
     ///
     private int filter_matches_[] = new int[CTRL_SLOTS_SIZE];
     private int open_timer_ = 0;
@@ -597,7 +598,7 @@ public class EdDropper
       if(!(world.getBlockState(pos).getBlock() instanceof DropperBlock)) return;
       final boolean continuous_mode = (drop_logic_ & DROPLOGIC_CONTINUOUS)!=0;
       boolean dirty = block_power_updated_;
-      boolean redstone_trigger = (block_power_signal_ && ((block_power_updated_) || (continuous_mode)));
+      boolean redstone_trigger = (block_power_signal_ && ((block_power_updated_) || (continuous_mode))) || ((drop_logic_ & DROPLOGIC_IGNORE_EXT)!=0);
       boolean filter_trigger;
       boolean filter_defined;
       boolean trigger;
@@ -916,7 +917,7 @@ public class EdDropper
     @Override
     public void render(MatrixStack mx, int mouseX, int mouseY, float partialTicks)
     {
-      renderBackground/*renderBackground*/(mx);
+      renderBackground(mx);
       super.render(mx, mouseX, mouseY, partialTicks);
       if(!tooltip_.render(mx, this, mouseX, mouseY)) renderHoveredTooltip(mx, mouseX, mouseY);
     }
@@ -973,7 +974,15 @@ public class EdDropper
       } else if(isPointInRegion(132, 66, 9, 9, mouseX, mouseY)) {
         container.onGuiAction("drop_logic", container.field(5) ^ DropperTileEntity.DROPLOGIC_FILTER_ANDGATE);
       } else if(isPointInRegion(148, 66, 9, 9, mouseX, mouseY)) {
-        container.onGuiAction("drop_logic", container.field(5) ^ DropperTileEntity.DROPLOGIC_EXTERN_ANDGATE);
+        final int mask = (DropperTileEntity.DROPLOGIC_EXTERN_ANDGATE|DropperTileEntity.DROPLOGIC_IGNORE_EXT);
+        int logic = (container.field(5) & mask);
+        switch(logic) {
+          case DropperTileEntity.DROPLOGIC_EXTERN_ANDGATE: logic = 0; break;
+          case 0:                                          logic = DropperTileEntity.DROPLOGIC_IGNORE_EXT; break;
+          case DropperTileEntity.DROPLOGIC_IGNORE_EXT:     logic = DropperTileEntity.DROPLOGIC_EXTERN_ANDGATE; break;
+          default: logic = DropperTileEntity.DROPLOGIC_EXTERN_ANDGATE;
+        }
+        container.onGuiAction("drop_logic", (container.field(5) & (~mask)) | logic);
       }
       return true;
     }
@@ -1051,11 +1060,13 @@ public class EdDropper
       }
       // trigger logic
       {
-        int filter_gate_offset = ((container.field(5) & DropperTileEntity.DROPLOGIC_FILTER_ANDGATE) != 0) ? 11 : 0;
-        int extern_gate_offset = ((container.field(5) & DropperTileEntity.DROPLOGIC_EXTERN_ANDGATE) != 0) ? 11 : 0;
-        int pulse_mode_offset  = ((container.field(5) & DropperTileEntity.DROPLOGIC_CONTINUOUS    ) != 0) ? 10 : 0;
+        final int logic = container.field(5);
+        int filter_gate_offset = ((logic & DropperTileEntity.DROPLOGIC_FILTER_ANDGATE) != 0) ? 11 : 0;
+        int pulse_mode_offset  = ((logic & DropperTileEntity.DROPLOGIC_CONTINUOUS    ) != 0) ? 10 : 0;
+        int extern_gate_offset_x = ((logic & DropperTileEntity.DROPLOGIC_EXTERN_ANDGATE) != 0) ? 11 : 0;
+        int extern_gate_offset_y = ((logic & DropperTileEntity.DROPLOGIC_IGNORE_EXT) != 0) ? 10 : 0;
         blit(mx, x0+132, y0+66, 179+filter_gate_offset, 66, 9, 9);
-        blit(mx, x0+148, y0+66, 179+extern_gate_offset, 66, 9, 9);
+        blit(mx, x0+148, y0+66, 179+extern_gate_offset_x, 66+extern_gate_offset_y, 9, 9);
         blit(mx, x0+162, y0+66, 200+pulse_mode_offset, 66, 9, 9);
       }
       // drop timer running indicator

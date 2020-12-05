@@ -14,7 +14,6 @@ package wile.engineersdecor.libmc.blocks;
 
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.pathfinding.PathType;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
 import net.minecraft.block.*;
 import net.minecraft.entity.EntityType;
 import net.minecraft.state.DirectionProperty;
@@ -48,6 +47,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Supplier;
@@ -110,17 +110,19 @@ public class StandardBlocks
     { this(conf, properties, Auxiliaries.getPixeledAABB(0, 0, 0, 16, 16,16 )); }
 
     public BaseBlock(long conf, Block.Properties properties, AxisAlignedBB aabb)
-    { super(properties); config = conf; vshape = VoxelShapes.create(aabb); }
-
-    public BaseBlock(long conf, Block.Properties properties, VoxelShape voxel_shape)
-    { super(properties); config = conf; vshape = voxel_shape; }
+    { this(conf, properties, VoxelShapes.create(aabb)); }
 
     public BaseBlock(long conf, Block.Properties properties, AxisAlignedBB[] aabbs)
+    { this(conf, properties, Arrays.stream(aabbs).map(aabb->VoxelShapes.create(aabb)).reduce(VoxelShapes.empty(), (shape, aabb)->VoxelShapes.combine(shape, aabb, IBooleanFunction.OR))); }
+
+    public BaseBlock(long conf, Block.Properties properties, VoxelShape voxel_shape)
     {
-      super(properties); config = conf;
-      VoxelShape shape = VoxelShapes.empty();
-      for(AxisAlignedBB aabb:aabbs) shape = VoxelShapes.combine(shape, VoxelShapes.create(aabb), IBooleanFunction.OR);
-      vshape = shape;
+      super(properties);
+      config = conf;
+      vshape = voxel_shape;
+      BlockState state = getStateContainer().getBaseState();
+      if((conf & CFG_WATERLOGGABLE)!=0) state = state.with(WATERLOGGED, false);
+      setDefaultState(state);
     }
 
     @Override
@@ -471,7 +473,7 @@ public class StandardBlocks
       }
       shapes = build_shapes;
       collision_shapes = build_collision_shapes;
-      setDefaultState(getStateContainer().getBaseState().with(NORTH, false).with(EAST, false).with(SOUTH, false).with(WEST, false).with(WATERLOGGED, false));
+      setDefaultState(super.getDefaultState().with(NORTH, false).with(EAST, false).with(SOUTH, false).with(WEST, false).with(WATERLOGGED, false));
     }
 
     @Override

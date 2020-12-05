@@ -11,8 +11,11 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
-    ~ v1.1.4     [R] Release build v1.1.4.
+    - v1.1.4     [R] Release build v1.1.4.
                  [F] Solar Panel balancing threshold tuned.
+                 [F] Fixed Catwalk default state (issue #140, thx hvdklauw).
+                 [M] Updated lang ru_ru file (PR#137, Smollet777).
+                 [M] Factory Dropper: Added Ignore-External-Redstone mode.
 
     - v1.1.4-b2  [A] Steel Catwalks added (top and bottom aligned).
                  [A] Steel Railings added.

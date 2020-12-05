@@ -38,7 +38,7 @@ public class EdCatwalkTopAlignedBlock extends DecorBlock.WaterLoggable implement
   public EdCatwalkTopAlignedBlock(long config, Block.Properties properties, final VoxelShape[] variant_shapes)
   {
     super(config, properties, variant_shapes[0]);
-    setDefaultState(getStateContainer().getBaseState().with(VARIANT, 0));
+    setDefaultState(super.getDefaultState().with(VARIANT, 0));
     this.variant_shapes = VARIANT.getAllowedValues().stream().map(i->(i<variant_shapes.length) ? (variant_shapes[i]) : (VoxelShapes.fullCube())).collect(Collectors.toList());
   }
 
