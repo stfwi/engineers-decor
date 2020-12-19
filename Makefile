@@ -35,6 +35,10 @@ mod:
 	@echo "[1.16] Building mod using gradle ..."
 	@$(GRADLE) build $(GRADLE_OPTS)
 
+run:
+	@echo "[1.16] Run client ..."
+	@$(GRADLE) runClient
+
 assets:
 	@echo "[1.16] Running asset generators ..."
 	@$(TASK) assets

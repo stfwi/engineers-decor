@@ -17,8 +17,6 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -50,8 +48,10 @@ public class EdChimneyBlock extends DecorBlock.Normal implements IDecorBlock
   @Nullable
   public BlockState getStateForPlacement(BlockItemUseContext context)
   {
+    BlockState state = super.getStateForPlacement(context);
+    if(state==null) return state;
     int p = context.getWorld().getRedstonePowerFromNeighbors(context.getPos());
-    return super.getStateForPlacement(context).with(POWER, p==0 ? 5 : p);
+    return state.with(POWER, p==0 ? 5 : p);
   }
 
   @Override

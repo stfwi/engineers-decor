@@ -51,6 +51,7 @@ import wile.engineersdecor.libmc.client.ContainerGui;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.Inventories;
 import wile.engineersdecor.libmc.detail.Inventories.InventoryRange;
+import wile.engineersdecor.libmc.detail.Inventories.StorageInventory;
 import wile.engineersdecor.libmc.detail.Networking;
 import wile.engineersdecor.libmc.detail.TooltipDisplay;
 import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
@@ -134,16 +135,16 @@ public class EdCraftingTable
       if(!explosion) {
         ItemStack stack = new ItemStack(this, 1);
         CompoundNBT inventory_nbt = new CompoundNBT();
-        ItemStackHelper.saveAllItems(inventory_nbt, ((CraftingTableTileEntity)te).stacks, false);
+        ((CraftingTableTileEntity)te).mainInventory().save(inventory_nbt, false);
         if(!inventory_nbt.isEmpty()) {
           CompoundNBT nbt = new CompoundNBT();
           nbt.put("inventory", inventory_nbt);
           stack.setTag(nbt);
         }
-        ((CraftingTableTileEntity) te).clear();
+        ((CraftingTableTileEntity) te).mainInventory().clear();
         stacks.add(stack);
       } else {
-        for(ItemStack stack: ((CraftingTableTileEntity)te).stacks) {
+        for(ItemStack stack: ((CraftingTableTileEntity)te).mainInventory()) {
           if(!stack.isEmpty()) stacks.add(stack);
         }
         ((CraftingTableTileEntity)te).reset();
@@ -156,37 +157,43 @@ public class EdCraftingTable
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class CraftingTableTileEntity extends TileEntity implements IInventory, INameable, INamedContainerProvider
+  public static class CraftingTableTileEntity extends TileEntity implements INameable, INamedContainerProvider
   {
     public static final int NUM_OF_STORAGE_SLOTS = 18;
     public static final int NUM_OF_STORAGE_ROWS = 2;
     public static final int NUM_OF_SLOTS = 9+NUM_OF_STORAGE_SLOTS;
 
-    protected NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
+    protected Inventories.StorageInventory inventory_ = new StorageInventory(this, NUM_OF_SLOTS, 1);
     protected CompoundNBT history = new CompoundNBT();
 
     public CraftingTableTileEntity()
     { this(ModContent.TET_CRAFTING_TABLE); }
 
     public CraftingTableTileEntity(TileEntityType<?> te_type)
-    { super(te_type); }
+    {
+      super(te_type);
+      inventory_.setCloseAction((player)->{
+        if(getWorld() instanceof World) {
+          BlockState state = getBlockState();
+          getWorld().notifyBlockUpdate(getPos(), state, state, 1|2|16);
+        }
+      });
+    }
 
     public void reset()
-    { stacks = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY); }
+    { inventory_.clear(); }
 
     public void readnbt(CompoundNBT nbt)
-    {
-      reset();
-      ItemStackHelper.loadAllItems(nbt, this.stacks);
-      while(this.stacks.size() < NUM_OF_SLOTS) this.stacks.add(ItemStack.EMPTY);
-      history = nbt.getCompound("history");
-    }
+    { reset(); inventory_.load(nbt); history = nbt.getCompound("history"); }
 
     private void writenbt(CompoundNBT nbt)
     {
-      ItemStackHelper.saveAllItems(nbt, this.stacks);
+      inventory_.save(nbt);
       if(!history.isEmpty()) nbt.put("history", history);
     }
+
+    public Inventories.StorageInventory mainInventory()
+    { return inventory_; }
 
     // TileEntity ------------------------------------------------------------------------------
 
@@ -209,11 +216,7 @@ public class EdCraftingTable
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) // on client
-    {
-      //@todo: check if that is still needed: super.read(pkt.getNbtCompound());
-      readnbt(pkt.getNbtCompound());
-      super.onDataPacket(net, pkt);
-    }
+    { readnbt(pkt.getNbtCompound()); super.onDataPacket(net, pkt); }
 
     @Override
     public void handleUpdateTag(BlockState state, CompoundNBT tag) // on client
@@ -245,68 +248,7 @@ public class EdCraftingTable
 
     @Override
     public Container createMenu( int id, PlayerInventory inventory, PlayerEntity player )
-    { return new CraftingTableContainer(id, inventory, this, IWorldPosCallable.of(world, pos)); }
-
-    // IInventory ------------------------------------------------------------------------------
-
-    @Override
-    public int getSizeInventory()
-    { return stacks.size(); }
-
-    @Override
-    public boolean isEmpty()
-    { for(ItemStack stack: stacks) { if(!stack.isEmpty()) return false; } return true; }
-
-    @Override
-    public ItemStack getStackInSlot(int index)
-    { return (index < getSizeInventory()) ? stacks.get(index) : ItemStack.EMPTY; }
-
-    @Override
-    public ItemStack decrStackSize(int index, int count)
-    { return ItemStackHelper.getAndSplit(stacks, index, count); }
-
-    @Override
-    public ItemStack removeStackFromSlot(int index)
-    { return ItemStackHelper.getAndRemove(stacks, index); }
-
-    @Override
-    public void setInventorySlotContents(int index, ItemStack stack)
-    { stacks.set(index, stack); }
-
-    @Override
-    public int getInventoryStackLimit()
-    { return 64; }
-
-    @Override
-    public void markDirty()
-    { super.markDirty(); }
-
-    @Override
-    public boolean isUsableByPlayer(PlayerEntity player)
-    { return ((getWorld().getTileEntity(getPos()) == this)) && (getPos().distanceSq(player.getPosition()) < 64); }
-
-    @Override
-    public void openInventory(PlayerEntity player)
-    {}
-
-    @Override
-    public void closeInventory(PlayerEntity player)
-    {
-      markDirty();
-      if(world instanceof World) {
-        BlockState state = world.getBlockState(pos);
-        world.notifyBlockUpdate(pos, state, state, 1|2);
-      }
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack)
-    { return true; }
-
-    @Override
-    public void clear()
-    { stacks.clear(); }
-
+    { return new CraftingTableContainer(id, inventory, inventory_, IWorldPosCallable.of(world, pos)); }
   }
 
   //--------------------------------------------------------------------------------------------------------------------

@@ -28,9 +28,12 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
+
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.function.BiPredicate;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 
 public class Inventories
@@ -113,7 +116,7 @@ public class Inventories
     return remaining;
   }
 
-  public static class InventoryRange implements IInventory
+  public static class InventoryRange implements IInventory, Iterable<ItemStack>
   {
     public final IInventory inventory;
     public final int offset, size, num_rows;
@@ -384,6 +387,141 @@ public class Inventories
 
     public boolean move(final InventoryRange target_range)
     { return move(target_range, false, false, true); }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    public Stream<ItemStack> stream()
+    { return java.util.stream.StreamSupport.stream(this.spliterator(), false); }
+
+    public Iterator<ItemStack> iterator()
+    { return new InventoryRangeIterator(this); }
+
+    public static class InventoryRangeIterator implements Iterator<ItemStack>
+    {
+      private final InventoryRange parent_;
+      private int index = 0;
+
+      public InventoryRangeIterator(InventoryRange range)
+      { parent_ = range; }
+
+      public boolean hasNext()
+      { return index < parent_.size; }
+
+      public ItemStack next()
+      {
+        if(index >= parent_.size) throw new NoSuchElementException();
+        return parent_.getStackInSlot(index++);
+      }
+    }
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+
+  public static class StorageInventory implements IInventory, Iterable<ItemStack>
+  {
+    protected final NonNullList<ItemStack> stacks_;
+    protected final TileEntity te_;
+    protected final int size_;
+    protected final int num_rows_;
+    protected int stack_limit_ = 64;
+    protected BiPredicate<Integer, ItemStack> validator_ = (index, stack)->true;
+    protected Consumer<PlayerEntity> open_action_ = (player)->{};
+    protected Consumer<PlayerEntity> close_action_ = (player)->{};
+
+    public StorageInventory(TileEntity te, int size, int num_rows)
+    {
+      te_ = te;
+      size_ = Math.max(size, 1);
+      stacks_ = NonNullList.<ItemStack>withSize(size_, ItemStack.EMPTY);
+      num_rows_ = MathHelper.clamp(num_rows, 1, size_);
+    }
+
+    public CompoundNBT save(CompoundNBT nbt)
+    { return ItemStackHelper.saveAllItems(nbt, stacks_); }
+
+    public CompoundNBT save(CompoundNBT nbt, boolean save_empty)
+    { return ItemStackHelper.saveAllItems(nbt, stacks_, save_empty); }
+
+    public StorageInventory load(CompoundNBT nbt)
+    {
+      ItemStackHelper.loadAllItems(nbt, stacks_);
+      while(stacks_.size() < size_) stacks_.add(ItemStack.EMPTY);
+      return this;
+    }
+
+    public NonNullList<ItemStack> stacks()
+    { return stacks_; }
+
+    public StorageInventory setOpenAction(Consumer<PlayerEntity> fn)
+    { open_action_ = fn; return this; }
+
+    public StorageInventory setCloseAction(Consumer<PlayerEntity> fn)
+    { close_action_ = fn; return this; }
+
+    public StorageInventory setStackLimit(int max_slot_stack_size)
+    { stack_limit_ = Math.max(max_slot_stack_size, 1); return this; }
+
+    // Iterable<ItemStack> ---------------------------------------------------------------------
+
+    public Iterator<ItemStack> iterator()
+    { return stacks_.iterator(); }
+
+    public Stream<ItemStack> stream()
+    { return stacks_.stream(); }
+
+    // IInventory ------------------------------------------------------------------------------
+
+    @Override
+    public int getSizeInventory()
+    { return size_; }
+
+    @Override
+    public boolean isEmpty()
+    { for(ItemStack stack: stacks_) { if(!stack.isEmpty()) return false; } return true; }
+
+    @Override
+    public ItemStack getStackInSlot(int index)
+    { return (index < size_) ? stacks_.get(index) : ItemStack.EMPTY; }
+
+    @Override
+    public ItemStack decrStackSize(int index, int count)
+    { return ItemStackHelper.getAndSplit(stacks_, index, count); }
+
+    @Override
+    public ItemStack removeStackFromSlot(int index)
+    { return ItemStackHelper.getAndRemove(stacks_, index); }
+
+    @Override
+    public void setInventorySlotContents(int index, ItemStack stack)
+    { stacks_.set(index, stack); }
+
+    @Override
+    public int getInventoryStackLimit()
+    { return stack_limit_; }
+
+    @Override
+    public void markDirty()
+    { te_.markDirty(); }
+
+    @Override
+    public boolean isUsableByPlayer(PlayerEntity player)
+    { return ((te_.getWorld().getTileEntity(te_.getPos()) == te_)) && (te_.getPos().distanceSq(player.getPosition()) < 64); }
+
+    @Override
+    public void openInventory(PlayerEntity player)
+    { open_action_.accept(player); }
+
+    @Override
+    public void closeInventory(PlayerEntity player)
+    { markDirty(); close_action_.accept(player); }
+
+    @Override
+    public boolean isItemValidForSlot(int index, ItemStack stack)
+    { return validator_.test(index, stack); }
+
+    @Override
+    public void clear()
+    { stacks_.clear(); }
 
   }
 

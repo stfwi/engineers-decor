@@ -259,7 +259,7 @@ public class ModContent
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof_skylight"));
 
-  public static final EdRoofBlock DARK_CERAMIC_SHINGLE_ROOF_CHIMNEYTRUNK = (EdRoofBlock)(new EdRoofBlock(
+  public static final EdChimneyTrunkBlock DARK_CERAMIC_SHINGLE_ROOF_CHIMNEYTRUNK = (EdChimneyTrunkBlock)(new EdChimneyTrunkBlock(
     DecorBlock.CFG_DEFAULT,
     Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE),
     VoxelShapes.create(Auxiliaries.getPixeledAABB(3, 0, 3, 13, 16, 13)),

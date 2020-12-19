@@ -496,7 +496,7 @@ public class EdElectricalFurnace
       } else if(energy_stored_ >= (MAX_ENERGY_BUFFER/2)) {
         enabled_ = true;
       }
-      if((!(stacks_.get(SMELTING_INPUT_SLOT_NO)).isEmpty()) && (enabled_) && (speed_>0) && (speed_<=MAX_SPEED_SETTING)) {
+      if((!(stacks_.get(SMELTING_INPUT_SLOT_NO)).isEmpty()) && (enabled_) && (speed_>0)) {
         IRecipe last_recipe = currentRecipe();
         updateCurrentRecipe();
         if(currentRecipe() != last_recipe) {
@@ -508,13 +508,14 @@ public class EdElectricalFurnace
           // bypass
           if(transferItems(SMELTING_INPUT_SLOT_NO, SMELTING_OUTPUT_SLOT_NO, 1)) dirty = true;
         } else {
-          // smelt
+          // smelt, automatically choke speed on low power storage
+          final int speed = MathHelper.clamp((getEnergyStored()>getMaxEnergyStored()/5)? (speed_) : (1), 1, MAX_SPEED_SETTING);
           if(!burning() && can_smelt) {
-            if(heat_up()) { dirty = true; update_blockstate = true; }
+            if(heat_up(speed)) { dirty = true; update_blockstate = true; }
           }
           if(burning() && can_smelt) {
-            if(heat_up()) dirty = true;
-            proc_time_elapsed_ += (int)(TICK_INTERVAL * proc_speed_percent_ * speed_setting_factor_[speed_] / 100);
+            if(heat_up(speed)) dirty = true;
+            proc_time_elapsed_ += (int)(TICK_INTERVAL * proc_speed_percent_ * speed_setting_factor_[speed] / 100);
             if(proc_time_elapsed_ >= proc_time_needed_) {
               proc_time_elapsed_ = 0;
               proc_time_needed_ = getSmeltingTimeNeeded(world, stacks_.get(SMELTING_INPUT_SLOT_NO));
@@ -626,9 +627,12 @@ public class EdElectricalFurnace
       return dirty;
     }
 
-    int energy_consumption()
+    private int energy_consumption()
+    { return energy_consumption(speed_); }
+
+    private int energy_consumption(int speed)
     {
-      switch(speed_) {
+      switch(speed) {
         case 1: return energy_consumption_;
         case 2: return energy_consumption_ * 2;
         case 3: return energy_consumption_ * 4;
@@ -636,9 +640,9 @@ public class EdElectricalFurnace
       }
     }
 
-    private boolean heat_up()
+    private boolean heat_up(int speed)
     {
-      int p = energy_consumption();
+      int p = energy_consumption(speed);
       if((p<=0) || (energy_stored_ < p)) return false;
       if(burntime_left_ >= (HEAT_CAPACITY-HEAT_INCREMENT)) return false;
       energy_stored_ -= p;
@@ -806,7 +810,7 @@ public class EdElectricalFurnace
     }
 
     @Override
-    public void render/*render*/(MatrixStack mx, int mouseX, int mouseY, float partialTicks)
+    public void render(MatrixStack mx, int mouseX, int mouseY, float partialTicks)
     {
       renderBackground/*renderBackground*/(mx);
       super.render(mx, mouseX, mouseY, partialTicks);
@@ -845,7 +849,7 @@ public class EdElectricalFurnace
     }
 
     @Override
-    public boolean mouseClicked/*mouseClicked*/(double mouseX, double mouseY, int mouseButton)
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
       tooltip_.resetTimer();
       ElectricalFurnaceContainer container = (ElectricalFurnaceContainer)getContainer();

@@ -28,8 +28,4 @@ public class EdDoorBlock extends StandardDoorBlock implements IDecorBlock
   public EdDoorBlock(long config, Block.Properties properties)
   { super(config, properties); }
 
-  //@Override
-  //@SuppressWarnings("deprecation")
-  //public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)
-  //{ return state.get(OPEN) ? VoxelShapes.empty() : super.getCollisionShape(state, world, pos, context); }
 }

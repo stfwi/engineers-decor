@@ -9,6 +9,7 @@
  */
 package wile.engineersdecor.detail;
 
+import net.minecraft.util.text.ITextComponent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.blocks.EdCraftingTable;
 import net.minecraft.client.renderer.*;
@@ -44,10 +45,10 @@ public class ModRenderers
     public InvisibleEntityRenderer(EntityRendererManager renderManagerIn)
     { super(renderManagerIn); }
 
-    public void func_225623_a_/*render*/(T p_225623_1_, float p_225623_2_, float p_225623_3_, MatrixStack p_225623_4_, IRenderTypeBuffer p_225623_5_, int p_225623_6_)
+    public void render(T entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLight)
     {}
 
-    public Vector3d func_225627_b_/*likely getOffset*/(T p_225627_1_, float p_225627_2_)
+    public Vector3d getRenderOffset(T entity, float partialTicks)
     { return Vector3d.ZERO; }
 
     @SuppressWarnings("deprecation")
@@ -57,7 +58,7 @@ public class ModRenderers
     protected boolean canRenderName(T entity)
     { return false; }
 
-    protected void func_225629_a_/*renderName/renderLabel*/(T p_225629_1_, String p_225629_2_, MatrixStack p_225629_3_, IRenderTypeBuffer p_225629_4_, int p_225629_5_)
+    protected void renderName(T entity, ITextComponent displayName, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLight)
     {}
   }
 
@@ -92,7 +93,7 @@ public class ModRenderers
         long posrnd = te.getPos().toLong();
         posrnd = (posrnd>>16)^(posrnd<<1);
         for(int i=0; i<9; ++i) {
-          final ItemStack stack = te.getStackInSlot(i);
+          final ItemStack stack = te.mainInventory().getStackInSlot(i);
           if(stack.isEmpty()) continue;
           float prnd = ((float)(((Integer.rotateRight(stack.getItem().hashCode()^(int)posrnd,(stack.getCount()+i)&31)))&1023))/1024f;
           float rndo = gap * ((prnd*0.1f)-0.05f);

@@ -678,7 +678,7 @@ public class ModConfig
     // currently no file config planned
     EdLabeledCrate.on_config(false);
     EdFluidFunnel.on_config(with_experimental_features_); // @todo: double check for abuse as pump first
-    EdDropper.on_config(with_experimental_features_); // @todo: double check handler cross-mod-compat first
+    EdDropper.on_config(true);
     EdFluidBarrel.on_config(12000, 1000);
     // -----------------------------------------------------------------------------------------------------------------
     {

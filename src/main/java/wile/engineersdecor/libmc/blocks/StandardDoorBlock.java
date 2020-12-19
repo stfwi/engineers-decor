@@ -137,14 +137,7 @@ public class StandardDoorBlock extends DoorBlock implements StandardBlocks.IStan
 
   @Override
   public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
-  {
-    boolean open = !state.get(OPEN);
-    state = state.with(OPEN, open);
-    world.setBlockState(pos, state, 2|8);
-    sound(world, pos, open);
-    actuate_adjacent_wing(state, world, pos, open);
-    return ActionResultType.func_233537_a_(world.isRemote());
-  }
+  { openDoor(world, state, pos, !state.get(OPEN)); return ActionResultType.func_233537_a_(world.isRemote()); }
 
   @Override
   public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving)
@@ -155,4 +148,15 @@ public class StandardDoorBlock extends DoorBlock implements StandardBlocks.IStan
     actuate_adjacent_wing(state, world, pos, powered);
     if(powered != state.get(OPEN)) sound(world, pos, powered);
   }
+
+  @Override
+  public void openDoor(World world, BlockState state, BlockPos pos, boolean open)
+  {
+    if(!state.isIn(this) || (state.get(OPEN) == open)) return;
+    state = state.with(OPEN, open);
+    world.setBlockState(pos, state, 2|8);
+    sound(world, pos, open);
+    actuate_adjacent_wing(state, world, pos, open);
+  }
+
 }

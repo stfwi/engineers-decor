@@ -244,6 +244,7 @@ public class EdDropper
     private int tick_timer_ = 0;
     protected NonNullList<ItemStack> stacks_;
     protected final InventoryRange storage_slot_range_;
+    protected final InventoryRange filter_slot_range_;
 
     public static void on_config(int cooldown_ticks)
     {
@@ -258,6 +259,7 @@ public class EdDropper
       super(te_type);
       stacks_ = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
       storage_slot_range_ = new InventoryRange(this, INPUT_SLOTS_FIRST, INPUT_SLOTS_SIZE);
+      filter_slot_range_ = new InventoryRange(this, CTRL_SLOTS_FIRST, CTRL_SLOTS_SIZE);
       reset_rtstate();
     }
 
@@ -596,6 +598,7 @@ public class EdDropper
       if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
       if(!(world.getBlockState(pos).getBlock() instanceof DropperBlock)) return;
+      if(storage_slot_range_.isEmpty()) return;
       final boolean continuous_mode = (drop_logic_ & DROPLOGIC_CONTINUOUS)!=0;
       boolean dirty = block_power_updated_;
       boolean redstone_trigger = (block_power_signal_ && ((block_power_updated_) || (continuous_mode))) || ((drop_logic_ & DROPLOGIC_IGNORE_EXT)!=0);
@@ -604,15 +607,10 @@ public class EdDropper
       boolean trigger;
       // Trigger logic
       {
-        boolean droppable_slot_found = false;
-        for(int i=INPUT_SLOTS_FIRST; i<(INPUT_SLOTS_FIRST+INPUT_SLOTS_SIZE); ++i) {
-          if(stacks_.get(i).getCount() >= drop_count_) { droppable_slot_found = true; break; }
-        }
         // From filters / inventory checks
         {
           int filter_nset = 0;
           int last_filter_matches_[] = filter_matches_.clone();
-          boolean slot_assigned = false;
           for(int ci=0; ci<CTRL_SLOTS_SIZE; ++ci) {
             filter_matches_[ci] = 0;
             final ItemStack cmp_stack = stacks_.get(CTRL_SLOTS_FIRST+ci);
@@ -621,8 +619,7 @@ public class EdDropper
             final int cmp_stack_count = cmp_stack.getCount();
             int inventory_item_count = 0;
             int slot = drop_slot_index_;
-            for(int i=INPUT_SLOTS_FIRST; i<(INPUT_SLOTS_FIRST+INPUT_SLOTS_SIZE); ++i) {
-              final ItemStack inp_stack = stacks_.get(slot);
+            for(final ItemStack inp_stack:storage_slot_range_) {
               if(Inventories.areItemStacksDifferent(inp_stack, cmp_stack)) { slot = next_slot(slot); continue; }
               inventory_item_count += inp_stack.getCount();
               if(inventory_item_count < cmp_stack_count) { slot = next_slot(slot); continue; }
@@ -648,7 +645,7 @@ public class EdDropper
             trigger = redstone_trigger;
           }
           if(triggered_) { triggered_ = false; trigger = true; }
-          if(!droppable_slot_found) {
+          if(storage_slot_range_.stream().noneMatch(is->is.getCount() >= drop_count_)) {
             if(open_timer_> 10) open_timer_ = 10; // override if dropping is not possible at all.
           } else if(trigger || filter_trigger || redstone_trigger) {
             open_timer_ = SHUTTER_CLOSE_DELAY;
@@ -672,18 +669,16 @@ public class EdDropper
         if(!filter_trigger) {
           for(int i=0; i<INPUT_SLOTS_SIZE; ++i) {
             if(drop_slot_index_ >= INPUT_SLOTS_SIZE) drop_slot_index_ = 0;
-            int ic = drop_slot_index_;
+            final int ic = drop_slot_index_;
             drop_slot_index_ = next_slot(drop_slot_index_);
             ItemStack ds = stacks_.get(ic);
             if((!ds.isEmpty()) && (ds.getCount() >= drop_count_)) {
-              {
-                boolean skip_stack = false;
-                for(int ci = 0; (ci<CTRL_SLOTS_SIZE)&&(!skip_stack); ++ci) {
-                  final ItemStack cmp_stack = stacks_.get(CTRL_SLOTS_FIRST+ci);
-                  if(Inventories.areItemStacksIdentical(ds, cmp_stack)) skip_stack = true;
-                }
-                if(skip_stack) continue;
+              boolean skip_stack = false;
+              for(int ci = 0; (ci<CTRL_SLOTS_SIZE)&&(!skip_stack); ++ci) {
+                final ItemStack cmp_stack = stacks_.get(CTRL_SLOTS_FIRST+ci);
+                if(Inventories.areItemStacksIdentical(ds, cmp_stack)) skip_stack = true;
               }
+              if(skip_stack) continue;
               drop_stacks[0] = ds.split(drop_count_);
               stacks_.set(ic, ds);
               break;
@@ -711,23 +706,31 @@ public class EdDropper
           }
         }
         // drop action
-        Tuple<Boolean, List<ItemStack>> res = try_eject(world, pos, state.get(DropperBlock.FACING), drop_stacks, drop_speed_, drop_xdev_, drop_ydev_, drop_noise_);
-        final boolean dropped = res.getA();
-        final List<ItemStack> remaining = res.getB();
-        for(ItemStack st:remaining) {
-          if(!storage_slot_range_.insert(st).isEmpty()) ModEngineersDecor.logger().debug("NOT ALL NON-DROPPED ITEMS PUT BACK:" + st);
-        }
-        if(dropped || (!remaining.isEmpty())) dirty = true;
-        // cooldown
-        if(dropped) drop_timer_ = DROP_PERIOD_OFFSET + drop_period_ * 2; // 0.1s time base -> 100%===10s
-        // drop sound
-        if(dropped && ((drop_logic_ & DROPLOGIC_SILENT_DROP) == 0)) {
-          world.playSound(null, pos, SoundEvents.BLOCK_WOOD_HIT, SoundCategory.BLOCKS, 0.1f, 4f);
+        if(Arrays.stream(drop_stacks).allMatch(ItemStack::isEmpty)) {
+          // @todo: check if a re-stacking action is appropriate, or if players intentionally use the stack-in-place feature.
+        } else {
+          Tuple<Boolean, List<ItemStack>> res = try_eject(world, pos, state.get(DropperBlock.FACING), drop_stacks, drop_speed_, drop_xdev_, drop_ydev_, drop_noise_);
+          final boolean dropped = res.getA();
+          final List<ItemStack> remaining = res.getB();
+          for(ItemStack st:remaining) {
+            if(!storage_slot_range_.insert(st).isEmpty()) ModEngineersDecor.logger().debug("NOT ALL NON-DROPPED ITEMS PUT BACK:" + st);
+          }
+          if(dropped || (!remaining.isEmpty())) dirty = true;
+          // cooldown
+          if(dropped) drop_timer_ = DROP_PERIOD_OFFSET + drop_period_ * 2; // 0.1s time base -> 100%===10s
+          // drop sound
+          if(dropped && ((drop_logic_ & DROPLOGIC_SILENT_DROP) == 0)) {
+            world.playSound(null, pos, SoundEvents.BLOCK_WOOD_HIT, SoundCategory.BLOCKS, 0.1f, 4f);
+          }
         }
         // advance to next nonempty slot.
-        for(int i = 0; i < INPUT_SLOTS_SIZE; ++i) {
-          if(!stacks_.get(drop_slot_index_).isEmpty()) break;
-          drop_slot_index_ = next_slot(drop_slot_index_);
+        {
+          boolean found = false;
+          for(int i = 0; i < storage_slot_range_.size; ++i) {
+            if(!stacks_.get(drop_slot_index_).isEmpty()) { found=true; break; }
+            drop_slot_index_ = next_slot(drop_slot_index_);
+          }
+          if(!found) drop_slot_index_ = 0;
         }
       }
       if(dirty) markDirty();

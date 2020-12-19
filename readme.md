@@ -11,7 +11,14 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
-    - v1.1.5     [F] Fixed Crafting Table JEI storage slot count.
+    - v1.1.6-b1  [F] Fixed Metal Crafting Table Hopper access (issue #147, ty umerrr).
+                 [F] Fixed Dark Shingle Roof Chimney placement restriction (issue #149, thx WenXin20).
+                 [F] Door tags added for Wood Door and Metal Sliding Door (issue #150, thx WenXin20).
+                 [A] Electrical Furnace automatically chokes speed and power consumption when the internally
+                     stored power is below 20%.
+
+    - v1.1.5     [R] Release build v1.1.5.
+                 [F] Fixed Crafting Table JEI storage slot count.
                  [F] Fixed Factory Hopper removed item collection dupe bug (issue #146, thx FatheredPuma81).
                  [F] Increased device GUI access ranges beyond the player block selection range.
                  [A] Window placement handling improved.

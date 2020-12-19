@@ -1,7 +1,8 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.16.4": {
-    "1.1.5": "[F] Fixed Crafting Table JEI storage slot count.\n[F] Fixed Factory Hopper removed item collection dupe bug (issue #146, thx FatheredPuma81).\n[F] Increased device GUI access ranges beyond the player block selection range.\n[A] Window placement handling improved.\n[M] Steel/Wood Pole and Double-T support placement improved (issue #139, thx Biviho).\n[M] Metal Sliding Door bottom/top shape when opened added.",
+    "1.1.6-b1": "[F] Fixed Metal Crafting Table Hopper access (issue #147, ty umerrr).\n[F] Fixed Dark Shingle Roof Chimney placement restriction (issue #149, thx WenXin20).\n[F] Door tags added for Wood Door and Metal Sliding Door (issue #150, thx WenXin20).\n[A] Electrical Furnace automatically chokes speed and power consumption when the internally stored power is below 20%.",
+    "1.1.5": "[R] Release build v1.1.5.\n[F] Fixed Crafting Table JEI storage slot count.\n[F] Fixed Factory Hopper removed item collection dupe bug (issue #146, thx FatheredPuma81).\n[F] Increased device GUI access ranges beyond the player block selection range.\n[A] Window placement handling improved.\n[M] Steel/Wood Pole and Double-T support placement improved (issue #139, thx Biviho).\n[M] Metal Sliding Door bottom/top shape when opened added.",
     "1.1.4": "[R] Release build v1.1.4.\n[F] Solar Panel balancing threshold tuned.\n[F] Fixed Catwalk default state (issue #140, thx hvdklauw).\n[M] Updated lang ru_ru file (PR#137, Smollet777).\n[M] Factory Dropper: Added Ignore-External-Redstone mode.",
     "1.1.4-b2": "[A] Steel Catwalks added (top and bottom aligned).\n[A] Steel Railings added.\n[F] Fixed Empty Fluid Barrel crafting crash (ty inflamedsebi).\n[A] Added Solar Panel power balancing.\n[M] GUI Button tooltip delay reduced to 800ms.\n[M] Hopper and Placer: Added \"Redstone ignored\" mode, changed icons from signal-like to Redstone-Torch-like.\n[M] Treated Wood Ladder now crafted from Old Industrial Wood, as Treated Wood Sticks now count as normal Sticks.",
     "1.1.4-b1": "[U] Ported to 1.16.4.",
@@ -21,6 +22,6 @@
   },
   "promos": {
     "1.16.4-recommended": "1.1.5",
-    "1.16.4-latest": "1.1.5"
+    "1.16.4-latest": "1.1.6-b1"
   }
 }
