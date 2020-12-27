@@ -8,13 +8,11 @@
  */
 package wile.engineersdecor.blocks;
 
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.libmc.detail.Fluidics;
-import wile.engineersdecor.libmc.detail.Inventories;
+import net.minecraftforge.common.util.Constants;
+import wile.engineersdecor.libmc.detail.*;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.detail.ExternalObjects;
-import wile.engineersdecor.libmc.detail.Overlay;
 import net.minecraft.world.World;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.IBlockReader;
@@ -98,6 +96,10 @@ public class EdMilker
     }
 
     @Override
+    public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+    { return false; }
+
+    @Override
     public boolean hasTileEntity(BlockState state)
     { return true; }
 
@@ -153,7 +155,7 @@ public class EdMilker
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class MilkerTileEntity extends TileEntity implements ITickableTileEntity, IEnergyStorage, IFluidTank, ICapabilityProvider
+  public static class MilkerTileEntity extends TileEntity implements ITickableTileEntity, IFluidTank, ICapabilityProvider
   {
     public static final int BUCKET_SIZE = 1000;
     public static final int TICK_INTERVAL = 80;
@@ -171,21 +173,24 @@ public class EdMilker
 
     private static FluidStack milk_fluid_ = NO_MILK_FLUID;
     private static HashMap<ItemStack, ItemStack> milk_containers_ = new HashMap<>();
-    private static int energy_consumption = DEFAULT_ENERGY_CONSUMPTION;
-    private static long min_milking_delay_per_cow_ticks = DEFAULT_MILKING_DELAY_PER_COW;
+    private static int energy_consumption_ = DEFAULT_ENERGY_CONSUMPTION;
+    private static long min_milking_delay_per_cow_ticks_ = DEFAULT_MILKING_DELAY_PER_COW;
     private int tick_timer_;
-    private int energy_stored_;
-    private int tank_level_ = 0;
     private UUID tracked_cow_ = null;
     private MilkingState state_ = MilkingState.IDLE;
     private int state_timeout_ = 0;
     private int state_timer_ = 0;
     private BlockPos tracked_cow_original_position_ = null;
+    private final RfEnergy.Battery battery_;
+    private final LazyOptional<IEnergyStorage> energy_handler_;
+    private final Fluidics.Tank tank_;
+    private final LazyOptional<IFluidHandler> fluid_handler_;
+
 
     public static void on_config(int energy_consumption_per_tick, int min_milking_delay_per_cow)
     {
-      energy_consumption = MathHelper.clamp(energy_consumption_per_tick, 0, 1024);
-      min_milking_delay_per_cow_ticks = MathHelper.clamp(min_milking_delay_per_cow, 1000, 24000);
+      energy_consumption_ = MathHelper.clamp(energy_consumption_per_tick, 0, 1024);
+      min_milking_delay_per_cow_ticks_ = MathHelper.clamp(min_milking_delay_per_cow, 1000, 24000);
       {
         ResourceLocation milk_rl = ForgeRegistries.FLUIDS.getKeys().stream().filter(rl->rl.getPath().equals("milk")).findFirst().orElse(null);
         if(milk_rl != null) {
@@ -198,7 +203,7 @@ public class EdMilker
         if(ExternalObjects.BOTTLED_MILK_BOTTLE_DRINKLABLE!=null) milk_containers_.put(new ItemStack(Items.GLASS_BOTTLE), new ItemStack(ExternalObjects.BOTTLED_MILK_BOTTLE_DRINKLABLE));
       }
       ModEngineersDecor.logger().info(
-        "Config milker: energy consumption:" + energy_consumption + "rf/t"
+        "Config milker: energy consumption:" + energy_consumption_ + "rf/t"
           + ((milk_fluid_==NO_MILK_FLUID)?"":" [milk fluid available]")
           + ((ExternalObjects.BOTTLED_MILK_BOTTLE_DRINKLABLE==null)?"":" [bottledmilk mod available]")
       );
@@ -208,12 +213,19 @@ public class EdMilker
     { this(ModContent.TET_SMALL_MILKING_MACHINE); }
 
     public MilkerTileEntity(TileEntityType<?> te_type)
-    { super(te_type); reset(); }
+    {
+      super(te_type);
+      tank_ = new Fluidics.Tank(TANK_CAPACITY, 0, BUCKET_SIZE, (fs)->(has_milk_fluid() && fs.isFluidEqual(milk_fluid_)));
+      fluid_handler_ = tank_.createFluidHandler();
+      battery_ = new RfEnergy.Battery(MAX_ENERGY_BUFFER, MAX_ENERGY_TRANSFER, 0);
+      energy_handler_ = battery_.createEnergyHandler();
+      reset();
+    }
 
     public void reset()
     {
-      tank_level_ = 0;
-      energy_stored_ = 0;
+      tank_.clear();
+      battery_.clear();
       tick_timer_ = 0;
       tracked_cow_ = null;
       state_ = MilkingState.IDLE;
@@ -232,29 +244,29 @@ public class EdMilker
 
     public void readnbt(CompoundNBT nbt, boolean update_packet)
     {
-      tank_level_ = nbt.getInt("tank");
-      energy_stored_ = nbt.getInt("energy");
+      battery_.load(nbt);
+      tank_.load(nbt);
     }
 
     protected void writenbt(CompoundNBT nbt, boolean update_packet)
     {
-      if(tank_level_ > 0) nbt.putInt("tank", tank_level_);
-      if(energy_stored_ > 0) nbt.putInt("energy", energy_stored_ );
+      tank_.save(nbt);
+      if(!battery_.isEmpty()) battery_.save(nbt);
     }
 
     private IFluidHandler fluid_handler()
     { return fluid_handler_.orElse(null); }
 
     private int fluid_level()
-    { return MathHelper.clamp(tank_level_, 0, TANK_CAPACITY); }
+    { return tank_.getFluidAmount(); }
 
-    private void drain(int amount)
-    { tank_level_ = MathHelper.clamp(tank_level_-BUCKET_SIZE, 0, TANK_CAPACITY); markDirty(); }
+    private FluidStack drain(int amount)
+    { return tank_.drain(amount); }
 
     public void state_message(PlayerEntity player)
     {
-      ITextComponent rf = (energy_consumption <= 0) ? (new StringTextComponent("")) : (Auxiliaries.localizable("block.engineersdecor.small_milking_machine.status.rf", new Object[]{energy_stored_}));
-      Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.small_milking_machine.status", new Object[]{tank_level_, rf}));
+      ITextComponent rf = (energy_consumption_ <= 0) ? (new StringTextComponent("")) : (Auxiliaries.localizable("block.engineersdecor.small_milking_machine.status.rf", new Object[]{battery_.getEnergyStored()}));
+      Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.small_milking_machine.status", new Object[]{tank_.getFluidAmount(), rf}));
     }
 
     // TileEntity ------------------------------------------------------------------------------
@@ -274,30 +286,6 @@ public class EdMilker
       energy_handler_.invalidate();
       fluid_handler_.invalidate();
     }
-
-    // IEnergyStorage ----------------------------------------------------------------------------
-
-    protected LazyOptional<IEnergyStorage> energy_handler_ = LazyOptional.of(() -> (IEnergyStorage)this);
-
-    @Override public boolean canExtract()     { return false; }
-    @Override public boolean canReceive()     { return true; }
-    @Override public int getMaxEnergyStored() { return MAX_ENERGY_BUFFER; }
-    @Override public int getEnergyStored()    { return energy_stored_; }
-    @Override public int extractEnergy(int maxExtract, boolean simulate) { return 0; }
-
-    @Override
-    public int receiveEnergy(int maxReceive, boolean simulate)
-    {
-      if(energy_stored_ >= MAX_ENERGY_BUFFER) return 0;
-      int n = Math.min(maxReceive, (MAX_ENERGY_BUFFER - energy_stored_));
-      if(n > MAX_ENERGY_TRANSFER) n = MAX_ENERGY_TRANSFER;
-      if(!simulate) {energy_stored_ += n; markDirty(); }
-      return n;
-    }
-
-    // IFluidHandler ---------------------------------------------------------------------------------------
-
-    private LazyOptional<IFluidHandler> fluid_handler_ = LazyOptional.of(() -> (IFluidHandler)new Fluidics.SingleTankFluidHandler(this));
 
     // IFluidTank ------------------------------------------------------------------------------------------
 
@@ -335,10 +323,7 @@ public class EdMilker
     public FluidStack drain(int maxDrain, FluidAction action)
     {
       if((!has_milk_fluid()) || (fluid_level() <= 0)) return FluidStack.EMPTY;
-      FluidStack fs = milk_fluid_.copy();
-      fs.setAmount(Math.min(fs.getAmount(), fluid_level()));
-      if(action==FluidAction.EXECUTE) tank_level_ -= fs.getAmount();
-      return fs;
+      return tank_.drain(maxDrain, action);
     }
 
     // ICapabilityProvider ---------------------------------------------------------------------------
@@ -347,7 +332,7 @@ public class EdMilker
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
       if((capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) && has_milk_fluid()) return fluid_handler_.cast();
-      if((capability == CapabilityEnergy.ENERGY) && (energy_consumption>0)) return energy_handler_.cast();
+      if((capability == CapabilityEnergy.ENERGY) && (energy_consumption_>0)) return energy_handler_.cast();
       return super.getCapability(capability, facing);
     }
 
@@ -369,13 +354,13 @@ public class EdMilker
       if(src==null) { src = dst; } else if(dst==null) { dst = src; }
       if((src==null) || (dst==null)) return false;
       boolean dirty = false;
-      while((tank_level_ >= BUCKET_SIZE)) {
+      while((tank_.getFluidAmount() >= BUCKET_SIZE)) {
         boolean inserted = false;
         for(Entry<ItemStack,ItemStack> e:milk_containers_.entrySet()) {
           if(Inventories.extract(src, e.getKey(), 1, true).isEmpty()) continue;
           if(!Inventories.insert(dst, e.getValue().copy(), false).isEmpty()) continue;
           Inventories.extract(src, e.getKey(), 1, false);
-          tank_level_ -= BUCKET_SIZE;
+          tank_.drain(BUCKET_SIZE);
           inserted = true;
           dirty = true;
           break;
@@ -392,7 +377,7 @@ public class EdMilker
       for(Direction dir:Direction.values()) {
         int amount = Fluidics.fill(getWorld(), getPos().offset(dir), dir.getOpposite(), fs);
         if(amount > 0) {
-          tank_level_ = Math.max(fluid_level() - amount, 0);
+          tank_.drain(amount);
           return true;
         }
       }
@@ -429,7 +414,7 @@ public class EdMilker
             if(e.getUniqueID().equals(tracked_cow_)) return true;
             if((tracked_cow_!=null) || e.isChild() || e.isInLove() || e.isBeingRidden()) return false;
             if(!e.getNavigator().noPath()) return false;
-            if(Math.abs(tracked_cows_.getOrDefault(e.getEntityId(), 0L)-t) < min_milking_delay_per_cow_ticks) return false;
+            if(Math.abs(tracked_cows_.getOrDefault(e.getEntityId(), 0L)-t) < min_milking_delay_per_cow_ticks_) return false;
             return true;
           }
         );
@@ -512,7 +497,7 @@ public class EdMilker
           return false;
         }
         case MILKING: {
-          tank_level_ = MathHelper.clamp(tank_level_+BUCKET_SIZE, 0, TANK_CAPACITY);
+          tank_.fill(milk_fluid_.copy(), FluidAction.EXECUTE);
           state_timeout_ = 600;
           state_ = MilkingState.LEAVING;
           state_timer_ = 20;
@@ -558,24 +543,19 @@ public class EdMilker
       final BlockState block_state = world.getBlockState(pos);
       if(!(block_state.getBlock() instanceof MilkerBlock)) return;
       if(!world.isBlockPowered(pos) || (state_ != MilkingState.IDLE)) {
-        if(energy_consumption > 0) {
-          if(energy_stored_ <= 0) return;
-          energy_stored_ = MathHelper.clamp(energy_stored_-energy_consumption, 0, MAX_ENERGY_BUFFER);
-        }
+        if((energy_consumption_ > 0) && (!battery_.draw(energy_consumption_))) return;
         // Track and milk cows
         if(milking_process()) dirty = true;
         // Fluid transfer
-        if((milk_fluid_.getAmount() > 0) && (fluid_level() >= BUCKET_SIZE)) {
+        if(has_milk_fluid() && (!tank_.isEmpty())) {
           log("Fluid transfer");
           for(Direction facing: FLUID_TRANSFER_DIRECTRIONS) {
-            IFluidHandler fh = FluidUtil.getFluidHandler(world, pos.offset(facing), facing.getOpposite()).orElse(null);
+            final IFluidHandler fh = FluidUtil.getFluidHandler(world, pos.offset(facing), facing.getOpposite()).orElse(null);
             if(fh == null) continue;
-            FluidStack fs = milk_fluid_.copy();
-            fs.setAmount(BUCKET_SIZE);
-            int nfilled = MathHelper.clamp(fh.fill(fs, FluidAction.EXECUTE), 0, BUCKET_SIZE);
+            final FluidStack fs = tank_.drain(BUCKET_SIZE, FluidAction.SIMULATE);
+            int nfilled = fh.fill(fs, FluidAction.EXECUTE);
             if(nfilled <= 0) continue;
-            tank_level_ -= nfilled;
-            if(tank_level_ < 0) tank_level_ = 0;
+            tank_.drain(nfilled, FluidAction.EXECUTE);
             dirty = true;
             break;
           }

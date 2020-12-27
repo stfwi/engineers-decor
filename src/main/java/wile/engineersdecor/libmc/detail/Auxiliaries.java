@@ -151,7 +151,7 @@ public class Auxiliaries
             if(!r) m = "";
           }
         }
-        mt.appendReplacement(sb, (new TranslationTextComponent(m)).getString().trim());
+        mt.appendReplacement(sb, Matcher.quoteReplacement((new TranslationTextComponent(m)).getString().trim()));
       }
       mt.appendTail(sb);
       return sb.toString();

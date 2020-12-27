@@ -111,6 +111,12 @@ public class Networking
       DEFAULT_CHANNEL.sendTo(new PacketTileNotifyServerToClient(te, nbt), ((ServerPlayerEntity)player).connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
     }
 
+    public static void sendToPlayers(TileEntity te, CompoundNBT nbt)
+    {
+      if(te==null) return;
+      for(PlayerEntity player: te.getWorld().getPlayers()) sendToPlayer(player, te, nbt);
+    }
+
     public PacketTileNotifyServerToClient()
     {}
 

@@ -145,7 +145,7 @@
   "block.engineersdecor.iron_inset_light.help": "§6小型荧石光源，能嵌入地板、天花板或墙里。§r\n 用于照亮电力光源难以安装的地方。 亮度与火把一样。",
   "block.engineersdecor.labeled_crate": "贴标签的板条箱",
   "block.engineersdecor.labeled_crate.help": "§6具备 9x6 大小格子的木箱，前面自带一个物品展示框。§r\n将物品放置在 GUI 右下角的框架槽内，可以定义所显示的标签。",
-  "block.engineersdecor.labeled_crate.tip": "§6标签：§r %1$s\n已使用 %2$s / 剩余 %3$s \n共存储 %4$s 件物品",
+  "block.engineersdecor.labeled_crate.tip": "§6标签：§r %1$s\n已使用 %2$s / 剩余 %3$s \n共存储 %4$s 件物品\n---\n%5$s",
   "block.engineersdecor.metal_crafting_table": "防腐木合成台",
   "block.engineersdecor.metal_crafting_table.help": "§6坚固，防风防雨。§r内含八个存储格，破坏后保留内容物，没有原版合成书。\n 单击上/下箭头按钮可选择合成历史，单击输出格自动放置物品，单击X按钮 清除合成栏和历史。Shift单击一叠物品：合成格空时转移到存储格， 非空时到合成栏。会自动分配转移的物品。",
   "block.engineersdecor.metal_crafting_table.tooltips.clear": "Clear grid to player inventory",

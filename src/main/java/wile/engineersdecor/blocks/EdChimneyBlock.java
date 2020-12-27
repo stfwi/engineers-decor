@@ -16,10 +16,12 @@ import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -66,6 +68,10 @@ public class EdChimneyBlock extends DecorBlock.Normal implements IDecorBlock
     int p = world.getRedstonePowerFromNeighbors(pos);
     if(p != state.get(POWER)) world.setBlockState(pos, state.with(POWER, p), 2);
   }
+
+  @Override
+  public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+  { return false; }
 
   @Override
   @OnlyIn(Dist.CLIENT)

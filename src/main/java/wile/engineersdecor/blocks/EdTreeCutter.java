@@ -8,6 +8,7 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.world.IWorldReader;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.detail.TreeCutting;
@@ -95,6 +96,10 @@ public class EdTreeCutter
       if(te instanceof TreeCutterTileEntity) ((TreeCutterTileEntity)te).state_message(player);
       return ActionResultType.CONSUME;
     }
+
+    @Override
+    public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+    { return false; }
   }
 
   //--------------------------------------------------------------------------------------------------------------------

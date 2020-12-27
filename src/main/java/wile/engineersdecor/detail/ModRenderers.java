@@ -150,14 +150,10 @@ public class ModRenderers
         double ox = tr[di][0], oy = tr[di][1], oz = tr[di][2];
         float ry = (float)tr[di][3];
         mxs.push();
-        //GlStateManager.disableLighting();
-        //RenderHelper.enableStandardItemLighting();
         mxs.translate(0.5+ox, 0.5+oy, 0.5+oz);
         mxs.rotate(Vector3f.YP.rotationDegrees(ry));
         mxs.scale(scaler, scaler, scaler);
         Minecraft.getInstance().getItemRenderer().renderItem(stack, net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType.FIXED, i5, i6, mxs, buf);
-        //RenderHelper.disableStandardItemLighting();
-        //GlStateManager.enableLighting();
         mxs.pop();
       } catch(Throwable e) {
         if(--tesr_error_counter<=0) {

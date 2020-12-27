@@ -9,9 +9,7 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraftforge.common.util.Constants;
-import wile.engineersdecor.ModContent;
-import wile.engineersdecor.ModEngineersDecor;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.block.*;
@@ -40,6 +38,8 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import wile.engineersdecor.libmc.detail.Fluidics;
+import wile.engineersdecor.ModContent;
+import wile.engineersdecor.ModEngineersDecor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -136,6 +136,10 @@ public class EdFreezer
     }
 
     @Override
+    public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+    { return false; }
+
+    @Override
     @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, World world, BlockPos pos, Random rnd)
     {}
@@ -155,6 +159,7 @@ public class EdFreezer
     public static final int MAX_FLUID_LEVEL = 2000;
     public static final int MAX_ENERGY_BUFFER = 32000;
     public static final int MAX_ENERGY_TRANSFER = 8192;
+    public static final int TANK_CAPACITY = 2000;
     public static final int DEFAULT_ENERGY_CONSUMPTION = 92;
     public static final int DEFAULT_COOLDOWN_RATE = 2;
     public static final int PHASE_EMPTY = 0;
@@ -166,7 +171,7 @@ public class EdFreezer
     private static int energy_consumption = DEFAULT_ENERGY_CONSUMPTION;
     private static int cooldown_rate = DEFAULT_COOLDOWN_RATE;
     private static int reheat_rate = 1;
-    private final Fluidics.Tank tank_ = new Fluidics.Tank(2000, fs->fs.getFluid()==Fluids.WATER);
+    private final Fluidics.Tank tank_ = new Fluidics.Tank(TANK_CAPACITY, TANK_CAPACITY, TANK_CAPACITY, fs->fs.getFluid()==Fluids.WATER);
     private int tick_timer_;
     private int energy_stored_;
     private int progress_;
@@ -226,14 +231,14 @@ public class EdFreezer
     {
       energy_stored_ = nbt.getInt("energy");
       progress_ = nbt.getInt("progress");
-      if(nbt.contains("tank", Constants.NBT.TAG_COMPOUND)) tank_.readnbt(nbt.getCompound("tank"));
+      tank_.load(nbt);
     }
 
     protected void writenbt(CompoundNBT nbt)
     {
       nbt.putInt("energy", MathHelper.clamp(energy_stored_,0 , MAX_ENERGY_BUFFER));
       nbt.putInt("progress", MathHelper.clamp(progress_,0 , 100));
-      if(!tank_.isEmpty()) nbt.put("tank", tank_.writenbt(new CompoundNBT()));
+      tank_.save(nbt);
     }
 
     // TileEntity ------------------------------------------------------------------------------

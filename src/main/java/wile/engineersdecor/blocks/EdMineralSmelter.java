@@ -9,6 +9,7 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.world.IWorldReader;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import net.minecraft.world.IBlockReader;
@@ -84,6 +85,10 @@ public class EdMineralSmelter
     @SuppressWarnings("deprecation")
     public int getComparatorInputOverride(BlockState state, World world, BlockPos pos)
     { return MathHelper.clamp((state.get(PHASE)*5), 0, 15); }
+
+    @Override
+    public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+    { return false; }
 
     @Override
     public boolean hasTileEntity(BlockState state)

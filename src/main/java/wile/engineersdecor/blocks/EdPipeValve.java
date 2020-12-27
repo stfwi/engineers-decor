@@ -9,6 +9,7 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.world.IWorldReader;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import net.minecraft.world.IWorld;
@@ -142,6 +143,10 @@ public class EdPipeValve
     @Override
     public boolean canConnectRedstone(BlockState state, IBlockReader world, BlockPos pos, @Nullable Direction side)
     { return (side!=null) && (side!=state.get(FACING)) && (side!=state.get(FACING).getOpposite()); }
+
+    @Override
+    public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+    { return false; }
 
     @Override
     @SuppressWarnings("deprecation")

@@ -16,9 +16,11 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
@@ -56,6 +58,19 @@ public class Fluidics
     @Override public FluidStack drain(int maxDrain, FluidAction action) { return tank_.drain(maxDrain, action); }
   }
 
+  private static class SingleTankOutputFluidHandler implements IFluidHandler
+  {
+    private final IFluidTank tank_;
+    public SingleTankOutputFluidHandler(IFluidTank tank) { tank_ = tank; }
+    @Override public int getTanks() { return 1; }
+    @Override public FluidStack getFluidInTank(int tank) { return tank_.getFluid().copy(); }
+    @Override public int getTankCapacity(int tank) { return tank_.getCapacity(); }
+    @Override public boolean isFluidValid(int tank, @Nonnull FluidStack stack) { return true; }
+    @Override public int fill(FluidStack resource, FluidAction action) { return 0; }
+    @Override public FluidStack drain(FluidStack resource, FluidAction action) { return tank_.drain(resource, action); }
+    @Override public FluidStack drain(int maxDrain, FluidAction action) { return tank_.drain(maxDrain, action); }
+  }
+
   /**
    * Simple fluid tank, validator concept according to reference implementation by KingLemming.
    */
@@ -65,24 +80,41 @@ public class Fluidics
     private BiConsumer<Tank,Integer> interaction_notifier_ = ((tank,diff)->{});
     private FluidStack fluid_ = FluidStack.EMPTY;
     private int capacity_;
+    private int fill_rate_;
+    private int drain_rate_;
 
     public Tank(int capacity)
-    { capacity_ = capacity; }
+    { this(capacity, capacity, capacity); }
 
-    public Tank(int capacity, Predicate<FluidStack> validator)
-    { capacity_ = capacity; setValidator(validator); }
+    public Tank(int capacity, int fill_rate, int drain_rate)
+    { this(capacity, fill_rate, drain_rate, e->true); }
 
-    public Tank readnbt(CompoundNBT nbt)
-    { setFluid(FluidStack.loadFluidStackFromNBT(nbt)); return this; }
+    public Tank(int capacity, int fill_rate, int drain_rate, Predicate<FluidStack> validator)
+    {
+      capacity_ = capacity;
+      setMaxFillRate(fill_rate);
+      setMaxDrainRate(drain_rate);
+      setValidator(validator);
+    }
 
-    public CompoundNBT writenbt()
-    { return writenbt(new CompoundNBT()); }
+    public Tank load(CompoundNBT nbt)
+    {
+      if(nbt.contains("tank", Constants.NBT.TAG_COMPOUND)) {
+        setFluid(FluidStack.loadFluidStackFromNBT(nbt.getCompound("tank")));
+      } else {
+        clear();
+      }
+      return this;
+    }
 
-    public CompoundNBT writenbt(CompoundNBT nbt)
-    { fluid_.writeToNBT(nbt); return nbt; }
+    public CompoundNBT save(CompoundNBT nbt)
+    { if(!isEmpty()) { nbt.put("tank", fluid_.writeToNBT(new CompoundNBT())); } return nbt; }
 
     public void reset()
-    { setFluid(null); }
+    { clear(); }
+
+    public Tank clear()
+    { setFluid(null); return this; }
 
     public int getCapacity()
     { return capacity_; }
@@ -90,11 +122,31 @@ public class Fluidics
     public Tank setCapacity(int capacity)
     { capacity_ = capacity; return this; }
 
+    public int getMaxDrainRate()
+    { return drain_rate_; }
+
+    public Tank setMaxDrainRate(int rate)
+    { drain_rate_ = MathHelper.clamp(rate, 0, capacity_); return this; }
+
+    public int getMaxFillRate()
+    { return fill_rate_; }
+
+    public Tank setMaxFillRate(int rate)
+    { fill_rate_ = MathHelper.clamp(rate, 0, capacity_); return this; }
+
     public Tank setValidator(Predicate<FluidStack> validator)
     { validator_ = (validator!=null) ? validator : ((e)->true); return this; }
 
     public Tank setInteractionNotifier(BiConsumer<Tank,Integer> notifier)
     { interaction_notifier_ = (notifier!=null) ? notifier : ((tank,diff)->{}); return this; }
+
+    public LazyOptional<IFluidHandler> createFluidHandler()
+    { return LazyOptional.of(() -> new Fluidics.SingleTankFluidHandler(this)); }
+
+    public LazyOptional<IFluidHandler> createOutputFluidHandler()
+    { return LazyOptional.of(() -> new Fluidics.SingleTankOutputFluidHandler(this)); }
+
+    // IFluidTank ------------------------------------------------------------------------------------
 
     @Nonnull
     public FluidStack getFluid()
@@ -109,13 +161,19 @@ public class Fluidics
     public boolean isEmpty()
     { return fluid_.isEmpty(); }
 
+    public boolean isFull()
+    { return getFluidAmount() >= getCapacity(); }
+
     public boolean isFluidValid(FluidStack stack)
     { return validator_.test(stack); }
+
+    public boolean isFluidEqual(FluidStack stack)
+    { return (stack==null) ? (fluid_.isEmpty()) : fluid_.isFluidEqual(stack); }
 
     @Override
     public int fill(FluidStack fs, FluidAction action)
     {
-      if(fs.isEmpty() || (!isFluidValid(fs))) {
+      if((fs==null) || fs.isEmpty() || (!isFluidValid(fs))) {
         return 0;
       } else if(action.simulate()) {
         if(fluid_.isEmpty()) return Math.min(capacity_, fs.getAmount());

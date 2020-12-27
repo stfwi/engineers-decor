@@ -42,6 +42,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import wile.engineersdecor.libmc.detail.RfEnergy;
+
 import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
@@ -135,7 +137,7 @@ public class EdBreaker
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class BreakerTileEntity extends TileEntity implements ITickableTileEntity, IEnergyStorage
+  public static class BreakerTileEntity extends TileEntity implements ITickableTileEntity
   {
     public static final int IDLE_TICK_INTERVAL = 40;
     public static final int TICK_INTERVAL = 5;
@@ -153,7 +155,8 @@ public class EdBreaker
     private int active_timer_;
     private int proc_time_elapsed_;
     private int time_needed_;
-    private int energy_;
+    private final RfEnergy.Battery battery_;
+    private final LazyOptional<IEnergyStorage> energy_handler_;
 
     public static void on_config(int boost_energy_per_tick, int breaking_time_per_hardness, int min_breaking_time_ticks, boolean power_required)
     {
@@ -166,19 +169,23 @@ public class EdBreaker
     }
 
     public BreakerTileEntity()
-    { super(ModContent.TET_SMALL_BLOCK_BREAKER); }
+    { this(ModContent.TET_SMALL_BLOCK_BREAKER); }
 
     public BreakerTileEntity(TileEntityType<?> te_type)
-    { super(te_type); }
+    {
+      super(te_type);
+      battery_ = new RfEnergy.Battery(energy_max, boost_energy_consumption, 0);
+      energy_handler_ = battery_.createEnergyHandler();
+    }
 
     public void block_updated()
     { if(tick_timer_ > 2) tick_timer_ = 2; }
 
     public void readnbt(CompoundNBT nbt)
-    { energy_ = nbt.getInt("energy"); }
+    { battery_.load(nbt); }
 
     private void writenbt(CompoundNBT nbt)
-    { nbt.putInt("energy", energy_); }
+    { battery_.save(nbt); }
 
     public void state_message(PlayerEntity player)
     {
@@ -186,8 +193,7 @@ public class EdBreaker
       if((proc_time_elapsed_ > 0) && (time_needed_ > 0)) {
         progress = Integer.toString((int)MathHelper.clamp((((double)proc_time_elapsed_) / ((double)time_needed_) * 100), 0, 100));
       }
-      String soc = Integer.toString(MathHelper.clamp((energy_*100/energy_max),0,100));
-      Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.small_block_breaker.status", new Object[]{soc, energy_max, progress }));
+      Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.small_block_breaker.status", new Object[]{battery_.getSOC(), energy_max, progress }));
     }
 
     // TileEntity ------------------------------------------------------------------------------
@@ -205,38 +211,6 @@ public class EdBreaker
     {
       super.remove();
       energy_handler_.invalidate();
-    }
-
-    // IEnergyStorage ----------------------------------------------------------------------------
-
-    protected LazyOptional<IEnergyStorage> energy_handler_ = LazyOptional.of(() -> (IEnergyStorage)this);
-
-    @Override
-    public boolean canExtract()
-    { return false; }
-
-    @Override
-    public boolean canReceive()
-    { return true; }
-
-    @Override
-    public int getMaxEnergyStored()
-    { return boost_energy_consumption*2; }
-
-    @Override
-    public int getEnergyStored()
-    { return energy_; }
-
-    @Override
-    public int extractEnergy(int maxExtract, boolean simulate)
-    { return 0; }
-
-    @Override
-    public int receiveEnergy(int maxReceive, boolean simulate)
-    {
-      maxReceive = MathHelper.clamp(maxReceive, 0, Math.max(energy_max-energy_, 0));
-      if(!simulate) energy_ += maxReceive;
-      return maxReceive;
     }
 
     // Capability export ----------------------------------------------------------------------------
@@ -349,8 +323,7 @@ public class EdBreaker
           return;
         }
         time_needed_ = MathHelper.clamp((int)(target_state.getBlockHardness(world, pos) * breaking_reluctance) + min_breaking_time, min_breaking_time, MAX_BREAKING_TIME);
-        if(energy_ >= boost_energy_consumption) {
-          energy_ -= boost_energy_consumption;
+        if(battery_.draw(boost_energy_consumption)) {
           proc_time_elapsed_ += TICK_INTERVAL * (1+BOOST_FACTOR);
           time_needed_ += min_breaking_time * (3*BOOST_FACTOR/5);
           active_timer_ = 2;

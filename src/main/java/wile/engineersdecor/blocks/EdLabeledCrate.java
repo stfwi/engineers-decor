@@ -8,15 +8,11 @@
  */
 package wile.engineersdecor.blocks;
 
-import wile.engineersdecor.ModContent;
-import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
-import wile.engineersdecor.libmc.client.ContainerGui;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.libmc.detail.Inventories.InventoryRange;
-import wile.engineersdecor.libmc.detail.Networking;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import javafx.util.Pair;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.World;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.block.Block;
@@ -52,15 +48,21 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import wile.engineersdecor.ModContent;
+import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.client.ContainerGui;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.Inventories;
+import wile.engineersdecor.libmc.detail.Inventories.InventoryRange;
+import wile.engineersdecor.libmc.detail.Inventories.StorageInventory;
+import wile.engineersdecor.libmc.detail.Inventories.MappedItemHandler;
+import wile.engineersdecor.libmc.detail.Networking;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 
 public class EdLabeledCrate
@@ -95,6 +97,10 @@ public class EdLabeledCrate
     @SuppressWarnings("deprecation")
     public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos)
     { return Container.calcRedstone(world.getTileEntity(pos)); }
+
+    @Override
+    public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+    { return false; }
 
     @Override
     public boolean hasTileEntity(BlockState state)
@@ -139,7 +145,7 @@ public class EdLabeledCrate
         Auxiliaries.setItemLabel(stack, ((LabeledCrateTileEntity)te).getCustomName());
         stacks.add(stack);
       } else {
-        for(ItemStack stack: ((LabeledCrateTileEntity)te).stacks_) stacks.add(stack);
+        for(ItemStack stack: ((LabeledCrateTileEntity)te).main_inventory_) stacks.add(stack);
         ((LabeledCrateTileEntity)te).reset_getnbt();
       }
       return stacks;
@@ -169,28 +175,40 @@ public class EdLabeledCrate
         super.addInformation(stack, world, tooltip, flag);
         return;
       }
-      NonNullList<ItemStack> items = NonNullList.withSize(LabeledCrateTileEntity.NUM_OF_SLOTS, ItemStack.EMPTY);
-      int num_used_slots = 0;
-      int total_items = 0;
+      ItemStack frameStack = ItemStack.EMPTY;
+      int num_used_slots = 0, total_items = 0;
+      String stats = "";
       if(stack.hasTag() && stack.getTag().contains("tedata")) {
         final CompoundNBT nbt = stack.getTag().getCompound("tedata");
         if(nbt.contains("Items")) {
-          ItemStackHelper.loadAllItems(nbt, items);
-          for(int i=0; i<LabeledCrateTileEntity.ITEMFRAME_SLOTNO; ++i) {
-            final ItemStack st = items.get(i);
-            if(st.isEmpty()) continue;
-            ++num_used_slots;
-            total_items += st.getCount();
+          NonNullList<ItemStack> all_items = NonNullList.withSize(LabeledCrateTileEntity.NUM_OF_SLOTS, ItemStack.EMPTY);
+          ItemStackHelper.loadAllItems(nbt, all_items);
+          frameStack = all_items.get(LabeledCrateTileEntity.ITEMFRAME_SLOTNO);
+          all_items.set(LabeledCrateTileEntity.ITEMFRAME_SLOTNO, ItemStack.EMPTY);
+          Map<Item,Integer> item_map = new HashMap<>();
+          for(ItemStack e:all_items) { // ok, the whole stream map collector seems to be actually slower than a simple loop.
+            if(!e.isEmpty()) {
+              item_map.put(e.getItem(), item_map.getOrDefault(e.getItem(), 0) + e.getCount());
+              ++num_used_slots;
+              total_items += e.getCount();
+            }
           }
+          List<Pair<String,Integer>> itmes = new ArrayList<>();
+          for(Map.Entry<Item,Integer> e:item_map.entrySet()) itmes.add(new Pair<>(e.getKey().getTranslationKey(), e.getValue()));
+          itmes.sort((a,b)->b.getValue()-a.getValue());
+          boolean dotdotdot = false;
+          if(itmes.size() > 8) { itmes.subList(8, itmes.size()).clear(); dotdotdot = true; }
+          stats = itmes.stream().map(e->Auxiliaries.localize(e.getKey())).collect(Collectors.joining(", "));
+          if(dotdotdot) stats += "...";
         }
       }
       int num_free_slots = LabeledCrateTileEntity.ITEMFRAME_SLOTNO - num_used_slots;
-      ItemStack frameStack = items.get(LabeledCrateTileEntity.ITEMFRAME_SLOTNO);
-      String[] lines =  Auxiliaries.localize(getTranslationKey()+".tip", new Object[] {
+      String[] lines = Auxiliaries.localize(getTranslationKey()+".tip", new Object[] {
         (frameStack.isEmpty() ? (new StringTextComponent("-/-")) : (new TranslationTextComponent(frameStack.getTranslationKey()))),
         num_used_slots,
         num_free_slots,
-        total_items
+        total_items,
+        stats
       }).split("\n");
       for(String line:lines) {
         tooltip.add(new StringTextComponent(line.trim()));
@@ -202,22 +220,28 @@ public class EdLabeledCrate
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class LabeledCrateTileEntity extends TileEntity implements INameable, IInventory, INamedContainerProvider, ISidedInventory
+  public static class LabeledCrateTileEntity extends TileEntity implements INameable, INamedContainerProvider, Networking.IPacketTileNotifyReceiver
   {
     public static final int NUM_OF_FIELDS = 1;
     public static final int NUM_OF_SLOTS = 55;
-    public static final int ITEMFRAME_SLOTNO = 54;
+    public static final int NUM_OF_STORAGE_SLOTS = 54;
+    public static final int NUM_OF_STORAGE_ROWS = 6;
+    public static final int ITEMFRAME_SLOTNO = NUM_OF_STORAGE_SLOTS;
 
-    // BTileEntity -----------------------------------------------------------------------------
-
-    protected NonNullList<ItemStack> stacks_ = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
+    protected final Inventories.StorageInventory main_inventory_ = new StorageInventory(this, NUM_OF_SLOTS, 1);
+    protected final InventoryRange storage_range_ = new InventoryRange(main_inventory_, 0, NUM_OF_STORAGE_SLOTS, NUM_OF_STORAGE_ROWS);
     private @Nullable ITextComponent custom_name_;
 
     public LabeledCrateTileEntity()
     { this(ModContent.TET_LABELED_CRATE); }
 
     public LabeledCrateTileEntity(TileEntityType<?> te_type)
-    { super(te_type); reset(); }
+    {
+      super(te_type); reset();
+      main_inventory_.setCloseAction(player->{
+        if(!getWorld().isRemote()) Networking.PacketTileNotifyServerToClient.sendToPlayers(this, writenbt(new CompoundNBT()));
+      });
+    }
 
     public CompoundNBT reset_getnbt()
     {
@@ -228,30 +252,33 @@ public class EdLabeledCrate
     }
 
     protected void reset()
-    {
-      stacks_ = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
-    }
+    { main_inventory_.clear(); }
 
-    public void readnbt(CompoundNBT nbt)
+    public CompoundNBT readnbt(CompoundNBT nbt)
     {
-      NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
-      if(!nbt.isEmpty()) ItemStackHelper.loadAllItems(nbt, stacks);
-      while(stacks.size() < NUM_OF_SLOTS) stacks.add(ItemStack.EMPTY);
       if(nbt.contains("name", NBT.TAG_STRING)) custom_name_ = Auxiliaries.unserializeTextComponent(nbt.getString("name"));
-      stacks_ = stacks;
+      main_inventory_.load(nbt);
+      return nbt;
     }
 
-    protected void writenbt(CompoundNBT nbt)
+    protected CompoundNBT writenbt(CompoundNBT nbt)
     {
       if(custom_name_ != null) nbt.putString("name", Auxiliaries.serializeTextComponent(custom_name_));
-      if(!stacks_.stream().allMatch(ItemStack::isEmpty)) ItemStackHelper.saveAllItems(nbt, stacks_);
+      if(!main_inventory_.isEmpty()) main_inventory_.save(nbt);
+      return nbt;
     }
 
     public ItemStack getItemFrameStack()
-    { return (stacks_.size() > ITEMFRAME_SLOTNO) ? (stacks_.get(ITEMFRAME_SLOTNO)) : (ItemStack.EMPTY); }
+    { return main_inventory_.getStackInSlot(ITEMFRAME_SLOTNO); }
 
     protected static boolean inacceptable(ItemStack stack)
     { return (stack.hasTag() && (!stack.getTag().isEmpty()) && (unstorable_containers.contains(stack.getItem()))); }
+
+    // IPacketTileNotifyReceiver ---------------------------------------------------------------
+
+    @Override
+    public void onServerPacketReceived(CompoundNBT nbt)
+    { readnbt(nbt); }
 
     // TileEntity ------------------------------------------------------------------------------
 
@@ -281,11 +308,7 @@ public class EdLabeledCrate
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) // on client
-    {
-      //@todo: check if needed: super.read(pkt.getNbtCompound());
-      readnbt(pkt.getNbtCompound());
-      super.onDataPacket(net, pkt);
-    }
+    { readnbt(pkt.getNbtCompound()); super.onDataPacket(net, pkt); }
 
     @Override
     public void handleUpdateTag(BlockState state, CompoundNBT tag) // on client
@@ -326,70 +349,7 @@ public class EdLabeledCrate
 
     @Override
     public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player )
-    { return new LabeledCrateContainer(id, inventory, this, IWorldPosCallable.of(world, pos), fields); }
-
-    // IInventory ------------------------------------------------------------------------------
-
-    @Override
-    public int getSizeInventory()
-    { return stacks_.size(); }
-
-    @Override
-    public boolean isEmpty()
-    { for(ItemStack stack: stacks_) { if(!stack.isEmpty()) return false; } return true; }
-
-    @Override
-    public ItemStack getStackInSlot(int index)
-    { return ((index >= 0) && (index < getSizeInventory())) ? stacks_.get(index) : ItemStack.EMPTY; }
-
-    @Override
-    public ItemStack decrStackSize(int index, int count)
-    { return ItemStackHelper.getAndSplit(stacks_, index, count); }
-
-    @Override
-    public ItemStack removeStackFromSlot(int index)
-    { return ItemStackHelper.getAndRemove(stacks_, index); }
-
-    @Override
-    public void setInventorySlotContents(int index, ItemStack stack)
-    {
-      if(stack.getCount() > getInventoryStackLimit()) stack.setCount(getInventoryStackLimit());
-      stacks_.set(index, stack);
-      markDirty();
-      if(getWorld() instanceof ServerWorld) {
-        // This should result in sending TE data (getUpdateTag etc) to the client for the TER.
-        BlockState state = world.getBlockState(getPos());
-        getWorld().notifyBlockUpdate(getPos(), state, state, 2|16|32);
-      }
-    }
-
-    @Override
-    public int getInventoryStackLimit()
-    { return 64; }
-
-    @Override
-    public void markDirty()
-    { super.markDirty(); }
-
-    @Override
-    public boolean isUsableByPlayer(PlayerEntity player)
-    { return ((getWorld().getTileEntity(getPos()) == this)) && (getPos().distanceSq(player.getPosition()) < 64); }
-
-    @Override
-    public void openInventory(PlayerEntity player)
-    {}
-
-    @Override
-    public void closeInventory(PlayerEntity player)
-    { markDirty(); }
-
-    @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack)
-    { return (index != ITEMFRAME_SLOTNO) && (!inacceptable(stack)); }
-
-    @Override
-    public void clear()
-    { stacks_.clear(); }
+    { return new LabeledCrateContainer(id, inventory, main_inventory_, IWorldPosCallable.of(world, pos), fields); }
 
     // Fields -----------------------------------------------------------------------------------------------
 
@@ -411,120 +371,13 @@ public class EdLabeledCrate
       }
     };
 
-    // ISidedInventory ----------------------------------------------------------------------------
-
-    private static final int[] SIDED_INV_SLOTS;
-    static {
-      // that useless unoptimised language ... no proper inline conv to int[]?
-      // private static final int[] SIDED_INV_SLOTS = IntStream.rangeClosed(0, BTileEntity.NUM_OF_SLOTS-2).boxed().collect(Collectors.toList()).toArray();
-      SIDED_INV_SLOTS = new int[LabeledCrateTileEntity.NUM_OF_SLOTS-1];
-      for(int i=0; i<SIDED_INV_SLOTS.length; ++i) SIDED_INV_SLOTS[i] = i;
-    }
-
-    @Override
-    public int[] getSlotsForFace(Direction side)
-    { return SIDED_INV_SLOTS; }
-
-    @Override
-    public boolean canInsertItem(int index, ItemStack stack, Direction direction)
-    { return true; }
-
-    @Override
-    public boolean canExtractItem(int index, ItemStack stack, Direction direction)
-    { return true; }
-
-    // IItemHandler  --------------------------------------------------------------------------------
-
-    protected static class BItemHandler implements IItemHandler
-    {
-      private LabeledCrateTileEntity te;
-
-      BItemHandler(LabeledCrateTileEntity te)
-      { this.te = te; }
-
-      @Override
-      public int getSlots()
-      { return ITEMFRAME_SLOTNO; } // iframe slot is the last
-
-      @Override
-      public int getSlotLimit(int index)
-      { return te.getInventoryStackLimit(); }
-
-      @Override
-      public boolean isItemValid(int slot, @Nonnull ItemStack stack)
-      { return te.isItemValidForSlot(slot, stack); }
-
-      @Override
-      @Nonnull
-      public ItemStack insertItem(int slotno, @Nonnull ItemStack stack, boolean simulate)
-      {
-        if(stack.isEmpty()) return ItemStack.EMPTY;
-        if((slotno < 0) || ((slotno >= NUM_OF_SLOTS)) || ((slotno == ITEMFRAME_SLOTNO)) ) return stack;
-        if((!isItemValid(slotno, stack))) return stack;
-        ItemStack slotstack = getStackInSlot(slotno);
-        if(!slotstack.isEmpty()) {
-          if(slotstack.getCount() >= Math.min(slotstack.getMaxStackSize(), getSlotLimit(slotno))) return stack;
-          if(!ItemHandlerHelper.canItemStacksStack(stack, slotstack)) return stack;
-          if(!te.canInsertItem(slotno, stack, Direction.UP) || (!te.isItemValidForSlot(slotno, stack))) return stack;
-          int n = Math.min(stack.getMaxStackSize(), getSlotLimit(slotno)) - slotstack.getCount();
-          if(stack.getCount() <= n) {
-            if(!simulate) {
-              ItemStack copy = stack.copy();
-              copy.grow(slotstack.getCount());
-              te.setInventorySlotContents(slotno, copy);
-            }
-            return ItemStack.EMPTY;
-          } else {
-            stack = stack.copy();
-            if(!simulate) {
-              ItemStack copy = stack.split(n);
-              copy.grow(slotstack.getCount());
-              te.setInventorySlotContents(slotno, copy);
-              return stack;
-            } else {
-              stack.shrink(n);
-              return stack;
-            }
-          }
-        } else {
-          if(!te.canInsertItem(slotno, stack, Direction.UP) || (!te.isItemValidForSlot(slotno, stack))) return stack;
-          int n = Math.min(stack.getMaxStackSize(), getSlotLimit(slotno));
-          if(n < stack.getCount()) {
-            stack = stack.copy();
-            if(!simulate) {
-              te.setInventorySlotContents(slotno, stack.split(n));
-              return stack;
-            } else {
-              stack.shrink(n);
-              return stack;
-            }
-          } else {
-            if(!simulate) te.setInventorySlotContents(slotno, stack);
-            return ItemStack.EMPTY;
-          }
-        }
-      }
-
-      @Override
-      @Nonnull
-      public ItemStack extractItem(int index, int amount, boolean simulate)
-      {
-        if((index < 0) || ((index >= NUM_OF_SLOTS)) || ((index == ITEMFRAME_SLOTNO)) ) return ItemStack.EMPTY;
-        if(!simulate) return ItemStackHelper.getAndSplit(te.stacks_, index, amount);
-        ItemStack stack = te.stacks_.get(index).copy();
-        if(stack.getCount() > amount) stack.setCount(amount);
-        return stack;
-      }
-
-      @Override
-      @Nonnull
-      public ItemStack getStackInSlot(int index)
-      { return te.getStackInSlot(index); }
-    }
-
     // Capability export ----------------------------------------------------------------------------
 
-    protected LazyOptional<IItemHandler> item_handler_ = LazyOptional.of(() -> new LabeledCrateTileEntity.BItemHandler(this));
+    protected LazyOptional<IItemHandler> item_handler_ = MappedItemHandler.createGenericHandler(storage_range_,
+      (slot,stack)->(slot!=ITEMFRAME_SLOTNO),
+      (slot,stack)->(slot!=ITEMFRAME_SLOTNO),
+      IntStream.range(0, NUM_OF_STORAGE_SLOTS).boxed().collect(Collectors.toList())
+    );
 
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
@@ -589,6 +442,7 @@ public class EdLabeledCrate
       player_ = player_inventory.player;
       inventory_ = block_inventory;
       wpc_ = wpc;
+      wpc_.consume((w,p)->inventory_.openInventory(player_));
       fields_ = fields;
       block_storage_range_ = new InventoryRange(inventory_, 0, LabeledCrateTileEntity.ITEMFRAME_SLOTNO);
       player_inventory_range_ = new InventoryRange(player_inventory, 0, 36);
@@ -624,7 +478,10 @@ public class EdLabeledCrate
 
     @Override
     public void onContainerClosed(PlayerEntity player)
-    { super.onContainerClosed(player); }
+    {
+      super.onContainerClosed(player);
+      inventory_.closeInventory(player);
+    }
 
     @Override
     public ItemStack transferStackInSlot(PlayerEntity player, int index)

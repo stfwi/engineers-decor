@@ -151,9 +151,9 @@ public class ModConfig
     public final ForgeConfigSpec.IntValue block_breaker_reluctance;
     public final ForgeConfigSpec.IntValue block_breaker_min_breaking_time;
     public final ForgeConfigSpec.BooleanValue block_breaker_requires_power;
-    public final ForgeConfigSpec.IntValue tree_cuttter_energy_consumption;
-    public final ForgeConfigSpec.IntValue tree_cuttter_cutting_time_needed;
-    public final ForgeConfigSpec.BooleanValue tree_cuttter_requires_power;
+    public final ForgeConfigSpec.IntValue tree_cutter_energy_consumption;
+    public final ForgeConfigSpec.IntValue tree_cutter_cutting_time_needed;
+    public final ForgeConfigSpec.BooleanValue tree_cutter_requires_power;
     public final ForgeConfigSpec.IntValue milking_machine_energy_consumption;
     public final ForgeConfigSpec.IntValue milking_machine_milking_delay;
 
@@ -459,21 +459,21 @@ public class ModConfig
           .translation(MODID + ".config.block_breaker_requires_power")
           .comment("Defines if the Small Block Breaker does not work without RF power.")
           .define("block_breaker_requires_power", false);
-        tree_cuttter_energy_consumption = builder
-          .translation(MODID + ".config.tree_cuttter_energy_consumption")
+        tree_cutter_energy_consumption = builder
+          .translation(MODID + ".config.tree_cutter_energy_consumption")
           .comment("Defines how much RF power the Small Tree Cutter requires to magnificently increase the processing speed. " +
             "The config value can be changed on-the-fly for tuning.")
-          .defineInRange("tree_cuttter_energy_consumption", EdTreeCutter.TreeCutterTileEntity.DEFAULT_BOOST_ENERGY, 4, 1024);
-        tree_cuttter_cutting_time_needed = builder
-          .translation(MODID + ".config.tree_cuttter_cutting_time_needed")
+          .defineInRange("tree_cutter_energy_consumption", EdTreeCutter.TreeCutterTileEntity.DEFAULT_BOOST_ENERGY, 4, 1024);
+        tree_cutter_cutting_time_needed = builder
+          .translation(MODID + ".config.tree_cutter_cutting_time_needed")
           .comment("Defines how much time the Small Tree Cutter needs to cut a tree without RF power. " +
             "The value is in seconds. With energy it is 6 times faster. " +
             "The config value can be changed on-the-fly for tuning.")
-          .defineInRange("tree_cuttter_cutting_time_needed", EdTreeCutter.TreeCutterTileEntity.DEFAULT_CUTTING_TIME_NEEDED, 10, 240);
-        tree_cuttter_requires_power = builder
-          .translation(MODID + ".config.tree_cuttter_requires_power")
+          .defineInRange("tree_cutter_cutting_time_needed", EdTreeCutter.TreeCutterTileEntity.DEFAULT_CUTTING_TIME_NEEDED, 10, 240);
+        tree_cutter_requires_power = builder
+          .translation(MODID + ".config.tree_cutter_requires_power")
           .comment("Defines if the Small Tree Cutter does not work without RF power.")
-          .define("tree_cuttter_requires_power", false);
+          .define("tree_cutter_requires_power", false);
         milking_machine_energy_consumption = builder
           .translation(MODID + ".config.milking_machine_energy_consumption")
           .comment("Defines how much time the Small Milking Machine needs work. " +
@@ -671,7 +671,7 @@ public class ModConfig
     EdElectricalFurnace.ElectricalFurnaceTileEntity.on_config(SERVER.e_furnace_speed_percent.get(), SERVER.e_furnace_power_consumption.get(), SERVER.e_furnace_automatic_pulling.get());
     EdSolarPanel.SolarPanelTileEntity.on_config(SERVER.small_solar_panel_peak_production.get());
     EdBreaker.BreakerTileEntity.on_config(SERVER.block_breaker_power_consumption.get(), SERVER.block_breaker_reluctance.get(), SERVER.block_breaker_min_breaking_time.get(), SERVER.block_breaker_requires_power.get());
-    EdTreeCutter.TreeCutterTileEntity.on_config(SERVER.tree_cuttter_energy_consumption.get(), SERVER.tree_cuttter_cutting_time_needed.get(), SERVER.tree_cuttter_requires_power.get());
+    EdTreeCutter.TreeCutterTileEntity.on_config(SERVER.tree_cutter_energy_consumption.get(), SERVER.tree_cutter_cutting_time_needed.get(), SERVER.tree_cutter_requires_power.get());
     EdMilker.MilkerTileEntity.on_config(SERVER.milking_machine_energy_consumption.get(), SERVER.milking_machine_milking_delay.get());
     EdSlabBlock.on_config(!SERVER.without_direct_slab_pickup.get());
     EdSlabSliceBlock.on_config(!SERVER.without_direct_slab_pickup.get());
@@ -683,7 +683,7 @@ public class ModConfig
     // -----------------------------------------------------------------------------------------------------------------
     {
       // Check if the config is already synchronized or has to be synchronised.
-      server_config_.putBoolean("tree_cuttter_requires_power", SERVER.tree_cuttter_requires_power.get());
+      server_config_.putBoolean("tree_cutter_requires_power", SERVER.tree_cutter_requires_power.get());
       server_config_.putBoolean("block_breaker_requires_power", SERVER.block_breaker_requires_power.get());
       {
         String s = String.join(",", optouts_);

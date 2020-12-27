@@ -11,6 +11,11 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
+    - v1.1.6-b2  [M] Alternative Clinker Brick recipe (swapped Bricks/Nether Bricks) added.
+                 [M] Furnace XP handling simplified (simply stores/releases XP for each smelting process).
+                 [M] Mod devices do not propagate strong Redstone power to adjacent blocks.
+                 [M] Minor "librarizing" changes under the hood.
+
     - v1.1.6-b1  [F] Fixed Metal Crafting Table Hopper access (issue #147, ty umerrr).
                  [F] Fixed Dark Shingle Roof Chimney placement restriction (issue #149, thx WenXin20).
                  [F] Door tags added for Wood Door and Metal Sliding Door (issue #150, thx WenXin20).

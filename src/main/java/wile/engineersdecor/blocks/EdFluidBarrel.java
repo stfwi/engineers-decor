@@ -11,11 +11,7 @@ package wile.engineersdecor.blocks;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.*;
-import wile.engineersdecor.ModContent;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.libmc.detail.Fluidics;
-import wile.engineersdecor.libmc.detail.Overlay;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItem;
@@ -49,6 +45,11 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import wile.engineersdecor.ModContent;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.Fluidics;
+import wile.engineersdecor.libmc.detail.Overlay;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -209,6 +210,10 @@ public class EdFluidBarrel
       return (int)MathHelper.clamp(((FluidBarrelTileEntity)te).getNormalizedFillLevel() * 15, 0, 15);
     }
 
+    @Override
+    public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+    { return false; }
+
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -218,8 +223,26 @@ public class EdFluidBarrel
   public static class FluidBarrelTileEntity extends TileEntity implements ICapabilityProvider, ITickableTileEntity
   {
     private final int TICK_INTERVAL = 10;
-    private final Fluidics.Tank tank_ = new Fluidics.Tank(capacity_);
     private int tick_timer_ = 0;
+    private final Fluidics.Tank tank_;
+    private final LazyOptional<IFluidHandler> fluid_handler_;
+
+    public FluidBarrelTileEntity()
+    { this(ModContent.TET_FLUID_BARREL); }
+
+    public FluidBarrelTileEntity(TileEntityType<?> te_type)
+    {
+      super(te_type);
+      tank_ = new Fluidics.Tank(capacity_);
+      tank_.setInteractionNotifier((t,d)->on_tank_changed());
+      fluid_handler_ = tank_.createFluidHandler();
+    }
+
+    public void readnbt(CompoundNBT nbt)
+    { tank_.load(nbt); }
+
+    public CompoundNBT writenbt(CompoundNBT nbt)
+    { tank_.save(nbt); return nbt; }
 
     public boolean handlePlayerInteraction(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand)
     {
@@ -256,30 +279,10 @@ public class EdFluidBarrel
     public double getNormalizedFillLevel()
     { return (tank_.isEmpty()) ? (0) : ((double)tank_.getFluidAmount()/(double)tank_.getCapacity()); }
 
-    public void readnbt(CompoundNBT nbt)
-    {
-      if(nbt.contains("tank", Constants.NBT.TAG_COMPOUND)) tank_.readnbt(nbt.getCompound("tank"));
-    }
-
-    public CompoundNBT writenbt(CompoundNBT nbt)
-    {
-      if(!tank_.isEmpty()) nbt.put("tank", tank_.writenbt(new CompoundNBT()));
-      return nbt;
-    }
-
     protected void on_tank_changed()
     { if(tick_timer_ > 2) tick_timer_ = 2; }
 
     // TileEntity ------------------------------------------------------------------------------
-
-    public FluidBarrelTileEntity()
-    { this(ModContent.TET_FLUID_BARREL); }
-
-    public FluidBarrelTileEntity(TileEntityType<?> te_type)
-    {
-      super(te_type);
-      tank_.setInteractionNotifier((t,d)->on_tank_changed());
-    }
 
     @Override
     public void read(BlockState state, CompoundNBT nbt)
@@ -294,15 +297,9 @@ public class EdFluidBarrel
     { super.remove(); fluid_handler_.invalidate(); }
 
     public CompoundNBT clear_getnbt()
-    {
-      CompoundNBT nbt = new CompoundNBT();
-      if(!tank_.isEmpty()) nbt.put("tank", tank_.writenbt(new CompoundNBT()));
-      return nbt;
-    }
+    { return tank_.save(new CompoundNBT()); }
 
     // ICapabilityProvider --------------------------------------------------------------------
-
-    private final LazyOptional<IFluidHandler> fluid_handler_ = LazyOptional.of(() -> new Fluidics.SingleTankFluidHandler(tank_));
 
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)

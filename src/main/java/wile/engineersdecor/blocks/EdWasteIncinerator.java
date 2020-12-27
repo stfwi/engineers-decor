@@ -23,6 +23,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -92,6 +93,10 @@ public class EdWasteIncinerator
     @SuppressWarnings("deprecation")
     public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos)
     { return Container.calcRedstone(world.getTileEntity(pos)); }
+
+    @Override
+    public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+    { return false; }
 
     @Override
     public boolean hasTileEntity(BlockState state)

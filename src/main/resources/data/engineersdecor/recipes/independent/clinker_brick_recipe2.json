@@ -1,0 +1,30 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:clinker_brick_block"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "BAB",
+          "ANA",
+          "BAB"
+        ],
+        "key": {
+          "A": { "item": "minecraft:brick" },
+          "B": { "tag" : "engineersdecor:brick_ingots" },
+          "N": { "item": "minecraft:bricks" }
+        },
+        "result": {
+          "item": "engineersdecor:clinker_brick_block",
+          "count": 8
+        }
+      }
+    }
+  ]
+}

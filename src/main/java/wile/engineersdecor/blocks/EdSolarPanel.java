@@ -8,6 +8,7 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.world.IWorldReader;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
@@ -77,6 +78,10 @@ public class EdSolarPanel
       if(te instanceof SolarPanelTileEntity) ((SolarPanelTileEntity)te).state_message(player);
       return ActionResultType.CONSUME;
     }
+
+    @Override
+    public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+    { return false; }
   }
 
   //--------------------------------------------------------------------------------------------------------------------

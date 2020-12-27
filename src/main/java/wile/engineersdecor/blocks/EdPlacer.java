@@ -13,6 +13,7 @@ import net.minecraft.inventory.container.ClickType;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.block.*;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -88,6 +89,10 @@ public class EdPlacer
     @SuppressWarnings("deprecation")
     public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos)
     { return Container.calcRedstone(world.getTileEntity(pos)); }
+
+    @Override
+    public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+    { return false; }
 
     @Override
     public boolean hasTileEntity(BlockState state)

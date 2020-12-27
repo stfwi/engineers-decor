@@ -9,6 +9,7 @@
 package wile.engineersdecor.blocks;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -20,7 +21,6 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.item.*;
 import net.minecraft.item.crafting.AbstractCookingRecipe;
-import net.minecraft.item.crafting.FurnaceRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -44,20 +44,20 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import com.mojang.blaze3d.systems.RenderSystem;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.blocks.EdFurnace.FurnaceTileEntity;
+import wile.engineersdecor.libmc.detail.Inventories.StorageInventory;
+import wile.engineersdecor.libmc.detail.Inventories.MappedItemHandler;
 import wile.engineersdecor.libmc.detail.TooltipDisplay;
 import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
 import wile.engineersdecor.libmc.client.ContainerGui;
 import wile.engineersdecor.libmc.detail.Inventories;
 import wile.engineersdecor.libmc.detail.Networking;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
@@ -116,28 +116,29 @@ public class EdElectricalFurnace
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class ElectricalFurnaceTileEntity extends EdFurnace.FurnaceTileEntity implements ITickableTileEntity, INameable, IInventory, INamedContainerProvider, ISidedInventory, IEnergyStorage
+  public static class ElectricalFurnaceTileEntity extends EdFurnace.FurnaceTileEntity implements ITickableTileEntity, INameable, INamedContainerProvider
   {
-    public static final IRecipeType<FurnaceRecipe> RECIPE_TYPE = IRecipeType.SMELTING;
-    public static final int NUM_OF_FIELDS = 7;
-    public static final int TICK_INTERVAL = 4;
-    public static final int FIFO_INTERVAL = 20;
-    public static final int HEAT_CAPACITY = 200;
-    public static final int HEAT_INCREMENT = 20;
-    public static final int MAX_ENERGY_TRANSFER = 1024;
-    public static final int MAX_ENERGY_BUFFER = 32000;
-    public static final int MAX_SPEED_SETTING = 3;
-    public static final int NUM_OF_SLOTS = 7;
-    public static final int SMELTING_INPUT_SLOT_NO = 0;
-    public static final int SMELTING_AUX_SLOT_NO = 1;
-    public static final int SMELTING_OUTPUT_SLOT_NO = 2;
-    public static final int FIFO_INPUT_0_SLOT_NO = 3;
-    public static final int FIFO_INPUT_1_SLOT_NO = 4;
-    public static final int FIFO_OUTPUT_0_SLOT_NO = 5;
-    public static final int FIFO_OUTPUT_1_SLOT_NO = 6;
-    public static final int DEFAULT_SPEED_PERCENT = 250;
-    public static final int DEFAULT_ENERGY_CONSUMPTION = 16;
-    public static final int DEFAULT_SCALED_ENERGY_CONSUMPTION = DEFAULT_ENERGY_CONSUMPTION * HEAT_INCREMENT * DEFAULT_SPEED_PERCENT / 100;
+    private static final int NUM_OF_FIELDS = 7;
+    private static final int TICK_INTERVAL = 4;
+    private static final int FIFO_INTERVAL = 20;
+    private static final int HEAT_CAPACITY = 200;
+    private static final int HEAT_INCREMENT = 20;
+    private static final int MAX_BURNTIME = 0x7fff;
+    private static final int MAX_XP_STORED = 65535;
+    private static final int MAX_ENERGY_TRANSFER = 1024;
+    private static final int MAX_ENERGY_BUFFER = 32000;
+    private static final int MAX_SPEED_SETTING = 3;
+    private static final int NUM_OF_SLOTS = 7;
+    private static final int SMELTING_INPUT_SLOT_NO = 0;
+    private static final int SMELTING_AUX_SLOT_NO = 1;
+    private static final int SMELTING_OUTPUT_SLOT_NO = 2;
+    private static final int FIFO_INPUT_0_SLOT_NO = 3;
+    private static final int FIFO_INPUT_1_SLOT_NO = 4;
+    private static final int FIFO_OUTPUT_0_SLOT_NO = 5;
+    private static final int FIFO_OUTPUT_1_SLOT_NO = 6;
+    public  static final int DEFAULT_SPEED_PERCENT = 290;
+    public  static final int DEFAULT_ENERGY_CONSUMPTION = 16;
+    public  static final int DEFAULT_SCALED_ENERGY_CONSUMPTION = DEFAULT_ENERGY_CONSUMPTION * HEAT_INCREMENT * DEFAULT_SPEED_PERCENT / 100;
 
     // Config ----------------------------------------------------------------------------------
 
@@ -158,66 +159,78 @@ public class EdElectricalFurnace
 
     // ElectricalFurnaceTileEntity -----------------------------------------------------------------------------
 
-    private int burntime_left_ = 0;
-    private int proc_time_elapsed_ = 0;
-    private int proc_time_needed_ = 0;
-    private int energy_stored_ = 0;
-    private int field_max_energy_stored_ = 0;
-    private int field_isburning_ = 0;
     private int speed_ = 1;
-    private int tick_timer_ = 0;
-    private int fifo_timer_ = 0;
     private boolean enabled_ = false;
+    private final LazyOptional<IItemHandler> item_handler_;
 
     public ElectricalFurnaceTileEntity()
     { this(ModContent.TET_SMALL_ELECTRICAL_FURNACE); }
 
     public ElectricalFurnaceTileEntity(TileEntityType<?> te_type)
-    { super(te_type); }
+    {
+      super(te_type, NUM_OF_SLOTS);
+      battery_.setMaxEnergyStored(MAX_ENERGY_BUFFER);
+      battery_.setChargeRate(MAX_ENERGY_TRANSFER);
+      battery_.setDischargeRate(0);
+      inventory_.setValidator((index, stack)->{
+        switch(index) {
+          case SMELTING_INPUT_SLOT_NO:
+          case FIFO_INPUT_0_SLOT_NO:
+          case FIFO_INPUT_1_SLOT_NO:
+            return true;
+          default:
+            return false;
+        }
+      });
+      item_handler_ = MappedItemHandler.createGenericHandler(inventory_,
+        (slot,stack)->((slot==FIFO_OUTPUT_0_SLOT_NO) || (slot==FIFO_OUTPUT_1_SLOT_NO)),
+        (slot,stack)->((slot==FIFO_INPUT_0_SLOT_NO) || (slot==FIFO_INPUT_1_SLOT_NO)),
+        Arrays.asList(FIFO_OUTPUT_0_SLOT_NO,FIFO_OUTPUT_1_SLOT_NO,FIFO_INPUT_0_SLOT_NO,FIFO_INPUT_1_SLOT_NO)
+      );
+    }
 
     public void reset()
     {
-      super.reset();
-      stacks_ = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
+      inventory_.clear();
       burntime_left_ = 0;
       proc_time_elapsed_ = 0;
       proc_time_needed_ = 0;
       fifo_timer_ = 0;
       tick_timer_ = 0;
-      energy_stored_ = 0;
+      battery_.clear();
       speed_ = 1;
-      field_max_energy_stored_ = getMaxEnergyStored();
-      field_isburning_ = 0;
+      field_is_burning_ = 0;
     }
 
     public void readnbt(CompoundNBT nbt)
     {
-      ItemStackHelper.loadAllItems(nbt, this.stacks_);
-      while(this.stacks_.size() < NUM_OF_SLOTS) this.stacks_.add(ItemStack.EMPTY);
       burntime_left_ = nbt.getInt("BurnTime");
       proc_time_elapsed_ = nbt.getInt("CookTime");
       proc_time_needed_ = nbt.getInt("CookTimeTotal");
-      energy_stored_ = nbt.getInt("Energy");
+      xp_stored_ = nbt.getFloat("XpStored");
       speed_ = nbt.getInt("SpeedSetting");
       speed_ = (speed_ < 0) ? (1) : ((speed_>MAX_SPEED_SETTING) ? MAX_SPEED_SETTING : speed_);
+      battery_.load(nbt, "Energy");
+      inventory_.load(nbt);
     }
 
     protected void writenbt(CompoundNBT nbt)
     {
       nbt.putInt("BurnTime", MathHelper.clamp(burntime_left_, 0, HEAT_CAPACITY));
-      nbt.putInt("CookTime", MathHelper.clamp(proc_time_elapsed_, 0, MAX_BURNTIME));
+      nbt.putInt("CookTime", MathHelper.clamp((int)proc_time_elapsed_, 0, MAX_BURNTIME));
       nbt.putInt("CookTimeTotal", MathHelper.clamp(proc_time_needed_, 0, MAX_BURNTIME));
-      nbt.putInt("Energy", MathHelper.clamp(energy_stored_, 0, MAX_ENERGY_BUFFER));
       nbt.putInt("SpeedSetting", MathHelper.clamp(speed_, -1, MAX_SPEED_SETTING));
-      ItemStackHelper.saveAllItems(nbt, stacks_);
+      nbt.putFloat("XpStored", MathHelper.clamp(xp_stored_, 0, MAX_XP_STORED));
+      battery_.save(nbt, "Energy");
+      inventory_.save(nbt);
     }
 
     public int getComparatorOutput()
     {
-      return (energy_stored_ <= 0) ? (0) : (
-        (stacks_.get(FIFO_INPUT_1_SLOT_NO).isEmpty() ? 0 : 5) +
-        (stacks_.get(FIFO_INPUT_0_SLOT_NO).isEmpty() ? 0 : 5) +
-        (stacks_.get(SMELTING_INPUT_SLOT_NO).isEmpty() ? 0 : 5)
+      return (battery_.isEmpty()) ? (0) : (
+        (inventory_.getStackInSlot(FIFO_INPUT_1_SLOT_NO).isEmpty() ? 0 : 5) +
+        (inventory_.getStackInSlot(FIFO_INPUT_0_SLOT_NO).isEmpty() ? 0 : 5) +
+        (inventory_.getStackInSlot(SMELTING_INPUT_SLOT_NO).isEmpty() ? 0 : 5)
       );
     }
 
@@ -235,7 +248,6 @@ public class EdElectricalFurnace
     public void remove()
     {
       super.remove();
-      Arrays.stream(item_handlers).forEach(LazyOptional::invalidate);
       item_handler_.invalidate();
       energy_handler_.invalidate();
     }
@@ -250,26 +262,7 @@ public class EdElectricalFurnace
 
     @Override
     public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player )
-    { return new EdElectricalFurnace.ElectricalFurnaceContainer(id, inventory, this, IWorldPosCallable.of(world, pos), fields); }
-
-    // IInventory ------------------------------------------------------------------------------
-
-    @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack)
-    {
-      switch(index) {
-        case SMELTING_INPUT_SLOT_NO:
-        case FIFO_INPUT_0_SLOT_NO:
-        case FIFO_INPUT_1_SLOT_NO:
-          return true;
-        default:
-          return false;
-      }
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int index)
-    { return ((index < 0) || (index >= SIDED_INV_SLOTS.length)) ? ItemStack.EMPTY : stacks_.get(SIDED_INV_SLOTS[index]); }
+    { return new EdElectricalFurnace.ElectricalFurnaceContainer(id, inventory, inventory_, IWorldPosCallable.of(world, pos), fields); }
 
     // Fields -----------------------------------------------------------------------------------------------
 
@@ -280,12 +273,12 @@ public class EdElectricalFurnace
       {
         switch(id) {
           case 0: return ElectricalFurnaceTileEntity.this.burntime_left_;
-          case 1: return ElectricalFurnaceTileEntity.this.energy_stored_;
-          case 2: return ElectricalFurnaceTileEntity.this.proc_time_elapsed_;
+          case 1: return ElectricalFurnaceTileEntity.this.battery_.getEnergyStored();
+          case 2: return (int)ElectricalFurnaceTileEntity.this.proc_time_elapsed_;
           case 3: return ElectricalFurnaceTileEntity.this.proc_time_needed_;
           case 4: return ElectricalFurnaceTileEntity.this.speed_;
-          case 5: return ElectricalFurnaceTileEntity.this.field_max_energy_stored_;
-          case 6: return ElectricalFurnaceTileEntity.this.field_isburning_;
+          case 5: return ElectricalFurnaceTileEntity.this.battery_.getMaxEnergyStored();
+          case 6: return ElectricalFurnaceTileEntity.this.field_is_burning_;
           default: return 0;
         }
       }
@@ -294,171 +287,17 @@ public class EdElectricalFurnace
       {
         switch(id) {
           case 0: ElectricalFurnaceTileEntity.this.burntime_left_ = value; break;
-          case 1: ElectricalFurnaceTileEntity.this.energy_stored_ = value; break;
+          case 1: ElectricalFurnaceTileEntity.this.battery_.setEnergyStored(value); break;
           case 2: ElectricalFurnaceTileEntity.this.proc_time_elapsed_ = value; break;
           case 3: ElectricalFurnaceTileEntity.this.proc_time_needed_ = value; break;
           case 4: ElectricalFurnaceTileEntity.this.speed_ = value; break;
-          case 5: ElectricalFurnaceTileEntity.this.field_max_energy_stored_ = value; break;
-          case 6: ElectricalFurnaceTileEntity.this.field_isburning_ = value; break;
+          case 5: ElectricalFurnaceTileEntity.this.battery_.setMaxEnergyStored(value); break;
+          case 6: ElectricalFurnaceTileEntity.this.field_is_burning_ = value; break;
         }
       }
     };
-
-    // ISidedInventory ----------------------------------------------------------------------------
-
-    private static final int[] SIDED_INV_SLOTS = new int[] {
-      SMELTING_INPUT_SLOT_NO, SMELTING_AUX_SLOT_NO, SMELTING_OUTPUT_SLOT_NO,
-      FIFO_INPUT_0_SLOT_NO, FIFO_INPUT_1_SLOT_NO, FIFO_OUTPUT_0_SLOT_NO, FIFO_OUTPUT_1_SLOT_NO
-    };
-
-    @Override
-    public int[] getSlotsForFace(Direction side)
-    { return SIDED_INV_SLOTS; }
-
-    @Override
-    public boolean canInsertItem(int index, ItemStack itemStackIn, Direction direction)
-    { return ((index==FIFO_INPUT_0_SLOT_NO) || (index==FIFO_INPUT_1_SLOT_NO)) && isItemValidForSlot(index, itemStackIn); }
-
-    @Override
-    public boolean canExtractItem(int index, ItemStack stack, Direction direction)
-    { return (index==FIFO_OUTPUT_0_SLOT_NO) || (index==FIFO_OUTPUT_1_SLOT_NO); }
-
-    // IEnergyStorage ----------------------------------------------------------------------------
-
-    @Override
-    public boolean canExtract()
-    { return false; }
-
-    @Override
-    public boolean canReceive()
-    { return true; }
-
-    @Override
-    public int getMaxEnergyStored()
-    { return MAX_ENERGY_BUFFER; }
-
-    @Override
-    public int getEnergyStored()
-    { return energy_stored_; }
-
-    @Override
-    public int extractEnergy(int maxExtract, boolean simulate)
-    { return 0; }
-
-    @Override
-    public int receiveEnergy(int maxReceive, boolean simulate)
-    {
-      if(energy_stored_ >= MAX_ENERGY_BUFFER) return 0;
-      int n = Math.min(maxReceive, (MAX_ENERGY_BUFFER - energy_stored_));
-      if(n > MAX_ENERGY_TRANSFER) n = MAX_ENERGY_TRANSFER;
-      if(!simulate) {energy_stored_ += n; markDirty(); }
-      return n;
-    }
-
-    // IItemHandler  --------------------------------------------------------------------------------
-
-    protected static class BItemHandler implements IItemHandler
-    {
-      private ElectricalFurnaceTileEntity te;
-
-      BItemHandler(ElectricalFurnaceTileEntity te)
-      { this.te = te; }
-
-      @Override
-      public int getSlots()
-      { return SIDED_INV_SLOTS.length; }
-
-      @Override
-      @Nonnull
-      public ItemStack getStackInSlot(int index)
-      { return te.getStackInSlot(index); }
-
-      @Override
-      public int getSlotLimit(int index)
-      { return te.getInventoryStackLimit(); }
-
-      @Override
-      public boolean isItemValid(int slot, @Nonnull ItemStack stack)
-      { return true; }
-
-      @Override
-      @Nonnull
-      public ItemStack insertItem(int index, @Nonnull ItemStack stack, boolean simulate)
-      {
-        if(stack.isEmpty()) return ItemStack.EMPTY;
-        if((index < 0) || (index >= SIDED_INV_SLOTS.length)) return ItemStack.EMPTY;
-        int slotno = SIDED_INV_SLOTS[index];
-        ItemStack slotstack = getStackInSlot(slotno);
-        if(!slotstack.isEmpty()) {
-          if(slotstack.getCount() >= Math.min(slotstack.getMaxStackSize(), getSlotLimit(index))) return stack;
-          if(!ItemHandlerHelper.canItemStacksStack(stack, slotstack)) return stack;
-          if(!te.canInsertItem(slotno, stack, Direction.UP) || (!te.isItemValidForSlot(slotno, stack))) return stack;
-          int n = Math.min(stack.getMaxStackSize(), getSlotLimit(index)) - slotstack.getCount();
-          if(stack.getCount() <= n) {
-            if(!simulate) {
-              ItemStack copy = stack.copy();
-              copy.grow(slotstack.getCount());
-              te.setInventorySlotContents(slotno, copy);
-            }
-            return ItemStack.EMPTY;
-          } else {
-            stack = stack.copy();
-            if(!simulate) {
-              ItemStack copy = stack.split(n);
-              copy.grow(slotstack.getCount());
-              te.setInventorySlotContents(slotno, copy);
-              return stack;
-            } else {
-              stack.shrink(n);
-              return stack;
-            }
-          }
-        } else {
-          if(!te.canInsertItem(slotno, stack, Direction.UP) || (!te.isItemValidForSlot(slotno, stack))) return stack;
-          int n = Math.min(stack.getMaxStackSize(), getSlotLimit(index));
-          if(n < stack.getCount()) {
-            stack = stack.copy();
-            if(!simulate) {
-              te.setInventorySlotContents(slotno, stack.split(n));
-              return stack;
-            } else {
-              stack.shrink(n);
-              return stack;
-            }
-          } else {
-            if(!simulate) te.setInventorySlotContents(slotno, stack);
-            return ItemStack.EMPTY;
-          }
-        }
-      }
-
-      @Override
-      @Nonnull
-      public ItemStack extractItem(int index, int amount, boolean simulate)
-      {
-        if(amount == 0) return ItemStack.EMPTY;
-        if((index < 0) || (index >= SIDED_INV_SLOTS.length)) return ItemStack.EMPTY;
-        int slotno = SIDED_INV_SLOTS[index];
-        ItemStack stackInSlot = getStackInSlot(slotno);
-        if(stackInSlot.isEmpty()) return ItemStack.EMPTY;
-        if(!te.canExtractItem(slotno, stackInSlot, Direction.DOWN)) return ItemStack.EMPTY;
-        if(simulate) {
-          if(stackInSlot.getCount() < amount) return stackInSlot.copy();
-          ItemStack ostack = stackInSlot.copy();
-          ostack.setCount(amount);
-          return ostack;
-        } else {
-          ItemStack ostack = te.decrStackSize(slotno, Math.min(stackInSlot.getCount(), amount));
-          te.markDirty();
-          return ostack;
-        }
-      }
-    }
 
     // Capability export ----------------------------------------------------------------------------
-
-    protected LazyOptional<IItemHandler> item_handler_ = LazyOptional.of(() -> new BItemHandler(this));
-    protected LazyOptional<IEnergyStorage> energy_handler_ = LazyOptional.of(() -> (IEnergyStorage)this);
 
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
@@ -491,25 +330,25 @@ public class EdElectricalFurnace
         if(transferItems(FIFO_INPUT_0_SLOT_NO, SMELTING_INPUT_SLOT_NO, 64)) dirty = true;
         if(transferItems(FIFO_INPUT_1_SLOT_NO, FIFO_INPUT_0_SLOT_NO, 64)) { dirty = true; } else { shift_in = true; }
       }
-      if(energy_stored_ < energy_consumption()) {
+      if(battery_.getEnergyStored() < energy_consumption()) {
         enabled_ = false;
-      } else if(energy_stored_ >= (MAX_ENERGY_BUFFER/2)) {
+      } else if(battery_.getEnergyStored() >= (MAX_ENERGY_BUFFER/2)) {
         enabled_ = true;
       }
-      if((!(stacks_.get(SMELTING_INPUT_SLOT_NO)).isEmpty()) && (enabled_) && (speed_>0)) {
+      if((!(inventory_.getStackInSlot(SMELTING_INPUT_SLOT_NO)).isEmpty()) && (enabled_) && (speed_>0)) {
         IRecipe last_recipe = currentRecipe();
         updateCurrentRecipe();
         if(currentRecipe() != last_recipe) {
           proc_time_elapsed_ = 0;
-          proc_time_needed_ = getSmeltingTimeNeeded(world, stacks_.get(SMELTING_INPUT_SLOT_NO));
+          proc_time_needed_ = getSmeltingTimeNeeded(world, inventory_.getStackInSlot(SMELTING_INPUT_SLOT_NO));
         }
         final boolean can_smelt = canSmeltCurrentItem();
-        if((!can_smelt) && (getSmeltingResult(stacks_.get(SMELTING_INPUT_SLOT_NO)).isEmpty())) {
+        if((!can_smelt) && (getSmeltingResult(inventory_.getStackInSlot(SMELTING_INPUT_SLOT_NO)).isEmpty())) {
           // bypass
           if(transferItems(SMELTING_INPUT_SLOT_NO, SMELTING_OUTPUT_SLOT_NO, 1)) dirty = true;
         } else {
           // smelt, automatically choke speed on low power storage
-          final int speed = MathHelper.clamp((getEnergyStored()>getMaxEnergyStored()/5)? (speed_) : (1), 1, MAX_SPEED_SETTING);
+          final int speed = (battery_.getSOC() >= 25)? (speed_) : (1);
           if(!burning() && can_smelt) {
             if(heat_up(speed)) { dirty = true; update_blockstate = true; }
           }
@@ -518,7 +357,7 @@ public class EdElectricalFurnace
             proc_time_elapsed_ += (int)(TICK_INTERVAL * proc_speed_percent_ * speed_setting_factor_[speed] / 100);
             if(proc_time_elapsed_ >= proc_time_needed_) {
               proc_time_elapsed_ = 0;
-              proc_time_needed_ = getSmeltingTimeNeeded(world, stacks_.get(SMELTING_INPUT_SLOT_NO));
+              proc_time_needed_ = getSmeltingTimeNeeded(world, inventory_.getStackInSlot(SMELTING_INPUT_SLOT_NO));
               smeltCurrentItem();
               dirty = true;
               shift_out = true;
@@ -528,7 +367,7 @@ public class EdElectricalFurnace
           }
         }
       } else if(proc_time_elapsed_ > 0) {
-        proc_time_elapsed_ -= ((stacks_.get(SMELTING_INPUT_SLOT_NO)).isEmpty() ? 20 : 1);
+        proc_time_elapsed_ -= ((inventory_.getStackInSlot(SMELTING_INPUT_SLOT_NO)).isEmpty() ? 20 : 1);
         if(proc_time_elapsed_ < 0) { proc_time_elapsed_ = 0; shift_out = true; update_blockstate = true; }
       }
       if(update_blockstate) {
@@ -537,31 +376,24 @@ public class EdElectricalFurnace
       }
       if(adjacent_inventory_shift(shift_in, shift_out)) dirty = true;
       if(dirty) markDirty();
-      field_max_energy_stored_ = getMaxEnergyStored();
-      field_isburning_ = burning() ? 1 : 0;
+      field_is_burning_ = burning() ? 1 : 0;
     }
 
     // Furnace --------------------------------------------------------------------------------------
-
-    protected void updateCurrentRecipe()
-    { setCurrentRecipe(getSmeltingResult(RECIPE_TYPE, world, stacks_.get(SMELTING_INPUT_SLOT_NO))); }
-
-    public boolean burning()
-    { return burntime_left_ > 0; }
 
     private boolean is_accepted_hopper(final ItemStack stack)
     { return (stack.getItem() == Blocks.HOPPER.asItem()) || (stack.getItem() == ModContent.FACTORY_HOPPER.asItem()); }
 
     private boolean transferItems(final int index_from, final int index_to, int count)
     {
-      ItemStack from = stacks_.get(index_from);
+      ItemStack from = inventory_.getStackInSlot(index_from);
       if(from.isEmpty()) return false;
-      ItemStack to = stacks_.get(index_to);
+      ItemStack to = inventory_.getStackInSlot(index_to);
       if(from.getCount() < count) count = from.getCount();
       if(count <= 0) return false;
       boolean changed = true;
       if(to.isEmpty()) {
-        stacks_.set(index_to, from.split(count));
+        inventory_.setInventorySlotContents(index_to, from.split(count));
       } else if(to.getCount() >= to.getMaxStackSize()) {
         changed = false;
       } else if(Inventories.areItemStacksDifferent(from, to)) {
@@ -576,7 +408,7 @@ public class EdElectricalFurnace
         }
       }
       if(from.isEmpty() && from!=ItemStack.EMPTY) {
-        stacks_.set(index_from, ItemStack.EMPTY);
+        inventory_.setInventorySlotContents(index_from, ItemStack.EMPTY);
         changed = true;
       }
       return changed;
@@ -585,25 +417,25 @@ public class EdElectricalFurnace
     private boolean adjacent_inventory_shift(boolean inp, boolean out)
     {
       boolean dirty = false;
-      if(energy_stored_  < transfer_energy_consumption_) return false;
+      if(battery_.getEnergyStored() < transfer_energy_consumption_) return false;
       final BlockState state = world.getBlockState(pos);
       if(!(state.getBlock() instanceof ElectricalFurnaceBlock)) return false;
       final Direction out_facing = state.get(ElectricalFurnaceBlock.HORIZONTAL_FACING);
-      if(out && (!stacks_.get(FIFO_OUTPUT_1_SLOT_NO).isEmpty())) {
+      if(out && (!inventory_.getStackInSlot(FIFO_OUTPUT_1_SLOT_NO).isEmpty())) {
         TileEntity te = world.getTileEntity(pos.offset(out_facing));
         if(te!=null) {
           IItemHandler hnd = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, out_facing).orElse(null);
           if(hnd != null) {
-            ItemStack remaining = ItemHandlerHelper.insertItemStacked(hnd, stacks_.get(FIFO_OUTPUT_1_SLOT_NO).copy(), false);
-            stacks_.set(FIFO_OUTPUT_1_SLOT_NO, remaining);
-            energy_stored_ -= transfer_energy_consumption_;
+            ItemStack remaining = ItemHandlerHelper.insertItemStacked(hnd, inventory_.getStackInSlot(FIFO_OUTPUT_1_SLOT_NO).copy(), false);
+            inventory_.setInventorySlotContents(FIFO_OUTPUT_1_SLOT_NO, remaining);
+            battery_.draw(transfer_energy_consumption_);
             dirty = true;
           }
         }
       }
-      if(with_automatic_inventory_pulling_ || is_accepted_hopper(stacks_.get(SMELTING_AUX_SLOT_NO))) {
+      if(with_automatic_inventory_pulling_ || is_accepted_hopper(inventory_.getStackInSlot(SMELTING_AUX_SLOT_NO))) {
         final Direction inp_facing = state.get(ElectricalFurnaceBlock.HORIZONTAL_FACING).getOpposite();
-        if(inp && (stacks_.get(FIFO_INPUT_1_SLOT_NO).isEmpty())) {
+        if(inp && (inventory_.getStackInSlot(FIFO_INPUT_1_SLOT_NO).isEmpty())) {
           TileEntity te = world.getTileEntity(pos.offset(inp_facing));
           if(te!=null) {
             IItemHandler hnd = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, inp_facing).orElse(null);
@@ -612,10 +444,10 @@ public class EdElectricalFurnace
                 ItemStack adj_stack = hnd.getStackInSlot(i);
                 if(!adj_stack.isEmpty()) {
                   ItemStack my_stack = adj_stack.copy();
-                  if(my_stack.getCount() > getInventoryStackLimit()) my_stack.setCount(getInventoryStackLimit());
+                  if(my_stack.getCount() > inventory_.getInventoryStackLimit()) my_stack.setCount(inventory_.getInventoryStackLimit());
                   adj_stack.shrink(my_stack.getCount());
-                  stacks_.set(FIFO_INPUT_1_SLOT_NO, my_stack);
-                  energy_stored_ -= transfer_energy_consumption_;
+                  inventory_.setInventorySlotContents(FIFO_INPUT_1_SLOT_NO, my_stack);
+                  battery_.draw(transfer_energy_consumption_);
                   dirty = true;
                   break;
                 }
@@ -642,10 +474,9 @@ public class EdElectricalFurnace
 
     private boolean heat_up(int speed)
     {
-      int p = energy_consumption(speed);
-      if((p<=0) || (energy_stored_ < p)) return false;
       if(burntime_left_ >= (HEAT_CAPACITY-HEAT_INCREMENT)) return false;
-      energy_stored_ -= p;
+      int p = energy_consumption(speed);
+      if((p<=0) || (!battery_.draw(p))) return false;
       burntime_left_ += HEAT_INCREMENT;
       this.markDirty();
       return true; // returns TE dirty
@@ -689,7 +520,7 @@ public class EdElectricalFurnace
       inventory_ = block_inventory;
       wpc_ = wpc;
       fields_ = fields;
-      recipe_type_ = ElectricalFurnaceTileEntity.RECIPE_TYPE;
+      recipe_type_ = FurnaceTileEntity.RECIPE_TYPE;
       addSlot(new Slot(inventory_, 0, 59, 28)); // smelting input
       addSlot(new Slot(inventory_, 1, 16, 52)); // aux
       addSlot(new EdFurnace.FurnaceContainer.BSlotResult(player_, inventory_, 2, 101, 28)); // smelting result
@@ -774,8 +605,8 @@ public class EdElectricalFurnace
 
     public void onClientPacketReceived(int windowId, PlayerEntity player, CompoundNBT nbt)
     {
-      if(!(inventory_ instanceof ElectricalFurnaceTileEntity)) return;
-      ElectricalFurnaceTileEntity te = (ElectricalFurnaceTileEntity)inventory_;
+      if(!(inventory_ instanceof StorageInventory)) return;
+      ElectricalFurnaceTileEntity te = (ElectricalFurnaceTileEntity)(((StorageInventory)inventory_).getTileEntity());
       if(nbt.contains("speed")) te.speed_ = MathHelper.clamp(nbt.getInt("speed"), 0, ElectricalFurnaceTileEntity.MAX_SPEED_SETTING);
       te.markDirty();
     }

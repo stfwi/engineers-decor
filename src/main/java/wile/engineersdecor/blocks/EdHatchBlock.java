@@ -97,6 +97,10 @@ public class EdHatchBlock extends DecorBlock.HorizontalWaterLoggable implements 
   }
 
   @Override
+  public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+  { return false; }
+
+  @Override
   @SuppressWarnings("deprecation")
   public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity)
   {

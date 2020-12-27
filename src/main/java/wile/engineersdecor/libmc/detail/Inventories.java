@@ -23,16 +23,20 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 
@@ -115,6 +119,169 @@ public class Inventories
     }
     return remaining;
   }
+
+  //--------------------------------------------------------------------------------------------------------------------
+
+  public static class MappedItemHandler implements IItemHandler
+  {
+    private BiPredicate<Integer, ItemStack> extraction_predicate_;
+    private BiPredicate<Integer, ItemStack> insertion_predicate_;
+    private List<Integer> slot_map_;
+    private final IInventory inv_;
+
+    public MappedItemHandler(IInventory inv, List<Integer> slot_map, BiPredicate<Integer, ItemStack> extraction_predicate, BiPredicate<Integer, ItemStack> insertion_predicate)
+    { inv_ = inv; extraction_predicate_ = extraction_predicate; insertion_predicate_ = insertion_predicate; slot_map_ = slot_map; }
+
+    public MappedItemHandler(IInventory inv, BiPredicate<Integer, ItemStack> extraction_predicate, BiPredicate<Integer, ItemStack> insertion_predicate)
+    { this(inv, IntStream.range(0, inv.getSizeInventory()).boxed().collect(Collectors.toList()), extraction_predicate, insertion_predicate); }
+
+    public MappedItemHandler(IInventory inv)
+    { this(inv, (i,s)->true, (i,s)->true); }
+
+    @Override
+    public int hashCode()
+    { return inv_.hashCode(); }
+
+    @Override
+    public boolean equals(Object o)
+    { return (o==this) || ((o!=null) && (getClass()==o.getClass()) && (inv_.equals(((MappedItemHandler)o).inv_))); }
+
+    // IItemHandler -----------------------------------------------------------------------------------------------
+
+    @Override
+    public int getSlots()
+    { return slot_map_.size(); }
+
+    @Override
+    @Nonnull
+    public ItemStack getStackInSlot(int slot)
+    { return (slot >= slot_map_.size()) ? ItemStack.EMPTY : inv_.getStackInSlot(slot_map_.get(slot)); }
+
+    @Override
+    public int getSlotLimit(int slot)
+    { return inv_.getInventoryStackLimit(); }
+
+    @Override
+    public boolean isItemValid(int slot, @Nonnull ItemStack stack)
+    {
+      if(slot >= slot_map_.size()) return false;
+      slot = slot_map_.get(slot);
+      return insertion_predicate_.test(slot, stack) && inv_.isItemValidForSlot(slot, stack);
+    }
+
+    @Override
+    @Nonnull
+    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
+    {
+      if(stack.isEmpty()) return ItemStack.EMPTY;
+      if(slot >= slot_map_.size()) return stack;
+      slot = slot_map_.get(slot);
+      if(!insertion_predicate_.test(slot, stack)) return stack;
+      if(!inv_.isItemValidForSlot(slot, stack)) return stack;
+      ItemStack sst = inv_.getStackInSlot(slot);
+      final int slot_limit = inv_.getInventoryStackLimit();
+      if(!sst.isEmpty()) {
+        if(sst.getCount() >= Math.min(sst.getMaxStackSize(), slot_limit)) return stack;
+        if(!ItemHandlerHelper.canItemStacksStack(stack, sst)) return stack;
+        final int limit = Math.min(stack.getMaxStackSize(), slot_limit) - sst.getCount();
+        if(stack.getCount() <= limit) {
+          if(!simulate) {
+            stack = stack.copy();
+            stack.grow(sst.getCount());
+            inv_.setInventorySlotContents(slot, stack);
+            inv_.markDirty();
+          }
+          return ItemStack.EMPTY;
+        } else {
+          stack = stack.copy();
+          if(simulate) {
+            stack.shrink(limit);
+          } else {
+            ItemStack diff = stack.split(limit);
+            diff.grow(sst.getCount());
+            inv_.setInventorySlotContents(slot, diff);
+            inv_.markDirty();
+          }
+          return stack;
+        }
+      } else {
+        final int limit = Math.min(slot_limit, stack.getMaxStackSize());
+        if(stack.getCount() >= limit) {
+          stack = stack.copy();
+          if(simulate) {
+            stack.shrink(limit);
+          } else {
+            inv_.setInventorySlotContents(slot, stack.split(limit));
+            inv_.markDirty();
+          }
+          return stack;
+        } else {
+          if(!simulate) {
+            inv_.setInventorySlotContents(slot, stack.copy());
+            inv_.markDirty();
+          }
+          return ItemStack.EMPTY;
+        }
+      }
+    }
+
+    @Override
+    public ItemStack extractItem(int slot, int amount, boolean simulate)
+    {
+      if(amount <= 0) return ItemStack.EMPTY;
+      if(slot >= slot_map_.size()) return ItemStack.EMPTY;
+      slot = slot_map_.get(slot);
+      ItemStack stack = inv_.getStackInSlot(slot);
+      if(!extraction_predicate_.test(slot, stack)) return ItemStack.EMPTY;
+      if(simulate) {
+        stack = stack.copy();
+        if(amount < stack.getCount()) stack.setCount(amount);
+      } else {
+        stack = inv_.decrStackSize(slot, Math.min(stack.getCount(), amount));
+        inv_.markDirty();
+      }
+      return stack;
+    }
+
+    // Factories --------------------------------------------------------------------------------------------
+
+    public static LazyOptional<IItemHandler> createGenericHandler(IInventory inv, BiPredicate<Integer, ItemStack> extraction_predicate, BiPredicate<Integer, ItemStack> insertion_predicate, List<Integer> slot_map)
+    { return LazyOptional.of(() -> new MappedItemHandler(inv, slot_map, extraction_predicate, insertion_predicate)); }
+
+    public static LazyOptional<IItemHandler> createGenericHandler(IInventory inv, BiPredicate<Integer, ItemStack> extraction_predicate, BiPredicate<Integer, ItemStack> insertion_predicate)
+    { return LazyOptional.of(() -> new MappedItemHandler(inv, extraction_predicate, insertion_predicate)); }
+
+    public static LazyOptional<IItemHandler> createGenericHandler(IInventory inv)
+    { return LazyOptional.of(() -> new MappedItemHandler(inv)); }
+
+
+    public static LazyOptional<IItemHandler> createExtractionHandler(IInventory inv, BiPredicate<Integer, ItemStack> extraction_predicate, List<Integer> slot_map)
+    { return LazyOptional.of(() -> new MappedItemHandler(inv, slot_map, extraction_predicate, (i, s)->false)); }
+
+    public static LazyOptional<IItemHandler> createExtractionHandler(IInventory inv, BiPredicate<Integer, ItemStack> extraction_predicate)
+    { return LazyOptional.of(() -> new MappedItemHandler(inv, extraction_predicate, (i, s)->false)); }
+
+    public static LazyOptional<IItemHandler> createExtractionHandler(IInventory inv, Integer... slots)
+    { return LazyOptional.of(() -> new MappedItemHandler(inv, Arrays.asList(slots), (i, s)->true, (i, s)->false)); }
+
+    public static LazyOptional<IItemHandler> createExtractionHandler(IInventory inv)
+    { return LazyOptional.of(() -> new MappedItemHandler(inv, (i, s)->true, (i, s)->false)); }
+
+
+    public static LazyOptional<IItemHandler> createInsertionHandler(IInventory inv, BiPredicate<Integer, ItemStack> insertion_predicate, List<Integer> slot_map)
+    { return LazyOptional.of(() -> new MappedItemHandler(inv, slot_map, (i, s)->false, insertion_predicate)); }
+
+    public static LazyOptional<IItemHandler> createInsertionHandler(IInventory inv, Integer... slots)
+    { return LazyOptional.of(() -> new MappedItemHandler(inv, Arrays.asList(slots), (i, s)->false, (i, s)->true)); }
+
+    public static LazyOptional<IItemHandler> createInsertionHandler(IInventory inv, BiPredicate<Integer, ItemStack> insertion_predicate)
+    { return LazyOptional.of(() -> new MappedItemHandler(inv, (i, s)->false, insertion_predicate)); }
+
+    public static LazyOptional<IItemHandler> createInsertionHandler(IInventory inv)
+    { return LazyOptional.of(() -> new MappedItemHandler(inv, (i, s)->false, (i, s)->true)); }
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
 
   public static class InventoryRange implements IInventory, Iterable<ItemStack>
   {
@@ -385,6 +552,9 @@ public class Inventories
       return changed;
     }
 
+    public boolean move(final InventoryRange target_range, boolean only_fillup)
+    { return move(target_range, only_fillup, false, true); }
+
     public boolean move(final InventoryRange target_range)
     { return move(target_range, false, false, true); }
 
@@ -428,6 +598,9 @@ public class Inventories
     protected Consumer<PlayerEntity> open_action_ = (player)->{};
     protected Consumer<PlayerEntity> close_action_ = (player)->{};
 
+    public StorageInventory(TileEntity te, int size)
+    { this(te, size, 1); }
+
     public StorageInventory(TileEntity te, int size, int num_rows)
     {
       te_ = te;
@@ -442,15 +615,21 @@ public class Inventories
     public CompoundNBT save(CompoundNBT nbt, boolean save_empty)
     { return ItemStackHelper.saveAllItems(nbt, stacks_, save_empty); }
 
+    public CompoundNBT save(boolean save_empty)
+    { return save(new CompoundNBT(), save_empty); }
+
     public StorageInventory load(CompoundNBT nbt)
     {
+      stacks_.clear();
       ItemStackHelper.loadAllItems(nbt, stacks_);
-      while(stacks_.size() < size_) stacks_.add(ItemStack.EMPTY);
       return this;
     }
 
     public NonNullList<ItemStack> stacks()
     { return stacks_; }
+
+    public TileEntity getTileEntity()
+    { return te_; }
 
     public StorageInventory setOpenAction(Consumer<PlayerEntity> fn)
     { open_action_ = fn; return this; }
@@ -460,6 +639,9 @@ public class Inventories
 
     public StorageInventory setStackLimit(int max_slot_stack_size)
     { stack_limit_ = Math.max(max_slot_stack_size, 1); return this; }
+
+    public StorageInventory setValidator(BiPredicate<Integer, ItemStack> validator)
+    { validator_ = validator; return this; }
 
     // Iterable<ItemStack> ---------------------------------------------------------------------
 
@@ -521,7 +703,7 @@ public class Inventories
 
     @Override
     public void clear()
-    { stacks_.clear(); }
+    { stacks_.clear(); markDirty(); }
 
   }
 
@@ -540,6 +722,13 @@ public class Inventories
   }
 
   //--------------------------------------------------------------------------------------------------------------------
+
+  public static IInventory readNbtStacks(CompoundNBT nbt, String key, IInventory target)
+  {
+    NonNullList<ItemStack> stacks = Inventories.readNbtStacks(nbt, key, target.getSizeInventory());
+    for(int i=0; i<stacks.size(); ++i) target.setInventorySlotContents(i, stacks.get(i));
+    return target;
+  }
 
   public static NonNullList<ItemStack> readNbtStacks(CompoundNBT nbt, String key, int size)
   {

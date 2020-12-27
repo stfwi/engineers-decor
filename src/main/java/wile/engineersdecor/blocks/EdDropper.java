@@ -11,6 +11,7 @@ package wile.engineersdecor.blocks;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
@@ -45,17 +46,18 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraftforge.items.wrapper.InvWrapper;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.client.ContainerGui;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.Inventories;
 import wile.engineersdecor.libmc.detail.Inventories.InventoryRange;
+import wile.engineersdecor.libmc.detail.Inventories.StorageInventory;
 import wile.engineersdecor.libmc.detail.Networking;
 import wile.engineersdecor.libmc.detail.TooltipDisplay;
 import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
@@ -158,7 +160,7 @@ public class EdDropper
         }
         stacks.add(stack);
       } else {
-        for(ItemStack stack: ((DropperTileEntity)te).stacks_) {
+        for(ItemStack stack: ((DropperTileEntity)te).main_inventory_) {
           if(!stack.isEmpty()) stacks.add(stack);
         }
         ((DropperTileEntity)te).reset_rtstate();
@@ -188,26 +190,15 @@ public class EdDropper
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public boolean canProvidePower(BlockState state)
-    { return true; }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
-    { return 0; }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
-    { return 0; }
+    public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+    { return false; }
   }
 
   //--------------------------------------------------------------------------------------------------------------------
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class DropperTileEntity extends TileEntity implements ITickableTileEntity, INameable, IInventory, INamedContainerProvider, ISidedInventory
+  public static class DropperTileEntity extends TileEntity implements ITickableTileEntity, INameable, INamedContainerProvider
   {
     public static final int NUM_OF_FIELDS = 16;
     public static final int TICK_INTERVAL = 32;
@@ -242,9 +233,9 @@ public class EdDropper
     private int drop_period_ = 0;
     private int drop_slot_index_ = 0;
     private int tick_timer_ = 0;
-    protected NonNullList<ItemStack> stacks_;
-    protected final InventoryRange storage_slot_range_;
-    protected final InventoryRange filter_slot_range_;
+    protected final Inventories.StorageInventory main_inventory_ = new StorageInventory(this, NUM_OF_SLOTS, 1);
+    protected final InventoryRange storage_slot_range_ = new InventoryRange(main_inventory_, INPUT_SLOTS_FIRST, INPUT_SLOTS_SIZE);
+    protected final InventoryRange filter_slot_range_ = new InventoryRange(main_inventory_, CTRL_SLOTS_FIRST, CTRL_SLOTS_SIZE);
 
     public static void on_config(int cooldown_ticks)
     {
@@ -255,19 +246,13 @@ public class EdDropper
     { this(ModContent.TET_FACTORY_DROPPER); }
 
     public DropperTileEntity(TileEntityType<?> te_type)
-    {
-      super(te_type);
-      stacks_ = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
-      storage_slot_range_ = new InventoryRange(this, INPUT_SLOTS_FIRST, INPUT_SLOTS_SIZE);
-      filter_slot_range_ = new InventoryRange(this, CTRL_SLOTS_FIRST, CTRL_SLOTS_SIZE);
-      reset_rtstate();
-    }
+    { super(te_type); reset_rtstate(); }
 
     public CompoundNBT clear_getnbt()
     {
       CompoundNBT nbt = new CompoundNBT();
       writenbt(nbt, false);
-      for(int i=0; i<stacks_.size(); ++i) stacks_.set(i, ItemStack.EMPTY);
+      main_inventory_.clear();
       reset_rtstate();
       triggered_ = false;
       block_power_updated_ = false;
@@ -283,9 +268,7 @@ public class EdDropper
 
     public void readnbt(CompoundNBT nbt, boolean update_packet)
     {
-      stacks_ = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
-      ItemStackHelper.loadAllItems(nbt, stacks_);
-      while(stacks_.size() < NUM_OF_SLOTS) stacks_.add(ItemStack.EMPTY);
+      main_inventory_.load(nbt);
       block_power_signal_ = nbt.getBoolean("powered");
       open_timer_ = nbt.getInt("open_timer");
       drop_speed_ = nbt.getInt("drop_speed");
@@ -300,7 +283,7 @@ public class EdDropper
 
     protected void writenbt(CompoundNBT nbt, boolean update_packet)
     {
-      ItemStackHelper.saveAllItems(nbt, stacks_);
+      main_inventory_.save(nbt);
       nbt.putBoolean("powered", block_power_signal_);
       nbt.putInt("open_timer", open_timer_);
       nbt.putInt("drop_speed", drop_speed_);
@@ -339,7 +322,7 @@ public class EdDropper
     public void remove()
     {
       super.remove();
-      Arrays.stream(item_handlers).forEach(LazyOptional::invalidate);
+      item_handler_.invalidate();
     }
 
     // INamable ----------------------------------------------------------------------------------------------
@@ -364,66 +347,7 @@ public class EdDropper
 
     @Override
     public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player )
-    { return new DropperContainer(id, inventory, this, IWorldPosCallable.of(world, pos), fields); }
-
-    // IInventory -------------------------------------------------------------------------------------------
-
-    @Override
-    public int getSizeInventory()
-    { return stacks_.size(); }
-
-    @Override
-    public boolean isEmpty()
-    { for(ItemStack stack: stacks_) { if(!stack.isEmpty()) return false; } return true; }
-
-    @Override
-    public ItemStack getStackInSlot(int index)
-    { return (index < getSizeInventory()) ? stacks_.get(index) : ItemStack.EMPTY; }
-
-    @Override
-    public ItemStack decrStackSize(int index, int count)
-    { return ItemStackHelper.getAndSplit(stacks_, index, count); }
-
-    @Override
-    public ItemStack removeStackFromSlot(int index)
-    { return ItemStackHelper.getAndRemove(stacks_, index); }
-
-    @Override
-    public void setInventorySlotContents(int index, ItemStack stack)
-    {
-      stacks_.set(index, stack);
-      if(stack.getCount() > getInventoryStackLimit()) stack.setCount(getInventoryStackLimit());
-      if(tick_timer_ > 8) tick_timer_ = 8;
-      markDirty();
-    }
-
-    @Override
-    public int getInventoryStackLimit()
-    { return 64; }
-
-    @Override
-    public void markDirty()
-    { super.markDirty(); }
-
-    @Override
-    public boolean isUsableByPlayer(PlayerEntity player)
-    { return ((getWorld().getTileEntity(getPos()) == this)) && (getPos().distanceSq(player.getPosition()) < 64); }
-
-    @Override
-    public void openInventory(PlayerEntity player)
-    {}
-
-    @Override
-    public void closeInventory(PlayerEntity player)
-    { markDirty(); }
-
-    @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack)
-    { return true; }
-
-    @Override
-    public void clear()
-    { stacks_.clear(); }
+    { return new DropperContainer(id, inventory, main_inventory_, IWorldPosCallable.of(world, pos), fields); }
 
     // Fields -----------------------------------------------------------------------------------------------
 
@@ -473,33 +397,14 @@ public class EdDropper
       }
     };
 
-    // ISidedInventory --------------------------------------------------------------------------------------
-
-    LazyOptional<? extends IItemHandler>[] item_handlers = SidedInvWrapper.create(this, Direction.UP);
-    private static final int[] SIDED_INV_SLOTS;
-    static {
-      SIDED_INV_SLOTS = new int[INPUT_SLOTS_SIZE];
-      for(int i=0; i<INPUT_SLOTS_SIZE; ++i) SIDED_INV_SLOTS[i] = i+INPUT_SLOTS_FIRST;
-    }
-
-    @Override
-    public int[] getSlotsForFace(Direction side)
-    { return SIDED_INV_SLOTS; }
-
-    @Override
-    public boolean canInsertItem(int index, ItemStack stack, Direction direction)
-    { return is_input_slot(index) && isItemValidForSlot(index, stack); }
-
-    @Override
-    public boolean canExtractItem(int index, ItemStack stack, Direction direction)
-    { return false; }
-
     // Capability export ------------------------------------------------------------------------------------
+
+    protected LazyOptional<? extends IItemHandler> item_handler_ = LazyOptional.of(()->new InvWrapper(storage_slot_range_));
 
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
-      if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handlers[0].cast();
+      if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handler_.cast();
       return super.getCapability(capability, facing);
     }
 
@@ -613,7 +518,7 @@ public class EdDropper
           int last_filter_matches_[] = filter_matches_.clone();
           for(int ci=0; ci<CTRL_SLOTS_SIZE; ++ci) {
             filter_matches_[ci] = 0;
-            final ItemStack cmp_stack = stacks_.get(CTRL_SLOTS_FIRST+ci);
+            final ItemStack cmp_stack = main_inventory_.getStackInSlot(CTRL_SLOTS_FIRST+ci);
             if(cmp_stack.isEmpty()) continue;
             filter_matches_[ci] = 1;
             final int cmp_stack_count = cmp_stack.getCount();
@@ -671,34 +576,34 @@ public class EdDropper
             if(drop_slot_index_ >= INPUT_SLOTS_SIZE) drop_slot_index_ = 0;
             final int ic = drop_slot_index_;
             drop_slot_index_ = next_slot(drop_slot_index_);
-            ItemStack ds = stacks_.get(ic);
+            ItemStack ds = main_inventory_.getStackInSlot(ic);
             if((!ds.isEmpty()) && (ds.getCount() >= drop_count_)) {
               boolean skip_stack = false;
               for(int ci = 0; (ci<CTRL_SLOTS_SIZE)&&(!skip_stack); ++ci) {
-                final ItemStack cmp_stack = stacks_.get(CTRL_SLOTS_FIRST+ci);
+                final ItemStack cmp_stack = main_inventory_.getStackInSlot(CTRL_SLOTS_FIRST+ci);
                 if(Inventories.areItemStacksIdentical(ds, cmp_stack)) skip_stack = true;
               }
               if(skip_stack) continue;
               drop_stacks[0] = ds.split(drop_count_);
-              stacks_.set(ic, ds);
+              main_inventory_.setInventorySlotContents(ic, ds);
               break;
             }
           }
         } else {
           for(int fi=0; fi<filter_matches_.length; ++fi) {
             if(filter_matches_[fi] > 1) {
-              drop_stacks[fi] = stacks_.get(CTRL_SLOTS_FIRST+fi).copy();
+              drop_stacks[fi] = main_inventory_.getStackInSlot(CTRL_SLOTS_FIRST+fi).copy();
               int ntoremove = drop_stacks[fi].getCount();
               for(int i=INPUT_SLOTS_SIZE-1; (i>=0) && (ntoremove>0); --i) {
-                ItemStack stack = stacks_.get(i);
+                ItemStack stack = main_inventory_.getStackInSlot(i);
                 if(Inventories.areItemStacksDifferent(stack, drop_stacks[fi])) continue;
                 if(stack.getCount() <= ntoremove) {
                   ntoremove -= stack.getCount();
-                  stacks_.set(i, ItemStack.EMPTY);
+                  main_inventory_.setInventorySlotContents(i, ItemStack.EMPTY);
                 } else {
                   stack.shrink(ntoremove);
                   ntoremove = 0;
-                  stacks_.set(i, stack);
+                  main_inventory_.setInventorySlotContents(i, stack);
                 }
               }
               if(ntoremove > 0) drop_stacks[fi].shrink(ntoremove);
@@ -727,7 +632,7 @@ public class EdDropper
         {
           boolean found = false;
           for(int i = 0; i < storage_slot_range_.size; ++i) {
-            if(!stacks_.get(drop_slot_index_).isEmpty()) { found=true; break; }
+            if(!main_inventory_.getStackInSlot(drop_slot_index_).isEmpty()) { found=true; break; }
             drop_slot_index_ = next_slot(drop_slot_index_);
           }
           if(!found) drop_slot_index_ = 0;
@@ -850,7 +755,7 @@ public class EdDropper
     @Override
     public void onClientPacketReceived(int windowId, PlayerEntity player, CompoundNBT nbt)
     {
-      if(!(inventory_ instanceof DropperTileEntity)) return;
+      if((!(inventory_ instanceof StorageInventory)) || (!(((StorageInventory)inventory_).getTileEntity() instanceof DropperTileEntity))) return;
       if(nbt.contains("action")) {
         boolean changed = false;
         final int slotId = nbt.contains("slot") ? nbt.getInt("slot") : -1;
@@ -869,7 +774,7 @@ public class EdDropper
           detectAndSendChanges();
         }
       } else {
-        DropperTileEntity te = (DropperTileEntity)inventory_;
+        DropperTileEntity te = (DropperTileEntity)((StorageInventory)inventory_).getTileEntity();
         if(nbt.contains("drop_speed")) te.drop_speed_ = MathHelper.clamp(nbt.getInt("drop_speed"), 0, 100);
         if(nbt.contains("drop_xdev"))  te.drop_xdev_  = MathHelper.clamp(nbt.getInt("drop_xdev"), -100, 100);
         if(nbt.contains("drop_ydev"))  te.drop_ydev_  = MathHelper.clamp(nbt.getInt("drop_ydev"), -100, 100);
