@@ -55,6 +55,9 @@ import java.util.*;
 
 public class EdMineralSmelter
 {
+  public static void on_config(int consumption, int heatup_per_second)
+  { MineralSmelterTileEntity.on_config(consumption, heatup_per_second); }
+
   //--------------------------------------------------------------------------------------------------------------------
   // Block
   //--------------------------------------------------------------------------------------------------------------------
@@ -247,7 +250,7 @@ public class EdMineralSmelter
       energy_consumption = MathHelper.clamp(consumption, 8, 4096);
       heatup_rate = MathHelper.clamp(heatup_per_second, 1, 5);
       cooldown_rate = MathHelper.clamp(heatup_per_second/2, 1, 5);
-      ModEngineersDecor.logger().info("Config mineal smelter energy consumption:" + energy_consumption + "rf/t, heat-up rate: " + heatup_rate + "%/s.");
+      ModEngineersDecor.logger().info("Config mineal smelter: energy consumption:" + energy_consumption + "rf/t, heat-up rate: " + heatup_rate + "%/s.");
     }
 
     public MineralSmelterTileEntity()

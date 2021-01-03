@@ -54,7 +54,7 @@ public class EdFluidFunnel
   public static void on_config(boolean with_tank_fluid_collection)
   {
     with_device_fluid_handler_collection = with_tank_fluid_collection;
-    ModEngineersDecor.logger().info("Config fluid funnel: tank-fluid-collection:"+with_device_fluid_handler_collection);
+    ModEngineersDecor.logger().info("Config fluid funnel: tank-fluid-collection:" + with_device_fluid_handler_collection + ".");
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -225,8 +225,6 @@ public class EdFluidFunnel
     }
 
     // ICapabilityProvider / Output flow handler ----------------------------------------------------------
-
-
 
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)

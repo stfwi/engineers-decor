@@ -9,12 +9,28 @@
 package wile.engineersdecor.libmc.detail;
 
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+
+import javax.annotation.Nullable;
 
 public class RfEnergy
 {
+  public static int feed(World world, BlockPos pos, @Nullable Direction side, int rf_energy)
+  {
+    final TileEntity te = world.getTileEntity(pos);
+    if(te == null) return 0;
+    final IEnergyStorage es = te.getCapability(CapabilityEnergy.ENERGY, side).orElse(null);
+    if(es == null) return 0;
+    return es.receiveEnergy(rf_energy, false);
+  }
+
   public static class Battery implements IEnergyStorage
   {
     protected int capacity_;

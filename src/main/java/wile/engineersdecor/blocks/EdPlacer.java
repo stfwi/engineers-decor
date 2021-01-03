@@ -67,6 +67,9 @@ import java.util.List;
 
 public class EdPlacer
 {
+  public static void on_config()
+  {}
+
   //--------------------------------------------------------------------------------------------------------------------
   // Block
   //--------------------------------------------------------------------------------------------------------------------
@@ -203,11 +206,6 @@ public class EdPlacer
     private int current_slot_index_ = 0;
     private int tick_timer_ = 0;
     protected NonNullList<ItemStack> stacks_;
-
-    public static void on_config(int cooldown_ticks)
-    {
-      // ModEngineersDecor.logger.info("Config factory placer:");
-    }
 
     public PlacerTileEntity()
     { this(ModContent.TET_FACTORY_PLACER); }

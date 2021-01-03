@@ -76,7 +76,7 @@ public class EdDropper
   public static void on_config(boolean with_item_insertion)
   {
     with_adjacent_item_insertion = with_item_insertion;
-    ModEngineersDecor.logger().info("Config dropper: item-insertion:" + with_adjacent_item_insertion);
+    ModEngineersDecor.logger().info("Config dropper: item-insertion:" + with_adjacent_item_insertion + ".");
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -236,11 +236,6 @@ public class EdDropper
     protected final Inventories.StorageInventory main_inventory_ = new StorageInventory(this, NUM_OF_SLOTS, 1);
     protected final InventoryRange storage_slot_range_ = new InventoryRange(main_inventory_, INPUT_SLOTS_FIRST, INPUT_SLOTS_SIZE);
     protected final InventoryRange filter_slot_range_ = new InventoryRange(main_inventory_, CTRL_SLOTS_FIRST, CTRL_SLOTS_SIZE);
-
-    public static void on_config(int cooldown_ticks)
-    {
-      // ModEngineersDecor.logger.info("Config factory dropper:");
-    }
 
     public DropperTileEntity()
     { this(ModContent.TET_FACTORY_DROPPER); }

@@ -43,6 +43,9 @@ import java.util.Random;
 
 public class EdTreeCutter
 {
+  public static void on_config(int boost_energy_per_tick, int cutting_time_seconds, boolean power_required)
+  { TreeCutterTileEntity.on_config(boost_energy_per_tick, cutting_time_seconds,power_required); }
+
   //--------------------------------------------------------------------------------------------------------------------
   // Block
   //--------------------------------------------------------------------------------------------------------------------
@@ -129,7 +132,7 @@ public class EdTreeCutter
       energy_max = Math.max(boost_energy_consumption * 10, 10000);
       cutting_time_needed = 20 * MathHelper.clamp(cutting_time_seconds, 10, 240);
       requires_power = power_required;
-      ModEngineersDecor.logger().info("Config tree cutter: Boost energy consumption:" + boost_energy_consumption + "rf/t" + (requires_power?" (power required for operation) ":"") + ", cutting time " + cutting_time_needed + "t." );
+      ModEngineersDecor.logger().info("Config tree cutter: energy consumption:" + (boost_energy_consumption/TICK_INTERVAL) + "rf/t" + (requires_power?" (power required for operation) ":"") + ", cutting time:" + cutting_time_needed + "t." );
     }
 
     public TreeCutterTileEntity()

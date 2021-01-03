@@ -952,8 +952,8 @@ public class ModContent
   // -------------------------------------------------------------------------------------------------------------------
 
   public static final EdTestBlock.TestBlock TEST_BLOCK = (EdTestBlock.TestBlock)(new EdTestBlock.TestBlock(
-    DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_FLIP_PLACEMENT_SHIFTCLICK,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(0f, 32000f).sound(SoundType.METAL).notSolid(),
+    DecorBlock.CFG_LOOK_PLACEMENT,
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(0f, 32000f).sound(SoundType.METAL),
     Auxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   )).setRegistryName(new ResourceLocation(MODID, "test_block"));
 
@@ -1076,7 +1076,7 @@ public class ModContent
   };
 
   private static final Block devBlocks[] = {
-    //TEST_BLOCK
+    TEST_BLOCK
   };
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -1258,7 +1258,6 @@ public class ModContent
     CT_LABELED_CRATE.setRegistryName(MODID,"ct_labeled_crate");
   }
 
-  // DON'T FORGET TO REGISTER THE GUI in registerContainerGuis(), no list/map format found yet for that.
   private static final ContainerType<?> container_types[] = {
     CT_TREATED_WOOD_CRAFTING_TABLE,
     CT_LABELED_CRATE,

@@ -43,6 +43,9 @@ import java.util.List;
 
 public class EdSolarPanel
 {
+  public static void on_config(int peak_power_per_tick)
+  { SolarPanelTileEntity.on_config(peak_power_per_tick); }
+
   //--------------------------------------------------------------------------------------------------------------------
   // Block
   //--------------------------------------------------------------------------------------------------------------------
@@ -111,7 +114,7 @@ public class EdSolarPanel
       peak_power_per_tick_ = MathHelper.clamp(peak_power_per_tick, 2, 8192);
       feeding_threshold = Math.max(max_power_storage_/5, 1000);
       balancing_threshold = Math.max(max_power_storage_/10, 1000);
-      ModEngineersDecor.logger().info("Config small solar panel: Peak production:" + peak_power_per_tick_ + "/tick");
+      ModEngineersDecor.logger().info("Config small solar panel: Peak production:" + peak_power_per_tick_ + "/t.");
     }
 
     //------------------------------------------------------------------------------------------------------------------

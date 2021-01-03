@@ -70,6 +70,9 @@ import java.util.*;
 
 public class EdFurnace
 {
+  public static void on_config(int speed_percent, int fuel_efficiency_percent, int boost_energy_per_tick)
+  { FurnaceTileEntity.on_config(speed_percent, fuel_efficiency_percent, boost_energy_per_tick); }
+
   //--------------------------------------------------------------------------------------------------------------------
   // Block
   //--------------------------------------------------------------------------------------------------------------------
@@ -232,7 +235,7 @@ public class EdFurnace
       proc_speed_ = ((double)MathHelper.clamp(speed_percent, 10, 500)) / 100;
       proc_fuel_efficiency_ = ((double) MathHelper.clamp(fuel_efficiency_percent, 10, 500)) / 100;
       boost_energy_consumption = TICK_INTERVAL * MathHelper.clamp(boost_energy_per_tick, 4, 4096);
-      ModEngineersDecor.logger().info("Config lab furnace speed:" + (proc_speed_*100) + "%, efficiency:" + (proc_fuel_efficiency_*100) + "%");
+      ModEngineersDecor.logger().info("Config lab furnace speed:" + (proc_speed_*100) + "%, efficiency:" + (proc_fuel_efficiency_*100) + "%, boost: " + (boost_energy_consumption/TICK_INTERVAL) + "rf/t.");
     }
 
     // DecorFurnaceTileEntity -----------------------------------------------------------------------------
@@ -507,7 +510,7 @@ public class EdFurnace
         if(burning() && canSmeltCurrentItem()) {
           proc_time_elapsed_ += TICK_INTERVAL * proc_speed_;
           if(heater_inserted_ && battery_.draw(boost_energy_consumption)) {
-            proc_time_elapsed_ += (TICK_INTERVAL * proc_speed_)*2;
+            proc_time_elapsed_ += (TICK_INTERVAL * proc_speed_) * 2;
           }
           if(proc_time_elapsed_ >= proc_time_needed_) {
             proc_time_elapsed_ = 0;

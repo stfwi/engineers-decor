@@ -64,10 +64,8 @@ import java.util.function.Supplier;
 
 public class EdHopper
 {
-  public static void on_config(int cooldown_ticks)
-  {
-    // ModEngineersDecor.logger.info("Config factory hopper:");
-  }
+  public static void on_config()
+  {}
 
   //--------------------------------------------------------------------------------------------------------------------
   // Block

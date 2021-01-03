@@ -215,6 +215,7 @@
   "block.engineersdecor.small_electrical_furnace": "Small Electrical Furnace",
   "block.engineersdecor.small_electrical_furnace.help": "Small metal cased pass-through furnace.\n Can draw items from the input side,\n puts items into the inventory at\n the output side. Items can be\n inserted or drawn from all sides\n using hoppers. Implicitly bypasses\n items that cannot be smelted or\n cooked. Slightly more energy\n efficient and faster than a heated\n cobblestone furnace. Fifos and\n feeders transfer whole stacks.\n Feeders require a bit of power.\n Place a Hopper into an aux slot\n to automatically draw items from\n inventories on the input side.",
   "block.engineersdecor.small_electrical_furnace.tooltips.auxslot": "Auxiliary slot\n§7Place a Hopper here to enable automatic feeding from the input side.",
+  "block.engineersdecor.small_electrical_furnace.tooltips.capacitors": "SOC %1$s%%, %2$srf/t",
   "block.engineersdecor.small_electrical_furnace.tooltips.speed": "Smelting speed selection §7(OFF/I/II/III)",
   "block.engineersdecor.small_fluid_funnel": "Small Fluid Collection Funnel",
   "block.engineersdecor.small_fluid_funnel.help": "Collects fluids above it. Has an\n internal tank with three buckets\n capacity. Traces flowing fluids\n to nearby source blocks. The\n fluid can be obtained with fluid\n transfer systems or a bucket.\n Fills only tanks below (gravity\n transfer). Compatible with vanilla\n infinite-water-source creation.",

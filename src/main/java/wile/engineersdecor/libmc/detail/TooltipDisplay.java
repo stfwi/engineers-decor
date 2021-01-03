@@ -20,6 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 
 @OnlyIn(Dist.CLIENT)
@@ -39,9 +40,14 @@ public class TooltipDisplay
   public static class TipRange
   {
     public final int x0,y0,x1,y1;
-    public final ITextComponent text;
+    public final Supplier<ITextComponent> text;
+
     public TipRange(int x, int y, int w, int h, ITextComponent text)
+    { this(x,y,w,h,()->text); }
+
+    public TipRange(int x, int y, int w, int h, Supplier<ITextComponent> text)
     { this.text=text; this.x0=x; this.y0=y; this.x1=x0+w-1; this.y1=y0+h-1; }
+
   }
 
   // ---------------------------------------------------------------------------------------------------
@@ -87,10 +93,10 @@ public class TooltipDisplay
     } else if(ranges.stream().noneMatch(
       (tip)->{
         if((x<tip.x0) || (x>tip.x1) || (y<tip.y0) || (y>tip.y1)) return false;
-        String text = tip.text.getString();
+        String text = tip.text.get().getString();
         if(!text.isEmpty() && (!text.startsWith("block."))) {
           try {
-            gui.renderTooltip(mx, tip.text, x, y); //gui.func_243308_b(mx, Collections.singletonList(tip.text), x, y);
+            gui.renderTooltip(mx, tip.text.get(), x, y);
           } catch(Exception ex) {
             had_render_exception = true;
             Auxiliaries.logError("Tooltip rendering disabled due to exception: '" + ex.getMessage() + "'");

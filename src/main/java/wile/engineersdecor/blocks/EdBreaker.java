@@ -52,6 +52,9 @@ import java.util.Random;
 
 public class EdBreaker
 {
+  public static void on_config(int boost_energy_per_tick, int breaking_time_per_hardness, int min_breaking_time_ticks, boolean power_required)
+  { BreakerTileEntity.on_config(boost_energy_per_tick, breaking_time_per_hardness, min_breaking_time_ticks, power_required); }
+
   //--------------------------------------------------------------------------------------------------------------------
   // Block
   //--------------------------------------------------------------------------------------------------------------------
@@ -161,11 +164,11 @@ public class EdBreaker
     public static void on_config(int boost_energy_per_tick, int breaking_time_per_hardness, int min_breaking_time_ticks, boolean power_required)
     {
       boost_energy_consumption = TICK_INTERVAL * MathHelper.clamp(boost_energy_per_tick, 4, 4096);
-      energy_max = Math.max(boost_energy_consumption * 10, 10000);
+      energy_max = Math.max(boost_energy_consumption * 10, 100000);
       breaking_reluctance = MathHelper.clamp(breaking_time_per_hardness, 5, 50);
       min_breaking_time = MathHelper.clamp(min_breaking_time_ticks, 10, 100);
       requires_power = power_required;
-      ModEngineersDecor.logger().info("Config block breaker: Boost energy consumption:" + (boost_energy_consumption/TICK_INTERVAL) + "rf/t, reluctance=" + breaking_reluctance + "t/hrdn, break time offset=" + min_breaking_time + "t");
+      ModEngineersDecor.logger().info("Config block breaker: Boost energy consumption:" + (boost_energy_consumption/TICK_INTERVAL) + "rf/t, reluctance=" + breaking_reluctance + "t/hrdn, break time offset=" + min_breaking_time + "t.");
     }
 
     public BreakerTileEntity()

@@ -47,6 +47,9 @@ import java.util.*;
 
 public class EdFreezer
 {
+  public static void on_config(int consumption, int cooldown_per_second)
+  { FreezerTileEntity.on_config(consumption, cooldown_per_second); }
+
   //--------------------------------------------------------------------------------------------------------------------
   // Block
   //--------------------------------------------------------------------------------------------------------------------

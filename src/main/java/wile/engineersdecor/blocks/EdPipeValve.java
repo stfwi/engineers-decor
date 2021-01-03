@@ -50,7 +50,7 @@ public class EdPipeValve
   {
     PipeValveTileEntity.fluid_maxflow_mb = MathHelper.clamp(container_size_decl, 1, 10000);
     PipeValveTileEntity.redstone_flow_slope_mb = MathHelper.clamp(redstone_slope, 1, 10000);
-    ModEngineersDecor.logger().info("Config pipe valve: maxflow:" + PipeValveTileEntity.fluid_maxflow_mb + "mb, redstone amp:" + PipeValveTileEntity.redstone_flow_slope_mb + "mb/sig");
+    ModEngineersDecor.logger().info("Config pipe valve: maxflow:" + PipeValveTileEntity.fluid_maxflow_mb + "mb, redstone amp:" + PipeValveTileEntity.redstone_flow_slope_mb + "mb/sig.");
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -67,13 +67,6 @@ public class EdPipeValve
     public static final BooleanProperty RS_CN_D = BooleanProperty.create("rs_d");
 
     public final int valve_config;
-
-    public static void on_config(int container_size_decl, int redstone_slope)
-    {
-      PipeValveTileEntity.fluid_maxflow_mb = MathHelper.clamp(container_size_decl, 1, 10000);
-      PipeValveTileEntity.redstone_flow_slope_mb = MathHelper.clamp(redstone_slope, 1, 10000);
-      ModEngineersDecor.logger().info("Config pipe valve: maxflow:" + PipeValveTileEntity.fluid_maxflow_mb + "mb, redstone amp:" + PipeValveTileEntity.redstone_flow_slope_mb + "mb/sig");
-    }
 
     public PipeValveBlock(long config, int valve_config, Block.Properties builder, final AxisAlignedBB[] unrotatedAABB)
     { super(config, builder, unrotatedAABB); this.valve_config = valve_config; }

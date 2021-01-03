@@ -663,23 +663,27 @@ public class ModConfig
     without_recipes_ = SERVER.without_recipes.get();
     without_direct_slab_pickup = SERVER.without_direct_slab_pickup.get();
     // -----------------------------------------------------------------------------------------------------------------
-    EdFurnace.FurnaceTileEntity.on_config(SERVER.furnace_smelting_speed_percent.get(), SERVER.furnace_fuel_efficiency_percent.get(), SERVER.furnace_boost_energy_consumption.get());
     EdChair.on_config(SERVER.without_chair_sitting.get(), SERVER.without_mob_chair_sitting.get(), SERVER.chair_mob_sitting_probability_percent.get(), SERVER.chair_mob_standup_probability_percent.get());
     EdLadderBlock.on_config(SERVER.without_ladder_speed_boost.get());
-    EdCraftingTable.on_config(SERVER.without_crafting_table_history.get(), false, SERVER.without_crafting_mouse_scrolling.get());
-    EdPipeValve.on_config(SERVER.pipevalve_max_flowrate.get(), SERVER.pipevalve_redstone_gain.get());
-    EdElectricalFurnace.ElectricalFurnaceTileEntity.on_config(SERVER.e_furnace_speed_percent.get(), SERVER.e_furnace_power_consumption.get(), SERVER.e_furnace_automatic_pulling.get());
-    EdSolarPanel.SolarPanelTileEntity.on_config(SERVER.small_solar_panel_peak_production.get());
-    EdBreaker.BreakerTileEntity.on_config(SERVER.block_breaker_power_consumption.get(), SERVER.block_breaker_reluctance.get(), SERVER.block_breaker_min_breaking_time.get(), SERVER.block_breaker_requires_power.get());
-    EdTreeCutter.TreeCutterTileEntity.on_config(SERVER.tree_cutter_energy_consumption.get(), SERVER.tree_cutter_cutting_time_needed.get(), SERVER.tree_cutter_requires_power.get());
-    EdMilker.MilkerTileEntity.on_config(SERVER.milking_machine_energy_consumption.get(), SERVER.milking_machine_milking_delay.get());
     EdSlabBlock.on_config(!SERVER.without_direct_slab_pickup.get());
     EdSlabSliceBlock.on_config(!SERVER.without_direct_slab_pickup.get());
-    // currently no file config planned
     EdLabeledCrate.on_config(false);
-    EdFluidFunnel.on_config(with_experimental_features_); // @todo: double check for abuse as pump first
-    EdDropper.on_config(true);
+    EdCraftingTable.on_config(SERVER.without_crafting_table_history.get(), false, SERVER.without_crafting_mouse_scrolling.get());
     EdFluidBarrel.on_config(12000, 1000);
+    EdFluidFunnel.on_config(with_experimental_features_);
+    EdPipeValve.on_config(SERVER.pipevalve_max_flowrate.get(), SERVER.pipevalve_redstone_gain.get());
+    EdHopper.on_config();
+    EdDropper.on_config(true);
+    EdPlacer.on_config();
+    EdBreaker.on_config(SERVER.block_breaker_power_consumption.get(), SERVER.block_breaker_reluctance.get(), SERVER.block_breaker_min_breaking_time.get(), SERVER.block_breaker_requires_power.get());
+    EdTreeCutter.on_config(SERVER.tree_cutter_energy_consumption.get(), SERVER.tree_cutter_cutting_time_needed.get(), SERVER.tree_cutter_requires_power.get());
+    EdFurnace.on_config(SERVER.furnace_smelting_speed_percent.get(), SERVER.furnace_fuel_efficiency_percent.get(), SERVER.furnace_boost_energy_consumption.get());
+    EdElectricalFurnace.on_config(SERVER.e_furnace_speed_percent.get(), SERVER.e_furnace_power_consumption.get(), SERVER.e_furnace_automatic_pulling.get());
+    EdSolarPanel.on_config(SERVER.small_solar_panel_peak_production.get());
+    EdMilker.on_config(SERVER.milking_machine_energy_consumption.get(), SERVER.milking_machine_milking_delay.get());
+    EdFreezer.on_config(92, 2);
+    EdMineralSmelter.on_config(92, 2);
+    EdWasteIncinerator.on_config(8);
     // -----------------------------------------------------------------------------------------------------------------
     {
       // Check if the config is already synchronized or has to be synchronised.

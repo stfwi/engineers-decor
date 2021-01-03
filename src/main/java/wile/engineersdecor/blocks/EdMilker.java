@@ -61,6 +61,9 @@ import java.util.stream.Collectors;
 
 public class EdMilker
 {
+  public static void on_config(int energy_consumption_per_tick, int min_milking_delay_per_cow)
+  { MilkerTileEntity.on_config(energy_consumption_per_tick, min_milking_delay_per_cow); }
+
   //--------------------------------------------------------------------------------------------------------------------
   // Block
   //--------------------------------------------------------------------------------------------------------------------
@@ -186,7 +189,6 @@ public class EdMilker
     private final Fluidics.Tank tank_;
     private final LazyOptional<IFluidHandler> fluid_handler_;
 
-
     public static void on_config(int energy_consumption_per_tick, int min_milking_delay_per_cow)
     {
       energy_consumption_ = MathHelper.clamp(energy_consumption_per_tick, 0, 1024);
@@ -204,7 +206,7 @@ public class EdMilker
       }
       ModEngineersDecor.logger().info(
         "Config milker: energy consumption:" + energy_consumption_ + "rf/t"
-          + ((milk_fluid_==NO_MILK_FLUID)?"":" [milk fluid available]")
+          + ((milk_fluid_==NO_MILK_FLUID)?"[no milk fluid registered]":" [milk fluid available]")
           + ((ExternalObjects.BOTTLED_MILK_BOTTLE_DRINKLABLE==null)?"":" [bottledmilk mod available]")
       );
     }

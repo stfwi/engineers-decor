@@ -64,6 +64,9 @@ import java.util.Random;
 
 public class EdWasteIncinerator
 {
+  public static void on_config(int boost_energy_per_tick)
+  { WasteIncineratorTileEntity.on_config(boost_energy_per_tick); }
+
   //--------------------------------------------------------------------------------------------------------------------
   // Block
   //--------------------------------------------------------------------------------------------------------------------
@@ -191,10 +194,10 @@ public class EdWasteIncinerator
 
     private static int energy_consumption = DEFAULT_ENERGY_CONSUMPTION;
 
-    public static void on_config(int speed_percent, int fuel_efficiency_percent, int boost_energy_per_tick)
+    public static void on_config(int boost_energy_per_tick)
     {
       energy_consumption = MathHelper.clamp(boost_energy_per_tick, 4, 4096);
-      ModEngineersDecor.logger().info("Config waste incinerator boost energy consumption:" + energy_consumption);
+      ModEngineersDecor.logger().info("Config waste incinerator: boost energy consumption:" + energy_consumption + ".");
     }
 
     // WasteIncineratorTileEntity -----------------------------------------------------------------------------

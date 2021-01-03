@@ -35,7 +35,6 @@ public class ModEngineersDecor
   public static final String MODNAME = "Engineer's Decor";
   public static final int VERSION_DATAFIXER = 0;
   private static final Logger LOGGER = LogManager.getLogger();
-  private static boolean config_loaded = false;
 
   public ModEngineersDecor()
   {
@@ -64,16 +63,6 @@ public class ModEngineersDecor
     LOGGER.info("Registering recipe condition processor ...");
     CraftingHelper.register(OptionalRecipeCondition.Serializer.INSTANCE);
     wile.engineersdecor.libmc.detail.Networking.init(MODID);
-    if(config_loaded) {
-      try {
-        logger().info("Applying loaded config file.");
-        ModConfig.apply();
-      } catch(Throwable e) {
-        logger().error("Failed to apply config: " + e.getMessage());
-      }
-    } else {
-      logger().info("Cannot apply config, load event was not casted yet.");
-    }
   }
 
   private void onClientSetup(final FMLClientSetupEvent event)
@@ -122,7 +111,7 @@ public class ModEngineersDecor
     {}
 
     public static void onConfigLoad(net.minecraftforge.fml.config.ModConfig.Loading configEvent)
-    { config_loaded = true; }
+    { ModConfig.apply(); }
 
     public static void onConfigReload(net.minecraftforge.fml.config.ModConfig.Reloading configEvent)
     {

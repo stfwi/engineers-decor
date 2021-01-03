@@ -64,6 +64,9 @@ import java.util.Random;
 
 public class EdElectricalFurnace
 {
+  public static void on_config(int speed_percent, int standard_energy_per_tick, boolean with_automatic_inventory_pulling)
+  { ElectricalFurnaceTileEntity.on_config(speed_percent, standard_energy_per_tick, with_automatic_inventory_pulling); }
+
   //--------------------------------------------------------------------------------------------------------------------
   // Block
   //--------------------------------------------------------------------------------------------------------------------
@@ -118,7 +121,7 @@ public class EdElectricalFurnace
 
   public static class ElectricalFurnaceTileEntity extends EdFurnace.FurnaceTileEntity implements ITickableTileEntity, INameable, INamedContainerProvider
   {
-    private static final int NUM_OF_FIELDS = 7;
+    private static final int NUM_OF_FIELDS = 8;
     private static final int TICK_INTERVAL = 4;
     private static final int FIFO_INTERVAL = 20;
     private static final int HEAT_CAPACITY = 200;
@@ -138,7 +141,7 @@ public class EdElectricalFurnace
     private static final int FIFO_OUTPUT_1_SLOT_NO = 6;
     public  static final int DEFAULT_SPEED_PERCENT = 290;
     public  static final int DEFAULT_ENERGY_CONSUMPTION = 16;
-    public  static final int DEFAULT_SCALED_ENERGY_CONSUMPTION = DEFAULT_ENERGY_CONSUMPTION * HEAT_INCREMENT * DEFAULT_SPEED_PERCENT / 100;
+    public  static final int DEFAULT_SCALED_ENERGY_CONSUMPTION = DEFAULT_ENERGY_CONSUMPTION * TICK_INTERVAL;
 
     // Config ----------------------------------------------------------------------------------
 
@@ -150,17 +153,20 @@ public class EdElectricalFurnace
 
     public static void on_config(int speed_percent, int standard_energy_per_tick, boolean with_automatic_inventory_pulling)
     {
-      proc_speed_percent_ = MathHelper.clamp(speed_percent, 10, 500);
-      energy_consumption_ = MathHelper.clamp(standard_energy_per_tick, 4, 4096) * HEAT_INCREMENT * proc_speed_percent_ / 100;
+      proc_speed_percent_ = MathHelper.clamp(speed_percent, 10, 800);
+      energy_consumption_ = MathHelper.clamp(standard_energy_per_tick, 4, 4096) * TICK_INTERVAL;
       transfer_energy_consumption_ = MathHelper.clamp(energy_consumption_ / 8, 8, HEAT_INCREMENT);
       with_automatic_inventory_pulling_ = with_automatic_inventory_pulling;
-      ModEngineersDecor.logger().info("Config electrical furnace speed:" + proc_speed_percent_ + ", power consumption:" + energy_consumption_);
+      ModEngineersDecor.logger().info("Config electrical furnace speed:" + proc_speed_percent_ + "%, heat-loss: 1K/t, heating consumption:" + (energy_consumption_/TICK_INTERVAL)+"rf/t.");
     }
 
     // ElectricalFurnaceTileEntity -----------------------------------------------------------------------------
 
     private int speed_ = 1;
     private boolean enabled_ = false;
+    protected int field_power_consumption_;
+    protected int power_consumption_accumulator_;
+    protected int power_consumption_timer_;
     private final LazyOptional<IItemHandler> item_handler_;
 
     public ElectricalFurnaceTileEntity()
@@ -279,6 +285,7 @@ public class EdElectricalFurnace
           case 4: return ElectricalFurnaceTileEntity.this.speed_;
           case 5: return ElectricalFurnaceTileEntity.this.battery_.getMaxEnergyStored();
           case 6: return ElectricalFurnaceTileEntity.this.field_is_burning_;
+          case 7: return ElectricalFurnaceTileEntity.this.field_power_consumption_;
           default: return 0;
         }
       }
@@ -293,6 +300,7 @@ public class EdElectricalFurnace
           case 4: ElectricalFurnaceTileEntity.this.speed_ = value; break;
           case 5: ElectricalFurnaceTileEntity.this.battery_.setMaxEnergyStored(value); break;
           case 6: ElectricalFurnaceTileEntity.this.field_is_burning_ = value; break;
+          case 7: ElectricalFurnaceTileEntity.this.field_power_consumption_ = value; break;
         }
       }
     };
@@ -318,7 +326,8 @@ public class EdElectricalFurnace
       final boolean was_burning = burning();
       if(was_burning) burntime_left_ -= TICK_INTERVAL;
       if(burntime_left_ < 0) burntime_left_ = 0;
-      if(world.isRemote) return;
+      if(world.isRemote()) return;
+      int battery_energy = battery_.getEnergyStored();
       boolean update_blockstate = (was_burning != burning());
       boolean dirty = update_blockstate;
       boolean shift_in = false;
@@ -348,7 +357,7 @@ public class EdElectricalFurnace
           if(transferItems(SMELTING_INPUT_SLOT_NO, SMELTING_OUTPUT_SLOT_NO, 1)) dirty = true;
         } else {
           // smelt, automatically choke speed on low power storage
-          final int speed = (battery_.getSOC() >= 25)? (speed_) : (1);
+          final int speed = MathHelper.clamp((battery_.getSOC() >= 25) ? (speed_) : (1), 0, MAX_SPEED_SETTING);
           if(!burning() && can_smelt) {
             if(heat_up(speed)) { dirty = true; update_blockstate = true; }
           }
@@ -375,8 +384,16 @@ public class EdElectricalFurnace
         sync_blockstate();
       }
       if(adjacent_inventory_shift(shift_in, shift_out)) dirty = true;
-      if(dirty) markDirty();
       field_is_burning_ = burning() ? 1 : 0;
+      // power consumption
+      power_consumption_timer_ += TICK_INTERVAL;
+      power_consumption_accumulator_ += (battery_.getEnergyStored() - battery_energy);
+      if(power_consumption_timer_ >= 20) {
+        field_power_consumption_ = power_consumption_accumulator_/power_consumption_timer_;
+        power_consumption_accumulator_ = 0;
+        power_consumption_timer_ = 0;
+      }
+      if(dirty) markDirty();
     }
 
     // Furnace --------------------------------------------------------------------------------------
@@ -474,11 +491,10 @@ public class EdElectricalFurnace
 
     private boolean heat_up(int speed)
     {
-      if(burntime_left_ >= (HEAT_CAPACITY-HEAT_INCREMENT)) return false;
+      if(!enabled_) return false;
       int p = energy_consumption(speed);
       if((p<=0) || (!battery_.draw(p))) return false;
-      burntime_left_ += HEAT_INCREMENT;
-      this.markDirty();
+      burntime_left_ = Math.min(burntime_left_+HEAT_INCREMENT, HEAT_CAPACITY);
       return true; // returns TE dirty
     }
 
@@ -629,21 +645,24 @@ public class EdElectricalFurnace
     public void init()
     {
       super.init();
-      {
-        final String prefix = ModContent.SMALL_ELECTRICAL_FURNACE.getTranslationKey() + ".tooltips.";
-        final int x0 = getGuiLeft(), y0 = getGuiTop();
-        final Slot aux = container.getSlot(ElectricalFurnaceTileEntity.SMELTING_AUX_SLOT_NO);
-        tooltip_.init(
-          new TipRange(x0+135, y0+50, 25, 25, new TranslationTextComponent(prefix + "speed")),
-          new TipRange(x0+aux.xPos, y0+aux.yPos, 16, 16, new TranslationTextComponent(prefix + "auxslot"))
-        );
-      }
+      final String prefix = ModContent.SMALL_ELECTRICAL_FURNACE.getTranslationKey() + ".tooltips.";
+      final int x0 = getGuiLeft(), y0 = getGuiTop();
+      final Slot aux = container.getSlot(ElectricalFurnaceTileEntity.SMELTING_AUX_SLOT_NO);
+      tooltip_.init(
+        new TipRange(x0+135, y0+50, 25, 25, new TranslationTextComponent(prefix + "speed")),
+        new TipRange(x0+aux.xPos, y0+aux.yPos, 16, 16, new TranslationTextComponent(prefix + "auxslot")),
+        new TipRange(x0+80, y0+55, 50, 14, ()->{
+          final int soc = getContainer().field(1) * 100 / Math.max(getContainer().field(5), 1);
+          final int consumption = getContainer().field(7);
+          return new TranslationTextComponent(prefix + "capacitors", soc, consumption);
+        })
+      );
     }
 
     @Override
     public void render(MatrixStack mx, int mouseX, int mouseY, float partialTicks)
     {
-      renderBackground/*renderBackground*/(mx);
+      renderBackground(mx);
       super.render(mx, mouseX, mouseY, partialTicks);
       if(!tooltip_.render(mx, this, mouseX, mouseY)) renderHoveredTooltip(mx, mouseX, mouseY);
     }
@@ -711,7 +730,7 @@ public class EdElectricalFurnace
     private int energy_px(int maxwidth, int quantization)
     {
       int emax = getContainer().field(5);
-      int k = ((maxwidth * getContainer().field(1) * 9) / 8) /((emax>0?emax:1)+1);
+      int k = ((maxwidth * getContainer().field(1) * 9) / 8) / ((emax>0?emax:1)+1);
       k = (k >= maxwidth-2) ? maxwidth : k;
       if(quantization > 0) k = ((k+(quantization/2))/quantization) * quantization;
       return k;

@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
+    - v1.1.6-b3  [M] Config logging edited, E-Furnace GUI capacitor tooltip added, E-Furnace power consumption
+                     independent of config speed setting (issue #152 ty Staegrin).
+
     - v1.1.6-b2  [M] Alternative Clinker Brick recipe (swapped Bricks/Nether Bricks) added.
                  [M] Furnace XP handling simplified (simply stores/releases XP for each smelting process).
                  [M] Mod devices do not propagate strong Redstone power to adjacent blocks.
