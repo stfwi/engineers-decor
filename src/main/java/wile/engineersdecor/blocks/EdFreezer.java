@@ -37,6 +37,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.libmc.detail.Fluidics;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
@@ -185,7 +186,7 @@ public class EdFreezer
       energy_consumption = MathHelper.clamp(consumption, 8, 4096);
       cooldown_rate = MathHelper.clamp(cooldown_per_second, 1, 5);
       reheat_rate = MathHelper.clamp(cooldown_per_second/2, 1, 5);
-      ModEngineersDecor.logger().info("Config freezer energy consumption:" + energy_consumption + "rf/t, cooldown-rate: " + cooldown_rate + "%/s.");
+      ModConfig.log("Config freezer energy consumption:" + energy_consumption + "rf/t, cooldown-rate: " + cooldown_rate + "%/s.");
     }
 
     public FreezerTileEntity()

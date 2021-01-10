@@ -48,6 +48,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
@@ -77,6 +78,7 @@ public class EdLabeledCrate
     unstorable_containers.clear();
     unstorable_containers.add(ModContent.LABELED_CRATE.asItem());
     unstorable_containers.add(Items.SHULKER_BOX);
+    ModConfig.log("Config crate: unstorable:" + unstorable_containers.stream().map(e->e.getRegistryName().toString()).collect(Collectors.joining(",")));
   }
 
   //--------------------------------------------------------------------------------------------------------------------

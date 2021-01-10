@@ -9,15 +9,16 @@
  */
 package wile.engineersdecor;
 
-import wile.engineersdecor.blocks.*;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Logger;
+import wile.engineersdecor.blocks.*;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.OptionalRecipeCondition;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -79,8 +80,59 @@ public class ModConfig
 
   public static class CommonConfig
   {
+    // Optout
+    public final ForgeConfigSpec.ConfigValue<String> pattern_excludes;
+    public final ForgeConfigSpec.ConfigValue<String> pattern_includes;
+    // MISC
+    public final ForgeConfigSpec.BooleanValue with_creative_mode_device_drops;
+    public final ForgeConfigSpec.BooleanValue with_experimental;
+    public final ForgeConfigSpec.BooleanValue with_config_logging;
+
     CommonConfig(ForgeConfigSpec.Builder builder)
     {
+      builder.comment("Settings affecting the logical server side.")
+        .push("server");
+      // --- OPTOUTS ------------------------------------------------------------
+      {
+        builder.comment("Opt-out settings")
+          .push("optout");
+        pattern_excludes = builder
+          .translation(MODID + ".config.pattern_excludes")
+          .comment("Opt-out any block by its registry name ('*' wildcard matching, "
+            + "comma separated list, whitespaces ignored. You must match the whole name, "
+            + "means maybe add '*' also at the begin and end. Example: '*wood*,*steel*' "
+            + "excludes everything that has 'wood' or 'steel' in the registry name. "
+            + "The matching result is also traced in the log file. ")
+          .define("pattern_excludes", "");
+        pattern_includes = builder
+          .translation(MODID + ".config.pattern_includes")
+          .comment("Prevent blocks from being opt'ed by registry name ('*' wildcard matching, "
+            + "comma separated list, whitespaces ignored. Evaluated before all other opt-out checks. "
+            + "You must match the whole name, means maybe add '*' also at the begin and end. Example: "
+            + "'*wood*,*steel*' includes everything that has 'wood' or 'steel' in the registry name."
+            + "The matching result is also traced in the log file.")
+          .define("pattern_includes", "");
+        builder.pop();
+      }
+      // --- MISC ---------------------------------------------------------------
+      {
+        builder.comment("Miscellaneous settings")
+          .push("miscellaneous");
+        with_experimental = builder
+          .translation(MODID + ".config.with_experimental")
+          .comment("Enables experimental features. Use at own risk.")
+          .define("with_experimental", false);
+        with_creative_mode_device_drops = builder
+          .translation(MODID + ".config.with_creative_mode_device_drops")
+          .comment("Enable that devices are dropped as item also in creative mode, allowing " +
+            " to relocate them with contents and settings.")
+          .define("with_creative_mode_device_drops", false);
+        with_config_logging = builder
+          .translation(MODID + ".config.with_config_logging")
+          .comment("Enable detailed logging of the config values and resulting calculations in each mod feature config.")
+          .define("with_config_logging", false);
+        builder.pop();
+      }
     }
   }
 
@@ -89,6 +141,12 @@ public class ModConfig
   public static class ServerConfig
   {
     // Optout
+    public final ForgeConfigSpec.BooleanValue without_chair_sitting;
+    public final ForgeConfigSpec.BooleanValue without_mob_chair_sitting;
+    public final ForgeConfigSpec.BooleanValue without_ladder_speed_boost;
+    public final ForgeConfigSpec.BooleanValue without_crafting_table_history;
+
+    /// ---------- @todo: remove these settings for MC1.17 / 1.16.5
     public final ForgeConfigSpec.ConfigValue<String> pattern_excludes;
     public final ForgeConfigSpec.ConfigValue<String> pattern_includes;
     public final ForgeConfigSpec.BooleanValue without_clinker_bricks;
@@ -125,15 +183,10 @@ public class ModConfig
     public final ForgeConfigSpec.BooleanValue without_tree_cutter;
     public final ForgeConfigSpec.BooleanValue without_labeled_crate;
     public final ForgeConfigSpec.BooleanValue without_fences;
-    public final ForgeConfigSpec.BooleanValue without_chair_sitting;
-    public final ForgeConfigSpec.BooleanValue without_mob_chair_sitting;
-    public final ForgeConfigSpec.BooleanValue without_ladder_speed_boost;
-    public final ForgeConfigSpec.BooleanValue without_crafting_table_history;
-    public final ForgeConfigSpec.BooleanValue without_direct_slab_pickup;
-    public final ForgeConfigSpec.BooleanValue with_creative_mode_device_drops;
+    /// -----------------------
+
     // Misc
-    public final ForgeConfigSpec.BooleanValue with_experimental;
-    public final ForgeConfigSpec.BooleanValue without_recipes;
+    public final ForgeConfigSpec.BooleanValue without_direct_slab_pickup;
     // Tweaks
     public final ForgeConfigSpec.IntValue furnace_smelting_speed_percent;
     public final ForgeConfigSpec.IntValue furnace_fuel_efficiency_percent;
@@ -163,7 +216,7 @@ public class ModConfig
         .push("server");
       // --- OPTOUTS ------------------------------------------------------------
       {
-        builder.comment("Opt-out settings")
+        builder.comment("Server dev opt-out settings !WARNING THE OPT-OUTs will be moved to common-config.toml in the next MC version!")
           .push("optout");
         pattern_excludes = builder
           .translation(MODID + ".config.pattern_excludes")
@@ -329,10 +382,6 @@ public class ModConfig
           .translation(MODID + ".config.without_hsupports")
           .comment("Disable horizontal supports like the double-T support.")
           .define("without_hsupports", false);
-        without_recipes = builder
-          .translation(MODID + ".config.without_recipes")
-          .comment("Disable all internal recipes, allowing to use alternative pack recipes.")
-          .define("without_recipes", false);
         without_fences = builder
           .translation(MODID + ".config.without_fences")
           .comment("Disable all fences and fence gates.")
@@ -343,20 +392,11 @@ public class ModConfig
       {
         builder.comment("Miscellaneous settings")
           .push("miscellaneous");
-        with_experimental = builder
-          .translation(MODID + ".config.with_experimental")
-          .comment("Enables experimental features. Use at own risk.")
-          .define("with_experimental", false);
         without_direct_slab_pickup = builder
           .translation(MODID + ".config.without_direct_slab_pickup")
           .comment("Disable directly picking up layers from slabs and slab " +
             " slices by left clicking while looking up/down.")
           .define("without_direct_slab_pickup", false);
-        with_creative_mode_device_drops = builder
-          .translation(MODID + ".config.with_creative_mode_device_drops")
-          .comment("Enable that devices are dropped as item also in creative mode, allowing " +
-            " to relocate them with contents and settings.")
-          .define("with_creative_mode_device_drops", false);
         builder.pop();
       }
       // --- TWEAKS -------------------------------------------------------------
@@ -490,7 +530,6 @@ public class ModConfig
     }
   }
 
-
   //--------------------------------------------------------------------------------------------------------------------
   // Optout checks
   //--------------------------------------------------------------------------------------------------------------------
@@ -505,7 +544,7 @@ public class ModConfig
   { return with_experimental_features_; }
 
   public static boolean withoutRecipes()
-  { return without_recipes_; }
+  { return false; }
 
   //--------------------------------------------------------------------------------------------------------------------
   // Cache
@@ -514,8 +553,7 @@ public class ModConfig
   private static final CompoundNBT server_config_ = new CompoundNBT();
   private static HashSet<String> optouts_ = new HashSet<>();
   private static boolean with_experimental_features_ = false;
-  private static boolean without_recipes_ = false;
-  public static boolean without_crafting_table = false;
+  private static boolean with_config_logging_ = false;
   public static boolean immersiveengineering_installed = false;
   public static boolean without_direct_slab_pickup = false;
   public static boolean with_creative_mode_device_drops = false;
@@ -525,43 +563,54 @@ public class ModConfig
 
   private static final void updateOptouts()
   {
-    final ArrayList<String> includes_ = new ArrayList<String>();
-    final ArrayList<String> excludes_ = new ArrayList<String>();
+    final ArrayList<String> includes = new ArrayList<>();
+    final ArrayList<String> excludes = new ArrayList<>();
     {
-      String inc = SERVER.pattern_includes.get().toLowerCase().replaceAll(MODID+":", "").replaceAll("[^*_,a-z0-9]", "");
-      if(SERVER.pattern_includes.get() != inc) SERVER.pattern_includes.set(inc);
-      if(!inc.isEmpty()) LOGGER.info("Config pattern includes: '" + inc + "'");
+      String inc = COMMON.pattern_includes.get().toLowerCase().replaceAll(MODID+":", "").replaceAll("[^*_,a-z0-9]", "");
+      if(COMMON.pattern_includes.get() != inc) COMMON.pattern_includes.set(inc);
       String[] incl = inc.split(",");
-      includes_.clear();
       for(int i=0; i< incl.length; ++i) {
         incl[i] = incl[i].replaceAll("[*]", ".*?");
-        if(!incl[i].isEmpty()) includes_.add(incl[i]);
+        if(!incl[i].isEmpty()) includes.add(incl[i]);
       }
     }
     {
-      String exc = SERVER.pattern_excludes.get().toLowerCase().replaceAll(MODID+":", "").replaceAll("[^*_,a-z0-9]", "");
-      if(!exc.isEmpty()) LOGGER.info("Config pattern excludes: '" + exc + "'");
+      String exc = COMMON.pattern_excludes.get().toLowerCase().replaceAll(MODID+":", "").replaceAll("[^*_,a-z0-9]", "");
       String[] excl = exc.split(",");
-      excludes_.clear();
       for(int i=0; i< excl.length; ++i) {
         excl[i] = excl[i].replaceAll("[*]", ".*?");
-        if(!excl[i].isEmpty()) excludes_.add(excl[i]);
+        if(!excl[i].isEmpty()) excludes.add(excl[i]);
       }
     }
+    if(SERVER_CONFIG_SPEC.isLoaded()) {
+      /// @todo: remove for MC1.17/1.16.5
+      String inc = SERVER.pattern_includes.get().toLowerCase().replaceAll(MODID+":", "").replaceAll("[^*_,a-z0-9]", "");
+      if(SERVER.pattern_includes.get() != inc) SERVER.pattern_includes.set(inc);
+      String[] incl = inc.split(",");
+      for(int i=0; i< incl.length; ++i) {
+        incl[i] = incl[i].replaceAll("[*]", ".*?");
+        if(!incl[i].isEmpty()) includes.add(incl[i]);
+      }
+    }
+    if(SERVER_CONFIG_SPEC.isLoaded()) {
+      /// @todo: remove for MC1.17/1.16.5
+      String exc = SERVER.pattern_excludes.get().toLowerCase().replaceAll(MODID+":", "").replaceAll("[^*_,a-z0-9]", "");
+      String[] excl = exc.split(",");
+      for(int i=0; i< excl.length; ++i) {
+        excl[i] = excl[i].replaceAll("[*]", ".*?");
+        if(!excl[i].isEmpty()) excludes.add(excl[i]);
+      }
+    }
+    if(!excludes.isEmpty()) LOGGER.info("Config pattern excludes: '" + String.join(",", excludes) + "'");
+    if(!includes.isEmpty()) LOGGER.info("Config pattern includes: '" + String.join(",", includes) + "'");
     {
-      boolean with_log_details = false;
       HashSet<String> optouts = new HashSet<>();
-      ModContent.getRegisteredItems().stream().filter((Item item) -> {
-        if(item == null) return true;
-        if(SERVER == null) return false;
-        return false;
-      }).forEach(
+      ModContent.getRegisteredItems().stream().filter((item)->(item!=null)).forEach(
         e -> optouts.add(e.getRegistryName().getPath())
       );
       ModContent.getRegisteredBlocks().stream().filter((Block block) -> {
         if(block==null) return true;
         if(block==ModContent.SIGN_MODLOGO) return true;
-        if(SERVER==null) return false;
         try {
           if(!with_experimental_features_) {
             if(block instanceof Auxiliaries.IExperimentalFeature) return true;
@@ -576,24 +625,25 @@ public class ModConfig
           // Force-include/exclude pattern matching
           final String rn = block.getRegistryName().getPath();
           try {
-            for(String e : includes_) {
+            for(String e : includes) {
               if(rn.matches(e)) {
-                if(with_log_details) LOGGER.info("Optout force include: "+rn);
+                log("Optout force include: "+rn);
                 return false;
               }
             }
-            for(String e : excludes_) {
+            for(String e : excludes) {
               if(rn.matches(e)) {
-                if(with_log_details) LOGGER.info("Optout force exclude: "+rn);
+                log("Optout force exclude: "+rn);
                 return true;
               }
             }
           } catch(Throwable ex) {
             LOGGER.error("optout include pattern failed, disabling.");
-            includes_.clear();
-            excludes_.clear();
+            includes.clear();
+            excludes.clear();
           }
           // Early non-opt out type based evaluation
+          if(SERVER==null) return false;
           if(block instanceof EdCraftingTable.CraftingTableBlock) return SERVER.without_crafting_table.get();
           if(block instanceof EdElectricalFurnace.ElectricalFurnaceBlock) return SERVER.without_electrical_furnace.get();
           if((block instanceof EdFurnace.FurnaceBlock)&&(!(block instanceof EdElectricalFurnace.ElectricalFurnaceBlock))) return SERVER.without_lab_furnace.get();
@@ -651,16 +701,17 @@ public class ModConfig
       );
       optouts_ = optouts;
     }
+    OptionalRecipeCondition.on_config(withExperimental(), withoutRecipes(), (block)->isOptedOut(block), (item)->isOptedOut(item));
   }
 
   public static final void apply()
   {
-    with_experimental_features_ = SERVER.with_experimental.get();
+    with_config_logging_ = COMMON.with_config_logging.get();
+    with_experimental_features_ = COMMON.with_experimental.get();
     if(with_experimental_features_) LOGGER.info("Config: EXPERIMENTAL FEATURES ENABLED.");
     immersiveengineering_installed = Auxiliaries.isModLoaded("immersiveengineering");
     updateOptouts();
-    without_crafting_table = isOptedOut(ModContent.CRAFTING_TABLE);
-    without_recipes_ = SERVER.without_recipes.get();
+    if(!SERVER_CONFIG_SPEC.isLoaded()) return;
     without_direct_slab_pickup = SERVER.without_direct_slab_pickup.get();
     // -----------------------------------------------------------------------------------------------------------------
     EdChair.on_config(SERVER.without_chair_sitting.get(), SERVER.without_mob_chair_sitting.get(), SERVER.chair_mob_sitting_probability_percent.get(), SERVER.chair_mob_standup_probability_percent.get());
@@ -692,8 +743,15 @@ public class ModConfig
       {
         String s = String.join(",", optouts_);
         server_config_.putString("optout", s);
-        if(!s.isEmpty()) LOGGER.info("Opt-outs:" + s);
+        if(!s.isEmpty()) log("Opt-outs:" + s);
       }
     }
   }
+
+  public static final void log(String config_message)
+  {
+    if(!with_config_logging_) return;
+    LOGGER.info(config_message);
+  }
+
 }

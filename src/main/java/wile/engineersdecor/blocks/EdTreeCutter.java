@@ -9,11 +9,6 @@
 package wile.engineersdecor.blocks;
 
 import net.minecraft.world.IWorldReader;
-import wile.engineersdecor.ModContent;
-import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.detail.TreeCutting;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.libmc.detail.Overlay;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.block.Block;
@@ -37,6 +32,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import wile.engineersdecor.ModConfig;
+import wile.engineersdecor.ModContent;
+import wile.engineersdecor.detail.TreeCutting;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.Overlay;
+
 import javax.annotation.Nullable;
 import java.util.Random;
 
@@ -132,7 +133,7 @@ public class EdTreeCutter
       energy_max = Math.max(boost_energy_consumption * 10, 10000);
       cutting_time_needed = 20 * MathHelper.clamp(cutting_time_seconds, 10, 240);
       requires_power = power_required;
-      ModEngineersDecor.logger().info("Config tree cutter: energy consumption:" + (boost_energy_consumption/TICK_INTERVAL) + "rf/t" + (requires_power?" (power required for operation) ":"") + ", cutting time:" + cutting_time_needed + "t." );
+      ModConfig.log("Config tree cutter: energy consumption:" + (boost_energy_consumption/TICK_INTERVAL) + "rf/t" + (requires_power?" (power required for operation) ":"") + ", cutting time:" + cutting_time_needed + "t." );
     }
 
     public TreeCutterTileEntity()

@@ -45,6 +45,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.client.ContainerGui;
@@ -77,6 +78,8 @@ public class EdCraftingTable
     with_crafting_slot_mouse_scrolling = !without_crafting_slot_mouse_scrolling;
     with_outslot_defined_refab = with_assist;
     CraftingHistory.max_history_size(32);
+    ModConfig.log("Config crafting table: assist:" + with_assist + ", direct-refab:" + with_assist_direct_history_refab +
+                               ", scrolling:"+with_crafting_slot_mouse_scrolling);
   }
 
   //--------------------------------------------------------------------------------------------------------------------

@@ -49,6 +49,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
+import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.blocks.EdFurnace.FurnaceBlock;
@@ -197,7 +198,7 @@ public class EdWasteIncinerator
     public static void on_config(int boost_energy_per_tick)
     {
       energy_consumption = MathHelper.clamp(boost_energy_per_tick, 4, 4096);
-      ModEngineersDecor.logger().info("Config waste incinerator: boost energy consumption:" + energy_consumption + ".");
+      ModConfig.log("Config waste incinerator: boost energy consumption:" + energy_consumption + ".");
     }
 
     // WasteIncineratorTileEntity -----------------------------------------------------------------------------

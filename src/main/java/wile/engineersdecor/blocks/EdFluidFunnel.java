@@ -11,6 +11,7 @@
 package wile.engineersdecor.blocks;
 
 import net.minecraft.world.IWorldReader;
+import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
 import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
@@ -54,7 +55,7 @@ public class EdFluidFunnel
   public static void on_config(boolean with_tank_fluid_collection)
   {
     with_device_fluid_handler_collection = with_tank_fluid_collection;
-    ModEngineersDecor.logger().info("Config fluid funnel: tank-fluid-collection:" + with_device_fluid_handler_collection + ".");
+    ModConfig.log("Config fluid funnel: tank-fluid-collection:" + with_device_fluid_handler_collection + ".");
   }
 
   //--------------------------------------------------------------------------------------------------------------------

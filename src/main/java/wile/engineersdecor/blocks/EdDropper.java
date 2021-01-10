@@ -51,6 +51,7 @@ import net.minecraftforge.items.IItemHandler;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.client.ContainerGui;
@@ -76,7 +77,7 @@ public class EdDropper
   public static void on_config(boolean with_item_insertion)
   {
     with_adjacent_item_insertion = with_item_insertion;
-    ModEngineersDecor.logger().info("Config dropper: item-insertion:" + with_adjacent_item_insertion + ".");
+    ModConfig.log("Config dropper: item-insertion:" + with_adjacent_item_insertion + ".");
   }
 
   //--------------------------------------------------------------------------------------------------------------------

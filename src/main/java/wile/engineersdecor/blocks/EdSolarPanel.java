@@ -9,10 +9,6 @@
 package wile.engineersdecor.blocks;
 
 import net.minecraft.world.IWorldReader;
-import wile.engineersdecor.ModContent;
-import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.libmc.detail.Overlay;
 import net.minecraft.world.World;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.LightType;
@@ -36,6 +32,11 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import wile.engineersdecor.ModConfig;
+import wile.engineersdecor.ModContent;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.Overlay;
+
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -114,7 +115,7 @@ public class EdSolarPanel
       peak_power_per_tick_ = MathHelper.clamp(peak_power_per_tick, 2, 8192);
       feeding_threshold = Math.max(max_power_storage_/5, 1000);
       balancing_threshold = Math.max(max_power_storage_/10, 1000);
-      ModEngineersDecor.logger().info("Config small solar panel: Peak production:" + peak_power_per_tick_ + "/t.");
+      ModConfig.log("Config small solar panel: Peak production:" + peak_power_per_tick_ + "/t.");
     }
 
     //------------------------------------------------------------------------------------------------------------------

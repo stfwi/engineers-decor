@@ -19,8 +19,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.*;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -42,12 +40,11 @@ public class ModEngineersDecor
     Auxiliaries.logGitVersion(MODNAME);
     OptionalRecipeCondition.init(MODID, LOGGER);
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onSetup);
-    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onSendImc);
-    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRecvImc);
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientSetup);
     FMLJavaModLoadingContext.get().getModEventBus().addListener(ForgeEvents::onConfigLoad);
     FMLJavaModLoadingContext.get().getModEventBus().addListener(ForgeEvents::onConfigReload);
     ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.SERVER, ModConfig.SERVER_CONFIG_SPEC);
+    ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.COMMON, ModConfig.COMMON_CONFIG_SPEC);
     ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.CLIENT, ModConfig.CLIENT_CONFIG_SPEC);
     MinecraftForge.EVENT_BUS.register(this);
   }
@@ -73,16 +70,6 @@ public class ModEngineersDecor
     wile.engineersdecor.libmc.detail.Overlay.register();
   }
 
-  private void onSendImc(final InterModEnqueueEvent event)
-  {
-    InterModComms.sendTo("inventorysorter", "containerblacklist", ()->ModContent.CT_TREATED_WOOD_CRAFTING_TABLE.getRegistryName());
-    InterModComms.sendTo("inventorysorter", "slotblacklist", ()-> EdCraftingTable.CraftingOutputSlot.class.getName());
-    InterModComms.sendTo("inventorysorter", "slotblacklist", ()-> EdCraftingTable.CraftingGridSlot.class.getName());
-  }
-
-  private void onRecvImc(final InterModProcessEvent event)
-  {}
-
   @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
   public static class ForgeEvents
   {
@@ -105,10 +92,6 @@ public class ModEngineersDecor
     @SubscribeEvent
     public static void onRegisterContainerTypes(final RegistryEvent.Register<ContainerType<?>> event)
     { ModContent.registerContainers(event); }
-
-    // @SubscribeEvent
-    public static void onServerStarting(FMLServerStartingEvent event)
-    {}
 
     public static void onConfigLoad(net.minecraftforge.fml.config.ModConfig.Loading configEvent)
     { ModConfig.apply(); }
@@ -145,9 +128,8 @@ public class ModEngineersDecor
   @SubscribeEvent
   public void onPlayerEvent(final LivingEvent.LivingUpdateEvent event)
   {
-    if(!(event.getEntity() instanceof PlayerEntity)) return;
+    if((event.getEntity().world == null) || (!(event.getEntity() instanceof PlayerEntity))) return;
     final PlayerEntity player = (PlayerEntity)event.getEntity();
-    if(player.world == null) return;
     if(player.isOnLadder()) EdLadderBlock.onPlayerUpdateEvent(player);
   }
 

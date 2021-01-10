@@ -10,8 +10,6 @@
 package wile.engineersdecor.blocks;
 
 import net.minecraft.world.IWorldReader;
-import wile.engineersdecor.ModContent;
-import wile.engineersdecor.ModEngineersDecor;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.IBlockReader;
@@ -37,6 +35,9 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import wile.engineersdecor.ModConfig;
+import wile.engineersdecor.ModContent;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -50,7 +51,7 @@ public class EdPipeValve
   {
     PipeValveTileEntity.fluid_maxflow_mb = MathHelper.clamp(container_size_decl, 1, 10000);
     PipeValveTileEntity.redstone_flow_slope_mb = MathHelper.clamp(redstone_slope, 1, 10000);
-    ModEngineersDecor.logger().info("Config pipe valve: maxflow:" + PipeValveTileEntity.fluid_maxflow_mb + "mb, redstone amp:" + PipeValveTileEntity.redstone_flow_slope_mb + "mb/sig.");
+    ModConfig.log("Config pipe valve: maxflow:" + PipeValveTileEntity.fluid_maxflow_mb + "mb, redstone amp:" + PipeValveTileEntity.redstone_flow_slope_mb + "mb/sig.");
   }
 
   //--------------------------------------------------------------------------------------------------------------------

@@ -8,8 +8,8 @@
  */
 package wile.engineersdecor.blocks;
 
+import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
-import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.Inventories;
 import wile.engineersdecor.libmc.detail.Overlay;
@@ -168,7 +168,7 @@ public class EdBreaker
       breaking_reluctance = MathHelper.clamp(breaking_time_per_hardness, 5, 50);
       min_breaking_time = MathHelper.clamp(min_breaking_time_ticks, 10, 100);
       requires_power = power_required;
-      ModEngineersDecor.logger().info("Config block breaker: Boost energy consumption:" + (boost_energy_consumption/TICK_INTERVAL) + "rf/t, reluctance=" + breaking_reluctance + "t/hrdn, break time offset=" + min_breaking_time + "t.");
+      ModConfig.log("Config block breaker: Boost energy consumption:" + (boost_energy_consumption/TICK_INTERVAL) + "rf/t, reluctance=" + breaking_reluctance + "t/hrdn, break time offset=" + min_breaking_time + "t.");
     }
 
     public BreakerTileEntity()

@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.16.4": {
+    "1.1.6": "[F] Added common-config opt-out specification for pack level opt-outs (issue #154, ty gekkone), will replace server config opt-out in MC1.17.",
     "1.1.6-b3": "[M] Config logging edited, E-Furnace GUI capacitor tooltip added, E-Furnace power consumption independent of config speed setting (issue #152 ty Staegrin).",
     "1.1.6-b2": "[M] Alternative Clinker Brick recipe (swapped Bricks/Nether Bricks) added.\n[M] Furnace XP handling simplified (simply stores/releases XP for each smelting process).\n[M] Mod devices do not propagate strong Redstone power to adjacent blocks.\n[M] Minor \"librarizing\" changes under the hood.",
     "1.1.6-b1": "[F] Fixed Metal Crafting Table Hopper access (issue #147, ty umerrr).\n[F] Fixed Dark Shingle Roof Chimney placement restriction (issue #149, thx WenXin20).\n[F] Door tags added for Wood Door and Metal Sliding Door (issue #150, thx WenXin20).\n[A] Electrical Furnace automatically chokes speed and power consumption when the internally stored power is below 20%.",
@@ -23,7 +24,7 @@
     "1.1.2-b1": "[U] Ported to MC1.16.2."
   },
   "promos": {
-    "1.16.4-recommended": "1.1.5",
-    "1.16.4-latest": "1.1.6-b3"
+    "1.16.4-recommended": "1.1.6",
+    "1.16.4-latest": "1.1.6"
   }
 }

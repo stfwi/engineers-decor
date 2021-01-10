@@ -39,7 +39,7 @@ public class JEIPlugin implements mezz.jei.api.IModPlugin
   @Override
   public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration)
   {
-    if(!ModConfig.without_crafting_table) {
+    if(!ModConfig.isOptedOut(ModContent.CRAFTING_TABLE)) {
       try {
         registration.addRecipeTransferHandler(
           EdCraftingTable.CraftingTableContainer.class,

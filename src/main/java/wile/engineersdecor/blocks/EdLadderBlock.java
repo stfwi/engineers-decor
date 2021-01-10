@@ -13,6 +13,7 @@
 package wile.engineersdecor.blocks;
 
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
+import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.math.vector.*;
@@ -45,7 +46,10 @@ public class EdLadderBlock extends LadderBlock implements IDecorBlock
   private static boolean without_speed_boost_ = false;
 
   public static void on_config(boolean without_speed_boost)
-  { without_speed_boost_ = without_speed_boost; }
+  {
+    without_speed_boost_ = without_speed_boost;
+    ModConfig.log("Config ladder: without-speed-boost:" + without_speed_boost_);
+  }
 
   public EdLadderBlock(long config, Block.Properties builder)
   { super(builder); }

@@ -45,8 +45,8 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
-import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.Fluidics;
@@ -72,7 +72,7 @@ public class EdFluidBarrel
     capacity_ = MathHelper.clamp(tank_capacity, 2000, 64000);
     tile_fluid_handler_transfer_rate_ = MathHelper.clamp(tank_capacity, 50, 4096);
     item_fluid_handler_transfer_rate_ = tile_fluid_handler_transfer_rate_;
-    ModEngineersDecor.logger().info("Config fluid barrel: capacity:" + capacity_ + "mb, transfer-rate:" + tile_fluid_handler_transfer_rate_ + "mb/t.");
+    ModConfig.log("Config fluid barrel: capacity:" + capacity_ + "mb, transfer-rate:" + tile_fluid_handler_transfer_rate_ + "mb/t.");
   }
 
   //--------------------------------------------------------------------------------------------------------------------

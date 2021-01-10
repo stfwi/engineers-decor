@@ -47,6 +47,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.blocks.EdFurnace.FurnaceTileEntity;
@@ -157,7 +158,7 @@ public class EdElectricalFurnace
       energy_consumption_ = MathHelper.clamp(standard_energy_per_tick, 4, 4096) * TICK_INTERVAL;
       transfer_energy_consumption_ = MathHelper.clamp(energy_consumption_ / 8, 8, HEAT_INCREMENT);
       with_automatic_inventory_pulling_ = with_automatic_inventory_pulling;
-      ModEngineersDecor.logger().info("Config electrical furnace speed:" + proc_speed_percent_ + "%, heat-loss: 1K/t, heating consumption:" + (energy_consumption_/TICK_INTERVAL)+"rf/t.");
+      ModConfig.log("Config electrical furnace speed:" + proc_speed_percent_ + "%, heat-loss: 1K/t, heating consumption:" + (energy_consumption_/TICK_INTERVAL)+"rf/t.");
     }
 
     // ElectricalFurnaceTileEntity -----------------------------------------------------------------------------

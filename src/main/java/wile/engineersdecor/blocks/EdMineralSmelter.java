@@ -10,8 +10,6 @@
 package wile.engineersdecor.blocks;
 
 import net.minecraft.world.IWorldReader;
-import wile.engineersdecor.ModContent;
-import wile.engineersdecor.ModEngineersDecor;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.block.*;
@@ -49,6 +47,10 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import wile.engineersdecor.ModConfig;
+import wile.engineersdecor.ModContent;
+import wile.engineersdecor.ModEngineersDecor;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
@@ -250,7 +252,7 @@ public class EdMineralSmelter
       energy_consumption = MathHelper.clamp(consumption, 8, 4096);
       heatup_rate = MathHelper.clamp(heatup_per_second, 1, 5);
       cooldown_rate = MathHelper.clamp(heatup_per_second/2, 1, 5);
-      ModEngineersDecor.logger().info("Config mineal smelter: energy consumption:" + energy_consumption + "rf/t, heat-up rate: " + heatup_rate + "%/s.");
+      ModConfig.log("Config mineal smelter: energy consumption:" + energy_consumption + "rf/t, heat-up rate: " + heatup_rate + "%/s.");
     }
 
     public MineralSmelterTileEntity()

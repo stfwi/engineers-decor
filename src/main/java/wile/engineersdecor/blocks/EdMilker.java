@@ -8,11 +8,6 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraftforge.common.util.Constants;
-import wile.engineersdecor.libmc.detail.*;
-import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.ModContent;
-import wile.engineersdecor.detail.ExternalObjects;
 import net.minecraft.world.World;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.IBlockReader;
@@ -51,6 +46,10 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.registries.ForgeRegistries;
+import wile.engineersdecor.ModConfig;
+import wile.engineersdecor.libmc.detail.*;
+import wile.engineersdecor.ModContent;
+import wile.engineersdecor.detail.ExternalObjects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -204,7 +203,7 @@ public class EdMilker
         milk_containers_.put(new ItemStack(Items.BUCKET), new ItemStack(Items.MILK_BUCKET));
         if(ExternalObjects.BOTTLED_MILK_BOTTLE_DRINKLABLE!=null) milk_containers_.put(new ItemStack(Items.GLASS_BOTTLE), new ItemStack(ExternalObjects.BOTTLED_MILK_BOTTLE_DRINKLABLE));
       }
-      ModEngineersDecor.logger().info(
+      ModConfig.log(
         "Config milker: energy consumption:" + energy_consumption_ + "rf/t"
           + ((milk_fluid_==NO_MILK_FLUID)?"[no milk fluid registered]":" [milk fluid available]")
           + ((ExternalObjects.BOTTLED_MILK_BOTTLE_DRINKLABLE==null)?"":" [bottledmilk mod available]")

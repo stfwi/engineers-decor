@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
+    - v1.1.6     [F] Added common-config opt-out specification for pack level opt-outs (issue #154,
+                     ty gekkone), will replace server config opt-out in MC1.17.
+
     - v1.1.6-b3  [M] Config logging edited, E-Furnace GUI capacitor tooltip added, E-Furnace power consumption
                      independent of config speed setting (issue #152 ty Staegrin).
 

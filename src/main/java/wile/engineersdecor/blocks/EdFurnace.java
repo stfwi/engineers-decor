@@ -54,6 +54,7 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.detail.ExternalObjects;
@@ -235,7 +236,7 @@ public class EdFurnace
       proc_speed_ = ((double)MathHelper.clamp(speed_percent, 10, 500)) / 100;
       proc_fuel_efficiency_ = ((double) MathHelper.clamp(fuel_efficiency_percent, 10, 500)) / 100;
       boost_energy_consumption = TICK_INTERVAL * MathHelper.clamp(boost_energy_per_tick, 4, 4096);
-      ModEngineersDecor.logger().info("Config lab furnace speed:" + (proc_speed_*100) + "%, efficiency:" + (proc_fuel_efficiency_*100) + "%, boost: " + (boost_energy_consumption/TICK_INTERVAL) + "rf/t.");
+      ModConfig.log("Config lab furnace speed:" + (proc_speed_*100) + "%, efficiency:" + (proc_fuel_efficiency_*100) + "%, boost: " + (boost_energy_consumption/TICK_INTERVAL) + "rf/t.");
     }
 
     // DecorFurnaceTileEntity -----------------------------------------------------------------------------
