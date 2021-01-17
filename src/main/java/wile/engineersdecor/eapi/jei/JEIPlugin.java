@@ -9,6 +9,7 @@
 package wile.engineersdecor.eapi.jei;
 //public class JEIPlugin {}
 
+import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
@@ -73,6 +74,20 @@ public class JEIPlugin implements mezz.jei.api.IModPlugin
       } catch(Exception e) {
         ModEngineersDecor.logger().warn("Exception in JEI opt-out processing: '" + e.getMessage() + "', skipping further JEI optout processing.");
       }
+    }
+  }
+
+  @Override
+  public void registerRecipeCatalysts(IRecipeCatalystRegistration registration)
+  {
+    if(!ModConfig.isOptedOut(ModContent.CRAFTING_TABLE)) {
+      registration.addRecipeCatalyst(new ItemStack(ModContent.CRAFTING_TABLE), VanillaRecipeCategoryUid.CRAFTING);
+    }
+    if(!ModConfig.isOptedOut(ModContent.SMALL_LAB_FURNACE)) {
+      registration.addRecipeCatalyst(new ItemStack(ModContent.SMALL_LAB_FURNACE), VanillaRecipeCategoryUid.FURNACE);
+    }
+    if(!ModConfig.isOptedOut(ModContent.SMALL_ELECTRICAL_FURNACE)) {
+      registration.addRecipeCatalyst(new ItemStack(ModContent.SMALL_ELECTRICAL_FURNACE), VanillaRecipeCategoryUid.FURNACE);
     }
   }
 }

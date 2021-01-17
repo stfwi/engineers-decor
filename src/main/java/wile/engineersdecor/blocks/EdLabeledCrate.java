@@ -10,7 +10,6 @@ package wile.engineersdecor.blocks;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import javafx.util.Pair;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -195,12 +194,12 @@ public class EdLabeledCrate
               total_items += e.getCount();
             }
           }
-          List<Pair<String,Integer>> itmes = new ArrayList<>();
-          for(Map.Entry<Item,Integer> e:item_map.entrySet()) itmes.add(new Pair<>(e.getKey().getTranslationKey(), e.getValue()));
-          itmes.sort((a,b)->b.getValue()-a.getValue());
+          List<Tuple<String,Integer>> itmes = new ArrayList<>();
+          for(Map.Entry<Item,Integer> e:item_map.entrySet()) itmes.add(new Tuple<>(e.getKey().getTranslationKey(), e.getValue()));
+          itmes.sort((a,b)->b.getB()-a.getB());
           boolean dotdotdot = false;
           if(itmes.size() > 8) { itmes.subList(8, itmes.size()).clear(); dotdotdot = true; }
-          stats = itmes.stream().map(e->Auxiliaries.localize(e.getKey())).collect(Collectors.joining(", "));
+          stats = itmes.stream().map(e->Auxiliaries.localize(e.getA())).collect(Collectors.joining(", "));
           if(dotdotdot) stats += "...";
         }
       }
@@ -230,8 +229,9 @@ public class EdLabeledCrate
     public static final int NUM_OF_STORAGE_ROWS = 6;
     public static final int ITEMFRAME_SLOTNO = NUM_OF_STORAGE_SLOTS;
 
-    protected final Inventories.StorageInventory main_inventory_ = new StorageInventory(this, NUM_OF_SLOTS, 1);
-    protected final InventoryRange storage_range_ = new InventoryRange(main_inventory_, 0, NUM_OF_STORAGE_SLOTS, NUM_OF_STORAGE_ROWS);
+    protected final Inventories.StorageInventory main_inventory_;
+    protected LazyOptional<IItemHandler> item_handler_;
+    protected final InventoryRange storage_range_;
     private @Nullable ITextComponent custom_name_;
 
     public LabeledCrateTileEntity()
@@ -239,9 +239,17 @@ public class EdLabeledCrate
 
     public LabeledCrateTileEntity(TileEntityType<?> te_type)
     {
-      super(te_type); reset();
-      main_inventory_.setCloseAction(player->{
-        if(!getWorld().isRemote()) Networking.PacketTileNotifyServerToClient.sendToPlayers(this, writenbt(new CompoundNBT()));
+      super(te_type);
+      main_inventory_ = new StorageInventory(this, NUM_OF_SLOTS, 1);
+      storage_range_ = new InventoryRange(main_inventory_, 0, NUM_OF_STORAGE_SLOTS, NUM_OF_STORAGE_ROWS);
+      item_handler_ = MappedItemHandler.createGenericHandler(storage_range_,
+        (slot,stack)->(slot!=ITEMFRAME_SLOTNO),
+        (slot,stack)->(slot!=ITEMFRAME_SLOTNO),
+        IntStream.range(0, NUM_OF_STORAGE_SLOTS).boxed().collect(Collectors.toList())
+      );
+      main_inventory_.setCloseAction((player)->{ Networking.PacketTileNotifyServerToClient.sendToPlayers(this, writenbt(new CompoundNBT())); });
+      main_inventory_.setSlotChangeAction((index,stack)->{
+        if(index==ITEMFRAME_SLOTNO) Networking.PacketTileNotifyServerToClient.sendToPlayers(this, writenbt(new CompoundNBT()));
       });
     }
 
@@ -281,6 +289,15 @@ public class EdLabeledCrate
     @Override
     public void onServerPacketReceived(CompoundNBT nbt)
     { readnbt(nbt); }
+
+    // Capability export ----------------------------------------------------------------------------
+
+    @Override
+    public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
+    {
+      if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handler_.cast();
+      return super.getCapability(capability, facing);
+    }
 
     // TileEntity ------------------------------------------------------------------------------
 
@@ -373,20 +390,6 @@ public class EdLabeledCrate
       }
     };
 
-    // Capability export ----------------------------------------------------------------------------
-
-    protected LazyOptional<IItemHandler> item_handler_ = MappedItemHandler.createGenericHandler(storage_range_,
-      (slot,stack)->(slot!=ITEMFRAME_SLOTNO),
-      (slot,stack)->(slot!=ITEMFRAME_SLOTNO),
-      IntStream.range(0, NUM_OF_STORAGE_SLOTS).boxed().collect(Collectors.toList())
-    );
-
-    @Override
-    public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
-    {
-      if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handler_.cast();
-      return super.getCapability(capability, facing);
-    }
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -528,8 +531,8 @@ public class EdLabeledCrate
     @Override
     public void onClientPacketReceived(int windowId, PlayerEntity player, CompoundNBT nbt)
     {
-      boolean changed = false;
       if(!nbt.contains("action")) return;
+      boolean changed = false;
       final int slotId = nbt.contains("slot") ? nbt.getInt("slot") : -1;
       switch(nbt.getString("action")) {
         case QUICK_MOVE_ALL: {

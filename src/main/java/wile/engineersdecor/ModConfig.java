@@ -585,7 +585,6 @@ public class ModConfig
     if(SERVER_CONFIG_SPEC.isLoaded()) {
       /// @todo: remove for MC1.17/1.16.5
       String inc = SERVER.pattern_includes.get().toLowerCase().replaceAll(MODID+":", "").replaceAll("[^*_,a-z0-9]", "");
-      if(SERVER.pattern_includes.get() != inc) SERVER.pattern_includes.set(inc);
       String[] incl = inc.split(",");
       for(int i=0; i< incl.length; ++i) {
         incl[i] = incl[i].replaceAll("[*]", ".*?");
@@ -601,8 +600,8 @@ public class ModConfig
         if(!excl[i].isEmpty()) excludes.add(excl[i]);
       }
     }
-    if(!excludes.isEmpty()) LOGGER.info("Config pattern excludes: '" + String.join(",", excludes) + "'");
-    if(!includes.isEmpty()) LOGGER.info("Config pattern includes: '" + String.join(",", includes) + "'");
+    if(!excludes.isEmpty()) log("Config pattern excludes: '" + String.join(",", excludes) + "'");
+    if(!includes.isEmpty()) log("Config pattern includes: '" + String.join(",", includes) + "'");
     {
       HashSet<String> optouts = new HashSet<>();
       ModContent.getRegisteredItems().stream().filter((item)->(item!=null)).forEach(
@@ -701,7 +700,7 @@ public class ModConfig
       );
       optouts_ = optouts;
     }
-    OptionalRecipeCondition.on_config(withExperimental(), withoutRecipes(), (block)->isOptedOut(block), (item)->isOptedOut(item));
+    OptionalRecipeCondition.on_config(withExperimental(), withoutRecipes(), ModConfig::isOptedOut, ModConfig::isOptedOut);
   }
 
   public static final void apply()

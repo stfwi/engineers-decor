@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
+    - v1.1.7     [M] 1.16.5 support.
+                 [F] Fixed Labeled Crate include (issue #157, ty NillerMedDild).
+
     - v1.1.6     [F] Added common-config opt-out specification for pack level opt-outs (issue #154,
                      ty gekkone), will replace server config opt-out in MC1.17.
 

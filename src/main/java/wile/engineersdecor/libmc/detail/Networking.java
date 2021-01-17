@@ -113,7 +113,7 @@ public class Networking
 
     public static void sendToPlayers(TileEntity te, CompoundNBT nbt)
     {
-      if(te==null) return;
+      if(te==null || te.getWorld().isRemote()) return;
       for(PlayerEntity player: te.getWorld().getPlayers()) sendToPlayer(player, te, nbt);
     }
 

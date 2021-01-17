@@ -33,6 +33,7 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -287,6 +288,8 @@ public class Inventories
   {
     public final IInventory inventory;
     public final int offset, size, num_rows;
+    protected int max_stack_size_ = 64;
+    protected BiPredicate<Integer, ItemStack> validator_ = (index, stack)->true;
 
     public InventoryRange(IInventory inventory, int offset, int size, int num_rows)
     {
@@ -308,46 +311,71 @@ public class Inventories
     public static InventoryRange fromPlayerInventory(PlayerEntity player)
     { return new InventoryRange(player.inventory, 0, 36, 4); }
 
+    public InventoryRange setValidator(BiPredicate<Integer, ItemStack> validator)
+    { validator_ = validator; return this; }
+
+    public BiPredicate<Integer, ItemStack> getValidator()
+    { return validator_; }
+
+    public InventoryRange setMaxStackSize(int count)
+    { max_stack_size_ = Math.max(count, 1) ; return this; }
+
+    public int getMaxStackSize()
+    { return max_stack_size_ ; }
+
     // IInventory ------------------------------------------------------------------------------------------------------
 
+    @Override
     public void clear()
     { inventory.clear(); }
 
+    @Override
     public int getSizeInventory()
     { return size; }
 
+    @Override
     public boolean isEmpty()
     { for(int i=0; i<size; ++i) if(!inventory.getStackInSlot(offset+i).isEmpty()){return false;} return true; }
 
+    @Override
     public ItemStack getStackInSlot(int index)
     { return inventory.getStackInSlot(offset+index); }
 
+    @Override
     public ItemStack decrStackSize(int index, int count)
     { return inventory.decrStackSize(offset+index, count); }
 
+    @Override
     public ItemStack removeStackFromSlot(int index)
     { return inventory.removeStackFromSlot(offset+index); }
 
+    @Override
     public void setInventorySlotContents(int index, ItemStack stack)
     { inventory.setInventorySlotContents(offset+index, stack); }
 
+    @Override
     public int getInventoryStackLimit()
-    { return inventory.getInventoryStackLimit(); }
+    { return Math.min(max_stack_size_, inventory.getInventoryStackLimit()); }
 
+    @Override
     public void markDirty()
     { inventory.markDirty(); }
 
+    @Override
     public boolean isUsableByPlayer(PlayerEntity player)
     { return inventory.isUsableByPlayer(player); }
 
+    @Override
     public void openInventory(PlayerEntity player)
     { inventory.openInventory(player); }
 
+    @Override
     public void closeInventory(PlayerEntity player)
     { inventory.closeInventory(player); }
 
+    @Override
     public boolean isItemValidForSlot(int index, ItemStack stack)
-    { return inventory.isItemValidForSlot(offset+index, stack); }
+    { return validator_.test(offset+index, stack) && inventory.isItemValidForSlot(offset+index, stack); }
 
     //------------------------------------------------------------------------------------------------------------------
 
@@ -597,6 +625,7 @@ public class Inventories
     protected BiPredicate<Integer, ItemStack> validator_ = (index, stack)->true;
     protected Consumer<PlayerEntity> open_action_ = (player)->{};
     protected Consumer<PlayerEntity> close_action_ = (player)->{};
+    protected BiConsumer<Integer,ItemStack> slot_set_action_ = (index, stack)->{};
 
     public StorageInventory(TileEntity te, int size)
     { this(te, size, 1); }
@@ -637,11 +666,17 @@ public class Inventories
     public StorageInventory setCloseAction(Consumer<PlayerEntity> fn)
     { close_action_ = fn; return this; }
 
+    public StorageInventory setSlotChangeAction(BiConsumer<Integer,ItemStack> fn)
+    { slot_set_action_ = fn; return this; }
+
     public StorageInventory setStackLimit(int max_slot_stack_size)
     { stack_limit_ = Math.max(max_slot_stack_size, 1); return this; }
 
     public StorageInventory setValidator(BiPredicate<Integer, ItemStack> validator)
     { validator_ = validator; return this; }
+
+    public BiPredicate<Integer, ItemStack> getValidator()
+    { return validator_; }
 
     // Iterable<ItemStack> ---------------------------------------------------------------------
 
@@ -675,7 +710,12 @@ public class Inventories
 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack)
-    { stacks_.set(index, stack); }
+    {
+      stacks_.set(index, stack);
+      if((stack.getCount() != stacks_.get(index).getCount()) || !areItemStacksDifferent(stacks_.get(index),stack)) {
+        slot_set_action_.accept(index, stack);
+      }
+    }
 
     @Override
     public int getInventoryStackLimit()
