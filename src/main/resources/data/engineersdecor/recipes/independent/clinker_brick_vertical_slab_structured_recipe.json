@@ -1,0 +1,31 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:clinker_brick_vertical_slab_structured",
+          "required": ["engineersdecor:clinker_brick_block"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "C",
+          "C",
+          "C"
+        ],
+        "key": {
+          "C": {
+            "item": "engineersdecor:clinker_brick_block"
+          }
+        },
+        "result": {
+          "item": "engineersdecor:clinker_brick_vertical_slab_structured",
+          "count": 6
+        }
+      }
+    }
+  ]
+}

@@ -116,6 +116,34 @@ public class ModContent
     new Block[]{CLINKER_BRICK_BLOCK, CLINKER_BRICK_STAINED_BLOCK, CLINKER_BRICK_SLAB, CLINKER_BRICK_STAIRS, CLINKER_BRICK_STAINED_SLAB, CLINKER_BRICK_STAINED_STAIRS}
   )).setRegistryName(new ResourceLocation(MODID, "clinker_brick_sastor_corner_block"));
 
+  public static final DecorBlock.HorizontalWaterLoggable CLINKER_BRICK_RECESSED = (DecorBlock.HorizontalWaterLoggable)(new DecorBlock.HorizontalWaterLoggable(
+    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT,
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE),
+    new AxisAlignedBB[] {
+      Auxiliaries.getPixeledAABB( 3,0, 0, 13,16, 1),
+      Auxiliaries.getPixeledAABB( 0,0, 1, 16,16,11),
+      Auxiliaries.getPixeledAABB( 4,0,11, 12,16,13)
+    }
+  )).setRegistryName(new ResourceLocation(MODID, "clinker_brick_recessed"));
+
+  public static final DecorBlock.HorizontalWaterLoggable CLINKER_BRICK_SASTOR_VERTICAL_SLOTTED = (DecorBlock.HorizontalWaterLoggable)(new DecorBlock.HorizontalWaterLoggable(
+    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT,
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE),
+    new AxisAlignedBB[] {
+      Auxiliaries.getPixeledAABB( 3,0, 0, 13,16, 1),
+      Auxiliaries.getPixeledAABB( 3,0,15, 13,16,16),
+      Auxiliaries.getPixeledAABB( 0,0, 1, 16,16,15)
+    }
+  )).setRegistryName(new ResourceLocation(MODID, "clinker_brick_vertically_slit"));
+
+  public static final DecorBlock.HorizontalWaterLoggable CLINKER_BRICK_VERTICAL_SLAB_STRUCTURED = (DecorBlock.HorizontalWaterLoggable)(new DecorBlock.HorizontalWaterLoggable(
+    DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT,
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE),
+    new AxisAlignedBB[] {
+      Auxiliaries.getPixeledAABB( 0,0, 0, 16,16, 8),
+    }
+  )).setRegistryName(new ResourceLocation(MODID, "clinker_brick_vertical_slab_structured"));
+
   // -------------------------------------------------------------------------------------------------------------------
 
   public static final DecorBlock.Normal SLAG_BRICK_BLOCK = (DecorBlock.Normal)(new DecorBlock.Normal(
@@ -228,49 +256,42 @@ public class ModContent
   // -------------------------------------------------------------------------------------------------------------------
 
   public static final EdRoofBlock DARK_CERAMIC_SHINGLE_ROOF = (EdRoofBlock)(new EdRoofBlock(
-    DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
+    DecorBlock.CFG_CUTOUT,
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE).notSolid().variableOpacity().setAllowsSpawn(ModContent::disallowSpawn)
   )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof"));
 
-  public static final DecorBlock.Normal DARK_CERAMIC_SHINGLE_ROOF_BLOCK = (DecorBlock.Normal)(new DecorBlock.Normal(
-    DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
-         .notSolid().variableOpacity().setEmmisiveRendering((s,w,p)->true).variableOpacity()
-  )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof_block"));
-
-  public static final EdSlabBlock DARK_CERAMIC_SHINGLE_ROOF_SLAB = (EdSlabBlock)(new EdSlabBlock(
-    DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
-         .notSolid().variableOpacity().setEmmisiveRendering((s,w,p)->true).variableOpacity()
-  )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof_slab"));
-
-  public static final EdSlabSliceBlock HALFSLAB_DARK_CERAMIC_SHINGLE_ROOF = (EdSlabSliceBlock)(new EdSlabSliceBlock(
-    DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
-  )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof_slabslice"));
-
   public static final EdRoofBlock DARK_CERAMIC_SHINGLE_ROOF_METALIZED = (EdRoofBlock)(new EdRoofBlock(
-    DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
+    DecorBlock.CFG_CUTOUT,
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE).notSolid().variableOpacity().setAllowsSpawn(ModContent::disallowSpawn)
   )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof_metallized"));
 
   public static final EdRoofBlock DARK_CERAMIC_SHINGLE_ROOF_SKYLIGHT = (EdRoofBlock)(new EdRoofBlock(
     DecorBlock.CFG_TRANSLUCENT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE).notSolid().variableOpacity().setAllowsSpawn(ModContent::disallowSpawn)
   )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof_skylight"));
 
   public static final EdChimneyTrunkBlock DARK_CERAMIC_SHINGLE_ROOF_CHIMNEYTRUNK = (EdChimneyTrunkBlock)(new EdChimneyTrunkBlock(
-    DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE),
+    DecorBlock.CFG_CUTOUT,
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE).notSolid().variableOpacity().setAllowsSpawn(ModContent::disallowSpawn),
     VoxelShapes.create(Auxiliaries.getPixeledAABB(3, 0, 3, 13, 16, 13)),
     VoxelShapes.create(Auxiliaries.getPixeledAABB(5, 0, 5, 11, 16, 11))
   )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof_chimneytrunk"));
 
   public static final EdChimneyBlock DARK_CERAMIC_SHINGLE_ROOF_CHIMNEY = (EdChimneyBlock)(new EdChimneyBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_AI_PASSABLE,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 2000f).sound(SoundType.STONE),
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 2000f).sound(SoundType.STONE).variableOpacity().setAllowsSpawn(ModContent::disallowSpawn),
     Auxiliaries.getPixeledAABB(3, 0, 3, 13, 6, 13)
   )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof_chimney"));
+
+  public static final DecorBlock.Normal DARK_CERAMIC_SHINGLE_ROOF_BLOCK = (DecorBlock.Normal)(new DecorBlock.Normal(
+    DecorBlock.CFG_DEFAULT,
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
+  )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof_block"));
+
+  public static final EdSlabBlock DARK_CERAMIC_SHINGLE_ROOF_SLAB = (EdSlabBlock)(new EdSlabBlock(
+    DecorBlock.CFG_DEFAULT,
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
+  )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof_slab"));
 
   // -------------------------------------------------------------------------------------------------------------------
 
@@ -283,6 +304,11 @@ public class ModContent
     DecorBlock.CFG_DEFAULT,
     Block.Properties.create(Material.EARTH, MaterialColor.DIRT).hardnessAndResistance(0.5f, 3f).sound(SoundType.GROUND).harvestTool(ToolType.SHOVEL)
   )).setRegistryName(new ResourceLocation(MODID, "dense_grit_dirt_block"));
+
+  public static final EdSlabSliceBlock HALFSLAB_DARK_CERAMIC_SHINGLE_ROOF = (EdSlabSliceBlock)(new EdSlabSliceBlock(
+    DecorBlock.CFG_DEFAULT,
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
+  )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof_slabslice"));
 
   // -------------------------------------------------------------------------------------------------------------------
 
@@ -989,6 +1015,9 @@ public class ModContent
     CLINKER_BRICK_STAINED_BLOCK,
     CLINKER_BRICK_STAINED_SLAB,
     CLINKER_BRICK_STAINED_STAIRS,
+    CLINKER_BRICK_SASTOR_VERTICAL_SLOTTED,
+    CLINKER_BRICK_RECESSED,
+    CLINKER_BRICK_VERTICAL_SLAB_STRUCTURED,
     SLAG_BRICK_BLOCK,
     SLAG_BRICK_SLAB,
     SLAG_BRICK_STAIRS,

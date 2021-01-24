@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "engineersdecor:block/brick/clinker_brick_recessed_model"          },
+    "facing=south": { "model": "engineersdecor:block/brick/clinker_brick_recessed_model", "y":180 },
+    "facing=west":  { "model": "engineersdecor:block/brick/clinker_brick_recessed_model", "y":270 },
+    "facing=east":  { "model": "engineersdecor:block/brick/clinker_brick_recessed_model", "y":90  }
+  }
+}

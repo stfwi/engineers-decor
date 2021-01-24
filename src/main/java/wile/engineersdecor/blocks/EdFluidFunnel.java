@@ -10,9 +10,8 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.world.IWorldReader;
-import wile.engineersdecor.ModConfig;
-import wile.engineersdecor.ModContent;
 import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -40,7 +39,8 @@ import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.ModConfig;
+import wile.engineersdecor.ModContent;
 import wile.engineersdecor.libmc.detail.Fluidics;
 
 import javax.annotation.Nullable;
@@ -257,6 +257,8 @@ public class EdFluidFunnel
         BlockState state = world.getBlockState(pos);
         if(state instanceof IBucketPickupHandler) {
           ((IBucketPickupHandler)state).pickupFluid(world, pos, state);
+        } else if((state.getBlock() instanceof IWaterLoggable) && (state.hasProperty(BlockStateProperties.WATERLOGGED))) {
+          world.setBlockState(pos, state.with(BlockStateProperties.WATERLOGGED, false), 1|2);
         } else {
           world.setBlockState(pos, Blocks.AIR.getDefaultState(), 1|2); // ok we can't leave the block, that would be an infinite source of an unknown fluid.
         }

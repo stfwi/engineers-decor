@@ -1,0 +1,55 @@
+{
+	"parent": "block/block",
+	"textures": {
+		"f": "engineersdecor:block/clinker_brick/clinker_brick_pole_side",
+		"s": "engineersdecor:block/clinker_brick/clinker_brick_sastor_upplate_top_texture",
+		"particle": "engineersdecor:block/clinker_brick/clinker_brick_texture0",
+		"d": "engineersdecor:block/clinker_brick/clinker_brick_texture0"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 1],
+			"to": [8, 16, 15],
+			"faces": {
+				"north": {"uv": [4, 0, 12, 16], "texture": "#f"},
+				"south": {"uv": [4, 0, 12, 16], "texture": "#f"},
+				"west": {"uv": [1, 0, 15, 16], "texture": "#d"},
+				"up": {"uv": [0, 1, 8, 15], "texture": "#d"},
+				"down": {"uv": [0, 1, 8, 15], "texture": "#d"}
+			}
+		},
+		{
+			"from": [8, 0, 1],
+			"to": [16, 16, 15],
+			"faces": {
+				"north": {"uv": [4, 0, 12, 16], "texture": "#f"},
+				"east": {"uv": [1, 0, 15, 16], "texture": "#d"},
+				"south": {"uv": [4, 0, 12, 16], "texture": "#f"},
+				"up": {"uv": [8, 1, 16, 15], "texture": "#d"},
+				"down": {"uv": [8, 1, 16, 15], "texture": "#d"}
+			}
+		},
+		{
+			"from": [3, 0, 0],
+			"to": [13, 16, 1],
+			"faces": {
+				"north": {"uv": [3, 0, 13, 16], "texture": "#d"},
+				"east": {"uv": [15, 0, 16, 16], "texture": "#s"},
+				"west": {"uv": [0, 0, 1, 16], "texture": "#s"},
+				"up": {"uv": [3, 0, 13, 1], "texture": "#s"},
+				"down": {"uv": [3, 15, 13, 16], "texture": "#s"}
+			}
+		},
+		{
+			"from": [3, 0, 15],
+			"to": [13, 16, 16],
+			"faces": {
+				"east": {"uv": [0, 0, 1, 16], "texture": "#s"},
+				"south": {"uv": [3, 0, 13, 16], "texture": "#d"},
+				"west": {"uv": [15, 0, 16, 16], "texture": "#s"},
+				"up": {"uv": [3, 15, 13, 16], "texture": "#s"},
+				"down": {"uv": [3, 0, 13, 1], "texture": "#s"}
+			}
+		}
+	]
+}

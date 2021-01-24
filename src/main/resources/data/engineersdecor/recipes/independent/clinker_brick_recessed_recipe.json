@@ -1,0 +1,23 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:clinker_brick_recessed",
+          "required": ["engineersdecor:clinker_brick_vertically_slit"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "ingredients": [
+          { "item": "engineersdecor:clinker_brick_vertically_slit" }
+        ],
+        "result": {
+          "item": "engineersdecor:clinker_brick_recessed"
+        }
+      }
+    }
+  ]
+}

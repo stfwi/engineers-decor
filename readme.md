@@ -11,6 +11,10 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
+    - v1.1.8-b1  [F] Fluid Funnel waterlogged fluid picking fixed (issue #158, thx ZoMadeStuff).
+                 [F] Roof rendering fixes (issues #153/#159, thx Salamance73/Murph).
+                 [A] Recessed Clinkers, Vertically Slit Clinkers, and Structured Vertical Clinker Slab added.
+
     - v1.1.7     [M] 1.16.5 support.
                  [F] Fixed Labeled Crate include (issue #157, ty NillerMedDild).
 

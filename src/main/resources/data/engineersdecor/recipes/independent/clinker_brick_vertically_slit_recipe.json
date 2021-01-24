@@ -1,0 +1,30 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:clinker_brick_vertically_slit",
+          "required": ["engineersdecor:clinker_brick_block", "engineersdecor:clinker_brick_vertical_slab_structured"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "BS",
+          "BS",
+          "BS"
+        ],
+        "key": {
+          "B": { "item": "engineersdecor:clinker_brick_block" },
+          "S": { "item": "engineersdecor:clinker_brick_vertical_slab_structured" }
+        },
+        "result": {
+          "item": "engineersdecor:clinker_brick_vertically_slit",
+          "count": 3
+        }
+      }
+    }
+  ]
+}
