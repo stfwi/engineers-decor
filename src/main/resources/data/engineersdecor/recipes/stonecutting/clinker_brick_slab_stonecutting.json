@@ -1,0 +1,20 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:clinker_brick_slab",
+          "required": ["engineersdecor:clinker_brick_block"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:stonecutting",
+        "ingredient": { "item": "engineersdecor:clinker_brick_block" },
+        "result": "engineersdecor:clinker_brick_slab",
+        "count": 2
+      }
+    }
+  ]
+}

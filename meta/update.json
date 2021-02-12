@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.16.4": {
+    "1.1.8-b2": "[F] Fixed Iron Hatch isLadder bug (thx jerryw09).\n[F] Fixed Block Placer block placing pre-conditions (issue #160, ty XFactHD).\n[F] Added explicit scheduled Crafting Table client sync.\n[F] Fixed directional waterloggable block default state forwarding (issue #162, ty b52src).",
     "1.1.8-b1": "[F] Fluid Funnel waterlogged fluid picking fixed (issue #158, thx ZoMadeStuff).\n[F] Roof rendering fixes (issues #153/#159, thx Salamance73/Murph).\n[A] Recessed Clinkers, Vertically Slit Clinkers, and Structured Vertical Clinker Slab added.",
     "1.1.7": "[M] 1.16.5 support.\n[F] Fixed Labeled Crate include (issue #157, ty NillerMedDild).",
     "1.1.6": "[F] Added common-config opt-out specification for pack level opt-outs (issue #154, ty gekkone), will replace server config opt-out in MC1.17.",
@@ -27,6 +28,6 @@
   },
   "promos": {
     "1.16.4-recommended": "1.1.7",
-    "1.16.4-latest": "1.1.8-b1"
+    "1.16.4-latest": "1.1.8-b2"
   }
 }

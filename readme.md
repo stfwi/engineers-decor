@@ -11,6 +11,11 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
+    - v1.1.8-b2  [F] Fixed Iron Hatch isLadder bug (thx jerryw09).
+                 [F] Fixed Block Placer block placing pre-conditions (issue #160, ty XFactHD).
+                 [F] Added explicit scheduled Crafting Table client sync.
+                 [F] Fixed directional waterloggable block default state forwarding (issue #162, ty b52src).
+
     - v1.1.8-b1  [F] Fluid Funnel waterlogged fluid picking fixed (issue #158, thx ZoMadeStuff).
                  [F] Roof rendering fixes (issues #153/#159, thx Salamance73/Murph).
                  [A] Recessed Clinkers, Vertically Slit Clinkers, and Structured Vertical Clinker Slab added.

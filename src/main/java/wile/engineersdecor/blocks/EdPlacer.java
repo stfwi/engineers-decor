@@ -9,6 +9,7 @@
 package wile.engineersdecor.blocks;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.block.*;
@@ -454,7 +455,7 @@ public class EdPlacer
 
     private boolean try_place(Direction facing, boolean triggered)
     {
-      if(world.isRemote) return false;
+      if(world.isRemote()) return false;
       BlockPos placement_pos = pos.offset(facing);
       if(world.getTileEntity(placement_pos) != null) return false;
       ItemStack current_stack = ItemStack.EMPTY;
@@ -500,21 +501,29 @@ public class EdPlacer
             placement_pos = placement_pos.up();
           }
         }
-      } else if(
-        (!world.getBlockState(placement_pos).getMaterial().isReplaceable()) ||
-        (!world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(placement_pos), (Entity e)->{
-          if(e.canBeCollidedWith()) return true;
-          if(triggered) return false;
-          if((e instanceof ItemEntity)) {
-            if((e.getMotion().getY() > 0) || (e.getMotion().getY() < -0.5)) return true; // not falling or falling by
-            if(Math.abs(e.getMotion().getX())+Math.abs(e.getMotion().getZ()) > 0) return true; // not straight
-          }
-          return false;
-        }).isEmpty())
+      } else {
+        final BlockState current_placement_pos_state = world.getBlockState(placement_pos);
+        @SuppressWarnings("deprecation")
+        final boolean replacable = current_placement_pos_state.getMaterial().isReplaceable()
+          || current_placement_pos_state.getBlock().isReplaceable(block.getDefaultState(), Fluids.EMPTY)
+          || world.isAirBlock(placement_pos);
+        if((!replacable) || (
+          (!world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(placement_pos), (Entity e)->{
+            if(e.canBeCollidedWith()) return true;
+            if(triggered) return false;
+            if((e instanceof ItemEntity)) {
+              if((e.getMotion().getY() > 0) || (e.getMotion().getY() < -0.5)) return true; // not falling or falling by
+              if(Math.abs(e.getMotion().getX())+Math.abs(e.getMotion().getZ()) > 0) return true; // not straight
+            }
+            return false;
+          }).isEmpty())
+        )
       ) {
         block = Blocks.AIR;
         no_space = true;
       }
+      }
+
       // println("PLACE " + current_stack + "  --> " + block + " at " + placement_pos.subtract(pos) + "( item=" + item + ")");
       if(block != Blocks.AIR) {
         try {

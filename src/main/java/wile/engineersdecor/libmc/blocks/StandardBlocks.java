@@ -263,7 +263,7 @@ public class StandardBlocks
     public Directed(long config, Block.Properties properties, final Supplier<ArrayList<VoxelShape>> shape_supplier)
     {
       super(config, properties);
-      setDefaultState(stateContainer.getBaseState().with(FACING, Direction.UP));
+      setDefaultState(super.getDefaultState().with(FACING, Direction.UP));
       vshapes = shape_supplier.get();
     }
 
@@ -338,7 +338,7 @@ public class StandardBlocks
     public Horizontal(long config, Block.Properties properties, final Supplier<ArrayList<VoxelShape>> shape_supplier)
     {
       super(config|CFG_HORIZIONTAL, properties);
-      setDefaultState(stateContainer.getBaseState().with(HORIZONTAL_FACING, Direction.NORTH));
+      setDefaultState(super.getDefaultState().with(HORIZONTAL_FACING, Direction.NORTH));
       vshapes = shape_supplier.get();
     }
 

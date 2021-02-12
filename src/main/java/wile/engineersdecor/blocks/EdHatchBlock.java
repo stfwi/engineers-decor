@@ -65,7 +65,20 @@ public class EdHatchBlock extends DecorBlock.HorizontalWaterLoggable implements 
 
   @Override
   public boolean isLadder(BlockState state, IWorldReader world, BlockPos pos, LivingEntity entity)
-  { return state.get(OPEN) && world.getBlockState(pos.up()).isLadder(world, pos, entity); }
+  {
+    if(!state.get(OPEN)) return false;
+    {
+      final BlockState up_state = world.getBlockState(pos.up());
+      if(up_state.isIn(this) && (up_state.get(OPEN))) return true;
+      if(up_state.isLadder(world, pos.up(), entity)) return true;
+    }
+    {
+      final BlockState down_state = world.getBlockState(pos.down());
+      if(down_state.isIn(this) && (down_state.get(OPEN))) return true;
+      if(down_state.isLadder(world, pos.down(), entity)) return true;
+    }
+    return false;
+  }
 
   @Override
   public boolean canCreatureSpawn(BlockState state, IBlockReader world, BlockPos pos, EntitySpawnPlacementRegistry.PlacementType type, @Nullable EntityType<?> entityType)

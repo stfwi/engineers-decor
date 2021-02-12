@@ -37,6 +37,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.client.gui.widget.button.ImageButton;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -158,19 +159,27 @@ public class EdCraftingTable
       }
       return stacks;
     }
+
+    @Override
+    public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand)
+    {
+      TileEntity te = world.getTileEntity(pos);
+      if(!(te instanceof CraftingTableTileEntity)) return;
+      ((CraftingTableTileEntity)te).sync();
+    }
   }
 
   //--------------------------------------------------------------------------------------------------------------------
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class CraftingTableTileEntity extends TileEntity implements INameable, INamedContainerProvider
+  public static class CraftingTableTileEntity extends TileEntity implements INameable, INamedContainerProvider, Networking.IPacketTileNotifyReceiver
   {
     public static final int NUM_OF_STORAGE_SLOTS = 18;
     public static final int NUM_OF_STORAGE_ROWS = 2;
     public static final int NUM_OF_SLOTS = 9+NUM_OF_STORAGE_SLOTS;
 
-    protected Inventories.StorageInventory inventory_ = new StorageInventory(this, NUM_OF_SLOTS, 1);
+    protected Inventories.StorageInventory inventory_;
     protected CompoundNBT history = new CompoundNBT();
 
     public CraftingTableTileEntity()
@@ -179,11 +188,16 @@ public class EdCraftingTable
     public CraftingTableTileEntity(TileEntityType<?> te_type)
     {
       super(te_type);
+      inventory_ = new StorageInventory(this, NUM_OF_SLOTS, 1);
       inventory_.setCloseAction((player)->{
         if(getWorld() instanceof World) {
+          scheduleSync();
           BlockState state = getBlockState();
           getWorld().notifyBlockUpdate(getPos(), state, state, 1|2|16);
         }
+      });
+      inventory_.setSlotChangeAction((slot_index,stack)-> {
+        if(slot_index < 9) scheduleSync();
       });
     }
 
@@ -256,6 +270,27 @@ public class EdCraftingTable
     @Override
     public Container createMenu( int id, PlayerInventory inventory, PlayerEntity player )
     { return new CraftingTableContainer(id, inventory, inventory_, IWorldPosCallable.of(world, pos)); }
+
+    @Override
+    public void onServerPacketReceived(CompoundNBT nbt)
+    { readnbt(nbt); }
+
+    public void sync()
+    {
+      if(getWorld().isRemote()) return;
+      CompoundNBT nbt = new CompoundNBT();
+      writenbt(nbt);
+      Networking.PacketTileNotifyServerToClient.sendToPlayers(this, nbt);
+    }
+
+    public void scheduleSync()
+    {
+      if(world.isRemote()) return;
+      final Block crafting_table_block = getBlockState().getBlock();
+      if(!(crafting_table_block instanceof CraftingTableBlock)) return;
+      if(world.getPendingBlockTicks().isTickScheduled(getPos(), crafting_table_block)) return;
+      world.getPendingBlockTicks().scheduleTick(getPos(), crafting_table_block, 20, TickPriority.LOW);
+    }
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -1476,7 +1511,14 @@ public class EdCraftingTable
         }
       }
       super.onCrafting(stack);
+    }
+
+    @Override
+    public ItemStack onTake(PlayerEntity player, ItemStack stack)
+    {
+      final ItemStack result_stack = super.onTake(player, stack);
       container.sync();
+      return result_stack;
     }
   }
 
