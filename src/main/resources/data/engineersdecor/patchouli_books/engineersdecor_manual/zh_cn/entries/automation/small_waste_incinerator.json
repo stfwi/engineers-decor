@@ -1,0 +1,18 @@
+{
+  "name": "小型垃圾焚烧炉",
+  "icon": "engineersdecor:small_waste_incinerator",
+  "category": "automation",
+  "sortnum": 6060,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "小型垃圾焚烧炉",
+      "item": "engineersdecor:small_waste_incinerator",
+      "text": "这个小装置可以安全地处理多余的物品。插入的材料在被推入熔岩室之前从14个格的斜坡上滑下，而在熔岩室它们会被慢慢分解。$(br)只要最上面的那个输入格是空的，其他堆叠的物品就会一直保持在同一个格中，否则它们会被"
+    },
+    {
+      "type": "text",
+      "text": "向前推一个格。你可以通过在设备的任何一面输入 RF 来加速焚烧过程。当你破坏方块进行重新摆放时，物品将保留在原位。$(br)要取回意外插入的物品，请打开设备 GUI 并手动取出堆叠。"
+    }
+  ]
+}

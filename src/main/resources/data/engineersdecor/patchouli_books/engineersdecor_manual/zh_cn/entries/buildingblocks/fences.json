@@ -1,0 +1,30 @@
+{
+  "name": "栅栏和墙",
+  "icon": "engineersdecor:steel_mesh_fence",
+  "category": "buildingblocks",
+  "sortnum": 1050,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "钢制网状栅栏",
+      "item": "engineersdecor:steel_mesh_fence",
+      "text": "一类工业围栏，从变电站的防护网到机器的围栏都有它的身影。$(br2)它们与兼容的栅栏或墙（即本页的墙）相连，而且特意设计成不与原版墙和栅栏相连。"
+    },
+    {
+      "type": "text",
+      "text": "它们也不和其他方块连接，除非这个方块是一列网状栅栏的延长。这样你就可以用栅栏来建墙，但又不用担心栅栏和箱子或者其他附近的方块连起来。"
+    },
+    {
+      "type": "spotlight",
+      "title": "混凝土墙",
+      "item": "engineersdecor:rebar_concrete_wall",
+      "text": "这种墙和原版墙的外观不同，而且材质会变化。它连接的方式和$(o)钢制网状栅栏$()相同。$(br)$(o)钢筋混凝土$()墙还防爆。"
+    },
+    {
+      "type": "spotlight",
+      "title": "砖墙",
+      "item": "engineersdecor:clinker_brick_wall",
+      "text": "与混凝土墙类似，砖墙有着独特的外观，而且只与兼容的栅栏和墙连接。"
+    }
+  ]
+}

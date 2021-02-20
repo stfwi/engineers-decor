@@ -1,0 +1,6 @@
+{
+	"name": "装饰",
+	"description": "用来给空无一物的大厅添加生气和焦点的装饰方块。",
+  "icon": "engineersdecor:sign_hotwire",
+  "sortnum": 3000
+}

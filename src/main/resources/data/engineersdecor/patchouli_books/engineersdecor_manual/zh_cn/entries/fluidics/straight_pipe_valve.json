@@ -1,0 +1,18 @@
+{
+  "name": "输液管止回阀",
+  "icon": "engineersdecor:straight_pipe_valve",
+  "category": "fluidics",
+  "sortnum": 7010,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "流体止回阀",
+      "item": "engineersdecor:straight_pipe_valve",
+      "text": "这种止回阀包含一个预应力弹簧板，可以从后面推，但不能从前面推。$(br)它的主要作用是防止流体管道系统中的回流。"
+    },
+    {
+      "type": "text",
+      "text": "阀门可以插入到$(o)输液管$()之间，也可以直接放到设备的流体输入输出上。黄色箭头标记着流向。$(br2)要放置阀门，右击它要指向的面。如果想反向放置可以潜行右击（比如要放到流体输出面）。最大流速为 $(o)$(t:可配置，实际可能不同)1000 mB 每 tick$()。"
+    }
+  ]
+}

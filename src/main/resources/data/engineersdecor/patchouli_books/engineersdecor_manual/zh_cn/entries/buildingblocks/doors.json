@@ -1,0 +1,18 @@
+{
+  "name": "门",
+  "icon": "engineersdecor:steel_mesh_fence_gate",
+  "category": "buildingblocks",
+  "sortnum": 1060,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "钢制网状栅栏门",
+      "item": "engineersdecor:steel_mesh_fence_gate",
+      "text": "一个和$(o)钢制网状栅栏$()风格一致的栅栏门。它可以放一格高作为普通栅栏，也可以放两格组成更高的笼式栅栏，栅栏门也会自动成型。$(br)底部一段所有面都可以通过红石信号开关门，顶部一端则只能从顶面用信号开关。"
+    },
+    {
+      "type": "text",
+      "text": ""
+    }
+  ]
+}

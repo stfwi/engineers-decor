@@ -1,0 +1,18 @@
+{
+  "name": "标志牌",
+  "icon": "engineersdecor:sign_hotwire",
+  "category": "cosmetic",
+  "sortnum": 3020,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "标志牌",
+      "item": "engineersdecor:sign_hotwire",
+      "text": "你可以制作一些可以贴在墙上的标志牌，应帮助人们在大型工厂中不失去方向。类似地，也有一些标志是仅仅为了健康和安全而放置的。如：不要忘记在靠近高压线的地方放置一个小心电线标志牌。不然如果有人受到伤害，责任就是你的。"
+    },
+    {
+      "type": "text",
+      "text": "另外，门旁边的出口标志牌对下次消防演习很有用。"
+    }
+  ]
+}

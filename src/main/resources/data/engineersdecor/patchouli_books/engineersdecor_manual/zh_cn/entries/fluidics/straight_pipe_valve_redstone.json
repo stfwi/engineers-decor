@@ -1,0 +1,18 @@
+{
+  "name": "红石流体阀",
+  "icon": "engineersdecor:straight_pipe_valve_redstone",
+  "category": "fluidics",
+  "sortnum": 7020,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "红石流体阀",
+      "item": "engineersdecor:straight_pipe_valve_redstone",
+      "text": "类似于$(o)输液管止回阀$()，$(o)红石流体阀$()只允许流动单向前进。一个额外的红石机械装置也会通过预应力红石弹簧板阻止流体向前流，除非收到红石信号。"
+    },
+    {
+      "type": "text",
+      "text": "这种阀门在需要启用和禁用设备的流体补充时非常有用。或者，也能用在想在自动化系统里切换两种待处理的流体时。"
+    }
+  ]
+}

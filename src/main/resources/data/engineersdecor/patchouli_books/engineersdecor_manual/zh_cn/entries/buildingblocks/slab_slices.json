@@ -1,0 +1,19 @@
+{
+  "name": "台阶薄片",
+  "icon": "engineersdecor:halfslab_rebar_concrete",
+  "category": "buildingblocks",
+  "sortnum":  1040,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "台阶薄片",
+      "item": "engineersdecor:halfslab_rebar_concrete",
+      "text": "这个模组的多种方块都有对应的非常薄的横向台阶。$(br2)一个普通的台阶占据半个方块，这些薄片则只占据八分之一个方块。它们对于屋顶、地板的细节处理或制作坡道都很有用。"
+    },
+    {
+      "title": "Placement & Pickup",
+      "type": "text",
+      "text": "你可以通过点击你想放置薄片的方块的顶部或底部面来放置薄片。薄片方块会相应地变高。$(br2)当你破坏一个薄片块时，构成的薄片会分别掉落。另外，你也可以在用手拿着薄片的同时左键点击薄片方块，将一层薄片剥离下来。这只有在几乎竖直向下或向上看时才有效。"
+    }
+  ]
+}

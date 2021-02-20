@@ -1,0 +1,18 @@
+{
+  "name": "玻璃",
+  "icon": "engineersdecor:panzerglass_block",
+  "category": "buildingblocks",
+  "sortnum": 1030,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "装甲玻璃",
+      "item": "engineersdecor:panzerglass_block",
+      "text": "装甲玻璃是一种强化安全玻璃，由钢化或化学处理过的玻璃、金属网、有机层和其他东西构成。它用于需要安全的地方，例如在个人安全领域，或在有爆炸危险的工业领域。"
+    },
+    {
+      "type": "text",
+      "text": "类似$(o)钢筋混凝土$()，这个玻璃十分昂贵，相对较难破坏，而且防爆。$(br)可用于封闭诸如储藏室的重要区域到建造刷怪场。"
+    }
+  ]
+}

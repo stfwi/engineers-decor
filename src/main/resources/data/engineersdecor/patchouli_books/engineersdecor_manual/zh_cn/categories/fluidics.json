@@ -1,0 +1,6 @@
+{
+	"name": "流体力学",
+	"description": "帮助处理流体的设备。",
+  "icon": "engineersdecor:straight_pipe_valve_redstone",
+  "sortnum": 7000
+}

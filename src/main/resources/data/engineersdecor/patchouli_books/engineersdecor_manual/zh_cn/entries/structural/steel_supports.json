@@ -1,0 +1,20 @@
+{
+  "name": "钢支架",
+  "icon": "engineersdecor:thick_steel_pole_head",
+  "category": "structural",
+  "sortnum": 2020,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "钢杆",
+      "item": "engineersdecor:thick_steel_pole",
+      "text": "空心钢杆（如上图所示）的横截面为“O”形，以节省重量和材料，同时提供良好的结构完整性。$(br)如果你想要，还有一种较细的变体。与栅栏不同，它们不与旁边的方块相连，而且可以垂直或横向放置。"
+    },
+    {
+      "type": "spotlight",
+      "title": "双 T 型支架",
+      "item": "engineersdecor:steel_double_t_support",
+      "text": "以其横截面命名（两个“T”），这是一种常用的材料/重量和最大负载之间的权衡。$(br)双 T 型支架只能横向放置（对齐方块顶面），与相邻双 T 型支架和下方的$(o)钢杆$()相连。"
+    }
+  ]
+}

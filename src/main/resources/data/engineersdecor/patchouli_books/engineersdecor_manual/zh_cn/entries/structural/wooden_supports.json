@@ -1,0 +1,20 @@
+{
+  "name": "木杆",
+  "icon": "engineersdecor:treated_wood_pole_support",
+  "category": "structural",
+  "sortnum": 2010,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "防腐木杆",
+      "item": "engineersdecor:treated_wood_pole",
+      "text": "木杆是一种平直的装饰支架，可以放置在各个方向。它们比栅栏杆略厚，不与旁边的砖块相连。方向由放置方块时右击的面决定。"
+    },
+    {
+      "type": "spotlight",
+      "title": "杆头",
+      "item": "engineersdecor:treated_wood_pole_head",
+      "text": "杆头能形成漂亮的杆末端。有两种变体：一种是小，一种大，大杆头的梯状结构暗示着负载的重量，而且不适合所有地方（适合的话只要试一下就知道了）。杆头将自动指向已放置的杆，除非你潜行右击，这将反转放置的方向。"
+    }
+  ]
+}
