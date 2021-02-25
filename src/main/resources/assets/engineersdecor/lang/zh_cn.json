@@ -78,6 +78,7 @@
   "block.engineersdecor.dark_shingle_roof_skylight": "黑色瓦片屋顶天窗",
   "block.engineersdecor.dark_shingle_roof_slab": "黑色陶瓷瓦片屋顶台阶",
   "block.engineersdecor.dark_shingle_roof_slabslice": "黑色陶瓷瓦片屋顶台阶薄片",
+  "block.engineersdecor.dark_shingle_roof_wireconduit": "黑色陶瓷瓦片屋顶 Wire Conduit",
   "block.engineersdecor.dense_grit_dirt_block": "压制砾土",
   "block.engineersdecor.dense_grit_dirt_block.help": "一种压制而成的泥土，与砂土非常类似，其光滑的表面上带有些许裂缝。常见于人来人往的小径或者肆意践踏的庭院中。重点是可以混入泥土和砂土。纹理会根据位置的不同而发生变化。可以阻止草的蔓延。",
   "block.engineersdecor.dense_grit_sand_block": "压制砾砂",
@@ -299,7 +300,7 @@
   "block.engineersdecor.treated_wood_windowsill": "防腐木窗台",
   "block.engineersdecor.treated_wood_windowsill.help": "简单的窗户装饰。",
   "item.engineersdecor.metal_bar": "金属棒",
+  "engineersdecor.book.landing_text": "提前提示：要获得方块或设备的简短提示文本，请在用鼠标悬停时同时按 CONTROL 和 SHIFT 键。这样你就不需要一直带着这个沉重的手册了。如果这些特性对你来说不太熟悉，或者你想了解更多背景，那么这本书中更详细的描述会很有帮助。",
   "engineersdecor.book.name": "工程师的装饰",
-  "engineersdecor.book.subtitle": "参考指南",
-  "engineersdecor.book.landing_text": "提前提示：要获得方块或设备的简短提示文本，请在用鼠标悬停时同时按 CONTROL 和 SHIFT 键。这样你就不需要一直带着这个沉重的手册了。如果这些特性对你来说不太熟悉，或者你想了解更多背景，那么这本书中更详细的描述会很有帮助。"
+  "engineersdecor.book.subtitle": "参考指南"
 }

@@ -78,6 +78,7 @@
   "block.engineersdecor.dark_shingle_roof_skylight": "Dark Shingle Roof Skylight",
   "block.engineersdecor.dark_shingle_roof_slab": "Dark Shingle Roof Slab",
   "block.engineersdecor.dark_shingle_roof_slabslice": "Dark Shingle Roof Slab Slice",
+  "block.engineersdecor.dark_shingle_roof_wireconduit": "Dark Shingle Roof Wire Conduit",
   "block.engineersdecor.dense_grit_dirt_block": "Dense Grit Dirt",
   "block.engineersdecor.dense_grit_dirt_block.help": "A compressed dirt-like soil,\n plain texture with some cracks.\n Known from often used paths or\n trampled yard grounds. Dirt and\n coarse dirt can be mixed in for\n accentuation. Position dependent\n texture variations. Inhibits\n grass spreading.",
   "block.engineersdecor.dense_grit_sand_block": "Dense Grit Sand",
@@ -299,7 +300,7 @@
   "block.engineersdecor.treated_wood_windowsill": "Treated Wood Window Sill",
   "block.engineersdecor.treated_wood_windowsill.help": "Simple window decoration.",
   "item.engineersdecor.metal_bar": "Metal Bar",
+  "engineersdecor.book.landing_text": "Tip in advance: To get a short tooltip help text for a block or device, press the CONTROL and SHIFT keys at the same time while hovering. That way you do not need to carry this heavy manual with you all the time. The more detailed descriptions in this book are helpful if the features are new for you, or if you like to read up about background aspects.",
   "engineersdecor.book.name": "Engineer's Decor",
-  "engineersdecor.book.subtitle": "Reference manual",
-  "engineersdecor.book.landing_text": "Tip in advance: To get a short tooltip help text for a block or device, press the CONTRTOL and SHIFT keys at the same time while hovering. That way you do not need to carry this heavy manual with you all the time. The more detailed descriptions in this book are helpful if the features are new for you, or if you like to read up about background aspects."
+  "engineersdecor.book.subtitle": "Reference manual"
 }

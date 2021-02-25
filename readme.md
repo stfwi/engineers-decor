@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
+    - v1.1.8     [F] Crafting Table Output slot sync rework (issue #138).
+                 [A] Dark Shingle Roof Wire Conduit added (CFR#347).
+
     - v1.1.8-b2  [F] Fixed Iron Hatch isLadder bug (thx jerryw09).
                  [F] Fixed Block Placer block placing pre-conditions (issue #160, ty XFactHD).
                  [F] Added explicit scheduled Crafting Table client sync.

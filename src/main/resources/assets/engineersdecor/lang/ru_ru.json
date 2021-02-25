@@ -78,6 +78,7 @@
   "block.engineersdecor.dark_shingle_roof_skylight": "Тёмная керамическая черепица с люкарной",
   "block.engineersdecor.dark_shingle_roof_slab": "Тёмная керамическая черепичная плита",
   "block.engineersdecor.dark_shingle_roof_slabslice": "Тёмная керамическая черепичная пластина",
+  "block.engineersdecor.dark_shingle_roof_wireconduit": "Тёмная керамическая черепица Wire Conduit",
   "block.engineersdecor.dense_grit_dirt_block": "Плотная зернистая земля",
   "block.engineersdecor.dense_grit_dirt_block.help": "Сжатый земляной грунт с простой текстурой с небольшими трещинами.\nМожно найти на тропинках или старых дворовых площадках.\nДля акцентирования можно мешать землю и каменистую землю.\nВариации текстуры зависят от позиции. Предотвращает распространение травы.",
   "block.engineersdecor.dense_grit_sand_block": "Плотный зернистый песок",
@@ -298,5 +299,8 @@
   "block.engineersdecor.treated_wood_window.help": "Деревянный каркас окна с тройным остеклением. Ну и шумоизоляция.",
   "block.engineersdecor.treated_wood_windowsill": "Обработанный деревянный подоконник",
   "block.engineersdecor.treated_wood_windowsill.help": "Простое оформление окон.",
-  "item.engineersdecor.metal_bar": "Металлический брусок"
+  "item.engineersdecor.metal_bar": "Металлический брусок",
+  "engineersdecor.book.landing_text": "Tip in advance: To get a short tooltip help text for a block or device, press the CONTRTOL and SHIFT keys at the same time while hovering. That way you do not need to carry this heavy manual with you all the time. The more detailed descriptions in this book are helpful if the features are new for you, or if you like to read up about background aspects.",
+  "engineersdecor.book.name": "Engineer's Decor",
+  "engineersdecor.book.subtitle": "Reference manual"
 }

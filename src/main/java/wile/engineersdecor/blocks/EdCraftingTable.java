@@ -9,7 +9,6 @@
 package wile.engineersdecor.blocks;
 
 import net.minecraft.inventory.container.*;
-import net.minecraft.network.play.server.SSetSlotPacket;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.world.*;
@@ -177,7 +176,8 @@ public class EdCraftingTable
   {
     public static final int NUM_OF_STORAGE_SLOTS = 18;
     public static final int NUM_OF_STORAGE_ROWS = 2;
-    public static final int NUM_OF_SLOTS = 9+NUM_OF_STORAGE_SLOTS;
+    public static final int NUM_OF_SLOTS = 9+NUM_OF_STORAGE_SLOTS+1;
+    public static final int CRAFTING_RESULT_SLOT = NUM_OF_SLOTS-1;
 
     protected Inventories.StorageInventory inventory_;
     protected CompoundNBT history = new CompoundNBT();
@@ -289,7 +289,7 @@ public class EdCraftingTable
       final Block crafting_table_block = getBlockState().getBlock();
       if(!(crafting_table_block instanceof CraftingTableBlock)) return;
       if(world.getPendingBlockTicks().isTickScheduled(getPos(), crafting_table_block)) return;
-      world.getPendingBlockTicks().scheduleTick(getPos(), crafting_table_block, 20, TickPriority.LOW);
+      world.getPendingBlockTicks().scheduleTick(getPos(), crafting_table_block, 10, TickPriority.LOW);
     }
   }
 
@@ -322,6 +322,7 @@ public class EdCraftingTable
     private final CraftingHistory history_;
     private final CraftingTableGrid matrix_;
     private final CraftResultInventory result_;
+    private final CraftingOutputSlot crafting_output_slot_;
     private boolean has_recipe_collision_;
     private boolean crafting_matrix_changed_now_;
     private final InventoryRange crafting_grid_range_;
@@ -330,6 +331,7 @@ public class EdCraftingTable
     private final InventoryRange player_storage_range_;
     private final InventoryRange player_hotbar_range_;
     private final InventoryRange player_inventory_range_;
+    private final @Nullable CraftingTableTileEntity te_;
 
     public CraftingTableContainer(int cid, PlayerInventory pinv)
     { this(cid, pinv, new Inventory(CraftingTableTileEntity.NUM_OF_SLOTS), IWorldPosCallable.DUMMY); }
@@ -340,20 +342,24 @@ public class EdCraftingTable
       wpc_ = wpc;
       player_ = pinv.player;
       inventory_ = block_inventory;
+      inventory_.openInventory(player_);
       World world = player_.world;
-      if(world.isRemote && (inventory_ instanceof CraftingTableTileEntity)) world = ((CraftingTableTileEntity)inventory_).getWorld();
-      history_ = new CraftingHistory(world);
-      result_ = new CraftResultInventory();
-      matrix_ = new CraftingTableGrid(this, block_inventory);
-      matrix_.openInventory(player_);
-      crafting_result_range_= new InventoryRange(result_, 0, 1, 1);
-      crafting_grid_range_  = new InventoryRange(matrix_, 0, 9, 3);
+      if((inventory_ instanceof StorageInventory) && ((((StorageInventory)inventory_).getTileEntity()) instanceof CraftingTableTileEntity)) {
+        te_ = (CraftingTableTileEntity)(((StorageInventory)inventory_).getTileEntity());
+      } else {
+        te_ = null;
+      }
+      crafting_grid_range_  = new InventoryRange(inventory_, 0, 9, 3);
       block_storage_range_  = new InventoryRange(inventory_, CRAFTING_SLOTS_SIZE, NUM_OF_STORAGE_SLOTS, NUM_OF_STORAGE_ROWS);
+      crafting_result_range_= new InventoryRange(inventory_, CraftingTableTileEntity.CRAFTING_RESULT_SLOT, 1, 1);
       player_storage_range_ = InventoryRange.fromPlayerStorage(player_);
       player_hotbar_range_  = InventoryRange.fromPlayerHotbar(player_);
       player_inventory_range_= InventoryRange.fromPlayerInventory(player_);
+      matrix_ = new CraftingTableGrid(this, inventory_);
+      result_ = new CraftOutputInventory(crafting_result_range_);
+      history_ = new CraftingHistory(world);
       // container slotId 0 === crafting output
-      addSlot(new CraftingOutputSlot(this, pinv.player, matrix_, result_, 0, 118, 27));
+      addSlot(crafting_output_slot_=(new CraftingOutputSlot(this, pinv.player, matrix_, result_, 0, 118, 27)));
       ArrayList<Tuple<Integer,Integer>> slotpositions = new ArrayList<Tuple<Integer,Integer>>();
       slotpositions.add(new Tuple<>(118, 27));
       // container slotId 1..9 === TE slots 0..8
@@ -381,23 +387,25 @@ public class EdCraftingTable
           addSlot(new Slot(inventory_, 9+x+y*9, 8+x*18, 65+y*18));
         }
       }
-      if((!player_.world.isRemote) && (inventory_ instanceof CraftingTableTileEntity)) {
-        history_.read(((CraftingTableTileEntity)inventory_).history.copy());
+      if((!player_.world.isRemote()) && (te_ != null)) {
+        history_.read(te_.history.copy());
       }
       CRAFTING_SLOT_COORDINATES = ImmutableList.copyOf(slotpositions);
-      onCraftMatrixChanged(matrix_);
+      onCraftMatrixChanged();
     }
 
     @Override
     public boolean canInteractWith(PlayerEntity player)
     { return inventory_.isUsableByPlayer(player); }
 
+    public void onCraftMatrixChanged()
+    { onCraftMatrixChanged(matrix_); }
+
     @Override
     public void onCraftMatrixChanged(IInventory inv)
     {
-      detectAndSendChanges();
       wpc_.consume((world,pos)->{
-        if(world.isRemote) return;
+        if(world.isRemote()) return;
         try {
           crafting_matrix_changed_now_ = true;
           ServerPlayerEntity player = (ServerPlayerEntity) player_;
@@ -412,12 +420,12 @@ public class EdCraftingTable
               recipe = (ICraftingRecipe)currently_used;
             }
             if(result_.canUseRecipe(world, player, recipe)) {
+              detectAndSendChanges();
               stack = recipe.getCraftingResult(matrix_);
             }
           }
           result_.setInventorySlotContents(0, stack);
-          player.connection.sendPacket(new SSetSlotPacket(windowId, 0, stack));
-          sync();
+          detectAndSendChanges();
         } catch(Throwable exc) {
           ModEngineersDecor.logger().error("Recipe failed:", exc);
         }
@@ -426,18 +434,7 @@ public class EdCraftingTable
 
     @Override
     public void onContainerClosed(PlayerEntity player)
-    {
-      matrix_.closeInventory(player);
-      result_.clear();
-      result_.closeInventory(player);
-      if(player!=null) {
-        for(Slot e:player.container.inventorySlots) {
-          if(e instanceof CraftingResultSlot) {
-            ((CraftingResultSlot)e).putStack(ItemStack.EMPTY);
-          }
-        }
-      }
-    }
+    { inventory_.closeInventory(player); }
 
     @Override
     public boolean canMergeSlot(ItemStack stack, Slot slot)
@@ -507,6 +504,7 @@ public class EdCraftingTable
       }
       if(nbt.contains("inventory")) {
         Inventories.readNbtStacks(nbt, "inventory", inventory_);
+        this.onCraftMatrixChanged(matrix_);
       }
     }
 
@@ -642,7 +640,7 @@ public class EdCraftingTable
       if(changed) inventory_.markDirty();
       if(player_inventory_changed) player.inventory.markDirty();
       if(changed || player_inventory_changed) {
-        this.onCraftMatrixChanged(inventory_);
+        this.onCraftMatrixChanged();
         this.detectAndSendChanges();
       }
     }
@@ -652,18 +650,19 @@ public class EdCraftingTable
 
     private void sync()
     {
-      if(!with_assist) return;
       this.wpc_.consume((world,pos)->{
         if(world.isRemote()) return;
-        CompoundNBT hist_nbt = history_.write();
+        inventory_.markDirty();
         final CompoundNBT nbt = new CompoundNBT();
-        if((inventory_ instanceof CraftingTableTileEntity)) {
-          ((CraftingTableTileEntity)inventory_).history = hist_nbt.copy();
-          inventory_.markDirty();
-          nbt.put("inventory", ((CraftingTableTileEntity)inventory_).mainInventory().save(false));
+        if(te_ != null) nbt.put("inventory", te_.mainInventory().save(false));
+        if(with_assist) {
+          CompoundNBT hist_nbt = history_.write();
+          if(te_ != null) {
+            te_.history = hist_nbt.copy();
+          }
+          nbt.put("history", hist_nbt);
+          nbt.putBoolean("hascollision", has_recipe_collision_);
         }
-        nbt.put("history", hist_nbt);
-        nbt.putBoolean("hascollision", has_recipe_collision_);
         Networking.PacketContainerSyncServerToClient.sendToListeners(world, this, nbt);
       });
     }
@@ -696,7 +695,7 @@ public class EdCraftingTable
               break;
             }
           }
-          onCraftMatrixChanged(inv);
+          onCraftMatrixChanged();
         } catch(Throwable exc) {
           ModEngineersDecor.logger().error("Recipe failed:", exc);
         }
@@ -807,7 +806,7 @@ public class EdCraftingTable
         }
       }
       if(recipe != null) {
-        onCraftMatrixChanged(inventory_);
+        onCraftMatrixChanged();
       }
     }
 
@@ -1089,9 +1088,9 @@ public class EdCraftingTable
       if(!slot.getStack().isEmpty()) { renderTooltip(mx, slot.getStack(), mouseX, mouseY); return; }
       if(with_assist) {
         int hist_index = -1;
-        if(slot instanceof CraftingResultSlot) {
+        if(slot instanceof CraftingOutputSlot) {
           hist_index = 0;
-        } else if(slot.inventory instanceof CraftingInventory) {
+        } else if(slot.inventory instanceof CraftOutputInventory) {
           hist_index = slot.getSlotIndex() + 1;
         }
         if((hist_index < 0) || (hist_index >= history_slot_tooltip.length)) return;
@@ -1183,7 +1182,7 @@ public class EdCraftingTable
     {
       tooltip.resetTimer();
       if(type == ClickType.PICKUP) {
-        boolean place_refab = (slot instanceof CraftingResultSlot) && (!slot.getHasStack());
+        boolean place_refab = (slot instanceof CraftingOutputSlot) && (!slot.getHasStack());
         if(place_refab && with_assist_direct_history_refab) on_history_item_placement(); // place before crafting -> direct item pick
         super.handleMouseClick(slot, slotId, mouseButton, type);
         if(place_refab && (!with_assist_direct_history_refab)) on_history_item_placement(); // place after crafting -> confirmation first
@@ -1237,7 +1236,7 @@ public class EdCraftingTable
     {
       tooltip.resetTimer();
       final Slot resultSlot = this.getSlotUnderMouse();
-      if((!with_crafting_slot_mouse_scrolling) || (!(resultSlot instanceof CraftingResultSlot))) {
+      if((!with_crafting_slot_mouse_scrolling) || (!(resultSlot instanceof CraftingOutputSlot))) {
         return this.getEventListenerForPos(mouseX, mouseY).filter((evl) -> {
           return evl.mouseScrolled(mouseX, mouseY, wheel_inc);
         }).isPresent();
@@ -1268,7 +1267,7 @@ public class EdCraftingTable
     {
       if((getContainer().history().current().isEmpty())) return;
       final Slot resultSlot = this.getSlotUnderMouse(); // double check
-      if(!(resultSlot instanceof CraftingResultSlot)) return;
+      if(!(resultSlot instanceof CraftingOutputSlot)) return;
       action(CraftingTableContainer.ACTION_PLACE_CURRENT_HISTORY_SEL);
     }
   }
@@ -1488,20 +1487,91 @@ public class EdCraftingTable
     }
   }
 
-  // Crafting slot of the container ------------------------------------------------------------------------------------
-  public static class CraftingOutputSlot extends CraftingResultSlot
+  // Crafting Result Inventory of the container ------------------------------------------------------------------------
+  public static class CraftOutputInventory extends CraftResultInventory implements IInventory, IRecipeHolder
+  {
+    private final IInventory result_inv_;
+    private IRecipe<?> recipe_used_;
+
+    public CraftOutputInventory(IInventory inventory)
+    { result_inv_ = inventory; }
+
+    public int getSizeInventory()
+    { return 1; }
+
+    public boolean isEmpty()
+    { return result_inv_.getStackInSlot(0).isEmpty(); }
+
+    public ItemStack getStackInSlot(int index)
+    { return result_inv_.getStackInSlot(0); }
+
+    public ItemStack decrStackSize(int index, int count)
+    { return result_inv_.removeStackFromSlot(0); }
+
+    public ItemStack removeStackFromSlot(int index)
+    { return result_inv_.removeStackFromSlot(0); }
+
+    public void setInventorySlotContents(int index, ItemStack stack)
+    { result_inv_.setInventorySlotContents(0, stack); }
+
+    public void markDirty()
+    { result_inv_.markDirty(); }
+
+    public boolean isUsableByPlayer(PlayerEntity player)
+    { return true; }
+
+    public void clear()
+    { result_inv_.setInventorySlotContents(0, ItemStack.EMPTY); }
+
+    public void setRecipeUsed(@Nullable IRecipe<?> recipe)
+    { recipe_used_ = recipe; }
+
+    @Nullable
+    public IRecipe<?> getRecipeUsed()
+    { return recipe_used_; }
+  }
+
+  // Crafting output slot of the container -----------------------------------------------------------------------------
+  // Has to be re-implemented because CraftingResultSlot is not synchronsized for detectAndSendChanges().
+  public static class CraftingOutputSlot extends Slot
   {
     private final CraftingTableContainer container;
     private final PlayerEntity player;
+    private final CraftingInventory craftMatrix;
+    private int amountCrafted;
 
-    public CraftingOutputSlot(CraftingTableContainer container, PlayerEntity player, CraftingInventory craftingInventory, IInventory inventoryIn, int slotIndex, int xPosition, int yPosition)
-    { super(player, craftingInventory, inventoryIn, slotIndex, xPosition, yPosition); this.container = container; this.player=player; }
+    public CraftingOutputSlot(CraftingTableContainer container, PlayerEntity player, CraftingInventory craftingInventory, IInventory resultInventory, int slotIndex, int xPosition, int yPosition)
+    {
+      super(resultInventory, slotIndex, xPosition, yPosition);
+      this.craftMatrix = craftingInventory;
+      this.container = container;
+      this.player = player;
+    }
+
+    @Override
+    public boolean isItemValid(ItemStack stack)
+    { return false; }
+
+    @Override
+    public ItemStack decrStackSize(int amount)
+    {
+      if(getHasStack()) amountCrafted += Math.min(amount, getStack().getCount());
+      return super.decrStackSize(amount);
+    }
+
+    @Override
+    protected void onCrafting(ItemStack stack, int amount)
+    { amountCrafted += amount; onCrafting(stack); }
+
+    @Override
+    protected void onSwapCraft(int numItemsCrafted)
+    { amountCrafted += numItemsCrafted; }
 
     @Override
     protected void onCrafting(ItemStack stack)
     {
       if((with_assist) && ((player.world!=null) && (!(player.world.isRemote()))) && (!stack.isEmpty())) {
-        final IRecipe recipe = ((CraftResultInventory)this.inventory).getRecipeUsed();
+        final IRecipe recipe = ((CraftOutputInventory)this.inventory).getRecipeUsed();
         final ArrayList<ItemStack> grid = new ArrayList<ItemStack>();
         grid.add(stack);
         for(int i = 0; i<9; ++i) grid.add(container.inventory_.getStackInSlot(i));
@@ -1510,15 +1580,43 @@ public class EdCraftingTable
           container.history().reset_current();
         }
       }
-      super.onCrafting(stack);
+      // Normal crafting result slot behaviour
+      if(amountCrafted > 0) {
+        stack.onCrafting(this.player.world, this.player, this.amountCrafted);
+        net.minecraftforge.fml.hooks.BasicEventHooks.firePlayerCraftingEvent(this.player, stack, this.craftMatrix);
+      }
+      if(inventory instanceof IRecipeHolder) {
+        ((IRecipeHolder)inventory).onCrafting(player);
+      }
+      amountCrafted = 0;
     }
 
     @Override
-    public ItemStack onTake(PlayerEntity player, ItemStack stack)
-    {
-      final ItemStack result_stack = super.onTake(player, stack);
-      container.sync();
-      return result_stack;
+    public ItemStack onTake(PlayerEntity taking_player, ItemStack stack) {
+      onCrafting(stack);
+      net.minecraftforge.common.ForgeHooks.setCraftingPlayer(taking_player);
+      NonNullList<ItemStack> stacks = taking_player.world.getRecipeManager().getRecipeNonNull(IRecipeType.CRAFTING, craftMatrix, taking_player.world);
+      net.minecraftforge.common.ForgeHooks.setCraftingPlayer(null);
+      for(int i=0; i<stacks.size(); ++i) {
+        ItemStack itemstack = craftMatrix.getStackInSlot(i);
+        ItemStack itemstack1 = stacks.get(i);
+        if(!itemstack.isEmpty()) {
+          craftMatrix.decrStackSize(i, 1);
+          itemstack = craftMatrix.getStackInSlot(i);
+        }
+        if(!itemstack1.isEmpty()) {
+          if(itemstack.isEmpty()) {
+            craftMatrix.setInventorySlotContents(i, itemstack1);
+          } else if (ItemStack.areItemsEqual(itemstack, itemstack1) && ItemStack.areItemStackTagsEqual(itemstack, itemstack1)) {
+            itemstack1.grow(itemstack.getCount());
+            craftMatrix.setInventorySlotContents(i, itemstack1);
+          } else if (!player.inventory.addItemStackToInventory(itemstack1)) {
+            player.dropItem(itemstack1, false);
+          }
+        }
+      }
+      container.onCraftMatrixChanged();
+      return stack;
     }
   }
 
@@ -1535,11 +1633,8 @@ public class EdCraftingTable
     protected final Container container;
     protected final IInventory inventory;
 
-    public CraftingTableGrid(Container container_, IInventory block_inventory) {
-      super(container_, 3, 3);
-      container = container_;
-      inventory = block_inventory;
-    }
+    public CraftingTableGrid(Container container_, IInventory block_inventory)
+    { super(container_, 3, 3); container = container_; inventory = block_inventory; }
 
     @Override
     public int getSizeInventory()

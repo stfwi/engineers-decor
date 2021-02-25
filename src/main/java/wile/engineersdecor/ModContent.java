@@ -15,6 +15,7 @@ package wile.engineersdecor;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.block.Block;
@@ -276,6 +277,21 @@ public class ModContent
     VoxelShapes.create(Auxiliaries.getPixeledAABB(3, 0, 3, 13, 16, 13)),
     VoxelShapes.create(Auxiliaries.getPixeledAABB(5, 0, 5, 11, 16, 11))
   )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof_chimneytrunk"));
+
+  public static final EdChimneyTrunkBlock DARK_CERAMIC_SHINGLE_ROOF_WIRECONDUIT = (EdChimneyTrunkBlock)(new EdChimneyTrunkBlock(
+    DecorBlock.CFG_CUTOUT,
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE).notSolid().variableOpacity().setAllowsSpawn(ModContent::disallowSpawn),
+    VoxelShapes.combineAndSimplify(
+      VoxelShapes.create(Auxiliaries.getPixeledAABB(3,  0, 3, 13, 13, 13)),
+      VoxelShapes.create(Auxiliaries.getPixeledAABB(5, 13, 5, 11, 16, 11)),
+      IBooleanFunction.OR
+    ),
+    VoxelShapes.combineAndSimplify(
+      VoxelShapes.create(Auxiliaries.getPixeledAABB(5,  0, 5, 11, 15, 11)),
+      VoxelShapes.create(Auxiliaries.getPixeledAABB(7, 15, 7,  9, 16,  9)),
+      IBooleanFunction.OR
+    )
+  )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof_wireconduit"));
 
   public static final EdChimneyBlock DARK_CERAMIC_SHINGLE_ROOF_CHIMNEY = (EdChimneyBlock)(new EdChimneyBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_AI_PASSABLE,
@@ -1047,6 +1063,7 @@ public class ModContent
     DARK_CERAMIC_SHINGLE_ROOF_METALIZED,
     DARK_CERAMIC_SHINGLE_ROOF_SKYLIGHT,
     DARK_CERAMIC_SHINGLE_ROOF_CHIMNEYTRUNK,
+    DARK_CERAMIC_SHINGLE_ROOF_WIRECONDUIT,
     DARK_CERAMIC_SHINGLE_ROOF_BLOCK,
     DARK_CERAMIC_SHINGLE_ROOF_SLAB,
     HALFSLAB_DARK_CERAMIC_SHINGLE_ROOF,
