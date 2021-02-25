@@ -1,0 +1,6 @@
+{
+	"name": "照明",
+	"description": "让我们来打打光。",
+  "icon": "engineersdecor:iron_inset_light",
+  "sortnum": 4000
+}

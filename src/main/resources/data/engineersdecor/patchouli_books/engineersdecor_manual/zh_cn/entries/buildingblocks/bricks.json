@@ -1,0 +1,28 @@
+{
+  "name": "砖块",
+  "icon": "engineersdecor:clinker_brick_block",
+  "category": "buildingblocks",
+  "sortnum": 1010,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "过烧砖",
+      "item": "engineersdecor:clinker_brick_block",
+      "text": "过烧砖是以极高温烧制，有点玻璃化的砖。它们看着比普通砖黑，而且一直是早期工业工厂的首选建筑材料。$(br)……而且你可能需要很多这种砖来建一个工厂。因此这些方块能用下界砖部分替代原料里的红砖，防止过快用完黏土。"
+    },
+    {
+      "type": "text",
+      "text": "为了使外观无缝，根据你放置的位置不同，这个方块还会有不同的纹理。过烧砖也有对应的楼梯、墙和台阶。$(br2)如果你需要更多材质变体，特别是用于工厂特别粗糙的区域，也可以混进一点可以合成的$(o)污渍过烧砖$()。"
+    },
+    {
+      "type": "spotlight",
+      "title": "矿渣砖",
+      "item": "engineersdecor:slag_brick_block",
+      "text": "作为钢铁工业的主要废弃物之一，矿渣碎屑被弃置在碎石堆上。$(o)矿渣砖$()，一种浅灰色，多孔，但是很廉价的砖块。$(br)与$(o)过烧砖$()类似，这些方块的材质会基于"
+    },
+    {
+      "type": "text",
+      "text": "位置改变（而且比真正炉渣砖的颜色丰富一点）。$(br)你也可以用$(o)炉渣砖$()合成楼梯、墙和台阶。"
+    }
+  ]
+}

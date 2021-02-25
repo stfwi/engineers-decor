@@ -1,0 +1,18 @@
+{
+  "name": "红石模拟流体阀",
+  "icon": "engineersdecor:straight_pipe_valve_redstone_analog",
+  "category": "fluidics",
+  "sortnum": 7030,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "红石模拟流体阀",
+      "item": "engineersdecor:straight_pipe_valve_redstone_analog",
+      "text": "$(o)红石模拟流体阀$()类似于$(o)红石流体阀$()，用于控制管道系统里的流体分配。$(br2)模拟阀在切换阀门之外还能基于红石信号强度限制流速。"
+    },
+    {
+      "type": "text",
+      "text": "潜在的应用有调节流体合成机器的工作速度、给不同流体路径划分优先级或者控制混合物的浓度。$(br)红石信号强度 0 会阻止所有流体流动，15 会完全开放阀门$(t:可配置，实际可能不同)（最大流速 1000 mB/t）$()。1 到 14 的强度则会以 $(t:可配置，实际可能不同)20 mB/t 一级（20 到 280）$()打开阀门。$(br)放置规则同$(o)输液管止回阀$()。"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "name": "小型方块破坏器",
+  "icon": "engineersdecor:small_block_breaker",
+  "category": "automation",
+  "sortnum": 6040,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "小型方块破坏器",
+      "item": "engineersdecor:small_block_breaker",
+      "text": "使用正面两个反向旋转的，$(t:……描述见工程师的工具模组……)有 REDIA 涂层$()的钻头。$(br2)它不收集或存储掉落的方块，而且破坏时间和方块硬度相关。提供 RF 能量可显著加快破坏速度。"
+    },
+    {
+      "type": "text",
+      "text": "方块被破坏器破坏的掉落物和方块用镐、斧头或者铲子破坏时一样的（没有精准采集、时运 0，等等）$(br)通入红石信号会关闭破坏器。$(br)你可以横向放置该设备，潜行右击可反转放置方向。$(br2)$(o)[注：整合包的配置可能强制这个设备需要能量工作。你可以通过钻头旋转判断设备是否在工作。]$()"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "窗户",
+  "icon": "engineersdecor:treated_wood_window",
+  "category": "buildingblocks",
+  "sortnum": 1070,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "窗户类型",
+      "item": "engineersdecor:treated_wood_window",
+      "text": "这些 3D 框架的窗户的玻璃板沾上了一点污渍，而且窗户可以水平或垂直放置。$(br)和原版玻璃窗不同，窗户在角落不会转弯，当你破坏窗户方块时，窗户玻璃仍保持完整。（不需要$(o)精准采集$()）。"
+    },
+    {
+      "type": "spotlight",
+      "title": "Placement",
+      "item": "engineersdecor:steel_framed_window",
+      "text": "要在天花板或者地板放置窗户，你需要几乎竖直得向上或向下看。这使得没有脚手架时在墙上放置窗户更加容易，也不会意外横向放置。出于类似的原因，当你在已有窗户旁放置另一个时，其朝向会与已有的相同。"
+    }
+  ]
+}

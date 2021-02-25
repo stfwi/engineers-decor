@@ -1,0 +1,6 @@
+{
+	"name": "建筑",
+	"description": "适用于工厂或家庭，包括建筑外部和基本内部结构的方块。",
+  "icon": "engineersdecor:clinker_brick_block",
+  "sortnum": 1000
+}

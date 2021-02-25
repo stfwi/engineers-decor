@@ -1,0 +1,18 @@
+{
+  "name": "小型砍树机",
+  "icon": "engineersdecor:small_tree_cutter",
+  "category": "automation",
+  "sortnum": 6050,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "小型砍树机",
+      "item": "engineersdecor:small_tree_cutter",
+      "text": "一台极简主义圆锯，带有保护框和木材传感器，可以自动切割包括树叶在内的树木。$(br2)它不会收集或储存掉落的木材或果实，而且在依赖内部的被动环保红石发电机运行时，砍树大约需要一分钟。通过"
+    },
+    {
+      "type": "text",
+      "text": "$(t:……看在美学的份上请在砍树机下方放一个电容器……)从外部提供 RF$()，这个过程可以加速到大约 10 秒。$(br)你可以通过红石信号停用砍树机。$(br2) $(br2) $(br2) $(br2)$(o)[注意：整合包可能将该机器配置为需要能量。你可以从锯片的转动判断是否在工作。]$()"
+    }
+  ]
+}

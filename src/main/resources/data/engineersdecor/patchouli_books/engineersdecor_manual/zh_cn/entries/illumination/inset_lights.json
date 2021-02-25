@@ -1,0 +1,20 @@
+{
+  "name": "嵌入灯",
+  "icon": "engineersdecor:iron_inset_light",
+  "category": "illumination",
+  "sortnum": 4010,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "嵌入聚光灯",
+      "item": "engineersdecor:iron_inset_light",
+      "text": "这种被动光源可以放置在天花板或墙壁上，并在正常电气照明无法使用的地方派上用场。例如，楼梯、狭窄的走廊、小检修室以及通风井都是常规办法有困难的地方。$(br)光照等级是 15，你需要荧石来合成这种灯。"
+    },
+    {
+      "type": "spotlight",
+      "title": "地板边缘灯",
+      "item": "engineersdecor:iron_floor_edge_light",
+      "text": "边缘灯对于定位很有用，也可以用来照亮大型机器之间的空间。$(br)大型机器可能会挡住泛光灯的光锥，造成危险的盲区（见“健康与安全”手册，“爆炸危害”一章）。"
+    }
+  ]
+}
