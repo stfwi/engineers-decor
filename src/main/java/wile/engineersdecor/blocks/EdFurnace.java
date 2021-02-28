@@ -484,9 +484,11 @@ public class EdFurnace
         if(transferItems(FIFO_FUEL_1_SLOT_NO, FIFO_FUEL_0_SLOT_NO, 1)) dirty = true;
         if(transferItems(FIFO_INPUT_0_SLOT_NO, SMELTING_INPUT_SLOT_NO, 1)) dirty = true;
         if(transferItems(FIFO_INPUT_1_SLOT_NO, FIFO_INPUT_0_SLOT_NO, 1)) dirty = true;
-        heater_inserted_ = (ExternalObjects.IE_EXTERNAL_HEATER==null) // without IE always allow electrical boost
+        heater_inserted_ = (ExternalObjects.IE_EXTERNAL_HEATER==null && ExternalObjects.CA_HEATER==null) // without IE always allow electrical boost
           || (inventory_.getStackInSlot(AUX_0_SLOT_NO).getItem()==ExternalObjects.IE_EXTERNAL_HEATER)
-          || (inventory_.getStackInSlot(AUX_1_SLOT_NO).getItem()==ExternalObjects.IE_EXTERNAL_HEATER);
+          || (inventory_.getStackInSlot(AUX_1_SLOT_NO).getItem()==ExternalObjects.IE_EXTERNAL_HEATER)
+          || (inventory_.getStackInSlot(AUX_0_SLOT_NO).getItem()==ExternalObjects.CA_HEATER)
+          || (inventory_.getStackInSlot(AUX_1_SLOT_NO).getItem()==ExternalObjects.CA_HEATER);
       }
       ItemStack fuel = inventory_.getStackInSlot(SMELTING_FUEL_SLOT_NO);
       if(burning() || (!fuel.isEmpty()) && (!(inventory_.getStackInSlot(SMELTING_INPUT_SLOT_NO)).isEmpty())) {
