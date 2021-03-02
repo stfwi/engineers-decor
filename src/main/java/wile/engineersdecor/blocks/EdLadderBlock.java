@@ -13,6 +13,8 @@
 package wile.engineersdecor.blocks;
 
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.IWorldReader;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import net.minecraft.entity.EntityType;
@@ -85,6 +87,10 @@ public class EdLadderBlock extends LadderBlock implements IDecorBlock
   @SuppressWarnings("deprecation")
   public PushReaction getPushReaction(BlockState state)
   { return PushReaction.NORMAL; }
+
+  @Override
+  public boolean isLadder(BlockState state, IWorldReader world, BlockPos pos, LivingEntity entity)
+  { return true; }
 
   // Player update event, forwarded from the main mod instance.
   public static void onPlayerUpdateEvent(final PlayerEntity player)

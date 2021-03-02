@@ -1,0 +1,23 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:dark_shingle_roof_wireconduit",
+          "required": [ "engineersdecor:dark_shingle_roof_chimneytrunk" ]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "ingredients": [
+          { "item": "engineersdecor:dark_shingle_roof_chimneytrunk" }
+        ],
+        "result": {
+          "item": "engineersdecor:dark_shingle_roof_wireconduit"
+        }
+      }
+    }
+  ]
+}

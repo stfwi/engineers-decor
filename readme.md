@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
+    - v1.1.9     [A] Dark Shingle Roof Wire Conduit recipe added.
+                 [F] Fixed Ladder climbing (affects forge>=36.0.45, issue #167, thx ZED).
+
     - v1.1.8     [F] Crafting Table Output slot sync rework (issue #138).
                  [A] Dark Shingle Roof Wire Conduit added (CFR#347).
 
