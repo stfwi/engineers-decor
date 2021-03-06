@@ -1083,8 +1083,9 @@ public class EdCraftingTable
 
     protected void renderHoveredToolTip(MatrixStack mx, int mouseX, int mouseY)
     {
-      if((!player.inventory.getItemStack().isEmpty()) || (getSlotUnderMouse() == null)) return;
+      if(!player.inventory.getItemStack().isEmpty()) return;
       final Slot slot = getSlotUnderMouse();
+      if(slot == null) return;
       if(!slot.getStack().isEmpty()) { renderTooltip(mx, slot.getStack(), mouseX, mouseY); return; }
       if(with_assist) {
         int hist_index = -1;

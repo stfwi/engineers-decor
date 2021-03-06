@@ -191,6 +191,7 @@ public class ModConfig
     public final ForgeConfigSpec.IntValue furnace_smelting_speed_percent;
     public final ForgeConfigSpec.IntValue furnace_fuel_efficiency_percent;
     public final ForgeConfigSpec.IntValue furnace_boost_energy_consumption;
+    public final ForgeConfigSpec.ConfigValue<String> furnace_accepted_heaters;
     public final ForgeConfigSpec.IntValue e_furnace_speed_percent;
     public final ForgeConfigSpec.IntValue e_furnace_power_consumption;
     public final ForgeConfigSpec.IntValue small_solar_panel_peak_production;
@@ -424,6 +425,11 @@ public class ModConfig
             "this consumption (fixed threshold value). The value can be changed on-the-fly for tuning. " +
             "The default value corresponds to the IE heater consumption.")
           .defineInRange("furnace_boost_energy_consumption", 24, 2, 1024);
+        furnace_accepted_heaters = builder
+          .translation(MODID + ".config.furnace_accepted_heaters")
+          .comment("Defines (as comma separated list of full registry names) which items are allowed as external " +
+            "heaters in the Aux slot for powered speed boosting.")
+          .define("furnace_accepted_heaters", "immersiveengineering:furnace_heater");
         chair_mob_sitting_probability_percent = builder
           .translation(MODID + ".config.chair_mob_sitting_probability_percent")
           .comment("Defines, in percent, how high the probability is that a mob sits on a chair " +
@@ -727,7 +733,7 @@ public class ModConfig
     EdPlacer.on_config();
     EdBreaker.on_config(SERVER.block_breaker_power_consumption.get(), SERVER.block_breaker_reluctance.get(), SERVER.block_breaker_min_breaking_time.get(), SERVER.block_breaker_requires_power.get());
     EdTreeCutter.on_config(SERVER.tree_cutter_energy_consumption.get(), SERVER.tree_cutter_cutting_time_needed.get(), SERVER.tree_cutter_requires_power.get());
-    EdFurnace.on_config(SERVER.furnace_smelting_speed_percent.get(), SERVER.furnace_fuel_efficiency_percent.get(), SERVER.furnace_boost_energy_consumption.get());
+    EdFurnace.on_config(SERVER.furnace_smelting_speed_percent.get(), SERVER.furnace_fuel_efficiency_percent.get(), SERVER.furnace_boost_energy_consumption.get(), SERVER.furnace_accepted_heaters.get());
     EdElectricalFurnace.on_config(SERVER.e_furnace_speed_percent.get(), SERVER.e_furnace_power_consumption.get(), SERVER.e_furnace_automatic_pulling.get());
     EdSolarPanel.on_config(SERVER.small_solar_panel_peak_production.get());
     EdMilker.on_config(SERVER.milking_machine_energy_consumption.get(), SERVER.milking_machine_milking_delay.get());

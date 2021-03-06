@@ -54,11 +54,12 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.registries.ForgeRegistries;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.detail.ExternalObjects;
 import wile.engineersdecor.libmc.client.ContainerGui;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.Inventories;
 import wile.engineersdecor.libmc.detail.Inventories.StorageInventory;
 import wile.engineersdecor.libmc.detail.Inventories.MappedItemHandler;
@@ -67,12 +68,13 @@ import wile.engineersdecor.libmc.detail.RfEnergy;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class EdFurnace
 {
-  public static void on_config(int speed_percent, int fuel_efficiency_percent, int boost_energy_per_tick)
-  { FurnaceTileEntity.on_config(speed_percent, fuel_efficiency_percent, boost_energy_per_tick); }
+  public static void on_config(int speed_percent, int fuel_efficiency_percent, int boost_energy_per_tick, String accepted_heaters_csv)
+  { FurnaceTileEntity.on_config(speed_percent, fuel_efficiency_percent, boost_energy_per_tick, accepted_heaters_csv); }
 
   //--------------------------------------------------------------------------------------------------------------------
   // Block
@@ -230,13 +232,34 @@ public class EdFurnace
     private static double proc_fuel_efficiency_ = 1.0;
     private static double proc_speed_ = 1.2;
     private static int boost_energy_consumption = DEFAULT_BOOST_ENERGY * TICK_INTERVAL;
+    private static Set<Item> accepted_heaters_ = new HashSet<>();
 
-    public static void on_config(int speed_percent, int fuel_efficiency_percent, int boost_energy_per_tick)
+    public static void on_config(int speed_percent, int fuel_efficiency_percent, int boost_energy_per_tick, String accepted_heaters_csv)
     {
       proc_speed_ = ((double)MathHelper.clamp(speed_percent, 10, 500)) / 100;
       proc_fuel_efficiency_ = ((double) MathHelper.clamp(fuel_efficiency_percent, 10, 500)) / 100;
       boost_energy_consumption = TICK_INTERVAL * MathHelper.clamp(boost_energy_per_tick, 4, 4096);
+      {
+        List<String> heater_resource_locations = Arrays.stream(accepted_heaters_csv.toLowerCase().split("[\\s,;]+"))
+          .map(s->s.trim())
+          .collect(Collectors.toList());
+        accepted_heaters_.clear();
+        for(String rlstr: heater_resource_locations) {
+          try {
+            ResourceLocation rl = new ResourceLocation(rlstr);
+            Item heater = ForgeRegistries.ITEMS.getValue(rl);
+            if((heater==null) || (heater==Items.AIR)) {
+              ModConfig.log("Furnace accepted heater config: Skipped '" + rl.toString() + "', item not found/mod not installed.");
+            } else {
+              accepted_heaters_.add(heater);
+            }
+          } catch(Throwable e) {
+            Auxiliaries.logError("Furnace accepted heater config invalid: '" + rlstr + "', not added.");
+          }
+        }
+      }
       ModConfig.log("Config lab furnace speed:" + (proc_speed_*100) + "%, efficiency:" + (proc_fuel_efficiency_*100) + "%, boost: " + (boost_energy_consumption/TICK_INTERVAL) + "rf/t.");
+      ModConfig.log("Config lab furnace accepted heaters: " + accepted_heaters_.stream().map(item->item.getRegistryName().toString()).collect(Collectors.joining(","))   + ".");
     }
 
     // DecorFurnaceTileEntity -----------------------------------------------------------------------------
@@ -484,9 +507,9 @@ public class EdFurnace
         if(transferItems(FIFO_FUEL_1_SLOT_NO, FIFO_FUEL_0_SLOT_NO, 1)) dirty = true;
         if(transferItems(FIFO_INPUT_0_SLOT_NO, SMELTING_INPUT_SLOT_NO, 1)) dirty = true;
         if(transferItems(FIFO_INPUT_1_SLOT_NO, FIFO_INPUT_0_SLOT_NO, 1)) dirty = true;
-        heater_inserted_ = (ExternalObjects.IE_EXTERNAL_HEATER==null) // without IE always allow electrical boost
-          || (inventory_.getStackInSlot(AUX_0_SLOT_NO).getItem()==ExternalObjects.IE_EXTERNAL_HEATER)
-          || (inventory_.getStackInSlot(AUX_1_SLOT_NO).getItem()==ExternalObjects.IE_EXTERNAL_HEATER);
+        heater_inserted_ = accepted_heaters_.isEmpty() // without IE always allow electrical boost
+          || accepted_heaters_.contains(inventory_.getStackInSlot(AUX_0_SLOT_NO).getItem())
+          || accepted_heaters_.contains(inventory_.getStackInSlot(AUX_1_SLOT_NO).getItem());
       }
       ItemStack fuel = inventory_.getStackInSlot(SMELTING_FUEL_SLOT_NO);
       if(burning() || (!fuel.isEmpty()) && (!(inventory_.getStackInSlot(SMELTING_INPUT_SLOT_NO)).isEmpty())) {

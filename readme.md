@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
+    - v1.1.10    [A] Added Small Lab Furnace config for accepted speed-boost heaters (PR#165, ty mrh0).
+                 [F] Fixed Labeled Crate mouse scrolling crash (issue #169, ty vaelzan).
+
     - v1.1.9     [A] Dark Shingle Roof Wire Conduit recipe added.
                  [F] Fixed Ladder climbing (affects forge>=36.0.45, issue #167, thx ZED).
 

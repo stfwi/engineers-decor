@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.16.4": {
+    "1.1.10": "[A] Added Small Lab Furnace config for accepted speed-boost heaters (PR#165, ty mrh0).\n[F] Fixed Labeled Crate mouse scrolling crash (issue #169, ty vaelzan).",
     "1.1.9": "[A] Dark Shingle Roof Wire Conduit recipe added.\n[F] Fixed Ladder climbing (affects forge>=36.0.45, issue #167, thx ZED).",
     "1.1.8": "[F] Crafting Table Output slot sync rework (issue #138).\n[A] Dark Shingle Roof Wire Conduit added (CFR#347).",
     "1.1.8-b2": "[F] Fixed Iron Hatch isLadder bug (thx jerryw09).\n[F] Fixed Block Placer block placing pre-conditions (issue #160, ty XFactHD).\n[F] Added explicit scheduled Crafting Table client sync.\n[F] Fixed directional waterloggable block default state forwarding (issue #162, ty b52src).",
@@ -29,7 +30,7 @@
     "1.1.2-b1": "[U] Ported to MC1.16.2."
   },
   "promos": {
-    "1.16.4-recommended": "1.1.9",
-    "1.16.4-latest": "1.1.9"
+    "1.16.4-recommended": "1.1.10",
+    "1.16.4-latest": "1.1.10"
   }
 }

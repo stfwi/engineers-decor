@@ -630,7 +630,7 @@ public class EdLabeledCrate
     {
       if(!with_gui_mouse_handling) return super.mouseScrolled(mouseX, mouseY, wheel_inc);
       final Slot slot = getSlotUnderMouse();
-      if(!slot.getHasStack()) return true;
+      if((slot==null) || (!slot.getHasStack())) return true;
       final int count = slot.getStack().getCount();
       int limit = (Auxiliaries.isShiftDown() ? 2 : 1) * (Auxiliaries.isCtrlDown() ? 4 : 1);
       if(wheel_inc > 0.1) {
