@@ -69,6 +69,7 @@ public class EdWindowBlock extends DecorBlock.DirectedWaterLoggable implements I
           .with(WATERLOGGED,world.getBlockState(pos.offset(d)).getFluidState().getFluid()==Fluids.WATER);
         world.setBlockState(pos.offset(d), st, 1|2);
         world.playSound(player, pos, SoundEvents.BLOCK_METAL_PLACE, SoundCategory.BLOCKS, 1f, 1f);
+        player.getHeldItem(hand).shrink(1);
       }
     );
     return ActionResultType.func_233537_a_(world.isRemote());
