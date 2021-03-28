@@ -51,7 +51,7 @@ public class EdSolarPanel
   // Block
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class SolarPanelBlock extends DecorBlock.Normal implements IDecorBlock
+  public static class SolarPanelBlock extends DecorBlock.Cutout implements IDecorBlock
   {
     public static final IntegerProperty EXPOSITION = IntegerProperty.create("exposition", 0, 4);
 
@@ -75,6 +75,7 @@ public class EdSolarPanel
     { return new EdSolarPanel.SolarPanelTileEntity(); }
 
     @Override
+    @SuppressWarnings("deprecation")
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
     {
       if(world.isRemote()) return ActionResultType.SUCCESS;

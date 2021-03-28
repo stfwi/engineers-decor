@@ -135,11 +135,11 @@ public class EdLabeledCrate
     public List<ItemStack> dropList(BlockState state, World world, final TileEntity te, boolean explosion)
     {
       final List<ItemStack> stacks = new ArrayList<ItemStack>();
-      if(world.isRemote) return stacks;
+      if(world.isRemote()) return stacks;
       if(!(te instanceof LabeledCrateTileEntity)) return stacks;
       if(!explosion) {
         ItemStack stack = new ItemStack(this, 1);
-        CompoundNBT te_nbt = ((LabeledCrateTileEntity)te).reset_getnbt();
+        CompoundNBT te_nbt = ((LabeledCrateTileEntity)te).getnbt();
         CompoundNBT nbt = new CompoundNBT();
         if(!te_nbt.isEmpty()) nbt.put("tedata", te_nbt);
         if(!nbt.isEmpty()) stack.setTag(nbt);
@@ -147,7 +147,7 @@ public class EdLabeledCrate
         stacks.add(stack);
       } else {
         for(ItemStack stack: ((LabeledCrateTileEntity)te).main_inventory_) stacks.add(stack);
-        ((LabeledCrateTileEntity)te).reset_getnbt();
+        ((LabeledCrateTileEntity)te).getnbt();
       }
       return stacks;
     }
@@ -253,16 +253,8 @@ public class EdLabeledCrate
       });
     }
 
-    public CompoundNBT reset_getnbt()
-    {
-      CompoundNBT nbt = new CompoundNBT();
-      writenbt(nbt);
-      reset();
-      return nbt;
-    }
-
-    protected void reset()
-    { main_inventory_.clear(); }
+    public CompoundNBT getnbt()
+    { return writenbt(new CompoundNBT()); }
 
     public CompoundNBT readnbt(CompoundNBT nbt)
     {

@@ -20,7 +20,6 @@ import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.world.IWorld;
@@ -29,7 +28,6 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.loot.LootParameters;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -102,42 +100,19 @@ public class StandardBlocks
 
   public static class BaseBlock extends Block implements IStandardBlock
   {
-    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public final long config;
-    private final VoxelShape vshape;
 
     public BaseBlock(long conf, Block.Properties properties)
-    { this(conf, properties, Auxiliaries.getPixeledAABB(0, 0, 0, 16, 16,16 )); }
-
-    public BaseBlock(long conf, Block.Properties properties, AxisAlignedBB aabb)
-    { this(conf, properties, VoxelShapes.create(aabb)); }
-
-    public BaseBlock(long conf, Block.Properties properties, AxisAlignedBB[] aabbs)
-    { this(conf, properties, Arrays.stream(aabbs).map(aabb->VoxelShapes.create(aabb)).reduce(VoxelShapes.empty(), (shape, aabb)->VoxelShapes.combine(shape, aabb, IBooleanFunction.OR))); }
-
-    public BaseBlock(long conf, Block.Properties properties, VoxelShape voxel_shape)
     {
       super(properties);
       config = conf;
-      vshape = voxel_shape;
       BlockState state = getStateContainer().getBaseState();
-      if((conf & CFG_WATERLOGGABLE)!=0) state = state.with(WATERLOGGED, false);
       setDefaultState(state);
     }
 
     @Override
     public long config()
     { return config; }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
-    { return ActionResultType.PASS; }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rnd)
-    {}
 
     @Override
     @OnlyIn(Dist.CLIENT)
@@ -150,39 +125,8 @@ public class StandardBlocks
 
     @Override
     @SuppressWarnings("deprecation")
-    public VoxelShape getShape(BlockState state, IBlockReader source, BlockPos pos, ISelectionContext selectionContext)
-    { return vshape; }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos,  ISelectionContext selectionContext)
-    { return vshape; }
-
-    @Override
-    @SuppressWarnings("deprecation")
     public boolean allowsMovement(BlockState state, IBlockReader world, BlockPos pos, PathType type)
     { return ((config & CFG_AI_PASSABLE)==0) ? false : super.allowsMovement(state, world, pos, type); }
-
-    @Override
-    @Nullable
-    public BlockState getStateForPlacement(BlockItemUseContext context)
-    {
-      BlockState state = super.getStateForPlacement(context);
-      if((config & CFG_WATERLOGGABLE)!=0) {
-        FluidState fs = context.getWorld().getFluidState(context.getPos());
-        state = state.with(WATERLOGGED,fs.getFluid()==Fluids.WATER);
-      }
-      return state;
-    }
-
-    @Override
-    public boolean canSpawnInBlock()
-    { return false; }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public PushReaction getPushReaction(BlockState state)
-    { return PushReaction.NORMAL; }
 
     @Override
     @SuppressWarnings("deprecation")
@@ -205,6 +149,61 @@ public class StandardBlocks
       boolean is_explosion = (explosion_radius!=null) && (explosion_radius > 0);
       return dropList(state, world, te, is_explosion);
     }
+  }
+
+  public static class Cutout extends BaseBlock implements IStandardBlock
+  {
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    private final VoxelShape vshape;
+
+    public Cutout(long conf, Block.Properties properties)
+    { this(conf, properties, Auxiliaries.getPixeledAABB(0, 0, 0, 16, 16,16 )); }
+
+    public Cutout(long conf, Block.Properties properties, AxisAlignedBB aabb)
+    { this(conf, properties, VoxelShapes.create(aabb)); }
+
+    public Cutout(long conf, Block.Properties properties, AxisAlignedBB[] aabbs)
+    { this(conf, properties, Arrays.stream(aabbs).map(aabb->VoxelShapes.create(aabb)).reduce(VoxelShapes.empty(), (shape, aabb)->VoxelShapes.combine(shape, aabb, IBooleanFunction.OR))); }
+
+    public Cutout(long conf, Block.Properties properties, VoxelShape voxel_shape)
+    {
+      super(conf, properties);
+      vshape = voxel_shape;
+      BlockState state = getStateContainer().getBaseState();
+      if((conf & CFG_WATERLOGGABLE)!=0) state = state.with(WATERLOGGED, false);
+      setDefaultState(state);
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public VoxelShape getShape(BlockState state, IBlockReader source, BlockPos pos, ISelectionContext selectionContext)
+    { return vshape; }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos,  ISelectionContext selectionContext)
+    { return vshape; }
+
+    @Override
+    @Nullable
+    public BlockState getStateForPlacement(BlockItemUseContext context)
+    {
+      BlockState state = super.getStateForPlacement(context);
+      if((config & CFG_WATERLOGGABLE)!=0) {
+        FluidState fs = context.getWorld().getFluidState(context.getPos());
+        state = state.with(WATERLOGGED,fs.getFluid()==Fluids.WATER);
+      }
+      return state;
+    }
+
+    @Override
+    public boolean canSpawnInBlock()
+    { return false; }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public PushReaction getPushReaction(BlockState state)
+    { return PushReaction.NORMAL; }
 
     @Override
     public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos)
@@ -236,7 +235,7 @@ public class StandardBlocks
     }
   }
 
-  public static class WaterLoggable extends BaseBlock implements IWaterLoggable, IStandardBlock
+  public static class WaterLoggable extends Cutout implements IWaterLoggable, IStandardBlock
   {
     public WaterLoggable(long config, Block.Properties properties)
     { super(config|CFG_WATERLOGGABLE, properties); }
@@ -255,7 +254,7 @@ public class StandardBlocks
     { super.fillStateContainer(builder); builder.add(WATERLOGGED); }
   }
 
-  public static class Directed extends BaseBlock implements IStandardBlock
+  public static class Directed extends Cutout implements IStandardBlock
   {
     public static final DirectionProperty FACING = DirectionalBlock.FACING;
     protected final ArrayList<VoxelShape> vshapes;
@@ -330,7 +329,7 @@ public class StandardBlocks
     }
   }
 
-  public static class Horizontal extends BaseBlock implements IStandardBlock
+  public static class Horizontal extends Cutout implements IStandardBlock
   {
     public static final DirectionProperty HORIZONTAL_FACING = HorizontalBlock.HORIZONTAL_FACING;
     protected final ArrayList<VoxelShape> vshapes;

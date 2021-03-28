@@ -56,6 +56,7 @@ public class EdRailingBlock extends DecorBlock.HorizontalFourWayWaterLoggable im
   }
 
   @Override
+  @SuppressWarnings("deprecation")
   public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
   {
     if(player.getHeldItem(hand).getItem() != asItem()) return ActionResultType.PASS;

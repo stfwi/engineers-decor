@@ -8,7 +8,6 @@
     "facing=west,open=true,segment=0":   { "model": "engineersdecor:block/fence/steel_mesh_fence_gate_bottom_model_open", "y":270 },
     "facing=east,open=false,segment=0":  { "model": "engineersdecor:block/fence/steel_mesh_fence_gate_bottom_model"     , "y":90  },
     "facing=east,open=true,segment=0":   { "model": "engineersdecor:block/fence/steel_mesh_fence_gate_bottom_model_open", "y":90  },
-
     "facing=north,open=false,segment=1": { "model": "engineersdecor:block/fence/steel_mesh_fence_gate_top_model"               },
     "facing=north,open=true,segment=1":  { "model": "engineersdecor:block/fence/steel_mesh_fence_gate_top_model_open"          },
     "facing=south,open=false,segment=1": { "model": "engineersdecor:block/fence/steel_mesh_fence_gate_top_model"     , "y":180 },

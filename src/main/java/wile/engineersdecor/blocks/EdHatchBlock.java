@@ -89,6 +89,7 @@ public class EdHatchBlock extends DecorBlock.HorizontalWaterLoggable implements 
   { super.fillStateContainer(builder); builder.add(OPEN, POWERED); }
 
   @Override
+  @SuppressWarnings("deprecation")
   public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
   {
     if(world.isRemote()) return ActionResultType.SUCCESS;

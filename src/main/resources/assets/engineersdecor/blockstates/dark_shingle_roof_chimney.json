@@ -1,7 +1,5 @@
 {
   "variants": {
-    "": [
-      { "model": "engineersdecor:block/roof/dark_shingle_roof_chimney_model" }
-    ]
+    "": { "model": "engineersdecor:block/roof/dark_shingle_roof_chimney_model" }
   }
 }

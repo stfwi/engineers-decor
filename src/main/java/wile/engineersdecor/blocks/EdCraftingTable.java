@@ -105,6 +105,7 @@ public class EdCraftingTable
     { return new EdCraftingTable.CraftingTableTileEntity(); }
 
     @Override
+    @SuppressWarnings("deprecation")
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
     {
       if(world.isRemote()) return ActionResultType.SUCCESS;
@@ -160,6 +161,7 @@ public class EdCraftingTable
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand)
     {
       TileEntity te = world.getTileEntity(pos);
@@ -806,6 +808,7 @@ public class EdCraftingTable
         }
       }
       if(recipe != null) {
+        sync();
         onCraftMatrixChanged();
       }
     }

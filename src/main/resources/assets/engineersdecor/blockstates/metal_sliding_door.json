@@ -7,7 +7,6 @@
   "facing=east,half=upper,hinge=left,open=true":   { "model": "engineersdecor:block/door/metal_sliding_door_model_top_open"     , "y": 270 },
   "facing=east,half=upper,hinge=right,open=false": { "model": "engineersdecor:block/door/metal_sliding_door_model_top_closed"   , "y":  90 },
   "facing=east,half=upper,hinge=right,open=true":  { "model": "engineersdecor:block/door/metal_sliding_door_model_top_open"     , "y":  90 },
-
   "facing=north,half=lower,hinge=left,open=false": { "model": "engineersdecor:block/door/metal_sliding_door_model_bottom_closed", "y": 180 },
   "facing=north,half=lower,hinge=left,open=true":  { "model": "engineersdecor:block/door/metal_sliding_door_model_bottom_open"  , "y": 180 },
   "facing=north,half=lower,hinge=right,open=false":{ "model": "engineersdecor:block/door/metal_sliding_door_model_bottom_closed", "y":   0 },
@@ -16,7 +15,6 @@
   "facing=north,half=upper,hinge=left,open=true":  { "model": "engineersdecor:block/door/metal_sliding_door_model_top_open"     , "y": 180 },
   "facing=north,half=upper,hinge=right,open=false":{ "model": "engineersdecor:block/door/metal_sliding_door_model_top_closed"   , "y":   0 },
   "facing=north,half=upper,hinge=right,open=true": { "model": "engineersdecor:block/door/metal_sliding_door_model_top_open"     , "y":   0 },
-
   "facing=south,half=lower,hinge=left,open=false": { "model": "engineersdecor:block/door/metal_sliding_door_model_bottom_closed", "y":   0 },
   "facing=south,half=lower,hinge=left,open=true":  { "model": "engineersdecor:block/door/metal_sliding_door_model_bottom_open"  , "y":   0 },
   "facing=south,half=lower,hinge=right,open=false":{ "model": "engineersdecor:block/door/metal_sliding_door_model_bottom_closed", "y": 180 },
@@ -25,7 +23,6 @@
   "facing=south,half=upper,hinge=left,open=true":  { "model": "engineersdecor:block/door/metal_sliding_door_model_top_open"     , "y":   0 },
   "facing=south,half=upper,hinge=right,open=false":{ "model": "engineersdecor:block/door/metal_sliding_door_model_top_closed"   , "y": 180 },
   "facing=south,half=upper,hinge=right,open=true": { "model": "engineersdecor:block/door/metal_sliding_door_model_top_open"     , "y": 180 },
-
   "facing=west,half=lower,hinge=left,open=false":  { "model": "engineersdecor:block/door/metal_sliding_door_model_bottom_closed", "y":  90 },
   "facing=west,half=lower,hinge=left,open=true":   { "model": "engineersdecor:block/door/metal_sliding_door_model_bottom_open"  , "y":  90 },
   "facing=west,half=lower,hinge=right,open=false": { "model": "engineersdecor:block/door/metal_sliding_door_model_bottom_closed", "y": 270 },

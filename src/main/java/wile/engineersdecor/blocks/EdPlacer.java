@@ -150,6 +150,7 @@ public class EdPlacer
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
     {
       if(world.isRemote()) return ActionResultType.SUCCESS;

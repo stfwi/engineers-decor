@@ -111,6 +111,7 @@ public class EdFreezer
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
     {
       if(player.isSneaking()) return ActionResultType.PASS;

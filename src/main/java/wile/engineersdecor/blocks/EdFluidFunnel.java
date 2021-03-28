@@ -62,7 +62,7 @@ public class EdFluidFunnel
   // Block
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class FluidFunnelBlock extends DecorBlock.Normal implements IDecorBlock
+  public static class FluidFunnelBlock extends DecorBlock.Cutout implements IDecorBlock
   {
     public static final int FILL_LEVEL_MAX = 3;
     public static final IntegerProperty FILL_LEVEL = IntegerProperty.create("level", 0, FILL_LEVEL_MAX);
@@ -143,6 +143,7 @@ public class EdFluidFunnel
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
     {
       if(world.isRemote) return ActionResultType.SUCCESS;

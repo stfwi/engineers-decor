@@ -53,6 +53,7 @@ public class EdChair
     { super(config, builder.tickRandomly(), unrotatedAABBs); }
 
     @Override
+    @SuppressWarnings("deprecation")
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
     {
       if(!sitting_enabled) return ActionResultType.PASS;
@@ -69,6 +70,7 @@ public class EdChair
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rnd)
     {
       if((!sitting_enabled) || (sitting_probability < 1e-6)) return;

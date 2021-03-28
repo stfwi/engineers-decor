@@ -129,6 +129,7 @@ public class EdHorizontalSupportBlock extends DecorBlock.WaterLoggable implement
   { return temp_block_update_until_better(state, world, pos); }
 
   @Override
+  @SuppressWarnings("deprecation")
   public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
   {
     ItemStack held_stack = player.getHeldItem(hand);

@@ -51,6 +51,7 @@ public class EdStraightPoleBlock extends DecorBlock.DirectedWaterLoggable implem
   }
 
   @Override
+  @SuppressWarnings("deprecation")
   public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
   {
     if((hit.getFace().getAxis() == state.get(FACING).getAxis())) return ActionResultType.PASS;

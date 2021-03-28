@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
+    - v1.1.12    [F] Chisels&Bits compatibility addressed (issue #172, ty rodg88).
+                 [F] Labeled Crate drop list made stateless (issue #173, ty HopsandBarley && Harmonised).
+
     - v1.1.11    [F] Fixed Window placement dupe (issue #170, ty NillerMedDild).
 
     - v1.1.10    [A] Added Small Lab Furnace config for accepted speed-boost heaters (PR#165, ty mrh0).

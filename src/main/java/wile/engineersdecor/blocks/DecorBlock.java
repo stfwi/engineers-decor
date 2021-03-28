@@ -44,15 +44,21 @@ public class DecorBlock
   public static class Normal extends StandardBlocks.BaseBlock implements IDecorBlock
   {
     public Normal(long conf, Block.Properties properties)
+    { super(conf, properties); }
+  }
+
+  public static class Cutout extends StandardBlocks.Cutout implements IDecorBlock
+  {
+    public Cutout(long conf, Block.Properties properties)
     { super(conf, properties, Auxiliaries.getPixeledAABB(0, 0, 0, 16, 16,16 )); }
 
-    public Normal(long conf, Block.Properties properties, AxisAlignedBB aabb)
+    public Cutout(long conf, Block.Properties properties, AxisAlignedBB aabb)
     { super(conf, properties, aabb);}
 
-    public Normal(long conf, Block.Properties properties, VoxelShape voxel_shape)
+    public Cutout(long conf, Block.Properties properties, VoxelShape voxel_shape)
     { super(conf, properties, voxel_shape); }
 
-    public Normal(long conf, Block.Properties properties, AxisAlignedBB[] aabbs)
+    public Cutout(long conf, Block.Properties properties, AxisAlignedBB[] aabbs)
     { super(conf, properties, aabbs); }
   }
 

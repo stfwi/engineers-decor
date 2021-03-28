@@ -93,6 +93,7 @@ public class EdTreeCutter
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
     {
       if(world.isRemote()) return ActionResultType.SUCCESS;

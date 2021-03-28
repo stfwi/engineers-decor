@@ -29,7 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public class EdChimneyBlock extends DecorBlock.Normal implements IDecorBlock
+public class EdChimneyBlock extends DecorBlock.Cutout implements IDecorBlock
 {
   public static final IntegerProperty POWER = BlockStateProperties.POWER_0_15;
 

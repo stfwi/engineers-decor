@@ -96,6 +96,7 @@ public class EdCatwalkStairsBlock extends DecorBlock.HorizontalWaterLoggable imp
   { return super.getStateForPlacement(context); }
 
   @Override
+  @SuppressWarnings("deprecation")
   public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
   {
     final Item item = player.getHeldItem(hand).getItem();

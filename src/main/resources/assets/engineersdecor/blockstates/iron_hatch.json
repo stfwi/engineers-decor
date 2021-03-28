@@ -3,17 +3,14 @@
   "facing=south,open=false,powered=false": { "model": "engineersdecor:block/trapdoor/iron_hatch_model_closed", "y":180 },
   "facing=west,open=false,powered=false":  { "model": "engineersdecor:block/trapdoor/iron_hatch_model_closed", "y":270 },
   "facing=east,open=false,powered=false":  { "model": "engineersdecor:block/trapdoor/iron_hatch_model_closed", "y":90  },
-
   "facing=north,open=true,powered=false": { "model": "engineersdecor:block/trapdoor/iron_hatch_model_open"          },
   "facing=south,open=true,powered=false": { "model": "engineersdecor:block/trapdoor/iron_hatch_model_open", "y":180 },
   "facing=west,open=true,powered=false":  { "model": "engineersdecor:block/trapdoor/iron_hatch_model_open", "y":270 },
   "facing=east,open=true,powered=false":  { "model": "engineersdecor:block/trapdoor/iron_hatch_model_open", "y":90  },
-
   "facing=north,open=false,powered=true": { "model": "engineersdecor:block/trapdoor/iron_hatch_model_closed"          },
   "facing=south,open=false,powered=true": { "model": "engineersdecor:block/trapdoor/iron_hatch_model_closed", "y":180 },
   "facing=west,open=false,powered=true":  { "model": "engineersdecor:block/trapdoor/iron_hatch_model_closed", "y":270 },
   "facing=east,open=false,powered=true":  { "model": "engineersdecor:block/trapdoor/iron_hatch_model_closed", "y":90  },
-
   "facing=north,open=true,powered=true": { "model": "engineersdecor:block/trapdoor/iron_hatch_model_open"          },
   "facing=south,open=true,powered=true": { "model": "engineersdecor:block/trapdoor/iron_hatch_model_open", "y":180 },
   "facing=west,open=true,powered=true":  { "model": "engineersdecor:block/trapdoor/iron_hatch_model_open", "y":270 },

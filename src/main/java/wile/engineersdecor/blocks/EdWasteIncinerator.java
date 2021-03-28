@@ -72,7 +72,7 @@ public class EdWasteIncinerator
   // Block
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class WasteIncineratorBlock extends DecorBlock.Normal implements IDecorBlock
+  public static class WasteIncineratorBlock extends DecorBlock.Cutout implements IDecorBlock
   {
     public static final BooleanProperty LIT = FurnaceBlock.LIT;
 
@@ -136,7 +136,7 @@ public class EdWasteIncinerator
       if(!(te instanceof WasteIncineratorTileEntity)) return stacks;
       if(!explosion) {
         ItemStack stack = new ItemStack(this, 1);
-        CompoundNBT te_nbt = ((WasteIncineratorTileEntity) te).reset_getnbt();
+        CompoundNBT te_nbt = ((WasteIncineratorTileEntity) te).getnbt();
         if(!te_nbt.isEmpty()) {
           CompoundNBT nbt = new CompoundNBT();
           nbt.put("tedata", te_nbt);
@@ -145,12 +145,13 @@ public class EdWasteIncinerator
         stacks.add(stack);
       } else {
         for(ItemStack stack: ((WasteIncineratorTileEntity)te).stacks_) stacks.add(stack);
-        ((WasteIncineratorTileEntity)te).reset_getnbt();
+        ((WasteIncineratorTileEntity)te).getnbt();
       }
       return stacks;
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
     {
       if(world.isRemote()) return ActionResultType.SUCCESS;
@@ -214,13 +215,8 @@ public class EdWasteIncinerator
     public WasteIncineratorTileEntity(TileEntityType<?> te_type)
     { super(te_type); reset(); }
 
-    public CompoundNBT reset_getnbt()
-    {
-      CompoundNBT nbt = new CompoundNBT();
-      writenbt(nbt);
-      reset();
-      return nbt;
-    }
+    public CompoundNBT getnbt()
+    { return writenbt(new CompoundNBT()); }
 
     protected void reset()
     {
@@ -238,10 +234,11 @@ public class EdWasteIncinerator
       energy_stored_ = compound.getInt("Energy");
     }
 
-    protected void writenbt(CompoundNBT compound)
+    protected CompoundNBT writenbt(CompoundNBT nbt)
     {
-      compound.putInt("Energy", MathHelper.clamp(energy_stored_,0 , MAX_ENERGY_BUFFER));
-      ItemStackHelper.saveAllItems(compound, stacks_);
+      nbt.putInt("Energy", MathHelper.clamp(energy_stored_,0 , MAX_ENERGY_BUFFER));
+      ItemStackHelper.saveAllItems(nbt, stacks_);
+      return nbt;
     }
 
     // TileEntity ------------------------------------------------------------------------------
@@ -252,7 +249,7 @@ public class EdWasteIncinerator
 
     @Override
     public CompoundNBT write(CompoundNBT nbt)
-    { super.write(nbt); writenbt(nbt); return nbt; }
+    { super.write(nbt); return writenbt(nbt); }
 
     @Override
     public void remove()
