@@ -5,6 +5,8 @@ A [Minecraft](https://minecraft.net) (Java Edition) mod based on
 [`Forge`](http://www.minecraftforge.net/), adding cosmetic blocks
 for the Engineer's factory, workshop, and home.
 
+***Note for coders/modders: Please take a look into the MC version branches to view/clone the source code.***
+
 ![](documentation/engineers-decor-v113-brief.png)
 
 [Screenshots in the documentation readme here](documentation/readme.md)
@@ -234,15 +236,8 @@ More to come slowly but steadily.
 ## Version history
 
 Mod versions are tracked in the readme files for individual Minecraft versions, and
-of course in the commits of this repository. Beta and release versions that are
-distributed as compiled `jar`s are tagged accordingly. Release versions are merged
-into the `master` branch, while beta/alpha version tags link to `develop` branch
-commits.
+of course in the commits of this repository. Simply take a look into the other branches.
 
-  - [1.12](1.12/readme.md)
-  - [1.14](1.14/readme.md)
-  - [1.15](1.15/readme.md)
-  - [1.16](1.16/readme.md)
 
 ### Community references
 
