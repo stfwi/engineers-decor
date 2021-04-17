@@ -86,7 +86,7 @@ public class Inventories
   public static ItemStack insert(World world, BlockPos pos, @Nullable Direction side, ItemStack stack, boolean simulate)
   { return insert(world.getTileEntity(pos), side, stack, simulate); }
 
-  public static ItemStack extract(IItemHandler inventory, @Nullable ItemStack match, int amount, boolean simulate)
+  public static ItemStack extract(@Nullable IItemHandler inventory, @Nullable ItemStack match, int amount, boolean simulate)
   {
     if((inventory==null) || (amount<=0)) return ItemStack.EMPTY;
     final int max = inventory.getSlots();

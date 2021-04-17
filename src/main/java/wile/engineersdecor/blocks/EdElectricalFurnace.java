@@ -453,24 +453,13 @@ public class EdElectricalFurnace
       }
       if(with_automatic_inventory_pulling_ || is_accepted_hopper(inventory_.getStackInSlot(SMELTING_AUX_SLOT_NO))) {
         final Direction inp_facing = state.get(ElectricalFurnaceBlock.HORIZONTAL_FACING).getOpposite();
-        if(inp && (inventory_.getStackInSlot(FIFO_INPUT_1_SLOT_NO).isEmpty())) {
-          TileEntity te = world.getTileEntity(pos.offset(inp_facing));
-          if(te!=null) {
-            IItemHandler hnd = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, inp_facing).orElse(null);
-            if(hnd != null) {
-            for(int i=0; i< hnd.getSlots(); ++i) {
-                ItemStack adj_stack = hnd.getStackInSlot(i);
-                if(!adj_stack.isEmpty()) {
-                  ItemStack my_stack = adj_stack.copy();
-                  if(my_stack.getCount() > inventory_.getInventoryStackLimit()) my_stack.setCount(inventory_.getInventoryStackLimit());
-                  adj_stack.shrink(my_stack.getCount());
-                  inventory_.setInventorySlotContents(FIFO_INPUT_1_SLOT_NO, my_stack);
-                  battery_.draw(transfer_energy_consumption_);
-                  dirty = true;
-                  break;
-                }
-              }
-            }
+        if(inp && (inventory_.getStackInSlot(FIFO_INPUT_1_SLOT_NO).isEmpty()) && (battery_.getEnergyStored() >= transfer_energy_consumption_)) {
+          final int max_count = MathHelper.clamp((transfer_energy_consumption_ <= 0) ? (64) : (battery_.getEnergyStored()/transfer_energy_consumption_), 1, 64);
+          final ItemStack retrieved = Inventories.extract(Inventories.itemhandler(world, pos.offset(inp_facing), inp_facing), null, max_count, false);
+          if(!retrieved.isEmpty()) {
+            inventory_.setInventorySlotContents(FIFO_INPUT_1_SLOT_NO, retrieved);
+            battery_.draw(max_count * transfer_energy_consumption_);
+            dirty = true;
           }
         }
       }
