@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.16.4": {
+    "1.1.13-b2": "[F] Fixed explosion resistance values for standard blocks.\n[F] Sandstone Ornated Clinker loot table fixed (ty czbuendel, Valen).",
     "1.1.13-b1": "[F] Hotfix Electrical Furnace inventory import from Storage Drawers (issue #174, ty anto-fire/IchigoGames).",
     "1.1.12": "[F] Chisels&Bits compatibility addressed (issue #172, ty rodg88).\n[F] Labeled Crate drop list made stateless (issue #173, ty HopsandBarley && Harmonised).",
     "1.1.11": "[F] Fixed Window placement dupe (issue #170, ty NillerMedDild).",
@@ -34,6 +35,6 @@
   },
   "promos": {
     "1.16.4-recommended": "1.1.12",
-    "1.16.4-latest": "1.1.13-b1"
+    "1.16.4-latest": "1.1.13-b2"
   }
 }

@@ -76,50 +76,50 @@ public class ModContent
 
   public static final DecorBlock.Normal CLINKER_BRICK_BLOCK = (DecorBlock.Normal)(new DecorBlock.Normal(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 10f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(MODID, "clinker_brick_block"));
 
   public static final EdSlabBlock CLINKER_BRICK_SLAB = (EdSlabBlock)(new EdSlabBlock(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 10f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(MODID, "clinker_brick_slab"));
 
   public static final EdStairsBlock CLINKER_BRICK_STAIRS = (EdStairsBlock)(new EdStairsBlock(
     DecorBlock.CFG_DEFAULT,
     CLINKER_BRICK_BLOCK.getDefaultState(),
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 10f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(MODID, "clinker_brick_stairs"));
 
   public static final EdWallBlock CLINKER_BRICK_WALL = (EdWallBlock)(new EdWallBlock(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 10f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(MODID, "clinker_brick_wall"));
 
   public static final DecorBlock.Normal CLINKER_BRICK_STAINED_BLOCK = (DecorBlock.Normal)(new DecorBlock.Normal(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 10f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(MODID, "clinker_brick_stained_block"));
 
   public static final EdSlabBlock CLINKER_BRICK_STAINED_SLAB = (EdSlabBlock)(new EdSlabBlock(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 10f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(MODID, "clinker_brick_stained_slab"));
 
   public static final EdStairsBlock CLINKER_BRICK_STAINED_STAIRS = (EdStairsBlock)(new EdStairsBlock(
     DecorBlock.CFG_DEFAULT,
     CLINKER_BRICK_BLOCK.getDefaultState(),
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 10f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(MODID, "clinker_brick_stained_stairs"));
 
   public static final EdCornerOrnamentedBlock CLINKER_BRICK_SASTOR_CORNER = (EdCornerOrnamentedBlock)(new EdCornerOrnamentedBlock(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE),
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 10f).sound(SoundType.STONE),
     new Block[]{CLINKER_BRICK_BLOCK, CLINKER_BRICK_STAINED_BLOCK, CLINKER_BRICK_SLAB, CLINKER_BRICK_STAIRS, CLINKER_BRICK_STAINED_SLAB, CLINKER_BRICK_STAINED_STAIRS}
   )).setRegistryName(new ResourceLocation(MODID, "clinker_brick_sastor_corner_block"));
 
   public static final DecorBlock.HorizontalWaterLoggable CLINKER_BRICK_RECESSED = (DecorBlock.HorizontalWaterLoggable)(new DecorBlock.HorizontalWaterLoggable(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE),
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 10f).sound(SoundType.STONE),
     new AxisAlignedBB[] {
       Auxiliaries.getPixeledAABB( 3,0, 0, 13,16, 1),
       Auxiliaries.getPixeledAABB( 0,0, 1, 16,16,11),
@@ -129,7 +129,7 @@ public class ModContent
 
   public static final DecorBlock.HorizontalWaterLoggable CLINKER_BRICK_SASTOR_VERTICAL_SLOTTED = (DecorBlock.HorizontalWaterLoggable)(new DecorBlock.HorizontalWaterLoggable(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE),
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 10f).sound(SoundType.STONE),
     new AxisAlignedBB[] {
       Auxiliaries.getPixeledAABB( 3,0, 0, 13,16, 1),
       Auxiliaries.getPixeledAABB( 3,0,15, 13,16,16),
@@ -139,7 +139,7 @@ public class ModContent
 
   public static final DecorBlock.HorizontalWaterLoggable CLINKER_BRICK_VERTICAL_SLAB_STRUCTURED = (DecorBlock.HorizontalWaterLoggable)(new DecorBlock.HorizontalWaterLoggable(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE),
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 10f).sound(SoundType.STONE),
     new AxisAlignedBB[] {
       Auxiliaries.getPixeledAABB( 0,0, 0, 16,16, 8),
     }
@@ -149,23 +149,23 @@ public class ModContent
 
   public static final DecorBlock.Normal SLAG_BRICK_BLOCK = (DecorBlock.Normal)(new DecorBlock.Normal(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 10f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(MODID, "slag_brick_block"));
 
   public static final EdSlabBlock SLAG_BRICK_SLAB = (EdSlabBlock)(new EdSlabBlock(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 10f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(MODID, "slag_brick_slab"));
 
   public static final EdStairsBlock SLAG_BRICK_STAIRS = (EdStairsBlock)(new EdStairsBlock(
     DecorBlock.CFG_DEFAULT,
     SLAG_BRICK_BLOCK.getDefaultState(),
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 10f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(MODID, "slag_brick_stairs"));
 
   public static final EdWallBlock SLAG_BRICK_WALL = (EdWallBlock)(new EdWallBlock(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 50f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(3f, 10f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(MODID, "slag_brick_wall"));
 
   // -------------------------------------------------------------------------------------------------------------------
@@ -258,29 +258,29 @@ public class ModContent
 
   public static final EdRoofBlock DARK_CERAMIC_SHINGLE_ROOF = (EdRoofBlock)(new EdRoofBlock(
     DecorBlock.CFG_CUTOUT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE).notSolid().variableOpacity().setAllowsSpawn(ModContent::disallowSpawn)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 6f).sound(SoundType.STONE).notSolid().variableOpacity().setAllowsSpawn(ModContent::disallowSpawn)
   )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof"));
 
   public static final EdRoofBlock DARK_CERAMIC_SHINGLE_ROOF_METALIZED = (EdRoofBlock)(new EdRoofBlock(
     DecorBlock.CFG_CUTOUT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE).notSolid().variableOpacity().setAllowsSpawn(ModContent::disallowSpawn)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 6f).sound(SoundType.STONE).notSolid().variableOpacity().setAllowsSpawn(ModContent::disallowSpawn)
   )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof_metallized"));
 
   public static final EdRoofBlock DARK_CERAMIC_SHINGLE_ROOF_SKYLIGHT = (EdRoofBlock)(new EdRoofBlock(
     DecorBlock.CFG_TRANSLUCENT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE).notSolid().variableOpacity().setAllowsSpawn(ModContent::disallowSpawn)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 6f).sound(SoundType.STONE).notSolid().variableOpacity().setAllowsSpawn(ModContent::disallowSpawn)
   )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof_skylight"));
 
   public static final EdChimneyTrunkBlock DARK_CERAMIC_SHINGLE_ROOF_CHIMNEYTRUNK = (EdChimneyTrunkBlock)(new EdChimneyTrunkBlock(
     DecorBlock.CFG_CUTOUT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE).notSolid().variableOpacity().setAllowsSpawn(ModContent::disallowSpawn),
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 6f).sound(SoundType.STONE).notSolid().variableOpacity().setAllowsSpawn(ModContent::disallowSpawn),
     VoxelShapes.create(Auxiliaries.getPixeledAABB(3, 0, 3, 13, 16, 13)),
     VoxelShapes.create(Auxiliaries.getPixeledAABB(5, 0, 5, 11, 16, 11))
   )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof_chimneytrunk"));
 
   public static final EdChimneyTrunkBlock DARK_CERAMIC_SHINGLE_ROOF_WIRECONDUIT = (EdChimneyTrunkBlock)(new EdChimneyTrunkBlock(
     DecorBlock.CFG_CUTOUT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE).notSolid().variableOpacity().setAllowsSpawn(ModContent::disallowSpawn),
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 6f).sound(SoundType.STONE).notSolid().variableOpacity().setAllowsSpawn(ModContent::disallowSpawn),
     VoxelShapes.combineAndSimplify(
       VoxelShapes.create(Auxiliaries.getPixeledAABB(3,  0, 3, 13, 13, 13)),
       VoxelShapes.create(Auxiliaries.getPixeledAABB(5, 13, 5, 11, 16, 11)),
@@ -295,18 +295,18 @@ public class ModContent
 
   public static final EdChimneyBlock DARK_CERAMIC_SHINGLE_ROOF_CHIMNEY = (EdChimneyBlock)(new EdChimneyBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_AI_PASSABLE,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 2000f).sound(SoundType.STONE).variableOpacity().setAllowsSpawn(ModContent::disallowSpawn),
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(5f, 6f).sound(SoundType.STONE).variableOpacity().setAllowsSpawn(ModContent::disallowSpawn),
     Auxiliaries.getPixeledAABB(3, 0, 3, 13, 6, 13)
   )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof_chimney"));
 
   public static final DecorBlock.Normal DARK_CERAMIC_SHINGLE_ROOF_BLOCK = (DecorBlock.Normal)(new DecorBlock.Normal(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 6f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof_block"));
 
   public static final EdSlabBlock DARK_CERAMIC_SHINGLE_ROOF_SLAB = (EdSlabBlock)(new EdSlabBlock(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 15f).sound(SoundType.STONE)
+    Block.Properties.create(Material.ROCK, MaterialColor.STONE).hardnessAndResistance(2f, 6f).sound(SoundType.STONE)
   )).setRegistryName(new ResourceLocation(MODID, "dark_shingle_roof_slab"));
 
   // -------------------------------------------------------------------------------------------------------------------
@@ -330,17 +330,17 @@ public class ModContent
 
   public static final EdLadderBlock METAL_RUNG_LADDER = (EdLadderBlock)(new EdLadderBlock(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1.0f, 25f).sound(SoundType.METAL).notSolid()
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1.0f, 8f).sound(SoundType.METAL).notSolid()
   )).setRegistryName(new ResourceLocation(MODID, "metal_rung_ladder"));
 
   public static final EdLadderBlock METAL_RUNG_STEPS = (EdLadderBlock)(new EdLadderBlock(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1.0f, 25f).sound(SoundType.METAL).notSolid()
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1.0f, 8f).sound(SoundType.METAL).notSolid()
   )).setRegistryName(new ResourceLocation(MODID, "metal_rung_steps"));
 
   public static final EdLadderBlock TREATED_WOOD_LADDER = (EdLadderBlock)(new EdLadderBlock(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1.0f, 25f).sound(SoundType.WOOD).notSolid()
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1.0f, 8f).sound(SoundType.WOOD).notSolid()
   )).setRegistryName(new ResourceLocation(MODID, "treated_wood_ladder"));
 
   public static final EdHatchBlock IRON_HATCH = (EdHatchBlock)(new EdHatchBlock(
@@ -352,7 +352,7 @@ public class ModContent
 
   public static final EdDoorBlock METAL_SLIDING_DOOR = (EdDoorBlock)(new EdDoorBlock(
     DecorBlock.CFG_TRANSLUCENT|DecorBlock.CFG_HORIZIONTAL,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1.5f, 12f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1.5f, 8f).sound(SoundType.METAL).notSolid(),
     new AxisAlignedBB[]{
       Auxiliaries.getPixeledAABB(15, 0.0,6, 16,16.0,10),
       Auxiliaries.getPixeledAABB( 0,15.5,6, 16,16.0,10),
@@ -374,28 +374,28 @@ public class ModContent
 
   public static final DecorBlock.Normal OLD_INDUSTRIAL_PLANKS = (DecorBlock.Normal)(new DecorBlock.Normal(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1.5f, 8f).sound(SoundType.WOOD)
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1.5f, 6f).sound(SoundType.WOOD)
   )).setRegistryName(new ResourceLocation(MODID, "old_industrial_wood_planks"));
 
   public static final EdSlabBlock OLD_INDUSTRIAL_SLAB = (EdSlabBlock)(new EdSlabBlock(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1.5f, 8f).sound(SoundType.WOOD)
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1.5f, 6f).sound(SoundType.WOOD)
   )).setRegistryName(new ResourceLocation(MODID, "old_industrial_wood_slab"));
 
   public static final EdStairsBlock OLD_INDUSTRIAL_STAIRS = (EdStairsBlock)(new EdStairsBlock(
     DecorBlock.CFG_DEFAULT,
     OLD_INDUSTRIAL_PLANKS.getDefaultState(),
-    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1.5f, 8f).sound(SoundType.WOOD)
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1.5f, 6f).sound(SoundType.WOOD)
   )).setRegistryName(new ResourceLocation(MODID, "old_industrial_wood_stairs"));
 
   public static final EdSlabSliceBlock OLD_INDUSTRIAL_SLABSLICE = (EdSlabSliceBlock)(new EdSlabSliceBlock(
     DecorBlock.CFG_CUTOUT,
-    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1.5f, 8f).sound(SoundType.WOOD).notSolid()
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1.5f, 6f).sound(SoundType.WOOD).notSolid()
   )).setRegistryName(new ResourceLocation(MODID, "old_industrial_wood_slabslice"));
 
   public static final EdDoorBlock OLD_INDUSTRIAL_WOOD_DOOR = (EdDoorBlock)(new EdDoorBlock(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1.5f, 12f).sound(SoundType.WOOD).notSolid(),
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(1.5f, 6f).sound(SoundType.WOOD).notSolid(),
     Auxiliaries.getPixeledAABB(15,0, 0, 16,16,16),
     Auxiliaries.getPixeledAABB( 0,0,13, 16,16,16),
     SoundEvents.BLOCK_WOODEN_DOOR_OPEN, SoundEvents.BLOCK_WOODEN_DOOR_CLOSE
@@ -405,13 +405,13 @@ public class ModContent
 
   public static final DecorBlock.WaterLoggable TREATED_WOOD_TABLE = (DecorBlock.WaterLoggable)(new DecorBlock.WaterLoggable(
     DecorBlock.CFG_CUTOUT,
-    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD).notSolid(),
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 5f).sound(SoundType.WOOD).notSolid(),
     Auxiliaries.getPixeledAABB(1,0,1, 15,15.9,15)
   )).setRegistryName(new ResourceLocation(MODID, "treated_wood_table"));
 
   public static final EdChair.ChairBlock TREATED_WOOD_STOOL = (EdChair.ChairBlock)(new EdChair.ChairBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT,
-    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD).notSolid(),
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 5f).sound(SoundType.WOOD).notSolid(),
     new AxisAlignedBB[]{
       Auxiliaries.getPixeledAABB(4,7,4, 12,8.8,12),
       Auxiliaries.getPixeledAABB(7,0,7, 9,7,9),
@@ -422,7 +422,7 @@ public class ModContent
 
   public static final DecorBlock.WaterLoggable TREATED_WOOD_SIDE_TABLE = (DecorBlock.WaterLoggable)(new DecorBlock.WaterLoggable(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT,
-    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD).notSolid(),
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 5f).sound(SoundType.WOOD).notSolid(),
     new AxisAlignedBB[]{
       Auxiliaries.getPixeledAABB( 2,15, 2, 14,16,14),
       Auxiliaries.getPixeledAABB( 3,15, 1, 13,16, 2),
@@ -438,13 +438,13 @@ public class ModContent
 
   public static final DecorBlock.DirectedWaterLoggable TREATED_WOOD_WINDOWSILL = (DecorBlock.DirectedWaterLoggable)(new DecorBlock.DirectedWaterLoggable(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_AI_PASSABLE,
-    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD).notSolid(),
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 5f).sound(SoundType.WOOD).notSolid(),
     Auxiliaries.getPixeledAABB(0.5,15,10.5, 15.5,16,16)
   )).setRegistryName(new ResourceLocation(MODID, "treated_wood_windowsill"));
 
   public static final DecorBlock.DirectedWaterLoggable TREATED_WOOD_BROAD_WINDOWSILL = (DecorBlock.DirectedWaterLoggable)(new DecorBlock.DirectedWaterLoggable(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_FACING_PLACEMENT,
-    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD).notSolid(),
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 5f).sound(SoundType.WOOD).notSolid(),
     Auxiliaries.getPixeledAABB(0,14.5,4, 16,16,16)
   )).setRegistryName(new ResourceLocation(MODID, "treated_wood_broad_windowsill"));
 
@@ -452,19 +452,19 @@ public class ModContent
 
   public static final DecorBlock.DirectedWaterLoggable INSET_LIGHT_IRON = (DecorBlock.DirectedWaterLoggable)(new DecorBlock.DirectedWaterLoggable(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT|DecorBlock.CFG_AI_PASSABLE,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).setLightLevel((state)->15).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 8f).sound(SoundType.METAL).setLightLevel((state)->15).notSolid(),
     Auxiliaries.getPixeledAABB(5.2,5.2,0, 10.8,10.8,0.3)
   )).setRegistryName(new ResourceLocation(MODID, "iron_inset_light"));
 
   public static final DecorBlock.DirectedWaterLoggable FLOOR_EDGE_LIGHT_IRON = (DecorBlock.DirectedWaterLoggable)(new DecorBlock.DirectedWaterLoggable(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_AI_PASSABLE,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).setLightLevel((state)->15).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 8f).sound(SoundType.METAL).setLightLevel((state)->15).notSolid(),
     Auxiliaries.getPixeledAABB(5,0,0, 11,2,0.5)
   )).setRegistryName(new ResourceLocation(MODID, "iron_floor_edge_light"));
 
   public static final DecorBlock.DirectedWaterLoggable CEILING_EDGE_LIGHT_IRON = (DecorBlock.DirectedWaterLoggable)(new DecorBlock.DirectedWaterLoggable(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_AI_PASSABLE,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).setLightLevel((state)->15).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 8f).sound(SoundType.METAL).setLightLevel((state)->15).notSolid(),
     new AxisAlignedBB[]{
       Auxiliaries.getPixeledAABB( 0,15.5,0, 16,16,2.0),
       Auxiliaries.getPixeledAABB( 0,14.0,0, 16,16,0.5),
@@ -475,7 +475,7 @@ public class ModContent
 
   public static final DecorBlock.DirectedWaterLoggable BULB_LIGHT_IRON = (DecorBlock.DirectedWaterLoggable)(new DecorBlock.DirectedWaterLoggable(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT|DecorBlock.CFG_AI_PASSABLE,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).setLightLevel((state)->15).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 8f).sound(SoundType.METAL).setLightLevel((state)->15).notSolid(),
     new AxisAlignedBB[]{
       Auxiliaries.getPixeledAABB(6.5,6.5,1, 9.5,9.5,4),
       Auxiliaries.getPixeledAABB(6.0,6.0,0, 10.0,10.0,1.0)
@@ -486,13 +486,13 @@ public class ModContent
 
   public static final DecorBlock.WaterLoggable STEEL_TABLE = (DecorBlock.WaterLoggable)(new DecorBlock.WaterLoggable(
     DecorBlock.CFG_CUTOUT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 8f).sound(SoundType.METAL).notSolid(),
     Auxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   )).setRegistryName(new ResourceLocation(MODID, "steel_table"));
 
   public static final EdFloorGratingBlock STEEL_FLOOR_GRATING = (EdFloorGratingBlock)(new EdFloorGratingBlock(
     DecorBlock.CFG_CUTOUT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 8f).sound(SoundType.METAL).notSolid(),
     Auxiliaries.getPixeledAABB(0,14,0, 16,15.5,16)
   )).setRegistryName(new ResourceLocation(MODID, "steel_floor_grating"));
 
@@ -500,13 +500,13 @@ public class ModContent
 
   public static final EdWindowBlock TREATED_WOOD_WINDOW = (EdWindowBlock)(new EdWindowBlock(
     DecorBlock.CFG_LOOK_PLACEMENT,
-    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD).notSolid(),
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 8f).sound(SoundType.WOOD).notSolid(),
     Auxiliaries.getPixeledAABB(0,0,7, 16,16,9)
   )).setRegistryName(new ResourceLocation(MODID, "treated_wood_window"));
 
   public static final EdWindowBlock STEEL_FRAMED_WINDOW = (EdWindowBlock)(new EdWindowBlock(
     DecorBlock.CFG_LOOK_PLACEMENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 8f).sound(SoundType.METAL).notSolid(),
     Auxiliaries.getPixeledAABB(0,0,7.5, 16,16,8.5)
   )).setRegistryName(new ResourceLocation(MODID, "steel_framed_window"));
 
@@ -514,56 +514,56 @@ public class ModContent
 
   public static final EdStraightPoleBlock TREATED_WOOD_POLE = (EdStraightPoleBlock)(new EdStraightPoleBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_FLIP_PLACEMENT_IF_SAME,
-    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD).notSolid(),
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 5f).sound(SoundType.WOOD).notSolid(),
     Auxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16),
     null
   )).setRegistryName(new ResourceLocation(MODID, "treated_wood_pole"));
 
   public static final EdStraightPoleBlock TREATED_WOOD_POLE_HEAD = (EdStraightPoleBlock)(new EdStraightPoleBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_FLIP_PLACEMENT_IF_SAME,
-    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD).notSolid(),
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 5f).sound(SoundType.WOOD).notSolid(),
     Auxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16),
     TREATED_WOOD_POLE
   )).setRegistryName(new ResourceLocation(MODID, "treated_wood_pole_head"));
 
   public static final EdStraightPoleBlock TREATED_WOOD_POLE_SUPPORT = (EdStraightPoleBlock)(new EdStraightPoleBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_FLIP_PLACEMENT_IF_SAME,
-    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 15f).sound(SoundType.WOOD).notSolid(),
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(2f, 5f).sound(SoundType.WOOD).notSolid(),
     Auxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16),
     TREATED_WOOD_POLE
   )).setRegistryName(new ResourceLocation(MODID, "treated_wood_pole_support"));
 
   public static final EdStraightPoleBlock THIN_STEEL_POLE = (EdStraightPoleBlock)(new EdStraightPoleBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 11f).sound(SoundType.METAL).notSolid(),
     Auxiliaries.getPixeledAABB(6,6,0, 10,10,16),
     null
   )).setRegistryName(new ResourceLocation(MODID, "thin_steel_pole"));
 
   public static final EdStraightPoleBlock THIN_STEEL_POLE_HEAD = (EdStraightPoleBlock)(new EdStraightPoleBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_FLIP_PLACEMENT_IF_SAME,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 11f).sound(SoundType.METAL).notSolid(),
     Auxiliaries.getPixeledAABB(6,6,0, 10,10,16),
     THIN_STEEL_POLE
   )).setRegistryName(new ResourceLocation(MODID, "thin_steel_pole_head"));
 
   public static final EdStraightPoleBlock THICK_STEEL_POLE = (EdStraightPoleBlock)(new EdStraightPoleBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 11f).sound(SoundType.METAL).notSolid(),
     Auxiliaries.getPixeledAABB(5,5,0, 11,11,16),
     null
   )).setRegistryName(new ResourceLocation(MODID, "thick_steel_pole"));
 
   public static final EdStraightPoleBlock THICK_STEEL_POLE_HEAD = (EdStraightPoleBlock)(new EdStraightPoleBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_FLIP_PLACEMENT_IF_SAME,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 11f).sound(SoundType.METAL).notSolid(),
     Auxiliaries.getPixeledAABB(5,5,0, 11,11,16),
     THICK_STEEL_POLE
   )).setRegistryName(new ResourceLocation(MODID, "thick_steel_pole_head"));
 
   public static final EdHorizontalSupportBlock STEEL_DOUBLE_T_SUPPORT = (EdHorizontalSupportBlock)(new EdHorizontalSupportBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 11f).sound(SoundType.METAL).notSolid(),
     Auxiliaries.getPixeledAABB( 5,11,0, 11,16,16), // main beam
     Auxiliaries.getPixeledAABB(10,11,5, 16,16,11), // east beam (also for west 180deg)
     Auxiliaries.getPixeledAABB( 6, 0,6, 10,16,10), // down thin
@@ -660,7 +660,7 @@ public class ModContent
 
   public static final EdCraftingTable.CraftingTableBlock CRAFTING_TABLE = (EdCraftingTable.CraftingTableBlock)(new EdCraftingTable.CraftingTableBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 12f).sound(SoundType.METAL).notSolid(),
     new AxisAlignedBB[]{
       Auxiliaries.getPixeledAABB(0,15,0, 16,16,16),
       Auxiliaries.getPixeledAABB(1, 0,1, 15,16,15)
@@ -669,7 +669,7 @@ public class ModContent
 
   public static final FurnaceBlock SMALL_LAB_FURNACE = (FurnaceBlock)(new FurnaceBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 12f).sound(SoundType.METAL).notSolid(),
     new AxisAlignedBB[]{
       Auxiliaries.getPixeledAABB(1,0,1, 15, 1,15),
       Auxiliaries.getPixeledAABB(0,1,1, 16,16,16),
@@ -678,7 +678,7 @@ public class ModContent
 
   public static final EdElectricalFurnace.ElectricalFurnaceBlock SMALL_ELECTRICAL_FURNACE = (EdElectricalFurnace.ElectricalFurnaceBlock)(new EdElectricalFurnace.ElectricalFurnaceBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 12f).sound(SoundType.METAL).notSolid(),
     new AxisAlignedBB[]{
       Auxiliaries.getPixeledAABB(0, 0,0, 16,11,16),
       Auxiliaries.getPixeledAABB(1,11,0, 15,12,16),
@@ -690,13 +690,13 @@ public class ModContent
 
   public static final EdDropper.DropperBlock FACTORY_DROPPER = (EdDropper.DropperBlock)(new EdDropper.DropperBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 12f).sound(SoundType.METAL).notSolid(),
     Auxiliaries.getPixeledAABB(0,0,1, 16,16,16)
   )).setRegistryName(new ResourceLocation(MODID, "factory_dropper"));
 
   public static final EdPlacer.PlacerBlock FACTORY_PLACER = (EdPlacer.PlacerBlock)(new EdPlacer.PlacerBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_FLIP_PLACEMENT_SHIFTCLICK|DecorBlock.CFG_OPPOSITE_PLACEMENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 12f).sound(SoundType.METAL).notSolid(),
     new AxisAlignedBB[]{
       Auxiliaries.getPixeledAABB(0,0,2, 16,16,16),
       Auxiliaries.getPixeledAABB( 0,0,0, 1,16, 2),
@@ -706,7 +706,7 @@ public class ModContent
 
   public static final EdBreaker.BreakerBlock SMALL_BLOCK_BREAKER = (EdBreaker.BreakerBlock)(new EdBreaker.BreakerBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT|DecorBlock.CFG_FLIP_PLACEMENT_SHIFTCLICK,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 12f).sound(SoundType.METAL).notSolid(),
     new AxisAlignedBB[]{
       Auxiliaries.getPixeledAABB(1,0,0, 15, 4, 7),
       Auxiliaries.getPixeledAABB(1,0,7, 15,12,16),
@@ -719,7 +719,7 @@ public class ModContent
 
   public static final EdHopper.HopperBlock FACTORY_HOPPER = (EdHopper.HopperBlock)(new EdHopper.HopperBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),()->{
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 12f).sound(SoundType.METAL).notSolid(),()->{
       final AxisAlignedBB[] down_aabbs = new AxisAlignedBB[]{
         Auxiliaries.getPixeledAABB( 5, 0, 5, 11, 1,11),
         Auxiliaries.getPixeledAABB( 4, 1, 4, 12, 7,12),
@@ -765,25 +765,25 @@ public class ModContent
 
   public static final EdWasteIncinerator.WasteIncineratorBlock SMALL_WASTE_INCINERATOR = (EdWasteIncinerator.WasteIncineratorBlock)(new EdWasteIncinerator.WasteIncineratorBlock(
     DecorBlock.CFG_DEFAULT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 12f).sound(SoundType.METAL),
     Auxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   )).setRegistryName(new ResourceLocation(MODID, "small_waste_incinerator"));
 
   public static final EdMineralSmelter.MineralSmelterBlock SMALL_MINERAL_SMELTER = (EdMineralSmelter.MineralSmelterBlock)(new EdMineralSmelter.MineralSmelterBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 12f).sound(SoundType.METAL).notSolid(),
     Auxiliaries.getPixeledAABB(1.1,0,1.1, 14.9,16,14.9)
   )).setRegistryName(new ResourceLocation(MODID, "small_mineral_smelter"));
 
   public static final EdFreezer.FreezerBlock SMALL_FREEZER = (EdFreezer.FreezerBlock)(new EdFreezer.FreezerBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 12f).sound(SoundType.METAL).notSolid(),
     Auxiliaries.getPixeledAABB(1.1,0,1.1, 14.9,16,14.9)
   )).setRegistryName(new ResourceLocation(MODID, "small_freezer"));
 
   public static final EdSolarPanel.SolarPanelBlock SMALL_SOLAR_PANEL = (EdSolarPanel.SolarPanelBlock)(new EdSolarPanel.SolarPanelBlock(
     DecorBlock.CFG_CUTOUT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 10f).sound(SoundType.METAL).notSolid(),
     new AxisAlignedBB[]{
       Auxiliaries.getPixeledAABB(0,0,0, 16,2,16),
       Auxiliaries.getPixeledAABB(6,1.5,3, 10,10.5,13),
@@ -792,7 +792,7 @@ public class ModContent
 
   public static final EdMilker.MilkerBlock SMALL_MILKING_MACHINE = (EdMilker.MilkerBlock)(new EdMilker.MilkerBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 10f).sound(SoundType.METAL).notSolid(),
     new AxisAlignedBB[]{
       Auxiliaries.getPixeledAABB( 1, 1,0, 15,14,10),
       Auxiliaries.getPixeledAABB( 0,14,0, 16,16,13),
@@ -804,7 +804,7 @@ public class ModContent
 
   public static final EdTreeCutter.TreeCutterBlock SMALL_TREE_CUTTER = (EdTreeCutter.TreeCutterBlock)(new EdTreeCutter.TreeCutterBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_FLIP_PLACEMENT_SHIFTCLICK,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 10f).sound(SoundType.METAL).notSolid(),
     new AxisAlignedBB[]{
       Auxiliaries.getPixeledAABB( 0,0, 0, 16,3,16),
       Auxiliaries.getPixeledAABB( 0,3, 0,  3,8,16),
@@ -818,7 +818,7 @@ public class ModContent
   public static final EdPipeValve.PipeValveBlock STRAIGHT_CHECK_VALVE = (EdPipeValve.PipeValveBlock)(new EdPipeValve.PipeValveBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT|DecorBlock.CFG_FLIP_PLACEMENT_SHIFTCLICK,
     EdPipeValve.CFG_CHECK_VALVE,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 8f).sound(SoundType.METAL).notSolid(),
     new AxisAlignedBB[]{
       Auxiliaries.getPixeledAABB(2,2, 0, 14,14, 2),
       Auxiliaries.getPixeledAABB(2,2,14, 14,14,16),
@@ -830,7 +830,7 @@ public class ModContent
   public static final EdPipeValve.PipeValveBlock STRAIGHT_REDSTONE_VALVE = (EdPipeValve.PipeValveBlock)(new EdPipeValve.PipeValveBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT,
     EdPipeValve.CFG_REDSTONE_CONTROLLED_VALVE,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 8f).sound(SoundType.METAL).notSolid(),
     new AxisAlignedBB[]{
       Auxiliaries.getPixeledAABB(2,2, 0, 14,14, 2),
       Auxiliaries.getPixeledAABB(2,2,14, 14,14,16),
@@ -842,7 +842,7 @@ public class ModContent
   public static final EdPipeValve.PipeValveBlock STRAIGHT_REDSTONE_ANALOG_VALVE = (EdPipeValve.PipeValveBlock)(new EdPipeValve.PipeValveBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_FACING_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT,
     EdPipeValve.CFG_REDSTONE_CONTROLLED_VALVE|EdPipeValve.CFG_ANALOG_VALVE,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 8f).sound(SoundType.METAL).notSolid(),
     new AxisAlignedBB[]{
       Auxiliaries.getPixeledAABB(2,2, 0, 14,14, 2),
       Auxiliaries.getPixeledAABB(2,2,14, 14,14,16),
@@ -853,7 +853,7 @@ public class ModContent
 
   public static final EdFluidBarrel.FluidBarrelBlock FLUID_BARREL = (EdFluidBarrel.FluidBarrelBlock)(new EdFluidBarrel.FluidBarrelBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 10f).sound(SoundType.METAL).notSolid(),
     new AxisAlignedBB[]{
       Auxiliaries.getPixeledAABB(2, 0,0, 14, 1,16),
       Auxiliaries.getPixeledAABB(1, 1,0, 15, 2,16),
@@ -865,7 +865,7 @@ public class ModContent
 
   public static final EdFluidFunnel.FluidFunnelBlock SMALL_FLUID_FUNNEL = (EdFluidFunnel.FluidFunnelBlock)(new EdFluidFunnel.FluidFunnelBlock(
     DecorBlock.CFG_CUTOUT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 15f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 10f).sound(SoundType.METAL).notSolid(),
     new AxisAlignedBB[]{
       Auxiliaries.getPixeledAABB(0, 0,0, 16,14,16),
       Auxiliaries.getPixeledAABB(1,14,1, 15,15,15),
@@ -875,7 +875,7 @@ public class ModContent
 
   public static final EdLabeledCrate.LabeledCrateBlock LABELED_CRATE = (EdLabeledCrate.LabeledCrateBlock)(new EdLabeledCrate.LabeledCrateBlock(
     DecorBlock.CFG_HORIZIONTAL|DecorBlock.CFG_LOOK_PLACEMENT|DecorBlock.CFG_OPPOSITE_PLACEMENT,
-    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(0.5f, 128f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.WOOD, MaterialColor.WOOD).hardnessAndResistance(0.5f, 32f).sound(SoundType.METAL).notSolid(),
     Auxiliaries.getPixeledAABB(0,0,0, 16,16,16)
   )).setRegistryName(new ResourceLocation(MODID, "labeled_crate"));
 
@@ -888,53 +888,53 @@ public class ModContent
 
   public static final EdSlabSliceBlock HALFSLAB_SHEETMETALIRON = (EdSlabSliceBlock)(new EdSlabSliceBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HARD_IE_DEPENDENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 10f).sound(SoundType.METAL).notSolid()
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 8f).sound(SoundType.METAL).notSolid()
   )).setRegistryName(new ResourceLocation(MODID, "halfslab_sheetmetal_iron"));
 
   public static final EdSlabSliceBlock HALFSLAB_SHEETMETALSTEEL = (EdSlabSliceBlock)(new EdSlabSliceBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HARD_IE_DEPENDENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 10f).sound(SoundType.METAL).notSolid()
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 8f).sound(SoundType.METAL).notSolid()
   )).setRegistryName(new ResourceLocation(MODID, "halfslab_sheetmetal_steel"));
 
   public static final EdSlabSliceBlock HALFSLAB_SHEETMETALCOPPER = (EdSlabSliceBlock)(new EdSlabSliceBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HARD_IE_DEPENDENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 10f).sound(SoundType.METAL).notSolid()
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 8f).sound(SoundType.METAL).notSolid()
   )).setRegistryName(new ResourceLocation(MODID, "halfslab_sheetmetal_copper"));
 
   public static final EdSlabSliceBlock HALFSLAB_SHEETMETALGOLD = (EdSlabSliceBlock)(new EdSlabSliceBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HARD_IE_DEPENDENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 10f).sound(SoundType.METAL).notSolid()
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 8f).sound(SoundType.METAL).notSolid()
   )).setRegistryName(new ResourceLocation(MODID, "halfslab_sheetmetal_gold"));
 
   public static final EdSlabSliceBlock HALFSLAB_SHEETMETALALUMINIUM = (EdSlabSliceBlock)(new EdSlabSliceBlock(
     DecorBlock.CFG_CUTOUT|DecorBlock.CFG_HARD_IE_DEPENDENT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 10f).sound(SoundType.METAL).notSolid()
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 8f).sound(SoundType.METAL).notSolid()
   )).setRegistryName(new ResourceLocation(MODID, "halfslab_sheetmetal_aluminum"));
 
   // -------------------------------------------------------------------------------------------------------------------
 
   public static final EdFenceBlock STEEL_MESH_FENCE = (EdFenceBlock)(new EdFenceBlock(
     DecorBlock.CFG_CUTOUT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 20f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 10f).sound(SoundType.METAL).notSolid(),
     1.5, 16, 0.25, 0, 16, 16
   )).setRegistryName(new ResourceLocation(MODID, "steel_mesh_fence"));
 
   public static final EdDoubleGateBlock STEEL_MESH_FENCE_GATE = (EdDoubleGateBlock)(new EdDoubleGateBlock(
     DecorBlock.CFG_CUTOUT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 20f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 10f).sound(SoundType.METAL).notSolid(),
     Auxiliaries.getPixeledAABB(0,0,6.5, 16,16,9.5)
   )).setRegistryName(new ResourceLocation(MODID, "steel_mesh_fence_gate"));
 
   public static final EdRailingBlock STEEL_RAILING = (EdRailingBlock)(new EdRailingBlock(
     DecorBlock.CFG_CUTOUT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 20f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(1f, 10f).sound(SoundType.METAL).notSolid(),
     Auxiliaries.getPixeledAABB(0,0,0,  0, 0,0),
     Auxiliaries.getPixeledAABB(0,0,0, 16,15.9,1)
   )).setRegistryName(new ResourceLocation(MODID, "steel_railing"));
 
   public static final EdCatwalkBlock STEEL_CATWALK = (EdCatwalkBlock)(new EdCatwalkBlock(
     DecorBlock.CFG_CUTOUT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 20f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 10f).sound(SoundType.METAL).notSolid(),
     Auxiliaries.getPixeledAABB(0,0,0, 16, 2,16),
     Auxiliaries.getPixeledAABB(0,0,0, 16,15.9, 1),
     STEEL_RAILING
@@ -942,7 +942,7 @@ public class ModContent
 
   public static final EdCatwalkTopAlignedBlock STEEL_CATWALK_TOP_ALIGNED = (EdCatwalkTopAlignedBlock)(new EdCatwalkTopAlignedBlock(
     DecorBlock.CFG_CUTOUT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 20f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 10f).sound(SoundType.METAL).notSolid(),
     new VoxelShape[]{
       VoxelShapes.create(Auxiliaries.getPixeledAABB(0,14,0, 16, 16,16)), // only base
       Auxiliaries.getUnionShape( // base with thick pole
@@ -966,7 +966,7 @@ public class ModContent
 
   public static final EdCatwalkStairsBlock STEEL_CATWALK_STAIRS = (EdCatwalkStairsBlock)(new EdCatwalkStairsBlock(
     DecorBlock.CFG_CUTOUT,
-    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 20f).sound(SoundType.METAL).notSolid(),
+    Block.Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2f, 10f).sound(SoundType.METAL).notSolid(),
     new AxisAlignedBB[] { // base
       Auxiliaries.getPixeledAABB( 1, 2, 8, 15,  4,  16),
       Auxiliaries.getPixeledAABB( 1,10, 0, 15, 12,   8),

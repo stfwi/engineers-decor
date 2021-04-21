@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
+    - v1.1.13-b2 [F] Fixed explosion resistance values for standard blocks.
+                 [F] Sandstone Ornated Clinker loot table fixed (ty czbuendel, Valen).
+
     - v1.1.13-b1 [F] Hotfix Electrical Furnace inventory import from Storage Drawers (issue #174, ty anto-fire/IchigoGames).
 
     - v1.1.12    [F] Chisels&Bits compatibility addressed (issue #172, ty rodg88).
