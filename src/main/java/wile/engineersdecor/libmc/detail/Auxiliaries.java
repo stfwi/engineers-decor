@@ -30,6 +30,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
+import wile.engineersdecor.ModConfig;
+
 import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -104,6 +106,9 @@ public class Auxiliaries
 
   public static final void logError(final String msg)
   { logger.error(msg); }
+
+  public static final void logDebug(final String msg)
+  { if(ModConfig.withDebug()) logger.warn(msg); }
 
   // -------------------------------------------------------------------------------------------------------------------
   // Localization, text formatting

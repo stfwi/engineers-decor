@@ -472,6 +472,7 @@ public class EdPlacer
       Block block = Block.getBlockFromItem(item);
       if(block == Blocks.AIR) {
         if(item != null) {
+          Auxiliaries.logDebug("Placer spit: No block for item " + item.getRegistryName().toString());
           return spit_out(facing); // Item not accepted
         } else {
           // try next slot
@@ -505,9 +506,11 @@ public class EdPlacer
       } else {
         final BlockState current_placement_pos_state = world.getBlockState(placement_pos);
         @SuppressWarnings("deprecation")
-        final boolean replacable = current_placement_pos_state.getMaterial().isReplaceable()
-          || current_placement_pos_state.getBlock().isReplaceable(block.getDefaultState(), Fluids.EMPTY)
-          || world.isAirBlock(placement_pos);
+        final boolean replacable = (current_placement_pos_state.getBlock().isReplaceable(current_placement_pos_state, Fluids.EMPTY)) && (
+          world.isAirBlock(placement_pos) ||
+          (current_placement_pos_state.getBlock() instanceof FlowingFluidBlock) ||
+          (current_placement_pos_state.getMaterial().isReplaceable() && (!current_placement_pos_state.getMaterial().isSolid()))
+        );
         if((!replacable) || (
           (!world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(placement_pos), (Entity e)->{
             if(e.canBeCollidedWith()) return true;
@@ -518,13 +521,11 @@ public class EdPlacer
             }
             return false;
           }).isEmpty())
-        )
-      ) {
-        block = Blocks.AIR;
-        no_space = true;
+        )) {
+          block = Blocks.AIR;
+          no_space = true;
+        }
       }
-      }
-
       // println("PLACE " + current_stack + "  --> " + block + " at " + placement_pos.subtract(pos) + "( item=" + item + ")");
       if(block != Blocks.AIR) {
         try {
@@ -542,6 +543,7 @@ public class EdPlacer
           }
           final BlockState placement_state = (use_context==null) ? (block.getDefaultState()) : (block.getStateForPlacement(use_context));
           if(placement_state == null) {
+            Auxiliaries.logDebug("Placer spit: No valid placement state for item " + item.getRegistryName().toString());
             return spit_out(facing);
           } else if((use_context!=null) && (item instanceof BlockItem)) {
             if(((BlockItem)item).tryPlace(use_context) != ActionResultType.FAIL) {
@@ -553,6 +555,7 @@ public class EdPlacer
                 if(stype != null) world.playSound(null, placement_pos, stype.getPlaceSound(), SoundCategory.BLOCKS, stype.getVolume()*0.6f, stype.getPitch());
               }
             } else {
+              Auxiliaries.logDebug("Placer spit: try-place and planting failed for item " + item.getRegistryName().toString());
               return spit_out(facing);
             }
           } else {

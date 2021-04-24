@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
+    - v1.1.13    [R] Release build v1.1.13.
+                 [A] Added debug logging feature.
+
     - v1.1.13-b2 [F] Fixed explosion resistance values for standard blocks.
                  [F] Sandstone Ornated Clinker loot table fixed (ty czbuendel, Valen).
 

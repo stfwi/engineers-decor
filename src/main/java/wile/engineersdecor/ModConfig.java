@@ -87,6 +87,7 @@ public class ModConfig
     public final ForgeConfigSpec.BooleanValue with_creative_mode_device_drops;
     public final ForgeConfigSpec.BooleanValue with_experimental;
     public final ForgeConfigSpec.BooleanValue with_config_logging;
+    public final ForgeConfigSpec.BooleanValue with_debug_logging;
 
     CommonConfig(ForgeConfigSpec.Builder builder)
     {
@@ -128,9 +129,13 @@ public class ModConfig
             " to relocate them with contents and settings.")
           .define("with_creative_mode_device_drops", false);
         with_config_logging = builder
-          .translation(MODID + ".config.with_config_logging")
+          .translation(MODID + ".config.with_debug_logging")
           .comment("Enable detailed logging of the config values and resulting calculations in each mod feature config.")
-          .define("with_config_logging", false);
+          .define("with_debug_logging", false);
+        with_debug_logging = builder
+          .translation(MODID + ".config.with_debug_logging")
+          .comment("Enable debug log messages for trouble shooting. Don't activate if not really needed, this can spam the log file.")
+          .define("with_debug_logging", false);
         builder.pop();
       }
     }
@@ -552,6 +557,9 @@ public class ModConfig
   public static boolean withoutRecipes()
   { return false; }
 
+  public static boolean withDebug()
+  { return with_debug_logs_; }
+
   //--------------------------------------------------------------------------------------------------------------------
   // Cache
   //--------------------------------------------------------------------------------------------------------------------
@@ -560,6 +568,7 @@ public class ModConfig
   private static HashSet<String> optouts_ = new HashSet<>();
   private static boolean with_experimental_features_ = false;
   private static boolean with_config_logging_ = false;
+  private static boolean with_debug_logs_ = false;
   public static boolean immersiveengineering_installed = false;
   public static boolean without_direct_slab_pickup = false;
   public static boolean with_creative_mode_device_drops = false;
@@ -713,7 +722,9 @@ public class ModConfig
   {
     with_config_logging_ = COMMON.with_config_logging.get();
     with_experimental_features_ = COMMON.with_experimental.get();
+    with_debug_logs_ = COMMON.with_debug_logging.get();
     if(with_experimental_features_) LOGGER.info("Config: EXPERIMENTAL FEATURES ENABLED.");
+    if(with_debug_logs_) LOGGER.info("Config: DEBUG LOGGING ENABLED, WARNING, THIS MAY SPAM THE LOG.");
     immersiveengineering_installed = Auxiliaries.isModLoaded("immersiveengineering");
     updateOptouts();
     if(!SERVER_CONFIG_SPEC.isLoaded()) return;
