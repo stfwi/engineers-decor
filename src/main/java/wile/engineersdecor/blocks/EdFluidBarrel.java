@@ -411,11 +411,12 @@ public class EdFluidBarrel
 
     @Override
     public boolean hasContainerItem(ItemStack stack)
-    { return true; }
+    { return (stack.getCount()==1) && (!getFluid(stack).isEmpty()); }
 
     @Override
     public ItemStack getContainerItem(ItemStack stack)
     {
+      if(stack.getCount()!=1) return ItemStack.EMPTY;
       FluidStack fs = getFluid(stack);
       if(fs.getAmount() > 1000) fs.shrink(1000); else fs = FluidStack.EMPTY;
       return setFluid(stack, fs);
