@@ -9,6 +9,7 @@
 package wile.engineersdecor.blocks;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.util.math.vector.Vector3d;
@@ -50,7 +51,6 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.fml.network.NetworkHooks;
-import com.mojang.blaze3d.systems.RenderSystem;
 import wile.engineersdecor.libmc.detail.TooltipDisplay;
 import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
 import wile.engineersdecor.libmc.client.ContainerGui;
@@ -537,11 +537,18 @@ public class EdPlacer
               placement_stack.setCount(1);
               ItemStack held = placer.getHeldItem(Hand.MAIN_HAND);
               placer.setHeldItem(Hand.MAIN_HAND, placement_stack);
-              use_context = new BlockItemUseContext(new ItemUseContext(placer, Hand.MAIN_HAND, new BlockRayTraceResult(new Vector3d(0.5,0,0.5), Direction.DOWN, placement_pos, false)));
+              List<Direction> directions = new ArrayList<>(Arrays.asList(Direction.UP, facing.getOpposite()));
+              for(Direction d:Direction.values()) if(!directions.contains(d)) directions.add(d);
+              for(Direction d:directions) {
+                Vector3d v = Vector3d.copyCentered(placement_pos).subtract(Vector3d.copy(d.getDirectionVec()));
+                use_context = new BlockItemUseContext(new ItemUseContext(placer, Hand.MAIN_HAND, new BlockRayTraceResult(v, d, placement_pos, false)));
+                if(block.getStateForPlacement(use_context) == null) use_context = null;
+                if(use_context!=null) break;
+              }
               placer.setHeldItem(Hand.MAIN_HAND, held);
             }
           }
-          final BlockState placement_state = (use_context==null) ? (block.getDefaultState()) : (block.getStateForPlacement(use_context));
+          BlockState placement_state = (use_context==null) ? (block.getDefaultState()) : (block.getStateForPlacement(use_context));
           if(placement_state == null) {
             Auxiliaries.logDebug("Placer spit: No valid placement state for item " + item.getRegistryName().toString());
             return spit_out(facing);

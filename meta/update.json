@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.16.4": {
+    "1.1.14-b2": "[F] Block Placer: Attempt circumventing external placement prevention.",
     "1.1.14-b1": "[F] Fixed Fluid Barrel container item definition (issue #178, thx Wormbo).",
     "1.1.13": "[R] Release build v1.1.13.\n[A] Added debug logging feature.",
     "1.1.13-b2": "[F] Fixed explosion resistance values for standard blocks.\n[F] Sandstone Ornated Clinker loot table fixed (ty czbuendel, Valen).",
@@ -37,6 +38,6 @@
   },
   "promos": {
     "1.16.4-recommended": "1.1.13",
-    "1.16.4-latest": "1.1.14-b1"
+    "1.16.4-latest": "1.1.14-b2"
   }
 }
