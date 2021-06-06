@@ -218,7 +218,6 @@
   "block.engineersdecor.small_block_breaker.status": "SOC: %1$s%% de %2$sRF§r | progreso: %3$s%%",
   "block.engineersdecor.small_electrical_furnace": "Pequeño horno eléctrico",
   "block.engineersdecor.small_electrical_furnace.help": "Pequeño horno de paso con carcasa metálica.\n Puede extraer objetos desde el lado de entrada,\n y ponerlos en el inventario en el lado de salida.\n Los objetos pueden introducirse o extraerse desde todos los lados utilizando tolvas.\n Implícitamente, evita los objetos que no pueden ser fundidos o cocinados.\n Es un poco más eficiente energéticamente y más rápido que un horno de piedra caliente.\n Los alimentadores requieren un poco de energía.\n Coloque una tolva en una ranura auxiliar para extraer automáticamente los objetos del inventario del lado de entrada.",
-  
   "block.engineersdecor.small_electrical_furnace.tooltips.auxslot": "Ranura auxiliar\n§7Coloque aquí una tolva para permitir la alimentación automática desde el lado de entrada.",
   "block.engineersdecor.small_electrical_furnace.tooltips.capacitors": "SOC %1$s%%, %2$sRF/t",
   "block.engineersdecor.small_electrical_furnace.tooltips.speed": "Selección de velocidad de fundición §7(OFF/I/II/III)",
