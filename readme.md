@@ -11,6 +11,8 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
+    - v1.1.14-b3 [A] Spanish language support added (PR#180, thx FrannDzs).
+
     - v1.1.14-b2 [F] Block Placer: Attempt circumventing external placement prevention.
 
     - v1.1.14-b1 [F] Fixed Fluid Barrel container item definition (issue #178, thx Wormbo).
