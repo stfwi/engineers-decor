@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.16.4": {
+    "1.1.14": "[R] Release build v1.1.14.",
     "1.1.14-b3": "[A] Spanish language support added (PR#180, thx FrannDzs).",
     "1.1.14-b2": "[F] Block Placer: Attempt circumventing external placement prevention.",
     "1.1.14-b1": "[F] Fixed Fluid Barrel container item definition (issue #178, thx Wormbo).",
@@ -38,7 +39,7 @@
     "1.1.2-b1": "[U] Ported to MC1.16.2."
   },
   "promos": {
-    "1.16.4-recommended": "1.1.13",
-    "1.16.4-latest": "1.1.14-b3"
+    "1.16.4-recommended": "1.1.14",
+    "1.16.4-latest": "1.1.14"
   }
 }
