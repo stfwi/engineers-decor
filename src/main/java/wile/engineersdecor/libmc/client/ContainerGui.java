@@ -24,14 +24,14 @@ public abstract class ContainerGui<T extends Container> extends ContainerScreen<
   {
     this.minecraft = minecraft;
     this.itemRenderer = minecraft.getItemRenderer();
-    this.font = minecraft.fontRenderer;
+    this.font = minecraft.font;
     this.width = width;
     this.height = height;
     java.util.function.Consumer<Widget> remove = (b) -> { buttons.remove(b); children.remove(b); };
     if((!canHaveDisturbingButtonsFromOtherMods()) || (!net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent.Pre(this, this.buttons, this::addButton, remove)))) {
       this.buttons.clear();
       this.children.clear();
-      this.setListener((IGuiEventListener)null);
+      this.setFocused((IGuiEventListener)null);
       this.init();
     }
     if(canHaveDisturbingButtonsFromOtherMods()) {

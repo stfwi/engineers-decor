@@ -233,8 +233,8 @@ public class Fluidics
    */
   public static @Nullable Tuple<Fluid, Integer> manualTrackedFluidHandlerInteraction(World world, BlockPos pos, @Nullable Direction side, PlayerEntity player, Hand hand)
   {
-    if(world.isRemote()) return null;
-    final ItemStack held = player.getHeldItem(hand);
+    if(world.isClientSide()) return null;
+    final ItemStack held = player.getItemInHand(hand);
     if(held.isEmpty()) return null;
     final IFluidHandler fh = FluidUtil.getFluidHandler(world, pos, side).orElse(null);
     if(fh==null) return null;
@@ -244,7 +244,7 @@ public class Fluidics
     if(!far.isSuccess()) far = FluidUtil.tryEmptyContainerAndStow(held, fh, ih, Integer.MAX_VALUE, player, true);
     if(!far.isSuccess()) return null;
     final ItemStack rstack = far.getResult().copy();
-    player.setHeldItem(hand, far.getResult());
+    player.setItemInHand(hand, far.getResult());
     final IFluidHandler fh_before = FluidUtil.getFluidHandler(held).orElse(null);
     final IFluidHandler fh_after = FluidUtil.getFluidHandler(rstack).orElse(null);
     if((fh_before==null) || (fh_after==null) || (fh_after.getTanks()!=fh_before.getTanks())) return null; // should not be, but y'never know.

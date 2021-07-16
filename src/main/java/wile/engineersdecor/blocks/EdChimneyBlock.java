@@ -31,20 +31,20 @@ import java.util.Random;
 
 public class EdChimneyBlock extends DecorBlock.Cutout implements IDecorBlock
 {
-  public static final IntegerProperty POWER = BlockStateProperties.POWER_0_15;
+  public static final IntegerProperty POWER = BlockStateProperties.POWER;
 
-  public EdChimneyBlock(long config, Block.Properties properties, AxisAlignedBB aabb)
+  public EdChimneyBlock(long config, AbstractBlock.Properties properties, AxisAlignedBB aabb)
   { super(config, properties, aabb); }
 
-  public EdChimneyBlock(long config, Block.Properties builder)
+  public EdChimneyBlock(long config, AbstractBlock.Properties builder)
   {
     this(config, builder, new AxisAlignedBB(0,0,0,1,1,1));
-    setDefaultState(super.getDefaultState().with(POWER, 0)); // no smoke in JEI
+    registerDefaultState(super.defaultBlockState().setValue(POWER, 0)); // no smoke in JEI
   }
 
   @Override
-  protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-  { super.fillStateContainer(builder); builder.add(POWER); }
+  protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+  { super.createBlockStateDefinition(builder); builder.add(POWER); }
 
   @Override
   @Nullable
@@ -52,21 +52,21 @@ public class EdChimneyBlock extends DecorBlock.Cutout implements IDecorBlock
   {
     BlockState state = super.getStateForPlacement(context);
     if(state==null) return state;
-    int p = context.getWorld().getRedstonePowerFromNeighbors(context.getPos());
-    return state.with(POWER, p==0 ? 5 : p);
+    int p = context.getLevel().getBestNeighborSignal(context.getClickedPos());
+    return state.setValue(POWER, p==0 ? 5 : p);
   }
 
   @Override
   @SuppressWarnings("deprecation")
-  public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
-  { world.setBlockState(pos, state.with(POWER, (state.get(POWER)+1) & 0xf), 1|2); return ActionResultType.func_233537_a_(world.isRemote()); }
+  public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+  { world.setBlock(pos, state.setValue(POWER, (state.getValue(POWER)+1) & 0xf), 1|2); return ActionResultType.sidedSuccess(world.isClientSide()); }
 
   @Override
   @SuppressWarnings("deprecation")
   public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean unused)
   {
-    int p = world.getRedstonePowerFromNeighbors(pos);
-    if(p != state.get(POWER)) world.setBlockState(pos, state.with(POWER, p), 2);
+    int p = world.getBestNeighborSignal(pos);
+    if(p != state.getValue(POWER)) world.setBlock(pos, state.setValue(POWER, p), 2);
   }
 
   @Override
@@ -78,7 +78,7 @@ public class EdChimneyBlock extends DecorBlock.Cutout implements IDecorBlock
   public void animateTick(BlockState state, World world, BlockPos pos, Random rnd)
   {
     if(state.getBlock() != this) return;
-    final int p = state.get(POWER);
+    final int p = state.getValue(POWER);
     if(p==0) return;
     int end = 1+rnd.nextInt(10) * p / 15;
     for(int i=0; i<end; ++i) {

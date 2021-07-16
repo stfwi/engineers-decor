@@ -10,10 +10,10 @@
 package wile.engineersdecor.blocks;
 
 import wile.engineersdecor.libmc.blocks.SlabSliceBlock;
-import net.minecraft.block.*;
+import net.minecraft.block.AbstractBlock;
 
 public class EdSlabSliceBlock extends SlabSliceBlock implements IDecorBlock
 {
-  public EdSlabSliceBlock(long config, Block.Properties builder)
+  public EdSlabSliceBlock(long config, AbstractBlock.Properties builder)
   { super(config, builder); }
 }

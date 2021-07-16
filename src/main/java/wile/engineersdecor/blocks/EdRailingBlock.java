@@ -8,7 +8,7 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,9 +29,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
 public class EdRailingBlock extends DecorBlock.HorizontalFourWayWaterLoggable implements IDecorBlock
 {
-  public EdRailingBlock(long config, Block.Properties properties, final AxisAlignedBB base_aabb, final AxisAlignedBB railing_aabb)
+  public EdRailingBlock(long config, AbstractBlock.Properties properties, final AxisAlignedBB base_aabb, final AxisAlignedBB railing_aabb)
   { super(config, properties, base_aabb, railing_aabb, 0); }
 
   @Override
@@ -40,40 +41,40 @@ public class EdRailingBlock extends DecorBlock.HorizontalFourWayWaterLoggable im
 
   @Override
   @SuppressWarnings("deprecation")
-  public boolean isReplaceable(BlockState state, BlockItemUseContext useContext)
-  { return (useContext.getItem().getItem() == asItem()) ? true : super.isReplaceable(state, useContext); }
+  public boolean canBeReplaced(BlockState state, BlockItemUseContext useContext)
+  { return (useContext.getItemInHand().getItem() == asItem()) ? true : super.canBeReplaced(state, useContext); }
 
   @Override
   @Nullable
   public BlockState getStateForPlacement(BlockItemUseContext context)
   {
-    if(context.getFace() != Direction.UP) return null;
-    BlockState state = context.getWorld().getBlockState(context.getPos());
+    if(context.getClickedFace() != Direction.UP) return null;
+    BlockState state = context.getLevel().getBlockState(context.getClickedPos());
     if(state.getBlock() != this) state = super.getStateForPlacement(context);
-    final Vector3d rhv = context.getHitVec().subtract(Vector3d.copyCentered(context.getPos()));
-    BooleanProperty side = getDirectionProperty(Direction.getFacingFromVector(rhv.x, 0, rhv.z));
-    return state.with(side, true);
+    final Vector3d rhv = context.getClickLocation().subtract(Vector3d.atCenterOf(context.getClickedPos()));
+    BooleanProperty side = getDirectionProperty(Direction.getNearest(rhv.x, 0, rhv.z));
+    return state.setValue(side, true);
   }
 
   @Override
   @SuppressWarnings("deprecation")
-  public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
+  public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
   {
-    if(player.getHeldItem(hand).getItem() != asItem()) return ActionResultType.PASS;
-    Direction face = hit.getFace();
-    if(!face.getAxis().isHorizontal()) return ActionResultType.func_233537_a_(world.isRemote());
-    final Vector3d rhv = hit.getHitVec().subtract(Vector3d.copyCentered(hit.getPos()));
-    if(rhv.mul(Vector3d.copy(face.getDirectionVec())).scale(2).lengthSquared() < 0.99) face = face.getOpposite(); // click on railing, not the outer side.
+    if(player.getItemInHand(hand).getItem() != asItem()) return ActionResultType.PASS;
+    Direction face = hit.getDirection();
+    if(!face.getAxis().isHorizontal()) return ActionResultType.sidedSuccess(world.isClientSide());
+    final Vector3d rhv = hit.getLocation().subtract(Vector3d.atCenterOf(hit.getBlockPos()));
+    if(rhv.multiply(Vector3d.atLowerCornerOf(face.getNormal())).scale(2).lengthSqr() < 0.99) face = face.getOpposite(); // click on railing, not the outer side.
     BooleanProperty railing = getDirectionProperty(face);
-    boolean add = (!state.get(railing));
-    state = state.with(railing, add);
-    if((!state.get(NORTH)) && (!state.get(EAST)) && (!state.get(SOUTH)) && (!state.get(WEST))) {
-      state = (world.getFluidState(pos).getFluid() == Fluids.WATER) ? Blocks.WATER.getDefaultState() : (Blocks.AIR.getDefaultState());
+    boolean add = (!state.getValue(railing));
+    state = state.setValue(railing, add);
+    if((!state.getValue(NORTH)) && (!state.getValue(EAST)) && (!state.getValue(SOUTH)) && (!state.getValue(WEST))) {
+      state = (world.getFluidState(pos).getType() == Fluids.WATER) ? Blocks.WATER.defaultBlockState() : (Blocks.AIR.defaultBlockState());
       EdCatwalkBlock.place_consume(state, world, pos, player, hand, add ? 1 : -1);
     } else {
       EdCatwalkBlock.place_consume(state, world, pos, player, hand, add ? 1 : -1);
     }
-    return ActionResultType.func_233537_a_(world.isRemote());
+    return ActionResultType.sidedSuccess(world.isClientSide());
   }
 
   // -- IDecorBlock
@@ -85,9 +86,9 @@ public class EdRailingBlock extends DecorBlock.HorizontalFourWayWaterLoggable im
   @Override
   public List<ItemStack> dropList(BlockState state, World world, @Nullable TileEntity te, boolean explosion)
   {
-    if(world.isRemote()) return Collections.singletonList(ItemStack.EMPTY);
+    if(world.isClientSide()) return Collections.singletonList(ItemStack.EMPTY);
     List<ItemStack> drops = new ArrayList<>();
-    int n = (state.get(NORTH)?1:0)+(state.get(EAST)?1:0)+(state.get(SOUTH)?1:0)+(state.get(WEST)?1:0);
+    int n = (state.getValue(NORTH)?1:0)+(state.getValue(EAST)?1:0)+(state.getValue(SOUTH)?1:0)+(state.getValue(WEST)?1:0);
     drops.add(new ItemStack(state.getBlock().asItem(), Math.max(n, 1)));
     return drops;
   }

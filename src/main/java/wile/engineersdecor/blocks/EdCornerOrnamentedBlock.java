@@ -8,6 +8,7 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
@@ -22,11 +23,12 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 
+
 public class EdCornerOrnamentedBlock extends DecorBlock.Directed
 {
   protected final HashSet<Block> compatible_blocks;
 
-  public EdCornerOrnamentedBlock(long config, Block.Properties properties, Block[] assigned_wall_blocks)
+  public EdCornerOrnamentedBlock(long config, AbstractBlock.Properties properties, Block[] assigned_wall_blocks)
   {
     super(config, properties, Auxiliaries.getPixeledAABB(0,0,0,16,16,16));
     compatible_blocks = new HashSet<Block>(Arrays.asList(assigned_wall_blocks));
@@ -36,25 +38,25 @@ public class EdCornerOrnamentedBlock extends DecorBlock.Directed
   @Nullable
   public BlockState getStateForPlacement(BlockItemUseContext context)
   {
-    final World world = context.getWorld();
-    final BlockPos pos = context.getPos();
+    final World world = context.getLevel();
+    final BlockPos pos = context.getClickedPos();
     // 1. Placement as below/above for corners, or placement adjacent horizontally if up/down facing.
     for(Direction adj: Direction.values()) {
-      BlockState state = world.getBlockState(pos.offset(adj));
+      BlockState state = world.getBlockState(pos.relative(adj));
       if(state.getBlock() != this) continue;
-      Direction facing = state.get(FACING);
+      Direction facing = state.getValue(FACING);
       if(facing.getAxis().isHorizontal() == (adj.getAxis().isVertical())) {
-        return super.getStateForPlacement(context).with(FACING, state.get(FACING));
+        return super.getStateForPlacement(context).setValue(FACING, state.getValue(FACING));
       }
     }
     // 2. By Player look angles with minimum horizontal diagonal deviation.
     {
       Direction facing = Direction.WEST;
-      final Vector2f look = context.getPlayer().getPitchYaw();
-      final Direction hit_face = context.getFace();
-      if((context.getFace()==Direction.DOWN) && (look.x <= -60)) {
+      final Vector2f look = context.getPlayer().getRotationVector();
+      final Direction hit_face = context.getClickedFace();
+      if((context.getClickedFace()==Direction.DOWN) && (look.x <= -60)) {
         facing = Direction.DOWN;
-      } else if((context.getFace()==Direction.UP) && (look.x >= 60)) {
+      } else if((context.getClickedFace()==Direction.UP) && (look.x >= 60)) {
         facing = Direction.UP;
       } else if(MathHelper.degreesDifferenceAbs(look.y, 45) <= 45) {
         facing = Direction.NORTH;
@@ -63,7 +65,7 @@ public class EdCornerOrnamentedBlock extends DecorBlock.Directed
       } else if(MathHelper.degreesDifferenceAbs(look.y, 45+180) <= 45) {
         facing = Direction.SOUTH;
       }
-      return super.getStateForPlacement(context).with(FACING, facing);
+      return super.getStateForPlacement(context).setValue(FACING, facing);
     }
   }
 }

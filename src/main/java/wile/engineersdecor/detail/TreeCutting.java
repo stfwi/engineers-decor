@@ -36,7 +36,7 @@ public class TreeCutting
   );
 
   private static boolean isLog(BlockState state)
-  { return (state.getBlock().isIn(BlockTags.LOGS)) || (state.getBlock().getTags().contains(new ResourceLocation("minecraft","logs"))); }
+  { return (state.getBlock().is(BlockTags.LOGS)) || (state.getBlock().getTags().contains(new ResourceLocation("minecraft","logs"))); }
 
   private static boolean isSameLog(BlockState a, BlockState b)
   { return (a.getBlock()==b.getBlock()); }
@@ -52,9 +52,9 @@ public class TreeCutting
   {
     ArrayList<BlockPos> to_decay = new ArrayList<BlockPos>();
     for(int y=-1; y<=1; ++y) {
-      final BlockPos layer = centerPos.add(0,y,0);
+      final BlockPos layer = centerPos.offset(0,y,0);
       for(Vector3i v:hoffsets) {
-        BlockPos pos = layer.add(v);
+        BlockPos pos = layer.offset(v);
         if((!checked.contains(pos)) && (world.getBlockState(pos).getBlock()==leaf_type_state.getBlock())) {
           checked.add(pos);
           to_decay.add(pos);
@@ -69,13 +69,13 @@ public class TreeCutting
 
   private static void breakBlock(World world, BlockPos pos)
   {
-    Block.spawnDrops(world.getBlockState(pos), world, pos);
-    world.setBlockState(pos, world.getFluidState(pos).getBlockState(), 1|2|8);
+    Block.dropResources(world.getBlockState(pos), world, pos);
+    world.setBlock(pos, world.getFluidState(pos).createLegacyBlock(), 1|2|8);
   }
 
   public static int chopTree(World world, BlockState broken_state, BlockPos startPos, int max_blocks_to_break, boolean without_target_block)
   {
-    if(world.isRemote || !isLog(broken_state)) return 0;
+    if(world.isClientSide || !isLog(broken_state)) return 0;
     final long ymin = startPos.getY();
     final long max_leaf_distance = 8;
     Set<BlockPos> checked = new HashSet<BlockPos>();
@@ -93,7 +93,7 @@ public class TreeCutting
       while(!queue.isEmpty() && (--steps_left >= 0)) {
         final BlockPos pos = queue.removeFirst();
         // Vertical search
-        final BlockPos uppos = pos.up();
+        final BlockPos uppos = pos.above();
         final BlockState upstate = world.getBlockState(uppos);
         if(!checked.contains(uppos)) {
           checked.add(uppos);
@@ -104,11 +104,11 @@ public class TreeCutting
             steps_left = 128;
           } else {
             boolean isleaf = isLeaves(upstate);
-            if(isleaf || world.isAirBlock(uppos) || (upstate.getBlock() instanceof VineBlock)) {
+            if(isleaf || world.isEmptyBlock(uppos) || (upstate.getBlock() instanceof VineBlock)) {
               if(isleaf) to_decay.add(uppos);
               // Up is air, check adjacent for diagonal up (e.g. Accacia)
               for(Vector3i v:hoffsets) {
-                final BlockPos p = uppos.add(v);
+                final BlockPos p = uppos.offset(v);
                 if(checked.contains(p)) continue;
                 checked.add(p);
                 final BlockState st = world.getBlockState(p);
@@ -125,10 +125,10 @@ public class TreeCutting
         }
         // Lateral search
         for(Vector3i v:hoffsets) {
-          final BlockPos p = pos.add(v);
+          final BlockPos p = pos.offset(v);
           if(checked.contains(p)) continue;
           checked.add(p);
-          if(p.distanceSq(new BlockPos(startPos.getX(), p.getY(), startPos.getZ())) > (cutlevel > 2 ? 256 : 9)) continue;
+          if(p.distSqr(new BlockPos(startPos.getX(), p.getY(), startPos.getZ())) > (cutlevel > 2 ? 256 : 9)) continue;
           final BlockState st = world.getBlockState(p);
           final Block bl = st.getBlock();
           if(isSameLog(st, broken_state)) {

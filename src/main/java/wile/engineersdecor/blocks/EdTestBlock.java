@@ -17,7 +17,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraft.block.Block;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.tileentity.TileEntity;
@@ -58,12 +58,12 @@ public class EdTestBlock
 
   public static class TestBlock extends DecorBlock.Directed implements Auxiliaries.IExperimentalFeature, IDecorBlock
   {
-    public TestBlock(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
+    public TestBlock(long config, AbstractBlock.Properties builder, final AxisAlignedBB unrotatedAABB)
     { super(config, builder, unrotatedAABB); }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext)
-    { return VoxelShapes.fullCube(); }
+    { return VoxelShapes.block(); }
 
     @Override
     public boolean hasTileEntity(BlockState state)
@@ -92,10 +92,10 @@ public class EdTestBlock
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
     {
-      if(world.isRemote()) return ActionResultType.SUCCESS;
-      TileEntity te = world.getTileEntity(pos);
+      if(world.isClientSide()) return ActionResultType.SUCCESS;
+      TileEntity te = world.getBlockEntity(pos);
       if(!(te instanceof TestTileEntity)) return ActionResultType.FAIL;
       return ((TestTileEntity)te).activated(player, hand, hit) ? ActionResultType.CONSUME : ActionResultType.PASS;
     }
@@ -147,9 +147,9 @@ public class EdTestBlock
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt)
+    public void load(BlockState state, CompoundNBT nbt)
     {
-      super.read(state, nbt);
+      super.load(state, nbt);
       tank_.load(nbt);
       battery_.load(nbt);
       rf_fed_avg = nbt.getInt("rf_fed_avg");
@@ -166,13 +166,13 @@ public class EdTestBlock
       items_received_total = nbt.getInt("items_received_total");
       items_inserted_total = nbt.getInt("items_inserted_total");
       if(nbt.contains("liq_fill_stack")) liq_fill_stack = FluidStack.loadFluidStackFromNBT(nbt.getCompound("liq_fill_stack"));
-      if(nbt.contains("insertion_item")) insertion_item = ItemStack.read(nbt.getCompound("insertion_item"));
+      if(nbt.contains("insertion_item")) insertion_item = ItemStack.of(nbt.getCompound("insertion_item"));
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt)
+    public CompoundNBT save(CompoundNBT nbt)
     {
-      super.write(nbt);
+      super.save(nbt);
       tank_.save(nbt);
       battery_.save(nbt);
       nbt.putInt("rf_fed_avg", rf_fed_avg);
@@ -189,7 +189,7 @@ public class EdTestBlock
       nbt.putInt("items_received_total", items_received_total);
       nbt.putInt("items_inserted_total", items_inserted_total);
       if(!liq_fill_stack.isEmpty()) nbt.put("liq_fill_stack", liq_fill_stack.writeToNBT(new CompoundNBT()));
-      if(!insertion_item.isEmpty()) nbt.put("insertion_item", insertion_item.write(new CompoundNBT()));
+      if(!insertion_item.isEmpty()) nbt.put("insertion_item", insertion_item.save(new CompoundNBT()));
       return nbt;
     }
 
@@ -211,7 +211,7 @@ public class EdTestBlock
 
     public boolean activated(PlayerEntity player, Hand hand, BlockRayTraceResult hit)
     {
-      final ItemStack held = player.getHeldItem(hand);
+      final ItemStack held = player.getItemInHand(hand);
       if(held.isEmpty()) {
         ArrayList<String> msgs = new ArrayList<>();
         if(rf_fed_avg > 0) msgs.add("-" + rf_fed_avg + "rf/t");
@@ -248,7 +248,7 @@ public class EdTestBlock
           if(rf_feed_setting == 0) rf_feed_setting = 0x10;
           Overlay.show(player, new StringTextComponent("RF feed rate: " + rf_feed_setting + "rf/t"), 1000);
         } else {
-          BlockState adjacent_state = world.getBlockState(pos.offset(block_facing));
+          BlockState adjacent_state = level.getBlockState(worldPosition.relative(block_facing));
           if(adjacent_state.getBlock()==Blocks.HOPPER || adjacent_state.getBlock()==ModContent.FACTORY_HOPPER) {
             insertion_item = held.copy();
             Overlay.show(player, new StringTextComponent("Insertion item: " + (insertion_item.getItem()==Items.LEVER ? "random" : insertion_item.toString()) + "/s"), 1000);
@@ -261,9 +261,9 @@ public class EdTestBlock
     }
 
     @Override
-    public void remove()
+    public void setRemoved()
     {
-      super.remove();
+      super.setRemoved();
       energy_handler_.invalidate();
       fluid_handler_.invalidate();
       item_handler_.invalidate();
@@ -283,39 +283,39 @@ public class EdTestBlock
     @Override
     public void tick()
     {
-      if(world.isRemote()) return;
-      block_facing = getBlockState().get(TestBlock.FACING);
-      paused = world.isBlockPowered(getPos());
+      if(level.isClientSide()) return;
+      block_facing = getBlockState().getValue(TestBlock.FACING);
+      paused = level.hasNeighborSignal(getBlockPos());
       if(!paused) {
         boolean dirty = false;
         {
-          int p = RfEnergy.feed(getWorld(), getPos().offset(block_facing), block_facing.getOpposite(), rf_feed_setting);
+          int p = RfEnergy.feed(getLevel(), getBlockPos().relative(block_facing), block_facing.getOpposite(), rf_feed_setting);
           rf_fed_acc += p;
           dirty |= p>0;
         }
         if(!liq_fill_stack.isEmpty()) {
-          int f = Fluidics.fill(getWorld(), getPos().offset(block_facing), block_facing.getOpposite(), liq_fill_stack);
+          int f = Fluidics.fill(getLevel(), getBlockPos().relative(block_facing), block_facing.getOpposite(), liq_fill_stack);
           liq_filled_acc += f;
           dirty |= f>0;
         }
         if(!inventory_.isEmpty()) {
-          int i = inventory_.getStackInSlot(0).getCount();
+          int i = inventory_.getItem(0).getCount();
           items_received_total += i;
-          inventory_.clear();
+          inventory_.clearContent();
           dirty |= i>0;
         }
         if((tick_timer == 1) && (!insertion_item.isEmpty())) {
-          BlockState adjacent_state = world.getBlockState(pos.offset(block_facing));
+          BlockState adjacent_state = level.getBlockState(worldPosition.relative(block_facing));
           ItemStack stack = (insertion_item.getItem()==Items.LEVER) ? getRandomItemstack() : insertion_item.copy();
           if(adjacent_state.getBlock()==Blocks.HOPPER || adjacent_state.getBlock()==ModContent.FACTORY_HOPPER) {
-            ItemStack remaining = Inventories.insert(getWorld(), getPos().offset(block_facing), block_facing.getOpposite(), stack, false);
+            ItemStack remaining = Inventories.insert(getLevel(), getBlockPos().relative(block_facing), block_facing.getOpposite(), stack, false);
             int n = stack.getCount() - remaining.getCount();
             items_inserted_total += n;
             dirty |= n>0;
           }
         }
         if(dirty) {
-          markDirty();
+          setChanged();
         }
       }
       if(--tick_timer <= 0) {

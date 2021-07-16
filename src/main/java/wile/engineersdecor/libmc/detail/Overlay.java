@@ -77,7 +77,7 @@ public class Overlay
     { deadline_ = 0; text_ = EMPTY_TEXT; }
 
     public static synchronized void show(ITextComponent s, int displayTimeoutMs)
-    { text_ = (s==null)?(EMPTY_TEXT):(s.deepCopy()); deadline_ = System.currentTimeMillis() + displayTimeoutMs; }
+    { text_ = (s==null)?(EMPTY_TEXT):(s.copy()); deadline_ = System.currentTimeMillis() + displayTimeoutMs; }
 
     public static synchronized void show(String s, int displayTimeoutMs)
     { text_ = ((s==null)||(s.isEmpty()))?(EMPTY_TEXT):(new StringTextComponent(s)); deadline_ = System.currentTimeMillis() + displayTimeoutMs; }
@@ -94,14 +94,14 @@ public class Overlay
       String txt = text().getString();
       if(txt.isEmpty()) return;
       MatrixStack mxs = event.getMatrixStack();
-      final MainWindow win = mc.getMainWindow();
-      final FontRenderer fr = mc.fontRenderer;
-      final boolean was_unicode = fr.getBidiFlag();
+      final MainWindow win = mc.getWindow();
+      final FontRenderer fr = mc.font;
+      final boolean was_unicode = fr.isBidirectional();
       try {
-        final int cx = win.getScaledWidth() / 2;
-        final int cy = (int)(win.getScaledHeight() * overlay_y_);
-        final int w = fr.getStringWidth(txt);
-        final int h = fr.FONT_HEIGHT;
+        final int cx = win.getGuiScaledWidth() / 2;
+        final int cy = (int)(win.getGuiScaledHeight() * overlay_y_);
+        final int w = fr.width(txt);
+        final int h = fr.lineHeight;
         fillGradient(mxs, cx-(w/2)-3, cy-2, cx+(w/2)+2, cy+h+2, 0xaa333333, 0xaa444444);
         hLine(mxs, cx-(w/2)-3, cx+(w/2)+2, cy-2, 0xaa333333);
         hLine(mxs, cx-(w/2)-3, cx+(w/2)+2, cy+h+2, 0xaa333333);

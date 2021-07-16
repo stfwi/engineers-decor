@@ -47,7 +47,7 @@ public class LootTableGen extends LootTableProvider
   { return Auxiliaries.modid() + " Loot Tables"; }
 
   @Override
-  public void act(DirectoryCache cache)
+  public void run(DirectoryCache cache)
   { save(cache, generate()); }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ public class LootTableGen extends LootTableProvider
         tables.put(
           block.getLootTable(),
           defaultBlockDrops(block.getRegistryName().getPath() + "_dlt", block)
-            .setParameterSet(LootParameterSets.BLOCK).build());
+            .setParamSet(LootParameterSets.BLOCK).build());
       } else {
         LOGGER.info("Dynamic drop list, skipping loot table for " + block.getRegistryName());
       }
@@ -76,7 +76,7 @@ public class LootTableGen extends LootTableProvider
     tables.forEach((rl,tab)->{
       Path fp = root.resolve("data/" + rl.getNamespace() + "/loot_tables/" + rl.getPath() + ".json");
       try {
-        IDataProvider.save(GSON, cache, LootTableManager.toJson(tab), fp);
+        IDataProvider.save(GSON, cache, LootTableManager.serialize(tab), fp);
       } catch(Exception e) {
         LOGGER.error("Failed to save loottable '"+fp+"', exception: " + e);
       }
@@ -85,12 +85,12 @@ public class LootTableGen extends LootTableProvider
 
   private LootTable.Builder defaultBlockDrops(String rl_path, Block block)
   {
-    ItemLootEntry.Builder iltb = ItemLootEntry.builder(block);
-    iltb.acceptFunction(CopyName.builder(Source.BLOCK_ENTITY));
-    if(block.hasTileEntity(block.getDefaultState())) {
-      iltb.acceptFunction(CopyNbt.builder(CopyNbt.Source.BLOCK_ENTITY));
+    StandaloneLootEntry.Builder iltb = ItemLootEntry.lootTableItem(block);
+    iltb.apply(CopyName.copyName(Source.BLOCK_ENTITY));
+    if(block.hasTileEntity(block.defaultBlockState())) {
+      iltb.apply(CopyNbt.copyData(CopyNbt.Source.BLOCK_ENTITY));
     }
-    return LootTable.builder().addLootPool(LootPool.builder().name(rl_path).rolls(ConstantRange.of(1)).addEntry(iltb));
+    return LootTable.lootTable().withPool(LootPool.lootPool().name(rl_path).setRolls(ConstantRange.exactly(1)).add(iltb));
   }
 
 }

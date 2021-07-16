@@ -17,10 +17,10 @@ import net.minecraft.block.*;
 
 public class EdFenceBlock extends StandardFenceBlock implements IDecorBlock
 {
-  public EdFenceBlock(long config, Block.Properties properties)
+  public EdFenceBlock(long config, AbstractBlock.Properties properties)
   { super(config, properties); }
 
-  public EdFenceBlock(long config, Block.Properties properties, double pole_width, double pole_height, double side_width, double side_min_y, double side_max_low_y, double side_max_tall_y)
+  public EdFenceBlock(long config, AbstractBlock.Properties properties, double pole_width, double pole_height, double side_width, double side_min_y, double side_max_low_y, double side_max_tall_y)
   { super(config, properties, pole_width, pole_height, side_width, side_min_y, side_max_low_y, side_max_tall_y); }
 
   @Override

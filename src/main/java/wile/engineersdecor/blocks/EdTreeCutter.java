@@ -11,6 +11,7 @@ package wile.engineersdecor.blocks;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.BooleanProperty;
@@ -42,6 +43,7 @@ import javax.annotation.Nullable;
 import java.util.Random;
 
 
+
 public class EdTreeCutter
 {
   public static void on_config(int boost_energy_per_tick, int cutting_time_seconds, boolean power_required)
@@ -55,17 +57,17 @@ public class EdTreeCutter
   {
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
-    public TreeCutterBlock(long config, Block.Properties builder, final AxisAlignedBB[] unrotatedAABB)
+    public TreeCutterBlock(long config, AbstractBlock.Properties builder, final AxisAlignedBB[] unrotatedAABB)
     { super(config, builder, unrotatedAABB); }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-    { super.fillStateContainer(builder); builder.add(ACTIVE); }
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    { super.createBlockStateDefinition(builder); builder.add(ACTIVE); }
 
     @Override
     @Nullable
     public BlockState getStateForPlacement(BlockItemUseContext context)
-    { return super.getStateForPlacement(context).with(ACTIVE, false); }
+    { return super.getStateForPlacement(context).setValue(ACTIVE, false); }
 
     @Override
     public boolean hasTileEntity(BlockState state)
@@ -79,12 +81,12 @@ public class EdTreeCutter
     @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, World world, BlockPos pos, Random rnd)
     {
-      if((state.getBlock()!=this) || (!state.get(ACTIVE))) return;
+      if((state.getBlock()!=this) || (!state.getValue(ACTIVE))) return;
       final double rv = rnd.nextDouble();
       if(rv > 0.8) return;
       final double x=0.5+pos.getX(), y=0.5+pos.getY(), z=0.5+pos.getZ();
       final double xc=0.52, xr=rnd.nextDouble()*0.4-0.2, yr=(y-0.3+rnd.nextDouble()*0.2);
-      switch(state.get(HORIZONTAL_FACING)) {
+      switch(state.getValue(HORIZONTAL_FACING)) {
         case WEST:  world.addParticle(ParticleTypes.SMOKE, x-xc, yr, z+xr, 0.0, 0.0, 0.0); break;
         case EAST:  world.addParticle(ParticleTypes.SMOKE, x+xc, yr, z+xr, 0.0, 0.0, 0.0); break;
         case NORTH: world.addParticle(ParticleTypes.SMOKE, x+xr, yr, z-xc, 0.0, 0.0, 0.0); break;
@@ -94,10 +96,10 @@ public class EdTreeCutter
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
     {
-      if(world.isRemote()) return ActionResultType.SUCCESS;
-      TileEntity te = world.getTileEntity(pos);
+      if(world.isClientSide()) return ActionResultType.SUCCESS;
+      TileEntity te = world.getBlockEntity(pos);
       if(te instanceof TreeCutterTileEntity) ((TreeCutterTileEntity)te).state_message(player);
       return ActionResultType.CONSUME;
     }
@@ -162,17 +164,17 @@ public class EdTreeCutter
     // TileEntity ------------------------------------------------------------------------------
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt)
-    { super.read(state, nbt); readnbt(nbt); }
+    public void load(BlockState state, CompoundNBT nbt)
+    { super.load(state, nbt); readnbt(nbt); }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt)
-    { super.write(nbt); writenbt(nbt); return nbt; }
+    public CompoundNBT save(CompoundNBT nbt)
+    { super.save(nbt); writenbt(nbt); return nbt; }
 
     @Override
-    public void remove()
+    public void setRemoved()
     {
-      super.remove();
+      super.setRemoved();
       energy_handler_.invalidate();
     }
 
@@ -223,21 +225,21 @@ public class EdTreeCutter
     public void tick()
     {
       if(--tick_timer_ > 0) return;
-      final BlockState device_state = world.getBlockState(pos);
+      final BlockState device_state = level.getBlockState(worldPosition);
       if(!(device_state.getBlock() instanceof TreeCutterBlock)) { tick_timer_ = TICK_INTERVAL; return; }
-      if(world.isRemote) {
-        if(!device_state.get(TreeCutterBlock.ACTIVE)) {
+      if(level.isClientSide) {
+        if(!device_state.getValue(TreeCutterBlock.ACTIVE)) {
           tick_timer_ = TICK_INTERVAL;
         } else {
           tick_timer_ = 1;
-          world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.BLOCK_WOOD_HIT, SoundCategory.BLOCKS, 0.1f, 1.0f, false);
+          level.playLocalSound(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), SoundEvents.WOOD_HIT, SoundCategory.BLOCKS, 0.1f, 1.0f, false);
         }
       } else {
         tick_timer_ = TICK_INTERVAL;
-        final BlockPos tree_pos = pos.offset(device_state.get(TreeCutterBlock.HORIZONTAL_FACING));
-        final BlockState tree_state = world.getBlockState(tree_pos);
-        if(!TreeCutting.canChop(tree_state) || (world.isBlockPowered(pos))) {
-          if(device_state.get(TreeCutterBlock.ACTIVE)) world.setBlockState(pos, device_state.with(TreeCutterBlock.ACTIVE, false), 1|2);
+        final BlockPos tree_pos = worldPosition.relative(device_state.getValue(TreeCutterBlock.HORIZONTAL_FACING));
+        final BlockState tree_state = level.getBlockState(tree_pos);
+        if(!TreeCutting.canChop(tree_state) || (level.hasNeighborSignal(worldPosition))) {
+          if(device_state.getValue(TreeCutterBlock.ACTIVE)) level.setBlock(worldPosition, device_state.setValue(TreeCutterBlock.ACTIVE, false), 1|2);
           proc_time_elapsed_ = 0;
           active_timer_ = 0;
           tick_timer_ = IDLE_TICK_INTERVAL;
@@ -259,12 +261,12 @@ public class EdTreeCutter
         }
         if(proc_time_elapsed_ >= cutting_time_needed) {
           proc_time_elapsed_ = 0;
-          TreeCutting.chopTree(world, tree_state, tree_pos, 512, false);
-          world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.BLOCK_WOOD_BREAK, SoundCategory.BLOCKS, 1.0f, 1.0f);
+          TreeCutting.chopTree(level, tree_state, tree_pos, 512, false);
+          level.playSound(null, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), SoundEvents.WOOD_BREAK, SoundCategory.BLOCKS, 1.0f, 1.0f);
           active = false;
         }
-        if(device_state.get(TreeCutterBlock.ACTIVE) != active) {
-          world.setBlockState(pos, device_state.with(TreeCutterBlock.ACTIVE, active), 1|2);
+        if(device_state.getValue(TreeCutterBlock.ACTIVE) != active) {
+          level.setBlock(worldPosition, device_state.setValue(TreeCutterBlock.ACTIVE, active), 1|2);
         }
       }
     }

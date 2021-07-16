@@ -41,6 +41,8 @@ import java.util.Collections;
 import java.util.List;
 
 
+import wile.engineersdecor.libmc.blocks.StandardBlocks.IStandardBlock.RenderTypeHint;
+
 public class SlabSliceBlock extends StandardBlocks.WaterLoggable implements StandardBlocks.IStandardBlock
 {
   public static final IntegerProperty PARTS = IntegerProperty.create("parts", 0, 14);
@@ -70,15 +72,15 @@ public class SlabSliceBlock extends StandardBlocks.WaterLoggable implements Stan
   public static void on_config(boolean direct_slab_pickup)
   { with_pickup = direct_slab_pickup; }
 
-  public SlabSliceBlock(long config, Block.Properties builder)
+  public SlabSliceBlock(long config, AbstractBlock.Properties builder)
   { super(config, builder); }
 
   protected boolean is_cube(BlockState state)
-  { return state.get(PARTS) == 0x07; }
+  { return state.getValue(PARTS) == 0x07; }
 
   @Override
   @OnlyIn(Dist.CLIENT)
-  public void addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
+  public void appendHoverText(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
   {
     if(!Auxiliaries.Tooltip.addInformation(stack, world, tooltip, flag, true)) return;
     if(with_pickup) Auxiliaries.Tooltip.addInformation("engineersdecor.tooltip.slabpickup", tooltip);
@@ -89,7 +91,7 @@ public class SlabSliceBlock extends StandardBlocks.WaterLoggable implements Stan
   { return (((config & StandardBlocks.CFG_TRANSLUCENT)!=0) ? (RenderTypeHint.TRANSLUCENT) : (RenderTypeHint.CUTOUT)); }
 
   @Override
-  public boolean canSpawnInBlock()
+  public boolean isPossibleToRespawnInThis()
   { return false; }
 
   @Override
@@ -98,52 +100,52 @@ public class SlabSliceBlock extends StandardBlocks.WaterLoggable implements Stan
 
   @Override
   public VoxelShape getShape(BlockState state, IBlockReader source, BlockPos pos, ISelectionContext selectionContext)
-  { return AABBs[state.get(PARTS) & 0xf]; }
+  { return AABBs[state.getValue(PARTS) & 0xf]; }
 
   @Override
   public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext)
   { return getShape(state, world, pos, selectionContext); }
 
   @Override
-  protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-  { super.fillStateContainer(builder); builder.add(PARTS); }
+  protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+  { super.createBlockStateDefinition(builder); builder.add(PARTS); }
 
   @Override
   @Nullable
   public BlockState getStateForPlacement(BlockItemUseContext context)
   {
-    final BlockPos pos = context.getPos();
-    BlockState state = context.getWorld().getBlockState(pos);
+    final BlockPos pos = context.getClickedPos();
+    BlockState state = context.getLevel().getBlockState(pos);
     if(state.getBlock() == this) {
-      int parts = state.get(PARTS);
+      int parts = state.getValue(PARTS);
       if(parts == 7) return null; // -> is already a full block.
       parts += (parts < 7) ? 1 : -1;
-      if(parts==7) state = state.with(WATERLOGGED, false);
-      return state.with(PARTS, parts);
+      if(parts==7) state = state.setValue(WATERLOGGED, false);
+      return state.setValue(PARTS, parts);
     } else {
-      final Direction face = context.getFace();
+      final Direction face = context.getClickedFace();
       final BlockState placement_state = super.getStateForPlacement(context); // fluid state
-      if(face == Direction.UP) return placement_state.with(PARTS, 0);
-      if(face == Direction.DOWN) return placement_state.with(PARTS, 14);
+      if(face == Direction.UP) return placement_state.setValue(PARTS, 0);
+      if(face == Direction.DOWN) return placement_state.setValue(PARTS, 14);
       if(!face.getAxis().isHorizontal()) return placement_state;
-      final boolean isupper = ((context.getHitVec().getY() - context.getPos().getY()) > 0.5);
-      return placement_state.with(PARTS, isupper ? 14 : 0);
+      final boolean isupper = ((context.getClickLocation().y() - context.getClickedPos().getY()) > 0.5);
+      return placement_state.setValue(PARTS, isupper ? 14 : 0);
     }
   }
 
   @Override
   @SuppressWarnings("deprecation")
-  public boolean isReplaceable(BlockState state, BlockItemUseContext context)
+  public boolean canBeReplaced(BlockState state, BlockItemUseContext context)
   {
-    if(context.getItem().getItem() != this.asItem()) return false;
+    if(context.getItemInHand().getItem() != this.asItem()) return false;
     if(!context.replacingClickedOnBlock()) return true;
-    final Direction face = context.getFace();
-    final int parts = state.get(PARTS);
+    final Direction face = context.getClickedFace();
+    final int parts = state.getValue(PARTS);
     if(parts == 7) return false;
     if((face == Direction.UP) && (parts < 7)) return true;
     if((face == Direction.DOWN) && (parts > 7)) return true;
     if(!face.getAxis().isHorizontal()) return false;
-    final boolean isupper = ((context.getHitVec().getY() - context.getPos().getY()) > 0.5);
+    final boolean isupper = ((context.getClickLocation().y() - context.getClickedPos().getY()) > 0.5);
     return isupper ? (parts==0) : (parts==1);
   }
 
@@ -163,30 +165,30 @@ public class SlabSliceBlock extends StandardBlocks.WaterLoggable implements Stan
 
   @Override
   public List<ItemStack> dropList(BlockState state, World world, TileEntity te, boolean explosion)
-  { return new ArrayList<ItemStack>(Collections.singletonList(new ItemStack(this.asItem(), num_slabs_contained_in_parts_[state.get(PARTS) & 0xf]))); }
+  { return new ArrayList<ItemStack>(Collections.singletonList(new ItemStack(this.asItem(), num_slabs_contained_in_parts_[state.getValue(PARTS) & 0xf]))); }
 
   @Override
   @SuppressWarnings("deprecation")
-  public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player)
+  public void attack(BlockState state, World world, BlockPos pos, PlayerEntity player)
   {
-    if((world.isRemote) || (!with_pickup)) return;
-    final ItemStack stack = player.getHeldItemMainhand();
-    if(stack.isEmpty() || (Block.getBlockFromItem(stack.getItem()) != this)) return;
+    if((world.isClientSide) || (!with_pickup)) return;
+    final ItemStack stack = player.getMainHandItem();
+    if(stack.isEmpty() || (Block.byItem(stack.getItem()) != this)) return;
     if(stack.getCount() >= stack.getMaxStackSize()) return;
-    Vector3d lv = player.getLookVec();
-    Direction facing = Direction.getFacingFromVector((float)lv.x, (float)lv.y, (float)lv.z);
+    Vector3d lv = player.getLookAngle();
+    Direction facing = Direction.getNearest((float)lv.x, (float)lv.y, (float)lv.z);
     if((facing != Direction.UP) && (facing != Direction.DOWN)) return;
     if(state.getBlock() != this) return;
-    int parts = state.get(PARTS);
+    int parts = state.getValue(PARTS);
     if((facing == Direction.DOWN) && (parts <= 7)) {
       if(parts > 0) {
-        world.setBlockState(pos, state.with(PARTS, parts-1), 3);
+        world.setBlock(pos, state.setValue(PARTS, parts-1), 3);
       } else {
         world.removeBlock(pos, false);
       }
     } else if((facing == Direction.UP) && (parts >= 7)) {
       if(parts < 14) {
-        world.setBlockState(pos, state.with(PARTS, parts + 1), 3);
+        world.setBlock(pos, state.setValue(PARTS, parts + 1), 3);
       } else {
         world.removeBlock(pos, false);
       }
@@ -195,18 +197,18 @@ public class SlabSliceBlock extends StandardBlocks.WaterLoggable implements Stan
     }
     if(!player.isCreative()) {
       stack.grow(1);
-      if(player.inventory != null) player.inventory.markDirty(); // @todo: check if inventory can actually be null
+      if(player.inventory != null) player.inventory.setChanged(); // @todo: check if inventory can actually be null
     }
     SoundType st = this.getSoundType(state, world, pos, null);
     world.playSound(player, pos, st.getPlaceSound(), SoundCategory.BLOCKS, (st.getVolume()+1f)/2.5f, 0.9f*st.getPitch());
   }
 
   @Override
-  public boolean receiveFluid(IWorld world, BlockPos pos, BlockState state, FluidState fluidState)
-  { return (state.get(PARTS)==14) ? false : super.receiveFluid(world, pos, state, fluidState); }
+  public boolean placeLiquid(IWorld world, BlockPos pos, BlockState state, FluidState fluidState)
+  { return (state.getValue(PARTS)==14) ? false : super.placeLiquid(world, pos, state, fluidState); }
 
   @Override
-  public boolean canContainFluid(IBlockReader world, BlockPos pos, BlockState state, Fluid fluid)
-  { return (state.get(PARTS)==14) ? false : super.canContainFluid(world, pos, state, fluid); }
+  public boolean canPlaceLiquid(IBlockReader world, BlockPos pos, BlockState state, Fluid fluid)
+  { return (state.getValue(PARTS)==14) ? false : super.canPlaceLiquid(world, pos, state, fluid); }
 
 }

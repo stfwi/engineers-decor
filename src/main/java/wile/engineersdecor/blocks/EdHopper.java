@@ -11,6 +11,7 @@ package wile.engineersdecor.blocks;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
@@ -62,6 +63,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
+
 public class EdHopper
 {
   public static void on_config()
@@ -73,22 +75,22 @@ public class EdHopper
 
   public static class HopperBlock extends DecorBlock.Directed implements IDecorBlock
   {
-    public HopperBlock(long config, Block.Properties builder, final Supplier<ArrayList<VoxelShape>> shape_supplier)
+    public HopperBlock(long config, AbstractBlock.Properties builder, final Supplier<ArrayList<VoxelShape>> shape_supplier)
     { super(config, builder, shape_supplier); }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)
-    { return VoxelShapes.fullCube(); }
+    { return VoxelShapes.block(); }
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean hasComparatorInputOverride(BlockState state)
+    public boolean hasAnalogOutputSignal(BlockState state)
     { return true; }
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos)
-    { return Container.calcRedstone(world.getTileEntity(pos)); }
+    public int getAnalogOutputSignal(BlockState blockState, World world, BlockPos pos)
+    { return Container.getRedstoneSignalFromBlockEntity(world.getBlockEntity(pos)); }
 
     @Override
     public boolean hasTileEntity(BlockState state)
@@ -100,17 +102,17 @@ public class EdHopper
     { return new HopperTileEntity(); }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
     {
-      if(world.isRemote) return;
+      if(world.isClientSide) return;
       if((!stack.hasTag()) || (!stack.getTag().contains("tedata"))) return;
       CompoundNBT te_nbt = stack.getTag().getCompound("tedata");
       if(te_nbt.isEmpty()) return;
-      final TileEntity te = world.getTileEntity(pos);
+      final TileEntity te = world.getBlockEntity(pos);
       if(!(te instanceof HopperTileEntity)) return;
       ((HopperTileEntity)te).readnbt(te_nbt, false);
       ((HopperTileEntity)te).reset_rtstate();
-      ((HopperTileEntity)te).markDirty();
+      ((HopperTileEntity)te).setChanged();
     }
 
     @Override
@@ -121,7 +123,7 @@ public class EdHopper
     public List<ItemStack> dropList(BlockState state, World world, final TileEntity te, boolean explosion)
     {
       final List<ItemStack> stacks = new ArrayList<ItemStack>();
-      if(world.isRemote) return stacks;
+      if(world.isClientSide) return stacks;
       if(!(te instanceof HopperTileEntity)) return stacks;
       if(!explosion) {
         ItemStack stack = new ItemStack(this, 1);
@@ -143,10 +145,10 @@ public class EdHopper
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
     {
-      if(world.isRemote()) return ActionResultType.SUCCESS;
-      final TileEntity te = world.getTileEntity(pos);
+      if(world.isClientSide()) return ActionResultType.SUCCESS;
+      final TileEntity te = world.getBlockEntity(pos);
       if(!(te instanceof HopperTileEntity)) return ActionResultType.FAIL;
       if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return ActionResultType.FAIL;
       NetworkHooks.openGui((ServerPlayerEntity)player,(INamedContainerProvider)te);
@@ -157,18 +159,18 @@ public class EdHopper
     @SuppressWarnings("deprecation")
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean unused)
     {
-      if(!(world instanceof World) || (((World) world).isRemote)) return;
-      TileEntity te = world.getTileEntity(pos);
+      if(!(world instanceof World) || (((World) world).isClientSide)) return;
+      TileEntity te = world.getBlockEntity(pos);
       if(!(te instanceof HopperTileEntity)) return;
       ((HopperTileEntity)te).block_updated();
     }
 
     @Override
-    public void onFallenUpon(World world, BlockPos pos, Entity entity, float fallDistance)
+    public void fallOn(World world, BlockPos pos, Entity entity, float fallDistance)
     {
-      super.onFallenUpon(world, pos, entity, fallDistance);
+      super.fallOn(world, pos, entity, fallDistance);
       if(!(entity instanceof ItemEntity)) return;
-      TileEntity te = world.getTileEntity(pos);
+      TileEntity te = world.getBlockEntity(pos);
       if(!(te instanceof HopperTileEntity)) return;
       ((HopperTileEntity)te).collection_timer_ = 0;
     }
@@ -179,17 +181,17 @@ public class EdHopper
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean canProvidePower(BlockState state)
+    public boolean isSignalSource(BlockState state)
     { return true; }
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
+    public int getSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
     { return 0; }
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
+    public int getDirectSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
     { return 0; }
 
   }
@@ -285,7 +287,7 @@ public class EdHopper
     public void block_updated()
     {
       // RS power check, both edges
-      boolean powered = world.isBlockPowered(pos);
+      boolean powered = level.hasNeighborSignal(worldPosition);
       if(block_power_signal_ != powered) block_power_updated_ = true;
       block_power_signal_ = powered;
       tick_timer_ = 1;
@@ -297,17 +299,17 @@ public class EdHopper
     // TileEntity --------------------------------------------------------------------------------------------
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt)
-    { super.read(state, nbt); readnbt(nbt, false); }
+    public void load(BlockState state, CompoundNBT nbt)
+    { super.load(state, nbt); readnbt(nbt, false); }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt)
-    { super.write(nbt); writenbt(nbt, false); return nbt; }
+    public CompoundNBT save(CompoundNBT nbt)
+    { super.save(nbt); writenbt(nbt, false); return nbt; }
 
     @Override
-    public void remove()
+    public void setRemoved()
     {
-      super.remove();
+      super.setRemoved();
       Arrays.stream(item_handlers).forEach(LazyOptional::invalidate);
     }
 
@@ -315,7 +317,7 @@ public class EdHopper
 
     @Override
     public ITextComponent getName()
-    { final Block block=getBlockState().getBlock(); return new StringTextComponent((block!=null) ? block.getTranslationKey() : "Factory Hopper"); }
+    { final Block block=getBlockState().getBlock(); return new StringTextComponent((block!=null) ? block.getDescriptionId() : "Factory Hopper"); }
 
     @Override
     public boolean hasCustomName()
@@ -333,12 +335,12 @@ public class EdHopper
 
     @Override
     public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player )
-    { return new HopperContainer(id, inventory, this, IWorldPosCallable.of(world, pos), fields); }
+    { return new HopperContainer(id, inventory, this, IWorldPosCallable.create(level, worldPosition), fields); }
 
     // IInventory --------------------------------------------------------------------------------------------
 
     @Override
-    public int getSizeInventory()
+    public int getContainerSize()
     { return stacks_.size(); }
 
     @Override
@@ -346,52 +348,52 @@ public class EdHopper
     { for(ItemStack stack: stacks_) { if(!stack.isEmpty()) return false; } return true; }
 
     @Override
-    public ItemStack getStackInSlot(int index)
+    public ItemStack getItem(int index)
     { return (index < stacks_.size()) ? stacks_.get(index) : ItemStack.EMPTY; }
 
     @Override
-    public ItemStack decrStackSize(int index, int count)
-    { return ItemStackHelper.getAndSplit(stacks_, index, count); }
+    public ItemStack removeItem(int index, int count)
+    { return ItemStackHelper.removeItem(stacks_, index, count); }
 
     @Override
-    public ItemStack removeStackFromSlot(int index)
-    { return ItemStackHelper.getAndRemove(stacks_, index); }
+    public ItemStack removeItemNoUpdate(int index)
+    { return ItemStackHelper.takeItem(stacks_, index); }
 
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack)
+    public void setItem(int index, ItemStack stack)
     {
       stacks_.set(index, stack);
-      if(stack.getCount() > getInventoryStackLimit()) stack.setCount(getInventoryStackLimit());
+      if(stack.getCount() > getMaxStackSize()) stack.setCount(getMaxStackSize());
       if(tick_timer_ > 8) tick_timer_ = 8;
-      markDirty();
+      setChanged();
     }
 
     @Override
-    public int getInventoryStackLimit()
+    public int getMaxStackSize()
     { return 64; }
 
     @Override
-    public void markDirty()
-    { super.markDirty(); }
+    public void setChanged()
+    { super.setChanged(); }
 
     @Override
-    public boolean isUsableByPlayer(PlayerEntity player)
-    { return ((getWorld().getTileEntity(getPos()) == this)) && (getPos().distanceSq(player.getPosition()) < 64); }
+    public boolean stillValid(PlayerEntity player)
+    { return ((getLevel().getBlockEntity(getBlockPos()) == this)) && (getBlockPos().distSqr(player.blockPosition()) < 64); }
 
     @Override
-    public void openInventory(PlayerEntity player)
+    public void startOpen(PlayerEntity player)
     {}
 
     @Override
-    public void closeInventory(PlayerEntity player)
-    { markDirty(); }
+    public void stopOpen(PlayerEntity player)
+    { setChanged(); }
 
     @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack)
+    public boolean canPlaceItem(int index, ItemStack stack)
     { return true; }
 
     @Override
-    public void clear()
+    public void clearContent()
     { stacks_.clear(); }
 
     // Fields -----------------------------------------------------------------------------------------------
@@ -442,11 +444,11 @@ public class EdHopper
     { return SIDED_INV_SLOTS; }
 
     @Override
-    public boolean canInsertItem(int index, ItemStack stack, Direction direction)
-    { return is_input_slot(index) && isItemValidForSlot(index, stack); }
+    public boolean canPlaceItemThroughFace(int index, ItemStack stack, Direction direction)
+    { return is_input_slot(index) && canPlaceItem(index, stack); }
 
     @Override
-    public boolean canExtractItem(int index, ItemStack stack, Direction direction)
+    public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction)
     { return (direction != Direction.UP); }
 
     // Capability export ------------------------------------------------------------------------------------
@@ -462,7 +464,7 @@ public class EdHopper
 
     private IItemHandler inventory_entity_handler(BlockPos where)
     {
-      final List<Entity> entities = world.getEntitiesInAABBexcluding(null, (new AxisAlignedBB(where)), EntityPredicates.HAS_INVENTORY);
+      final List<Entity> entities = level.getEntities((Entity)null, (new AxisAlignedBB(where)), EntityPredicates.CONTAINER_ENTITY_SELECTOR);
       return entities.isEmpty() ? null : Inventories.itemhandler(entities.get(0));
     }
 
@@ -512,19 +514,19 @@ public class EdHopper
         current_slot_index_ = 0;
         return false;
       }
-      final BlockPos facing_pos = pos.offset(facing);
+      final BlockPos facing_pos = worldPosition.relative(facing);
       IItemHandler ih = null;
       // Tile entity insertion check
       {
-        final TileEntity te = world.getTileEntity(facing_pos);
+        final TileEntity te = level.getBlockEntity(facing_pos);
         if(te != null) {
           ih = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing.getOpposite()).orElse(null);
           if(ih == null) { delay_timer_ = TICK_INTERVAL+2; return false; }
           if(te instanceof net.minecraft.tileentity.HopperTileEntity) {
-            Direction f = world.getBlockState(facing_pos).get(net.minecraft.block.HopperBlock.FACING);
+            Direction f = level.getBlockState(facing_pos).getValue(net.minecraft.block.HopperBlock.FACING);
             if(f==facing.getOpposite()) return false; // no back transfer
           } else if(te instanceof EdHopper.HopperTileEntity) {
-            Direction f = world.getBlockState(facing_pos).get(EdHopper.HopperBlock.FACING);
+            Direction f = level.getBlockState(facing_pos).getValue(EdHopper.HopperBlock.FACING);
             if(f==facing.getOpposite()) return false;
           }
         }
@@ -582,22 +584,22 @@ public class EdHopper
 
     private boolean try_inventory_extract(final IInventory inv)
     {
-      final int end = inv.getSizeInventory();
+      final int end = inv.getContainerSize();
       int n_to_extract = transfer_count_;
       for(int i=0; i<end; ++i) {
-        ItemStack stack = inv.getStackInSlot(i).copy();
+        ItemStack stack = inv.getItem(i).copy();
         if(stack.isEmpty()) continue;
         int n_accepted = try_insert_into_hopper(stack);
         if(n_accepted > 0) {
           stack.shrink(n_accepted);
           n_to_extract -= n_accepted;
           if(stack.isEmpty()) stack = ItemStack.EMPTY;
-          inv.setInventorySlotContents(i, stack);
+          inv.setItem(i, stack);
           if(n_to_extract <= 0) break;
         }
       }
       if(n_to_extract < transfer_count_) {
-        inv.markDirty();
+        inv.setChanged();
         return true;
       } else {
         return false;
@@ -609,19 +611,19 @@ public class EdHopper
       AxisAlignedBB collection_volume;
       Vector3d rpos;
       if(facing==Direction.UP)  {
-        rpos = new Vector3d(0.5+pos.getX(),1.5+pos.getY(),0.5+pos.getZ());
-        collection_volume = (new AxisAlignedBB(pos.up())).grow(0.1+collection_range_, 0.6, 0.1+collection_range_);
+        rpos = new Vector3d(0.5+worldPosition.getX(),1.5+worldPosition.getY(),0.5+worldPosition.getZ());
+        collection_volume = (new AxisAlignedBB(worldPosition.above())).inflate(0.1+collection_range_, 0.6, 0.1+collection_range_);
       } else {
-        rpos = new Vector3d(0.5+pos.getX(),-1.5+pos.getY(),0.5+pos.getZ());
-        collection_volume = (new AxisAlignedBB(pos.down(2))).grow(0.1+collection_range_, 1, 0.1+collection_range_);
+        rpos = new Vector3d(0.5+worldPosition.getX(),-1.5+worldPosition.getY(),0.5+worldPosition.getZ());
+        collection_volume = (new AxisAlignedBB(worldPosition.below(2))).inflate(0.1+collection_range_, 1, 0.1+collection_range_);
       }
-      final List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, collection_volume, e->(e.isAlive() && e.isOnGround()));
+      final List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, collection_volume, e->(e.isAlive() && e.isOnGround()));
       if(items.size() <= 0) return false;
       final int max_to_collect = 3;
       int n_collected = 0;
       for(ItemEntity ie:items) {
-        boolean is_direct_collection_tange = ie.getDistanceSq(rpos)<0.7;
-        if(!is_direct_collection_tange && (ie.cannotPickup())) continue;
+        boolean is_direct_collection_tange = ie.distanceToSqr(rpos)<0.7;
+        if(!is_direct_collection_tange && (ie.hasPickUpDelay())) continue;
         ItemStack stack = ie.getItem();
         if(stack.isEmpty()) continue;
         int n_accepted = try_insert_into_hopper(stack);
@@ -643,8 +645,8 @@ public class EdHopper
     public void tick()
     {
       // Tick cycle pre-conditions
-      if(world.isRemote) return;
-      if((delay_timer_ > 0) && ((--delay_timer_) == 0)) markDirty();
+      if(level.isClientSide) return;
+      if((delay_timer_ > 0) && ((--delay_timer_) == 0)) setChanged();
       if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
       // Cycle init
@@ -652,12 +654,12 @@ public class EdHopper
       final boolean rssignal = ((logic_ & LOGIC_IGNORE_EXT)!=0) || ((logic_ & LOGIC_INVERTED)!=0)==(!block_power_signal_);
       final boolean pulse_mode = ((logic_ & (LOGIC_CONTINUOUS|LOGIC_IGNORE_EXT))==0);
       boolean trigger = ((logic_ & LOGIC_IGNORE_EXT)!=0) || (rssignal && ((block_power_updated_) || (!pulse_mode)));
-      final BlockState state = world.getBlockState(pos);
+      final BlockState state = level.getBlockState(worldPosition);
       if(!(state.getBlock() instanceof HopperBlock)) { block_power_signal_= false; return; }
-      final Direction hopper_facing = state.get(HopperBlock.FACING);
+      final Direction hopper_facing = state.getValue(HopperBlock.FACING);
       // Trigger edge detection for next cycle
       {
-        boolean tr = world.isBlockPowered(pos);
+        boolean tr = level.hasNeighborSignal(worldPosition);
         block_power_updated_ = (block_power_signal_ != tr);
         block_power_signal_ = tr;
         if(block_power_updated_) dirty = true;
@@ -665,7 +667,7 @@ public class EdHopper
       // Collection
       if(rssignal || pulse_mode) {
         Direction hopper_input_facing = (hopper_facing==Direction.UP) ? Direction.DOWN : Direction.UP;
-        TileEntity te = world.getTileEntity(pos.offset(hopper_input_facing));
+        TileEntity te = level.getBlockEntity(worldPosition.relative(hopper_input_facing));
         IItemHandler ih = (te==null) ? (null) : (te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, hopper_input_facing.getOpposite()).orElse(null));
         if((ih != null) || (te instanceof ISidedInventory)) {
           // Tile Entity pulling
@@ -676,7 +678,7 @@ public class EdHopper
           }
         }
         if(ih==null) {
-          ih = inventory_entity_handler(pos.offset(hopper_input_facing));
+          ih = inventory_entity_handler(worldPosition.relative(hopper_input_facing));
           if((ih!=null) && (try_item_handler_extract(ih))) dirty = true;
         }
         if((ih==null) && (collection_timer_ -= TICK_INTERVAL) <= 0) {
@@ -690,7 +692,7 @@ public class EdHopper
         delay_timer_ = PERIOD_OFFSET + transfer_period_ * 2;
         if(try_insert(hopper_facing)) dirty = true;
       }
-      if(dirty) markDirty();
+      if(dirty) setChanged();
       if(trigger && (tick_timer_ > TICK_INTERVAL)) tick_timer_ = TICK_INTERVAL;
     }
   }
@@ -718,7 +720,7 @@ public class EdHopper
     public final int field(int index) { return fields_.get(index); }
 
     public HopperContainer(int cid, PlayerInventory player_inventory)
-    { this(cid, player_inventory, new Inventory(HopperTileEntity.NUM_OF_SLOTS), IWorldPosCallable.DUMMY, new IntArray(HopperTileEntity.NUM_OF_FIELDS)); }
+    { this(cid, player_inventory, new Inventory(HopperTileEntity.NUM_OF_SLOTS), IWorldPosCallable.NULL, new IntArray(HopperTileEntity.NUM_OF_FIELDS)); }
 
     private HopperContainer(int cid, PlayerInventory player_inventory, IInventory block_inventory, IWorldPosCallable wpc, IIntArray fields)
     {
@@ -746,34 +748,34 @@ public class EdHopper
           addSlot(new Slot(player_inventory, x+y*9+9, 8+x*18, 71+y*18)); // player slots: 9..35
         }
       }
-      this.trackIntArray(fields_); // === Add reference holders
+      this.addDataSlots(fields_); // === Add reference holders
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity player)
-    { return inventory_.isUsableByPlayer(player); }
+    public boolean stillValid(PlayerEntity player)
+    { return inventory_.stillValid(player); }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity player, int index)
+    public ItemStack quickMoveStack(PlayerEntity player, int index)
     {
       Slot slot = getSlot(index);
-      if((slot==null) || (!slot.getHasStack())) return ItemStack.EMPTY;
-      ItemStack slot_stack = slot.getStack();
+      if((slot==null) || (!slot.hasItem())) return ItemStack.EMPTY;
+      ItemStack slot_stack = slot.getItem();
       ItemStack transferred = slot_stack.copy();
       if((index>=0) && (index<PLAYER_INV_START_SLOTNO)) {
         // Device slots
-        if(!mergeItemStack(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+36, false)) return ItemStack.EMPTY;
+        if(!moveItemStackTo(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+36, false)) return ItemStack.EMPTY;
       } else if((index >= PLAYER_INV_START_SLOTNO) && (index <= PLAYER_INV_START_SLOTNO+36)) {
         // Player slot
-        if(!mergeItemStack(slot_stack, 0, HopperTileEntity.NUM_OF_SLOTS, false)) return ItemStack.EMPTY;
+        if(!moveItemStackTo(slot_stack, 0, HopperTileEntity.NUM_OF_SLOTS, false)) return ItemStack.EMPTY;
       } else {
         // invalid slot
         return ItemStack.EMPTY;
       }
       if(slot_stack.isEmpty()) {
-        slot.putStack(ItemStack.EMPTY);
+        slot.set(ItemStack.EMPTY);
       } else {
-        slot.onSlotChanged();
+        slot.setChanged();
       }
       if(slot_stack.getCount() == transferred.getCount()) return ItemStack.EMPTY;
       slot.onTake(player, slot_stack);
@@ -784,21 +786,21 @@ public class EdHopper
 
     @OnlyIn(Dist.CLIENT)
     public void onGuiAction(CompoundNBT nbt)
-    { Networking.PacketContainerSyncClientToServer.sendToServer(windowId, nbt); }
+    { Networking.PacketContainerSyncClientToServer.sendToServer(containerId, nbt); }
 
     @OnlyIn(Dist.CLIENT)
     public void onGuiAction(String key, int value)
     {
       CompoundNBT nbt = new CompoundNBT();
       nbt.putInt(key, value);
-      Networking.PacketContainerSyncClientToServer.sendToServer(windowId, nbt);
+      Networking.PacketContainerSyncClientToServer.sendToServer(containerId, nbt);
     }
 
     @OnlyIn(Dist.CLIENT)
     public void onGuiAction(String message, CompoundNBT nbt)
     {
       nbt.putString("action", message);
-      Networking.PacketContainerSyncClientToServer.sendToServer(windowId, nbt);
+      Networking.PacketContainerSyncClientToServer.sendToServer(containerId, nbt);
     }
 
     @Override
@@ -820,20 +822,20 @@ public class EdHopper
         final int slotId = nbt.contains("slot") ? nbt.getInt("slot") : -1;
         switch(nbt.getString("action")) {
           case QUICK_MOVE_ALL: {
-            if((slotId >= STORAGE_SLOT_BEGIN) && (slotId < STORAGE_SLOT_END) && (getSlot(slotId).getHasStack())) {
+            if((slotId >= STORAGE_SLOT_BEGIN) && (slotId < STORAGE_SLOT_END) && (getSlot(slotId).hasItem())) {
               changed = block_storage_range_.move(getSlot(slotId).getSlotIndex(), player_inventory_range_, true, false, true, true);
-            } else if((slotId >= PLAYER_SLOT_BEGIN) && (slotId < PLAYER_SLOT_END) && (getSlot(slotId).getHasStack())) {
+            } else if((slotId >= PLAYER_SLOT_BEGIN) && (slotId < PLAYER_SLOT_END) && (getSlot(slotId).hasItem())) {
               changed = player_inventory_range_.move(getSlot(slotId).getSlotIndex(), block_storage_range_, true, false, false, true);
             }
           } break;
         }
         if(changed) {
-          inventory_.markDirty();
-          player.inventory.markDirty();
-          detectAndSendChanges();
+          inventory_.setChanged();
+          player.inventory.setChanged();
+          broadcastChanges();
         }
       }
-      te.markDirty();
+      te.setChanged();
     }
   }
 
@@ -855,7 +857,7 @@ public class EdHopper
     {
       super.init();
       {
-        final String prefix = ModContent.FACTORY_HOPPER.getTranslationKey() + ".tooltips.";
+        final String prefix = ModContent.FACTORY_HOPPER.getDescriptionId() + ".tooltips.";
         final int x0 = getGuiLeft(), y0 = getGuiTop();
         tooltip_.init(
           new TipRange(x0+148, y0+22,  3,  3, new TranslationTextComponent(prefix + "delayindicator")),
@@ -874,23 +876,23 @@ public class EdHopper
     {
       renderBackground(mx);
       super.render(mx, mouseX, mouseY, partialTicks);
-      if(!tooltip_.render(mx, this, mouseX, mouseY)) renderHoveredTooltip(mx, mouseX, mouseY);
+      if(!tooltip_.render(mx, this, mouseX, mouseY)) renderTooltip(mx, mouseX, mouseY);
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(MatrixStack mx, int x, int y)
+    protected void renderLabels(MatrixStack mx, int x, int y)
     {}
 
     @Override
-    protected void handleMouseClick(Slot slot, int slotId, int button, ClickType type)
+    protected void slotClicked(Slot slot, int slotId, int button, ClickType type)
     {
       tooltip_.resetTimer();
-      if((type == ClickType.QUICK_MOVE) && (slot!=null) && slot.getHasStack() && Auxiliaries.isShiftDown() && Auxiliaries.isCtrlDown()) {
+      if((type == ClickType.QUICK_MOVE) && (slot!=null) && slot.hasItem() && Auxiliaries.isShiftDown() && Auxiliaries.isCtrlDown()) {
         CompoundNBT nbt = new CompoundNBT();
         nbt.putInt("slot", slotId);
-        container.onGuiAction(HopperContainer.QUICK_MOVE_ALL, nbt);
+        menu.onGuiAction(HopperContainer.QUICK_MOVE_ALL, nbt);
       } else {
-        super.handleMouseClick(slot, slotId, button, type);
+        super.slotClicked(slot, slotId, button, type);
       }
     }
 
@@ -898,11 +900,11 @@ public class EdHopper
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
       tooltip_.resetTimer();
-      HopperContainer container = (HopperContainer)getContainer();
+      HopperContainer container = (HopperContainer)getMenu();
       int mx = (int)(mouseX - getGuiLeft() + .5), my = (int)(mouseY - getGuiTop() + .5);
-      if((!isPointInRegion(126, 1, 49, 60, mouseX, mouseY))) {
+      if((!isHovering(126, 1, 49, 60, mouseX, mouseY))) {
         return super.mouseClicked(mouseX, mouseY, mouseButton);
-      } else if(isPointInRegion(128, 9, 44, 10, mouseX, mouseY)) {
+      } else if(isHovering(128, 9, 44, 10, mouseX, mouseY)) {
         int range = (mx-133);
         if(range < -1) {
           range = container.field(0) - 1; // -
@@ -913,7 +915,7 @@ public class EdHopper
           range = MathHelper.clamp(range, 0, HopperTileEntity.MAX_COLLECTION_RANGE);
         }
         container.onGuiAction("range", range);
-      } else if(isPointInRegion(128, 21, 44, 10, mouseX, mouseY)) {
+      } else if(isHovering(128, 21, 44, 10, mouseX, mouseY)) {
         int period = (mx-133);
         if(period < -1) {
           period = container.field(3) - 3; // -
@@ -924,7 +926,7 @@ public class EdHopper
         }
         period = MathHelper.clamp(period, 0, 100);
         container.onGuiAction("period", period);
-      } else if(isPointInRegion(128, 34, 44, 10, mouseX, mouseY)) {
+      } else if(isHovering(128, 34, 44, 10, mouseX, mouseY)) {
         int ndrop = (mx-134);
         if(ndrop < -1) {
           ndrop = container.field(1) - 1; // -
@@ -934,9 +936,9 @@ public class EdHopper
           ndrop = MathHelper.clamp(1+ndrop, 1, HopperTileEntity.MAX_TRANSFER_COUNT); // slider
         }
         container.onGuiAction("xsize", ndrop);
-      } else if(isPointInRegion(133, 49, 9, 9, mouseX, mouseY)) {
+      } else if(isHovering(133, 49, 9, 9, mouseX, mouseY)) {
         container.onGuiAction("manual_trigger", 1);
-      } else if(isPointInRegion(145, 49, 9, 9, mouseX, mouseY)) {
+      } else if(isHovering(145, 49, 9, 9, mouseX, mouseY)) {
         final int mask = (HopperTileEntity.LOGIC_INVERTED|HopperTileEntity.LOGIC_IGNORE_EXT|HopperTileEntity.LOGIC_NOT_INVERTED);
         int logic = (container.field(2) & mask);
         switch(logic) {
@@ -946,7 +948,7 @@ public class EdHopper
           default: logic = HopperTileEntity.LOGIC_IGNORE_EXT;
         }
         container.onGuiAction("logic", (container.field(2) & (~mask)) | logic);
-      } else if(isPointInRegion(159, 49, 7, 9, mouseX, mouseY)) {
+      } else if(isHovering(159, 49, 7, 9, mouseX, mouseY)) {
         container.onGuiAction("logic", container.field(2) ^ HopperTileEntity.LOGIC_CONTINUOUS);
       }
       return true;
@@ -954,14 +956,14 @@ public class EdHopper
 
     @Override
     @SuppressWarnings("deprecation")
-    protected void drawGuiContainerBackgroundLayer(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
+    protected void renderBg(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
     {
       RenderSystem.enableBlend();
       RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-      getMinecraft().getTextureManager().bindTexture(new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/factory_hopper_gui.png"));
+      getMinecraft().getTextureManager().bind(new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/factory_hopper_gui.png"));
       final int x0=getGuiLeft(), y0=getGuiTop(), w=getXSize(), h=getYSize();
       blit(mx, x0, y0, 0, 0, w, h);
-      HopperContainer container = (HopperContainer)getContainer();
+      HopperContainer container = (HopperContainer)getMenu();
       // active slot
       {
         int slot_index = container.field(6);

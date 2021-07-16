@@ -53,7 +53,7 @@ public class EdLadderBlock extends LadderBlock implements IDecorBlock
     ModConfig.log("Config ladder: without-speed-boost:" + without_speed_boost_);
   }
 
-  public EdLadderBlock(long config, Block.Properties builder)
+  public EdLadderBlock(long config, AbstractBlock.Properties builder)
   { super(builder); }
 
   @Override
@@ -62,12 +62,12 @@ public class EdLadderBlock extends LadderBlock implements IDecorBlock
 
   @Override
   @OnlyIn(Dist.CLIENT)
-  public void addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
+  public void appendHoverText(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
   { Auxiliaries.Tooltip.addInformation(stack, world, tooltip, flag, true); }
 
   public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos)
   {
-    switch ((Direction)state.get(FACING)) {
+    switch ((Direction)state.getValue(FACING)) {
       case NORTH: return EDLADDER_NORTH_AABB;
       case SOUTH: return EDLADDER_SOUTH_AABB;
       case WEST: return EDLADDER_WEST_AABB;
@@ -76,7 +76,7 @@ public class EdLadderBlock extends LadderBlock implements IDecorBlock
   }
 
   @Override
-  public boolean canSpawnInBlock()
+  public boolean isPossibleToRespawnInThis()
   { return false; }
 
   @Override
@@ -85,7 +85,7 @@ public class EdLadderBlock extends LadderBlock implements IDecorBlock
 
   @Override
   @SuppressWarnings("deprecation")
-  public PushReaction getPushReaction(BlockState state)
+  public PushReaction getPistonPushReaction(BlockState state)
   { return PushReaction.NORMAL; }
 
   @Override
@@ -95,23 +95,23 @@ public class EdLadderBlock extends LadderBlock implements IDecorBlock
   // Player update event, forwarded from the main mod instance.
   public static void onPlayerUpdateEvent(final PlayerEntity player)
   {
-    if((without_speed_boost_) || (player.isOnGround()) || (!player.isOnLadder()) || (player.isSteppingCarefully()) || (player.isSpectator())) return;
-    double lvy = player.getLookVec().y;
+    if((without_speed_boost_) || (player.isOnGround()) || (!player.onClimbable()) || (player.isSteppingCarefully()) || (player.isSpectator())) return;
+    double lvy = player.getLookAngle().y;
     if(Math.abs(lvy) < 0.92) return;
-    final BlockPos pos = player.getPosition();
-    final BlockState state = player.world.getBlockState(pos);
+    final BlockPos pos = player.blockPosition();
+    final BlockState state = player.level.getBlockState(pos);
     if(!(state.getBlock() instanceof EdLadderBlock)) return;
     player.fallDistance = 0;
-    if((player.getMotion().getY() < 0) == (player.getLookVec().y < 0)) {
-      player.setMotionMultiplier(state, new Vector3d(0.2, (lvy>0)?(3):(6), 0.2));
-      if(Math.abs(player.getMotion().getY()) > 0.1) {
-        Vector3d vdiff = Vector3d.copyCenteredHorizontally(pos).subtract(player.getPositionVec()).scale(1);
-        vdiff.add(Vector3d.copyCenteredHorizontally(state.get(FACING).getDirectionVec()).scale(0.5));
-        vdiff = new Vector3d(vdiff.x, player.getMotion().y, vdiff.z);
-        player.setMotion(vdiff);
+    if((player.getDeltaMovement().y() < 0) == (player.getLookAngle().y < 0)) {
+      player.makeStuckInBlock(state, new Vector3d(0.2, (lvy>0)?(3):(6), 0.2));
+      if(Math.abs(player.getDeltaMovement().y()) > 0.1) {
+        Vector3d vdiff = Vector3d.atBottomCenterOf(pos).subtract(player.position()).scale(1);
+        vdiff.add(Vector3d.atBottomCenterOf(state.getValue(FACING).getNormal()).scale(0.5));
+        vdiff = new Vector3d(vdiff.x, player.getDeltaMovement().y, vdiff.z);
+        player.setDeltaMovement(vdiff);
       }
-    } else if(player.getLookVec().y > 0) {
-      player.setMotionMultiplier(state, new Vector3d(1, 0.05, 1));
+    } else if(player.getLookAngle().y > 0) {
+      player.makeStuckInBlock(state, new Vector3d(1, 0.05, 1));
     }
   }
 

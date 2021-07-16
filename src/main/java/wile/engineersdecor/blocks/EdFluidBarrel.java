@@ -22,6 +22,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
@@ -57,6 +58,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 public class EdFluidBarrel
 {
   //--------------------------------------------------------------------------------------------------------------------
@@ -84,10 +86,10 @@ public class EdFluidBarrel
     public static final int FILL_LEVEL_MAX = 4;
     public static final IntegerProperty FILL_LEVEL = IntegerProperty.create("level", 0, FILL_LEVEL_MAX);
 
-    public FluidBarrelBlock(long config, Block.Properties builder, final AxisAlignedBB[] unrotatedAABB)
+    public FluidBarrelBlock(long config, AbstractBlock.Properties builder, final AxisAlignedBB[] unrotatedAABB)
     {
       super(config, builder, unrotatedAABB);
-      setDefaultState(super.getDefaultState().with(FACING, Direction.UP).with(FILL_LEVEL, 0));
+      registerDefaultState(super.defaultBlockState().setValue(FACING, Direction.UP).setValue(FILL_LEVEL, 0));
     }
 
     // IBlockItemFactory ----------------------------------------------------------------------------
@@ -106,7 +108,7 @@ public class EdFluidBarrel
     public List<ItemStack> dropList(BlockState state, World world, final TileEntity te, boolean explosion)
     {
       final List<ItemStack> stacks = new ArrayList<ItemStack>();
-      if(world.isRemote) return stacks;
+      if(world.isClientSide) return stacks;
       if(!(te instanceof FluidBarrelTileEntity)) return stacks;
       ItemStack stack = new ItemStack(this, 1);
       CompoundNBT te_nbt = ((FluidBarrelTileEntity) te).clear_getnbt();
@@ -123,29 +125,29 @@ public class EdFluidBarrel
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(final ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
+    public void appendHoverText(final ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
     {
       if(
         (!(stack.getItem() instanceof FluidBarrelItem)) ||
         (Auxiliaries.Tooltip.helpCondition())
       ) {
-        super.addInformation(stack, world, tooltip, flag); return;
+        super.appendHoverText(stack, world, tooltip, flag); return;
       }
       FluidStack fs = FluidBarrelItem.getFluid(stack);
       if(!fs.isEmpty()) {
-        tooltip.add(Auxiliaries.localizable(getTranslationKey()+".status.tip", new Object[] {
+        tooltip.add(Auxiliaries.localizable(getDescriptionId()+".status.tip", new Object[] {
           Integer.toString(fs.getAmount()),
           Integer.toString(capacity_),
           new TranslationTextComponent(fs.getTranslationKey())
         }));
       } else {
-        tooltip.add(Auxiliaries.localizable(getTranslationKey()+".status.tip.empty", new Object[] {
+        tooltip.add(Auxiliaries.localizable(getDescriptionId()+".status.tip.empty", new Object[] {
           "0",
           Integer.toString(capacity_),
         }));
       }
       if(!Auxiliaries.Tooltip.extendedTipCondition()) {
-        super.addInformation(stack, world, tooltip, flag);
+        super.appendHoverText(stack, world, tooltip, flag);
       }
     }
 
@@ -159,55 +161,55 @@ public class EdFluidBarrel
     { return new EdFluidBarrel.FluidBarrelTileEntity(); }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-    { super.fillStateContainer(builder); builder.add(FILL_LEVEL); }
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    { super.createBlockStateDefinition(builder); builder.add(FILL_LEVEL); }
 
     @Override
     @Nullable
     public BlockState getStateForPlacement(BlockItemUseContext context)
     {
       BlockState state = super.getStateForPlacement(context);
-      if(!context.getPlayer().isSneaking()) state = state.with(FACING, Direction.UP);
+      if(!context.getPlayer().isShiftKeyDown()) state = state.setValue(FACING, Direction.UP);
       return state;
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
     {
-      if(world.isRemote) return;
+      if(world.isClientSide) return;
       if((!stack.hasTag()) || (!stack.getTag().contains("tedata"))) return;
       CompoundNBT te_nbt = stack.getTag().getCompound("tedata");
       if(te_nbt.isEmpty()) return;
-      final TileEntity te = world.getTileEntity(pos);
+      final TileEntity te = world.getBlockEntity(pos);
       if(!(te instanceof FluidBarrelTileEntity)) return;
       ((FluidBarrelTileEntity)te).readnbt(te_nbt);
-      ((FluidBarrelTileEntity)te).markDirty();
-      world.getPendingBlockTicks().scheduleTick(pos, this, 4);
+      ((FluidBarrelTileEntity)te).setChanged();
+      world.getBlockTicks().scheduleTick(pos, this, 4);
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
     {
-      if(player.getHeldItem(hand).getItem() == asItem()) return ActionResultType.PASS; // Pass that to block placement.
-      if(world.isRemote()) return ActionResultType.SUCCESS;
-      TileEntity te = world.getTileEntity(pos);
+      if(player.getItemInHand(hand).getItem() == asItem()) return ActionResultType.PASS; // Pass that to block placement.
+      if(world.isClientSide()) return ActionResultType.SUCCESS;
+      TileEntity te = world.getBlockEntity(pos);
       if(!(te instanceof FluidBarrelTileEntity)) return ActionResultType.FAIL;
       if(!((FluidBarrelTileEntity)te).handlePlayerInteraction(state, world, pos, player, hand)) return ActionResultType.PASS;
-      world.getPendingBlockTicks().scheduleTick(pos, this, 4);
+      world.getBlockTicks().scheduleTick(pos, this, 4);
       return ActionResultType.CONSUME;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean hasComparatorInputOverride(BlockState state)
+    public boolean hasAnalogOutputSignal(BlockState state)
     { return true; }
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getComparatorInputOverride(BlockState state, World world, BlockPos pos)
+    public int getAnalogOutputSignal(BlockState state, World world, BlockPos pos)
     {
-      TileEntity te = world.getTileEntity(pos);
+      TileEntity te = world.getBlockEntity(pos);
       if(!(te instanceof FluidBarrelTileEntity)) return 0;
       return (int)MathHelper.clamp(((FluidBarrelTileEntity)te).getNormalizedFillLevel() * 15, 0, 15);
     }
@@ -248,16 +250,16 @@ public class EdFluidBarrel
 
     public boolean handlePlayerInteraction(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand)
     {
-      if(world.isRemote()) return false;
+      if(world.isClientSide()) return false;
       {
         Tuple<Fluid,Integer> transferred = Fluidics.manualTrackedFluidHandlerInteraction(world, pos, null, player, hand);
         if(transferred==null) {
-          world.playSound(null, pos, SoundEvents.BLOCK_IRON_TRAPDOOR_OPEN, SoundCategory.BLOCKS, 0.2f, 0.02f);
+          world.playSound(null, pos, SoundEvents.IRON_TRAPDOOR_OPEN, SoundCategory.BLOCKS, 0.2f, 0.02f);
         } else if(transferred.getB() > 0) {
-          SoundEvent se = (transferred.getA()==Fluids.LAVA) ? SoundEvents.ITEM_BUCKET_EMPTY_LAVA: SoundEvents.ITEM_BUCKET_EMPTY;
+          SoundEvent se = (transferred.getA()==Fluids.LAVA) ? SoundEvents.BUCKET_EMPTY_LAVA: SoundEvents.BUCKET_EMPTY;
           world.playSound(null, pos, se, SoundCategory.BLOCKS, 1f, 1f);
         } else {
-          SoundEvent se = (transferred.getA()==Fluids.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL;
+          SoundEvent se = (transferred.getA()==Fluids.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL;
           world.playSound(null, pos, se, SoundCategory.BLOCKS, 1f, 1f);
         }
       }
@@ -287,16 +289,16 @@ public class EdFluidBarrel
     // TileEntity ------------------------------------------------------------------------------
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt)
-    { super.read(state, nbt); readnbt(nbt); }
+    public void load(BlockState state, CompoundNBT nbt)
+    { super.load(state, nbt); readnbt(nbt); }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt)
-    { super.write(nbt); return writenbt(nbt); }
+    public CompoundNBT save(CompoundNBT nbt)
+    { super.save(nbt); return writenbt(nbt); }
 
     @Override
-    public void remove()
-    { super.remove(); fluid_handler_.invalidate(); }
+    public void setRemoved()
+    { super.setRemoved(); fluid_handler_.invalidate(); }
 
     public CompoundNBT clear_getnbt()
     { return tank_.save(new CompoundNBT()); }
@@ -315,7 +317,7 @@ public class EdFluidBarrel
     private boolean transfer_down()
     {
       if(tank_.isEmpty()) return false;
-      final IFluidHandler fh = FluidUtil.getFluidHandler(world, pos.down(), Direction.UP).orElse(null);
+      final IFluidHandler fh = FluidUtil.getFluidHandler(level, worldPosition.below(), Direction.UP).orElse(null);
       if(fh==null) return false;
       final FluidStack fs = tank_.getFluid().copy();
       if(fs.getAmount() > tile_fluid_handler_transfer_rate_) fs.setAmount(tile_fluid_handler_transfer_rate_);
@@ -327,17 +329,17 @@ public class EdFluidBarrel
 
     public void tick()
     {
-      if((world.isRemote()) || (--tick_timer_>=0)) return;
+      if((level.isClientSide()) || (--tick_timer_>=0)) return;
       tick_timer_ = TICK_INTERVAL;
       final BlockState state = getBlockState();
       final Block block = state.getBlock();
       if(!(block instanceof FluidBarrelBlock)) return;
-      if(state.get(FluidBarrelBlock.FACING).getAxis().isVertical()) transfer_down(); // tick_timer_ ==> 1 if something was transferred, otherwise no need to waste CPU
+      if(state.getValue(FluidBarrelBlock.FACING).getAxis().isVertical()) transfer_down(); // tick_timer_ ==> 1 if something was transferred, otherwise no need to waste CPU
       double norm_level = getNormalizedFillLevel();
       int fill_level = (norm_level <= 0) ? 0 : ((int)MathHelper.clamp((norm_level * FluidBarrelBlock.FILL_LEVEL_MAX)+0.5, 1, FluidBarrelBlock.FILL_LEVEL_MAX));
-      if(fill_level != state.get(FluidBarrelBlock.FILL_LEVEL)) {
-        world.setBlockState(pos, state.with(FluidBarrelBlock.FILL_LEVEL, fill_level), 2);
-        world.notifyNeighborsOfStateChange(pos, block);
+      if(fill_level != state.getValue(FluidBarrelBlock.FILL_LEVEL)) {
+        level.setBlock(worldPosition, state.setValue(FluidBarrelBlock.FILL_LEVEL, fill_level), 2);
+        level.updateNeighborsAt(worldPosition, block);
       }
     }
 

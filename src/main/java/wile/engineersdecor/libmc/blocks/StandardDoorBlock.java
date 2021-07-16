@@ -44,7 +44,7 @@ public class StandardDoorBlock extends DoorBlock implements StandardBlocks.IStan
   protected final SoundEvent open_sound_;
   protected final SoundEvent close_sound_;
 
-  public StandardDoorBlock(long config, Block.Properties properties, AxisAlignedBB[] open_aabbs_top, AxisAlignedBB[] open_aabbs_bottom, AxisAlignedBB[] closed_aabbs_top, AxisAlignedBB[] closed_aabbs_bottom, SoundEvent open_sound, SoundEvent close_sound)
+  public StandardDoorBlock(long config, AbstractBlock.Properties properties, AxisAlignedBB[] open_aabbs_top, AxisAlignedBB[] open_aabbs_bottom, AxisAlignedBB[] closed_aabbs_top, AxisAlignedBB[] closed_aabbs_bottom, SoundEvent open_sound, SoundEvent close_sound)
   {
     super(properties);
     VoxelShape shapes[][][][] = new VoxelShape[Direction.values().length][2][2][2];
@@ -54,13 +54,13 @@ public class StandardDoorBlock extends DoorBlock implements StandardBlocks.IStan
           for(boolean hinge_right: new boolean[]{false,true}) {
             VoxelShape shape = VoxelShapes.empty();
             if(facing.getAxis() == Axis.Y) {
-              shape = VoxelShapes.fullCube();
+              shape = VoxelShapes.block();
             } else {
               final AxisAlignedBB[] aabbs = (open)?((half==DoubleBlockHalf.UPPER) ? open_aabbs_top : open_aabbs_bottom) : ((half==DoubleBlockHalf.UPPER) ? closed_aabbs_top : closed_aabbs_bottom);
               for(AxisAlignedBB e:aabbs) {
                 AxisAlignedBB aabb = Auxiliaries.getRotatedAABB(e, facing, true);
-                if(!hinge_right) aabb = Auxiliaries.getMirroredAABB(aabb, facing.rotateY().getAxis());
-                shape = VoxelShapes.combineAndSimplify(shape, VoxelShapes.create(aabb), IBooleanFunction.OR);
+                if(!hinge_right) aabb = Auxiliaries.getMirroredAABB(aabb, facing.getClockWise().getAxis());
+                shape = VoxelShapes.join(shape, VoxelShapes.create(aabb), IBooleanFunction.OR);
               }
             }
             shapes[facing.ordinal()][open?1:0][hinge_right?1:0][half==DoubleBlockHalf.UPPER?0:1] = shape;
@@ -74,10 +74,10 @@ public class StandardDoorBlock extends DoorBlock implements StandardBlocks.IStan
     close_sound_ = close_sound;
   }
 
-  public StandardDoorBlock(long config, Block.Properties properties, AxisAlignedBB open_aabb, AxisAlignedBB closed_aabb, SoundEvent open_sound, SoundEvent close_sound)
+  public StandardDoorBlock(long config, AbstractBlock.Properties properties, AxisAlignedBB open_aabb, AxisAlignedBB closed_aabb, SoundEvent open_sound, SoundEvent close_sound)
   { this(config, properties, new AxisAlignedBB[]{open_aabb}, new AxisAlignedBB[]{open_aabb}, new AxisAlignedBB[]{closed_aabb}, new AxisAlignedBB[]{closed_aabb}, open_sound, close_sound); }
 
-  public StandardDoorBlock(long config, Block.Properties properties, SoundEvent open_sound, SoundEvent close_sound)
+  public StandardDoorBlock(long config, AbstractBlock.Properties properties, SoundEvent open_sound, SoundEvent close_sound)
   {
     this(
       config, properties,
@@ -88,14 +88,14 @@ public class StandardDoorBlock extends DoorBlock implements StandardBlocks.IStan
     );
   }
 
-  public StandardDoorBlock(long config, Block.Properties properties)
+  public StandardDoorBlock(long config, AbstractBlock.Properties properties)
   {
     this(
       config, properties,
       Auxiliaries.getPixeledAABB(13,0, 0, 16,16,16),
       Auxiliaries.getPixeledAABB( 0,0,13, 16,16,16),
-      SoundEvents.BLOCK_WOODEN_DOOR_OPEN,
-      SoundEvents.BLOCK_WOODEN_DOOR_CLOSE
+      SoundEvents.WOODEN_DOOR_OPEN,
+      SoundEvents.WOODEN_DOOR_CLOSE
     );
   }
 
@@ -110,21 +110,21 @@ public class StandardDoorBlock extends DoorBlock implements StandardBlocks.IStan
   {
     if(!(world_ro instanceof World)) return;
     final World world = (World)world_ro;
-    final BlockPos adjecent_pos = pos.offset( (state.get(HINGE)==DoorHingeSide.LEFT) ? (state.get(FACING).rotateY()) : (state.get(FACING).rotateYCCW()));
-    if(!world.isBlockPresent(adjecent_pos)) return;
+    final BlockPos adjecent_pos = pos.relative( (state.getValue(HINGE)==DoorHingeSide.LEFT) ? (state.getValue(FACING).getClockWise()) : (state.getValue(FACING).getCounterClockWise()));
+    if(!world.isLoaded(adjecent_pos)) return;
     BlockState adjacent_state = world.getBlockState(adjecent_pos);
     if(adjacent_state.getBlock()!=this) return;
-    if(adjacent_state.get(OPEN)==open) return;
-    world.setBlockState(adjecent_pos, adjacent_state.with(OPEN, open), 2|10);
+    if(adjacent_state.getValue(OPEN)==open) return;
+    world.setBlock(adjecent_pos, adjacent_state.setValue(OPEN, open), 2|10);
   }
 
   @Override
   @OnlyIn(Dist.CLIENT)
-  public void addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
+  public void appendHoverText(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
   { Auxiliaries.Tooltip.addInformation(stack, world, tooltip, flag, true); }
 
   @Override
-  public boolean canSpawnInBlock()
+  public boolean isPossibleToRespawnInThis()
   { return false; }
 
   @Override
@@ -133,28 +133,28 @@ public class StandardDoorBlock extends DoorBlock implements StandardBlocks.IStan
 
   @Override
   public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)
-  { return shapes_[state.get(FACING).ordinal()][state.get(OPEN)?1:0][state.get(HINGE)==DoorHingeSide.RIGHT?1:0][state.get(HALF)==DoubleBlockHalf.UPPER?0:1]; }
+  { return shapes_[state.getValue(FACING).ordinal()][state.getValue(OPEN)?1:0][state.getValue(HINGE)==DoorHingeSide.RIGHT?1:0][state.getValue(HALF)==DoubleBlockHalf.UPPER?0:1]; }
 
   @Override
-  public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
-  { openDoor(world, state, pos, !state.get(OPEN)); return ActionResultType.func_233537_a_(world.isRemote()); }
+  public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
+  { setOpen(world, state, pos, !state.getValue(OPEN)); return ActionResultType.sidedSuccess(world.isClientSide()); }
 
   @Override
   public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving)
   {
-    boolean powered = world.isBlockPowered(pos) || world.isBlockPowered(pos.offset(state.get(HALF) == DoubleBlockHalf.LOWER ? Direction.UP : Direction.DOWN));
-    if((block == this) || (powered == state.get(POWERED))) return;
-    world.setBlockState(pos, state.with(POWERED, powered).with(OPEN, powered), 2);
+    boolean powered = world.hasNeighborSignal(pos) || world.hasNeighborSignal(pos.relative(state.getValue(HALF) == DoubleBlockHalf.LOWER ? Direction.UP : Direction.DOWN));
+    if((block == this) || (powered == state.getValue(POWERED))) return;
+    world.setBlock(pos, state.setValue(POWERED, powered).setValue(OPEN, powered), 2);
     actuate_adjacent_wing(state, world, pos, powered);
-    if(powered != state.get(OPEN)) sound(world, pos, powered);
+    if(powered != state.getValue(OPEN)) sound(world, pos, powered);
   }
 
   @Override
-  public void openDoor(World world, BlockState state, BlockPos pos, boolean open)
+  public void setOpen(World world, BlockState state, BlockPos pos, boolean open)
   {
-    if(!state.isIn(this) || (state.get(OPEN) == open)) return;
-    state = state.with(OPEN, open);
-    world.setBlockState(pos, state, 2|8);
+    if(!state.is(this) || (state.getValue(OPEN) == open)) return;
+    state = state.setValue(OPEN, open);
+    world.setBlock(pos, state, 2|8);
     sound(world, pos, open);
     actuate_adjacent_wing(state, world, pos, open);
   }

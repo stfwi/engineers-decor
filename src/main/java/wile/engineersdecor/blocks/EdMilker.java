@@ -11,6 +11,7 @@ package wile.engineersdecor.blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.BooleanProperty;
@@ -72,26 +73,26 @@ public class EdMilker
     public static final BooleanProperty FILLED = BooleanProperty.create("filled");
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
-    public MilkerBlock(long config, Block.Properties builder, final AxisAlignedBB[] unrotatedAABBs)
+    public MilkerBlock(long config, AbstractBlock.Properties builder, final AxisAlignedBB[] unrotatedAABBs)
     { super(config, builder, unrotatedAABBs); }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-    { super.fillStateContainer(builder); builder.add(ACTIVE); builder.add(FILLED); }
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    { super.createBlockStateDefinition(builder); builder.add(ACTIVE); builder.add(FILLED); }
 
     @Override
     @Nullable
     public BlockState getStateForPlacement(BlockItemUseContext context)
-    { return super.getStateForPlacement(context).with(FILLED, false).with(ACTIVE, false); }
+    { return super.getStateForPlacement(context).setValue(FILLED, false).setValue(ACTIVE, false); }
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean hasComparatorInputOverride(BlockState state)
+    public boolean hasAnalogOutputSignal(BlockState state)
     { return true; }
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getComparatorInputOverride(BlockState state, World world, BlockPos pos)
+    public int getAnalogOutputSignal(BlockState state, World world, BlockPos pos)
     {
       MilkerTileEntity te = getTe(world, pos);
       return (te==null) ? 0 : MathHelper.clamp((16 * te.fluid_level())/MilkerTileEntity.TANK_CAPACITY, 0, 15);
@@ -112,12 +113,12 @@ public class EdMilker
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
     {
-      if(world.isRemote()) return ActionResultType.SUCCESS;
+      if(world.isClientSide()) return ActionResultType.SUCCESS;
       MilkerTileEntity te = getTe(world, pos);
       if(te==null) return ActionResultType.FAIL;
-      final ItemStack in_stack = player.getHeldItem(hand);
+      final ItemStack in_stack = player.getItemInHand(hand);
       final ItemStack out_stack = MilkerTileEntity.milk_filled_container_item(in_stack);
       if(in_stack.isEmpty()) {
         te.state_message(player);
@@ -135,15 +136,15 @@ public class EdMilker
             in_stack.shrink(1);
             drained = true;
             if(remainder.getCount() > 0) {
-              final ItemEntity ei = new ItemEntity(world, player.getPositionVec().getX(), player.getPositionVec().getY()+0.5, player.getPositionVec().getZ(), remainder);
-              ei.setPickupDelay(40);
-              ei.setMotion(0,0,0);
-              world.addEntity(ei);
+              final ItemEntity ei = new ItemEntity(world, player.position().x(), player.position().y()+0.5, player.position().z(), remainder);
+              ei.setPickUpDelay(40);
+              ei.setDeltaMovement(0,0,0);
+              world.addFreshEntity(ei);
             }
           }
         }
         if(drained) {
-          world.playSound(null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 0.8f, 1f);
+          world.playSound(null, pos, SoundEvents.BUCKET_FILL, SoundCategory.BLOCKS, 0.8f, 1f);
         }
       }
       return ActionResultType.CONSUME;
@@ -151,7 +152,7 @@ public class EdMilker
 
     @Nullable
     private MilkerTileEntity getTe(World world, BlockPos pos)
-    { final TileEntity te=world.getTileEntity(pos); return (!(te instanceof MilkerTileEntity)) ? (null) : ((MilkerTileEntity)te); }
+    { final TileEntity te=world.getBlockEntity(pos); return (!(te instanceof MilkerTileEntity)) ? (null) : ((MilkerTileEntity)te); }
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -175,7 +176,7 @@ public class EdMilker
     private enum MilkingState { IDLE, PICKED, COMING, POSITIONING, MILKING, LEAVING, WAITING }
 
     private static FluidStack milk_fluid_ = NO_MILK_FLUID;
-    private static HashMap<ItemStack, ItemStack> milk_containers_ = new HashMap<>();
+    private static final HashMap<ItemStack, ItemStack> milk_containers_ = new HashMap<>();
     private static int energy_consumption_ = DEFAULT_ENERGY_CONSUMPTION;
     private static long min_milking_delay_per_cow_ticks_ = DEFAULT_MILKING_DELAY_PER_COW;
     private int tick_timer_;
@@ -240,7 +241,7 @@ public class EdMilker
       CompoundNBT nbt = new CompoundNBT();
       writenbt(nbt, false); reset();
       if(cowuid == null) return nbt;
-      world.getEntitiesWithinAABB(CowEntity.class, new AxisAlignedBB(pos).grow(16, 16, 16), e->e.getUniqueID().equals(cowuid)).forEach(e->e.setNoAI(false));
+      level.getEntitiesOfClass(CowEntity.class, new AxisAlignedBB(worldPosition).inflate(16, 16, 16), e->e.getUUID().equals(cowuid)).forEach(e->e.setNoAi(false));
       return nbt;
     }
 
@@ -274,17 +275,17 @@ public class EdMilker
     // TileEntity ------------------------------------------------------------------------------
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt)
-    { super.read(state, nbt); readnbt(nbt, false); }
+    public void load(BlockState state, CompoundNBT nbt)
+    { super.load(state, nbt); readnbt(nbt, false); }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt)
-    { super.write(nbt); writenbt(nbt, false); return nbt; }
+    public CompoundNBT save(CompoundNBT nbt)
+    { super.save(nbt); writenbt(nbt, false); return nbt; }
 
     @Override
-    public void remove()
+    public void setRemoved()
     {
-      super.remove();
+      super.setRemoved();
       energy_handler_.invalidate();
       fluid_handler_.invalidate();
     }
@@ -351,8 +352,8 @@ public class EdMilker
     private boolean fill_adjacent_inventory_item_containers(Direction block_facing)
     {
       // Check inventory existence, back to down is preferred, otherwise sort back into same inventory.
-      IItemHandler src = Inventories.itemhandler(world, pos.offset(block_facing), block_facing.getOpposite());
-      IItemHandler dst = Inventories.itemhandler(world, pos.down(), Direction.UP);
+      IItemHandler src = Inventories.itemhandler(level, worldPosition.relative(block_facing), block_facing.getOpposite());
+      IItemHandler dst = Inventories.itemhandler(level, worldPosition.below(), Direction.UP);
       if(src==null) { src = dst; } else if(dst==null) { dst = src; }
       if((src==null) || (dst==null)) return false;
       boolean dirty = false;
@@ -377,7 +378,7 @@ public class EdMilker
       if((fluid_level()<=0) || (!has_milk_fluid())) return false;
       final FluidStack fs = new FluidStack(milk_fluid_, Math.max(fluid_level(), BUCKET_SIZE));
       for(Direction dir:Direction.values()) {
-        int amount = Fluidics.fill(getWorld(), getPos().offset(dir), dir.getOpposite(), fs);
+        int amount = Fluidics.fill(getLevel(), getBlockPos().relative(dir), dir.getOpposite(), fs);
         if(amount > 0) {
           tank_.drain(amount);
           return true;
@@ -390,10 +391,10 @@ public class EdMilker
     {
       log("release cow");
       if(cow != null) {
-        cow.setNoAI(false);
+        cow.setNoAi(false);
         SingleMoveGoal.abortFor(cow);
-        tracked_cows_.remove(cow.getEntityId());
-        for(int id:tracked_cows_.keySet().stream().filter(i->cow.getEntityWorld().getEntityByID(i)==null).collect(Collectors.toList())) {
+        tracked_cows_.remove(cow.getId());
+        for(int id:tracked_cows_.keySet().stream().filter(i->cow.getCommandSenderWorld().getEntity(i)==null).collect(Collectors.toList())) {
           tracked_cows_.remove(id);
         }
       }
@@ -405,25 +406,25 @@ public class EdMilker
     private boolean milking_process()
     {
       if((tracked_cow_ == null) && (fluid_level() >= MAX_MILKING_TANK_LEVEL)) return false; // nothing to do
-      final Direction facing = world.getBlockState(getPos()).get(MilkerBlock.HORIZONTAL_FACING).getOpposite();
-      final Vector3d target_pos = Vector3d.copy(getPos().offset(facing)).add(0.5,0,0.5);
+      final Direction facing = level.getBlockState(getBlockPos()).getValue(MilkerBlock.HORIZONTAL_FACING).getOpposite();
+      final Vector3d target_pos = Vector3d.atLowerCornerOf(getBlockPos().relative(facing)).add(0.5,0,0.5);
       CowEntity cow = null;
       {
-        AxisAlignedBB aabb = new AxisAlignedBB(pos.offset(facing, 3)).grow(4, 2, 4);
-        final long t = world.getGameTime();
-        final List<CowEntity> cows = world.getEntitiesWithinAABB(CowEntity.class, aabb,
+        AxisAlignedBB aabb = new AxisAlignedBB(worldPosition.relative(facing, 3)).inflate(4, 2, 4);
+        final long t = level.getGameTime();
+        final List<CowEntity> cows = level.getEntitiesOfClass(CowEntity.class, aabb,
           e-> {
-            if(e.getUniqueID().equals(tracked_cow_)) return true;
-            if((tracked_cow_!=null) || e.isChild() || e.isInLove() || e.isBeingRidden()) return false;
-            if(!e.getNavigator().noPath()) return false;
-            if(Math.abs(tracked_cows_.getOrDefault(e.getEntityId(), 0L)-t) < min_milking_delay_per_cow_ticks_) return false;
+            if(e.getUUID().equals(tracked_cow_)) return true;
+            if((tracked_cow_!=null) || e.isBaby() || e.isInLove() || e.isVehicle()) return false;
+            if(!e.getNavigation().isDone()) return false;
+            if(Math.abs(tracked_cows_.getOrDefault(e.getId(), 0L)-t) < min_milking_delay_per_cow_ticks_) return false;
             return true;
           }
         );
         if(cows.size() == 1) {
           cow = cows.get(0); // tracked or only one
         } else if(cows.size() > 1) {
-          cow = cows.get(world.rand.nextInt(cows.size()-1)); // pick one
+          cow = cows.get(level.random.nextInt(cows.size()-1)); // pick one
         }
       }
       if((state_ != MilkingState.IDLE) && ((state_timeout_ -= PROCESSING_TICK_INTERVAL) <= 0)) { release_cow(cow); log("Cow motion timeout"); cow = null; }
@@ -435,35 +436,35 @@ public class EdMilker
       if(state_timer_ > 0) return false;
       switch(state_) { // Let's do this the old school FSA sequencing way ...
         case IDLE: {
-          final List<LivingEntity> blocking_entities = world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(pos.offset(facing)).grow(0.5, 0.5, 0.5));
+          final List<LivingEntity> blocking_entities = level.getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(worldPosition.relative(facing)).inflate(0.5, 0.5, 0.5));
           if(blocking_entities.size() > 0) {
             tick_timer_ = TICK_INTERVAL;
             log("Idle: Position blocked");
             if(blocking_entities.get(0) instanceof CowEntity) {
               CowEntity blocker = (CowEntity)blocking_entities.get(0);
-              BlockPos p = getPos().offset(facing,2);
+              BlockPos p = getBlockPos().relative(facing,2);
               log("Idle: Shove off");
-              blocker.setNoAI(false);
-              SingleMoveGoal.startFor(blocker, p, 2, 1.0, (goal, world, pos)->(pos.distanceSq(goal.getCreature().getPosition())>100));
+              blocker.setNoAi(false);
+              SingleMoveGoal.startFor(blocker, p, 2, 1.0, (goal, world, pos)->(pos.distSqr(goal.getCreature().blockPosition())>100));
             }
             return false;
           }
-          if(cow.getLeashed() || cow.isChild() || cow.isInLove() || (!cow.isOnGround()) || cow.isBeingRidden() || cow.isSprinting()) return false;
-          tracked_cows_.put(cow.getEntityId(), cow.getEntityWorld().getGameTime());
-          tracked_cow_ = cow.getUniqueID();
+          if(cow.isLeashed() || cow.isBaby() || cow.isInLove() || (!cow.isOnGround()) || cow.isVehicle() || cow.isSprinting()) return false;
+          tracked_cows_.put(cow.getId(), cow.getCommandSenderWorld().getGameTime());
+          tracked_cow_ = cow.getUUID();
           state_ = MilkingState.PICKED;
           state_timeout_ = 200;
-          tracked_cow_original_position_ = cow.getPosition();
+          tracked_cow_original_position_ = cow.blockPosition();
           log("Idle: Picked cow " + tracked_cow_);
           return false;
         }
         case PICKED: {
           SingleMoveGoal.startFor(
             cow, target_pos, 2, 1.0,
-            (goal, world, pos)->(pos.distanceSq(goal.getCreature().getPosition())>100),
+            (goal, world, pos)->(pos.distSqr(goal.getCreature().blockPosition())>100),
             (goal, world, pos)->{
               log("move: position reached");
-              goal.getCreature().setLocationAndAngles(goal.getTargetPosition().getX(), goal.getTargetPosition().getY(), goal.getTargetPosition().getZ(), facing.getHorizontalAngle(), 0);
+              goal.getCreature().moveTo(goal.getTargetPosition().x(), goal.getTargetPosition().y(), goal.getTargetPosition().z(), facing.toYRot(), 0);
             },
             (goal, world, pos)->{
               log("move: aborted");
@@ -475,7 +476,7 @@ public class EdMilker
           return false;
         }
         case COMING: {
-          if(target_pos.squareDistanceTo(cow.getPositionVec()) <= 1) {
+          if(target_pos.distanceToSqr(cow.position()) <= 1) {
             log("Coming: position reached");
             state_ = MilkingState.POSITIONING;
             state_timeout_ = 100; // 5s
@@ -490,9 +491,9 @@ public class EdMilker
         case POSITIONING: {
           log("Positioning: start milking");
           SingleMoveGoal.abortFor(cow);
-          cow.setNoAI(true);
-          cow.setLocationAndAngles(target_pos.getX(), target_pos.getY(), target_pos.getZ(), facing.getHorizontalAngle(), 0);
-          world.playSound(null, pos, SoundEvents.ENTITY_COW_MILK, SoundCategory.BLOCKS, 0.5f, 1f);
+          cow.setNoAi(true);
+          cow.moveTo(target_pos.x(), target_pos.y(), target_pos.z(), facing.toYRot(), 0);
+          level.playSound(null, worldPosition, SoundEvents.COW_MILK, SoundCategory.BLOCKS, 0.5f, 1f);
           state_timeout_ = 600;
           state_ = MilkingState.MILKING;
           state_timer_ = 30;
@@ -503,19 +504,19 @@ public class EdMilker
           state_timeout_ = 600;
           state_ = MilkingState.LEAVING;
           state_timer_ = 20;
-          cow.setNoAI(false);
-          cow.getNavigator().clearPath();
+          cow.setNoAi(false);
+          cow.getNavigation().stop();
           log("Milking: done, leave");
           return true;
         }
         case LEAVING: {
-          BlockPos p = (tracked_cow_original_position_ != null) ? (tracked_cow_original_position_) : getPos().offset(facing,2).offset(facing.rotateYCCW());
-          SingleMoveGoal.startFor(cow, p, 2, 1.0, (goal, world, pos)->(pos.distanceSq(goal.getCreature().getPosition())>100));
+          BlockPos p = (tracked_cow_original_position_ != null) ? (tracked_cow_original_position_) : getBlockPos().relative(facing,2).relative(facing.getCounterClockWise());
+          SingleMoveGoal.startFor(cow, p, 2, 1.0, (goal, world, pos)->(pos.distSqr(goal.getCreature().blockPosition())>100));
           state_timeout_ = 600;
           state_timer_ = 500;
           tick_timer_ = TICK_INTERVAL;
           state_ = MilkingState.WAITING;
-          tracked_cows_.put(cow.getEntityId(), cow.getEntityWorld().getGameTime());
+          tracked_cows_.put(cow.getId(), cow.getCommandSenderWorld().getGameTime());
           log("Leaving: process done");
           return true;
         }
@@ -539,12 +540,12 @@ public class EdMilker
     @Override
     public void tick()
     {
-      if((world.isRemote) || ((--tick_timer_ > 0))) return;
+      if((level.isClientSide) || ((--tick_timer_ > 0))) return;
       tick_timer_ = TICK_INTERVAL;
       boolean dirty = false;
-      final BlockState block_state = world.getBlockState(pos);
+      final BlockState block_state = level.getBlockState(worldPosition);
       if(!(block_state.getBlock() instanceof MilkerBlock)) return;
-      if(!world.isBlockPowered(pos) || (state_ != MilkingState.IDLE)) {
+      if(!level.hasNeighborSignal(worldPosition) || (state_ != MilkingState.IDLE)) {
         if((energy_consumption_ > 0) && (!battery_.draw(energy_consumption_))) return;
         // Track and milk cows
         if(milking_process()) dirty = true;
@@ -552,7 +553,7 @@ public class EdMilker
         if(has_milk_fluid() && (!tank_.isEmpty())) {
           log("Fluid transfer");
           for(Direction facing: FLUID_TRANSFER_DIRECTRIONS) {
-            final IFluidHandler fh = FluidUtil.getFluidHandler(world, pos.offset(facing), facing.getOpposite()).orElse(null);
+            final IFluidHandler fh = FluidUtil.getFluidHandler(level, worldPosition.relative(facing), facing.getOpposite()).orElse(null);
             if(fh == null) continue;
             final FluidStack fs = tank_.drain(BUCKET_SIZE, FluidAction.SIMULATE);
             int nfilled = fh.fill(fs, FluidAction.EXECUTE);
@@ -565,13 +566,13 @@ public class EdMilker
         // Adjacent inventory update, only done just after milking to prevent waste of server cpu.
         if((!dirty) && (fluid_level() > 0)) {
           log("Try item transfer");
-          if(fill_adjacent_tank() || ((fluid_level() >= BUCKET_SIZE) && fill_adjacent_inventory_item_containers(block_state.get(MilkerBlock.HORIZONTAL_FACING)))) dirty = true;
+          if(fill_adjacent_tank() || ((fluid_level() >= BUCKET_SIZE) && fill_adjacent_inventory_item_containers(block_state.getValue(MilkerBlock.HORIZONTAL_FACING)))) dirty = true;
         }
       }
       // State update
-      BlockState new_state = block_state.with(MilkerBlock.FILLED, fluid_level()>=FILLED_INDICATION_THRESHOLD).with(MilkerBlock.ACTIVE, state_==MilkingState.MILKING);
-      if(block_state != new_state) world.setBlockState(pos, new_state,1|2|16);
-      if(dirty) markDirty();
+      BlockState new_state = block_state.setValue(MilkerBlock.FILLED, fluid_level()>=FILLED_INDICATION_THRESHOLD).setValue(MilkerBlock.ACTIVE, state_==MilkingState.MILKING);
+      if(block_state != new_state) level.setBlock(worldPosition, new_state,1|2|16);
+      if(dirty) setChanged();
     }
   }
 
@@ -597,9 +598,9 @@ public class EdMilker
       abort_condition_ = abort_condition;
       on_target_position_reached_ = on_position_reached;
       on_aborted_ = on_aborted;
-      destinationBlock = new BlockPos(pos.getX(), pos.getY(), pos.getZ());
-      timeoutCounter = 0;
-      runDelay = 0;
+      blockPos = new BlockPos(pos.x(), pos.y(), pos.z());
+      tryTicks = 0;
+      nextStartTick = 0;
       aborted_ = false;
       was_aborted_ = false;
       target_pos_ = pos;
@@ -611,14 +612,14 @@ public class EdMilker
     public static boolean startFor(CreatureEntity entity, Vector3d target_pos, int priority, double speed, TargetPositionInValidCheck abort_condition, @Nullable StrollEvent on_position_reached, @Nullable StrollEvent on_aborted)
     {
       synchronized(tracked_entities_) {
-        SingleMoveGoal goal = tracked_entities_.getOrDefault(entity.getEntityId(), null);
+        SingleMoveGoal goal = tracked_entities_.getOrDefault(entity.getId(), null);
         if(goal != null) {
           if(!goal.aborted()) return false; // that is still running.
           entity.goalSelector.removeGoal(goal);
         }
-        log("::start("+entity.getEntityId()+")");
+        log("::start("+entity.getId()+")");
         goal = new SingleMoveGoal(entity, target_pos, speed, abort_condition, on_position_reached, on_aborted);
-        tracked_entities_.put(entity.getEntityId(), goal);
+        tracked_entities_.put(entity.getId(), goal);
         entity.goalSelector.addGoal(priority, goal);
         return true;
       }
@@ -631,14 +632,14 @@ public class EdMilker
 
     public static void abortFor(CreatureEntity entity)
     {
-      log("::abort("+entity.getEntityId()+")");
+      log("::abort("+entity.getId()+")");
       if(entity.isAlive()) {
         entity.goalSelector.getRunningGoals().filter(g->(g.getGoal()) instanceof SingleMoveGoal).forEach(g->((SingleMoveGoal)g.getGoal()).abort());
       }
-      final World world = entity.getEntityWorld();
+      final World world = entity.getCommandSenderWorld();
       if(world != null) {
         // @todo: check nicer way to filter a map.
-        List<Integer> to_remove = tracked_entities_.keySet().stream().filter(i->(world.getEntityByID(i) == null)).collect(Collectors.toList());
+        List<Integer> to_remove = tracked_entities_.keySet().stream().filter(i->(world.getEntity(i) == null)).collect(Collectors.toList());
         for(int id:to_remove)tracked_entities_.remove(id);
       }
     }
@@ -647,7 +648,7 @@ public class EdMilker
     { return target_pos_; }
 
     public CreatureEntity getCreature()
-    { return creature; }
+    { return mob; }
 
     public synchronized void abort()
     { aborted_ = true; }
@@ -660,50 +661,50 @@ public class EdMilker
       abort_condition_ = abort_condition;
       on_target_position_reached_ = on_position_reached;
       on_aborted_ = on_aborted;
-      destinationBlock = new BlockPos(target_pos.getX(), target_pos.getY(), target_pos.getZ());
-      timeoutCounter = 0;
-      runDelay = 0;
+      blockPos = new BlockPos(target_pos.x(), target_pos.y(), target_pos.z());
+      tryTicks = 0;
+      nextStartTick = 0;
       aborted_ = false;
       was_aborted_ = false;
-      target_pos_ = new Vector3d(target_pos.getX(), target_pos.getY(), target_pos.getZ());
+      target_pos_ = new Vector3d(target_pos.x(), target_pos.y(), target_pos.z());
       // this.movementSpeed = speed; -> that is final, need to override tick and func_whatever
     }
 
     @Override
-    public void resetTask()
-    { runDelay = 0; timeoutCounter = 0; }
+    public void stop()
+    { nextStartTick = 0; tryTicks = 0; }
 
     @Override
-    public double getTargetDistanceSq()
+    public double acceptedDistance()
     { return 0.7; }
 
     @Override
-    public boolean shouldMove()
-    { return (!aborted()) && (timeoutCounter & 0x7) == 0; }
+    public boolean shouldRecalculatePath()
+    { return (!aborted()) && (tryTicks & 0x7) == 0; }
 
     @Override
-    public boolean shouldExecute()
+    public boolean canUse()
     {
       if(aborted_) {
-        if((!was_aborted_) && (on_aborted_!=null)) on_aborted_.apply(this, creature.world, target_pos_);
+        if((!was_aborted_) && (on_aborted_!=null)) on_aborted_.apply(this, mob.level, target_pos_);
         was_aborted_ = true;
         return false;
-      } else if(!shouldMoveTo(creature.world, destinationBlock)) {
+      } else if(!isValidTarget(mob.level, blockPos)) {
         synchronized(this) { aborted_ = true; }
         return false;
-      } else if(--runDelay > 0) {
+      } else if(--nextStartTick > 0) {
         return false;
       } else {
-        runDelay = 10;
+        nextStartTick = 10;
         return true;
       }
     }
 
     @Override
-    public void startExecuting()
+    public void start()
     {
-      timeoutCounter = 0;
-      if(!creature.getNavigator().tryMoveToXYZ(target_pos_.getX(), target_pos_.getY(), target_pos_.getZ(), this.movementSpeed)) {
+      tryTicks = 0;
+      if(!mob.getNavigation().moveTo(target_pos_.x(), target_pos_.y(), target_pos_.z(), this.speedModifier)) {
         abort();
         log("startExecuting() -> abort, no path");
       } else {
@@ -711,24 +712,24 @@ public class EdMilker
       }
     }
 
-    public boolean shouldContinueExecuting()
+    public boolean canContinueToUse()
     {
       if(aborted()) {
         log("shouldContinueExecuting() -> already aborted");
         return false;
-      } else if(creature.getNavigator().noPath()) {
-        if((!creature.getNavigator().setPath(creature.getNavigator().getPathToPos(target_pos_.getX(), target_pos_.getY(), target_pos_.getZ(), 0), movementSpeed))) {
+      } else if(mob.getNavigation().isDone()) {
+        if((!mob.getNavigation().moveTo(mob.getNavigation().createPath(target_pos_.x(), target_pos_.y(), target_pos_.z(), 0), speedModifier))) {
           log("shouldContinueExecuting() -> abort, no path");
           abort();
           return false;
         } else {
           return true;
         }
-      } else if(timeoutCounter > motion_timeout) {
+      } else if(tryTicks > motion_timeout) {
         log("shouldContinueExecuting() -> abort, timeout");
         abort();
         return false;
-      } else if(!shouldMoveTo(creature.world, destinationBlock)) {
+      } else if(!isValidTarget(mob.level, blockPos)) {
         log("shouldContinueExecuting() -> abort, !shouldMoveTo()");
         abort();
         return false;
@@ -739,7 +740,7 @@ public class EdMilker
     }
 
     @Override
-    protected boolean shouldMoveTo(IWorldReader world, BlockPos pos)
+    protected boolean isValidTarget(IWorldReader world, BlockPos pos)
     {
       if(abort_condition_.test(this, world, pos)) {
         log("shouldMoveTo() -> abort_condition");
@@ -752,14 +753,14 @@ public class EdMilker
     @Override
     public void tick()
     {
-      BlockPos testpos = new BlockPos(target_pos_.getX(), creature.getPositionVec().getY(), target_pos_.getZ());
-      if(!testpos.withinDistance(creature.getPositionVec(), getTargetDistanceSq())) {
-        if((++timeoutCounter > motion_timeout)) {
+      BlockPos testpos = new BlockPos(target_pos_.x(), mob.position().y(), target_pos_.z());
+      if(!testpos.closerThan(mob.position(), acceptedDistance())) {
+        if((++tryTicks > motion_timeout)) {
           log("tick() -> abort, timeoutCounter");
           abort();
           return;
         }
-        if(shouldMove() && (!creature.getNavigator().tryMoveToXYZ(target_pos_.getX(), target_pos_.getY(), target_pos_.getZ(), movementSpeed))) {
+        if(shouldRecalculatePath() && (!mob.getNavigation().moveTo(target_pos_.x(), target_pos_.y(), target_pos_.z(), speedModifier))) {
           log("tick() -> abort, !tryMoveToXYZ()");
           abort();
         }
@@ -767,7 +768,7 @@ public class EdMilker
         log("tick() -> abort, in position)");
         in_position_ = true;
         abort();
-        if(on_target_position_reached_ != null) on_target_position_reached_.apply(this, creature.world, target_pos_);
+        if(on_target_position_reached_ != null) on_target_position_reached_.apply(this, mob.level, target_pos_);
       }
     }
   }

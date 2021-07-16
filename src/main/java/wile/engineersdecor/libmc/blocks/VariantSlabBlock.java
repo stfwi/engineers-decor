@@ -44,6 +44,8 @@ import java.util.Collections;
 import java.util.List;
 
 
+import wile.engineersdecor.libmc.blocks.StandardBlocks.IStandardBlock.RenderTypeHint;
+
 public class VariantSlabBlock extends StandardBlocks.WaterLoggable implements StandardBlocks.IStandardBlock
 {
   public static final EnumProperty<SlabType> TYPE = BlockStateProperties.SLAB_TYPE;
@@ -62,10 +64,10 @@ public class VariantSlabBlock extends StandardBlocks.WaterLoggable implements St
   { with_pickup = direct_slab_pickup; }
 
   protected boolean is_cube(BlockState state)
-  { return state.get(TYPE) == SlabType.DOUBLE; }
+  { return state.getValue(TYPE) == SlabType.DOUBLE; }
 
-  public VariantSlabBlock(long config, Block.Properties builder)
-  { super(config, builder); setDefaultState(getDefaultState().with(TYPE, SlabType.BOTTOM)); }
+  public VariantSlabBlock(long config, AbstractBlock.Properties builder)
+  { super(config, builder); registerDefaultState(defaultBlockState().setValue(TYPE, SlabType.BOTTOM)); }
 
   @Override
   public RenderTypeHint getRenderTypeHint()
@@ -73,7 +75,7 @@ public class VariantSlabBlock extends StandardBlocks.WaterLoggable implements St
 
   @Override
   @OnlyIn(Dist.CLIENT)
-  public void addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
+  public void appendHoverText(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
   {
     if(!Auxiliaries.Tooltip.addInformation(stack, world, tooltip, flag, true)) return;
     if(with_pickup) Auxiliaries.Tooltip.addInformation("engineersdecor.tooltip.slabpickup", "engineersdecor.tooltip.slabpickup", tooltip, flag, true);
@@ -82,11 +84,11 @@ public class VariantSlabBlock extends StandardBlocks.WaterLoggable implements St
   @Override
   @OnlyIn(Dist.CLIENT)
   @SuppressWarnings("deprecation")
-  public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side)
-  { return (adjacentBlockState==state) ? true : super.isSideInvisible(state, adjacentBlockState, side); }
+  public boolean skipRendering(BlockState state, BlockState adjacentBlockState, Direction side)
+  { return (adjacentBlockState==state) ? true : super.skipRendering(state, adjacentBlockState, side); }
 
   @Override
-  public boolean canSpawnInBlock()
+  public boolean isPossibleToRespawnInThis()
   { return false; }
 
   @Override
@@ -95,44 +97,44 @@ public class VariantSlabBlock extends StandardBlocks.WaterLoggable implements St
 
   @Override
   public VoxelShape getShape(BlockState state, IBlockReader source, BlockPos pos, ISelectionContext selectionContext)
-  { return AABBs[state.get(TYPE).ordinal() & 0x3]; }
+  { return AABBs[state.getValue(TYPE).ordinal() & 0x3]; }
 
   @Override
   public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext)
   { return getShape(state, world, pos, selectionContext); }
 
   @Override
-  protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-  { super.fillStateContainer(builder); builder.add(TYPE, TEXTURE_VARIANT); }
+  protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+  { super.createBlockStateDefinition(builder); builder.add(TYPE, TEXTURE_VARIANT); }
 
   @Override
   @Nullable
   public BlockState getStateForPlacement(BlockItemUseContext context)
   {
-    BlockPos pos = context.getPos();
-    if(context.getWorld().getBlockState(pos).getBlock() == this) return context.getWorld().getBlockState(pos).with(TYPE, SlabType.DOUBLE).with(WATERLOGGED, false);
-    final int rnd = MathHelper.clamp((int)(MathHelper.getPositionRandom(context.getPos()) & 0x3), 0, 3);
-    final Direction face = context.getFace();
-    final BlockState placement_state = super.getStateForPlacement(context).with(TEXTURE_VARIANT, rnd); // fluid state
-    if(face == Direction.UP) return placement_state.with(TYPE, SlabType.BOTTOM);
-    if(face == Direction.DOWN) return placement_state.with(TYPE, SlabType.TOP);
+    BlockPos pos = context.getClickedPos();
+    if(context.getLevel().getBlockState(pos).getBlock() == this) return context.getLevel().getBlockState(pos).setValue(TYPE, SlabType.DOUBLE).setValue(WATERLOGGED, false);
+    final int rnd = MathHelper.clamp((int)(MathHelper.getSeed(context.getClickedPos()) & 0x3), 0, 3);
+    final Direction face = context.getClickedFace();
+    final BlockState placement_state = super.getStateForPlacement(context).setValue(TEXTURE_VARIANT, rnd); // fluid state
+    if(face == Direction.UP) return placement_state.setValue(TYPE, SlabType.BOTTOM);
+    if(face == Direction.DOWN) return placement_state.setValue(TYPE, SlabType.TOP);
     if(!face.getAxis().isHorizontal()) return placement_state;
-    final boolean isupper = ((context.getHitVec().getY() - context.getPos().getY()) > 0.5);
-    return placement_state.with(TYPE, isupper ? SlabType.TOP : SlabType.BOTTOM);
+    final boolean isupper = ((context.getClickLocation().y() - context.getClickedPos().getY()) > 0.5);
+    return placement_state.setValue(TYPE, isupper ? SlabType.TOP : SlabType.BOTTOM);
   }
 
   @Override
   @SuppressWarnings("deprecation")
-  public boolean isReplaceable(BlockState state, BlockItemUseContext context)
+  public boolean canBeReplaced(BlockState state, BlockItemUseContext context)
   {
-    if(context.getItem().getItem() != this.asItem()) return false;
+    if(context.getItemInHand().getItem() != this.asItem()) return false;
     if(!context.replacingClickedOnBlock()) return true;
-    final Direction face = context.getFace();
-    final SlabType type = state.get(TYPE);
+    final Direction face = context.getClickedFace();
+    final SlabType type = state.getValue(TYPE);
     if((face == Direction.UP) && (type==SlabType.BOTTOM)) return true;
     if((face == Direction.DOWN) && (type==SlabType.TOP)) return true;
     if(!face.getAxis().isHorizontal()) return false;
-    final boolean isupper = ((context.getHitVec().getY() - context.getPos().getY()) > 0.5);
+    final boolean isupper = ((context.getClickLocation().y() - context.getClickedPos().getY()) > 0.5);
     return isupper ? (type==SlabType.BOTTOM) : (type==SlabType.TOP);
   }
 
@@ -152,48 +154,48 @@ public class VariantSlabBlock extends StandardBlocks.WaterLoggable implements St
 
   @Override
   public List<ItemStack> dropList(BlockState state, World world, TileEntity te, boolean explosion)
-  { return new ArrayList<ItemStack>(Collections.singletonList(new ItemStack(this.asItem(), num_slabs_contained_in_parts_[state.get(TYPE).ordinal() & 0x3]))); }
+  { return new ArrayList<ItemStack>(Collections.singletonList(new ItemStack(this.asItem(), num_slabs_contained_in_parts_[state.getValue(TYPE).ordinal() & 0x3]))); }
 
   @Override
   @SuppressWarnings("deprecation")
-  public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player)
+  public void attack(BlockState state, World world, BlockPos pos, PlayerEntity player)
   {
-    if((world.isRemote) || (!with_pickup)) return;
-    final ItemStack stack = player.getHeldItemMainhand();
-    if(stack.isEmpty() || (Block.getBlockFromItem(stack.getItem()) != this)) return;
+    if((world.isClientSide) || (!with_pickup)) return;
+    final ItemStack stack = player.getMainHandItem();
+    if(stack.isEmpty() || (Block.byItem(stack.getItem()) != this)) return;
     if(stack.getCount() >= stack.getMaxStackSize()) return;
-    Vector3d lv = player.getLookVec();
-    Direction facing = Direction.getFacingFromVector((float)lv.x, (float)lv.y, (float)lv.z);
+    Vector3d lv = player.getLookAngle();
+    Direction facing = Direction.getNearest((float)lv.x, (float)lv.y, (float)lv.z);
     if((facing != Direction.UP) && (facing != Direction.DOWN)) return;
     if(state.getBlock() != this) return;
-    SlabType type = state.get(TYPE);
+    SlabType type = state.getValue(TYPE);
     if(facing == Direction.DOWN) {
       if(type == SlabType.DOUBLE) {
-        world.setBlockState(pos, state.with(TYPE, SlabType.BOTTOM), 3);
+        world.setBlock(pos, state.setValue(TYPE, SlabType.BOTTOM), 3);
       } else {
         world.removeBlock(pos, false);
       }
     } else if(facing == Direction.UP) {
       if(type == SlabType.DOUBLE) {
-        world.setBlockState(pos, state.with(TYPE, SlabType.TOP), 3);
+        world.setBlock(pos, state.setValue(TYPE, SlabType.TOP), 3);
       } else {
         world.removeBlock(pos, false);
       }
     }
     if(!player.isCreative()) {
       stack.grow(1);
-      if(player.inventory != null) player.inventory.markDirty();
+      if(player.inventory != null) player.inventory.setChanged();
     }
     SoundType st = this.getSoundType(state, world, pos, null);
     world.playSound(player, pos, st.getPlaceSound(), SoundCategory.BLOCKS, (st.getVolume()+1f)/2.5f, 0.9f*st.getPitch());
   }
 
   @Override
-  public boolean receiveFluid(IWorld world, BlockPos pos, BlockState state, FluidState fluidState)
-  { return (state.get(TYPE)==SlabType.DOUBLE) ? false : super.receiveFluid(world, pos, state, fluidState); }
+  public boolean placeLiquid(IWorld world, BlockPos pos, BlockState state, FluidState fluidState)
+  { return (state.getValue(TYPE)==SlabType.DOUBLE) ? false : super.placeLiquid(world, pos, state, fluidState); }
 
   @Override
-  public boolean canContainFluid(IBlockReader world, BlockPos pos, BlockState state, Fluid fluid)
-  { return (state.get(TYPE)==SlabType.DOUBLE) ? false : super.canContainFluid(world, pos, state, fluid); }
+  public boolean canPlaceLiquid(IBlockReader world, BlockPos pos, BlockState state, Fluid fluid)
+  { return (state.getValue(TYPE)==SlabType.DOUBLE) ? false : super.canPlaceLiquid(world, pos, state, fluid); }
 
 }

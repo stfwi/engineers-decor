@@ -43,7 +43,7 @@ public class JEIPlugin implements mezz.jei.api.IModPlugin
     if(!ModConfig.isOptedOut(ModContent.CRAFTING_TABLE)) {
       try {
         registration.addRecipeTransferHandler(
-          EdCraftingTable.CraftingTableContainer.class,
+          EdCraftingTable.CraftingTableUiContainer.class,
           VanillaRecipeCategoryUid.CRAFTING,
           1, 9, 10, 36+CraftingTableTileEntity.NUM_OF_STORAGE_SLOTS
         );

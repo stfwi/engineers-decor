@@ -29,19 +29,19 @@ public class StandardStairsBlock extends StairsBlock implements StandardBlocks.I
 {
   private final long config;
 
-  public StandardStairsBlock(long config, BlockState state, Block.Properties properties)
+  public StandardStairsBlock(long config, BlockState state, AbstractBlock.Properties properties)
   { super(()->state, properties); this.config = config; }
 
-  public StandardStairsBlock(long config, java.util.function.Supplier<BlockState> state, Block.Properties properties)
+  public StandardStairsBlock(long config, java.util.function.Supplier<BlockState> state, AbstractBlock.Properties properties)
   { super(state, properties); this.config = config; }
 
   @Override
   @OnlyIn(Dist.CLIENT)
-  public void addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
+  public void appendHoverText(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
   { Auxiliaries.Tooltip.addInformation(stack, world, tooltip, flag, true); }
 
   @Override
-  public boolean canSpawnInBlock()
+  public boolean isPossibleToRespawnInThis()
   { return false; }
 
   @Override
@@ -50,6 +50,6 @@ public class StandardStairsBlock extends StairsBlock implements StandardBlocks.I
 
   @Override
   @SuppressWarnings("deprecation")
-  public PushReaction getPushReaction(BlockState state)
+  public PushReaction getPistonPushReaction(BlockState state)
   { return PushReaction.NORMAL; }
 }

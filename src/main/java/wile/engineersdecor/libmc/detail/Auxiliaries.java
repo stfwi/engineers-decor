@@ -78,20 +78,20 @@ public class Auxiliaries
   { return ModList.get().isLoaded(registry_name); }
 
   public static final boolean isDevelopmentMode()
-  { return SharedConstants.developmentMode; }
+  { return SharedConstants.IS_RUNNING_IN_IDE; }
 
   @OnlyIn(Dist.CLIENT)
   public static final boolean isShiftDown()
   {
-    return (InputMappings.isKeyDown(SidedProxy.mc().getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ||
-            InputMappings.isKeyDown(SidedProxy.mc().getMainWindow().getHandle(), GLFW.GLFW_KEY_RIGHT_SHIFT));
+    return (InputMappings.isKeyDown(SidedProxy.mc().getWindow().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT) ||
+            InputMappings.isKeyDown(SidedProxy.mc().getWindow().getWindow(), GLFW.GLFW_KEY_RIGHT_SHIFT));
   }
 
   @OnlyIn(Dist.CLIENT)
   public static final boolean isCtrlDown()
   {
-    return (InputMappings.isKeyDown(SidedProxy.mc().getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_CONTROL) ||
-            InputMappings.isKeyDown(SidedProxy.mc().getMainWindow().getHandle(), GLFW.GLFW_KEY_RIGHT_CONTROL));
+    return (InputMappings.isKeyDown(SidedProxy.mc().getWindow().getWindow(), GLFW.GLFW_KEY_LEFT_CONTROL) ||
+            InputMappings.isKeyDown(SidedProxy.mc().getWindow().getWindow(), GLFW.GLFW_KEY_RIGHT_CONTROL));
   }
 
   // -------------------------------------------------------------------------------------------------------------------
@@ -133,7 +133,7 @@ public class Auxiliaries
   public static String localize(String translationKey, Object... args)
   {
     TranslationTextComponent tr = new TranslationTextComponent(translationKey, args);
-    tr.mergeStyle(TextFormatting.RESET);
+    tr.withStyle(TextFormatting.RESET);
     final String ft = tr.getString();
     if(ft.contains("${")) {
       // Non-recursive, non-argument lang file entry cross referencing.
@@ -170,7 +170,7 @@ public class Auxiliaries
    */
   @OnlyIn(Dist.CLIENT)
   public static boolean hasTranslation(String key)
-  { return net.minecraft.client.resources.I18n.hasKey(key); }
+  { return net.minecraft.client.resources.I18n.exists(key); }
 
   public static final class Tooltip
   {
@@ -206,7 +206,7 @@ public class Auxiliaries
       if(tip_text.isEmpty()) return false;
       String[] tip_list = tip_text.split("\\r?\\n");
       for(String tip:tip_list) {
-        tooltip.add(new StringTextComponent(tip.replaceAll("\\s+$","").replaceAll("^\\s+", "")).mergeStyle(TextFormatting.GRAY));
+        tooltip.add(new StringTextComponent(tip.replaceAll("\\s+$","").replaceAll("^\\s+", "")).withStyle(TextFormatting.GRAY));
       }
       return true;
     }
@@ -218,13 +218,13 @@ public class Auxiliaries
      */
     @OnlyIn(Dist.CLIENT)
     public static boolean addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag, boolean addAdvancedTooltipHints)
-    { return addInformation(stack.getTranslationKey(), stack.getTranslationKey(), tooltip, flag, addAdvancedTooltipHints); }
+    { return addInformation(stack.getDescriptionId(), stack.getDescriptionId(), tooltip, flag, addAdvancedTooltipHints); }
 
     @OnlyIn(Dist.CLIENT)
     public static boolean addInformation(String translation_key, List<ITextComponent> tooltip)
     {
       if(!Auxiliaries.hasTranslation(translation_key)) return false;
-      tooltip.add(new StringTextComponent(localize(translation_key).replaceAll("\\s+$","").replaceAll("^\\s+", "")).mergeStyle(TextFormatting.GRAY));
+      tooltip.add(new StringTextComponent(localize(translation_key).replaceAll("\\s+$","").replaceAll("^\\s+", "")).withStyle(TextFormatting.GRAY));
       return true;
     }
 
@@ -238,7 +238,7 @@ public class Auxiliaries
   }
 
   public static @Nullable ITextComponent unserializeTextComponent(String serialized)
-  { return ITextComponent.Serializer.getComponentFromJson(serialized); }
+  { return ITextComponent.Serializer.fromJson(serialized); }
 
   public static String serializeTextComponent(ITextComponent tc)
   { return (tc==null) ? ("") : (ITextComponent.Serializer.toJson(tc)); }
@@ -252,7 +252,7 @@ public class Auxiliaries
    */
   public static @Nullable ITextComponent getItemLabel(ItemStack stack)
   {
-    CompoundNBT nbt = stack.getChildTag("display");
+    CompoundNBT nbt = stack.getTagElement("display");
     if(nbt != null && nbt.contains("Name", 8)) {
       try {
         ITextComponent tc = unserializeTextComponent(nbt.getString("Name"));
@@ -268,10 +268,10 @@ public class Auxiliaries
   public static ItemStack setItemLabel(ItemStack stack, @Nullable ITextComponent name)
   {
     if(name != null) {
-      CompoundNBT nbt = stack.getOrCreateChildTag("display");
+      CompoundNBT nbt = stack.getOrCreateTagElement("display");
       nbt.putString("Name", serializeTextComponent(name));
     } else {
-      if(stack.hasTag()) stack.removeChildTag("display");
+      if(stack.hasTag()) stack.removeTagKey("display");
     }
     return stack;
   }
@@ -286,7 +286,7 @@ public class Auxiliaries
   public static final AxisAlignedBB getRotatedAABB(AxisAlignedBB bb, Direction new_facing, boolean horizontal_rotation)
   {
     if(!horizontal_rotation) {
-      switch(new_facing.getIndex()) {
+      switch(new_facing.get3DDataValue()) {
         case 0: return new AxisAlignedBB(1-bb.maxX,   bb.minZ,   bb.minY, 1-bb.minX,   bb.maxZ,   bb.maxY); // D
         case 1: return new AxisAlignedBB(1-bb.maxX, 1-bb.maxZ, 1-bb.maxY, 1-bb.minX, 1-bb.minZ, 1-bb.minY); // U
         case 2: return new AxisAlignedBB(  bb.minX,   bb.minY,   bb.minZ,   bb.maxX,   bb.maxY,   bb.maxZ); // N --> bb
@@ -295,7 +295,7 @@ public class Auxiliaries
         case 5: return new AxisAlignedBB(1-bb.maxZ,   bb.minY,   bb.minX, 1-bb.minZ,   bb.maxY,   bb.maxX); // E
       }
     } else {
-      switch(new_facing.getIndex()) {
+      switch(new_facing.get3DDataValue()) {
         case 0: return new AxisAlignedBB(  bb.minX, bb.minY,   bb.minZ,   bb.maxX, bb.maxY,   bb.maxZ); // D --> bb
         case 1: return new AxisAlignedBB(  bb.minX, bb.minY,   bb.minZ,   bb.maxX, bb.maxY,   bb.maxZ); // U --> bb
         case 2: return new AxisAlignedBB(  bb.minX, bb.minY,   bb.minZ,   bb.maxX, bb.maxY,   bb.maxZ); // N --> bb
@@ -347,7 +347,7 @@ public class Auxiliaries
   public static final VoxelShape getUnionShape(AxisAlignedBB ... aabbs)
   {
     VoxelShape shape = VoxelShapes.empty();
-    for(AxisAlignedBB aabb: aabbs) shape = VoxelShapes.combineAndSimplify(shape, VoxelShapes.create(aabb), IBooleanFunction.OR);
+    for(AxisAlignedBB aabb: aabbs) shape = VoxelShapes.join(shape, VoxelShapes.create(aabb), IBooleanFunction.OR);
     return shape;
   }
 
@@ -355,7 +355,7 @@ public class Auxiliaries
   {
     VoxelShape shape = VoxelShapes.empty();
     for(AxisAlignedBB[] aabbs:aabb_list) {
-      for(AxisAlignedBB aabb: aabbs) shape = VoxelShapes.combine(shape, VoxelShapes.create(aabb), IBooleanFunction.OR);
+      for(AxisAlignedBB aabb: aabbs) shape = VoxelShapes.joinUnoptimized(shape, VoxelShapes.create(aabb), IBooleanFunction.OR);
     }
     return shape;
   }

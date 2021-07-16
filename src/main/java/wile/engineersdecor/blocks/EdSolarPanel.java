@@ -42,6 +42,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import net.minecraft.block.AbstractBlock;
+
 public class EdSolarPanel
 {
   public static void on_config(int peak_power_per_tick)
@@ -55,15 +57,15 @@ public class EdSolarPanel
   {
     public static final IntegerProperty EXPOSITION = IntegerProperty.create("exposition", 0, 4);
 
-    public SolarPanelBlock(long config, Block.Properties builder, final AxisAlignedBB[] unrotatedAABB)
+    public SolarPanelBlock(long config, AbstractBlock.Properties builder, final AxisAlignedBB[] unrotatedAABB)
     {
       super(config, builder, unrotatedAABB);
-      setDefaultState(super.getDefaultState().with(EXPOSITION, 1));
+      registerDefaultState(super.defaultBlockState().setValue(EXPOSITION, 1));
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-    { super.fillStateContainer(builder); builder.add(EXPOSITION); }
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    { super.createBlockStateDefinition(builder); builder.add(EXPOSITION); }
 
     @Override
     public boolean hasTileEntity(BlockState state)
@@ -76,10 +78,10 @@ public class EdSolarPanel
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
     {
-      if(world.isRemote()) return ActionResultType.SUCCESS;
-      TileEntity te = world.getTileEntity(pos);
+      if(world.isClientSide()) return ActionResultType.SUCCESS;
+      TileEntity te = world.getBlockEntity(pos);
       if(te instanceof SolarPanelTileEntity) ((SolarPanelTileEntity)te).state_message(player);
       return ActionResultType.CONSUME;
     }
@@ -100,8 +102,8 @@ public class EdSolarPanel
     public static final int ACCUMULATION_INTERVAL = 8;
     private static final Direction transfer_directions_[] = {Direction.DOWN, Direction.EAST, Direction.SOUTH, Direction.WEST, Direction.NORTH };
     private static int peak_power_per_tick_ = DEFAULT_PEAK_POWER;
-    private static int max_power_storage_ = 64000;
-    private static int max_feed_power = 8192;
+    private static final int max_power_storage_ = 64000;
+    private static final int max_feed_power = 8192;
     private static int feeding_threshold = max_power_storage_/5;
     private static int balancing_threshold = max_power_storage_/10;
     private int tick_timer_ = 0;
@@ -183,33 +185,33 @@ public class EdSolarPanel
     // TileEntity ------------------------------------------------------------------------------
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt)
-    { super.read(state, nbt); readnbt(nbt, false); }
+    public void load(BlockState state, CompoundNBT nbt)
+    { super.load(state, nbt); readnbt(nbt, false); }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt)
-    { super.write(nbt); writenbt(nbt, false); return nbt; }
+    public CompoundNBT save(CompoundNBT nbt)
+    { super.save(nbt); writenbt(nbt, false); return nbt; }
 
     @Override
-    public void remove()
+    public void setRemoved()
     {
-      super.remove();
+      super.setRemoved();
       energy_handler_.invalidate();
     }
 
     @Override
     public void tick()
     {
-      if((world.isRemote) || (--tick_timer_ > 0)) return;
+      if((level.isClientSide) || (--tick_timer_ > 0)) return;
       tick_timer_ = TICK_INTERVAL;
-      BlockState state = world.getBlockState(pos);
+      BlockState state = level.getBlockState(worldPosition);
       if(!(state.getBlock() instanceof SolarPanelBlock)) return;
       current_feedin_ = 0;
       final List<SolarPanelTileEntity> adjacent_panels = new ArrayList<>();
       if(output_enabled_) {
         for(int i=0; (i<transfer_directions_.length) && (accumulated_power_>0); ++i) {
           final Direction f = transfer_directions_[i];
-          TileEntity te = world.getTileEntity(pos.offset(f));
+          TileEntity te = level.getBlockEntity(worldPosition.relative(f));
           if(te==null) continue;
           IEnergyStorage es = te.getCapability(CapabilityEnergy.ENERGY, f.getOpposite()).orElse(null);
           if(es==null) continue;
@@ -233,17 +235,17 @@ public class EdSolarPanel
           if(accumulated_power_ < balancing_threshold) break;
         }
       }
-      if(!world.canBlockSeeSky(pos)) {
+      if(!level.canSeeSkyFromBelowWater(worldPosition)) {
         tick_timer_ = TICK_INTERVAL * 10;
         current_production_ = 0;
         if((accumulated_power_ > 0)) output_enabled_ = true;
-        if(state.get((SolarPanelBlock.EXPOSITION))!=2) world.setBlockState(pos, state.with(SolarPanelBlock.EXPOSITION, 2));
+        if(state.getValue((SolarPanelBlock.EXPOSITION))!=2) level.setBlockAndUpdate(worldPosition, state.setValue(SolarPanelBlock.EXPOSITION, 2));
         return;
       }
       if(accumulated_power_ <= 0) output_enabled_ = false;
       if(--recalc_timer_ > 0) return;
       recalc_timer_ = ACCUMULATION_INTERVAL + ((int)(Math.random()+.5));
-      int theta = ((((int)(world.getCelestialAngleRadians(1f) * (180.0/Math.PI)))+90) % 360);
+      int theta = ((((int)(level.getSunAngle(1f) * (180.0/Math.PI)))+90) % 360);
       int e = 2;
       if(theta > 340)      e = 2;
       else if(theta <  45) e = 0;
@@ -251,10 +253,10 @@ public class EdSolarPanel
       else if(theta < 100) e = 2;
       else if(theta < 135) e = 3;
       else if(theta < 190) e = 4;
-      BlockState nstate = state.with(SolarPanelBlock.EXPOSITION, e);
-      if(nstate != state) world.setBlockState(pos, nstate, 1|2);
-      final double eff = (1.0-((world.getRainStrength(1f)*0.6)+(world.getThunderStrength(1f)*0.3)));
-      final double ll = ((double)(world.getLightManager().getLightEngine(LightType.SKY).getLightFor(getPos())))/15;
+      BlockState nstate = state.setValue(SolarPanelBlock.EXPOSITION, e);
+      if(nstate != state) level.setBlock(worldPosition, nstate, 1|2);
+      final double eff = (1.0-((level.getRainLevel(1f)*0.6)+(level.getThunderLevel(1f)*0.3)));
+      final double ll = ((double)(level.getLightEngine().getLayerListener(LightType.SKY).getLightValue(getBlockPos())))/15;
       final double rf = Math.sin((Math.PI/2) * Math.sqrt(((double)(((theta<0)||(theta>180))?(0):((theta>90)?(180-theta):(theta))))/90));
       current_production_ = (int)(Math.min(rf*rf*eff*ll, 1) * peak_power_per_tick_);
       accumulated_power_ = Math.min(accumulated_power_ + (current_production_*(TICK_INTERVAL*ACCUMULATION_INTERVAL)), max_power_storage_);

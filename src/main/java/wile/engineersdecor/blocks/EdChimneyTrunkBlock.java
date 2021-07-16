@@ -20,10 +20,10 @@ import javax.annotation.Nullable;
 
 public class EdChimneyTrunkBlock extends EdRoofBlock implements IDecorBlock
 {
-  public EdChimneyTrunkBlock(long config, Block.Properties properties)
-  { super(config, properties.variableOpacity(), VoxelShapes.empty(), VoxelShapes.empty()); }
+  public EdChimneyTrunkBlock(long config, AbstractBlock.Properties properties)
+  { super(config, properties.dynamicShape(), VoxelShapes.empty(), VoxelShapes.empty()); }
 
-  public EdChimneyTrunkBlock(long config, Block.Properties properties, VoxelShape add, VoxelShape cut)
+  public EdChimneyTrunkBlock(long config, AbstractBlock.Properties properties, VoxelShape add, VoxelShape cut)
   { super(config, properties, add, cut); }
 
   @Override
@@ -31,6 +31,6 @@ public class EdChimneyTrunkBlock extends EdRoofBlock implements IDecorBlock
   public BlockState getStateForPlacement(BlockItemUseContext context)
   {
     BlockState state = super.getStateForPlacement(context);
-    return (state==null) ? (state) : (state.with(EdRoofBlock.SHAPE, StairsShape.STRAIGHT).with(EdRoofBlock.HALF, Half.BOTTOM));
+    return (state==null) ? (state) : (state.setValue(EdRoofBlock.SHAPE, StairsShape.STRAIGHT).setValue(EdRoofBlock.HALF, Half.BOTTOM));
   }
 }

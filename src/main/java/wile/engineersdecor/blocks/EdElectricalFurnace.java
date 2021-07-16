@@ -13,6 +13,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -63,6 +64,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Random;
 
+
 public class EdElectricalFurnace
 {
   public static void on_config(int speed_percent, int standard_energy_per_tick, boolean with_automatic_inventory_pulling)
@@ -74,7 +76,7 @@ public class EdElectricalFurnace
 
   public static class ElectricalFurnaceBlock extends EdFurnace.FurnaceBlock implements IDecorBlock
   {
-    public ElectricalFurnaceBlock(long config, Block.Properties builder, final AxisAlignedBB[] unrotatedAABBs)
+    public ElectricalFurnaceBlock(long config, AbstractBlock.Properties builder, final AxisAlignedBB[] unrotatedAABBs)
     { super(config, builder, unrotatedAABBs); }
 
     @Override
@@ -83,31 +85,31 @@ public class EdElectricalFurnace
     { return new EdElectricalFurnace.ElectricalFurnaceTileEntity(); }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
     {
-      if(world.isRemote()) return ActionResultType.SUCCESS;
-      final TileEntity te = world.getTileEntity(pos);
+      if(world.isClientSide()) return ActionResultType.SUCCESS;
+      final TileEntity te = world.getBlockEntity(pos);
       if(!(te instanceof EdElectricalFurnace.ElectricalFurnaceTileEntity)) return ActionResultType.FAIL;
       if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return ActionResultType.FAIL;
       NetworkHooks.openGui((ServerPlayerEntity)player,(INamedContainerProvider)te);
-      player.addStat(Stats.INTERACT_WITH_FURNACE);
+      player.awardStat(Stats.INTERACT_WITH_FURNACE);
       return ActionResultType.CONSUME;
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
     {
-      world.setBlockState(pos, state.with(LIT, false));
-      if(world.isRemote) return;
+      world.setBlockAndUpdate(pos, state.setValue(LIT, false));
+      if(world.isClientSide) return;
       if((!stack.hasTag()) || (!stack.getTag().contains("inventory"))) return;
       CompoundNBT inventory_nbt = stack.getTag().getCompound("inventory");
       if(inventory_nbt.isEmpty()) return;
-      final TileEntity te = world.getTileEntity(pos);
+      final TileEntity te = world.getBlockEntity(pos);
       if(!(te instanceof EdElectricalFurnace.ElectricalFurnaceTileEntity)) return;
       ElectricalFurnaceTileEntity bte = (EdElectricalFurnace.ElectricalFurnaceTileEntity)te;
       bte.readnbt(inventory_nbt);
-      bte.markDirty();
-      world.setBlockState(pos, state.with(LIT, bte.burning()));
+      bte.setChanged();
+      world.setBlockAndUpdate(pos, state.setValue(LIT, bte.burning()));
     }
 
     @Override
@@ -150,7 +152,7 @@ public class EdElectricalFurnace
     private static int energy_consumption_ = DEFAULT_SCALED_ENERGY_CONSUMPTION;
     private static int transfer_energy_consumption_ = DEFAULT_SCALED_ENERGY_CONSUMPTION / 8;
     private static int proc_speed_percent_ = DEFAULT_SPEED_PERCENT;
-    private static double speed_setting_factor_[] = {0.0, 1.0, 1.5, 2.0};
+    private static final double speed_setting_factor_[] = {0.0, 1.0, 1.5, 2.0};
 
     public static void on_config(int speed_percent, int standard_energy_per_tick, boolean with_automatic_inventory_pulling)
     {
@@ -198,7 +200,7 @@ public class EdElectricalFurnace
 
     public void reset()
     {
-      inventory_.clear();
+      inventory_.clearContent();
       burntime_left_ = 0;
       proc_time_elapsed_ = 0;
       proc_time_needed_ = 0;
@@ -216,7 +218,7 @@ public class EdElectricalFurnace
       proc_time_needed_ = nbt.getInt("CookTimeTotal");
       xp_stored_ = nbt.getFloat("XpStored");
       speed_ = nbt.getInt("SpeedSetting");
-      speed_ = (speed_ < 0) ? (1) : ((speed_>MAX_SPEED_SETTING) ? MAX_SPEED_SETTING : speed_);
+      speed_ = (speed_ < 0) ? (1) : (Math.min(speed_, MAX_SPEED_SETTING));
       battery_.load(nbt, "Energy");
       inventory_.load(nbt);
     }
@@ -235,26 +237,26 @@ public class EdElectricalFurnace
     public int getComparatorOutput()
     {
       return (battery_.isEmpty()) ? (0) : (
-        (inventory_.getStackInSlot(FIFO_INPUT_1_SLOT_NO).isEmpty() ? 0 : 5) +
-        (inventory_.getStackInSlot(FIFO_INPUT_0_SLOT_NO).isEmpty() ? 0 : 5) +
-        (inventory_.getStackInSlot(SMELTING_INPUT_SLOT_NO).isEmpty() ? 0 : 5)
+        (inventory_.getItem(FIFO_INPUT_1_SLOT_NO).isEmpty() ? 0 : 5) +
+        (inventory_.getItem(FIFO_INPUT_0_SLOT_NO).isEmpty() ? 0 : 5) +
+        (inventory_.getItem(SMELTING_INPUT_SLOT_NO).isEmpty() ? 0 : 5)
       );
     }
 
     // TileEntity ------------------------------------------------------------------------------
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt)
-    { super.read(state, nbt); readnbt(nbt); }
+    public void load(BlockState state, CompoundNBT nbt)
+    { super.load(state, nbt); readnbt(nbt); }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt)
-    { super.write(nbt); writenbt(nbt); return nbt; }
+    public CompoundNBT save(CompoundNBT nbt)
+    { super.save(nbt); writenbt(nbt); return nbt; }
 
     @Override
-    public void remove()
+    public void setRemoved()
     {
-      super.remove();
+      super.setRemoved();
       item_handler_.invalidate();
       energy_handler_.invalidate();
     }
@@ -263,13 +265,13 @@ public class EdElectricalFurnace
 
     @Override
     public ITextComponent getName()
-    { final Block block=getBlockState().getBlock(); return new StringTextComponent((block!=null) ? block.getTranslationKey() : "Small electrical furnace"); }
+    { final Block block=getBlockState().getBlock(); return new StringTextComponent((block!=null) ? block.getDescriptionId() : "Small electrical furnace"); }
 
     // IContainerProvider ----------------------------------------------------------------------
 
     @Override
     public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player )
-    { return new EdElectricalFurnace.ElectricalFurnaceContainer(id, inventory, inventory_, IWorldPosCallable.of(world, pos), fields); }
+    { return new EdElectricalFurnace.ElectricalFurnaceContainer(id, inventory, inventory_, IWorldPosCallable.create(level, worldPosition), fields); }
 
     // Fields -----------------------------------------------------------------------------------------------
 
@@ -323,11 +325,11 @@ public class EdElectricalFurnace
     {
       if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
-      if(!(world.getBlockState(pos).getBlock() instanceof ElectricalFurnaceBlock)) return;
+      if(!(level.getBlockState(worldPosition).getBlock() instanceof ElectricalFurnaceBlock)) return;
       final boolean was_burning = burning();
       if(was_burning) burntime_left_ -= TICK_INTERVAL;
       if(burntime_left_ < 0) burntime_left_ = 0;
-      if(world.isRemote()) return;
+      if(level.isClientSide()) return;
       int battery_energy = battery_.getEnergyStored();
       boolean update_blockstate = (was_burning != burning());
       boolean dirty = update_blockstate;
@@ -345,15 +347,15 @@ public class EdElectricalFurnace
       } else if(battery_.getEnergyStored() >= (MAX_ENERGY_BUFFER/2)) {
         enabled_ = true;
       }
-      if((!(inventory_.getStackInSlot(SMELTING_INPUT_SLOT_NO)).isEmpty()) && (enabled_) && (speed_>0)) {
-        IRecipe last_recipe = currentRecipe();
+      if((!(inventory_.getItem(SMELTING_INPUT_SLOT_NO)).isEmpty()) && (enabled_) && (speed_>0)) {
+        IRecipe<?> last_recipe = currentRecipe();
         updateCurrentRecipe();
         if(currentRecipe() != last_recipe) {
           proc_time_elapsed_ = 0;
-          proc_time_needed_ = getSmeltingTimeNeeded(world, inventory_.getStackInSlot(SMELTING_INPUT_SLOT_NO));
+          proc_time_needed_ = getSmeltingTimeNeeded(level, inventory_.getItem(SMELTING_INPUT_SLOT_NO));
         }
         final boolean can_smelt = canSmeltCurrentItem();
-        if((!can_smelt) && (getSmeltingResult(inventory_.getStackInSlot(SMELTING_INPUT_SLOT_NO)).isEmpty())) {
+        if((!can_smelt) && (getSmeltingResult(inventory_.getItem(SMELTING_INPUT_SLOT_NO)).isEmpty())) {
           // bypass
           if(transferItems(SMELTING_INPUT_SLOT_NO, SMELTING_OUTPUT_SLOT_NO, 1)) dirty = true;
         } else {
@@ -367,7 +369,7 @@ public class EdElectricalFurnace
             proc_time_elapsed_ += (int)(TICK_INTERVAL * proc_speed_percent_ * speed_setting_factor_[speed] / 100);
             if(proc_time_elapsed_ >= proc_time_needed_) {
               proc_time_elapsed_ = 0;
-              proc_time_needed_ = getSmeltingTimeNeeded(world, inventory_.getStackInSlot(SMELTING_INPUT_SLOT_NO));
+              proc_time_needed_ = getSmeltingTimeNeeded(level, inventory_.getItem(SMELTING_INPUT_SLOT_NO));
               smeltCurrentItem();
               dirty = true;
               shift_out = true;
@@ -377,7 +379,7 @@ public class EdElectricalFurnace
           }
         }
       } else if(proc_time_elapsed_ > 0) {
-        proc_time_elapsed_ -= ((inventory_.getStackInSlot(SMELTING_INPUT_SLOT_NO)).isEmpty() ? 20 : 1);
+        proc_time_elapsed_ -= ((inventory_.getItem(SMELTING_INPUT_SLOT_NO)).isEmpty() ? 20 : 1);
         if(proc_time_elapsed_ < 0) { proc_time_elapsed_ = 0; shift_out = true; update_blockstate = true; }
       }
       if(update_blockstate) {
@@ -394,7 +396,7 @@ public class EdElectricalFurnace
         power_consumption_accumulator_ = 0;
         power_consumption_timer_ = 0;
       }
-      if(dirty) markDirty();
+      if(dirty) setChanged();
     }
 
     // Furnace --------------------------------------------------------------------------------------
@@ -404,14 +406,14 @@ public class EdElectricalFurnace
 
     private boolean transferItems(final int index_from, final int index_to, int count)
     {
-      ItemStack from = inventory_.getStackInSlot(index_from);
+      ItemStack from = inventory_.getItem(index_from);
       if(from.isEmpty()) return false;
-      ItemStack to = inventory_.getStackInSlot(index_to);
+      ItemStack to = inventory_.getItem(index_to);
       if(from.getCount() < count) count = from.getCount();
       if(count <= 0) return false;
       boolean changed = true;
       if(to.isEmpty()) {
-        inventory_.setInventorySlotContents(index_to, from.split(count));
+        inventory_.setItem(index_to, from.split(count));
       } else if(to.getCount() >= to.getMaxStackSize()) {
         changed = false;
       } else if(Inventories.areItemStacksDifferent(from, to)) {
@@ -426,7 +428,7 @@ public class EdElectricalFurnace
         }
       }
       if(from.isEmpty() && from!=ItemStack.EMPTY) {
-        inventory_.setInventorySlotContents(index_from, ItemStack.EMPTY);
+        inventory_.setItem(index_from, ItemStack.EMPTY);
         changed = true;
       }
       return changed;
@@ -436,28 +438,28 @@ public class EdElectricalFurnace
     {
       boolean dirty = false;
       if(battery_.getEnergyStored() < transfer_energy_consumption_) return false;
-      final BlockState state = world.getBlockState(pos);
+      final BlockState state = level.getBlockState(worldPosition);
       if(!(state.getBlock() instanceof ElectricalFurnaceBlock)) return false;
-      final Direction out_facing = state.get(ElectricalFurnaceBlock.HORIZONTAL_FACING);
-      if(out && (!inventory_.getStackInSlot(FIFO_OUTPUT_1_SLOT_NO).isEmpty())) {
-        TileEntity te = world.getTileEntity(pos.offset(out_facing));
+      final Direction out_facing = state.getValue(ElectricalFurnaceBlock.HORIZONTAL_FACING);
+      if(out && (!inventory_.getItem(FIFO_OUTPUT_1_SLOT_NO).isEmpty())) {
+        TileEntity te = level.getBlockEntity(worldPosition.relative(out_facing));
         if(te!=null) {
           IItemHandler hnd = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, out_facing).orElse(null);
           if(hnd != null) {
-            ItemStack remaining = ItemHandlerHelper.insertItemStacked(hnd, inventory_.getStackInSlot(FIFO_OUTPUT_1_SLOT_NO).copy(), false);
-            inventory_.setInventorySlotContents(FIFO_OUTPUT_1_SLOT_NO, remaining);
+            ItemStack remaining = ItemHandlerHelper.insertItemStacked(hnd, inventory_.getItem(FIFO_OUTPUT_1_SLOT_NO).copy(), false);
+            inventory_.setItem(FIFO_OUTPUT_1_SLOT_NO, remaining);
             battery_.draw(transfer_energy_consumption_);
             dirty = true;
           }
         }
       }
-      if(with_automatic_inventory_pulling_ || is_accepted_hopper(inventory_.getStackInSlot(SMELTING_AUX_SLOT_NO))) {
-        final Direction inp_facing = state.get(ElectricalFurnaceBlock.HORIZONTAL_FACING).getOpposite();
-        if(inp && (inventory_.getStackInSlot(FIFO_INPUT_1_SLOT_NO).isEmpty()) && (battery_.getEnergyStored() >= transfer_energy_consumption_)) {
+      if(with_automatic_inventory_pulling_ || is_accepted_hopper(inventory_.getItem(SMELTING_AUX_SLOT_NO))) {
+        final Direction inp_facing = state.getValue(ElectricalFurnaceBlock.HORIZONTAL_FACING).getOpposite();
+        if(inp && (inventory_.getItem(FIFO_INPUT_1_SLOT_NO).isEmpty()) && (battery_.getEnergyStored() >= transfer_energy_consumption_)) {
           final int max_count = MathHelper.clamp((transfer_energy_consumption_ <= 0) ? (64) : (battery_.getEnergyStored()/transfer_energy_consumption_), 1, 64);
-          final ItemStack retrieved = Inventories.extract(Inventories.itemhandler(world, pos.offset(inp_facing), inp_facing), null, max_count, false);
+          final ItemStack retrieved = Inventories.extract(Inventories.itemhandler(level, worldPosition.relative(inp_facing), inp_facing), null, max_count, false);
           if(!retrieved.isEmpty()) {
-            inventory_.setInventorySlotContents(FIFO_INPUT_1_SLOT_NO, retrieved);
+            inventory_.setItem(FIFO_INPUT_1_SLOT_NO, retrieved);
             battery_.draw(max_count * transfer_energy_consumption_);
             dirty = true;
           }
@@ -490,9 +492,9 @@ public class EdElectricalFurnace
 
     private void sync_blockstate()
     {
-      final BlockState state = world.getBlockState(pos);
-      if((state.getBlock() instanceof ElectricalFurnaceBlock) && (state.get(ElectricalFurnaceBlock.LIT) != burning())) {
-        world.setBlockState(pos, state.with(ElectricalFurnaceBlock.LIT, burning()), 2);
+      final BlockState state = level.getBlockState(worldPosition);
+      if((state.getBlock() instanceof ElectricalFurnaceBlock) && (state.getValue(ElectricalFurnaceBlock.LIT) != burning())) {
+        level.setBlock(worldPosition, state.setValue(ElectricalFurnaceBlock.LIT, burning()), 2);
       }
     }
 
@@ -514,10 +516,10 @@ public class EdElectricalFurnace
     public int field(int index) { return fields_.get(index); }
     public PlayerEntity player() { return player_ ; }
     public IInventory inventory() { return inventory_ ; }
-    public World world() { return player_.world; }
+    public World world() { return player_.level; }
 
     public ElectricalFurnaceContainer(int cid, PlayerInventory player_inventory)
-    { this(cid, player_inventory, new Inventory(ElectricalFurnaceTileEntity.NUM_OF_SLOTS), IWorldPosCallable.DUMMY, new IntArray(ElectricalFurnaceTileEntity.NUM_OF_FIELDS)); }
+    { this(cid, player_inventory, new Inventory(ElectricalFurnaceTileEntity.NUM_OF_SLOTS), IWorldPosCallable.NULL, new IntArray(ElectricalFurnaceTileEntity.NUM_OF_FIELDS)); }
 
     private ElectricalFurnaceContainer(int cid, PlayerInventory player_inventory, IInventory block_inventory, IWorldPosCallable wpc, IIntArray fields)
     {
@@ -542,42 +544,42 @@ public class EdElectricalFurnace
           addSlot(new Slot(player_inventory, x+y*9+9, 8+x*18, 86+y*18)); // player slots: 9..35
         }
       }
-      this.trackIntArray(fields_); // === Add reference holders
+      this.addDataSlots(fields_); // === Add reference holders
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity player)
-    { return inventory_.isUsableByPlayer(player); }
+    public boolean stillValid(PlayerEntity player)
+    { return inventory_.stillValid(player); }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity player, int index)
+    public ItemStack quickMoveStack(PlayerEntity player, int index)
     {
       Slot slot = getSlot(index);
-      if((slot==null) || (!slot.getHasStack())) return ItemStack.EMPTY;
-      ItemStack slot_stack = slot.getStack();
+      if((slot==null) || (!slot.hasItem())) return ItemStack.EMPTY;
+      ItemStack slot_stack = slot.getItem();
       ItemStack transferred = slot_stack.copy();
       if((index==2) || (index==5) || (index==6)) {
         // Output slots
-        if(!mergeItemStack(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+36, true)) return ItemStack.EMPTY;
-        slot.onSlotChange(slot_stack, transferred);
+        if(!moveItemStackTo(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+36, true)) return ItemStack.EMPTY;
+        slot.onQuickCraft(slot_stack, transferred);
       } else if((index==0) || (index==3) || (index==4)) {
         // Input slots
-        if(!mergeItemStack(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+36, false)) return ItemStack.EMPTY;
+        if(!moveItemStackTo(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+36, false)) return ItemStack.EMPTY;
       } else if(index==1) {
         // Bypass slot
-        if(!mergeItemStack(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+36, false)) return ItemStack.EMPTY;
+        if(!moveItemStackTo(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+36, false)) return ItemStack.EMPTY;
       } else if((index >= PLAYER_INV_START_SLOTNO) && (index <= PLAYER_INV_START_SLOTNO+36)) {
         // Player inventory
         if(ElectricalFurnaceTileEntity.canSmelt(world(), slot_stack)) {
           if(
-            (!mergeItemStack(slot_stack, 0, 1, false)) && // smelting input
-            (!mergeItemStack(slot_stack, 3, 4, false)) && // fifo0
-            (!mergeItemStack(slot_stack, 4, 5, false))    // fifo1
+            (!moveItemStackTo(slot_stack, 0, 1, false)) && // smelting input
+            (!moveItemStackTo(slot_stack, 3, 4, false)) && // fifo0
+            (!moveItemStackTo(slot_stack, 4, 5, false))    // fifo1
           ) return ItemStack.EMPTY;
         } else if((index >= PLAYER_INV_START_SLOTNO) && (index < PLAYER_INV_START_SLOTNO+27)) {
           // player inventory --> player hotbar
-          if(!mergeItemStack(slot_stack, PLAYER_INV_START_SLOTNO+27, PLAYER_INV_START_SLOTNO+36, false)) return ItemStack.EMPTY;
-        } else if((index >= PLAYER_INV_START_SLOTNO+27) && (index < PLAYER_INV_START_SLOTNO+36) && (!mergeItemStack(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+27, false))) {
+          if(!moveItemStackTo(slot_stack, PLAYER_INV_START_SLOTNO+27, PLAYER_INV_START_SLOTNO+36, false)) return ItemStack.EMPTY;
+        } else if((index >= PLAYER_INV_START_SLOTNO+27) && (index < PLAYER_INV_START_SLOTNO+36) && (!moveItemStackTo(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+27, false))) {
           // player hotbar --> player inventory
           return ItemStack.EMPTY;
         }
@@ -586,9 +588,9 @@ public class EdElectricalFurnace
         return ItemStack.EMPTY;
       }
       if(slot_stack.isEmpty()) {
-        slot.putStack(ItemStack.EMPTY);
+        slot.set(ItemStack.EMPTY);
       } else {
-        slot.onSlotChanged();
+        slot.setChanged();
       }
       if(slot_stack.getCount() == transferred.getCount()) return ItemStack.EMPTY;
       slot.onTake(player, slot_stack);
@@ -599,11 +601,11 @@ public class EdElectricalFurnace
 
     @OnlyIn(Dist.CLIENT)
     public void onGuiAction(CompoundNBT nbt)
-    { Networking.PacketContainerSyncClientToServer.sendToServer(windowId, nbt); }
+    { Networking.PacketContainerSyncClientToServer.sendToServer(containerId, nbt); }
 
     @OnlyIn(Dist.CLIENT)
     public void onGuiAction(String key, int value)
-    { CompoundNBT nbt=new CompoundNBT(); nbt.putInt(key, value); Networking.PacketContainerSyncClientToServer.sendToServer(windowId, nbt); }
+    { CompoundNBT nbt=new CompoundNBT(); nbt.putInt(key, value); Networking.PacketContainerSyncClientToServer.sendToServer(containerId, nbt); }
 
     @Override
     public void onServerPacketReceived(int windowId, CompoundNBT nbt)
@@ -614,7 +616,7 @@ public class EdElectricalFurnace
       if(!(inventory_ instanceof StorageInventory)) return;
       ElectricalFurnaceTileEntity te = (ElectricalFurnaceTileEntity)(((StorageInventory)inventory_).getTileEntity());
       if(nbt.contains("speed")) te.speed_ = MathHelper.clamp(nbt.getInt("speed"), 0, ElectricalFurnaceTileEntity.MAX_SPEED_SETTING);
-      te.markDirty();
+      te.setChanged();
     }
   }
 
@@ -635,15 +637,15 @@ public class EdElectricalFurnace
     public void init()
     {
       super.init();
-      final String prefix = ModContent.SMALL_ELECTRICAL_FURNACE.getTranslationKey() + ".tooltips.";
+      final String prefix = ModContent.SMALL_ELECTRICAL_FURNACE.getDescriptionId() + ".tooltips.";
       final int x0 = getGuiLeft(), y0 = getGuiTop();
-      final Slot aux = container.getSlot(ElectricalFurnaceTileEntity.SMELTING_AUX_SLOT_NO);
+      final Slot aux = menu.getSlot(ElectricalFurnaceTileEntity.SMELTING_AUX_SLOT_NO);
       tooltip_.init(
         new TipRange(x0+135, y0+50, 25, 25, new TranslationTextComponent(prefix + "speed")),
-        new TipRange(x0+aux.xPos, y0+aux.yPos, 16, 16, new TranslationTextComponent(prefix + "auxslot")),
+        new TipRange(x0+aux.x, y0+aux.y, 16, 16, new TranslationTextComponent(prefix + "auxslot")),
         new TipRange(x0+80, y0+55, 50, 14, ()->{
-          final int soc = getContainer().field(1) * 100 / Math.max(getContainer().field(5), 1);
-          final int consumption = getContainer().field(7);
+          final int soc = getMenu().field(1) * 100 / Math.max(getMenu().field(5), 1);
+          final int consumption = getMenu().field(7);
           return new TranslationTextComponent(prefix + "capacitors", soc, consumption);
         })
       );
@@ -654,23 +656,23 @@ public class EdElectricalFurnace
     {
       renderBackground(mx);
       super.render(mx, mouseX, mouseY, partialTicks);
-      if(!tooltip_.render(mx, this, mouseX, mouseY)) renderHoveredTooltip(mx, mouseX, mouseY);
+      if(!tooltip_.render(mx, this, mouseX, mouseY)) renderTooltip(mx, mouseX, mouseY);
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(MatrixStack mx, int x, int y)
+    protected void renderLabels(MatrixStack mx, int x, int y)
     {}
 
     @Override
     @SuppressWarnings("deprecation")
-    protected void drawGuiContainerBackgroundLayer(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
+    protected void renderBg(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
     {
       RenderSystem.enableBlend();
       RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-      getMinecraft().getTextureManager().bindTexture(new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/small_electrical_furnace_gui.png"));
-      final int x0=guiLeft, y0=guiTop, w=xSize, h=ySize;
+      getMinecraft().getTextureManager().bind(new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/small_electrical_furnace_gui.png"));
+      final int x0=leftPos, y0=topPos, w=imageWidth, h=imageHeight;
       blit(mx, x0, y0, 0, 0, w, h);
-      if(getContainer().field(6)!=0)  {
+      if(getMenu().field(6)!=0)  {
         final int hi = 13;
         final int k = heat_px(hi);
         blit(mx, x0+62, y0+55+hi-k, 177, hi-k, 13, k);
@@ -678,7 +680,7 @@ public class EdElectricalFurnace
       blit(mx, x0+79, y0+30, 176, 15, 1+progress_px(17), 15);
       int we = energy_px(32, 8);
       if(we>0) blit(mx, x0+90, y0+54, 185, 30, we, 13);
-      switch(getContainer().field(4)) {
+      switch(getMenu().field(4)) {
         case 0: blit(mx, x0+144, y0+57, 180, 57, 6, 9); break;
         case 1: blit(mx, x0+142, y0+58, 190, 58, 9, 6); break;
         case 2: blit(mx, x0+144, y0+56, 200, 57, 6, 9); break;
@@ -692,35 +694,35 @@ public class EdElectricalFurnace
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
       tooltip_.resetTimer();
-      ElectricalFurnaceContainer container = (ElectricalFurnaceContainer)getContainer();
+      ElectricalFurnaceContainer container = (ElectricalFurnaceContainer)getMenu();
       int mx = (int)(mouseX - getGuiLeft() + .5), my = (int)(mouseY - getGuiTop() + .5);
-      if((!isPointInRegion(136, 48, 28, 28, mouseX, mouseY))) {
+      if((!isHovering(136, 48, 28, 28, mouseX, mouseY))) {
         return super.mouseClicked(mouseX, mouseY, mouseButton);
-      } else if(isPointInRegion(144, 64, 6, 10, mouseX, mouseY)) {
+      } else if(isHovering(144, 64, 6, 10, mouseX, mouseY)) {
         container.onGuiAction("speed", 0);
-      } else if(isPointInRegion(134, 58, 10, 6, mouseX, mouseY)) {
+      } else if(isHovering(134, 58, 10, 6, mouseX, mouseY)) {
         container.onGuiAction("speed", 1);
-      } else if(isPointInRegion(144, 48, 6, 10, mouseX, mouseY)) {
+      } else if(isHovering(144, 48, 6, 10, mouseX, mouseY)) {
         container.onGuiAction("speed", 2);
-      } else if(isPointInRegion(150, 58, 10, 6, mouseX, mouseY)) {
+      } else if(isHovering(150, 58, 10, 6, mouseX, mouseY)) {
         container.onGuiAction("speed", 3);
       }
       return true;
     }
 
     private int progress_px(int pixels)
-    { final int tc=getContainer().field(2), T=getContainer().field(3); return ((T>0) && (tc>0)) ? (tc * pixels / T) : (0); }
+    { final int tc=getMenu().field(2), T=getMenu().field(3); return ((T>0) && (tc>0)) ? (tc * pixels / T) : (0); }
 
     private int heat_px(int pixels)
     {
-      int k = ((getContainer().field(0) * (pixels+1)) / (EdElectricalFurnace.ElectricalFurnaceTileEntity.HEAT_CAPACITY));
-      return (k < pixels) ? k : pixels;
+      int k = ((getMenu().field(0) * (pixels+1)) / (EdElectricalFurnace.ElectricalFurnaceTileEntity.HEAT_CAPACITY));
+      return Math.min(k, pixels);
     }
 
     private int energy_px(int maxwidth, int quantization)
     {
-      int emax = getContainer().field(5);
-      int k = ((maxwidth * getContainer().field(1) * 9) / 8) / ((emax>0?emax:1)+1);
+      int emax = getMenu().field(5);
+      int k = ((maxwidth * getMenu().field(1) * 9) / 8) / ((emax>0?emax:1)+1);
       k = (k >= maxwidth-2) ? maxwidth : k;
       if(quantization > 0) k = ((k+(quantization/2))/quantization) * quantization;
       return k;

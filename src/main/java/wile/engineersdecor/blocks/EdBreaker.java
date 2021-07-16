@@ -19,6 +19,7 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.Block;
@@ -50,6 +51,7 @@ import java.util.List;
 import java.util.Random;
 
 
+
 public class EdBreaker
 {
   public static void on_config(int boost_energy_per_tick, int breaking_time_per_hardness, int min_breaking_time_ticks, boolean power_required)
@@ -63,17 +65,17 @@ public class EdBreaker
   {
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
-    public BreakerBlock(long config, Block.Properties builder, final AxisAlignedBB[] unrotatedAABBs)
+    public BreakerBlock(long config, AbstractBlock.Properties builder, final AxisAlignedBB[] unrotatedAABBs)
     { super(config, builder, unrotatedAABBs); }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-    { super.fillStateContainer(builder); builder.add(ACTIVE); }
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    { super.createBlockStateDefinition(builder); builder.add(ACTIVE); }
 
     @Override
     @Nullable
     public BlockState getStateForPlacement(BlockItemUseContext context)
-    { return super.getStateForPlacement(context).with(ACTIVE, false); }
+    { return super.getStateForPlacement(context).setValue(ACTIVE, false); }
 
     @Override
     public boolean hasTileEntity(BlockState state)
@@ -87,12 +89,12 @@ public class EdBreaker
     @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, World world, BlockPos pos, Random rnd)
     {
-      if((state.getBlock()!=this) || (!state.get(ACTIVE))) return;
+      if((state.getBlock()!=this) || (!state.getValue(ACTIVE))) return;
       final double rv = rnd.nextDouble();
       if(rv > 0.8) return;
       final double x=0.5+pos.getX(), y=0.5+pos.getY(), z=0.5+pos.getZ();
       final double xc=0.52, xr=rnd.nextDouble()*0.4-0.2, yr=(y-0.3+rnd.nextDouble()*0.2);
-      switch(state.get(HORIZONTAL_FACING)) {
+      switch(state.getValue(HORIZONTAL_FACING)) {
         case WEST:  world.addParticle(ParticleTypes.SMOKE, x-xc, yr, z+xr, 0.0, 0.0, 0.0); break;
         case EAST:  world.addParticle(ParticleTypes.SMOKE, x+xc, yr, z+xr, 0.0, 0.0, 0.0); break;
         case NORTH: world.addParticle(ParticleTypes.SMOKE, x+xr, yr, z-xc, 0.0, 0.0, 0.0); break;
@@ -104,33 +106,33 @@ public class EdBreaker
     @SuppressWarnings("deprecation")
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean unused)
     {
-      if(!(world instanceof World) || (((World) world).isRemote)) return;
-      TileEntity te = world.getTileEntity(pos);
+      if(!(world instanceof World) || (((World) world).isClientSide)) return;
+      TileEntity te = world.getBlockEntity(pos);
       if(!(te instanceof BreakerTileEntity)) return;
       ((BreakerTileEntity)te).block_updated();
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean canProvidePower(BlockState state)
+    public boolean isSignalSource(BlockState state)
     { return true; }
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
+    public int getSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
     { return 0; }
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
+    public int getDirectSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
     { return 0; }
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
     {
-      if(world.isRemote()) return ActionResultType.SUCCESS;
-      TileEntity te = world.getTileEntity(pos);
+      if(world.isClientSide()) return ActionResultType.SUCCESS;
+      TileEntity te = world.getBlockEntity(pos);
       if(te instanceof BreakerTileEntity) ((BreakerTileEntity)te).state_message(player);
       return ActionResultType.CONSUME;
     }
@@ -202,17 +204,17 @@ public class EdBreaker
     // TileEntity ------------------------------------------------------------------------------
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt)
-    { super.read(state, nbt); readnbt(nbt); }
+    public void load(BlockState state, CompoundNBT nbt)
+    { super.load(state, nbt); readnbt(nbt); }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt)
-    { super.write(nbt); writenbt(nbt); return nbt; }
+    public CompoundNBT save(CompoundNBT nbt)
+    { super.save(nbt); writenbt(nbt); return nbt; }
 
     @Override
-    public void remove()
+    public void setRemoved()
     {
-      super.remove();
+      super.setRemoved();
       energy_handler_.invalidate();
     }
 
@@ -227,7 +229,7 @@ public class EdBreaker
 
     // ITickable ------------------------------------------------------------------------------------
 
-    private static HashSet<Block> blacklist = new HashSet<>();
+    private static final HashSet<Block> blacklist = new HashSet<>();
     static {
       blacklist.add(Blocks.AIR);
       blacklist.add(Blocks.BEDROCK);
@@ -245,22 +247,22 @@ public class EdBreaker
       if(blacklist.contains(block)) return false;
       if(state.getMaterial().isLiquid()) return false;
       if(block.isAir(state, world, pos)) return false;
-      float bh = state.getBlockHardness(world, pos);
+      float bh = state.getDestroySpeed(world, pos);
       if((bh<0) || (bh>55)) return false;
       return true;
     }
 
     private static void spawnBlockAsEntity(World world, BlockPos pos, ItemStack stack) {
-      if(world.isRemote || stack.isEmpty() || (!world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS)) || world.restoringBlockSnapshots) return;
+      if(world.isClientSide || stack.isEmpty() || (!world.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS)) || world.restoringBlockSnapshots) return;
       ItemEntity e = new ItemEntity(world,
-        ((world.rand.nextFloat()*0.1)+0.5) + pos.getX(),
-        ((world.rand.nextFloat()*0.1)+0.5) + pos.getY(),
-        ((world.rand.nextFloat()*0.1)+0.5) + pos.getZ(),
+        ((world.random.nextFloat()*0.1)+0.5) + pos.getX(),
+        ((world.random.nextFloat()*0.1)+0.5) + pos.getY(),
+        ((world.random.nextFloat()*0.1)+0.5) + pos.getZ(),
         stack
       );
-      e.setDefaultPickupDelay();
-      e.setMotion((world.rand.nextFloat()*0.1-0.05), (world.rand.nextFloat()*0.1-0.03), (world.rand.nextFloat()*0.1-0.05));
-      world.addEntity(e);
+      e.setDefaultPickUpDelay();
+      e.setDeltaMovement((world.random.nextFloat()*0.1-0.05), (world.random.nextFloat()*0.1-0.03), (world.random.nextFloat()*0.1-0.05));
+      world.addFreshEntity(e);
     }
 
     private static boolean canInsertInto(World world, BlockPos pos)
@@ -273,17 +275,17 @@ public class EdBreaker
 
     private boolean breakBlock(BlockState state, BlockPos pos, World world)
     {
-      if(world.isRemote  || (!(world instanceof ServerWorld)) || world.restoringBlockSnapshots) return false; // retry next cycle
+      if(world.isClientSide  || (!(world instanceof ServerWorld)) || world.restoringBlockSnapshots) return false; // retry next cycle
       List<ItemStack> drops;
       final Block block = state.getBlock();
-      final boolean insert = canInsertInto(world, getPos().down());
-      drops = Block.getDrops(state, (ServerWorld)world, pos, world.getTileEntity(pos));
+      final boolean insert = canInsertInto(world, getBlockPos().below());
+      drops = Block.getDrops(state, (ServerWorld)world, pos, world.getBlockEntity(pos));
       world.removeBlock(pos, false);
       for(ItemStack drop:drops) {
         if(!insert) {
           spawnBlockAsEntity(world, pos, drop);
         } else {
-          final ItemStack remaining = Inventories.insert(world, getPos().down(), Direction.UP, drop, false);
+          final ItemStack remaining = Inventories.insert(world, getBlockPos().below(), Direction.UP, drop, false);
           if(!remaining.isEmpty()) spawnBlockAsEntity(world, pos, remaining);
         }
       }
@@ -297,35 +299,35 @@ public class EdBreaker
     public void tick()
     {
       if(--tick_timer_ > 0) return;
-      final BlockState device_state = world.getBlockState(pos);
+      final BlockState device_state = level.getBlockState(worldPosition);
       if(!(device_state.getBlock() instanceof BreakerBlock)) return;
-      if(world.isRemote) {
-        if(!device_state.get(BreakerBlock.ACTIVE)) {
+      if(level.isClientSide) {
+        if(!device_state.getValue(BreakerBlock.ACTIVE)) {
           tick_timer_ = TICK_INTERVAL;
         } else {
           tick_timer_ = 1;
           // not sure if is so cool to do this each tick ... may be simplified/removed again.
-          SoundEvent sound = SoundEvents.BLOCK_WOOD_HIT;
-          BlockState target_state = world.getBlockState(pos.offset(device_state.get(BreakerBlock.HORIZONTAL_FACING)));
+          SoundEvent sound = SoundEvents.WOOD_HIT;
+          BlockState target_state = level.getBlockState(worldPosition.relative(device_state.getValue(BreakerBlock.HORIZONTAL_FACING)));
           SoundType stype = target_state.getBlock().getSoundType(target_state);
-          if((stype == SoundType.CLOTH) || (stype == SoundType.PLANT) || (stype == SoundType.SNOW)) {
-            sound = SoundEvents.BLOCK_WOOL_HIT;
-          } else if((stype == SoundType.GROUND) || (stype == SoundType.SAND)) {
-            sound = SoundEvents.BLOCK_GRAVEL_HIT;
+          if((stype == SoundType.WOOL) || (stype == SoundType.GRASS) || (stype == SoundType.SNOW)) {
+            sound = SoundEvents.WOOL_HIT;
+          } else if((stype == SoundType.GRAVEL) || (stype == SoundType.SAND)) {
+            sound = SoundEvents.GRAVEL_HIT;
           }
-          world.playSound(pos.getX(), pos.getY(), pos.getZ(), sound, SoundCategory.BLOCKS, 0.1f, 1.2f, false);
+          level.playLocalSound(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), sound, SoundCategory.BLOCKS, 0.1f, 1.2f, false);
         }
       } else {
         tick_timer_ = TICK_INTERVAL;
-        final BlockPos target_pos = pos.offset(device_state.get(BreakerBlock.HORIZONTAL_FACING));
-        final BlockState target_state = world.getBlockState(target_pos);
-        if((world.isBlockPowered(pos)) || (!isBreakable(target_state, target_pos, world))) {
-          if(device_state.get(BreakerBlock.ACTIVE)) world.setBlockState(pos, device_state.with(BreakerBlock.ACTIVE, false), 1|2);
+        final BlockPos target_pos = worldPosition.relative(device_state.getValue(BreakerBlock.HORIZONTAL_FACING));
+        final BlockState target_state = level.getBlockState(target_pos);
+        if((level.hasNeighborSignal(worldPosition)) || (!isBreakable(target_state, target_pos, level))) {
+          if(device_state.getValue(BreakerBlock.ACTIVE)) level.setBlock(worldPosition, device_state.setValue(BreakerBlock.ACTIVE, false), 1|2);
           proc_time_elapsed_ = 0;
           tick_timer_ = IDLE_TICK_INTERVAL;
           return;
         }
-        time_needed_ = MathHelper.clamp((int)(target_state.getBlockHardness(world, pos) * breaking_reluctance) + min_breaking_time, min_breaking_time, MAX_BREAKING_TIME);
+        time_needed_ = MathHelper.clamp((int)(target_state.getDestroySpeed(level, worldPosition) * breaking_reluctance) + min_breaking_time, min_breaking_time, MAX_BREAKING_TIME);
         if(battery_.draw(boost_energy_consumption)) {
           proc_time_elapsed_ += TICK_INTERVAL * (1+BOOST_FACTOR);
           time_needed_ += min_breaking_time * (3*BOOST_FACTOR/5);
@@ -342,11 +344,11 @@ public class EdBreaker
         }
         if(proc_time_elapsed_ >= time_needed_) {
           proc_time_elapsed_ = 0;
-          breakBlock(target_state, target_pos, world);
+          breakBlock(target_state, target_pos, level);
           active = false;
         }
-        if(device_state.get(BreakerBlock.ACTIVE) != active) {
-          world.setBlockState(pos, device_state.with(BreakerBlock.ACTIVE, active), 1|2);
+        if(device_state.getValue(BreakerBlock.ACTIVE) != active) {
+          level.setBlock(worldPosition, device_state.setValue(BreakerBlock.ACTIVE, active), 1|2);
         }
       }
     }

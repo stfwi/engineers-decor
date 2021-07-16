@@ -8,6 +8,7 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
@@ -31,19 +32,20 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 
+
 public class EdHatchBlock extends DecorBlock.HorizontalWaterLoggable implements IDecorBlock
 {
   public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
   public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
   protected final ArrayList<VoxelShape> vshapes_open;
 
-  public EdHatchBlock(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABBClosed, final AxisAlignedBB unrotatedAABBOpen)
+  public EdHatchBlock(long config, AbstractBlock.Properties builder, final AxisAlignedBB unrotatedAABBClosed, final AxisAlignedBB unrotatedAABBOpen)
   {
     super(config, builder, unrotatedAABBClosed); vshapes_open = makeHorizontalShapeLookup(new AxisAlignedBB[]{unrotatedAABBOpen});
-    setDefaultState(super.getDefaultState().with(OPEN, false).with(POWERED, false));
+    registerDefaultState(super.defaultBlockState().setValue(OPEN, false).setValue(POWERED, false));
   }
 
-  public EdHatchBlock(long config, Block.Properties builder, final AxisAlignedBB[] unrotatedAABBsClosed, final AxisAlignedBB[] unrotatedAABBsOpen)
+  public EdHatchBlock(long config, AbstractBlock.Properties builder, final AxisAlignedBB[] unrotatedAABBsClosed, final AxisAlignedBB[] unrotatedAABBsOpen)
   { super(config, builder, unrotatedAABBsClosed); vshapes_open = makeHorizontalShapeLookup(unrotatedAABBsOpen); }
 
   @Override
@@ -52,30 +54,30 @@ public class EdHatchBlock extends DecorBlock.HorizontalWaterLoggable implements 
 
   @Override
   public VoxelShape getShape(BlockState state, IBlockReader source, BlockPos pos, ISelectionContext selectionContext)
-  { return state.get(OPEN) ? vshapes_open.get((state.get(HORIZONTAL_FACING)).getIndex() & 0x7) : super.getShape(state, source, pos, selectionContext); }
+  { return state.getValue(OPEN) ? vshapes_open.get((state.getValue(HORIZONTAL_FACING)).get3DDataValue() & 0x7) : super.getShape(state, source, pos, selectionContext); }
 
   @Override
   public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos)
-  { return state.get(OPEN); }
+  { return state.getValue(OPEN); }
 
   @Override
   @SuppressWarnings("deprecation")
-  public boolean allowsMovement(BlockState state, IBlockReader world, BlockPos pos, PathType type)
-  { return !state.get(OPEN); }
+  public boolean isPathfindable(BlockState state, IBlockReader world, BlockPos pos, PathType type)
+  { return !state.getValue(OPEN); }
 
   @Override
   public boolean isLadder(BlockState state, IWorldReader world, BlockPos pos, LivingEntity entity)
   {
-    if(!state.get(OPEN)) return false;
+    if(!state.getValue(OPEN)) return false;
     {
-      final BlockState up_state = world.getBlockState(pos.up());
-      if(up_state.isIn(this) && (up_state.get(OPEN))) return true;
-      if(up_state.isLadder(world, pos.up(), entity)) return true;
+      final BlockState up_state = world.getBlockState(pos.above());
+      if(up_state.is(this) && (up_state.getValue(OPEN))) return true;
+      if(up_state.isLadder(world, pos.above(), entity)) return true;
     }
     {
-      final BlockState down_state = world.getBlockState(pos.down());
-      if(down_state.isIn(this) && (down_state.get(OPEN))) return true;
-      if(down_state.isLadder(world, pos.down(), entity)) return true;
+      final BlockState down_state = world.getBlockState(pos.below());
+      if(down_state.is(this) && (down_state.getValue(OPEN))) return true;
+      if(down_state.isLadder(world, pos.below(), entity)) return true;
     }
     return false;
   }
@@ -85,17 +87,17 @@ public class EdHatchBlock extends DecorBlock.HorizontalWaterLoggable implements 
   { return false; }
 
   @Override
-  protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-  { super.fillStateContainer(builder); builder.add(OPEN, POWERED); }
+  protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+  { super.createBlockStateDefinition(builder); builder.add(OPEN, POWERED); }
 
   @Override
   @SuppressWarnings("deprecation")
-  public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+  public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
   {
-    if(world.isRemote()) return ActionResultType.SUCCESS;
-    boolean open = !state.get(OPEN);
-    world.setBlockState(pos, state.with(OPEN, open), 1|2);
-    world.playSound(null, pos, open?SoundEvents.BLOCK_IRON_DOOR_OPEN:SoundEvents.BLOCK_IRON_DOOR_CLOSE, SoundCategory.BLOCKS, 0.7f, 1.4f);
+    if(world.isClientSide()) return ActionResultType.SUCCESS;
+    boolean open = !state.getValue(OPEN);
+    world.setBlock(pos, state.setValue(OPEN, open), 1|2);
+    world.playSound(null, pos, open?SoundEvents.IRON_DOOR_OPEN:SoundEvents.IRON_DOOR_CLOSE, SoundCategory.BLOCKS, 0.7f, 1.4f);
     return ActionResultType.CONSUME;
   }
 
@@ -103,11 +105,11 @@ public class EdHatchBlock extends DecorBlock.HorizontalWaterLoggable implements 
   @SuppressWarnings("deprecation")
   public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving)
   {
-    if((world.isRemote) || (!(state.getBlock() instanceof EdHatchBlock))) return;
-    boolean powered = world.isBlockPowered(pos);
-    if(powered == state.get(POWERED)) return;
-    if(powered != state.get(OPEN)) world.playSound(null, pos, powered?SoundEvents.BLOCK_IRON_DOOR_OPEN:SoundEvents.BLOCK_IRON_DOOR_CLOSE, SoundCategory.BLOCKS, 0.7f, 1.4f);
-    world.setBlockState(pos, state.with(OPEN, powered).with(POWERED, powered), 1|2);
+    if((world.isClientSide) || (!(state.getBlock() instanceof EdHatchBlock))) return;
+    boolean powered = world.hasNeighborSignal(pos);
+    if(powered == state.getValue(POWERED)) return;
+    if(powered != state.getValue(OPEN)) world.playSound(null, pos, powered?SoundEvents.IRON_DOOR_OPEN:SoundEvents.IRON_DOOR_CLOSE, SoundCategory.BLOCKS, 0.7f, 1.4f);
+    world.setBlock(pos, state.setValue(OPEN, powered).setValue(POWERED, powered), 1|2);
   }
 
   @Override
@@ -116,17 +118,17 @@ public class EdHatchBlock extends DecorBlock.HorizontalWaterLoggable implements 
 
   @Override
   @SuppressWarnings("deprecation")
-  public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity)
+  public void entityInside(BlockState state, World world, BlockPos pos, Entity entity)
   {
-    if((!state.get(OPEN)) || (!(entity instanceof PlayerEntity))) return;
+    if((!state.getValue(OPEN)) || (!(entity instanceof PlayerEntity))) return;
     final PlayerEntity player = (PlayerEntity)entity;
-    if(entity.getLookVec().getY() > -0.75) return;
-    if(player.getHorizontalFacing() != state.get(HORIZONTAL_FACING)) return;
-    Vector3d ppos = player.getPositionVec();
-    Vector3d centre = Vector3d.copyCenteredHorizontally(pos);
+    if(entity.getLookAngle().y() > -0.75) return;
+    if(player.getDirection() != state.getValue(HORIZONTAL_FACING)) return;
+    Vector3d ppos = player.position();
+    Vector3d centre = Vector3d.atBottomCenterOf(pos);
     Vector3d v = centre.subtract(ppos);
-    if(ppos.getY() < (centre.getY()-0.1) || (v.lengthSquared() > 0.3)) return;
+    if(ppos.y() < (centre.y()-0.1) || (v.lengthSqr() > 0.3)) return;
     v = v.scale(0.3);
-    player.addVelocity(v.x, 0, v.z);
+    player.push(v.x, 0, v.z);
   }
 }

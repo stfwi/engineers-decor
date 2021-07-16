@@ -13,6 +13,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -86,18 +87,18 @@ public class EdLabeledCrate
 
   public static class LabeledCrateBlock extends StandardBlocks.Horizontal implements IDecorBlock
   {
-    public LabeledCrateBlock(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
+    public LabeledCrateBlock(long config, AbstractBlock.Properties builder, final AxisAlignedBB unrotatedAABB)
     { super(config, builder, unrotatedAABB); }
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean hasComparatorInputOverride(BlockState state)
+    public boolean hasAnalogOutputSignal(BlockState state)
     { return true; }
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos)
-    { return Container.calcRedstone(world.getTileEntity(pos)); }
+    public int getAnalogOutputSignal(BlockState blockState, World world, BlockPos pos)
+    { return Container.getRedstoneSignalFromBlockEntity(world.getBlockEntity(pos)); }
 
     @Override
     public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
@@ -113,10 +114,10 @@ public class EdLabeledCrate
     { return new LabeledCrateTileEntity(); }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
     {
-      if((world.isRemote) || (!stack.hasTag())) return;
-      final TileEntity te = world.getTileEntity(pos);
+      if((world.isClientSide) || (!stack.hasTag())) return;
+      final TileEntity te = world.getBlockEntity(pos);
       if(!(te instanceof LabeledCrateTileEntity)) return;
       final CompoundNBT nbt = stack.getTag();
       if(nbt.contains("tedata")) {
@@ -124,7 +125,7 @@ public class EdLabeledCrate
         if(!te_nbt.isEmpty()) ((LabeledCrateTileEntity)te).readnbt(te_nbt);
       }
       ((LabeledCrateTileEntity)te).setCustomName(Auxiliaries.getItemLabel(stack));
-      ((LabeledCrateTileEntity)te).markDirty();
+      ((LabeledCrateTileEntity)te).setChanged();
     }
 
     @Override
@@ -135,7 +136,7 @@ public class EdLabeledCrate
     public List<ItemStack> dropList(BlockState state, World world, final TileEntity te, boolean explosion)
     {
       final List<ItemStack> stacks = new ArrayList<ItemStack>();
-      if(world.isRemote()) return stacks;
+      if(world.isClientSide()) return stacks;
       if(!(te instanceof LabeledCrateTileEntity)) return stacks;
       if(!explosion) {
         ItemStack stack = new ItemStack(this, 1);
@@ -154,10 +155,10 @@ public class EdLabeledCrate
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
     {
-      if(world.isRemote()) return ActionResultType.SUCCESS;
-      final TileEntity te = world.getTileEntity(pos);
+      if(world.isClientSide()) return ActionResultType.SUCCESS;
+      final TileEntity te = world.getBlockEntity(pos);
       if(!(te instanceof LabeledCrateTileEntity)) return ActionResultType.FAIL;
       if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return ActionResultType.FAIL;
       NetworkHooks.openGui((ServerPlayerEntity)player,(INamedContainerProvider)te);
@@ -165,15 +166,15 @@ public class EdLabeledCrate
     }
 
     @Override
-    public PushReaction getPushReaction(BlockState state)
+    public PushReaction getPistonPushReaction(BlockState state)
     { return PushReaction.BLOCK; }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(final ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
+    public void appendHoverText(final ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
     {
       if(!Auxiliaries.Tooltip.extendedTipCondition() || Auxiliaries.Tooltip.helpCondition()) {
-        super.addInformation(stack, world, tooltip, flag);
+        super.appendHoverText(stack, world, tooltip, flag);
         return;
       }
       ItemStack frameStack = ItemStack.EMPTY;
@@ -195,7 +196,7 @@ public class EdLabeledCrate
             }
           }
           List<Tuple<String,Integer>> itmes = new ArrayList<>();
-          for(Map.Entry<Item,Integer> e:item_map.entrySet()) itmes.add(new Tuple<>(e.getKey().getTranslationKey(), e.getValue()));
+          for(Map.Entry<Item,Integer> e:item_map.entrySet()) itmes.add(new Tuple<>(e.getKey().getDescriptionId(), e.getValue()));
           itmes.sort((a,b)->b.getB()-a.getB());
           boolean dotdotdot = false;
           if(itmes.size() > 8) { itmes.subList(8, itmes.size()).clear(); dotdotdot = true; }
@@ -204,8 +205,8 @@ public class EdLabeledCrate
         }
       }
       int num_free_slots = LabeledCrateTileEntity.ITEMFRAME_SLOTNO - num_used_slots;
-      String[] lines = Auxiliaries.localize(getTranslationKey()+".tip", new Object[] {
-        (frameStack.isEmpty() ? (new StringTextComponent("-/-")) : (new TranslationTextComponent(frameStack.getTranslationKey()))),
+      String[] lines = Auxiliaries.localize(getDescriptionId()+".tip", new Object[] {
+        (frameStack.isEmpty() ? (new StringTextComponent("-/-")) : (new TranslationTextComponent(frameStack.getDescriptionId()))),
         num_used_slots,
         num_free_slots,
         total_items,
@@ -271,7 +272,7 @@ public class EdLabeledCrate
     }
 
     public ItemStack getItemFrameStack()
-    { return main_inventory_.getStackInSlot(ITEMFRAME_SLOTNO); }
+    { return main_inventory_.getItem(ITEMFRAME_SLOTNO); }
 
     protected static boolean inacceptable(ItemStack stack)
     { return (stack.hasTag() && (!stack.getTag().isEmpty()) && (unstorable_containers.contains(stack.getItem()))); }
@@ -294,17 +295,17 @@ public class EdLabeledCrate
     // TileEntity ------------------------------------------------------------------------------
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt)
-    { super.read(state, nbt); readnbt(nbt); }
+    public void load(BlockState state, CompoundNBT nbt)
+    { super.load(state, nbt); readnbt(nbt); }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt)
-    { super.write(nbt); writenbt(nbt); return nbt; }
+    public CompoundNBT save(CompoundNBT nbt)
+    { super.save(nbt); writenbt(nbt); return nbt; }
 
     @Override
-    public void remove()
+    public void setRemoved()
     {
-      super.remove();
+      super.setRemoved();
       item_handler_.invalidate();
     }
 
@@ -315,18 +316,18 @@ public class EdLabeledCrate
     @Override
     @Nullable
     public SUpdateTileEntityPacket getUpdatePacket()
-    { return new SUpdateTileEntityPacket(pos, 1, getUpdateTag()); }
+    { return new SUpdateTileEntityPacket(worldPosition, 1, getUpdateTag()); }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) // on client
-    { readnbt(pkt.getNbtCompound()); super.onDataPacket(net, pkt); }
+    { readnbt(pkt.getTag()); super.onDataPacket(net, pkt); }
 
     @Override
     public void handleUpdateTag(BlockState state, CompoundNBT tag) // on client
-    { read(state, tag); }
+    { load(state, tag); }
 
     @OnlyIn(Dist.CLIENT)
-    public double getMaxRenderDistanceSquared()
+    public double getViewDistance()
     { return 1600; }
 
     // INameable  ---------------------------------------------------------------------------
@@ -336,7 +337,7 @@ public class EdLabeledCrate
     {
       if(custom_name_ != null) return custom_name_;
       final Block block = getBlockState().getBlock();
-      if(block!=null) return new TranslationTextComponent(block.getTranslationKey());
+      if(block!=null) return new TranslationTextComponent(block.getDescriptionId());
       return new StringTextComponent("Labeled Crate");
     }
 
@@ -360,7 +361,7 @@ public class EdLabeledCrate
 
     @Override
     public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player )
-    { return new LabeledCrateContainer(id, inventory, main_inventory_, IWorldPosCallable.of(world, pos), fields); }
+    { return new LabeledCrateContainer(id, inventory, main_inventory_, IWorldPosCallable.create(level, worldPosition), fields); }
 
     // Fields -----------------------------------------------------------------------------------------------
 
@@ -401,11 +402,11 @@ public class EdLabeledCrate
       { super(inventory, index, x, y); }
 
       @Override
-      public int getSlotStackLimit()
+      public int getMaxStackSize()
       { return 64; }
 
       @Override
-      public boolean isItemValid(ItemStack stack)
+      public boolean mayPlace(ItemStack stack)
       { return !LabeledCrateTileEntity.inacceptable(stack); }
     }
 
@@ -427,11 +428,11 @@ public class EdLabeledCrate
     public int field(int index) { return fields_.get(index); }
     public PlayerEntity player() { return player_ ; }
     public IInventory inventory() { return inventory_ ; }
-    public World world() { return player_.world; }
+    public World world() { return player_.level; }
     //------------------------------------------------------------------------------------------------------------------
 
     public LabeledCrateContainer(int cid, PlayerInventory player_inventory)
-    { this(cid, player_inventory, new Inventory(LabeledCrateTileEntity.NUM_OF_SLOTS), IWorldPosCallable.DUMMY, new IntArray(LabeledCrateTileEntity.NUM_OF_FIELDS)); }
+    { this(cid, player_inventory, new Inventory(LabeledCrateTileEntity.NUM_OF_SLOTS), IWorldPosCallable.NULL, new IntArray(LabeledCrateTileEntity.NUM_OF_FIELDS)); }
 
     private LabeledCrateContainer(int cid, PlayerInventory player_inventory, IInventory block_inventory, IWorldPosCallable wpc, IIntArray fields)
     {
@@ -439,7 +440,7 @@ public class EdLabeledCrate
       player_ = player_inventory.player;
       inventory_ = block_inventory;
       wpc_ = wpc;
-      wpc_.consume((w,p)->inventory_.openInventory(player_));
+      wpc_.execute((w,p)->inventory_.startOpen(player_));
       fields_ = fields;
       block_storage_range_ = new InventoryRange(inventory_, 0, LabeledCrateTileEntity.ITEMFRAME_SLOTNO);
       player_inventory_range_ = new InventoryRange(player_inventory, 0, 36);
@@ -453,7 +454,7 @@ public class EdLabeledCrate
         }
       }
       // picture frame slot (54)
-      addSlot(new Slot(frame_slot_range_, 0, 191, 100) { @Override public int getSlotStackLimit(){return 1;} });
+      addSlot(new Slot(frame_slot_range_, 0, 191, 100) { @Override public int getMaxStackSize(){return 1;} });
       // player slots
       for(int x=0; x<9; ++x) {
         addSlot(new Slot(player_inventory, x, 28+x*18, 183)); // player slots: 0..8
@@ -466,41 +467,41 @@ public class EdLabeledCrate
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity player)
-    { return inventory_.isUsableByPlayer(player); }
+    public boolean stillValid(PlayerEntity player)
+    { return inventory_.stillValid(player); }
 
     @Override
-    public boolean canMergeSlot(ItemStack stack, Slot slot)
-    { return (slot.getSlotStackLimit() > 1); }
+    public boolean canTakeItemForPickAll(ItemStack stack, Slot slot)
+    { return (slot.getMaxStackSize() > 1); }
 
     @Override
-    public void onContainerClosed(PlayerEntity player)
+    public void removed(PlayerEntity player)
     {
-      super.onContainerClosed(player);
-      inventory_.closeInventory(player);
+      super.removed(player);
+      inventory_.stopOpen(player);
     }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity player, int index)
+    public ItemStack quickMoveStack(PlayerEntity player, int index)
     {
       Slot slot = getSlot(index);
-      if((slot==null) || (!slot.getHasStack())) return ItemStack.EMPTY;
-      ItemStack slot_stack = slot.getStack();
+      if((slot==null) || (!slot.hasItem())) return ItemStack.EMPTY;
+      ItemStack slot_stack = slot.getItem();
       ItemStack transferred = slot_stack.copy();
       if((index>=0) && (index<PLAYER_INV_START_SLOTNO)) {
         // Crate slots
-        if(!mergeItemStack(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+36, false)) return ItemStack.EMPTY;
+        if(!moveItemStackTo(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+36, false)) return ItemStack.EMPTY;
       } else if((index >= PLAYER_INV_START_SLOTNO) && (index <= PLAYER_INV_START_SLOTNO+36)) {
         // Player slot
-        if(!mergeItemStack(slot_stack, 0, PLAYER_INV_START_SLOTNO-1, false)) return ItemStack.EMPTY;
+        if(!moveItemStackTo(slot_stack, 0, PLAYER_INV_START_SLOTNO-1, false)) return ItemStack.EMPTY;
       } else {
         // Invalid slot
         return ItemStack.EMPTY;
       }
       if(slot_stack.isEmpty()) {
-        slot.putStack(ItemStack.EMPTY);
+        slot.set(ItemStack.EMPTY);
       } else {
-        slot.onSlotChanged();
+        slot.setChanged();
       }
       if(slot_stack.getCount() == transferred.getCount()) return ItemStack.EMPTY;
       slot.onTake(player, slot_stack);
@@ -513,7 +514,7 @@ public class EdLabeledCrate
     public void onGuiAction(String message, CompoundNBT nbt)
     {
       nbt.putString("action", message);
-      Networking.PacketContainerSyncClientToServer.sendToServer(windowId, nbt);
+      Networking.PacketContainerSyncClientToServer.sendToServer(containerId, nbt);
     }
 
     @Override
@@ -528,9 +529,9 @@ public class EdLabeledCrate
       final int slotId = nbt.contains("slot") ? nbt.getInt("slot") : -1;
       switch(nbt.getString("action")) {
         case QUICK_MOVE_ALL: {
-          if((slotId >= STORAGE_SLOT_BEGIN) && (slotId < STORAGE_SLOT_END) && (getSlot(slotId).getHasStack())) {
+          if((slotId >= STORAGE_SLOT_BEGIN) && (slotId < STORAGE_SLOT_END) && (getSlot(slotId).hasItem())) {
             changed = block_storage_range_.move(getSlot(slotId).getSlotIndex(), player_inventory_range_, true, false, true, true);
-          } else if((slotId >= PLAYER_SLOT_BEGIN) && (slotId < PLAYER_SLOT_END) && (getSlot(slotId).getHasStack())) {
+          } else if((slotId >= PLAYER_SLOT_BEGIN) && (slotId < PLAYER_SLOT_END) && (getSlot(slotId).hasItem())) {
             changed = player_inventory_range_.move(getSlot(slotId).getSlotIndex(), block_storage_range_, true, false, false, true);
           }
         } break;
@@ -540,9 +541,9 @@ public class EdLabeledCrate
         } break;
       }
       if(changed) {
-        inventory_.markDirty();
-        player.inventory.markDirty();
-        detectAndSendChanges();
+        inventory_.setChanged();
+        player.inventory.setChanged();
+        broadcastChanges();
       }
     }
   }
@@ -560,10 +561,10 @@ public class EdLabeledCrate
     {
       super(container, player_inventory, title);
       player_ = player_inventory.player;
-      xSize = 213;
-      ySize = 206;
-      titleX = 23;
-      titleY = -10;
+      imageWidth = 213;
+      imageHeight = 206;
+      titleLabelX = 23;
+      titleLabelY = -10;
     }
 
     @Override
@@ -575,23 +576,23 @@ public class EdLabeledCrate
     {
       renderBackground/*renderBackground*/(mx);
       super.render(mx, mouseX, mouseY, partialTicks);
-      renderHoveredTooltip(mx, mouseX, mouseY);
+      renderTooltip(mx, mouseX, mouseY);
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(MatrixStack mx, int x, int y)
+    protected void renderLabels(MatrixStack mx, int x, int y)
     {
-      font.func_243248_b(mx, title, (float)titleX+1, (float)titleY+1, 0x303030);
-      font.func_243248_b(mx, title, (float)titleX, (float)titleY, 0x707070);
+      font.draw(mx, title, (float)titleLabelX+1, (float)titleLabelY+1, 0x303030);
+      font.draw(mx, title, (float)titleLabelX, (float)titleLabelY, 0x707070);
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    protected void drawGuiContainerBackgroundLayer(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
+    protected void renderBg(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
     {
-      GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-      getMinecraft().getTextureManager().bindTexture(new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/labeled_crate_gui.png"));
-      final int x0=guiLeft, y0=this.guiTop, w=xSize, h=ySize;
+      GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
+      getMinecraft().getTextureManager().bind(new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/labeled_crate_gui.png"));
+      final int x0=leftPos, y0=this.topPos, w=imageWidth, h=imageHeight;
       blit(mx, x0, y0, 0, 0, w, h);
     }
 
@@ -601,19 +602,19 @@ public class EdLabeledCrate
     { action(message, new CompoundNBT()); }
 
     protected void action(String message, CompoundNBT nbt)
-    { getContainer().onGuiAction(message, nbt); }
+    { getMenu().onGuiAction(message, nbt); }
 
     @Override
-    protected void handleMouseClick(Slot slot, int slotId, int button, ClickType type)
+    protected void slotClicked(Slot slot, int slotId, int button, ClickType type)
     {
       if(!with_gui_mouse_handling) {
-        super.handleMouseClick(slot, slotId, button, type);
-      } else if((type == ClickType.QUICK_MOVE) && (slot!=null) && slot.getHasStack() && Auxiliaries.isShiftDown() && Auxiliaries.isCtrlDown()) {
+        super.slotClicked(slot, slotId, button, type);
+      } else if((type == ClickType.QUICK_MOVE) && (slot!=null) && slot.hasItem() && Auxiliaries.isShiftDown() && Auxiliaries.isCtrlDown()) {
         CompoundNBT nbt = new CompoundNBT();
         nbt.putInt("slot", slotId);
         action(LabeledCrateContainer.QUICK_MOVE_ALL, nbt);
       } else {
-        super.handleMouseClick(slot, slotId, button, type);
+        super.slotClicked(slot, slotId, button, type);
       }
     }
 
@@ -622,14 +623,14 @@ public class EdLabeledCrate
     {
       if(!with_gui_mouse_handling) return super.mouseScrolled(mouseX, mouseY, wheel_inc);
       final Slot slot = getSlotUnderMouse();
-      if((slot==null) || (!slot.getHasStack())) return true;
-      final int count = slot.getStack().getCount();
+      if((slot==null) || (!slot.hasItem())) return true;
+      final int count = slot.getItem().getCount();
       int limit = (Auxiliaries.isShiftDown() ? 2 : 1) * (Auxiliaries.isCtrlDown() ? 4 : 1);
       if(wheel_inc > 0.1) {
         if(count > 0) {
-          if((count < slot.getStack().getMaxStackSize()) && (count < slot.getSlotStackLimit())) {
+          if((count < slot.getItem().getMaxStackSize()) && (count < slot.getMaxStackSize())) {
             CompoundNBT nbt = new CompoundNBT();
-            nbt.putInt("slot", slot.slotNumber);
+            nbt.putInt("slot", slot.index);
             if(limit > 1) nbt.putInt("limit", limit);
             action(LabeledCrateContainer.INCREASE_STACK, nbt);
           }
@@ -637,7 +638,7 @@ public class EdLabeledCrate
       } else if(wheel_inc < -0.1) {
         if(count > 0) {
           CompoundNBT nbt = new CompoundNBT();
-          nbt.putInt("slot", slot.slotNumber);
+          nbt.putInt("slot", slot.index);
           if(limit > 1) nbt.putInt("limit", limit);
           action(LabeledCrateContainer.DECREASE_STACK, nbt);
         }

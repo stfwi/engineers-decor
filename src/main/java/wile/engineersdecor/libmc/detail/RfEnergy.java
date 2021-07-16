@@ -24,7 +24,7 @@ public class RfEnergy
 {
   public static int feed(World world, BlockPos pos, @Nullable Direction side, int rf_energy)
   {
-    final TileEntity te = world.getTileEntity(pos);
+    final TileEntity te = world.getBlockEntity(pos);
     if(te == null) return 0;
     final IEnergyStorage es = te.getCapability(CapabilityEnergy.ENERGY, side).orElse(null);
     if(es == null) return 0;

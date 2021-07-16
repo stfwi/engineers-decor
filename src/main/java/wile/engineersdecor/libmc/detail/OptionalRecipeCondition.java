@@ -97,7 +97,7 @@ public class OptionalRecipeCondition implements ICondition
     if(without_recipes) return false;
     if((experimental) && (!with_experimental)) return false;
     final IForgeRegistry<Item> item_registry = ForgeRegistries.ITEMS;
-    final Map<ResourceLocation, ITag<Item>> item_tags = TagCollectionManager.getManager().getItemTags().getIDTagMap();
+    final Map<ResourceLocation, ITag<Item>> item_tags = TagCollectionManager.getInstance().getItems().getAllTags();
     if(result != null) {
       boolean item_registered = item_registry.containsKey(result);
       if(!item_registered) return false; // required result not registered
@@ -112,7 +112,7 @@ public class OptionalRecipeCondition implements ICondition
     if(!all_required_tags.isEmpty()) {
       for(ResourceLocation rl:all_required_tags) {
         if(!item_tags.containsKey(rl)) return false;
-        if(item_tags.get(rl).getAllElements().isEmpty()) return false;
+        if(item_tags.get(rl).getValues().isEmpty()) return false;
       }
     }
     if(!any_missing.isEmpty()) {
@@ -124,7 +124,7 @@ public class OptionalRecipeCondition implements ICondition
     if(!any_missing_tags.isEmpty()) {
       for(ResourceLocation rl:any_missing_tags) {
         if(!item_tags.containsKey(rl)) return true;
-        if(item_tags.get(rl).getAllElements().isEmpty()) return true;
+        if(item_tags.get(rl).getValues().isEmpty()) return true;
       }
       return false;
     }
@@ -173,7 +173,7 @@ public class OptionalRecipeCondition implements ICondition
         }
       }
       if(json.has("required")) {
-        for(JsonElement e:JSONUtils.getJsonArray(json, "required")) {
+        for(JsonElement e:JSONUtils.getAsJsonArray(json, "required")) {
           String s = e.getAsString();
           if(s.startsWith("#")) {
             required_tags.add(new ResourceLocation(s.substring(1)));
@@ -183,7 +183,7 @@ public class OptionalRecipeCondition implements ICondition
         }
       }
       if(json.has("missing")) {
-        for(JsonElement e:JSONUtils.getJsonArray(json, "missing")) {
+        for(JsonElement e:JSONUtils.getAsJsonArray(json, "missing")) {
           String s = e.getAsString();
           if(s.startsWith("#")) {
             missing_tags.add(new ResourceLocation(s.substring(1)));

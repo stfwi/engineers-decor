@@ -21,6 +21,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.world.IWorldReader;
@@ -76,27 +77,27 @@ public class EdWasteIncinerator
   {
     public static final BooleanProperty LIT = FurnaceBlock.LIT;
 
-    public WasteIncineratorBlock(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
+    public WasteIncineratorBlock(long config, AbstractBlock.Properties builder, final AxisAlignedBB unrotatedAABB)
     { super(config, builder, unrotatedAABB); }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-    { super.fillStateContainer(builder); builder.add(LIT); }
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    { super.createBlockStateDefinition(builder); builder.add(LIT); }
 
     @Override
     @Nullable
     public BlockState getStateForPlacement(BlockItemUseContext context)
-    { return super.getStateForPlacement(context).with(LIT, false); }
+    { return super.getStateForPlacement(context).setValue(LIT, false); }
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean hasComparatorInputOverride(BlockState state)
+    public boolean hasAnalogOutputSignal(BlockState state)
     { return true; }
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos)
-    { return Container.calcRedstone(world.getTileEntity(pos)); }
+    public int getAnalogOutputSignal(BlockState blockState, World world, BlockPos pos)
+    { return Container.getRedstoneSignalFromBlockEntity(world.getBlockEntity(pos)); }
 
     @Override
     public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
@@ -112,16 +113,16 @@ public class EdWasteIncinerator
     { return new EdWasteIncinerator.WasteIncineratorTileEntity(); }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
     {
-      if(world.isRemote) return;
+      if(world.isClientSide) return;
       if((!stack.hasTag()) || (!stack.getTag().contains("tedata"))) return;
       CompoundNBT te_nbt = stack.getTag().getCompound("tedata");
       if(te_nbt.isEmpty()) return;
-      final TileEntity te = world.getTileEntity(pos);
+      final TileEntity te = world.getBlockEntity(pos);
       if(!(te instanceof EdWasteIncinerator.WasteIncineratorTileEntity)) return;
       ((EdWasteIncinerator.WasteIncineratorTileEntity)te).readnbt(te_nbt);
-      ((EdWasteIncinerator.WasteIncineratorTileEntity)te).markDirty();
+      ((EdWasteIncinerator.WasteIncineratorTileEntity)te).setChanged();
     }
 
     @Override
@@ -132,7 +133,7 @@ public class EdWasteIncinerator
     public List<ItemStack> dropList(BlockState state, World world, final TileEntity te, boolean explosion)
     {
       final List<ItemStack> stacks = new ArrayList<ItemStack>();
-      if(world.isRemote) return stacks;
+      if(world.isClientSide) return stacks;
       if(!(te instanceof WasteIncineratorTileEntity)) return stacks;
       if(!explosion) {
         ItemStack stack = new ItemStack(this, 1);
@@ -152,10 +153,10 @@ public class EdWasteIncinerator
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
     {
-      if(world.isRemote()) return ActionResultType.SUCCESS;
-      final TileEntity te = world.getTileEntity(pos);
+      if(world.isClientSide()) return ActionResultType.SUCCESS;
+      final TileEntity te = world.getBlockEntity(pos);
       if(!(te instanceof WasteIncineratorTileEntity)) return ActionResultType.FAIL;
       if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return ActionResultType.FAIL;
       NetworkHooks.openGui((ServerPlayerEntity)player,(INamedContainerProvider)te);
@@ -166,7 +167,7 @@ public class EdWasteIncinerator
     @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, World world, BlockPos pos, Random rnd)
     {
-      if((state.getBlock()!=this) || (!state.get(LIT))) return;
+      if((state.getBlock()!=this) || (!state.getValue(LIT))) return;
       final double rv = rnd.nextDouble();
       if(rv > 0.5) return;
       final double x=0.5+pos.getX(), y=0.5+pos.getY(), z=0.5+pos.getZ();
@@ -244,17 +245,17 @@ public class EdWasteIncinerator
     // TileEntity ------------------------------------------------------------------------------
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt)
-    { super.read(state, nbt); readnbt(nbt); }
+    public void load(BlockState state, CompoundNBT nbt)
+    { super.load(state, nbt); readnbt(nbt); }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt)
-    { super.write(nbt); return writenbt(nbt); }
+    public CompoundNBT save(CompoundNBT nbt)
+    { super.save(nbt); return writenbt(nbt); }
 
     @Override
-    public void remove()
+    public void setRemoved()
     {
-      super.remove();
+      super.setRemoved();
       energy_handler_.invalidate();
       item_handler_.invalidate();
     }
@@ -263,7 +264,7 @@ public class EdWasteIncinerator
 
     @Override
     public ITextComponent getName()
-    { final Block block=getBlockState().getBlock(); return new StringTextComponent((block!=null) ? block.getTranslationKey() : "Small Waste Incinerator"); }
+    { final Block block=getBlockState().getBlock(); return new StringTextComponent((block!=null) ? block.getDescriptionId() : "Small Waste Incinerator"); }
 
     @Override
     public boolean hasCustomName()
@@ -281,12 +282,12 @@ public class EdWasteIncinerator
 
     @Override
     public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player )
-    { return new EdWasteIncinerator.WasteIncineratorContainer(id, inventory, this, IWorldPosCallable.of(world, pos), fields); }
+    { return new EdWasteIncinerator.WasteIncineratorContainer(id, inventory, this, IWorldPosCallable.create(level, worldPosition), fields); }
 
     // IInventory ------------------------------------------------------------------------------
 
     @Override
-    public int getSizeInventory()
+    public int getContainerSize()
     { return stacks_.size(); }
 
     @Override
@@ -294,51 +295,51 @@ public class EdWasteIncinerator
     { for(ItemStack stack: stacks_) { if(!stack.isEmpty()) return false; } return true; }
 
     @Override
-    public ItemStack getStackInSlot(int index)
-    { return ((index >= 0) && (index < getSizeInventory())) ? stacks_.get(index) : ItemStack.EMPTY; }
+    public ItemStack getItem(int index)
+    { return ((index >= 0) && (index < getContainerSize())) ? stacks_.get(index) : ItemStack.EMPTY; }
 
     @Override
-    public ItemStack decrStackSize(int index, int count)
-    { return ItemStackHelper.getAndSplit(stacks_, index, count); }
+    public ItemStack removeItem(int index, int count)
+    { return ItemStackHelper.removeItem(stacks_, index, count); }
 
     @Override
-    public ItemStack removeStackFromSlot(int index)
-    { return ItemStackHelper.getAndRemove(stacks_, index); }
+    public ItemStack removeItemNoUpdate(int index)
+    { return ItemStackHelper.takeItem(stacks_, index); }
 
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack)
+    public void setItem(int index, ItemStack stack)
     {
-      if(stack.getCount() > getInventoryStackLimit()) stack.setCount(getInventoryStackLimit());
+      if(stack.getCount() > getMaxStackSize()) stack.setCount(getMaxStackSize());
       stacks_.set(index, stack);
-      markDirty();
+      setChanged();
     }
 
     @Override
-    public int getInventoryStackLimit()
+    public int getMaxStackSize()
     { return 64; }
 
     @Override
-    public void markDirty()
-    { super.markDirty(); }
+    public void setChanged()
+    { super.setChanged(); }
 
     @Override
-    public boolean isUsableByPlayer(PlayerEntity player)
-    { return ((getWorld().getTileEntity(getPos()) == this)) && (getPos().distanceSq(player.getPosition()) < 64); }
+    public boolean stillValid(PlayerEntity player)
+    { return ((getLevel().getBlockEntity(getBlockPos()) == this)) && (getBlockPos().distSqr(player.blockPosition()) < 64); }
 
     @Override
-    public void openInventory(PlayerEntity player)
+    public void startOpen(PlayerEntity player)
     {}
 
     @Override
-    public void closeInventory(PlayerEntity player)
-    { markDirty(); }
+    public void stopOpen(PlayerEntity player)
+    { setChanged(); }
 
     @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack)
+    public boolean canPlaceItem(int index, ItemStack stack)
     { return (index==0); }
 
     @Override
-    public void clear()
+    public void clearContent()
     { stacks_.clear(); }
 
     // Fields -----------------------------------------------------------------------------------------------
@@ -370,11 +371,11 @@ public class EdWasteIncinerator
     { return SIDED_INV_SLOTS; }
 
     @Override
-    public boolean canInsertItem(int index, ItemStack itemStackIn, Direction direction)
-    { return isItemValidForSlot(index, itemStackIn); }
+    public boolean canPlaceItemThroughFace(int index, ItemStack itemStackIn, Direction direction)
+    { return canPlaceItem(index, itemStackIn); }
 
     @Override
-    public boolean canExtractItem(int index, ItemStack stack, Direction direction)
+    public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction)
     { return false; }
 
     // IEnergyStorage ----------------------------------------------------------------------------
@@ -405,7 +406,7 @@ public class EdWasteIncinerator
       if(energy_stored_ >= MAX_ENERGY_BUFFER) return 0;
       int n = Math.min(maxReceive, (MAX_ENERGY_BUFFER - energy_stored_));
       if(n > MAX_ENERGY_TRANSFER) n = MAX_ENERGY_TRANSFER;
-      if(!simulate) {energy_stored_ += n; markDirty(); }
+      if(!simulate) {energy_stored_ += n; setChanged(); }
       return n;
     }
 
@@ -413,7 +414,7 @@ public class EdWasteIncinerator
 
     protected static class BItemHandler implements IItemHandler
     {
-      private WasteIncineratorTileEntity te;
+      private final WasteIncineratorTileEntity te;
 
       BItemHandler(WasteIncineratorTileEntity te)
       { this.te = te; }
@@ -424,7 +425,7 @@ public class EdWasteIncinerator
 
       @Override
       public int getSlotLimit(int index)
-      { return te.getInventoryStackLimit(); }
+      { return te.getMaxStackSize(); }
 
       @Override
       public boolean isItemValid(int slot, @Nonnull ItemStack stack)
@@ -442,13 +443,13 @@ public class EdWasteIncinerator
         {
           if(slotstack.getCount() >= Math.min(slotstack.getMaxStackSize(), getSlotLimit(index))) return stack;
           if(!ItemHandlerHelper.canItemStacksStack(stack, slotstack)) return stack;
-          if(!te.canInsertItem(slotno, stack, Direction.UP) || (!te.isItemValidForSlot(slotno, stack))) return stack;
+          if(!te.canPlaceItemThroughFace(slotno, stack, Direction.UP) || (!te.canPlaceItem(slotno, stack))) return stack;
           int n = Math.min(stack.getMaxStackSize(), getSlotLimit(index)) - slotstack.getCount();
           if(stack.getCount() <= n) {
             if(!simulate) {
               ItemStack copy = stack.copy();
               copy.grow(slotstack.getCount());
-              te.setInventorySlotContents(slotno, copy);
+              te.setItem(slotno, copy);
             }
             return ItemStack.EMPTY;
           } else {
@@ -456,7 +457,7 @@ public class EdWasteIncinerator
             if(!simulate) {
               ItemStack copy = stack.split(n);
               copy.grow(slotstack.getCount());
-              te.setInventorySlotContents(slotno, copy);
+              te.setItem(slotno, copy);
               return stack;
             } else {
               stack.shrink(n);
@@ -464,19 +465,19 @@ public class EdWasteIncinerator
             }
           }
         } else {
-          if(!te.canInsertItem(slotno, stack, Direction.UP) || (!te.isItemValidForSlot(slotno, stack))) return stack;
+          if(!te.canPlaceItemThroughFace(slotno, stack, Direction.UP) || (!te.canPlaceItem(slotno, stack))) return stack;
           int n = Math.min(stack.getMaxStackSize(), getSlotLimit(index));
           if(n < stack.getCount()) {
             stack = stack.copy();
             if(!simulate) {
-              te.setInventorySlotContents(slotno, stack.split(n));
+              te.setItem(slotno, stack.split(n));
               return stack;
             } else {
               stack.shrink(n);
               return stack;
             }
           } else {
-            if(!simulate) te.setInventorySlotContents(slotno, stack);
+            if(!simulate) te.setItem(slotno, stack);
             return ItemStack.EMPTY;
           }
         }
@@ -490,7 +491,7 @@ public class EdWasteIncinerator
       @Override
       @Nonnull
       public ItemStack getStackInSlot(int index)
-      { return te.getStackInSlot(index); }
+      { return te.getItem(index); }
     }
 
     // Capability export ----------------------------------------------------------------------------
@@ -513,13 +514,13 @@ public class EdWasteIncinerator
     {
       if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
-      if(world.isRemote) return;
+      if(level.isClientSide) return;
       boolean dirty = false;
       ItemStack processing_stack = stacks_.get(BURN_SLOT_NO);
       final boolean was_processing = !processing_stack.isEmpty();
       boolean is_processing = was_processing;
       boolean new_stack_processing = false;
-      if((!stacks_.get(0).isEmpty()) && transferItems(0, 1, getInventoryStackLimit())) dirty = true;
+      if((!stacks_.get(0).isEmpty()) && transferItems(0, 1, getMaxStackSize())) dirty = true;
       ItemStack first_stack = stacks_.get(0);
       boolean shift = !first_stack.isEmpty();
       if(is_processing) {
@@ -538,7 +539,7 @@ public class EdWasteIncinerator
       if(shift) {
         boolean transferred = false;
         for(int i=BURN_SLOT_NO-1; i>0; --i) {
-          transferred |= transferItems(i-1, i, getInventoryStackLimit());
+          transferred |= transferItems(i-1, i, getMaxStackSize());
         }
         if((!is_processing) && (!transferred)) {
           shiftStacks(0, BURN_SLOT_NO);
@@ -546,13 +547,13 @@ public class EdWasteIncinerator
         }
       }
       if((was_processing != is_processing) || (new_stack_processing)) {
-        if(new_stack_processing) world.playSound(null, pos, SoundEvents.BLOCK_LAVA_AMBIENT, SoundCategory.BLOCKS, 0.05f, 2.4f);
-        final BlockState state = world.getBlockState(pos);
+        if(new_stack_processing) level.playSound(null, worldPosition, SoundEvents.LAVA_AMBIENT, SoundCategory.BLOCKS, 0.05f, 2.4f);
+        final BlockState state = level.getBlockState(worldPosition);
         if(state.getBlock() instanceof WasteIncineratorBlock) {
-          world.setBlockState(pos, state.with(WasteIncineratorBlock.LIT, is_processing), 2|16);
+          level.setBlock(worldPosition, state.setValue(WasteIncineratorBlock.LIT, is_processing), 2|16);
         }
       }
-      if(dirty) markDirty();
+      if(dirty) setChanged();
     }
 
     // Aux methods ----------------------------------------------------------------------------------
@@ -618,10 +619,10 @@ public class EdWasteIncinerator
     public int field(int index) { return fields_.get(index); }
     public PlayerEntity player() { return player_ ; }
     public IInventory inventory() { return inventory_ ; }
-    public World world() { return player_.world; }
+    public World world() { return player_.level; }
 
     public WasteIncineratorContainer(int cid, PlayerInventory player_inventory)
-    { this(cid, player_inventory, new Inventory(WasteIncineratorTileEntity.NUM_OF_SLOTS), IWorldPosCallable.DUMMY, new IntArray(WasteIncineratorTileEntity.NUM_OF_FIELDS)); }
+    { this(cid, player_inventory, new Inventory(WasteIncineratorTileEntity.NUM_OF_SLOTS), IWorldPosCallable.NULL, new IntArray(WasteIncineratorTileEntity.NUM_OF_FIELDS)); }
 
     private WasteIncineratorContainer(int cid, PlayerInventory player_inventory, IInventory block_inventory, IWorldPosCallable wpc, IIntArray fields)
     {
@@ -658,30 +659,30 @@ public class EdWasteIncinerator
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity player)
-    { return inventory_.isUsableByPlayer(player); }
+    public boolean stillValid(PlayerEntity player)
+    { return inventory_.stillValid(player); }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity player, int index)
+    public ItemStack quickMoveStack(PlayerEntity player, int index)
     {
       Slot slot = getSlot(index);
-      if((slot==null) || (!slot.getHasStack())) return ItemStack.EMPTY;
-      ItemStack slot_stack = slot.getStack();
+      if((slot==null) || (!slot.hasItem())) return ItemStack.EMPTY;
+      ItemStack slot_stack = slot.getItem();
       ItemStack transferred = slot_stack.copy();
       if((index>=0) && (index<PLAYER_INV_START_SLOTNO)) {
         // Device slots
-        if(!mergeItemStack(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+36, true)) return ItemStack.EMPTY;
+        if(!moveItemStackTo(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+36, true)) return ItemStack.EMPTY;
       } else if((index >= PLAYER_INV_START_SLOTNO) && (index <= PLAYER_INV_START_SLOTNO+36)) {
         // Player slot
-        if(!mergeItemStack(slot_stack, 0, PLAYER_INV_START_SLOTNO-1, true)) return ItemStack.EMPTY;
+        if(!moveItemStackTo(slot_stack, 0, PLAYER_INV_START_SLOTNO-1, true)) return ItemStack.EMPTY;
       } else {
         // invalid slot
         return ItemStack.EMPTY;
       }
       if(slot_stack.isEmpty()) {
-        slot.putStack(ItemStack.EMPTY);
+        slot.set(ItemStack.EMPTY);
       } else {
-        slot.onSlotChanged();
+        slot.setChanged();
       }
       if(slot_stack.getCount() == transferred.getCount()) return ItemStack.EMPTY;
       slot.onTake(player, slot_stack);
@@ -710,21 +711,21 @@ public class EdWasteIncinerator
     {
       renderBackground/*renderBackground*/(mx);
       super.render(mx, mouseX, mouseY, partialTicks);
-      renderHoveredTooltip(mx, mouseX, mouseY);
+      renderTooltip(mx, mouseX, mouseY);
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(MatrixStack mx, int x, int y)
+    protected void renderLabels(MatrixStack mx, int x, int y)
     {}
 
     @Override
     @SuppressWarnings("deprecation")
-    protected void drawGuiContainerBackgroundLayer(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
+    protected void renderBg(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
     {
       RenderSystem.enableBlend();
       RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-      getMinecraft().getTextureManager().bindTexture(new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/small_waste_incinerator_gui.png"));
-      final int x0=guiLeft, y0=this.guiTop, w=xSize, h=ySize;
+      getMinecraft().getTextureManager().bind(new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/small_waste_incinerator_gui.png"));
+      final int x0=leftPos, y0=this.topPos, w=imageWidth, h=imageHeight;
       blit(mx, x0, y0, 0, 0, w, h);
       RenderSystem.disableBlend();
     }

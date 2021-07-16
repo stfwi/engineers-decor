@@ -27,6 +27,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.world.IWorldReader;
@@ -71,6 +72,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
+
 public class EdFurnace
 {
   public static void on_config(int speed_percent, int fuel_efficiency_percent, int boost_energy_per_tick, String accepted_heaters_csv)
@@ -84,33 +86,33 @@ public class EdFurnace
   {
     public static final BooleanProperty LIT = RedstoneTorchBlock.LIT;
 
-    public FurnaceBlock(long config, Block.Properties properties, final AxisAlignedBB[] unrotatedAABB)
-    { super(config, properties, unrotatedAABB); setDefaultState(super.getDefaultState().with(LIT, false)); }
+    public FurnaceBlock(long config, AbstractBlock.Properties properties, final AxisAlignedBB[] unrotatedAABB)
+    { super(config, properties, unrotatedAABB); registerDefaultState(super.defaultBlockState().setValue(LIT, false)); }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-    { super.fillStateContainer(builder); builder.add(LIT); }
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    { super.createBlockStateDefinition(builder); builder.add(LIT); }
 
     @Override
     @SuppressWarnings("deprecation")
     public int getLightValue(BlockState state, IBlockReader world, BlockPos pos)
-    { return state.get(LIT) ? super.getLightValue(state, world, pos) : 0; }
+    { return state.getValue(LIT) ? super.getLightValue(state, world, pos) : 0; }
 
     @Override
     @Nullable
     public BlockState getStateForPlacement(BlockItemUseContext context)
-    { return super.getStateForPlacement(context).with(LIT, false); }
+    { return super.getStateForPlacement(context).setValue(LIT, false); }
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean hasComparatorInputOverride(BlockState state)
+    public boolean hasAnalogOutputSignal(BlockState state)
     { return true; }
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos)
+    public int getAnalogOutputSignal(BlockState blockState, World world, BlockPos pos)
     {
-      TileEntity te = world.getTileEntity(pos);
+      TileEntity te = world.getBlockEntity(pos);
       return (te instanceof FurnaceTileEntity) ? ((FurnaceTileEntity)te).getComparatorOutput() : 0;
     }
 
@@ -128,19 +130,19 @@ public class EdFurnace
     { return new FurnaceTileEntity(); }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
     {
-      world.setBlockState(pos, state.with(LIT, false));
-      if(world.isRemote) return;
+      world.setBlockAndUpdate(pos, state.setValue(LIT, false));
+      if(world.isClientSide) return;
       if((!stack.hasTag()) || (!stack.getTag().contains("inventory"))) return;
       CompoundNBT inventory_nbt = stack.getTag().getCompound("inventory");
       if(inventory_nbt.isEmpty()) return;
-      final TileEntity te = world.getTileEntity(pos);
+      final TileEntity te = world.getBlockEntity(pos);
       if(!(te instanceof FurnaceTileEntity)) return;
       final FurnaceTileEntity bte = ((FurnaceTileEntity)te);
       bte.readnbt(inventory_nbt);
-      bte.markDirty();
-      world.setBlockState(pos, state.with(LIT, bte.burning()));
+      bte.setChanged();
+      world.setBlockAndUpdate(pos, state.setValue(LIT, bte.burning()));
     }
 
     @Override
@@ -150,7 +152,7 @@ public class EdFurnace
     @Override
     public List<ItemStack> dropList(BlockState state, World world, final TileEntity te, boolean explosion) {
       final List<ItemStack> stacks = new ArrayList<ItemStack>();
-      if(world.isRemote) return stacks;
+      if(world.isClientSide) return stacks;
       if(!(te instanceof FurnaceTileEntity)) return stacks;
       if(!explosion) {
         ItemStack stack = new ItemStack(this, 1);
@@ -170,14 +172,14 @@ public class EdFurnace
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
     {
-      if(world.isRemote()) return ActionResultType.SUCCESS;
-      final TileEntity te = world.getTileEntity(pos);
+      if(world.isClientSide()) return ActionResultType.SUCCESS;
+      final TileEntity te = world.getBlockEntity(pos);
       if(!(te instanceof FurnaceTileEntity)) return ActionResultType.FAIL;
       if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return ActionResultType.FAIL;
       NetworkHooks.openGui((ServerPlayerEntity)player,(INamedContainerProvider)te);
-      player.addStat(Stats.INTERACT_WITH_FURNACE);
+      player.awardStat(Stats.INTERACT_WITH_FURNACE);
       return ActionResultType.CONSUME;
     }
 
@@ -185,13 +187,13 @@ public class EdFurnace
     @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, World world, BlockPos pos, Random rnd)
     {
-      if((state.getBlock()!=this) || (!state.get(LIT))) return;
+      if((state.getBlock()!=this) || (!state.getValue(LIT))) return;
       final double rv = rnd.nextDouble();
       if(rv > 0.5) return;
       final double x=0.5+pos.getX(), y=0.5+pos.getY(), z=0.5+pos.getZ();
       final double xc=0.52, xr=rnd.nextDouble()*0.4-0.2, yr=(y-0.3+rnd.nextDouble()*0.2);
-      if(rv < 0.1d) world.playSound(x, y, z, SoundEvents.BLOCK_FURNACE_FIRE_CRACKLE, SoundCategory.BLOCKS, 0.4f, 0.5f, false);
-      switch(state.get(HORIZONTAL_FACING)) {
+      if(rv < 0.1d) world.playLocalSound(x, y, z, SoundEvents.FURNACE_FIRE_CRACKLE, SoundCategory.BLOCKS, 0.4f, 0.5f, false);
+      switch(state.getValue(HORIZONTAL_FACING)) {
         case WEST:  world.addParticle(ParticleTypes.SMOKE, x-xc, yr, z+xr, 0.0, 0.0, 0.0); break;
         case EAST:  world.addParticle(ParticleTypes.SMOKE, x+xc, yr, z+xr, 0.0, 0.0, 0.0); break;
         case NORTH: world.addParticle(ParticleTypes.SMOKE, x+xr, yr, z-xc, 0.0, 0.0, 0.0); break;
@@ -233,7 +235,7 @@ public class EdFurnace
     private static double proc_fuel_efficiency_ = 1.0;
     private static double proc_speed_ = 1.2;
     private static int boost_energy_consumption = DEFAULT_BOOST_ENERGY * TICK_INTERVAL;
-    private static Set<Item> accepted_heaters_ = new HashSet<>();
+    private static final Set<Item> accepted_heaters_ = new HashSet<>();
 
     public static void on_config(int speed_percent, int fuel_efficiency_percent, int boost_energy_per_tick, String accepted_heaters_csv)
     {
@@ -250,7 +252,7 @@ public class EdFurnace
             ResourceLocation rl = new ResourceLocation(rlstr);
             Item heater = ForgeRegistries.ITEMS.getValue(rl);
             if((heater==null) || (heater==Items.AIR)) {
-              ModConfig.log("Furnace accepted heater config: Skipped '" + rl.toString() + "', item not found/mod not installed.");
+              ModConfig.log("Furnace accepted heater config: Skipped '" + rl + "', item not found/mod not installed.");
             } else {
               accepted_heaters_.add(heater);
             }
@@ -272,7 +274,7 @@ public class EdFurnace
     protected int burntime_left_;
     protected int field_is_burning_;
     protected float xp_stored_;
-    protected @Nullable IRecipe current_recipe_ = null;
+    protected @Nullable IRecipe<?> current_recipe_ = null;
     private int fuel_burntime_;
     private int field_proc_time_elapsed_;
     private boolean heater_inserted_ = false;
@@ -294,16 +296,16 @@ public class EdFurnace
       super(te_type);
       inventory_ = new StorageInventory(this, num_slots) {
         @Override
-        public void setInventorySlotContents(int index, ItemStack stack)
+        public void setItem(int index, ItemStack stack)
         {
           ItemStack slot_stack = stacks_.get(index);
           boolean already_in_slot = (!stack.isEmpty()) && (Inventories.areItemStacksIdentical(stack, slot_stack));
           stacks_.set(index, stack);
-          if(stack.getCount() > getInventoryStackLimit()) stack.setCount(getInventoryStackLimit());
+          if(stack.getCount() > getMaxStackSize()) stack.setCount(getMaxStackSize());
           if((index == SMELTING_INPUT_SLOT_NO) && (!already_in_slot)) {
-            proc_time_needed_ = getSmeltingTimeNeeded(world, stack);
+            proc_time_needed_ = getSmeltingTimeNeeded(level, stack);
             proc_time_elapsed_ = 0;
-            markDirty();
+            setChanged();
           }
         }
       };
@@ -322,13 +324,13 @@ public class EdFurnace
           case AUX_1_SLOT_NO:
             return true;
           default: {
-            ItemStack slot_stack = inventory_.getStackInSlot(FIFO_FUEL_1_SLOT_NO);
-            return isFuel(world, stack) || FurnaceFuelSlot.isBucket(stack) && (slot_stack.getItem() != Items.BUCKET);
+            ItemStack slot_stack = inventory_.getItem(FIFO_FUEL_1_SLOT_NO);
+            return isFuel(level, stack) || FurnaceFuelSlot.isBucket(stack) && (slot_stack.getItem() != Items.BUCKET);
           }
         }
       });
       item_extraction_handler_ = MappedItemHandler.createExtractionHandler(inventory_,
-        (slot,stack)->(slot!=SMELTING_FUEL_SLOT_NO) || (stack.getItem()==Items.BUCKET) || (!isFuel(getWorld(), stack)),
+        (slot,stack)->(slot!=SMELTING_FUEL_SLOT_NO) || (stack.getItem()==Items.BUCKET) || (!isFuel(getLevel(), stack)),
         Arrays.asList(FIFO_OUTPUT_0_SLOT_NO, FIFO_OUTPUT_1_SLOT_NO, SMELTING_FUEL_SLOT_NO)
       );
       item_insertion_handler_ = MappedItemHandler.createInsertionHandler(inventory_,
@@ -351,7 +353,7 @@ public class EdFurnace
 
     public void reset()
     {
-      inventory_.clear();
+      inventory_.clearContent();
       proc_time_elapsed_ = 0;
       proc_time_needed_ = 0;
       burntime_left_ = 0;
@@ -386,13 +388,13 @@ public class EdFurnace
 
     public int getComparatorOutput()
     {
-      if(inventory_.getStackInSlot(FIFO_FUEL_0_SLOT_NO).isEmpty() && inventory_.getStackInSlot(FIFO_FUEL_1_SLOT_NO).isEmpty() && inventory_.getStackInSlot(SMELTING_FUEL_SLOT_NO).isEmpty()) {
+      if(inventory_.getItem(FIFO_FUEL_0_SLOT_NO).isEmpty() && inventory_.getItem(FIFO_FUEL_1_SLOT_NO).isEmpty() && inventory_.getItem(SMELTING_FUEL_SLOT_NO).isEmpty()) {
         return 0; // fuel completely empty
       } else {
         return (
-          (inventory_.getStackInSlot(FIFO_INPUT_1_SLOT_NO).isEmpty() ? 0 : 5) +
-          (inventory_.getStackInSlot(FIFO_INPUT_0_SLOT_NO).isEmpty() ? 0 : 5) +
-          (inventory_.getStackInSlot(SMELTING_INPUT_SLOT_NO).isEmpty() ? 0 : 5)
+          (inventory_.getItem(FIFO_INPUT_1_SLOT_NO).isEmpty() ? 0 : 5) +
+          (inventory_.getItem(FIFO_INPUT_0_SLOT_NO).isEmpty() ? 0 : 5) +
+          (inventory_.getItem(SMELTING_INPUT_SLOT_NO).isEmpty() ? 0 : 5)
         );
       }
     }
@@ -400,17 +402,17 @@ public class EdFurnace
     // TileEntity ------------------------------------------------------------------------------
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt)
-    { super.read(state, nbt); readnbt(nbt); }
+    public void load(BlockState state, CompoundNBT nbt)
+    { super.load(state, nbt); readnbt(nbt); }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt)
-    { super.write(nbt); writenbt(nbt); return nbt; }
+    public CompoundNBT save(CompoundNBT nbt)
+    { super.save(nbt); writenbt(nbt); return nbt; }
 
     @Override
-    public void remove()
+    public void setRemoved()
     {
-      super.remove();
+      super.setRemoved();
       item_extraction_handler_.invalidate();
       item_insertion_handler_.invalidate();
       item_fuel_insertion_handler_.invalidate();
@@ -421,7 +423,7 @@ public class EdFurnace
 
     @Override
     public ITextComponent getName()
-    { final Block block=getBlockState().getBlock(); return new StringTextComponent((block!=null) ? block.getTranslationKey() : "Lab furnace"); }
+    { final Block block=getBlockState().getBlock(); return new StringTextComponent((block!=null) ? block.getDescriptionId() : "Lab furnace"); }
 
     @Override
     public boolean hasCustomName()
@@ -439,7 +441,7 @@ public class EdFurnace
 
     @Override
     public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player )
-    { return new FurnaceContainer(id, inventory, inventory_, IWorldPosCallable.of(world, pos), fields); }
+    { return new FurnaceContainer(id, inventory, inventory_, IWorldPosCallable.create(level, worldPosition), fields); }
 
     // Fields -----------------------------------------------------------------------------------------------
 
@@ -492,12 +494,12 @@ public class EdFurnace
     {
       if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
-      final BlockState state = world.getBlockState(pos);
+      final BlockState state = level.getBlockState(worldPosition);
       if(!(state.getBlock() instanceof FurnaceBlock)) return;
       final boolean was_burning = burning();
       if(was_burning) burntime_left_ -= TICK_INTERVAL;
       if(burntime_left_ < 0) burntime_left_ = 0;
-      if(world.isRemote) return;
+      if(level.isClientSide) return;
       boolean dirty = false;
       if(--fifo_timer_ <= 0) {
         fifo_timer_ = FIFO_INTERVAL/TICK_INTERVAL;
@@ -509,26 +511,26 @@ public class EdFurnace
         if(transferItems(FIFO_INPUT_0_SLOT_NO, SMELTING_INPUT_SLOT_NO, 1)) dirty = true;
         if(transferItems(FIFO_INPUT_1_SLOT_NO, FIFO_INPUT_0_SLOT_NO, 1)) dirty = true;
         heater_inserted_ = accepted_heaters_.isEmpty() // without IE always allow electrical boost
-          || accepted_heaters_.contains(inventory_.getStackInSlot(AUX_0_SLOT_NO).getItem())
-          || accepted_heaters_.contains(inventory_.getStackInSlot(AUX_1_SLOT_NO).getItem());
+          || accepted_heaters_.contains(inventory_.getItem(AUX_0_SLOT_NO).getItem())
+          || accepted_heaters_.contains(inventory_.getItem(AUX_1_SLOT_NO).getItem());
       }
-      ItemStack fuel = inventory_.getStackInSlot(SMELTING_FUEL_SLOT_NO);
-      if(burning() || (!fuel.isEmpty()) && (!(inventory_.getStackInSlot(SMELTING_INPUT_SLOT_NO)).isEmpty())) {
-        IRecipe last_recipe = currentRecipe();
+      ItemStack fuel = inventory_.getItem(SMELTING_FUEL_SLOT_NO);
+      if(burning() || (!fuel.isEmpty()) && (!(inventory_.getItem(SMELTING_INPUT_SLOT_NO)).isEmpty())) {
+        IRecipe<?> last_recipe = currentRecipe();
         updateCurrentRecipe();
         if(currentRecipe() != last_recipe) {
           proc_time_elapsed_ = 0;
-          proc_time_needed_ = getSmeltingTimeNeeded(world, inventory_.getStackInSlot(SMELTING_INPUT_SLOT_NO));
+          proc_time_needed_ = getSmeltingTimeNeeded(level, inventory_.getItem(SMELTING_INPUT_SLOT_NO));
         }
         if(!burning() && canSmeltCurrentItem()) {
-          burntime_left_ = (int)MathHelper.clamp((proc_fuel_efficiency_ * getFuelBurntime(world, fuel)), 0, MAX_BURNTIME);
+          burntime_left_ = (int)MathHelper.clamp((proc_fuel_efficiency_ * getFuelBurntime(level, fuel)), 0, MAX_BURNTIME);
           fuel_burntime_ = (int)MathHelper.clamp(((double)burntime_left_)/((proc_speed_ > 0) ? proc_speed_ : 1), 1, MAX_BURNTIME);
           if(burning()) {
             dirty = true;
             if(!fuel.isEmpty()) {
               Item fuel_item = fuel.getItem();
               fuel.shrink(1);
-              if(fuel.isEmpty()) inventory_.setInventorySlotContents(SMELTING_FUEL_SLOT_NO, fuel_item.getContainerItem(fuel));
+              if(fuel.isEmpty()) inventory_.setItem(SMELTING_FUEL_SLOT_NO, fuel_item.getContainerItem(fuel));
             }
           }
         }
@@ -539,7 +541,7 @@ public class EdFurnace
           }
           if(proc_time_elapsed_ >= proc_time_needed_) {
             proc_time_elapsed_ = 0;
-            proc_time_needed_ = getSmeltingTimeNeeded(world, inventory_.getStackInSlot(SMELTING_INPUT_SLOT_NO));
+            proc_time_needed_ = getSmeltingTimeNeeded(level, inventory_.getItem(SMELTING_INPUT_SLOT_NO));
             smeltCurrentItem();
             dirty = true;
           }
@@ -551,10 +553,10 @@ public class EdFurnace
       }
       if(was_burning != burning()) {
         dirty = true;
-        world.setBlockState(pos, state.with(FurnaceBlock.LIT, burning()));
+        level.setBlockAndUpdate(worldPosition, state.setValue(FurnaceBlock.LIT, burning()));
       }
       if(dirty) {
-        markDirty();
+        setChanged();
       }
       field_is_burning_ = this.burning() ? 1 : 0;
       field_proc_time_elapsed_ = (int)proc_time_elapsed_;
@@ -567,8 +569,8 @@ public class EdFurnace
     {
       if(stack.isEmpty()) return null;
       Inventory inventory = new Inventory(3);
-      inventory.setInventorySlotContents(0, stack);
-      return world.getRecipeManager().getRecipe(recipe_type, inventory, world).orElse(null);
+      inventory.setItem(0, stack);
+      return world.getRecipeManager().getRecipeFor(recipe_type, inventory, world).orElse(null);
     }
 
     public boolean burning()
@@ -579,20 +581,20 @@ public class EdFurnace
       if(stack.isEmpty()) return 0;
       AbstractCookingRecipe recipe = getSmeltingResult(RECIPE_TYPE, world, stack);
       if(recipe == null) return 0;
-      int t = recipe.getCookTime();
+      int t = recipe.getCookingTime();
       return (t<=0) ? DEFAULT_SMELTING_TIME : t;
     }
 
     private boolean transferItems(final int index_from, final int index_to, int count)
     {
-      ItemStack from = inventory_.getStackInSlot(index_from);
+      ItemStack from = inventory_.getItem(index_from);
       if(from.isEmpty()) return false;
-      ItemStack to = inventory_.getStackInSlot(index_to);
+      ItemStack to = inventory_.getItem(index_to);
       if(from.getCount() < count) count = from.getCount();
       if(count <= 0) return false;
       boolean changed = true;
       if(to.isEmpty()) {
-        inventory_.setInventorySlotContents(index_to, from.split(count));
+        inventory_.setItem(index_to, from.split(count));
       } else if(to.getCount() >= to.getMaxStackSize()) {
         changed = false;
       } else if(Inventories.areItemStacksDifferent(from, to)) {
@@ -607,7 +609,7 @@ public class EdFurnace
         }
       }
       if(from.isEmpty() && from!=ItemStack.EMPTY) {
-        inventory_.setInventorySlotContents(index_from, ItemStack.EMPTY);
+        inventory_.setItem(index_from, ItemStack.EMPTY);
         changed = true;
       }
       return changed;
@@ -615,25 +617,25 @@ public class EdFurnace
 
     protected boolean canSmeltCurrentItem()
     {
-      if((currentRecipe()==null) || (inventory_.getStackInSlot(SMELTING_INPUT_SLOT_NO).isEmpty())) return false;
-      final ItemStack recipe_result_items = getSmeltingResult(inventory_.getStackInSlot(SMELTING_INPUT_SLOT_NO));
+      if((currentRecipe()==null) || (inventory_.getItem(SMELTING_INPUT_SLOT_NO).isEmpty())) return false;
+      final ItemStack recipe_result_items = getSmeltingResult(inventory_.getItem(SMELTING_INPUT_SLOT_NO));
       if(recipe_result_items.isEmpty()) return false;
-      final ItemStack result_stack = inventory_.getStackInSlot(SMELTING_OUTPUT_SLOT_NO);
+      final ItemStack result_stack = inventory_.getItem(SMELTING_OUTPUT_SLOT_NO);
       if(result_stack.isEmpty()) return true;
-      if(!result_stack.isItemEqual(recipe_result_items)) return false;
-      if(result_stack.getCount() + recipe_result_items.getCount() <= inventory_.getInventoryStackLimit() && result_stack.getCount() + recipe_result_items.getCount() <= result_stack.getMaxStackSize()) return true;
+      if(!result_stack.sameItem(recipe_result_items)) return false;
+      if(result_stack.getCount() + recipe_result_items.getCount() <= inventory_.getMaxStackSize() && result_stack.getCount() + recipe_result_items.getCount() <= result_stack.getMaxStackSize()) return true;
       return result_stack.getCount() + recipe_result_items.getCount() <= recipe_result_items.getMaxStackSize();
     }
 
     protected void smeltCurrentItem()
     {
       if(!canSmeltCurrentItem()) return;
-      final ItemStack smelting_input_stack = inventory_.getStackInSlot(SMELTING_INPUT_SLOT_NO);
+      final ItemStack smelting_input_stack = inventory_.getItem(SMELTING_INPUT_SLOT_NO);
       final ItemStack recipe_result_items = getSmeltingResult(smelting_input_stack);
-      final ItemStack smelting_output_stack = inventory_.getStackInSlot(SMELTING_OUTPUT_SLOT_NO);
+      final ItemStack smelting_output_stack = inventory_.getItem(SMELTING_OUTPUT_SLOT_NO);
       final float xp = getCurrentSmeltingXp(smelting_output_stack);
       if(smelting_output_stack.isEmpty()) {
-        inventory_.setInventorySlotContents(SMELTING_OUTPUT_SLOT_NO, recipe_result_items.copy());
+        inventory_.setItem(SMELTING_OUTPUT_SLOT_NO, recipe_result_items.copy());
       } else if(smelting_output_stack.getItem() == recipe_result_items.getItem()) {
         smelting_output_stack.grow(recipe_result_items.getCount());
       }
@@ -645,7 +647,7 @@ public class EdFurnace
     {
       if(stack.isEmpty()) return 0;
       int t = ForgeHooks.getBurnTime(stack);
-      return (t<0) ? 0 : t;
+      return Math.max(t, 0);
     }
 
     public static boolean isFuel(World world, ItemStack stack)
@@ -662,7 +664,7 @@ public class EdFurnace
     }
 
     public ItemStack getSmeltingResult(final ItemStack stack)
-    { return (currentRecipe()==null) ? (ItemStack.EMPTY) : (currentRecipe().getRecipeOutput()); }
+    { return (currentRecipe()==null) ? (ItemStack.EMPTY) : (currentRecipe().getResultItem()); }
 
     public float getCurrentSmeltingXp(final ItemStack stack)
     {
@@ -674,11 +676,11 @@ public class EdFurnace
     { return getSmeltingResult(RECIPE_TYPE, world, stack) != null; }
 
     @Nullable
-    protected IRecipe currentRecipe()
+    protected IRecipe<?> currentRecipe()
     { return current_recipe_; }
 
     protected void updateCurrentRecipe()
-    { setCurrentRecipe(getSmeltingResult(RECIPE_TYPE, getWorld(), inventory_.getStackInSlot(SMELTING_INPUT_SLOT_NO))); }
+    { setCurrentRecipe(getSmeltingResult(RECIPE_TYPE, getLevel(), inventory_.getItem(SMELTING_INPUT_SLOT_NO))); }
 
     protected void setCurrentRecipe(IRecipe<?> recipe)
     { current_recipe_ = recipe; }
@@ -720,32 +722,32 @@ public class EdFurnace
       { super(inventory, index, xpos, ypos); inventory_ = inventory; player_ = player; }
 
       @Override
-      public boolean isItemValid(ItemStack stack)
+      public boolean mayPlace(ItemStack stack)
       { return false; }
 
       @Override
-      public ItemStack decrStackSize(int amount)
-      { removeCount += getHasStack() ? Math.min(amount, getStack().getCount()) : 0; return super.decrStackSize(amount); }
+      public ItemStack remove(int amount)
+      { removeCount += hasItem() ? Math.min(amount, getItem().getCount()) : 0; return super.remove(amount); }
 
       @Override
       public ItemStack onTake(PlayerEntity thePlayer, ItemStack stack)
-      { onCrafting(stack); super.onTake(thePlayer, stack); return stack; }
+      { checkTakeAchievements(stack); super.onTake(thePlayer, stack); return stack; }
 
       @Override
-      protected void onCrafting(ItemStack stack, int amount)
-      { removeCount += amount; onCrafting(stack); }
+      protected void onQuickCraft(ItemStack stack, int amount)
+      { removeCount += amount; checkTakeAchievements(stack); }
 
       @Override
-      protected void onCrafting(ItemStack stack)
+      protected void checkTakeAchievements(ItemStack stack)
       {
-        stack.onCrafting(player_.world, player_, removeCount);
-        if((!player_.world.isRemote()) && (inventory_ instanceof StorageInventory)) {
+        stack.onCraftedBy(player_.level, player_, removeCount);
+        if((!player_.level.isClientSide()) && (inventory_ instanceof StorageInventory)) {
           FurnaceTileEntity te = (FurnaceTileEntity)(((StorageInventory)inventory_).getTileEntity());
           int xp = te.consumeSmeltingExperience(stack);
           while(xp > 0) {
-            int k = ExperienceOrbEntity.getXPSplit(xp);
+            int k = ExperienceOrbEntity.getExperienceValue(xp);
             xp -= k;
-            player_.world.addEntity((new ExperienceOrbEntity(player_.world, player_.getPosition().getX(), player_.getPosition().getY()+0.5, player_.getPosition().getZ()+0.5, k)));
+            player_.level.addFreshEntity((new ExperienceOrbEntity(player_.level, player_.blockPosition().getX(), player_.blockPosition().getY()+0.5, player_.blockPosition().getZ()+0.5, k)));
           }
         }
         removeCount = 0;
@@ -761,12 +763,12 @@ public class EdFurnace
       { super(inventory, index, xpos, ypos); container_=container; }
 
       @Override
-      public boolean isItemValid(ItemStack stack)
+      public boolean mayPlace(ItemStack stack)
       { return isBucket(stack) || (FurnaceTileEntity.isFuel(container_.world(), stack)); }
 
       @Override
-      public int getItemStackLimit(ItemStack stack)
-      { return isBucket(stack) ? 1 : super.getItemStackLimit(stack); }
+      public int getMaxStackSize(ItemStack stack)
+      { return isBucket(stack) ? 1 : super.getMaxStackSize(stack); }
 
       protected static boolean isBucket(ItemStack stack)
       { return (stack.getItem()==Items.BUCKET); }
@@ -784,10 +786,10 @@ public class EdFurnace
     public int field(int index) { return fields_.get(index); }
     public PlayerEntity player() { return player_ ; }
     public IInventory inventory() { return inventory_ ; }
-    public World world() { return player_.world; }
+    public World world() { return player_.level; }
 
     public FurnaceContainer(int cid, PlayerInventory player_inventory)
-    { this(cid, player_inventory, new Inventory(FurnaceTileEntity.NUM_OF_SLOTS), IWorldPosCallable.DUMMY, new IntArray(FurnaceTileEntity.NUM_OF_FIELDS)); }
+    { this(cid, player_inventory, new Inventory(FurnaceTileEntity.NUM_OF_SLOTS), IWorldPosCallable.NULL, new IntArray(FurnaceTileEntity.NUM_OF_FIELDS)); }
 
     private FurnaceContainer(int cid, PlayerInventory player_inventory, IInventory block_inventory, IWorldPosCallable wpc, IIntArray fields)
     {
@@ -816,50 +818,50 @@ public class EdFurnace
           addSlot(new Slot(player_inventory, x+y*9+9, 8+x*18, 86+y*18)); // player slots: 9..35
         }
       }
-      this.trackIntArray(fields_); // === Add reference holders
+      this.addDataSlots(fields_); // === Add reference holders
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity player)
-    { return inventory_.isUsableByPlayer(player); }
+    public boolean stillValid(PlayerEntity player)
+    { return inventory_.stillValid(player); }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity player, int index)
+    public ItemStack quickMoveStack(PlayerEntity player, int index)
     {
       Slot slot = getSlot(index);
-      if((slot==null) || (!slot.getHasStack())) return ItemStack.EMPTY;
-      ItemStack slot_stack = slot.getStack();
+      if((slot==null) || (!slot.hasItem())) return ItemStack.EMPTY;
+      ItemStack slot_stack = slot.getItem();
       ItemStack transferred = slot_stack.copy();
       if((index==2) || (index==7) || (index==8)) {
         // Output slots
-        if(!mergeItemStack(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+36, true)) return ItemStack.EMPTY;
-        slot.onSlotChange(slot_stack, transferred);
+        if(!moveItemStackTo(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+36, true)) return ItemStack.EMPTY;
+        slot.onQuickCraft(slot_stack, transferred);
       } else if((index==0) || (index==3) || (index==4)) {
         // Input slots
-        if(!mergeItemStack(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+36, false)) return ItemStack.EMPTY;
+        if(!moveItemStackTo(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+36, false)) return ItemStack.EMPTY;
       } else if((index==1) || (index==5) || (index==6)) {
         // Fuel slots
-        if(!mergeItemStack(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+36, false)) return ItemStack.EMPTY;
+        if(!moveItemStackTo(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+36, false)) return ItemStack.EMPTY;
       } else if((index==9) || (index==10)) {
-        if(!mergeItemStack(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+36, false)) return ItemStack.EMPTY;
+        if(!moveItemStackTo(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+36, false)) return ItemStack.EMPTY;
       } else if((index >= PLAYER_INV_START_SLOTNO) && (index <= PLAYER_INV_START_SLOTNO+36)) {
         // Player inventory
         if(FurnaceTileEntity.canSmelt(world(), slot_stack)) {
           if(
-            (!mergeItemStack(slot_stack, 0, 1, false)) && // smelting input
-            (!mergeItemStack(slot_stack, 3, 4, false)) && // fifo0
-            (!mergeItemStack(slot_stack, 4, 5, false))    // fifo1
+            (!moveItemStackTo(slot_stack, 0, 1, false)) && // smelting input
+            (!moveItemStackTo(slot_stack, 3, 4, false)) && // fifo0
+            (!moveItemStackTo(slot_stack, 4, 5, false))    // fifo1
           ) return ItemStack.EMPTY;
-        } else if(FurnaceTileEntity.isFuel(player_.world, slot_stack)) {
+        } else if(FurnaceTileEntity.isFuel(player_.level, slot_stack)) {
           if(
-            (!mergeItemStack(slot_stack, 1, 2, false)) && // fuel input
-            (!mergeItemStack(slot_stack, 5, 6, false)) && // fuel fifo0
-            (!mergeItemStack(slot_stack, 6, 7, false))    // fuel fifo1
+            (!moveItemStackTo(slot_stack, 1, 2, false)) && // fuel input
+            (!moveItemStackTo(slot_stack, 5, 6, false)) && // fuel fifo0
+            (!moveItemStackTo(slot_stack, 6, 7, false))    // fuel fifo1
           ) return ItemStack.EMPTY;
         } else if((index >= PLAYER_INV_START_SLOTNO) && (index < PLAYER_INV_START_SLOTNO+27)) {
           // player inventory --> player hotbar
-          if(!mergeItemStack(slot_stack, PLAYER_INV_START_SLOTNO+27, PLAYER_INV_START_SLOTNO+36, false)) return ItemStack.EMPTY;
-        } else if((index >= PLAYER_INV_START_SLOTNO+27) && (index < PLAYER_INV_START_SLOTNO+36) && (!mergeItemStack(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+27, false))) {
+          if(!moveItemStackTo(slot_stack, PLAYER_INV_START_SLOTNO+27, PLAYER_INV_START_SLOTNO+36, false)) return ItemStack.EMPTY;
+        } else if((index >= PLAYER_INV_START_SLOTNO+27) && (index < PLAYER_INV_START_SLOTNO+36) && (!moveItemStackTo(slot_stack, PLAYER_INV_START_SLOTNO, PLAYER_INV_START_SLOTNO+27, false))) {
           // player hotbar --> player inventory
           return ItemStack.EMPTY;
         }
@@ -868,9 +870,9 @@ public class EdFurnace
         return ItemStack.EMPTY;
       }
       if(slot_stack.isEmpty()) {
-        slot.putStack(ItemStack.EMPTY);
+        slot.set(ItemStack.EMPTY);
       } else {
-        slot.onSlotChanged();
+        slot.setChanged();
       }
       if(slot_stack.getCount() == transferred.getCount()) return ItemStack.EMPTY;
       slot.onTake(player, slot_stack);
@@ -882,14 +884,14 @@ public class EdFurnace
 
     @OnlyIn(Dist.CLIENT)
     public void onGuiAction(CompoundNBT nbt)
-    { Networking.PacketContainerSyncClientToServer.sendToServer(windowId, nbt); }
+    { Networking.PacketContainerSyncClientToServer.sendToServer(containerId, nbt); }
 
     @OnlyIn(Dist.CLIENT)
     public void onGuiAction(String key, int value)
     {
       CompoundNBT nbt = new CompoundNBT();
       nbt.putInt(key, value);
-      Networking.PacketContainerSyncClientToServer.sendToServer(windowId, nbt);
+      Networking.PacketContainerSyncClientToServer.sendToServer(containerId, nbt);
     }
 
     @Override
@@ -923,23 +925,23 @@ public class EdFurnace
     {
       renderBackground/*renderBackground*/(mx);
       super.render(mx, mouseX, mouseY, partialTicks);
-      renderHoveredTooltip(mx, mouseX, mouseY);
+      renderTooltip(mx, mouseX, mouseY);
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(MatrixStack mx, int x, int y)
+    protected void renderLabels(MatrixStack mx, int x, int y)
     {}
 
     @Override
     @SuppressWarnings("deprecation")
-    protected void drawGuiContainerBackgroundLayer(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
+    protected void renderBg(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
     {
       RenderSystem.enableBlend();
       RenderSystem.color3f(1.0F, 1.0F, 1.0F);
-      getMinecraft().getTextureManager().bindTexture(new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/small_lab_furnace_gui.png"));
-      final int x0=guiLeft, y0=guiTop, w=xSize, h=ySize;
+      getMinecraft().getTextureManager().bind(new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/small_lab_furnace_gui.png"));
+      final int x0=leftPos, y0=topPos, w=imageWidth, h=imageHeight;
       blit(mx, x0, y0, 0, 0, w, h);
-      if(getContainer().field(4) != 0) {
+      if(getMenu().field(4) != 0) {
         final int k = flame_px(13);
         blit(mx, x0+59, y0+36+12-k, 176, 12-k, 14, k+1);
       }
@@ -948,10 +950,10 @@ public class EdFurnace
     }
 
     private int progress_px(int pixels)
-    { final int tc=getContainer().field(2), T=getContainer().field(3); return ((T>0) && (tc>0)) ? (tc * pixels / T) : (0); }
+    { final int tc=getMenu().field(2), T=getMenu().field(3); return ((T>0) && (tc>0)) ? (tc * pixels / T) : (0); }
 
     private int flame_px(int pixels)
-    { int ibt = getContainer().field(1); return ((getContainer().field(0) * pixels) / ((ibt>0) ? (ibt) : (FurnaceTileEntity.DEFAULT_SMELTING_TIME))); }
+    { int ibt = getMenu().field(1); return ((getMenu().field(0) * pixels) / ((ibt>0) ? (ibt) : (FurnaceTileEntity.DEFAULT_SMELTING_TIME))); }
   }
 
 }

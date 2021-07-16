@@ -17,7 +17,7 @@ import wile.engineersdecor.libmc.blocks.VariantWallBlock;
 
 public class EdWallBlock extends VariantWallBlock implements IDecorBlock
 {
-  public EdWallBlock(long config, Block.Properties builder)
+  public EdWallBlock(long config, AbstractBlock.Properties builder)
   { super(config, builder); }
 
   protected boolean attachesTo(BlockState facingState, IWorldReader world, BlockPos facingPos, Direction side)

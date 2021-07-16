@@ -67,7 +67,7 @@ public class EdFluidFunnel
     public static final int FILL_LEVEL_MAX = 3;
     public static final IntegerProperty FILL_LEVEL = IntegerProperty.create("level", 0, FILL_LEVEL_MAX);
 
-    public FluidFunnelBlock(long config, Block.Properties builder, final AxisAlignedBB[] unrotatedAABB)
+    public FluidFunnelBlock(long config, AbstractBlock.Properties builder, final AxisAlignedBB[] unrotatedAABB)
     { super(config, builder, unrotatedAABB); }
 
     @Override
@@ -75,13 +75,13 @@ public class EdFluidFunnel
     { return RenderTypeHint.CUTOUT; }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-    { super.fillStateContainer(builder); builder.add(FILL_LEVEL); }
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    { super.createBlockStateDefinition(builder); builder.add(FILL_LEVEL); }
 
     @Override
     @Nullable
     public BlockState getStateForPlacement(BlockItemUseContext context)
-    { return super.getStateForPlacement(context).with(FILL_LEVEL, 0); }
+    { return super.getStateForPlacement(context).setValue(FILL_LEVEL, 0); }
 
     @Override
     public boolean hasTileEntity(BlockState state)
@@ -94,26 +94,26 @@ public class EdFluidFunnel
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean hasComparatorInputOverride(BlockState state)
+    public boolean hasAnalogOutputSignal(BlockState state)
     { return true; }
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getComparatorInputOverride(BlockState state, World world, BlockPos pos)
-    { return MathHelper.clamp((state.get(FILL_LEVEL)*5), 0, 15); }
+    public int getAnalogOutputSignal(BlockState state, World world, BlockPos pos)
+    { return MathHelper.clamp((state.getValue(FILL_LEVEL)*5), 0, 15); }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
     {
-      if(world.isRemote) return;
+      if(world.isClientSide) return;
       if((!stack.hasTag()) || (!stack.getTag().contains("tedata"))) return;
       CompoundNBT te_nbt = stack.getTag().getCompound("tedata");
       if(te_nbt.isEmpty()) return;
-      final TileEntity te = world.getTileEntity(pos);
+      final TileEntity te = world.getBlockEntity(pos);
       if(!(te instanceof FluidFunnelTileEntity)) return;
       ((FluidFunnelTileEntity)te).readnbt(te_nbt);
-      ((FluidFunnelTileEntity)te).markDirty();
-      world.setBlockState(pos, state.with(FILL_LEVEL, 0));
+      ((FluidFunnelTileEntity)te).setChanged();
+      world.setBlockAndUpdate(pos, state.setValue(FILL_LEVEL, 0));
     }
 
     @Override
@@ -124,7 +124,7 @@ public class EdFluidFunnel
     public List<ItemStack> dropList(BlockState state, World world, final TileEntity te, boolean explosion)
     {
       final List<ItemStack> stacks = new ArrayList<ItemStack>();
-      if(world.isRemote) return stacks;
+      if(world.isClientSide) return stacks;
       if(!(te instanceof FluidFunnelTileEntity)) return stacks;
       if(!explosion) {
         ItemStack stack = new ItemStack(this, 1);
@@ -144,18 +144,18 @@ public class EdFluidFunnel
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
     {
-      if(world.isRemote) return ActionResultType.SUCCESS;
-      TileEntity te = world.getTileEntity(pos);
+      if(world.isClientSide) return ActionResultType.SUCCESS;
+      TileEntity te = world.getBlockEntity(pos);
       if(!(te instanceof FluidFunnelTileEntity)) return ActionResultType.FAIL;
-      return FluidUtil.interactWithFluidHandler(player, hand, world, pos, rayTraceResult.getFace()) ? ActionResultType.CONSUME : ActionResultType.FAIL;
+      return FluidUtil.interactWithFluidHandler(player, hand, world, pos, rayTraceResult.getDirection()) ? ActionResultType.CONSUME : ActionResultType.FAIL;
     }
 
     @Override
     @SuppressWarnings("deprecation")
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean unused)
-    { TileEntity te = world.getTileEntity(pos); if(te instanceof FluidFunnelTileEntity) ((FluidFunnelTileEntity)te).block_changed(); }
+    { TileEntity te = world.getBlockEntity(pos); if(te instanceof FluidFunnelTileEntity) ((FluidFunnelTileEntity)te).block_changed(); }
 
     @Override
     public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
@@ -212,17 +212,17 @@ public class EdFluidFunnel
     // TileEntity -----------------------------------------------------------------------------------------
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt)
-    { super.read(state, nbt); readnbt(nbt); }
+    public void load(BlockState state, CompoundNBT nbt)
+    { super.load(state, nbt); readnbt(nbt); }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt)
-    { super.write(nbt); writenbt(nbt); return nbt; }
+    public CompoundNBT save(CompoundNBT nbt)
+    { super.save(nbt); writenbt(nbt); return nbt; }
 
     @Override
-    public void remove()
+    public void setRemoved()
     {
-      super.remove();
+      super.setRemoved();
       fluid_handler_.invalidate();
     }
 
@@ -239,29 +239,29 @@ public class EdFluidFunnel
 
     private FluidState get_fluidstate(BlockPos pos)
     {
-      final Block collection_block = world.getBlockState(pos).getBlock();
+      final Block collection_block = level.getBlockState(pos).getBlock();
       if((!(collection_block instanceof IFluidBlock)) && (!(collection_block instanceof FlowingFluidBlock)) && (!(collection_block instanceof IWaterLoggable))) {
-        return Fluids.EMPTY.getDefaultState();
+        return Fluids.EMPTY.defaultFluidState();
       }
-      return world.getFluidState(pos);
+      return level.getFluidState(pos);
     }
 
     private boolean try_pick(BlockPos pos, FluidState fluidstate)
     {
       if(!fluidstate.isSource()) return false;
-      IFluidHandler hnd = FluidUtil.getFluidHandler(world, pos, null).orElse(null);
+      IFluidHandler hnd = FluidUtil.getFluidHandler(level, pos, null).orElse(null);
       FluidStack fs;
       if(hnd != null) {
         fs = hnd.drain(TANK_CAPACITY, FluidAction.EXECUTE); // IFluidBlock
       } else {
-        fs = new FluidStack(fluidstate.getFluid(), 1000);
-        BlockState state = world.getBlockState(pos);
+        fs = new FluidStack(fluidstate.getType(), 1000);
+        BlockState state = level.getBlockState(pos);
         if(state instanceof IBucketPickupHandler) {
-          ((IBucketPickupHandler)state).pickupFluid(world, pos, state);
+          ((IBucketPickupHandler)state).takeLiquid(level, pos, state);
         } else if((state.getBlock() instanceof IWaterLoggable) && (state.hasProperty(BlockStateProperties.WATERLOGGED))) {
-          world.setBlockState(pos, state.with(BlockStateProperties.WATERLOGGED, false), 1|2);
+          level.setBlock(pos, state.setValue(BlockStateProperties.WATERLOGGED, false), 1|2);
         } else {
-          world.setBlockState(pos, Blocks.AIR.getDefaultState(), 1|2); // ok we can't leave the block, that would be an infinite source of an unknown fluid.
+          level.setBlock(pos, Blocks.AIR.defaultBlockState(), 1|2); // ok we can't leave the block, that would be an infinite source of an unknown fluid.
         }
       }
       if((fs==null) || (fs.isEmpty())) return false; // it's marked nonnull but I don't trust every modder - including meself ...
@@ -278,10 +278,10 @@ public class EdFluidFunnel
     private boolean can_pick(BlockPos pos, FluidState fluidstate)
     {
       if(fluidstate.isSource()) return true;
-      IFluidHandler hnd = FluidUtil.getFluidHandler(world, pos, null).orElse(null);
+      IFluidHandler hnd = FluidUtil.getFluidHandler(level, pos, null).orElse(null);
       if(hnd == null) return false;
       FluidStack fs = hnd.drain(TANK_CAPACITY, FluidAction.SIMULATE); // don't trust that everyone returns nonnull
-      return ((fs!=null) && (!fs.isEmpty())) && (fluidstate.getFluid().isEquivalentTo(fs.getFluid()));
+      return ((fs!=null) && (!fs.isEmpty())) && (fluidstate.getType().isSame(fs.getFluid()));
     }
 
     private void rebuild_search_offsets(boolean intensive)
@@ -304,10 +304,10 @@ public class EdFluidFunnel
     {
       FluidState collection_fluidstate = get_fluidstate(collection_pos);
       if(collection_fluidstate.isEmpty()) return false;
-      Fluid fluid_to_collect = collection_fluidstate.getFluid();
-      if((!tank_.isEmpty()) && (!tank_.getFluid().getFluid().isEquivalentTo(fluid_to_collect))) return false;
+      Fluid fluid_to_collect = collection_fluidstate.getType();
+      if((!tank_.isEmpty()) && (!tank_.getFluid().getFluid().isSame(fluid_to_collect))) return false;
       if(try_pick(collection_pos, collection_fluidstate)) { last_pick_pos_ = collection_pos; return true; } // Blocks directly always first. Allows water source blocks to recover/reflow to source blocks.
-      if((last_pick_pos_==null) || (last_pick_pos_.distanceSq(collection_pos) > MAX_TRACK_RADIUS_SQ)) { last_pick_pos_ = collection_pos; search_offsets_ = null; }
+      if((last_pick_pos_==null) || (last_pick_pos_.distSqr(collection_pos) > MAX_TRACK_RADIUS_SQ)) { last_pick_pos_ = collection_pos; search_offsets_ = null; }
       BlockPos pos = last_pick_pos_;
       HashSet<BlockPos> checked = new HashSet<>();
       Stack<BlockPos> trail = new Stack<BlockPos>();
@@ -321,12 +321,12 @@ public class EdFluidFunnel
       while(++steps <= max) {
         int num_adjacent = 0;
         for(int i=0; i<search_offsets_.size(); ++i) {
-          BlockPos p = pos.add(search_offsets_.get(i));
+          BlockPos p = pos.offset(search_offsets_.get(i));
           if(checked.contains(p)) continue;
           checked.add(p);
           ++steps;
           FluidState fluidstate = get_fluidstate(p);
-          if(fluidstate.getFluid().isEquivalentTo(fluid_to_collect)) {
+          if(fluidstate.getType().isSame(fluid_to_collect)) {
             ++num_adjacent;
             pos = p;
             trail.push(pos);
@@ -334,10 +334,10 @@ public class EdFluidFunnel
               // check for same fluid above (only source blocks)
               final int max_surface_search = (MAX_TRACKING_STEPS_PER_CYCLE_INTENSIVE/2)-steps;
               for(int k=0; k<max_surface_search; ++k) {
-                FluidState fs = get_fluidstate(pos.up());
-                if(!can_pick(pos.up(), fs)) break;
+                FluidState fs = get_fluidstate(pos.above());
+                if(!can_pick(pos.above(), fs)) break;
                 fluidstate = fs;
-                pos = pos.up();
+                pos = pos.above();
                 trail.push(pos);
               }
             }
@@ -346,7 +346,7 @@ public class EdFluidFunnel
               no_fluid_found_counter_ = 0;
               search_offsets_ = null;
               // probability reset, so it's not turteling too far away, mainly for large nether lava seas, not desert lakes.
-              if((++total_pick_counter_ > 50) && world.rand.nextInt(10)==0) last_pick_pos_ = collection_pos;
+              if((++total_pick_counter_ > 50) && level.random.nextInt(10)==0) last_pick_pos_ = collection_pos;
               //println("PASS " + steps + " - " + (pos.subtract(collection_pos)));
               return true;
             }
@@ -357,7 +357,7 @@ public class EdFluidFunnel
       }
       //println("FAIL=" + steps + " - " + (pos.subtract(collection_pos)));
       //String s = new String(); for(BlockPos p:checked) s += "\n" + p; println(s);
-      if(intensive_search_counter_ > 2) world.removeBlock(pos, false);
+      if(intensive_search_counter_ > 2) level.removeBlock(pos, false);
       last_pick_pos_ = collection_pos;
       search_offsets_ = null; // try other search order
       ++no_fluid_found_counter_;
@@ -366,18 +366,18 @@ public class EdFluidFunnel
 
     public void tick()
     {
-      if((world.isRemote) || (--tick_timer_ > 0)) return;
+      if((level.isClientSide) || (--tick_timer_ > 0)) return;
       tick_timer_ = TICK_INTERVAL;
       collection_timer_ += TICK_INTERVAL;
-      final BlockState funnel_state = world.getBlockState(pos);
+      final BlockState funnel_state = level.getBlockState(worldPosition);
       if(!(funnel_state.getBlock() instanceof FluidFunnelBlock)) return;
       boolean dirty = false;
       // Collection
       if((collection_timer_ >= COLLECTION_INTERVAL) && ((tank_==null) || (tank_.getFluidAmount() <= (TANK_CAPACITY-1000)))) {
         collection_timer_ = 0;
-        if(!world.isBlockPowered(pos)) { // redstone disable feature
-          if(last_pick_pos_==null) last_pick_pos_ = pos.up();
-          TileEntity te = with_device_fluid_handler_collection ? (world.getTileEntity(pos.up())) : (null);
+        if(!level.hasNeighborSignal(worldPosition)) { // redstone disable feature
+          if(last_pick_pos_==null) last_pick_pos_ = worldPosition.above();
+          TileEntity te = with_device_fluid_handler_collection ? (level.getBlockEntity(worldPosition.above())) : (null);
           if(te != null) {
             IFluidHandler fh = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN).orElse(null);
             if(fh == null) {
@@ -393,13 +393,13 @@ public class EdFluidFunnel
             }
           }
           if(te==null) {
-            if(try_collect(pos.up())) dirty = true;
+            if(try_collect(worldPosition.above())) dirty = true;
           }
         }
       }
       // Gravity fluid transfer
       if((tank_.getFluidAmount() >= 1000)) {
-        IFluidHandler fh = FluidUtil.getFluidHandler(world, pos.down(), Direction.UP).orElse(null);
+        IFluidHandler fh = FluidUtil.getFluidHandler(level, worldPosition.below(), Direction.UP).orElse(null);
         if(fh != null) {
           FluidStack fs = new FluidStack(tank_.getFluid().getFluid(), 1000);
           int nfilled = MathHelper.clamp(fh.fill(fs, FluidAction.EXECUTE), 0, 1000);
@@ -409,8 +409,8 @@ public class EdFluidFunnel
       }
       // Block state
       int fill_level = (tank_==null) ? 0 : (MathHelper.clamp(tank_.getFluidAmount()/1000,0, FluidFunnelBlock.FILL_LEVEL_MAX));
-      if(funnel_state.get(FluidFunnelBlock.FILL_LEVEL) != fill_level) world.setBlockState(pos, funnel_state.with(FluidFunnelBlock.FILL_LEVEL, fill_level), 2|16);
-      if(dirty) markDirty();
+      if(funnel_state.getValue(FluidFunnelBlock.FILL_LEVEL) != fill_level) level.setBlock(worldPosition, funnel_state.setValue(FluidFunnelBlock.FILL_LEVEL, fill_level), 2|16);
+      if(dirty) setChanged();
     }
   }
 }

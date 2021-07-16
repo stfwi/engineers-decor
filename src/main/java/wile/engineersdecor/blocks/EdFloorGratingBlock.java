@@ -8,7 +8,7 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 
 public class EdFloorGratingBlock extends DecorBlock.WaterLoggable implements IDecorBlock
 {
-  public EdFloorGratingBlock(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
+  public EdFloorGratingBlock(long config, AbstractBlock.Properties builder, final AxisAlignedBB unrotatedAABB)
   { super(config, builder, unrotatedAABB); }
 
   @Override
@@ -42,30 +42,30 @@ public class EdFloorGratingBlock extends DecorBlock.WaterLoggable implements IDe
 
   @Override
   @SuppressWarnings("deprecation")
-  public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity)
+  public void entityInside(BlockState state, World world, BlockPos pos, Entity entity)
   {
     if(!(entity instanceof ItemEntity)) return;
-    final boolean colliding = ((entity.getPositionVec().y-pos.getY()) > 0.7);
-    if(colliding || (entity.getMotion().getY() > 0)) {
+    final boolean colliding = ((entity.position().y-pos.getY()) > 0.7);
+    if(colliding || (entity.getDeltaMovement().y() > 0)) {
       double x = pos.getX() + 0.5;
-      double y = MathHelper.clamp(entity.getPositionVec().y-0.3, pos.getY(), pos.getY()+0.6);
+      double y = MathHelper.clamp(entity.position().y-0.3, pos.getY(), pos.getY()+0.6);
       double z = pos.getZ() + 0.5;
-      double vx = entity.getMotion().getX();
-      double vy = entity.getMotion().getY();
-      double vz = entity.getMotion().getZ();
+      double vx = entity.getDeltaMovement().x();
+      double vy = entity.getDeltaMovement().y();
+      double vz = entity.getDeltaMovement().z();
       if(colliding) {
         vx = 0;
         vy = -0.3;
         vz = 0;
-        if((entity.getPositionVec().y-pos.getY()) > 0.8) y = pos.getY() + 0.6;
-        entity.prevPosX = x+0.1;
-        entity.prevPosY = y+0.1;
-        entity.prevPosZ = z+0.1;
+        if((entity.position().y-pos.getY()) > 0.8) y = pos.getY() + 0.6;
+        entity.xo = x+0.1;
+        entity.yo = y+0.1;
+        entity.zo = z+0.1;
       }
       vy = MathHelper.clamp(vy, -0.3, 0);
-      entity.setMotion(vx, vy, vz);
+      entity.setDeltaMovement(vx, vy, vz);
       entity.fallDistance = 0;
-      entity.setPositionAndUpdate(x,y,z);
+      entity.teleportTo(x,y,z);
     }
   }
 

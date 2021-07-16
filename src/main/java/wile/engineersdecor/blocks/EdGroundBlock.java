@@ -13,6 +13,6 @@ import net.minecraft.block.*;
 
 public class EdGroundBlock extends DecorBlock.Normal implements IDecorBlock
 {
-  public EdGroundBlock(long config, Block.Properties builder)
+  public EdGroundBlock(long config, AbstractBlock.Properties builder)
   { super(config, builder); }
 }

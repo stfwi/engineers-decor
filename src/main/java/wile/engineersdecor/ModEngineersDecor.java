@@ -118,7 +118,7 @@ public class ModEngineersDecor
   //
   public static final ItemGroup ITEMGROUP = (new ItemGroup("tab" + MODID) {
     @OnlyIn(Dist.CLIENT)
-    public ItemStack createIcon()
+    public ItemStack makeIcon()
     { return new ItemStack(ModContent.SIGN_MODLOGO); }
   });
 
@@ -128,9 +128,9 @@ public class ModEngineersDecor
   @SubscribeEvent
   public void onPlayerEvent(final LivingEvent.LivingUpdateEvent event)
   {
-    if((event.getEntity().world == null) || (!(event.getEntity() instanceof PlayerEntity))) return;
+    if((event.getEntity().level == null) || (!(event.getEntity() instanceof PlayerEntity))) return;
     final PlayerEntity player = (PlayerEntity)event.getEntity();
-    if(player.isOnLadder()) EdLadderBlock.onPlayerUpdateEvent(player);
+    if(player.onClimbable()) EdLadderBlock.onPlayerUpdateEvent(player);
   }
 
 }

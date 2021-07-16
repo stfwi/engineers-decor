@@ -12,6 +12,7 @@ import net.minecraft.inventory.container.*;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.world.*;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
@@ -63,6 +64,7 @@ import java.util.stream.Collectors;
 import java.util.Arrays;
 
 
+
 public class EdCraftingTable
 {
   public static boolean with_assist = true;
@@ -88,7 +90,7 @@ public class EdCraftingTable
 
   public static final class CraftingTableBlock extends DecorBlock.HorizontalWaterLoggable implements IDecorBlock
   {
-    public CraftingTableBlock(long config, Block.Properties builder, final AxisAlignedBB[] unrotatedAABBs)
+    public CraftingTableBlock(long config, AbstractBlock.Properties builder, final AxisAlignedBB[] unrotatedAABBs)
     { super(config, builder, unrotatedAABBs); }
 
     @Override
@@ -106,10 +108,10 @@ public class EdCraftingTable
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
     {
-      if(world.isRemote()) return ActionResultType.SUCCESS;
-      final TileEntity te = world.getTileEntity(pos);
+      if(world.isClientSide()) return ActionResultType.SUCCESS;
+      final TileEntity te = world.getBlockEntity(pos);
       if(!(te instanceof CraftingTableTileEntity)) return ActionResultType.FAIL;
       if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return ActionResultType.FAIL;
       NetworkHooks.openGui((ServerPlayerEntity)player,(INamedContainerProvider)te);
@@ -117,17 +119,17 @@ public class EdCraftingTable
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
     {
-      if(world.isRemote) return;
+      if(world.isClientSide) return;
       if(!stack.hasTag()) return;
       if((!stack.hasTag()) || (!stack.getTag().contains("inventory"))) return;
       CompoundNBT inventory_nbt = stack.getTag().getCompound("inventory");
       if(inventory_nbt.isEmpty()) return;
-      final TileEntity te = world.getTileEntity(pos);
+      final TileEntity te = world.getBlockEntity(pos);
       if(!(te instanceof CraftingTableTileEntity)) return;
       ((CraftingTableTileEntity)te).readnbt(inventory_nbt);
-      ((CraftingTableTileEntity)te).markDirty();
+      ((CraftingTableTileEntity)te).setChanged();
     }
 
     @Override
@@ -138,7 +140,7 @@ public class EdCraftingTable
     public List<ItemStack> dropList(BlockState state, World world, final TileEntity te, boolean explosion)
     {
       final List<ItemStack> stacks = new ArrayList<ItemStack>();
-      if(world.isRemote) return stacks;
+      if(world.isClientSide) return stacks;
       if(!(te instanceof CraftingTableTileEntity)) return stacks;
       if(!explosion) {
         ItemStack stack = new ItemStack(this, 1);
@@ -149,7 +151,7 @@ public class EdCraftingTable
           nbt.put("inventory", inventory_nbt);
           stack.setTag(nbt);
         }
-        ((CraftingTableTileEntity) te).mainInventory().clear();
+        ((CraftingTableTileEntity) te).mainInventory().clearContent();
         stacks.add(stack);
       } else {
         for(ItemStack stack: ((CraftingTableTileEntity)te).mainInventory()) {
@@ -164,7 +166,7 @@ public class EdCraftingTable
     @SuppressWarnings("deprecation")
     public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand)
     {
-      TileEntity te = world.getTileEntity(pos);
+      TileEntity te = world.getBlockEntity(pos);
       if(!(te instanceof CraftingTableTileEntity)) return;
       ((CraftingTableTileEntity)te).sync();
     }
@@ -192,10 +194,10 @@ public class EdCraftingTable
       super(te_type);
       inventory_ = new StorageInventory(this, NUM_OF_SLOTS, 1);
       inventory_.setCloseAction((player)->{
-        if(getWorld() instanceof World) {
+        if(getLevel() instanceof World) {
           scheduleSync();
           BlockState state = getBlockState();
-          getWorld().notifyBlockUpdate(getPos(), state, state, 1|2|16);
+          getLevel().sendBlockUpdated(getBlockPos(), state, state, 1|2|16);
         }
       });
       inventory_.setSlotChangeAction((slot_index,stack)-> {
@@ -204,7 +206,7 @@ public class EdCraftingTable
     }
 
     public void reset()
-    { inventory_.clear(); }
+    { inventory_.clearContent(); }
 
     public void readnbt(CompoundNBT nbt)
     { reset(); inventory_.load(nbt); history = nbt.getCompound("history"); }
@@ -221,12 +223,12 @@ public class EdCraftingTable
     // TileEntity ------------------------------------------------------------------------------
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt)
-    { super.read(state, nbt); readnbt(nbt); }
+    public void load(BlockState state, CompoundNBT nbt)
+    { super.load(state, nbt); readnbt(nbt); }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt)
-    { super.write(nbt); writenbt(nbt); return nbt; }
+    public CompoundNBT save(CompoundNBT nbt)
+    { super.save(nbt); writenbt(nbt); return nbt; }
 
     @Override
     public CompoundNBT getUpdateTag()
@@ -235,25 +237,25 @@ public class EdCraftingTable
     @Override
     @Nullable
     public SUpdateTileEntityPacket getUpdatePacket()
-    { return new SUpdateTileEntityPacket(pos, 1, getUpdateTag()); }
+    { return new SUpdateTileEntityPacket(worldPosition, 1, getUpdateTag()); }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) // on client
-    { readnbt(pkt.getNbtCompound()); super.onDataPacket(net, pkt); }
+    { readnbt(pkt.getTag()); super.onDataPacket(net, pkt); }
 
     @Override
     public void handleUpdateTag(BlockState state, CompoundNBT tag) // on client
-    { read(state, tag); }
+    { load(state, tag); }
 
     @OnlyIn(Dist.CLIENT)
-    public double getMaxRenderDistanceSquared()
+    public double getViewDistance()
     { return 400; }
 
     // INameable ---------------------------------------------------------------------------
 
     @Override
     public ITextComponent getName()
-    { final Block block=getBlockState().getBlock(); return new StringTextComponent((block!=null) ? block.getTranslationKey() : "Treated wood crafting table"); }
+    { final Block block=getBlockState().getBlock(); return new StringTextComponent((block!=null) ? block.getDescriptionId() : "Treated wood crafting table"); }
 
     @Override
     public boolean hasCustomName()
@@ -271,7 +273,7 @@ public class EdCraftingTable
 
     @Override
     public Container createMenu( int id, PlayerInventory inventory, PlayerEntity player )
-    { return new CraftingTableContainer(id, inventory, inventory_, IWorldPosCallable.of(world, pos)); }
+    { return new CraftingTableUiContainer(id, inventory, inventory_, IWorldPosCallable.create(level, worldPosition)); }
 
     @Override
     public void onServerPacketReceived(CompoundNBT nbt)
@@ -279,7 +281,7 @@ public class EdCraftingTable
 
     public void sync()
     {
-      if(getWorld().isRemote()) return;
+      if(getLevel().isClientSide()) return;
       CompoundNBT nbt = new CompoundNBT();
       writenbt(nbt);
       Networking.PacketTileNotifyServerToClient.sendToPlayers(this, nbt);
@@ -287,11 +289,11 @@ public class EdCraftingTable
 
     public void scheduleSync()
     {
-      if(world.isRemote()) return;
+      if(level.isClientSide()) return;
       final Block crafting_table_block = getBlockState().getBlock();
       if(!(crafting_table_block instanceof CraftingTableBlock)) return;
-      if(world.getPendingBlockTicks().isTickScheduled(getPos(), crafting_table_block)) return;
-      world.getPendingBlockTicks().scheduleTick(getPos(), crafting_table_block, 10, TickPriority.LOW);
+      if(level.getBlockTicks().hasScheduledTick(getBlockPos(), crafting_table_block)) return;
+      level.getBlockTicks().scheduleTick(getBlockPos(), crafting_table_block, 10, TickPriority.LOW);
     }
   }
 
@@ -299,7 +301,7 @@ public class EdCraftingTable
   // Crafting container
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class CraftingTableContainer extends Container implements Networking.INetworkSynchronisableContainer
+  public static class CraftingTableUiContainer extends Container implements Networking.INetworkSynchronisableContainer
   {
     protected static final String BUTTON_NEXT = "next";
     protected static final String BUTTON_PREV = "prev";
@@ -335,17 +337,17 @@ public class EdCraftingTable
     private final InventoryRange player_inventory_range_;
     private final @Nullable CraftingTableTileEntity te_;
 
-    public CraftingTableContainer(int cid, PlayerInventory pinv)
-    { this(cid, pinv, new Inventory(CraftingTableTileEntity.NUM_OF_SLOTS), IWorldPosCallable.DUMMY); }
+    public CraftingTableUiContainer(int cid, PlayerInventory pinv)
+    { this(cid, pinv, new Inventory(CraftingTableTileEntity.NUM_OF_SLOTS), IWorldPosCallable.NULL); }
 
-    private CraftingTableContainer(int cid, PlayerInventory pinv, IInventory block_inventory, IWorldPosCallable wpc)
+    private CraftingTableUiContainer(int cid, PlayerInventory pinv, IInventory block_inventory, IWorldPosCallable wpc)
     {
       super(ModContent.CT_TREATED_WOOD_CRAFTING_TABLE, cid);
       wpc_ = wpc;
       player_ = pinv.player;
       inventory_ = block_inventory;
-      inventory_.openInventory(player_);
-      World world = player_.world;
+      inventory_.startOpen(player_);
+      World world = player_.level;
       if((inventory_ instanceof StorageInventory) && ((((StorageInventory)inventory_).getTileEntity()) instanceof CraftingTableTileEntity)) {
         te_ = (CraftingTableTileEntity)(((StorageInventory)inventory_).getTileEntity());
       } else {
@@ -389,7 +391,7 @@ public class EdCraftingTable
           addSlot(new Slot(inventory_, 9+x+y*9, 8+x*18, 65+y*18));
         }
       }
-      if((!player_.world.isRemote()) && (te_ != null)) {
+      if((!player_.level.isClientSide()) && (te_ != null)) {
         history_.read(te_.history.copy());
       }
       CRAFTING_SLOT_COORDINATES = ImmutableList.copyOf(slotpositions);
@@ -397,22 +399,22 @@ public class EdCraftingTable
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity player)
-    { return inventory_.isUsableByPlayer(player); }
+    public boolean stillValid(PlayerEntity player)
+    { return inventory_.stillValid(player); }
 
     public void onCraftMatrixChanged()
-    { onCraftMatrixChanged(matrix_); }
+    { slotsChanged(matrix_); }
 
     @Override
-    public void onCraftMatrixChanged(IInventory inv)
+    public void slotsChanged(IInventory inv)
     {
-      wpc_.consume((world,pos)->{
-        if(world.isRemote()) return;
+      wpc_.execute((world,pos)->{
+        if(world.isClientSide()) return;
         try {
           crafting_matrix_changed_now_ = true;
           ServerPlayerEntity player = (ServerPlayerEntity) player_;
           ItemStack stack = ItemStack.EMPTY;
-          List<ICraftingRecipe> recipes = world.getServer().getRecipeManager().getRecipes(IRecipeType.CRAFTING, matrix_, world);
+          List<ICraftingRecipe> recipes = world.getServer().getRecipeManager().getRecipesFor(IRecipeType.CRAFTING, matrix_, world);
           has_recipe_collision_ = false;
           if(recipes.size() > 0) {
             ICraftingRecipe recipe = recipes.get(0);
@@ -421,13 +423,13 @@ public class EdCraftingTable
             if((recipes.size() > 1) && (currently_used instanceof ICraftingRecipe) && (recipes.contains(currently_used))) {
               recipe = (ICraftingRecipe)currently_used;
             }
-            if(result_.canUseRecipe(world, player, recipe)) {
-              detectAndSendChanges();
-              stack = recipe.getCraftingResult(matrix_);
+            if(result_.setRecipeUsed(world, player, recipe)) {
+              broadcastChanges();
+              stack = recipe.assemble(matrix_);
             }
           }
-          result_.setInventorySlotContents(0, stack);
-          detectAndSendChanges();
+          result_.setItem(0, stack);
+          broadcastChanges();
         } catch(Throwable exc) {
           ModEngineersDecor.logger().error("Recipe failed:", exc);
         }
@@ -435,51 +437,51 @@ public class EdCraftingTable
     }
 
     @Override
-    public void onContainerClosed(PlayerEntity player)
-    { inventory_.closeInventory(player); }
+    public void removed(PlayerEntity player)
+    { inventory_.stopOpen(player); }
 
     @Override
-    public boolean canMergeSlot(ItemStack stack, Slot slot)
-    { return (slot.inventory != result_) && (super.canMergeSlot(stack, slot)); }
+    public boolean canTakeItemForPickAll(ItemStack stack, Slot slot)
+    { return (slot.container != result_) && (super.canTakeItemForPickAll(stack, slot)); }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity player, int index)
+    public ItemStack quickMoveStack(PlayerEntity player, int index)
     {
-      Slot slot = inventorySlots.get(index);
-      if((slot == null) || (!slot.getHasStack())) return ItemStack.EMPTY;
-      ItemStack slotstack = slot.getStack();
+      Slot slot = slots.get(index);
+      if((slot == null) || (!slot.hasItem())) return ItemStack.EMPTY;
+      ItemStack slotstack = slot.getItem();
       ItemStack stack = slotstack.copy();
       if(index == 0) {
-        if(!this.mergeItemStack(slotstack, 10, 46+NUM_OF_STORAGE_SLOTS, false)) return ItemStack.EMPTY;
-        wpc_.consume((world, pos)->slotstack.getItem().onCreated(slotstack, world, player));
-        slot.onSlotChange(slotstack, stack);
+        if(!this.moveItemStackTo(slotstack, 10, 46+NUM_OF_STORAGE_SLOTS, false)) return ItemStack.EMPTY;
+        wpc_.execute((world, pos)->slotstack.getItem().onCraftedBy(slotstack, world, player));
+        slot.onQuickCraft(slotstack, stack);
       } else if(index >= 10 && (index < 46)) {
-        if(!this.mergeItemStack(slotstack, 46, 46+NUM_OF_STORAGE_SLOTS, false)) return ItemStack.EMPTY;
+        if(!this.moveItemStackTo(slotstack, 46, 46+NUM_OF_STORAGE_SLOTS, false)) return ItemStack.EMPTY;
       } else if((index >= 46) && (index < 46+NUM_OF_STORAGE_SLOTS)) {
-        if(!this.mergeItemStack(slotstack, 10, 46, false)) return ItemStack.EMPTY;
-      } else if(!this.mergeItemStack(slotstack, 10, 46, false)) {
+        if(!this.moveItemStackTo(slotstack, 10, 46, false)) return ItemStack.EMPTY;
+      } else if(!this.moveItemStackTo(slotstack, 10, 46, false)) {
         return ItemStack.EMPTY;
       }
-      if(slotstack.isEmpty()) slot.putStack(ItemStack.EMPTY);
-      slot.onSlotChanged();
+      if(slotstack.isEmpty()) slot.set(ItemStack.EMPTY);
+      slot.setChanged();
       if((index != 0) && (slotstack.getCount() == stack.getCount())) return ItemStack.EMPTY;
       ItemStack itemstack2 = slot.onTake(player, slotstack);
-      if(index == 0) player.dropItem(itemstack2, false);
+      if(index == 0) player.drop(itemstack2, false);
       return stack;
     }
 
     @Override
-    public ItemStack slotClick(int slotId, int button, ClickType clickType, PlayerEntity player)
+    public ItemStack clicked(int slotId, int button, ClickType clickType, PlayerEntity player)
     {
       crafting_matrix_changed_now_ = false;
-      final ItemStack stack = super.slotClick(slotId, button, clickType, player);
+      final ItemStack stack = super.clicked(slotId, button, clickType, player);
       if((with_outslot_defined_refab) && (slotId == 0) && (clickType == ClickType.PICKUP)) {
-        if((!crafting_matrix_changed_now_) && (!player.world.isRemote()) && (crafting_grid_empty())) {
-          final ItemStack dragged = player.inventory.getItemStack();
+        if((!crafting_matrix_changed_now_) && (!player.level.isClientSide()) && (crafting_grid_empty())) {
+          final ItemStack dragged = player.inventory.getCarried();
           if((dragged != null) && (!dragged.isEmpty())) {
-            try_result_stack_refab(dragged, player.world);
+            try_result_stack_refab(dragged, player.level);
           } else if(!history().current().isEmpty()) {
-            try_result_stack_refab(history().current_recipe().getRecipeOutput(), player.world);
+            try_result_stack_refab(history().current_recipe().getResultItem(), player.level);
           }
         }
       }
@@ -492,7 +494,7 @@ public class EdCraftingTable
     public void onGuiAction(String message, CompoundNBT nbt)
     {
       nbt.putString("action", message);
-      Networking.PacketContainerSyncClientToServer.sendToServer(windowId, nbt);
+      Networking.PacketContainerSyncClientToServer.sendToServer(containerId, nbt);
     }
 
     @Override
@@ -506,7 +508,7 @@ public class EdCraftingTable
       }
       if(nbt.contains("inventory")) {
         Inventories.readNbtStacks(nbt, "inventory", inventory_);
-        this.onCraftMatrixChanged(matrix_);
+        this.slotsChanged(matrix_);
       }
     }
 
@@ -555,13 +557,13 @@ public class EdCraftingTable
             } else {
               // from player
               int player_slot = (container_slot_id >= 37) ? (container_slot_id-37) : (container_slot_id-10+9);
-              final ItemStack reference_stack = player.inventory.getStackInSlot(player_slot).copy();
+              final ItemStack reference_stack = player.inventory.getItem(player_slot).copy();
               if((!reference_stack.isEmpty()) && (distribute_stack(player.inventory, player_slot) != PlacementResult.UNCHANGED)) {
                 player_inventory_changed = true;
                 changed = true;
                 if(nbt.contains("move-all")) {
-                  for(int i=0; i < player.inventory.getSizeInventory(); ++i) {
-                    final ItemStack stack = player.inventory.getStackInSlot(i);
+                  for(int i=0; i < player.inventory.getContainerSize(); ++i) {
+                    final ItemStack stack = player.inventory.getItem(i);
                     if(!Inventories.areItemStacksIdentical(reference_stack, stack)) continue;
                     if(distribute_stack(player.inventory, i) == PlacementResult.UNCHANGED) break; // grid is full
                   }
@@ -577,10 +579,10 @@ public class EdCraftingTable
               int slot = container_slot_id;
               ItemStack remaining = Inventories.insert(
                 new InventoryRange[] {block_storage_range_, player_storage_range_, player_hotbar_range_},
-                inventory_.getStackInSlot(slot-1)
+                inventory_.getItem(slot-1)
               );
-              changed = player_inventory_changed = (remaining.getCount()!=inventory_.getStackInSlot(slot-1).getCount());
-              inventory_.setInventorySlotContents(slot-1, remaining);
+              changed = player_inventory_changed = (remaining.getCount()!=inventory_.getItem(slot-1).getCount());
+              inventory_.setItem(slot-1, remaining);
             }
           } break;
           case ACTION_MOVE_ALL_STACKS: {
@@ -612,15 +614,15 @@ public class EdCraftingTable
               from_slot = (container_slot_id >= 37) ? (container_slot_id-37) : (container_slot_id-10+9);
               to_ranges = new InventoryRange[]{block_storage_range_};
             }
-            final ItemStack reference_stack = from_inventory.getStackInSlot(from_slot).copy();
+            final ItemStack reference_stack = from_inventory.getItem(from_slot).copy();
             if(!reference_stack.isEmpty()) {
               boolean abort = false;
-              for(int i=0; (i < from_inventory.getSizeInventory()) && (!abort); ++i) {
-                final ItemStack stack = from_inventory.getStackInSlot(i);
+              for(int i=0; (i < from_inventory.getContainerSize()) && (!abort); ++i) {
+                final ItemStack stack = from_inventory.getItem(i);
                 if(Inventories.areItemStacksDifferent(reference_stack, stack)) continue;
-                ItemStack remaining = Inventories.insert(to_ranges, from_inventory.getStackInSlot(i));
-                changed = player_inventory_changed = (remaining.getCount()!=from_inventory.getStackInSlot(i).getCount());
-                from_inventory.setInventorySlotContents(i, remaining);
+                ItemStack remaining = Inventories.insert(to_ranges, from_inventory.getItem(i));
+                changed = player_inventory_changed = (remaining.getCount()!=from_inventory.getItem(i).getCount());
+                from_inventory.setItem(i, remaining);
               }
             }
           } break;
@@ -639,11 +641,11 @@ public class EdCraftingTable
           } break;
         }
       }
-      if(changed) inventory_.markDirty();
-      if(player_inventory_changed) player.inventory.markDirty();
+      if(changed) inventory_.setChanged();
+      if(player_inventory_changed) player.inventory.setChanged();
       if(changed || player_inventory_changed) {
         this.onCraftMatrixChanged();
-        this.detectAndSendChanges();
+        this.broadcastChanges();
       }
     }
 
@@ -652,9 +654,9 @@ public class EdCraftingTable
 
     private void sync()
     {
-      this.wpc_.consume((world,pos)->{
-        if(world.isRemote()) return;
-        inventory_.markDirty();
+      this.wpc_.execute((world,pos)->{
+        if(world.isClientSide()) return;
+        inventory_.setChanged();
         final CompoundNBT nbt = new CompoundNBT();
         if(te_ != null) nbt.put("inventory", te_.mainInventory().save(false));
         if(with_assist) {
@@ -676,23 +678,23 @@ public class EdCraftingTable
 
     public void select_next_collision_recipe(IInventory inv)
     {
-      wpc_.consume((world,pos)->{
-        if(world.isRemote) return;
+      wpc_.execute((world,pos)->{
+        if(world.isClientSide) return;
         try {
           ServerPlayerEntity player = (ServerPlayerEntity) player_;
-          final List<ICraftingRecipe> matching_recipes = world.getServer().getRecipeManager().getRecipes(IRecipeType.CRAFTING, matrix_, world);
+          final List<ICraftingRecipe> matching_recipes = world.getServer().getRecipeManager().getRecipesFor(IRecipeType.CRAFTING, matrix_, world);
           if(matching_recipes.size() < 2) return; // nothing to change
           IRecipe<?> currently_used = result_.getRecipeUsed();
           List<ICraftingRecipe> usable_recipes = matching_recipes.stream()
-            .filter((r)->result_.canUseRecipe(world,player,r))
+            .filter((r)->result_.setRecipeUsed(world,player,r))
             .sorted((a,b)->Integer.compare(a.getId().hashCode(), b.getId().hashCode()))
             .collect(Collectors.toList());
           for(int i=0; i<usable_recipes.size(); ++i) {
             if(usable_recipes.get(i) == currently_used) {
               if(++i >= usable_recipes.size()) i=0;
               currently_used = usable_recipes.get(i);
-              ItemStack stack = ((ICraftingRecipe)currently_used).getCraftingResult(matrix_);
-              result_.setInventorySlotContents(0, stack);
+              ItemStack stack = ((ICraftingRecipe)currently_used).assemble(matrix_);
+              result_.setItem(0, stack);
               result_.setRecipeUsed(currently_used);
               break;
             }
@@ -708,15 +710,15 @@ public class EdCraftingTable
     private ICraftingRecipe find_first_recipe_for(World world, ItemStack stack)
     {
       return (ICraftingRecipe)world.getServer().getRecipeManager().getRecipes().stream()
-        .filter(r->(r.getType()==IRecipeType.CRAFTING) && (r.getRecipeOutput().isItemEqual(stack)))
+        .filter(r->(r.getType()==IRecipeType.CRAFTING) && (r.getResultItem().sameItem(stack)))
         .findFirst().orElse(null);
     }
 
     private Optional<ItemStack> search_inventory(ItemStack match_stack) {
       InventoryRange search_ranges[] = new InventoryRange[]{block_storage_range_, player_storage_range_, player_hotbar_range_};
       for(InventoryRange range: search_ranges) {
-        for(int i=0; i<range.getSizeInventory(); ++i) {
-          if(Inventories.areItemStacksIdentical(range.getStackInSlot(i), match_stack)) return Optional.of(match_stack);
+        for(int i=0; i<range.getContainerSize(); ++i) {
+          if(Inventories.areItemStacksIdentical(range.getItem(i), match_stack)) return Optional.of(match_stack);
         }
       }
       return Optional.empty();
@@ -732,7 +734,7 @@ public class EdCraftingTable
 
     private ArrayList<ItemStack> placement_stacks(ICraftingRecipe recipe)
     {
-      final World world = player_.world;
+      final World world = player_.level;
       final ArrayList<ItemStack> grid = new ArrayList<ItemStack>();
       if(recipe.getIngredients().size() > 9) {
         return grid;
@@ -745,7 +747,7 @@ public class EdCraftingTable
         }
         for(int h=3-endh; h<3; ++h) for(int w=0; w<3; ++w) {
           if((w >= endw) || (ingredient_index >= recipe.getIngredients().size())) { grid.add(ItemStack.EMPTY); continue; }
-          ItemStack[] match_stacks = recipe.getIngredients().get(ingredient_index++).getMatchingStacks();
+          ItemStack[] match_stacks = recipe.getIngredients().get(ingredient_index++).getItems();
           if(match_stacks.length == 0) { grid.add(ItemStack.EMPTY); continue; }
           ItemStack preferred = search_inventory(match_stacks).orElse(match_stacks[0]);
           if(preferred.isEmpty()) { grid.add(ItemStack.EMPTY); continue; }
@@ -754,7 +756,7 @@ public class EdCraftingTable
       } else if(recipe instanceof ShapelessRecipe) {
         // todo: check if a collision resolver with shaped recipes makes sense here.
         for(int ingredient_index=0; ingredient_index<recipe.getIngredients().size(); ++ingredient_index) {
-          ItemStack[] match_stacks = recipe.getIngredients().get(ingredient_index).getMatchingStacks();
+          ItemStack[] match_stacks = recipe.getIngredients().get(ingredient_index).getItems();
           if(match_stacks.length == 0) { grid.add(ItemStack.EMPTY); continue; }
           ItemStack preferred = search_inventory(match_stacks).orElse(match_stacks[0]);
           if(preferred.isEmpty()) { grid.add(ItemStack.EMPTY); continue; }
@@ -774,7 +776,7 @@ public class EdCraftingTable
         ItemStack replacement = to_replace;
         if(to_replace.isEmpty() || (search_inventory(to_replace).isPresent())) continue; // no replacement needed
         for(int ingredient_index=0; ingredient_index<recipe.getIngredients().size(); ++ingredient_index) {
-          ItemStack[] match_stacks = recipe.getIngredients().get(ingredient_index).getMatchingStacks();
+          ItemStack[] match_stacks = recipe.getIngredients().get(ingredient_index).getItems();
           if(Arrays.stream(match_stacks).anyMatch(s->Inventories.areItemStacksIdentical(s, to_replace))) {
             replacement = search_inventory(match_stacks).orElse(to_replace);
             changed = true;
@@ -814,7 +816,7 @@ public class EdCraftingTable
     }
 
     private boolean crafting_grid_empty()
-    { for(int i=0; i<10; ++i) { if(getSlot(i).getHasStack()) return false; } return true; }
+    { for(int i=0; i<10; ++i) { if(getSlot(i).hasItem()) return false; } return true; }
 
     private boolean itemstack_recipe_match(ItemStack grid_stack, ItemStack history_stack)
     {
@@ -824,9 +826,9 @@ public class EdCraftingTable
         for(int i=0; i<ingredients.size(); ++i) {
           Ingredient ingredient = ingredients.get(i);
           grid_match = false; dist_match = false;
-          for(final ItemStack match:ingredient.getMatchingStacks()) {
-            if(match.isItemEqualIgnoreDurability(grid_stack)) dist_match = true;
-            if(match.isItemEqualIgnoreDurability(history_stack)) grid_match = true;
+          for(final ItemStack match:ingredient.getItems()) {
+            if(match.sameItemStackIgnoreDurability(grid_stack)) dist_match = true;
+            if(match.sameItemStackIgnoreDurability(history_stack)) grid_match = true;
             if(dist_match && grid_match) return true;
           }
         }
@@ -843,7 +845,7 @@ public class EdCraftingTable
       for(int i=0; i<9; ++i) {
         if((i+CraftingHistory.INPUT_STACKS_BEGIN) >= tocraft.size()) break;
         final ItemStack needed = tocraft.get(i+CraftingHistory.INPUT_STACKS_BEGIN);
-        final ItemStack palced = inventory_.getStackInSlot(i+CRAFTING_SLOTS_BEGIN);
+        final ItemStack palced = inventory_.getItem(i+CRAFTING_SLOTS_BEGIN);
         if(needed.isEmpty() && (!palced.isEmpty())) return slots; // history vs grid mismatch.
         if((!palced.isEmpty()) && (!itemstack_recipe_match(needed, palced))) return slots; // also mismatch
         if(!needed.isEmpty()) stack_sizes[i] = palced.getCount();
@@ -857,13 +859,13 @@ public class EdCraftingTable
       int fillup_size = (max_placed <= min_placed) ?  (min_placed + 1) : max_placed;
       for(int i=0; i<9; ++i) {
         if(stack_sizes[i] < 0) continue;
-        if(fillup_size > inventory_.getStackInSlot(i+CRAFTING_SLOTS_BEGIN).getMaxStackSize()) return slots; // can't fillup all
+        if(fillup_size > inventory_.getItem(i+CRAFTING_SLOTS_BEGIN).getMaxStackSize()) return slots; // can't fillup all
       }
       for(int i=0; i<9; ++i) {
         if(stack_sizes[i] < 0) {
           slots.add(ItemStack.EMPTY);
         } else {
-          ItemStack st = inventory_.getStackInSlot(i+CRAFTING_SLOTS_BEGIN).copy();
+          ItemStack st = inventory_.getItem(i+CRAFTING_SLOTS_BEGIN).copy();
           if(st.isEmpty()) {
             st = tocraft.get(i+CraftingHistory.INPUT_STACKS_BEGIN).copy();
             st.setCount(Math.min(st.getMaxStackSize(), fillup_size));
@@ -880,7 +882,7 @@ public class EdCraftingTable
     {
       final ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
       for(int i=0; i<9; ++i) {
-        final ItemStack palced = crafting_grid_range_.getStackInSlot(i).copy();
+        final ItemStack palced = crafting_grid_range_.getItem(i).copy();
         if(!palced.isEmpty()) palced.setCount(count);
         stacks.add(palced);
       }
@@ -897,7 +899,7 @@ public class EdCraftingTable
             boolean slots_updated = false;
             for(int i = 0; i < 9; ++i) {
               if(to_fill.get(i).isEmpty()) continue;
-              ItemStack grid_stack = crafting_grid_range_.getStackInSlot(i).copy();
+              ItemStack grid_stack = crafting_grid_range_.getItem(i).copy();
               if(grid_stack.getCount() >= grid_stack.getMaxStackSize()) continue;
               final ItemStack req_stack = to_fill.get(i).copy();
               req_stack.setCount(1);
@@ -909,7 +911,7 @@ public class EdCraftingTable
               } else {
                 grid_stack.grow(mv_stack.getCount());
               }
-              crafting_grid_range_.setInventorySlotContents(i, grid_stack);
+              crafting_grid_range_.setItem(i, grid_stack);
               slots_changed = true;
               slots_updated = true;
             }
@@ -937,14 +939,14 @@ public class EdCraftingTable
     {
       List<ItemStack> to_refab = refab_crafting_stacks();
       if(history_.current_recipe() != null) result_.setRecipeUsed(history_.current_recipe());
-      ItemStack to_distribute = inventory.getStackInSlot(slot_index).copy();
+      ItemStack to_distribute = inventory.getItem(slot_index).copy();
       if(to_distribute.isEmpty()) return PlacementResult.UNCHANGED;
       int matching_grid_stack_sizes[] = {-1,-1,-1,-1,-1,-1,-1,-1,-1};
       int max_matching_stack_size = -1;
       int min_matching_stack_size = 65;
       int total_num_missing_stacks = 0;
       for(int i=0; i<9; ++i) {
-        final ItemStack grid_stack = crafting_grid_range_.getStackInSlot(i);
+        final ItemStack grid_stack = crafting_grid_range_.getItem(i);
         final ItemStack refab_stack = to_refab.isEmpty() ? ItemStack.EMPTY : to_refab.get(i).copy();
         if((!grid_stack.isEmpty()) && Inventories.areItemStacksIdentical(grid_stack, to_distribute)) {
           matching_grid_stack_sizes[i] = grid_stack.getCount();
@@ -966,7 +968,7 @@ public class EdCraftingTable
         }
       }
       if(min_matching_stack_size < 0) return PlacementResult.UNCHANGED;
-      final int stack_limit_size = Math.min(to_distribute.getMaxStackSize(), crafting_grid_range_.getInventoryStackLimit());
+      final int stack_limit_size = Math.min(to_distribute.getMaxStackSize(), crafting_grid_range_.getMaxStackSize());
       if(min_matching_stack_size >= stack_limit_size) return PlacementResult.UNCHANGED;
       int n_to_distribute = to_distribute.getCount();
       for(int it_guard=63; it_guard>=0; --it_guard) {
@@ -988,17 +990,17 @@ public class EdCraftingTable
       }
       if(n_to_distribute == to_distribute.getCount()) return PlacementResult.UNCHANGED; // was already full
       if(n_to_distribute <= 0) {
-        inventory.setInventorySlotContents(slot_index, ItemStack.EMPTY);
+        inventory.setItem(slot_index, ItemStack.EMPTY);
       } else {
         to_distribute.setCount(n_to_distribute);
-        inventory.setInventorySlotContents(slot_index, to_distribute);
+        inventory.setItem(slot_index, to_distribute);
       }
       for(int i=0; i<9; ++i) {
         if(matching_grid_stack_sizes[i] < 0) continue;
-        ItemStack grid_stack = crafting_grid_range_.getStackInSlot(i).copy();
+        ItemStack grid_stack = crafting_grid_range_.getItem(i).copy();
         if(grid_stack.isEmpty()) grid_stack = to_distribute.copy();
         grid_stack.setCount(matching_grid_stack_sizes[i]);
-        crafting_grid_range_.setInventorySlotContents(i, grid_stack);
+        crafting_grid_range_.setItem(i, grid_stack);
       }
       return PlacementResult.PLACED;
     }
@@ -1007,7 +1009,7 @@ public class EdCraftingTable
     {
       boolean changed = false;
       for(int i=0; i<9; ++i) {
-        ItemStack stack = crafting_grid_range_.getStackInSlot(i).copy();
+        ItemStack stack = crafting_grid_range_.getItem(i).copy();
         if(stack.isEmpty()) continue;
         for(InventoryRange range:ranges) {
           ItemStack remaining = range.insert(stack, false, limit, false, false);
@@ -1016,7 +1018,7 @@ public class EdCraftingTable
           stack = remaining;
           if(stop) break;
         }
-        crafting_grid_range_.setInventorySlotContents(i, stack.isEmpty() ? ItemStack.EMPTY : stack);
+        crafting_grid_range_.setItem(i, stack.isEmpty() ? ItemStack.EMPTY : stack);
       }
       return changed;
     }
@@ -1031,7 +1033,7 @@ public class EdCraftingTable
   //--------------------------------------------------------------------------------------------------------------------
 
   @OnlyIn(Dist.CLIENT)
-  public static class CraftingTableGui extends ContainerGui<CraftingTableContainer>
+  public static class CraftingTableGui extends ContainerGui<CraftingTableUiContainer>
   {
     protected static final ResourceLocation BACKGROUND = new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/metal_crafting_table_gui.png");
     protected final PlayerEntity player;
@@ -1039,33 +1041,33 @@ public class EdCraftingTable
     protected final boolean history_slot_tooltip[] = {false,false,false,false,false,false,false,false,false,false};
     protected final TooltipDisplay tooltip = new TooltipDisplay();
 
-    public CraftingTableGui(CraftingTableContainer container, PlayerInventory playerInventory, ITextComponent title)
+    public CraftingTableGui(CraftingTableUiContainer uicontainer, PlayerInventory playerInventory, ITextComponent title)
     {
-      super(container, playerInventory, title);
+      super(uicontainer, playerInventory, title);
       this.player = playerInventory.player;
-      this.xSize = 176;
-      this.ySize = 188;
+      this.imageWidth = 176;
+      this.imageHeight = 188;
     }
 
     @Override
     public void init()
     {
       super.init();
-      final int x0=guiLeft, y0=guiTop;
+      final int x0=leftPos, y0=topPos;
       buttons.clear();
       if(with_assist) {
-        buttons.add(addButton(new ImageButton(x0+158,y0+30, 12,12, 194,44, 12, BACKGROUND, (bt)->action(CraftingTableContainer.BUTTON_NEXT))));
-        buttons.add(addButton(new ImageButton(x0+158,y0+16, 12,12, 180,30, 12, BACKGROUND, (bt)->action(CraftingTableContainer.BUTTON_PREV))));
-        buttons.add(addButton(new ImageButton(x0+158,y0+44, 12,12, 194,8,  12, BACKGROUND, (bt)->action(CraftingTableContainer.BUTTON_CLEAR_GRID))));
-        buttons.add(addButton(new ImageButton(x0+116,y0+10, 20,10, 183,95, 12, BACKGROUND, (bt)->action(CraftingTableContainer.BUTTON_NEXT_COLLISION_RECIPE))));
+        buttons.add(addButton(new ImageButton(x0+158,y0+30, 12,12, 194,44, 12, BACKGROUND, (bt)->action(CraftingTableUiContainer.BUTTON_NEXT))));
+        buttons.add(addButton(new ImageButton(x0+158,y0+16, 12,12, 180,30, 12, BACKGROUND, (bt)->action(CraftingTableUiContainer.BUTTON_PREV))));
+        buttons.add(addButton(new ImageButton(x0+158,y0+44, 12,12, 194,8,  12, BACKGROUND, (bt)->action(CraftingTableUiContainer.BUTTON_CLEAR_GRID))));
+        buttons.add(addButton(new ImageButton(x0+116,y0+10, 20,10, 183,95, 12, BACKGROUND, (bt)->action(CraftingTableUiContainer.BUTTON_NEXT_COLLISION_RECIPE))));
       }
       {
         List<TipRange> tooltips = new ArrayList<>();
-        final String prefix = ModContent.CRAFTING_TABLE.getTranslationKey() + ".tooltips.";
+        final String prefix = ModContent.CRAFTING_TABLE.getDescriptionId() + ".tooltips.";
         String[] translation_keys = { "next", "prev", "clear", "nextcollisionrecipe", "fromstorage", "tostorage", "fromplayer", "toplayer" };
         for(int i=0; (i<buttons.size()) && (i<translation_keys.length); ++i) {
           Button bt = buttons.get(i);
-          tooltips.add(new TipRange(bt.x,bt.y, bt.getWidth(), bt.getHeightRealms(), Auxiliaries.localizable(prefix+translation_keys[i])));
+          tooltips.add(new TipRange(bt.x,bt.y, bt.getWidth(), bt.getHeight(), Auxiliaries.localizable(prefix+translation_keys[i])));
         }
         tooltip.init(tooltips);
       }
@@ -1075,7 +1077,7 @@ public class EdCraftingTable
     public void render(MatrixStack mx, int mouseX, int mouseY, float partialTicks)
     {
       if(with_assist) {
-        boolean is_collision = getContainer().has_recipe_collision();
+        boolean is_collision = getMenu().has_recipe_collision();
         buttons.get(3).visible = is_collision;
         buttons.get(3).active = is_collision;
       }
@@ -1086,46 +1088,46 @@ public class EdCraftingTable
 
     protected void renderHoveredToolTip(MatrixStack mx, int mouseX, int mouseY)
     {
-      if(!player.inventory.getItemStack().isEmpty()) return;
+      if(!player.inventory.getCarried().isEmpty()) return;
       final Slot slot = getSlotUnderMouse();
       if(slot == null) return;
-      if(!slot.getStack().isEmpty()) { renderTooltip(mx, slot.getStack(), mouseX, mouseY); return; }
+      if(!slot.getItem().isEmpty()) { renderTooltip(mx, slot.getItem(), mouseX, mouseY); return; }
       if(with_assist) {
         int hist_index = -1;
         if(slot instanceof CraftingOutputSlot) {
           hist_index = 0;
-        } else if(slot.inventory instanceof CraftOutputInventory) {
+        } else if(slot.container instanceof CraftOutputInventory) {
           hist_index = slot.getSlotIndex() + 1;
         }
         if((hist_index < 0) || (hist_index >= history_slot_tooltip.length)) return;
         if(!history_slot_tooltip[hist_index]) return;
-        ItemStack hist_stack = getContainer().history().current().get(hist_index);
+        ItemStack hist_stack = getMenu().history().current().get(hist_index);
         if(!hist_stack.isEmpty()) renderTooltip(mx, hist_stack, mouseX, mouseY);
       }
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(MatrixStack mx, int x, int y)
+    protected void renderLabels(MatrixStack mx, int x, int y)
     {}
 
     @Override
     @SuppressWarnings("deprecation")
-    protected void drawGuiContainerBackgroundLayer(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
+    protected void renderBg(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
     {
       RenderSystem.color3f(1.0F, 1.0F, 1.0F);
-      getMinecraft().getTextureManager().bindTexture(BACKGROUND);
-      final int x0=guiLeft, y0=guiTop;
-      blit(mx, x0, y0, 0, 0, xSize, ySize);
+      getMinecraft().getTextureManager().bind(BACKGROUND);
+      final int x0=leftPos, y0=topPos;
+      blit(mx, x0, y0, 0, 0, imageWidth, imageHeight);
       if(with_assist) {
-        for(int i=0; i<history_slot_tooltip.length; ++i) history_slot_tooltip[i] = false;
-        final List<ItemStack> crafting_template = getContainer().history().current();
+        Arrays.fill(history_slot_tooltip, false);
+        final List<ItemStack> crafting_template = getMenu().history().current();
         if((crafting_template == null) || (crafting_template.isEmpty())) return;
         {
           int i = 0;
-          for(Tuple<Integer, Integer> e : ((CraftingTableContainer)getContainer()).CRAFTING_SLOT_COORDINATES) {
+          for(Tuple<Integer, Integer> e : ((CraftingTableUiContainer)getMenu()).CRAFTING_SLOT_COORDINATES) {
             if(i==0) continue; // explicitly here, that is the result slot.
-            if((getContainer().getSlot(i).getHasStack())) {
-              if(!getContainer().getSlot(i).getStack().isItemEqual(crafting_template.get(i))) {
+            if((getMenu().getSlot(i).hasItem())) {
+              if(!getMenu().getSlot(i).getItem().sameItem(crafting_template.get(i))) {
                 return; // user has placed another recipe
               }
             }
@@ -1134,11 +1136,11 @@ public class EdCraftingTable
         }
         {
           int i = 0;
-          for(Tuple<Integer, Integer> e : ((CraftingTableContainer) getContainer()).CRAFTING_SLOT_COORDINATES) {
+          for(Tuple<Integer, Integer> e : ((CraftingTableUiContainer) getMenu()).CRAFTING_SLOT_COORDINATES) {
             final ItemStack stack = crafting_template.get(i);
             if(!stack.isEmpty()) {
-              if(!getContainer().getSlot(i).getHasStack()) history_slot_tooltip[i] = true;
-              if((i==0) && getContainer().getSlot(i).getStack().isItemEqual(crafting_template.get(i))) {
+              if(!getMenu().getSlot(i).hasItem()) history_slot_tooltip[i] = true;
+              if((i==0) && getMenu().getSlot(i).getItem().sameItem(crafting_template.get(i))) {
                 continue; // don't shade the output slot if the result can be crafted.
               } else {
                 draw_template_item_at(mx, stack, x0, y0, e.getA(), e.getB());
@@ -1155,21 +1157,21 @@ public class EdCraftingTable
     {
       ItemRenderer ir = this.itemRenderer;
       final int main_zl = getBlitOffset();
-      final float zl = ir.zLevel;
-      ir.zLevel = -80;
+      final float zl = ir.blitOffset;
+      ir.blitOffset = -80;
       RenderSystem.enableRescaleNormal();
-      ir.renderItemIntoGUI(stack, x0+x, y0+y);
+      ir.renderGuiItem(stack, x0+x, y0+y);
       RenderSystem.disableRescaleNormal();
       RenderSystem.disableLighting();
       RenderSystem.disableColorMaterial();
       RenderSystem.enableAlphaTest();
       RenderSystem.defaultAlphaFunc();
       RenderSystem.enableBlend();
-      ir.zLevel = zl;
+      ir.blitOffset = zl;
       setBlitOffset(100);
       RenderSystem.colorMask(true, true, true, true);
       RenderSystem.color4f(0.7f, 0.7f, 0.7f, 0.8f);
-      getMinecraft().getTextureManager().bindTexture(BACKGROUND);
+      getMinecraft().getTextureManager().bind(BACKGROUND);
       blit(mx, x0+x, y0+y, x, y, 16, 16);
       RenderSystem.color4f(1f, 1f, 1f, 1f);
       setBlitOffset(main_zl);
@@ -1179,28 +1181,28 @@ public class EdCraftingTable
     { action(message, new CompoundNBT()); }
 
     protected void action(String message, CompoundNBT nbt)
-    { getContainer().onGuiAction(message, nbt); tooltip.resetTimer(); }
+    { getMenu().onGuiAction(message, nbt); tooltip.resetTimer(); }
 
     @Override
-    protected void handleMouseClick(Slot slot, int slotId, int mouseButton, ClickType type)
+    protected void slotClicked(Slot slot, int slotId, int mouseButton, ClickType type)
     {
       tooltip.resetTimer();
       if(type == ClickType.PICKUP) {
-        boolean place_refab = (slot instanceof CraftingOutputSlot) && (!slot.getHasStack());
+        boolean place_refab = (slot instanceof CraftingOutputSlot) && (!slot.hasItem());
         if(place_refab && with_assist_direct_history_refab) on_history_item_placement(); // place before crafting -> direct item pick
-        super.handleMouseClick(slot, slotId, mouseButton, type);
+        super.slotClicked(slot, slotId, mouseButton, type);
         if(place_refab && (!with_assist_direct_history_refab)) on_history_item_placement(); // place after crafting -> confirmation first
         return;
       }
-      if((type == ClickType.QUICK_MOVE) && (slotId > 0) && (slot.getHasStack())) { // container slots 0 is crafting output
+      if((type == ClickType.QUICK_MOVE) && (slotId > 0) && (slot.hasItem())) { // container slots 0 is crafting output
         if(with_assist) {
-          List<ItemStack> history = getContainer().history().current();
+          List<ItemStack> history = getMenu().history().current();
           boolean palce_in_crafting_grid = false;
           if(slotId > 9) { // container slots 1..9 are crafting grid
             palce_in_crafting_grid = (!history.isEmpty());
             if(!palce_in_crafting_grid) {
               for(int i = 0; i < 9; ++i) {
-                if(!Inventories.areItemStacksDifferent(getContainer().getSlot(i).getStack(), slot.getStack())) {
+                if(!Inventories.areItemStacksDifferent(getMenu().getSlot(i).getItem(), slot.getItem())) {
                   palce_in_crafting_grid = true;
                   break;
                 }
@@ -1212,27 +1214,27 @@ public class EdCraftingTable
             CompoundNBT nbt = new CompoundNBT();
             nbt.putInt("containerslot", slotId);
             if(Auxiliaries.isCtrlDown()) nbt.putBoolean("move-all", true);
-            action(CraftingTableContainer.ACTION_PLACE_SHIFTCLICKED_STACK, nbt);
+            action(CraftingTableUiContainer.ACTION_PLACE_SHIFTCLICKED_STACK, nbt);
             return;
           } else if(Auxiliaries.isCtrlDown()) {
             // Move all same items from the inventory of the clicked slot
             // (or the crafting grid) to the corresponding target inventory.
             CompoundNBT nbt = new CompoundNBT();
             nbt.putInt("containerslot", slotId);
-            action(CraftingTableContainer.ACTION_MOVE_ALL_STACKS, nbt);
+            action(CraftingTableUiContainer.ACTION_MOVE_ALL_STACKS, nbt);
             return;
           } else if((slotId > 0) && (slotId <= 9)) {
             // Move from crafting grid to inventory
             CompoundNBT nbt = new CompoundNBT();
             nbt.putInt("containerslot", slotId);
-            action(CraftingTableContainer.ACTION_MOVE_STACK, nbt);
+            action(CraftingTableUiContainer.ACTION_MOVE_STACK, nbt);
             return;
           } else {
             // Let the normal slot click handle that.
           }
         }
       }
-      super.handleMouseClick(slot, slotId, mouseButton, type);
+      super.slotClicked(slot, slotId, mouseButton, type);
     }
 
     @Override
@@ -1241,27 +1243,27 @@ public class EdCraftingTable
       tooltip.resetTimer();
       final Slot resultSlot = this.getSlotUnderMouse();
       if((!with_crafting_slot_mouse_scrolling) || (!(resultSlot instanceof CraftingOutputSlot))) {
-        return this.getEventListenerForPos(mouseX, mouseY).filter((evl) -> {
+        return this.getChildAt(mouseX, mouseY).filter((evl) -> {
           return evl.mouseScrolled(mouseX, mouseY, wheel_inc);
         }).isPresent();
       }
-      int count = resultSlot.getStack().getCount();
+      int count = resultSlot.getItem().getCount();
       int limit = (Auxiliaries.isShiftDown() ? 2 : 1) * (Auxiliaries.isCtrlDown() ? 4 : 1);
       if(wheel_inc > 0.1) {
         if(count > 0) {
-          if((count < resultSlot.getStack().getMaxStackSize()) && (count < resultSlot.getSlotStackLimit())) {
+          if((count < resultSlot.getItem().getMaxStackSize()) && (count < resultSlot.getMaxStackSize())) {
             CompoundNBT nbt = new CompoundNBT();
             if(limit > 1) nbt.putInt("limit", limit);
-            action(CraftingTableContainer.ACTION_INCREASE_CRAFTING_STACKS, nbt);
+            action(CraftingTableUiContainer.ACTION_INCREASE_CRAFTING_STACKS, nbt);
           }
-        } else if(!getContainer().history().current().isEmpty()) {
-          action(CraftingTableContainer.ACTION_PLACE_CURRENT_HISTORY_SEL);
+        } else if(!getMenu().history().current().isEmpty()) {
+          action(CraftingTableUiContainer.ACTION_PLACE_CURRENT_HISTORY_SEL);
         }
       } else if(wheel_inc < -0.1) {
         if(count > 0) {
           CompoundNBT nbt = new CompoundNBT();
           if(limit > 1) nbt.putInt("limit", limit);
-          action(CraftingTableContainer.ACTION_DECREASE_CRAFTING_STACKS, nbt);
+          action(CraftingTableUiContainer.ACTION_DECREASE_CRAFTING_STACKS, nbt);
         }
       }
       return true;
@@ -1269,10 +1271,10 @@ public class EdCraftingTable
 
     private void on_history_item_placement()
     {
-      if((getContainer().history().current().isEmpty())) return;
+      if((getMenu().history().current().isEmpty())) return;
       final Slot resultSlot = this.getSlotUnderMouse(); // double check
       if(!(resultSlot instanceof CraftingOutputSlot)) return;
-      action(CraftingTableContainer.ACTION_PLACE_CURRENT_HISTORY_SEL);
+      action(CraftingTableUiContainer.ACTION_PLACE_CURRENT_HISTORY_SEL);
     }
   }
 
@@ -1290,8 +1292,8 @@ public class EdCraftingTable
     public static final List<ItemStack> NOTHING = new ArrayList<ItemStack>();
     private static int max_history_size_ = 5;
     private final World world;
-    private List<String> history_ = new ArrayList<String>();
-    private String stash_ = new String();
+    private final List<String> history_ = new ArrayList<String>();
+    private String stash_ = "";
     private int current_ = -1;
     private List<ItemStack> current_stacks_ = new ArrayList<ItemStack>();
     private ICraftingRecipe current_recipe_ = null;
@@ -1360,7 +1362,7 @@ public class EdCraftingTable
     {
       if(grid_stacks.size() == 9) {
         ArrayList<ItemStack> result_and_stacks = new ArrayList<>();
-        result_and_stacks.add(recipe.getRecipeOutput());
+        result_and_stacks.add(recipe.getResultItem());
         result_and_stacks.addAll(grid_stacks);
         stash_ = stacks2str(result_and_stacks, recipe);
         current_stacks_ = result_and_stacks;
@@ -1376,7 +1378,7 @@ public class EdCraftingTable
     {
       for(int i=0; i<history_.size(); ++i) {
         Tuple<ICraftingRecipe, List<ItemStack>> data = str2stacks(history_.get(i));
-        if((data!=null) && (data.getA().getRecipeOutput().isItemEqual(result))) return i;
+        if((data!=null) && (data.getA().getResultItem().sameItem(result))) return i;
       }
       return -1;
     }
@@ -1387,7 +1389,7 @@ public class EdCraftingTable
       stash_ = "";
       String s = stacks2str(grid_stacks, recipe);
       if(s.isEmpty()) return;
-      String recipe_filter = recipe.getId().toString() + ";";
+      String recipe_filter = "" + recipe.getId() + ";";
       history_.removeIf(e->e.equals(s));
       history_.removeIf(e->e.startsWith(recipe_filter));
       history_.add(s);
@@ -1402,7 +1404,7 @@ public class EdCraftingTable
       if((num_stacks < 9) || (num_stacks > 10)) return "";
       final ArrayList<String> items = new ArrayList<String>();
       items.add(recipe.getId().toString());
-      if(num_stacks < 10) items.add(recipe.getRecipeOutput().getItem().getRegistryName().toString());
+      if(num_stacks < 10) items.add(recipe.getResultItem().getItem().getRegistryName().toString());
       for(ItemStack st:grid_stacks) {
         if(st.isEmpty()) {
           items.add("");
@@ -1432,7 +1434,7 @@ public class EdCraftingTable
           stacks.add(stack);
         }
         if((stacks.size() != 10) || (stacks.get(0).isEmpty())) return null; // invalid size or no result
-        IRecipe recipe = world.getRecipeManager().getRecipe(new ResourceLocation(recipe_name)).orElse(null);
+        IRecipe<?> recipe = world.getRecipeManager().byKey(new ResourceLocation(recipe_name)).orElse(null);
         if(!(recipe instanceof ICraftingRecipe)) return null;
         return new Tuple<ICraftingRecipe, List<ItemStack>>((ICraftingRecipe)recipe, stacks);
       } catch(Throwable ex) {
@@ -1500,32 +1502,32 @@ public class EdCraftingTable
     public CraftOutputInventory(IInventory inventory)
     { result_inv_ = inventory; }
 
-    public int getSizeInventory()
+    public int getContainerSize()
     { return 1; }
 
     public boolean isEmpty()
-    { return result_inv_.getStackInSlot(0).isEmpty(); }
+    { return result_inv_.getItem(0).isEmpty(); }
 
-    public ItemStack getStackInSlot(int index)
-    { return result_inv_.getStackInSlot(0); }
+    public ItemStack getItem(int index)
+    { return result_inv_.getItem(0); }
 
-    public ItemStack decrStackSize(int index, int count)
-    { return result_inv_.removeStackFromSlot(0); }
+    public ItemStack removeItem(int index, int count)
+    { return result_inv_.removeItemNoUpdate(0); }
 
-    public ItemStack removeStackFromSlot(int index)
-    { return result_inv_.removeStackFromSlot(0); }
+    public ItemStack removeItemNoUpdate(int index)
+    { return result_inv_.removeItemNoUpdate(0); }
 
-    public void setInventorySlotContents(int index, ItemStack stack)
-    { result_inv_.setInventorySlotContents(0, stack); }
+    public void setItem(int index, ItemStack stack)
+    { result_inv_.setItem(0, stack); }
 
-    public void markDirty()
-    { result_inv_.markDirty(); }
+    public void setChanged()
+    { result_inv_.setChanged(); }
 
-    public boolean isUsableByPlayer(PlayerEntity player)
+    public boolean stillValid(PlayerEntity player)
     { return true; }
 
-    public void clear()
-    { result_inv_.setInventorySlotContents(0, ItemStack.EMPTY); }
+    public void clearContent()
+    { result_inv_.setItem(0, ItemStack.EMPTY); }
 
     public void setRecipeUsed(@Nullable IRecipe<?> recipe)
     { recipe_used_ = recipe; }
@@ -1539,87 +1541,87 @@ public class EdCraftingTable
   // Has to be re-implemented because CraftingResultSlot is not synchronsized for detectAndSendChanges().
   public static class CraftingOutputSlot extends Slot
   {
-    private final CraftingTableContainer container;
+    private final CraftingTableUiContainer uicontainer;
     private final PlayerEntity player;
     private final CraftingInventory craftMatrix;
     private int amountCrafted;
 
-    public CraftingOutputSlot(CraftingTableContainer container, PlayerEntity player, CraftingInventory craftingInventory, IInventory resultInventory, int slotIndex, int xPosition, int yPosition)
+    public CraftingOutputSlot(CraftingTableUiContainer uicontainer, PlayerEntity player, CraftingInventory craftingInventory, IInventory resultInventory, int slotIndex, int xPosition, int yPosition)
     {
       super(resultInventory, slotIndex, xPosition, yPosition);
       this.craftMatrix = craftingInventory;
-      this.container = container;
+      this.uicontainer = uicontainer;
       this.player = player;
     }
 
     @Override
-    public boolean isItemValid(ItemStack stack)
+    public boolean mayPlace(ItemStack stack)
     { return false; }
 
     @Override
-    public ItemStack decrStackSize(int amount)
+    public ItemStack remove(int amount)
     {
-      if(getHasStack()) amountCrafted += Math.min(amount, getStack().getCount());
-      return super.decrStackSize(amount);
+      if(hasItem()) amountCrafted += Math.min(amount, getItem().getCount());
+      return super.remove(amount);
     }
 
     @Override
-    protected void onCrafting(ItemStack stack, int amount)
-    { amountCrafted += amount; onCrafting(stack); }
+    protected void onQuickCraft(ItemStack stack, int amount)
+    { amountCrafted += amount; checkTakeAchievements(stack); }
 
     @Override
     protected void onSwapCraft(int numItemsCrafted)
     { amountCrafted += numItemsCrafted; }
 
     @Override
-    protected void onCrafting(ItemStack stack)
+    protected void checkTakeAchievements(ItemStack stack)
     {
-      if((with_assist) && ((player.world!=null) && (!(player.world.isRemote()))) && (!stack.isEmpty())) {
-        final IRecipe recipe = ((CraftOutputInventory)this.inventory).getRecipeUsed();
+      if((with_assist) && ((player.level!=null) && (!(player.level.isClientSide()))) && (!stack.isEmpty())) {
+        final IRecipe<?> recipe = ((CraftOutputInventory)this.container).getRecipeUsed();
         final ArrayList<ItemStack> grid = new ArrayList<ItemStack>();
         grid.add(stack);
-        for(int i = 0; i<9; ++i) grid.add(container.inventory_.getStackInSlot(i));
+        for(int i = 0; i<9; ++i) grid.add(uicontainer.inventory_.getItem(i));
         if(recipe instanceof ICraftingRecipe) {
-          container.history().add(grid, (ICraftingRecipe)recipe);
-          container.history().reset_current();
+          uicontainer.history().add(grid, (ICraftingRecipe)recipe);
+          uicontainer.history().reset_current();
         }
       }
       // Normal crafting result slot behaviour
       if(amountCrafted > 0) {
-        stack.onCrafting(this.player.world, this.player, this.amountCrafted);
+        stack.onCraftedBy(this.player.level, this.player, this.amountCrafted);
         net.minecraftforge.fml.hooks.BasicEventHooks.firePlayerCraftingEvent(this.player, stack, this.craftMatrix);
       }
-      if(inventory instanceof IRecipeHolder) {
-        ((IRecipeHolder)inventory).onCrafting(player);
+      if(uicontainer instanceof IRecipeHolder) {
+        ((IRecipeHolder)uicontainer).awardUsedRecipes(player);
       }
       amountCrafted = 0;
     }
 
     @Override
     public ItemStack onTake(PlayerEntity taking_player, ItemStack stack) {
-      onCrafting(stack);
+      checkTakeAchievements(stack);
       net.minecraftforge.common.ForgeHooks.setCraftingPlayer(taking_player);
-      NonNullList<ItemStack> stacks = taking_player.world.getRecipeManager().getRecipeNonNull(IRecipeType.CRAFTING, craftMatrix, taking_player.world);
+      NonNullList<ItemStack> stacks = taking_player.level.getRecipeManager().getRemainingItemsFor(IRecipeType.CRAFTING, craftMatrix, taking_player.level);
       net.minecraftforge.common.ForgeHooks.setCraftingPlayer(null);
       for(int i=0; i<stacks.size(); ++i) {
-        ItemStack itemstack = craftMatrix.getStackInSlot(i);
+        ItemStack itemstack = craftMatrix.getItem(i);
         ItemStack itemstack1 = stacks.get(i);
         if(!itemstack.isEmpty()) {
-          craftMatrix.decrStackSize(i, 1);
-          itemstack = craftMatrix.getStackInSlot(i);
+          craftMatrix.removeItem(i, 1);
+          itemstack = craftMatrix.getItem(i);
         }
         if(!itemstack1.isEmpty()) {
           if(itemstack.isEmpty()) {
-            craftMatrix.setInventorySlotContents(i, itemstack1);
-          } else if (ItemStack.areItemsEqual(itemstack, itemstack1) && ItemStack.areItemStackTagsEqual(itemstack, itemstack1)) {
+            craftMatrix.setItem(i, itemstack1);
+          } else if (ItemStack.isSame(itemstack, itemstack1) && ItemStack.tagMatches(itemstack, itemstack1)) {
             itemstack1.grow(itemstack.getCount());
-            craftMatrix.setInventorySlotContents(i, itemstack1);
-          } else if (!player.inventory.addItemStackToInventory(itemstack1)) {
-            player.dropItem(itemstack1, false);
+            craftMatrix.setItem(i, itemstack1);
+          } else if (!player.inventory.add(itemstack1)) {
+            player.drop(itemstack1, false);
           }
         }
       }
-      container.onCraftMatrixChanged();
+      uicontainer.onCraftMatrixChanged();
       return stack;
     }
   }
@@ -1634,44 +1636,44 @@ public class EdCraftingTable
   // Crafting inventory (needed to allow SlotCrafting to have a InventoryCrafting) -------------------------------------
   public static class CraftingTableGrid extends CraftingInventory
   {
-    protected final Container container;
+    protected final Container uicontainer;
     protected final IInventory inventory;
 
     public CraftingTableGrid(Container container_, IInventory block_inventory)
-    { super(container_, 3, 3); container = container_; inventory = block_inventory; }
+    { super(container_, 3, 3); uicontainer = container_; inventory = block_inventory; }
 
     @Override
-    public int getSizeInventory()
+    public int getContainerSize()
     { return 9; }
 
     @Override
-    public void openInventory(PlayerEntity player)
-    { inventory.openInventory(player); }
+    public void startOpen(PlayerEntity player)
+    { inventory.startOpen(player); }
 
     @Override
-    public void closeInventory(PlayerEntity player)
-    { inventory.closeInventory(player); }
+    public void stopOpen(PlayerEntity player)
+    { inventory.stopOpen(player); }
 
     @Override
-    public void markDirty()
-    { inventory.markDirty(); }
+    public void setChanged()
+    { inventory.setChanged(); }
 
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack)
+    public void setItem(int index, ItemStack stack)
     {
-      inventory.setInventorySlotContents(index, stack);
-      container.onCraftMatrixChanged(this);
+      inventory.setItem(index, stack);
+      uicontainer.slotsChanged(this);
     }
 
     @Override
-    public ItemStack getStackInSlot(int index)
-    { return inventory.getStackInSlot(index); }
+    public ItemStack getItem(int index)
+    { return inventory.getItem(index); }
 
     @Override
-    public ItemStack decrStackSize(int index, int count)
+    public ItemStack removeItem(int index, int count)
     {
-      final ItemStack stack = inventory.decrStackSize(index, count);
-      if(!stack.isEmpty()) container.onCraftMatrixChanged(this);
+      final ItemStack stack = inventory.removeItem(index, count);
+      if(!stack.isEmpty()) uicontainer.slotsChanged(this);
       return stack;
     }
   }

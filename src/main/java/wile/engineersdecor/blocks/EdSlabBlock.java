@@ -13,6 +13,6 @@ import net.minecraft.block.*;
 
 public class EdSlabBlock extends VariantSlabBlock implements IDecorBlock
 {
-  public EdSlabBlock(long config, Block.Properties builder)
+  public EdSlabBlock(long config, AbstractBlock.Properties builder)
   { super(config, builder); }
 }

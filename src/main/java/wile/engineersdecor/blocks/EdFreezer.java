@@ -40,7 +40,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.libmc.detail.Fluidics;
 import wile.engineersdecor.ModContent;
-import wile.engineersdecor.ModEngineersDecor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -60,27 +59,27 @@ public class EdFreezer
     public static final int PHASE_MAX = 4;
     public static final IntegerProperty PHASE = IntegerProperty.create("phase", 0, PHASE_MAX);
 
-    public FreezerBlock(long config, Block.Properties builder, final AxisAlignedBB unrotatedAABB)
+    public FreezerBlock(long config, AbstractBlock.Properties builder, final AxisAlignedBB unrotatedAABB)
     { super(config, builder, unrotatedAABB); }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-    { super.fillStateContainer(builder); builder.add(PHASE); }
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    { super.createBlockStateDefinition(builder); builder.add(PHASE); }
 
     @Override
     @Nullable
     public BlockState getStateForPlacement(BlockItemUseContext context)
-    { return super.getStateForPlacement(context).with(PHASE, 0); }
+    { return super.getStateForPlacement(context).setValue(PHASE, 0); }
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean hasComparatorInputOverride(BlockState state)
+    public boolean hasAnalogOutputSignal(BlockState state)
     { return true; }
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getComparatorInputOverride(BlockState state, World world, BlockPos pos)
-    { return MathHelper.clamp((state.get(PHASE)*4), 0, 15); }
+    public int getAnalogOutputSignal(BlockState state, World world, BlockPos pos)
+    { return MathHelper.clamp((state.getValue(PHASE)*4), 0, 15); }
 
     @Override
     public boolean hasTileEntity(BlockState state)
@@ -92,7 +91,7 @@ public class EdFreezer
     { return new EdFreezer.FreezerTileEntity(); }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
     {}
 
     @Override
@@ -103,7 +102,7 @@ public class EdFreezer
     public List<ItemStack> dropList(BlockState state, World world, TileEntity te, boolean explosion)
     {
       final List<ItemStack> stacks = new ArrayList<ItemStack>();
-      if(world.isRemote) return stacks;
+      if(world.isClientSide) return stacks;
       if(!(te instanceof FreezerTileEntity)) return stacks;
       ((FreezerTileEntity)te).reset_process();
       stacks.add(new ItemStack(this, 1));
@@ -112,16 +111,16 @@ public class EdFreezer
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
     {
-      if(player.isSneaking()) return ActionResultType.PASS;
-      if(world.isRemote()) return ActionResultType.SUCCESS;
+      if(player.isShiftKeyDown()) return ActionResultType.PASS;
+      if(world.isClientSide()) return ActionResultType.SUCCESS;
       FreezerTileEntity te = getTe(world, pos);
       if(te==null) return ActionResultType.FAIL;
-      final ItemStack stack = player.getHeldItem(hand);
+      final ItemStack stack = player.getItemInHand(hand);
       boolean dirty = false;
       if(Fluidics.manualFluidHandlerInteraction(world, pos, null, player, hand)) {
-        world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 0.5f, 1.4f);
+        world.playSound(null, pos, SoundEvents.BUCKET_EMPTY, SoundCategory.BLOCKS, 0.5f, 1.4f);
         return ActionResultType.CONSUME;
       }
       if(stack.getItem()==Items.WATER_BUCKET) {
@@ -129,10 +128,10 @@ public class EdFreezer
       } else if(stack.isEmpty()) {
         ItemStack ice = te.getIceItem(true);
         if(!ice.isEmpty()) {
-          player.addItemStackToInventory(ice);
-          world.playSound(null, pos, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 0.3f, 1.1f);
+          player.addItem(ice);
+          world.playSound(null, pos, SoundEvents.ITEM_PICKUP, SoundCategory.BLOCKS, 0.3f, 1.1f);
         } else {
-          world.playSound(null, pos, SoundEvents.BLOCK_IRON_TRAPDOOR_OPEN, SoundCategory.BLOCKS, 0.2f, 0.02f);
+          world.playSound(null, pos, SoundEvents.IRON_TRAPDOOR_OPEN, SoundCategory.BLOCKS, 0.2f, 0.02f);
         }
         return ActionResultType.CONSUME;
       } else {
@@ -151,7 +150,7 @@ public class EdFreezer
 
     @Nullable
     private FreezerTileEntity getTe(World world, BlockPos pos)
-    { final TileEntity te=world.getTileEntity(pos); return (!(te instanceof FreezerTileEntity)) ? (null) : ((FreezerTileEntity)te); }
+    { final TileEntity te=world.getBlockEntity(pos); return (!(te instanceof FreezerTileEntity)) ? (null) : ((FreezerTileEntity)te); }
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -249,17 +248,17 @@ public class EdFreezer
     // TileEntity ------------------------------------------------------------------------------
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt)
-    { super.read(state, nbt); readnbt(nbt); }
+    public void load(BlockState state, CompoundNBT nbt)
+    { super.load(state, nbt); readnbt(nbt); }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt)
-    { super.write(nbt); writenbt(nbt); return nbt; }
+    public CompoundNBT save(CompoundNBT nbt)
+    { super.save(nbt); writenbt(nbt); return nbt; }
 
     @Override
-    public void remove()
+    public void setRemoved()
     {
-      super.remove();
+      super.setRemoved();
       energy_handler_.invalidate();
       fluid_handler_.invalidate();
       item_handler_.invalidate();
@@ -267,11 +266,11 @@ public class EdFreezer
 
     // IItemHandler  --------------------------------------------------------------------------------
 
-    private LazyOptional<IItemHandler> item_handler_ = LazyOptional.of(() -> (IItemHandler)new FreezerItemHandler(this));
+    private final LazyOptional<IItemHandler> item_handler_ = LazyOptional.of(() -> (IItemHandler)new FreezerItemHandler(this));
 
     protected static class FreezerItemHandler implements IItemHandler
     {
-      private FreezerTileEntity te;
+      private final FreezerTileEntity te;
 
       FreezerItemHandler(FreezerTileEntity te)
       { this.te = te; }
@@ -338,7 +337,7 @@ public class EdFreezer
       if(energy_stored_ >= MAX_ENERGY_BUFFER) return 0;
       int n = Math.min(maxReceive, (MAX_ENERGY_BUFFER - energy_stored_));
       if(n > MAX_ENERGY_TRANSFER) n = MAX_ENERGY_TRANSFER;
-      if(!simulate) {energy_stored_ += n; markDirty(); }
+      if(!simulate) {energy_stored_ += n; setChanged(); }
       return n;
     }
 
@@ -358,16 +357,16 @@ public class EdFreezer
     @Override
     public void tick()
     {
-      if(world.isRemote) return;
+      if(level.isClientSide) return;
       if(--tick_timer_ > 0) return;
       tick_timer_ = TICK_INTERVAL;
-      BlockState state = world.getBlockState(pos);
+      BlockState state = level.getBlockState(worldPosition);
       if(!(state.getBlock() instanceof FreezerBlock)) return;
       boolean dirty = false;
       final int last_phase = phase();
       if(tank_.getFluidAmount() < 1000) {
         progress_ = 0;
-      } else if((energy_stored_ <= 0) || (world.isBlockPowered(pos))) {
+      } else if((energy_stored_ <= 0) || (level.hasNeighborSignal(worldPosition))) {
         progress_ = MathHelper.clamp(progress_-reheat_rate, 0,100);
       } else if(progress_ >= 100) {
         progress_ = 100;
@@ -378,18 +377,18 @@ public class EdFreezer
       }
       int new_phase = phase();
       if(new_phase > last_phase) {
-        world.playSound(null, pos, SoundEvents.BLOCK_SAND_FALL, SoundCategory.BLOCKS, 0.2f, 0.7f);
+        level.playSound(null, worldPosition, SoundEvents.SAND_FALL, SoundCategory.BLOCKS, 0.2f, 0.7f);
       } else if(new_phase < last_phase) {
-        world.playSound(null, pos, SoundEvents.BLOCK_SAND_FALL, SoundCategory.BLOCKS, 0.2f, 0.7f);
+        level.playSound(null, worldPosition, SoundEvents.SAND_FALL, SoundCategory.BLOCKS, 0.2f, 0.7f);
       }
       // Block state
-      if((force_block_update_ || (state.get(FreezerBlock.PHASE) != new_phase))) {
-        state = state.with(FreezerBlock.PHASE, new_phase);
-        world.setBlockState(pos, state,3|16);
-        world.notifyNeighborsOfStateChange(getPos(), state.getBlock());
+      if((force_block_update_ || (state.getValue(FreezerBlock.PHASE) != new_phase))) {
+        state = state.setValue(FreezerBlock.PHASE, new_phase);
+        level.setBlock(worldPosition, state,3|16);
+        level.updateNeighborsAt(getBlockPos(), state.getBlock());
         force_block_update_ = false;
       }
-      if(dirty) markDirty();
+      if(dirty) setChanged();
     }
   }
 }
