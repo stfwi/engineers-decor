@@ -12,40 +12,44 @@
  */
 package wile.engineersdecor.libmc.blocks;
 
-import net.minecraft.entity.EntitySpawnPlacementRegistry;
-import net.minecraft.pathfinding.PathType;
-import net.minecraft.block.*;
-import net.minecraft.entity.EntityType;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.loot.LootParameters;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.shapes.IBooleanFunction;
-import net.minecraft.block.material.PushReaction;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.loot.LootContext;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.util.*;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
+
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Supplier;
@@ -75,7 +79,7 @@ public class StandardBlocks
     default boolean hasDynamicDropList()
     { return false; }
 
-    default List<ItemStack> dropList(BlockState state, World world, @Nullable TileEntity te, boolean explosion)
+    default List<ItemStack> dropList(BlockState state, Level world, @Nullable BlockEntity te, boolean explosion)
     { return Collections.singletonList((!world.isClientSide()) ? (new ItemStack(state.getBlock().asItem())) : (ItemStack.EMPTY)); }
 
     enum RenderTypeHint { SOLID,CUTOUT,CUTOUT_MIPPED,TRANSLUCENT,TRANSLUCENT_NO_CRUMBLING }
@@ -98,11 +102,11 @@ public class StandardBlocks
     BlockItem getBlockItem(Block block, Item.Properties builder);
   }
 
-  public static class BaseBlock extends Block implements IStandardBlock
+  public static class BaseBlock extends Block implements IStandardBlock, LiquidBlockContainer
   {
     public final long config;
 
-    public BaseBlock(long conf, AbstractBlock.Properties properties)
+    public BaseBlock(long conf, BlockBehaviour.Properties properties)
     {
       super(properties);
       config = conf;
@@ -116,7 +120,7 @@ public class StandardBlocks
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter world, List<Component> tooltip, TooltipFlag flag)
     { Auxiliaries.Tooltip.addInformation(stack, world, tooltip, flag, true); }
 
     @Override
@@ -124,31 +128,42 @@ public class StandardBlocks
     { return getRenderTypeHint(config); }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public boolean isPathfindable(BlockState state, IBlockReader world, BlockPos pos, PathType type)
-    { return ((config & CFG_AI_PASSABLE)==0) ? false : super.isPathfindable(state, world, pos, type); }
+    public boolean canPlaceLiquid(BlockGetter world, BlockPos pos, BlockState state, Fluid fluid)
+    { return false; }
+
+    @Override
+    public boolean placeLiquid(LevelAccessor world, BlockPos pos, BlockState state, FluidState fluidstate)
+    { return false; }
 
     @Override
     @SuppressWarnings("deprecation")
-    public void onRemove(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
+    public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type)
+    { return ((config & CFG_AI_PASSABLE)!=0) && (super.isPathfindable(state, world, pos, type)); }
+
+    public boolean hasSignalConnector(BlockState state, BlockGetter world, BlockPos pos, @Nullable Direction side)
+    { return state.isSignalSource(); }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving)
     {
-      if(state.hasTileEntity() && (state.getBlock() != newState.getBlock())) {
-        world.removeBlockEntity(pos);
-        world.updateNeighbourForOutputSignal(pos, this);
-      }
+      final boolean rsup = (state.hasBlockEntity() && (state.getBlock() != newState.getBlock()));
+      super.onRemove(state, world, pos, newState, isMoving);
+      if(rsup) world.updateNeighbourForOutputSignal(pos, this);
     }
 
     @Override
     @SuppressWarnings("deprecation")
     public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
     {
-      final ServerWorld world = builder.getLevel();
-      final Float explosion_radius = builder.getOptionalParameter(LootParameters.EXPLOSION_RADIUS);
-      final TileEntity te = builder.getOptionalParameter(LootParameters.BLOCK_ENTITY);
+      final ServerLevel world = builder.getLevel();
+      final Float explosion_radius = builder.getOptionalParameter(LootContextParams.EXPLOSION_RADIUS);
+      final BlockEntity te = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
       if((!hasDynamicDropList()) || (world==null)) return super.getDrops(state, builder);
       boolean is_explosion = (explosion_radius!=null) && (explosion_radius > 0);
       return dropList(state, world, te, is_explosion);
     }
+
   }
 
   public static class Cutout extends BaseBlock implements IStandardBlock
@@ -156,16 +171,16 @@ public class StandardBlocks
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     private final VoxelShape vshape;
 
-    public Cutout(long conf, AbstractBlock.Properties properties)
+    public Cutout(long conf, BlockBehaviour.Properties properties)
     { this(conf, properties, Auxiliaries.getPixeledAABB(0, 0, 0, 16, 16,16 )); }
 
-    public Cutout(long conf, AbstractBlock.Properties properties, AxisAlignedBB aabb)
-    { this(conf, properties, VoxelShapes.create(aabb)); }
+    public Cutout(long conf, BlockBehaviour.Properties properties, AABB aabb)
+    { this(conf, properties, Shapes.create(aabb)); }
 
-    public Cutout(long conf, AbstractBlock.Properties properties, AxisAlignedBB[] aabbs)
-    { this(conf, properties, Arrays.stream(aabbs).map(aabb->VoxelShapes.create(aabb)).reduce(VoxelShapes.empty(), (shape, aabb)->VoxelShapes.joinUnoptimized(shape, aabb, IBooleanFunction.OR))); }
+    public Cutout(long conf, BlockBehaviour.Properties properties, AABB[] aabbs)
+    { this(conf, properties, Arrays.stream(aabbs).map(Shapes::create).reduce(Shapes.empty(), (shape, aabb)->Shapes.joinUnoptimized(shape, aabb, BooleanOp.OR))); }
 
-    public Cutout(long conf, AbstractBlock.Properties properties, VoxelShape voxel_shape)
+    public Cutout(long conf, BlockBehaviour.Properties properties, VoxelShape voxel_shape)
     {
       super(conf, properties);
       vshape = voxel_shape;
@@ -176,17 +191,17 @@ public class StandardBlocks
 
     @Override
     @SuppressWarnings("deprecation")
-    public VoxelShape getShape(BlockState state, IBlockReader source, BlockPos pos, ISelectionContext selectionContext)
+    public VoxelShape getShape(BlockState state, BlockGetter source, BlockPos pos, CollisionContext selectionContext)
     { return vshape; }
 
     @Override
     @SuppressWarnings("deprecation")
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos,  ISelectionContext selectionContext)
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos,  CollisionContext selectionContext)
     { return vshape; }
 
     @Override
     @Nullable
-    public BlockState getStateForPlacement(BlockItemUseContext context)
+    public BlockState getStateForPlacement(BlockPlaceContext context)
     {
       BlockState state = super.getStateForPlacement(context);
       if((config & CFG_WATERLOGGABLE)!=0) {
@@ -206,7 +221,7 @@ public class StandardBlocks
     { return PushReaction.NORMAL; }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos)
+    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos)
     {
       if((config & CFG_WATERLOGGABLE)!=0) {
         if(state.getValue(WATERLOGGED)) return false;
@@ -226,7 +241,7 @@ public class StandardBlocks
 
     @Override
     @SuppressWarnings("deprecation")
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos pos, BlockPos facingPos)
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world, BlockPos pos, BlockPos facingPos)
     {
       if((config & CFG_WATERLOGGABLE)!=0) {
         if(state.getValue(WATERLOGGED)) world.getLiquidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
@@ -235,22 +250,22 @@ public class StandardBlocks
     }
   }
 
-  public static class WaterLoggable extends Cutout implements IWaterLoggable, IStandardBlock
+  public static class WaterLoggable extends Cutout implements IStandardBlock
   {
-    public WaterLoggable(long config, AbstractBlock.Properties properties)
+    public WaterLoggable(long config, BlockBehaviour.Properties properties)
     { super(config|CFG_WATERLOGGABLE, properties); }
 
-    public WaterLoggable(long config, AbstractBlock.Properties properties, AxisAlignedBB aabb)
+    public WaterLoggable(long config, BlockBehaviour.Properties properties, AABB aabb)
     { super(config|CFG_WATERLOGGABLE, properties, aabb); }
 
-    public WaterLoggable(long config, AbstractBlock.Properties properties, VoxelShape voxel_shape)
+    public WaterLoggable(long config, BlockBehaviour.Properties properties, VoxelShape voxel_shape)
     { super(config|CFG_WATERLOGGABLE, properties, voxel_shape);  }
 
-    public WaterLoggable(long config, AbstractBlock.Properties properties, AxisAlignedBB[] aabbs)
+    public WaterLoggable(long config, BlockBehaviour.Properties properties, AABB[] aabbs)
     { super(config|CFG_WATERLOGGABLE, properties, aabbs); }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     { super.createBlockStateDefinition(builder); builder.add(WATERLOGGED); }
   }
 
@@ -259,56 +274,56 @@ public class StandardBlocks
     public static final DirectionProperty FACING = DirectionalBlock.FACING;
     protected final ArrayList<VoxelShape> vshapes;
 
-    public Directed(long config, AbstractBlock.Properties properties, final Supplier<ArrayList<VoxelShape>> shape_supplier)
+    public Directed(long config, BlockBehaviour.Properties properties, final Supplier<ArrayList<VoxelShape>> shape_supplier)
     {
       super(config, properties);
       registerDefaultState(super.defaultBlockState().setValue(FACING, Direction.UP));
       vshapes = shape_supplier.get();
     }
 
-    public Directed(long config, AbstractBlock.Properties properties, final AxisAlignedBB[] unrotatedAABBs)
+    public Directed(long config, BlockBehaviour.Properties properties, final AABB[] unrotatedAABBs)
     {
       this(config, properties, ()->{
         final boolean is_horizontal = ((config & CFG_HORIZIONTAL)!=0);
-        return new ArrayList<VoxelShape>(Arrays.asList(
+        return new ArrayList<>(Arrays.asList(
           Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.DOWN, is_horizontal)),
           Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.UP, is_horizontal)),
           Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.NORTH, is_horizontal)),
           Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.SOUTH, is_horizontal)),
           Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.WEST, is_horizontal)),
           Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.EAST, is_horizontal)),
-          VoxelShapes.block(),
-          VoxelShapes.block()
+          Shapes.block(),
+          Shapes.block()
         ));
       });
     }
 
-    public Directed(long config, AbstractBlock.Properties properties, final AxisAlignedBB unrotatedAABB)
-    { this(config, properties, new AxisAlignedBB[]{unrotatedAABB}); }
+    public Directed(long config, BlockBehaviour.Properties properties, final AABB unrotatedAABB)
+    { this(config, properties, new AABB[]{unrotatedAABB}); }
 
     @Override
     public boolean isPossibleToRespawnInThis()
     { return false; }
 
     @Override
-    public boolean canCreatureSpawn(BlockState state, IBlockReader world, BlockPos pos, EntitySpawnPlacementRegistry.PlacementType type, @Nullable EntityType<?> entityType)
+    public boolean canCreatureSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, @Nullable EntityType<?> entityType)
     { return false; }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader source, BlockPos pos, ISelectionContext selectionContext)
+    public VoxelShape getShape(BlockState state, BlockGetter source, BlockPos pos, CollisionContext selectionContext)
     { return vshapes.get((state.getValue(FACING)).get3DDataValue() & 0x7); }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext)
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext selectionContext)
     { return getShape(state, world, pos, selectionContext); }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     { super.createBlockStateDefinition(builder); builder.add(FACING); }
 
     @Override
     @Nullable
-    public BlockState getStateForPlacement(BlockItemUseContext context)
+    public BlockState getStateForPlacement(BlockPlaceContext context)
     {
       Direction facing = context.getClickedFace();
       if((config & (CFG_HORIZIONTAL|CFG_LOOK_PLACEMENT)) == (CFG_HORIZIONTAL|CFG_LOOK_PLACEMENT)) {
@@ -320,8 +335,6 @@ public class StandardBlocks
       } else if((config & CFG_LOOK_PLACEMENT)!=0) {
         // placement in direction the player is looking, with up and down
         facing = context.getNearestLookingDirection();
-      } else {
-        // default: placement on the face the player clicking
       }
       if((config & CFG_OPPOSITE_PLACEMENT)!=0) facing = facing.getOpposite();
       if(((config & CFG_FLIP_PLACEMENT_SHIFTCLICK) != 0) && (context.getPlayer().isShiftKeyDown())) facing = facing.getOpposite();
@@ -331,51 +344,51 @@ public class StandardBlocks
 
   public static class Horizontal extends Cutout implements IStandardBlock
   {
-    public static final DirectionProperty HORIZONTAL_FACING = HorizontalBlock.FACING;
+    public static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
     protected final ArrayList<VoxelShape> vshapes;
 
-    public Horizontal(long config, AbstractBlock.Properties properties, final Supplier<ArrayList<VoxelShape>> shape_supplier)
+    public Horizontal(long config, BlockBehaviour.Properties properties, final Supplier<ArrayList<VoxelShape>> shape_supplier)
     {
       super(config|CFG_HORIZIONTAL, properties);
       registerDefaultState(super.defaultBlockState().setValue(HORIZONTAL_FACING, Direction.NORTH));
       vshapes = shape_supplier.get();
     }
 
-    public Horizontal(long config, AbstractBlock.Properties properties, final AxisAlignedBB[] unrotatedAABBs)
+    public Horizontal(long config, BlockBehaviour.Properties properties, final AABB[] unrotatedAABBs)
     { this(config, properties, ()->makeHorizontalShapeLookup(unrotatedAABBs)); }
 
-    public Horizontal(long config, AbstractBlock.Properties properties, final AxisAlignedBB unrotatedAABB)
-    { this(config, properties, new AxisAlignedBB[]{unrotatedAABB}); }
+    public Horizontal(long config, BlockBehaviour.Properties properties, final AABB unrotatedAABB)
+    { this(config, properties, new AABB[]{unrotatedAABB}); }
 
-    protected static ArrayList<VoxelShape> makeHorizontalShapeLookup(final AxisAlignedBB[] unrotatedAABBs)
+    protected static ArrayList<VoxelShape> makeHorizontalShapeLookup(final AABB[] unrotatedAABBs)
     {
-      return new ArrayList<VoxelShape>(Arrays.asList(
-        VoxelShapes.block(),
-        VoxelShapes.block(),
+      return new ArrayList<>(Arrays.asList(
+        Shapes.block(),
+        Shapes.block(),
         Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.NORTH, true)),
         Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.SOUTH, true)),
         Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.WEST, true)),
         Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.EAST, true)),
-        VoxelShapes.block(),
-        VoxelShapes.block()
+        Shapes.block(),
+        Shapes.block()
       ));
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader source, BlockPos pos, ISelectionContext selectionContext)
+    public VoxelShape getShape(BlockState state, BlockGetter source, BlockPos pos, CollisionContext selectionContext)
     { return vshapes.get((state.getValue(HORIZONTAL_FACING)).get3DDataValue() & 0x7); }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext)
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext selectionContext)
     { return getShape(state, world, pos, selectionContext); }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     { super.createBlockStateDefinition(builder); builder.add(HORIZONTAL_FACING); }
 
     @Override
     @Nullable
-    public BlockState getStateForPlacement(BlockItemUseContext context)
+    public BlockState getStateForPlacement(BlockPlaceContext context)
     {
       Direction facing = context.getClickedFace();
       if((config & CFG_LOOK_PLACEMENT) != 0) {
@@ -401,71 +414,71 @@ public class StandardBlocks
     { return state.rotate(mirrorIn.getRotation(state.getValue(HORIZONTAL_FACING))); }
   }
 
-  public static class DirectedWaterLoggable extends Directed implements IWaterLoggable, IStandardBlock
+  public static class DirectedWaterLoggable extends Directed implements IStandardBlock
   {
-    public DirectedWaterLoggable(long config, AbstractBlock.Properties properties, AxisAlignedBB aabb)
+    public DirectedWaterLoggable(long config, BlockBehaviour.Properties properties, AABB aabb)
     { super(config|CFG_WATERLOGGABLE, properties, aabb); }
 
-    public DirectedWaterLoggable(long config, AbstractBlock.Properties properties, AxisAlignedBB[] aabbs)
+    public DirectedWaterLoggable(long config, BlockBehaviour.Properties properties, AABB[] aabbs)
     { super(config|CFG_WATERLOGGABLE, properties, aabbs); }
 
-    public DirectedWaterLoggable(long config, AbstractBlock.Properties properties, final Supplier<ArrayList<VoxelShape>> shape_supplier)
+    public DirectedWaterLoggable(long config, BlockBehaviour.Properties properties, final Supplier<ArrayList<VoxelShape>> shape_supplier)
     { super(config|CFG_WATERLOGGABLE, properties, shape_supplier); }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     { super.createBlockStateDefinition(builder); builder.add(WATERLOGGED); }
   }
 
-  public static class HorizontalWaterLoggable extends Horizontal implements IWaterLoggable, IStandardBlock
+  public static class HorizontalWaterLoggable extends Horizontal implements IStandardBlock
   {
-    public HorizontalWaterLoggable(long config, AbstractBlock.Properties properties, AxisAlignedBB aabb)
+    public HorizontalWaterLoggable(long config, BlockBehaviour.Properties properties, AABB aabb)
     { super(config|CFG_WATERLOGGABLE|CFG_HORIZIONTAL, properties, aabb); }
 
-    public HorizontalWaterLoggable(long config, AbstractBlock.Properties properties, AxisAlignedBB[] aabbs)
+    public HorizontalWaterLoggable(long config, BlockBehaviour.Properties properties, AABB[] aabbs)
     { super(config|CFG_WATERLOGGABLE|CFG_HORIZIONTAL, properties, aabbs); }
 
-    public HorizontalWaterLoggable(long config, AbstractBlock.Properties properties, final Supplier<ArrayList<VoxelShape>> shape_supplier)
+    public HorizontalWaterLoggable(long config, BlockBehaviour.Properties properties, final Supplier<ArrayList<VoxelShape>> shape_supplier)
     { super(config|CFG_WATERLOGGABLE|CFG_HORIZIONTAL, properties, shape_supplier); }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     { super.createBlockStateDefinition(builder); builder.add(WATERLOGGED); }
   }
 
   static public class HorizontalFourWayWaterLoggable extends WaterLoggable implements IStandardBlock
   {
-    public static final BooleanProperty NORTH = SixWayBlock.NORTH;
-    public static final BooleanProperty EAST  = SixWayBlock.EAST;
-    public static final BooleanProperty SOUTH = SixWayBlock.SOUTH;
-    public static final BooleanProperty WEST  = SixWayBlock.WEST;
+    public static final BooleanProperty NORTH = BlockStateProperties.NORTH;
+    public static final BooleanProperty EAST  = BlockStateProperties.EAST;
+    public static final BooleanProperty SOUTH = BlockStateProperties.SOUTH;
+    public static final BooleanProperty WEST  = BlockStateProperties.WEST;
     protected final Map<BlockState, VoxelShape> shapes;
     protected final Map<BlockState, VoxelShape> collision_shapes;
 
-    public HorizontalFourWayWaterLoggable(long config, AbstractBlock.Properties properties, AxisAlignedBB base_aabb, final AxisAlignedBB side_aabb, int railing_height_extension)
+    public HorizontalFourWayWaterLoggable(long config, BlockBehaviour.Properties properties, AABB base_aabb, final AABB side_aabb, int railing_height_extension)
     {
       super(config, properties, base_aabb);
       Map<BlockState, VoxelShape> build_shapes = new HashMap<>();
       Map<BlockState, VoxelShape> build_collision_shapes = new HashMap<>();
       for(BlockState state:getStateDefinition().getPossibleStates()) {
         {
-          VoxelShape shape = ((base_aabb.getXsize()==0) || (base_aabb.getYsize()==0) || (base_aabb.getZsize()==0)) ? VoxelShapes.empty() : VoxelShapes.create(base_aabb);
-          if(state.getValue(NORTH)) shape = VoxelShapes.joinUnoptimized(shape,VoxelShapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.NORTH, true)), IBooleanFunction.OR);
-          if(state.getValue(EAST))  shape = VoxelShapes.joinUnoptimized(shape,VoxelShapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.EAST, true)), IBooleanFunction.OR);
-          if(state.getValue(SOUTH)) shape = VoxelShapes.joinUnoptimized(shape,VoxelShapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.SOUTH, true)), IBooleanFunction.OR);
-          if(state.getValue(WEST))  shape = VoxelShapes.joinUnoptimized(shape,VoxelShapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.WEST, true)), IBooleanFunction.OR);
-          if(shape.isEmpty()) shape = VoxelShapes.block();
+          VoxelShape shape = ((base_aabb.getXsize()==0) || (base_aabb.getYsize()==0) || (base_aabb.getZsize()==0)) ? Shapes.empty() : Shapes.create(base_aabb);
+          if(state.getValue(NORTH)) shape = Shapes.joinUnoptimized(shape,Shapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.NORTH, true)), BooleanOp.OR);
+          if(state.getValue(EAST))  shape = Shapes.joinUnoptimized(shape,Shapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.EAST, true)), BooleanOp.OR);
+          if(state.getValue(SOUTH)) shape = Shapes.joinUnoptimized(shape,Shapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.SOUTH, true)), BooleanOp.OR);
+          if(state.getValue(WEST))  shape = Shapes.joinUnoptimized(shape,Shapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.WEST, true)), BooleanOp.OR);
+          if(shape.isEmpty()) shape = Shapes.block();
           build_shapes.put(state.setValue(WATERLOGGED, false), shape);
           build_shapes.put(state.setValue(WATERLOGGED, true), shape);
         }
         {
           // how the hack to extend a shape, these are the above with y+4px.
-          VoxelShape shape = ((base_aabb.getXsize()==0) || (base_aabb.getYsize()==0) || (base_aabb.getZsize()==0)) ? VoxelShapes.empty() : VoxelShapes.create(base_aabb);
-          if(state.getValue(NORTH)) shape = VoxelShapes.joinUnoptimized(shape,VoxelShapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.NORTH, true).expandTowards(0, railing_height_extension, 0)), IBooleanFunction.OR);
-          if(state.getValue(EAST))  shape = VoxelShapes.joinUnoptimized(shape,VoxelShapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.EAST, true).expandTowards(0, railing_height_extension, 0)), IBooleanFunction.OR);
-          if(state.getValue(SOUTH)) shape = VoxelShapes.joinUnoptimized(shape,VoxelShapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.SOUTH, true).expandTowards(0, railing_height_extension, 0)), IBooleanFunction.OR);
-          if(state.getValue(WEST))  shape = VoxelShapes.joinUnoptimized(shape,VoxelShapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.WEST, true).expandTowards(0, railing_height_extension, 0)), IBooleanFunction.OR);
-          if(shape.isEmpty()) shape = VoxelShapes.block();
+          VoxelShape shape = ((base_aabb.getXsize()==0) || (base_aabb.getYsize()==0) || (base_aabb.getZsize()==0)) ? Shapes.empty() : Shapes.create(base_aabb);
+          if(state.getValue(NORTH)) shape = Shapes.joinUnoptimized(shape,Shapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.NORTH, true).expandTowards(0, railing_height_extension, 0)), BooleanOp.OR);
+          if(state.getValue(EAST))  shape = Shapes.joinUnoptimized(shape,Shapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.EAST, true).expandTowards(0, railing_height_extension, 0)), BooleanOp.OR);
+          if(state.getValue(SOUTH)) shape = Shapes.joinUnoptimized(shape,Shapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.SOUTH, true).expandTowards(0, railing_height_extension, 0)), BooleanOp.OR);
+          if(state.getValue(WEST))  shape = Shapes.joinUnoptimized(shape,Shapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.WEST, true).expandTowards(0, railing_height_extension, 0)), BooleanOp.OR);
+          if(shape.isEmpty()) shape = Shapes.block();
           build_collision_shapes.put(state.setValue(WATERLOGGED, false), shape);
           build_collision_shapes.put(state.setValue(WATERLOGGED, true), shape);
         }
@@ -476,30 +489,30 @@ public class StandardBlocks
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     { super.createBlockStateDefinition(builder); builder.add(NORTH,EAST,SOUTH,WEST); }
 
     @Override
     @Nullable
-    public BlockState getStateForPlacement(BlockItemUseContext context)
+    public BlockState getStateForPlacement(BlockPlaceContext context)
     { return super.getStateForPlacement(context).setValue(NORTH, false).setValue(EAST, false).setValue(SOUTH, false).setValue(WEST, false); }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
-    { return shapes.getOrDefault(state, VoxelShapes.block()); }
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context)
+    { return shapes.getOrDefault(state, Shapes.block()); }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
-    { return collision_shapes.getOrDefault(state, VoxelShapes.block()); }
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context)
+    { return collision_shapes.getOrDefault(state, Shapes.block()); }
 
     public static BooleanProperty getDirectionProperty(Direction face)
     {
-      switch(face) {
-        case EAST : return HorizontalFourWayWaterLoggable.EAST;
-        case SOUTH: return HorizontalFourWayWaterLoggable.SOUTH;
-        case WEST : return HorizontalFourWayWaterLoggable.WEST;
-        default   : return HorizontalFourWayWaterLoggable.NORTH;
-      }
+      return switch (face) {
+        case EAST -> HorizontalFourWayWaterLoggable.EAST;
+        case SOUTH -> HorizontalFourWayWaterLoggable.SOUTH;
+        case WEST -> HorizontalFourWayWaterLoggable.WEST;
+        default -> HorizontalFourWayWaterLoggable.NORTH;
+      };
     }
   }
 

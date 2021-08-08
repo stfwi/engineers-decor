@@ -8,35 +8,39 @@
  */
 package wile.engineersdecor.detail;
 
-import net.minecraft.block.*;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.util.ResourceLocation;
-import wile.engineersdecor.ModEngineersDecor;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.World;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.level.block.VineBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import wile.engineersdecor.ModEngineersDecor;
+
 import java.util.*;
 
 
 public class TreeCutting
 {
-  private static org.apache.logging.log4j.Logger LOGGER = ModEngineersDecor.logger();
+  private static final org.apache.logging.log4j.Logger LOGGER = ModEngineersDecor.logger();
 
   public static boolean canChop(BlockState state)
   { return isLog(state); }
 
   // -------------------------------------------------------------------------------------------------------------------
 
-  private static final List<Vector3i> hoffsets = ImmutableList.of(
-    new Vector3i( 1,0, 0), new Vector3i( 1,0, 1), new Vector3i( 0,0, 1),
-    new Vector3i(-1,0, 1), new Vector3i(-1,0, 0), new Vector3i(-1,0,-1),
-    new Vector3i( 0,0,-1), new Vector3i( 1,0,-1)
+  private static final List<Vec3i> hoffsets = ImmutableList.of(
+    new Vec3i( 1,0, 0), new Vec3i( 1,0, 1), new Vec3i( 0,0, 1),
+    new Vec3i(-1,0, 1), new Vec3i(-1,0, 0), new Vec3i(-1,0,-1),
+    new Vec3i( 0,0,-1), new Vec3i( 1,0,-1)
   );
 
   private static boolean isLog(BlockState state)
-  { return (state.getBlock().is(BlockTags.LOGS)) || (state.getBlock().getTags().contains(new ResourceLocation("minecraft","logs"))); }
+  { return (state.is(BlockTags.LOGS)) || (state.getBlock().getTags().contains(new ResourceLocation("minecraft","logs"))); }
 
   private static boolean isSameLog(BlockState a, BlockState b)
   { return (a.getBlock()==b.getBlock()); }
@@ -48,12 +52,12 @@ public class TreeCutting
     return false;
   }
 
-  private static List<BlockPos> findBlocksAround(final World world, final BlockPos centerPos, final BlockState leaf_type_state, final Set<BlockPos> checked, int recursion_left)
+  private static List<BlockPos> findBlocksAround(final Level world, final BlockPos centerPos, final BlockState leaf_type_state, final Set<BlockPos> checked, int recursion_left)
   {
-    ArrayList<BlockPos> to_decay = new ArrayList<BlockPos>();
+    ArrayList<BlockPos> to_decay = new ArrayList<>();
     for(int y=-1; y<=1; ++y) {
       final BlockPos layer = centerPos.offset(0,y,0);
-      for(Vector3i v:hoffsets) {
+      for(Vec3i v:hoffsets) {
         BlockPos pos = layer.offset(v);
         if((!checked.contains(pos)) && (world.getBlockState(pos).getBlock()==leaf_type_state.getBlock())) {
           checked.add(pos);
@@ -67,26 +71,26 @@ public class TreeCutting
     return to_decay;
   }
 
-  private static void breakBlock(World world, BlockPos pos)
+  private static void breakBlock(Level world, BlockPos pos)
   {
     Block.dropResources(world.getBlockState(pos), world, pos);
     world.setBlock(pos, world.getFluidState(pos).createLegacyBlock(), 1|2|8);
   }
 
-  public static int chopTree(World world, BlockState broken_state, BlockPos startPos, int max_blocks_to_break, boolean without_target_block)
+  public static int chopTree(Level world, BlockState broken_state, BlockPos startPos, int max_blocks_to_break, boolean without_target_block)
   {
     if(world.isClientSide || !isLog(broken_state)) return 0;
     final long ymin = startPos.getY();
     final long max_leaf_distance = 8;
-    Set<BlockPos> checked = new HashSet<BlockPos>();
-    ArrayList<BlockPos> to_break = new ArrayList<BlockPos>();
-    ArrayList<BlockPos> to_decay = new ArrayList<BlockPos>();
+    Set<BlockPos> checked = new HashSet<>();
+    ArrayList<BlockPos> to_break = new ArrayList<>();
+    ArrayList<BlockPos> to_decay = new ArrayList<>();
     checked.add(startPos);
     // Initial simple layer-up search of same logs. This forms the base corpus, and only leaves and
     // leaf-enclosed logs attached to this corpus may be broken/decayed.
     {
-      LinkedList<BlockPos> queue = new LinkedList<BlockPos>();
-      LinkedList<BlockPos> upqueue = new LinkedList<BlockPos>();
+      LinkedList<BlockPos> queue = new LinkedList<>();
+      LinkedList<BlockPos> upqueue = new LinkedList<>();
       queue.add(startPos);
       int cutlevel = 0;
       int steps_left = 128;
@@ -107,7 +111,7 @@ public class TreeCutting
             if(isleaf || world.isEmptyBlock(uppos) || (upstate.getBlock() instanceof VineBlock)) {
               if(isleaf) to_decay.add(uppos);
               // Up is air, check adjacent for diagonal up (e.g. Accacia)
-              for(Vector3i v:hoffsets) {
+              for(Vec3i v:hoffsets) {
                 final BlockPos p = uppos.offset(v);
                 if(checked.contains(p)) continue;
                 checked.add(p);
@@ -124,7 +128,7 @@ public class TreeCutting
           }
         }
         // Lateral search
-        for(Vector3i v:hoffsets) {
+        for(Vec3i v:hoffsets) {
           final BlockPos p = pos.offset(v);
           if(checked.contains(p)) continue;
           checked.add(p);
@@ -141,7 +145,7 @@ public class TreeCutting
         }
         if(queue.isEmpty() && (!upqueue.isEmpty())) {
           queue = upqueue;
-          upqueue = new LinkedList<BlockPos>();
+          upqueue = new LinkedList<>();
           ++cutlevel;
         }
       }
@@ -156,7 +160,7 @@ public class TreeCutting
     if(!to_decay.isEmpty()) {
       final BlockState leaf_type_state = world.getBlockState(to_decay.get(0));
       final ArrayList<BlockPos> leafs = to_decay;
-      to_decay = new ArrayList<BlockPos>();
+      to_decay = new ArrayList<>();
       for(BlockPos pos:leafs) {
         int dist = 3;
         to_decay.add(pos);
@@ -172,7 +176,7 @@ public class TreeCutting
     for(BlockPos pos:to_decay) breakBlock(world, pos);
     {
       // And now the bill.
-      return MathHelper.clamp(((to_break.size()*6/5)+(to_decay.size()/10)-1), 1, 65535);
+      return Mth.clamp(((to_break.size()*6/5)+(to_decay.size()/10)-1), 1, 65535);
     }
   }
 }

@@ -9,32 +9,30 @@
  */
 package wile.engineersdecor;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.logging.log4j.Logger;
 import wile.engineersdecor.blocks.*;
+import wile.engineersdecor.libmc.blocks.SlabSliceBlock;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.blocks.VariantSlabBlock;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.OptionalRecipeCondition;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
+
 
 public class ModConfig
 {
   //--------------------------------------------------------------------------------------------------------------------
-  private static final Logger LOGGER = ModEngineersDecor.logger();
   private static final String MODID = ModEngineersDecor.MODID;
   public static final CommonConfig COMMON;
   public static final ServerConfig SERVER;
-  public static final ClientConfig CLIENT;
   public static final ForgeConfigSpec COMMON_CONFIG_SPEC;
   public static final ForgeConfigSpec SERVER_CONFIG_SPEC;
-  public static final ForgeConfigSpec CLIENT_CONFIG_SPEC;
 
   static {
     final Pair<CommonConfig, ForgeConfigSpec> common_ = (new ForgeConfigSpec.Builder()).configure(CommonConfig::new);
@@ -43,37 +41,6 @@ public class ModConfig
     final Pair<ServerConfig, ForgeConfigSpec> server_ = (new ForgeConfigSpec.Builder()).configure(ServerConfig::new);
     SERVER_CONFIG_SPEC = server_.getRight();
     SERVER = server_.getLeft();
-    final Pair<ClientConfig, ForgeConfigSpec> client_ = (new ForgeConfigSpec.Builder()).configure(ClientConfig::new);
-    CLIENT_CONFIG_SPEC = client_.getRight();
-    CLIENT = client_.getLeft();
-  }
-
-  //--------------------------------------------------------------------------------------------------------------------
-
-  public static class ClientConfig
-  {
-    public final ForgeConfigSpec.BooleanValue without_tooltips;
-    public final ForgeConfigSpec.BooleanValue without_ters;
-
-    ClientConfig(ForgeConfigSpec.Builder builder)
-    {
-      builder.comment("Settings not loaded on servers.")
-             .push("client");
-      // --- OPTOUTS ------------------------------------------------------------
-      {
-        builder.comment("Opt-out settings")
-               .push("optout");
-        without_tooltips = builder
-          .translation(MODID + ".config.without_tooltips")
-          .comment("Disable CTRL-SHIFT item tooltip display.")
-          .define("without_tooltips", false);
-        without_ters = builder
-          .translation(MODID + ".config.without_ters")
-          .comment("Disable all TERs (tile entity renderers).")
-          .define("without_ters", false);
-      }
-      builder.pop();
-    }
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -150,46 +117,6 @@ public class ModConfig
     public final ForgeConfigSpec.BooleanValue without_mob_chair_sitting;
     public final ForgeConfigSpec.BooleanValue without_ladder_speed_boost;
     public final ForgeConfigSpec.BooleanValue without_crafting_table_history;
-
-    /// ---------- @todo: remove these settings for MC1.17 / 1.16.5
-    public final ForgeConfigSpec.ConfigValue<String> pattern_excludes;
-    public final ForgeConfigSpec.ConfigValue<String> pattern_includes;
-    public final ForgeConfigSpec.BooleanValue without_clinker_bricks;
-    public final ForgeConfigSpec.BooleanValue without_slag_bricks;
-    public final ForgeConfigSpec.BooleanValue without_rebar_concrete;
-    public final ForgeConfigSpec.BooleanValue without_gas_concrete;
-    public final ForgeConfigSpec.BooleanValue without_walls;
-    public final ForgeConfigSpec.BooleanValue without_stairs;
-    public final ForgeConfigSpec.BooleanValue without_panzer_glass;
-    public final ForgeConfigSpec.BooleanValue without_ladders;
-    public final ForgeConfigSpec.BooleanValue without_treated_wood_furniture;
-    public final ForgeConfigSpec.BooleanValue without_metal_furniture;
-    public final ForgeConfigSpec.BooleanValue without_windows;
-    public final ForgeConfigSpec.BooleanValue without_light_sources;
-    public final ForgeConfigSpec.BooleanValue without_slabs;
-    public final ForgeConfigSpec.BooleanValue without_halfslabs;
-    public final ForgeConfigSpec.BooleanValue without_poles;
-    public final ForgeConfigSpec.BooleanValue without_hsupports;
-    public final ForgeConfigSpec.BooleanValue without_sign_plates;
-    public final ForgeConfigSpec.BooleanValue without_floor_grating;
-    public final ForgeConfigSpec.BooleanValue without_crafting_table;
-    public final ForgeConfigSpec.BooleanValue without_lab_furnace;
-    public final ForgeConfigSpec.BooleanValue without_electrical_furnace;
-    public final ForgeConfigSpec.BooleanValue without_valves;
-    public final ForgeConfigSpec.BooleanValue without_waste_incinerator;
-    public final ForgeConfigSpec.BooleanValue without_factory_dropper;
-    public final ForgeConfigSpec.BooleanValue without_factory_hopper;
-    public final ForgeConfigSpec.BooleanValue without_factory_placer;
-    public final ForgeConfigSpec.BooleanValue without_block_breaker;
-    public final ForgeConfigSpec.BooleanValue without_solar_panel;
-    public final ForgeConfigSpec.BooleanValue without_fluid_funnel;
-    public final ForgeConfigSpec.BooleanValue without_mineral_smelter;
-    public final ForgeConfigSpec.BooleanValue without_milking_machine;
-    public final ForgeConfigSpec.BooleanValue without_tree_cutter;
-    public final ForgeConfigSpec.BooleanValue without_labeled_crate;
-    public final ForgeConfigSpec.BooleanValue without_fences;
-    /// -----------------------
-
     // Misc
     public final ForgeConfigSpec.BooleanValue without_direct_slab_pickup;
     // Tweaks
@@ -224,82 +151,6 @@ public class ModConfig
       {
         builder.comment("Server dev opt-out settings !WARNING THE OPT-OUTs will be moved to common-config.toml in the next MC version!")
           .push("optout");
-        pattern_excludes = builder
-          .translation(MODID + ".config.pattern_excludes")
-          .comment("Opt-out any block by its registry name ('*' wildcard matching, "
-            + "comma separated list, whitespaces ignored. You must match the whole name, "
-            + "means maybe add '*' also at the begin and end. Example: '*wood*,*steel*' "
-            + "excludes everything that has 'wood' or 'steel' in the registry name. "
-            + "The matching result is also traced in the log file. ")
-          .define("pattern_excludes", "");
-        pattern_includes = builder
-          .translation(MODID + ".config.pattern_includes")
-          .comment("Prevent blocks from being opt'ed by registry name ('*' wildcard matching, "
-            + "comma separated list, whitespaces ignored. Evaluated before all other opt-out checks. "
-            + "You must match the whole name, means maybe add '*' also at the begin and end. Example: "
-            + "'*wood*,*steel*' includes everything that has 'wood' or 'steel' in the registry name."
-            + "The matching result is also traced in the log file.")
-          .define("pattern_includes", "");
-        without_clinker_bricks = builder
-          .translation(MODID + ".config.without_clinker_bricks")
-          .comment("Disable clinker bricks and derived blocks.")
-          .define("without_clinker_bricks", false);
-        without_slag_bricks = builder
-          .translation(MODID + ".config.without_slag_bricks")
-          .comment("Disable slag bricks and derived blocks.")
-          .define("without_slag_bricks", false);
-        without_rebar_concrete = builder
-          .translation(MODID + ".config.without_rebar_concrete")
-          .comment("Disable rebar concrete and derived blocks.")
-          .define("without_rebar_concrete", false);
-        without_gas_concrete = builder
-          .translation(MODID + ".config.without_gas_concrete")
-          .comment("Disable gas concrete and derived blocks.")
-          .define("without_gas_concrete", false);
-        without_walls = builder
-          .translation(MODID + ".config.without_walls")
-          .comment("Disable all mod wall blocks.")
-          .define("without_walls", false);
-        without_stairs = builder
-          .translation(MODID + ".config.without_stairs")
-          .comment("Disable all mod stairs blocks.")
-          .define("without_stairs", false);
-        without_panzer_glass = builder
-          .translation(MODID + ".config.without_panzer_glass")
-          .comment("Disable panzer glass and derived blocks.")
-          .define("without_panzer_glass", false);
-        without_crafting_table = builder
-          .translation(MODID + ".config.without_crafting_table")
-          .comment("Disable crafting table.")
-          .define("without_crafting_table", false);
-        without_lab_furnace = builder
-          .translation(MODID + ".config.without_lab_furnace")
-          .comment("Disable small lab furnace.")
-          .define("without_lab_furnace", false);
-        without_electrical_furnace = builder
-          .translation(MODID + ".config.without_electrical_furnace")
-          .comment("Disable small electrical pass-through furnace.")
-          .define("without_electrical_furnace", false);
-        without_treated_wood_furniture = builder
-          .translation(MODID + ".config.without_treated_wood_furniture")
-          .comment("Disable treated wood table, stool, windowsill, etc.")
-          .define("without_treated_wood_furniture", false);
-        without_metal_furniture = builder
-          .translation(MODID + ".config.without_metal_furniture")
-          .comment("Disable metal tables, etc.")
-          .define("without_metal_furniture", false);
-        without_windows = builder
-          .translation(MODID + ".config.without_windows")
-          .comment("Disable treated wood window, etc.")
-          .define("without_windows", false);
-        without_light_sources = builder
-          .translation(MODID + ".config.without_light_sources")
-          .comment("Disable light sources")
-          .define("without_light_sources", false);
-        without_ladders = builder
-          .translation(MODID + ".config.without_ladders")
-          .comment("Disable ladders")
-          .define("without_ladders", false);
         without_chair_sitting = builder
           .translation(MODID + ".config.without_chair_sitting")
           .comment("Disable possibility to sit on stools and chairs.")
@@ -316,82 +167,6 @@ public class ModConfig
           .translation(MODID + ".config.without_crafting_table_history")
           .comment("Disable history refabrication feature of the crafting table.")
           .define("without_crafting_table_history", false);
-        without_valves = builder
-          .translation(MODID + ".config.without_valves")
-          .comment("Disable check valve, and redstone controlled valves.")
-          .define("without_valves", false);
-        without_waste_incinerator = builder
-          .translation(MODID + ".config.without_waste_incinerator")
-          .comment("Disable item disposal/trash/void incinerator device.")
-          .define("without_waste_incinerator", false);
-        without_sign_plates = builder
-          .translation(MODID + ".config.without_sign_plates")
-          .comment("Disable decorative sign plates (caution, hazards, etc).")
-          .define("without_sign_plates", false);
-        without_floor_grating = builder
-          .translation(MODID + ".config.without_floor_grating")
-          .comment("Disable floor gratings.")
-          .define("without_floor_grating", false);
-        without_factory_dropper = builder
-          .translation(MODID + ".config.without_factory_dropper")
-          .comment("Disable the factory dropper.")
-          .define("without_factory_dropper", false);
-        without_factory_hopper = builder
-          .translation(MODID + ".config.without_factory_hopper")
-          .comment("Disable the factory hopper.")
-          .define("without_factory_hopper", false);
-        without_factory_placer = builder
-          .translation(MODID + ".config.without_factory_placer")
-          .comment("Disable the factory placer.")
-          .define("without_factory_placer", false);
-        without_block_breaker = builder
-          .translation(MODID + ".config.without_block_breaker")
-          .comment("Disable the small block breaker.")
-          .define("without_block_breaker", false);
-        without_solar_panel = builder
-          .translation(MODID + ".config.without_solar_panel")
-          .comment("Disable the small solar panel.")
-          .define("without_solar_panel", false);
-        without_fluid_funnel = builder
-          .translation(MODID + ".config.without_fluid_funnel")
-          .comment("Disable the small fluid collection funnel.")
-          .define("without_fluid_funnel", false);
-        without_mineral_smelter = builder
-          .translation(MODID + ".config.without_mineral_smelter")
-          .comment("Disable the small mineral smelter.")
-          .define("without_mineral_smelter", false);
-        without_milking_machine = builder
-          .translation(MODID + ".config.without_milking_machine")
-          .comment("Disable the small milking machine.")
-          .define("without_milking_machine", false);
-        without_tree_cutter = builder
-          .translation(MODID + ".config.without_tree_cutter")
-          .comment("Disable the small tree cutter.")
-          .define("without_tree_cutter", false);
-        without_labeled_crate = builder
-          .translation(MODID + ".config.without_labeled_crate")
-          .comment("Disable labeled crate.")
-          .define("without_labeled_crate", false);
-        without_slabs = builder
-          .translation(MODID + ".config.without_slabs")
-          .comment("Disable horizontal half-block slab.")
-          .define("without_slabs", false);
-        without_halfslabs = builder
-          .translation(MODID + ".config.without_halfslabs")
-          .comment("Disable stackable 1/8 block slices.")
-          .define("without_halfslabs", false);
-        without_poles = builder
-          .translation(MODID + ".config.without_poles")
-          .comment("Disable poles of any material.")
-          .define("without_poles", false);
-        without_hsupports = builder
-          .translation(MODID + ".config.without_hsupports")
-          .comment("Disable horizontal supports like the double-T support.")
-          .define("without_hsupports", false);
-        without_fences = builder
-          .translation(MODID + ".config.without_fences")
-          .comment("Disable all fences and fence gates.")
-          .define("without_fences", false);
         builder.pop();
       }
       // --- MISC ---------------------------------------------------------------
@@ -488,24 +263,24 @@ public class ModConfig
             "Note that the agerage power is much less, as no power is produced at all during the night, " +
             "and the power curve is nonlinear rising/falling during the day. Bad weather conditions also " +
             "decrease the production. The config value can be changed on-the-fly for tuning.")
-          .defineInRange("small_solar_panel_peak_production", EdSolarPanel.SolarPanelTileEntity.DEFAULT_PEAK_POWER, 2, 4096);
+          .defineInRange("small_solar_panel_peak_production", EdSolarPanel.DEFAULT_PEAK_POWER, 2, 4096);
         block_breaker_power_consumption = builder
           .translation(MODID + ".config.block_breaker_power_consumption")
           .comment("Defines how much RF power the Small Block Breaker requires to magnificently increase the processing speed. " +
             "The config value can be changed on-the-fly for tuning.")
-          .defineInRange("block_breaker_power_consumption", EdBreaker.BreakerTileEntity.DEFAULT_BOOST_ENERGY, 4, 1024);
+          .defineInRange("block_breaker_power_consumption", EdBreaker.DEFAULT_BOOST_ENERGY, 4, 1024);
         block_breaker_reluctance = builder
           .translation(MODID + ".config.block_breaker_reluctance")
           .comment("Defines how much time the Small Block Breaker needs per block hardness, " +
             "means: 'reluctance' * hardness + min_time, you change the 'reluctance' here." +
             "The unit is ticks/hardness. " + "The config value can be changed on-the-fly for tuning.")
-          .defineInRange("block_breaker_reluctance", EdBreaker.BreakerTileEntity.DEFAULT_BREAKING_RELUCTANCE, 5, 50);
+          .defineInRange("block_breaker_reluctance", EdBreaker.DEFAULT_BREAKING_RELUCTANCE, 5, 50);
         block_breaker_min_breaking_time = builder
           .translation(MODID + ".config.block_breaker_min_breaking_time")
           .comment("Defines how much time the Small Block Breaker needs at least, better said it's an offset: " +
             "'reluctance' * hardness + min_time, you change the 'min_time' here, value " +
             "in ticks." + "The config value can be changed on-the-fly for tuning.")
-          .defineInRange("block_breaker_min_breaking_time", EdBreaker.BreakerTileEntity.DEFAULT_MIN_BREAKING_TIME, 10, 100);
+          .defineInRange("block_breaker_min_breaking_time", EdBreaker.DEFAULT_MIN_BREAKING_TIME, 10, 100);
         block_breaker_requires_power = builder
           .translation(MODID + ".config.block_breaker_requires_power")
           .comment("Defines if the Small Block Breaker does not work without RF power.")
@@ -531,11 +306,11 @@ public class ModConfig
             "Note this is a permanent standby power, not only when the device does something. " +
             "Use zero to disable energy dependency and energy handling of the machine. " +
             "The config value can be changed on-the-fly for tuning.")
-          .defineInRange("milking_machine_energy_consumption", EdMilker.MilkerTileEntity.DEFAULT_ENERGY_CONSUMPTION, 0, 1024);
+          .defineInRange("milking_machine_energy_consumption", EdMilker.DEFAULT_ENERGY_CONSUMPTION, 0, 1024);
         milking_machine_milking_delay = builder
           .translation(MODID + ".config.milking_machine_milking_delay")
           .comment("Defines (for each individual cow) the minimum time between milking." )
-          .defineInRange("milking_machine_milking_delay", EdMilker.MilkerTileEntity.DEFAULT_MILKING_DELAY_PER_COW, 1000, 24000);
+          .defineInRange("milking_machine_milking_delay", EdMilker.DEFAULT_MILKING_DELAY_PER_COW, 1000, 24000);
         builder.pop();
       }
     }
@@ -545,10 +320,10 @@ public class ModConfig
   // Optout checks
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static final boolean isOptedOut(final @Nullable Block block)
+  public static boolean isOptedOut(final @Nullable Block block)
   { return isOptedOut(block.asItem()); }
 
-  public static final boolean isOptedOut(final @Nullable Item item)
+  public static boolean isOptedOut(final @Nullable Item item)
   { return (item!=null) && optouts_.contains(item.getRegistryName().getPath()); }
 
   public static boolean withExperimental()
@@ -560,11 +335,14 @@ public class ModConfig
   public static boolean withDebug()
   { return with_debug_logs_; }
 
+  public static boolean withDebugLogging()
+  { return with_experimental_features_ && with_config_logging_; }
+
   //--------------------------------------------------------------------------------------------------------------------
   // Cache
   //--------------------------------------------------------------------------------------------------------------------
 
-  private static final CompoundNBT server_config_ = new CompoundNBT();
+  private static final CompoundTag server_config_ = new CompoundTag();
   private static HashSet<String> optouts_ = new HashSet<>();
   private static boolean with_experimental_features_ = false;
   private static boolean with_config_logging_ = false;
@@ -573,16 +351,16 @@ public class ModConfig
   public static boolean without_direct_slab_pickup = false;
   public static boolean with_creative_mode_device_drops = false;
 
-  public static final CompoundNBT getServerConfig() // config that may be synchronized from server to client via net pkg.
+  public static CompoundTag getServerConfig() // config that may be synchronized from server to client via net pkg.
   { return server_config_; }
 
-  private static final void updateOptouts()
+  private static void updateOptouts()
   {
     final ArrayList<String> includes = new ArrayList<>();
     final ArrayList<String> excludes = new ArrayList<>();
     {
       String inc = COMMON.pattern_includes.get().toLowerCase().replaceAll(MODID+":", "").replaceAll("[^*_,a-z0-9]", "");
-      if(COMMON.pattern_includes.get() != inc) COMMON.pattern_includes.set(inc);
+      if(!COMMON.pattern_includes.get().equals(inc)) COMMON.pattern_includes.set(inc);
       String[] incl = inc.split(",");
       for(int i=0; i< incl.length; ++i) {
         incl[i] = incl[i].replaceAll("[*]", ".*?");
@@ -597,29 +375,11 @@ public class ModConfig
         if(!excl[i].isEmpty()) excludes.add(excl[i]);
       }
     }
-    if(SERVER_CONFIG_SPEC.isLoaded()) {
-      /// @todo: remove for MC1.17/1.16.5
-      String inc = SERVER.pattern_includes.get().toLowerCase().replaceAll(MODID+":", "").replaceAll("[^*_,a-z0-9]", "");
-      String[] incl = inc.split(",");
-      for(int i=0; i< incl.length; ++i) {
-        incl[i] = incl[i].replaceAll("[*]", ".*?");
-        if(!incl[i].isEmpty()) includes.add(incl[i]);
-      }
-    }
-    if(SERVER_CONFIG_SPEC.isLoaded()) {
-      /// @todo: remove for MC1.17/1.16.5
-      String exc = SERVER.pattern_excludes.get().toLowerCase().replaceAll(MODID+":", "").replaceAll("[^*_,a-z0-9]", "");
-      String[] excl = exc.split(",");
-      for(int i=0; i< excl.length; ++i) {
-        excl[i] = excl[i].replaceAll("[*]", ".*?");
-        if(!excl[i].isEmpty()) excludes.add(excl[i]);
-      }
-    }
     if(!excludes.isEmpty()) log("Config pattern excludes: '" + String.join(",", excludes) + "'");
     if(!includes.isEmpty()) log("Config pattern includes: '" + String.join(",", includes) + "'");
     {
       HashSet<String> optouts = new HashSet<>();
-      ModContent.getRegisteredItems().stream().filter((item)->(item!=null)).forEach(
+      ModContent.getRegisteredItems().stream().filter(Objects::nonNull).forEach(
         e -> optouts.add(e.getRegistryName().getPath())
       );
       ModContent.getRegisteredBlocks().stream().filter((Block block) -> {
@@ -632,9 +392,7 @@ public class ModConfig
           }
           // Hard IE dependent blocks
           if(!immersiveengineering_installed) {
-            if((block instanceof IDecorBlock) && ((((IDecorBlock)block).config() & DecorBlock.CFG_HARD_IE_DEPENDENT)!=0)) return true;
-            if((block instanceof DecorBlock.Normal) && ((((DecorBlock.Normal)block).config & DecorBlock.CFG_HARD_IE_DEPENDENT)!=0)) return true;
-            if((block instanceof StandardBlocks.BaseBlock) && ((((StandardBlocks.BaseBlock)block).config & DecorBlock.CFG_HARD_IE_DEPENDENT)!=0)) return true;
+            if((block instanceof StandardBlocks.IStandardBlock) && ((((StandardBlocks.IStandardBlock)block).config() & DecorBlock.CFG_HARD_IE_DEPENDENT)!=0)) return true;
           }
           // Force-include/exclude pattern matching
           final String rn = block.getRegistryName().getPath();
@@ -652,62 +410,12 @@ public class ModConfig
               }
             }
           } catch(Throwable ex) {
-            LOGGER.error("optout include pattern failed, disabling.");
+            Auxiliaries.logger().error("optout include pattern failed, disabling.");
             includes.clear();
             excludes.clear();
           }
-          // Early non-opt out type based evaluation
-          if(SERVER==null) return false;
-          if(block instanceof EdCraftingTable.CraftingTableBlock) return SERVER.without_crafting_table.get();
-          if(block instanceof EdElectricalFurnace.ElectricalFurnaceBlock) return SERVER.without_electrical_furnace.get();
-          if((block instanceof EdFurnace.FurnaceBlock)&&(!(block instanceof EdElectricalFurnace.ElectricalFurnaceBlock))) return SERVER.without_lab_furnace.get();
-          if(block instanceof EdWasteIncinerator.WasteIncineratorBlock) return SERVER.without_waste_incinerator.get();
-          if(block instanceof EdDropper.DropperBlock) return SERVER.without_factory_dropper.get();
-          if(block instanceof EdPlacer.PlacerBlock) return SERVER.without_factory_placer.get();
-          if(block instanceof EdBreaker.BreakerBlock) return SERVER.without_block_breaker.get();
-          if(block instanceof EdSlabSliceBlock) return SERVER.without_halfslabs.get();
-          if(block instanceof EdLadderBlock) return SERVER.without_ladders.get();
-          if(block instanceof EdWindowBlock) return SERVER.without_windows.get();
-          if(block instanceof EdPipeValve.PipeValveBlock) return SERVER.without_valves.get();
-          if(block instanceof EdHorizontalSupportBlock) return SERVER.without_hsupports.get();
-          if(block instanceof EdFloorGratingBlock) return SERVER.without_floor_grating.get();
-          if(block instanceof EdHopper.HopperBlock) return SERVER.without_factory_hopper.get();
-          if(block instanceof EdFluidFunnel.FluidFunnelBlock) return SERVER.without_fluid_funnel.get();
-          if(block instanceof EdSolarPanel.SolarPanelBlock) return SERVER.without_solar_panel.get();
-          if(block instanceof EdMineralSmelter.MineralSmelterBlock) return SERVER.without_mineral_smelter.get();
-          if(block instanceof EdMilker.MilkerBlock) return SERVER.without_milking_machine.get();
-          if(block instanceof EdTreeCutter.TreeCutterBlock) return SERVER.without_tree_cutter.get();
-          if(block instanceof EdLabeledCrate.LabeledCrateBlock) return SERVER.without_labeled_crate.get();
-          // Type based evaluation where later filters may match, too
-          if(SERVER.without_slabs.get()&&(block instanceof EdSlabBlock)) return true;
-          if(SERVER.without_stairs.get()&&(block instanceof EdStairsBlock)) return true;
-          if(SERVER.without_walls.get()&&(block instanceof EdWallBlock)) return true;
-          if(SERVER.without_poles.get()&&(block instanceof EdStraightPoleBlock)) return true;
-          // String matching based evaluation
-          if(SERVER.without_clinker_bricks.get()&&(rn.startsWith("clinker_brick_"))) return true;
-          if(SERVER.without_slag_bricks.get()&&rn.startsWith("slag_brick_")) return true;
-          if(SERVER.without_rebar_concrete.get()&&rn.startsWith("rebar_concrete")) return true;
-          if(SERVER.without_gas_concrete.get()&&rn.startsWith("gas_concrete")) return true;
-          if(SERVER.without_panzer_glass.get()&&rn.startsWith("panzerglass_")) return true;
-          if(SERVER.without_light_sources.get()&&rn.endsWith("_light")) return true;
-          if(SERVER.without_sign_plates.get()&&rn.startsWith("sign_")) return true;
-          if(SERVER.without_treated_wood_furniture.get()) {
-            if(block instanceof EdChair.ChairBlock) return true;
-            if(rn.equals("treated_wood_table")) return true;
-            if(rn.equals("treated_wood_stool")) return true;
-            if(rn.equals("treated_wood_windowsill")) return true;
-            if(rn.equals("treated_wood_broad_windowsill")) return true;
-            if(rn.equals("treated_wood_side_table")) return true;
-          }
-          if(SERVER.without_metal_furniture.get()) {
-            if(rn.equals("steel_table")) return true;
-          }
-          if(SERVER.without_fences.get()) {
-            if(block instanceof EdFenceBlock) return true;
-            if(block instanceof EdDoubleGateBlock) return true;
-          }
         } catch(Exception ex) {
-          LOGGER.error("Exception evaluating the optout config: '"+ex.getMessage()+"'");
+          Auxiliaries.logger().error("Exception evaluating the optout config: '"+ex.getMessage()+"'");
         }
         return false;
       }).forEach(
@@ -718,13 +426,13 @@ public class ModConfig
     OptionalRecipeCondition.on_config(withExperimental(), withoutRecipes(), ModConfig::isOptedOut, ModConfig::isOptedOut);
   }
 
-  public static final void apply()
+  public static void apply()
   {
     with_config_logging_ = COMMON.with_config_logging.get();
     with_experimental_features_ = COMMON.with_experimental.get();
     with_debug_logs_ = COMMON.with_debug_logging.get();
-    if(with_experimental_features_) LOGGER.info("Config: EXPERIMENTAL FEATURES ENABLED.");
-    if(with_debug_logs_) LOGGER.info("Config: DEBUG LOGGING ENABLED, WARNING, THIS MAY SPAM THE LOG.");
+    if(with_experimental_features_) Auxiliaries.logger().info("Config: EXPERIMENTAL FEATURES ENABLED.");
+    if(with_debug_logs_) Auxiliaries.logger().info("Config: DEBUG LOGGING ENABLED, WARNING, THIS MAY SPAM THE LOG.");
     immersiveengineering_installed = Auxiliaries.isModLoaded("immersiveengineering");
     updateOptouts();
     if(!SERVER_CONFIG_SPEC.isLoaded()) return;
@@ -732,8 +440,8 @@ public class ModConfig
     // -----------------------------------------------------------------------------------------------------------------
     EdChair.on_config(SERVER.without_chair_sitting.get(), SERVER.without_mob_chair_sitting.get(), SERVER.chair_mob_sitting_probability_percent.get(), SERVER.chair_mob_standup_probability_percent.get());
     EdLadderBlock.on_config(SERVER.without_ladder_speed_boost.get());
-    EdSlabBlock.on_config(!SERVER.without_direct_slab_pickup.get());
-    EdSlabSliceBlock.on_config(!SERVER.without_direct_slab_pickup.get());
+    VariantSlabBlock.on_config(!SERVER.without_direct_slab_pickup.get());
+    SlabSliceBlock.on_config(!SERVER.without_direct_slab_pickup.get());
     EdLabeledCrate.on_config(false);
     EdCraftingTable.on_config(SERVER.without_crafting_table_history.get(), false, SERVER.without_crafting_mouse_scrolling.get());
     EdFluidBarrel.on_config(12000, 1000);
@@ -746,7 +454,7 @@ public class ModConfig
     EdTreeCutter.on_config(SERVER.tree_cutter_energy_consumption.get(), SERVER.tree_cutter_cutting_time_needed.get(), SERVER.tree_cutter_requires_power.get());
     EdFurnace.on_config(SERVER.furnace_smelting_speed_percent.get(), SERVER.furnace_fuel_efficiency_percent.get(), SERVER.furnace_boost_energy_consumption.get(), SERVER.furnace_accepted_heaters.get());
     EdElectricalFurnace.on_config(SERVER.e_furnace_speed_percent.get(), SERVER.e_furnace_power_consumption.get(), SERVER.e_furnace_automatic_pulling.get());
-    EdSolarPanel.on_config(SERVER.small_solar_panel_peak_production.get());
+    EdSolarPanel.on_config(SERVER.small_solar_panel_peak_production.get(), 64000, 1024);
     EdMilker.on_config(SERVER.milking_machine_energy_consumption.get(), SERVER.milking_machine_milking_delay.get());
     EdFreezer.on_config(92, 2);
     EdMineralSmelter.on_config(92, 2);
@@ -764,10 +472,10 @@ public class ModConfig
     }
   }
 
-  public static final void log(String config_message)
+  public static void log(String config_message)
   {
     if(!with_config_logging_) return;
-    LOGGER.info(config_message);
+    Auxiliaries.logger().info(config_message);
   }
 
 }

@@ -6,7 +6,7 @@
         {
           "type": "engineersdecor:optional",
           "result": "engineersdecor:panzerglass_block",
-          "required": ["engineersdecor:metal_bar", "#engineersdecor:plain_glass_blocks"]
+          "required": ["engineersdecor:metal_bar", "minecraft:glass"]
         }
       ],
       "recipe": {
@@ -17,7 +17,7 @@
           "SGS"
         ],
         "key": {
-          "G": { "tag": "engineersdecor:plain_glass_blocks" },
+          "G": { "item": "minecraft:glass" },
           "S": { "item": "engineersdecor:metal_bar" }
         },
         "result": {

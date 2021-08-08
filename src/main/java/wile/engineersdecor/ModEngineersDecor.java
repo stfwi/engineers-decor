@@ -1,29 +1,30 @@
 package wile.engineersdecor;
 
-import wile.engineersdecor.blocks.*;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.libmc.detail.OptionalRecipeCondition;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.*;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import wile.engineersdecor.blocks.EdLadderBlock;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.OptionalRecipeCondition;
 
 
 @Mod("engineersdecor")
@@ -39,17 +40,16 @@ public class ModEngineersDecor
     Auxiliaries.init(MODID, LOGGER, ModConfig::getServerConfig);
     Auxiliaries.logGitVersion(MODNAME);
     OptionalRecipeCondition.init(MODID, LOGGER);
-    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onSetup);
-    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientSetup);
-    FMLJavaModLoadingContext.get().getModEventBus().addListener(ForgeEvents::onConfigLoad);
-    FMLJavaModLoadingContext.get().getModEventBus().addListener(ForgeEvents::onConfigReload);
     ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.SERVER, ModConfig.SERVER_CONFIG_SPEC);
     ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.COMMON, ModConfig.COMMON_CONFIG_SPEC);
-    ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.CLIENT, ModConfig.CLIENT_CONFIG_SPEC);
+    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onSetup);
+    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientSetup);
+    // FMLJavaModLoadingContext.get().getModEventBus().addListener(ForgeEvents::onConfigLoad);
+    // FMLJavaModLoadingContext.get().getModEventBus().addListener(ForgeEvents::onConfigReload);
     MinecraftForge.EVENT_BUS.register(this);
   }
 
-  public static final Logger logger() { return LOGGER; }
+  public static Logger logger() { return LOGGER; }
 
   //
   // Events
@@ -82,7 +82,7 @@ public class ModEngineersDecor
     { ModContent.registerItems(event); ModContent.registerBlockItems(event); }
 
     @SubscribeEvent
-    public static void onTileEntityRegistry(final RegistryEvent.Register<TileEntityType<?>> event)
+    public static void onTileEntityRegistry(final RegistryEvent.Register<BlockEntityType<?>> event)
     { ModContent.registerTileEntities(event); }
 
     @SubscribeEvent
@@ -90,9 +90,10 @@ public class ModEngineersDecor
     { ModContent.registerEntities(event); }
 
     @SubscribeEvent
-    public static void onRegisterContainerTypes(final RegistryEvent.Register<ContainerType<?>> event)
+    public static void onRegisterContainerTypes(final RegistryEvent.Register<MenuType<?>> event)
     { ModContent.registerContainers(event); }
 
+    /*
     public static void onConfigLoad(net.minecraftforge.fml.config.ModConfig.Loading configEvent)
     { ModConfig.apply(); }
 
@@ -105,18 +106,13 @@ public class ModEngineersDecor
         ModEngineersDecor.logger().error("Failed to load changed config: " + e.getMessage());
       }
     }
-
-    @SubscribeEvent
-    public static void onDataGeneration(GatherDataEvent event)
-    {
-      event.getGenerator().addProvider(new wile.engineersdecor.libmc.datagen.LootTableGen(event.getGenerator(), ModContent::allBlocks));
-    }
+   */
   }
 
   //
   // Item group / creative tab
   //
-  public static final ItemGroup ITEMGROUP = (new ItemGroup("tab" + MODID) {
+  public static final CreativeModeTab ITEMGROUP = (new CreativeModeTab("tab" + MODID) {
     @OnlyIn(Dist.CLIENT)
     public ItemStack makeIcon()
     { return new ItemStack(ModContent.SIGN_MODLOGO); }
@@ -128,8 +124,7 @@ public class ModEngineersDecor
   @SubscribeEvent
   public void onPlayerEvent(final LivingEvent.LivingUpdateEvent event)
   {
-    if((event.getEntity().level == null) || (!(event.getEntity() instanceof PlayerEntity))) return;
-    final PlayerEntity player = (PlayerEntity)event.getEntity();
+    if((event.getEntity().level == null) || (!(event.getEntity() instanceof final Player player))) return;
     if(player.onClimbable()) EdLadderBlock.onPlayerUpdateEvent(player);
   }
 

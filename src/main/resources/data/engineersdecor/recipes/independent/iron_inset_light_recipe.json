@@ -6,7 +6,7 @@
         {
           "type": "engineersdecor:optional",
           "result": "engineersdecor:iron_inset_light",
-          "required": ["#engineersdecor:luminescent_blocks", "engineersdecor:metal_bar"]
+          "required": ["minecraft:glowstone", "engineersdecor:metal_bar"]
         }
       ],
       "recipe": {
@@ -18,8 +18,8 @@
         ],
         "key": {
           "P": { "item": "engineersdecor:metal_bar" },
-          "L": { "tag" : "engineersdecor:luminescent_blocks" },
-          "G": { "tag" : "engineersdecor:plain_glass_panes" }
+          "L": { "item" : "minecraft:glowstone" },
+          "G": { "item": "minecraft:glass_pane" }
         },
         "result": {
           "item": "engineersdecor:iron_inset_light",

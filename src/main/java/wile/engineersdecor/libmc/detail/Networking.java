@@ -8,22 +8,23 @@
  */
 package wile.engineersdecor.libmc.detail;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.World;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
-import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkDirection;
+import net.minecraftforge.fmllegacy.network.NetworkRegistry;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
+
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -53,34 +54,34 @@ public class Networking
 
   public interface IPacketTileNotifyReceiver
   {
-    default void onServerPacketReceived(CompoundNBT nbt) {}
-    default void onClientPacketReceived(PlayerEntity player, CompoundNBT nbt) {}
+    default void onServerPacketReceived(CompoundTag nbt) {}
+    default void onClientPacketReceived(Player player, CompoundTag nbt) {}
   }
 
   public static class PacketTileNotifyClientToServer
   {
-    CompoundNBT nbt = null;
+    CompoundTag nbt = null;
     BlockPos pos = BlockPos.ZERO;
 
-    public static void sendToServer(BlockPos pos, CompoundNBT nbt)
+    public static void sendToServer(BlockPos pos, CompoundTag nbt)
     { if((pos!=null) && (nbt!=null)) DEFAULT_CHANNEL.sendToServer(new PacketTileNotifyClientToServer(pos, nbt)); }
 
-    public static void sendToServer(TileEntity te, CompoundNBT nbt)
+    public static void sendToServer(BlockEntity te, CompoundTag nbt)
     { if((te!=null) && (nbt!=null)) DEFAULT_CHANNEL.sendToServer(new PacketTileNotifyClientToServer(te, nbt)); }
 
     public PacketTileNotifyClientToServer()
     {}
 
-    public PacketTileNotifyClientToServer(BlockPos pos, CompoundNBT nbt)
+    public PacketTileNotifyClientToServer(BlockPos pos, CompoundTag nbt)
     { this.nbt = nbt; this.pos = pos; }
 
-    public PacketTileNotifyClientToServer(TileEntity te, CompoundNBT nbt)
+    public PacketTileNotifyClientToServer(BlockEntity te, CompoundTag nbt)
     { this.nbt = nbt; pos = te.getBlockPos(); }
 
-    public static PacketTileNotifyClientToServer parse(final PacketBuffer buf)
+    public static PacketTileNotifyClientToServer parse(final FriendlyByteBuf buf)
     { return new PacketTileNotifyClientToServer(buf.readBlockPos(), buf.readNbt()); }
 
-    public static void compose(final PacketTileNotifyClientToServer pkt, final PacketBuffer buf)
+    public static void compose(final PacketTileNotifyClientToServer pkt, final FriendlyByteBuf buf)
     { buf.writeBlockPos(pkt.pos); buf.writeNbt(pkt.nbt); }
 
     public static class Handler
@@ -88,10 +89,10 @@ public class Networking
       public static void handle(final PacketTileNotifyClientToServer pkt, final Supplier<NetworkEvent.Context> ctx)
       {
         ctx.get().enqueueWork(() -> {
-          PlayerEntity player = ctx.get().getSender();
-          World world = player.level;
-          if(world == null) return;
-          final TileEntity te = world.getBlockEntity(pkt.pos);
+          Player player = ctx.get().getSender();
+          if(player==null) return;
+          Level world = player.level;
+          final BlockEntity te = world.getBlockEntity(pkt.pos);
           if(!(te instanceof IPacketTileNotifyReceiver)) return;
           ((IPacketTileNotifyReceiver)te).onClientPacketReceived(ctx.get().getSender(), pkt.nbt);
         });
@@ -102,34 +103,34 @@ public class Networking
 
   public static class PacketTileNotifyServerToClient
   {
-    CompoundNBT nbt = null;
+    CompoundTag nbt = null;
     BlockPos pos = BlockPos.ZERO;
 
-    public static void sendToPlayer(PlayerEntity player, TileEntity te, CompoundNBT nbt)
+    public static void sendToPlayer(Player player, BlockEntity te, CompoundTag nbt)
     {
-      if((!(player instanceof ServerPlayerEntity)) || (player instanceof FakePlayer) || (te==null) || (nbt==null)) return;
-      DEFAULT_CHANNEL.sendTo(new PacketTileNotifyServerToClient(te, nbt), ((ServerPlayerEntity)player).connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+      if((!(player instanceof ServerPlayer)) || (player instanceof FakePlayer) || (te==null) || (nbt==null)) return;
+      DEFAULT_CHANNEL.sendTo(new PacketTileNotifyServerToClient(te, nbt), ((ServerPlayer)player).connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 
-    public static void sendToPlayers(TileEntity te, CompoundNBT nbt)
+    public static void sendToPlayers(BlockEntity te, CompoundTag nbt)
     {
-      if(te==null || te.getLevel().isClientSide()) return;
-      for(PlayerEntity player: te.getLevel().players()) sendToPlayer(player, te, nbt);
+      if(te==null || te.getLevel()==null) return;
+      for(Player player: te.getLevel().players()) sendToPlayer(player, te, nbt);
     }
 
     public PacketTileNotifyServerToClient()
     {}
 
-    public PacketTileNotifyServerToClient(BlockPos pos, CompoundNBT nbt)
+    public PacketTileNotifyServerToClient(BlockPos pos, CompoundTag nbt)
     { this.nbt=nbt; this.pos=pos; }
 
-    public PacketTileNotifyServerToClient(TileEntity te, CompoundNBT nbt)
+    public PacketTileNotifyServerToClient(BlockEntity te, CompoundTag nbt)
     { this.nbt=nbt; pos=te.getBlockPos(); }
 
-    public static PacketTileNotifyServerToClient parse(final PacketBuffer buf)
+    public static PacketTileNotifyServerToClient parse(final FriendlyByteBuf buf)
     { return new PacketTileNotifyServerToClient(buf.readBlockPos(), buf.readNbt()); }
 
-    public static void compose(final PacketTileNotifyServerToClient pkt, final PacketBuffer buf)
+    public static void compose(final PacketTileNotifyServerToClient pkt, final FriendlyByteBuf buf)
     { buf.writeBlockPos(pkt.pos); buf.writeNbt(pkt.nbt); }
 
     public static class Handler
@@ -137,9 +138,9 @@ public class Networking
       public static void handle(final PacketTileNotifyServerToClient pkt, final Supplier<NetworkEvent.Context> ctx)
       {
         ctx.get().enqueueWork(() -> {
-          World world = SidedProxy.getWorldClientSide();
+          Level world = SidedProxy.getWorldClientSide();
           if(world == null) return;
-          final TileEntity te = world.getBlockEntity(pkt.pos);
+          final BlockEntity te = world.getBlockEntity(pkt.pos);
           if(!(te instanceof IPacketTileNotifyReceiver)) return;
           ((IPacketTileNotifyReceiver)te).onServerPacketReceived(pkt.nbt);
         });
@@ -149,36 +150,36 @@ public class Networking
   }
 
   //--------------------------------------------------------------------------------------------------------------------
-  // (GUI) Container synchrsonisation
+  // (GUI) Container synchronization
   //--------------------------------------------------------------------------------------------------------------------
 
   public interface INetworkSynchronisableContainer
   {
-    void onServerPacketReceived(int windowId, CompoundNBT nbt);
-    void onClientPacketReceived(int windowId, PlayerEntity player, CompoundNBT nbt);
+    void onServerPacketReceived(int windowId, CompoundTag nbt);
+    void onClientPacketReceived(int windowId, Player player, CompoundTag nbt);
   }
 
   public static class PacketContainerSyncClientToServer
   {
     int id = -1;
-    CompoundNBT nbt = null;
+    CompoundTag nbt = null;
 
-    public static void sendToServer(int windowId, CompoundNBT nbt)
+    public static void sendToServer(int windowId, CompoundTag nbt)
     { if(nbt!=null) DEFAULT_CHANNEL.sendToServer(new PacketContainerSyncClientToServer(windowId, nbt)); }
 
-    public static void sendToServer(Container container, CompoundNBT nbt)
+    public static void sendToServer(AbstractContainerMenu container, CompoundTag nbt)
     { if(nbt!=null) DEFAULT_CHANNEL.sendToServer(new PacketContainerSyncClientToServer(container.containerId, nbt)); }
 
     public PacketContainerSyncClientToServer()
     {}
 
-    public PacketContainerSyncClientToServer(int id, CompoundNBT nbt)
+    public PacketContainerSyncClientToServer(int id, CompoundTag nbt)
     { this.nbt = nbt; this.id = id; }
 
-    public static PacketContainerSyncClientToServer parse(final PacketBuffer buf)
+    public static PacketContainerSyncClientToServer parse(final FriendlyByteBuf buf)
     { return new PacketContainerSyncClientToServer(buf.readInt(), buf.readNbt()); }
 
-    public static void compose(final PacketContainerSyncClientToServer pkt, final PacketBuffer buf)
+    public static void compose(final PacketContainerSyncClientToServer pkt, final FriendlyByteBuf buf)
     { buf.writeInt(pkt.id); buf.writeNbt(pkt.nbt); }
 
     public static class Handler
@@ -186,8 +187,8 @@ public class Networking
       public static void handle(final PacketContainerSyncClientToServer pkt, final Supplier<NetworkEvent.Context> ctx)
       {
         ctx.get().enqueueWork(() -> {
-          PlayerEntity player = ctx.get().getSender();
-          if(!(player.containerMenu instanceof INetworkSynchronisableContainer)) return;
+          Player player = ctx.get().getSender();
+          if((player==null) || !(player.containerMenu instanceof INetworkSynchronisableContainer)) return;
           if(player.containerMenu.containerId != pkt.id) return;
           ((INetworkSynchronisableContainer)player.containerMenu).onClientPacketReceived(pkt.id, player,pkt.nbt);
         });
@@ -199,24 +200,24 @@ public class Networking
   public static class PacketContainerSyncServerToClient
   {
     int id = -1;
-    CompoundNBT nbt = null;
+    CompoundTag nbt = null;
 
-    public static void sendToPlayer(PlayerEntity player, int windowId, CompoundNBT nbt)
+    public static void sendToPlayer(Player player, int windowId, CompoundTag nbt)
     {
-      if((!(player instanceof ServerPlayerEntity)) || (player instanceof FakePlayer) || (nbt==null)) return;
-      DEFAULT_CHANNEL.sendTo(new PacketContainerSyncServerToClient(windowId, nbt), ((ServerPlayerEntity)player).connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+      if((!(player instanceof ServerPlayer)) || (player instanceof FakePlayer) || (nbt==null)) return;
+      DEFAULT_CHANNEL.sendTo(new PacketContainerSyncServerToClient(windowId, nbt), ((ServerPlayer)player).connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 
-    public static void sendToPlayer(PlayerEntity player, Container container, CompoundNBT nbt)
+    public static void sendToPlayer(Player player, AbstractContainerMenu container, CompoundTag nbt)
     {
-      if((!(player instanceof ServerPlayerEntity)) || (player instanceof FakePlayer) || (nbt==null)) return;
-      DEFAULT_CHANNEL.sendTo(new PacketContainerSyncServerToClient(container.containerId, nbt), ((ServerPlayerEntity)player).connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+      if((!(player instanceof ServerPlayer)) || (player instanceof FakePlayer) || (nbt==null)) return;
+      DEFAULT_CHANNEL.sendTo(new PacketContainerSyncServerToClient(container.containerId, nbt), ((ServerPlayer)player).connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 
-    public static <C extends Container & INetworkSynchronisableContainer>
-    void sendToListeners(World world, C container, CompoundNBT nbt)
+    public static <C extends AbstractContainerMenu & INetworkSynchronisableContainer>
+    void sendToListeners(Level world, C container, CompoundTag nbt)
     {
-      for(PlayerEntity player: world.players()) {
+      for(Player player: world.players()) {
         if(player.containerMenu.containerId != container.containerId) continue;
         sendToPlayer(player, container.containerId, nbt);
       }
@@ -225,13 +226,13 @@ public class Networking
     public PacketContainerSyncServerToClient()
     {}
 
-    public PacketContainerSyncServerToClient(int id, CompoundNBT nbt)
+    public PacketContainerSyncServerToClient(int id, CompoundTag nbt)
     { this.nbt=nbt; this.id=id; }
 
-    public static PacketContainerSyncServerToClient parse(final PacketBuffer buf)
+    public static PacketContainerSyncServerToClient parse(final FriendlyByteBuf buf)
     { return new PacketContainerSyncServerToClient(buf.readInt(), buf.readNbt()); }
 
-    public static void compose(final PacketContainerSyncServerToClient pkt, final PacketBuffer buf)
+    public static void compose(final PacketContainerSyncServerToClient pkt, final FriendlyByteBuf buf)
     { buf.writeInt(pkt.id); buf.writeNbt(pkt.nbt); }
 
     public static class Handler
@@ -239,8 +240,8 @@ public class Networking
       public static void handle(final PacketContainerSyncServerToClient pkt, final Supplier<NetworkEvent.Context> ctx)
       {
         ctx.get().enqueueWork(() -> {
-          PlayerEntity player = SidedProxy.getPlayerClientSide();
-          if(!(player.containerMenu instanceof INetworkSynchronisableContainer)) return;
+          Player player = SidedProxy.getPlayerClientSide();
+          if((player==null) || !(player.containerMenu instanceof INetworkSynchronisableContainer)) return;
           if(player.containerMenu.containerId != pkt.id) return;
           ((INetworkSynchronisableContainer)player.containerMenu).onServerPacketReceived(pkt.id,pkt.nbt);
         });
@@ -256,43 +257,42 @@ public class Networking
   public static class OverlayTextMessage
   {
     public static final int DISPLAY_TIME_MS = 3000;
-    private static BiConsumer<ITextComponent, Integer> handler_ = null;
-    private ITextComponent data_;
+    private static BiConsumer<Component, Integer> handler_ = null;
+    private final Component data_;
     private int delay_ = DISPLAY_TIME_MS;
-    private ITextComponent data() { return data_; }
+    private Component data() { return data_; }
     private int delay() { return delay_; }
 
-
-    public static void setHandler(BiConsumer<ITextComponent, Integer> handler)
+    public static void setHandler(BiConsumer<Component, Integer> handler)
     { if(handler_==null) handler_ = handler; }
 
-    public static void sendToPlayer(PlayerEntity player, ITextComponent message, int delay)
+    public static void sendToPlayer(Player player, Component message, int delay)
     {
-      if((!(player instanceof ServerPlayerEntity)) || (player instanceof FakePlayer)) return;
-      DEFAULT_CHANNEL.sendTo(new OverlayTextMessage(message, delay), ((ServerPlayerEntity)player).connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+      if((!(player instanceof ServerPlayer)) || (player instanceof FakePlayer)) return;
+      DEFAULT_CHANNEL.sendTo(new OverlayTextMessage(message, delay), ((ServerPlayer)player).connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 
     public OverlayTextMessage()
-    { data_ = new TranslationTextComponent("[unset]"); }
+    { data_ = new TranslatableComponent("[unset]"); }
 
-    public OverlayTextMessage(final ITextComponent tct, int delay)
-    { data_ = (ITextComponent)tct.copy(); delay_ = delay; }
+    public OverlayTextMessage(final Component tct, int delay)
+    { data_ = tct.copy(); delay_ = delay; }
 
-    public static OverlayTextMessage parse(final PacketBuffer buf)
+    public static OverlayTextMessage parse(final FriendlyByteBuf buf)
     {
       try {
-        return new OverlayTextMessage((ITextComponent)buf.readComponent(), DISPLAY_TIME_MS);
+        return new OverlayTextMessage(buf.readComponent(), DISPLAY_TIME_MS);
       } catch(Throwable e) {
-        return new OverlayTextMessage(new TranslationTextComponent("[incorrect translation]"), DISPLAY_TIME_MS);
+        return new OverlayTextMessage(new TranslatableComponent("[incorrect translation]"), DISPLAY_TIME_MS);
       }
     }
 
-    public static void compose(final OverlayTextMessage pkt, final PacketBuffer buf)
+    public static void compose(final OverlayTextMessage pkt, final FriendlyByteBuf buf)
     {
       try {
         buf.writeComponent(pkt.data());
       } catch(Throwable e) {
-        Auxiliaries.logger().error("OverlayTextMessage.toBytes() failed: " + e.toString());
+        Auxiliaries.logger().error("OverlayTextMessage.toBytes() failed: " + e);
       }
     }
 

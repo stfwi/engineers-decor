@@ -8,47 +8,51 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.util.*;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.util.Tuple;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.blocks.StandardEntityBlocks;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.Fluidics;
 import wile.engineersdecor.libmc.detail.Overlay;
@@ -71,8 +75,8 @@ public class EdFluidBarrel
 
   public static void on_config(int tank_capacity, int transfer_rate)
   {
-    capacity_ = MathHelper.clamp(tank_capacity, 2000, 64000);
-    tile_fluid_handler_transfer_rate_ = MathHelper.clamp(tank_capacity, 50, 4096);
+    capacity_ = Mth.clamp(tank_capacity, 2000, 64000);
+    tile_fluid_handler_transfer_rate_ = Mth.clamp(tank_capacity, 50, 4096);
     item_fluid_handler_transfer_rate_ = tile_fluid_handler_transfer_rate_;
     ModConfig.log("Config fluid barrel: capacity:" + capacity_ + "mb, transfer-rate:" + tile_fluid_handler_transfer_rate_ + "mb/t.");
   }
@@ -81,39 +85,40 @@ public class EdFluidBarrel
   // Block
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class FluidBarrelBlock extends DecorBlock.DirectedWaterLoggable implements IDecorBlock, StandardBlocks.IBlockItemFactory
+  public static class FluidBarrelBlock extends StandardBlocks.DirectedWaterLoggable implements StandardEntityBlocks.IStandardEntityBlock<FluidBarrelTileEntity>, StandardBlocks.IBlockItemFactory
   {
     public static final int FILL_LEVEL_MAX = 4;
     public static final IntegerProperty FILL_LEVEL = IntegerProperty.create("level", 0, FILL_LEVEL_MAX);
 
-    public FluidBarrelBlock(long config, AbstractBlock.Properties builder, final AxisAlignedBB[] unrotatedAABB)
+    public FluidBarrelBlock(long config, BlockBehaviour.Properties builder, final AABB[] unrotatedAABB)
     {
       super(config, builder, unrotatedAABB);
       registerDefaultState(super.defaultBlockState().setValue(FACING, Direction.UP).setValue(FILL_LEVEL, 0));
     }
 
-    // IBlockItemFactory ----------------------------------------------------------------------------
+    @Nullable
+    @Override
+    public BlockEntityType<EdFluidBarrel.FluidBarrelTileEntity> getBlockEntityType()
+    { return ModContent.TET_FLUID_BARREL; }
 
     @Override
     public BlockItem getBlockItem(Block block, Item.Properties builder)
     { return new FluidBarrelItem(block, builder); }
-
-    // IStandardBlock --------------------------------------------------------------------------------
 
     @Override
     public boolean hasDynamicDropList()
     { return true; }
 
     @Override
-    public List<ItemStack> dropList(BlockState state, World world, final TileEntity te, boolean explosion)
+    public List<ItemStack> dropList(BlockState state, Level world, final BlockEntity te, boolean explosion)
     {
-      final List<ItemStack> stacks = new ArrayList<ItemStack>();
+      final List<ItemStack> stacks = new ArrayList<>();
       if(world.isClientSide) return stacks;
       if(!(te instanceof FluidBarrelTileEntity)) return stacks;
       ItemStack stack = new ItemStack(this, 1);
-      CompoundNBT te_nbt = ((FluidBarrelTileEntity) te).clear_getnbt();
+      CompoundTag te_nbt = ((FluidBarrelTileEntity) te).clear_getnbt();
       if(!te_nbt.isEmpty()) {
-        CompoundNBT nbt = new CompoundNBT();
+        CompoundTag nbt = new CompoundTag();
         nbt.put("tedata", te_nbt);
         stack.setTag(nbt);
       }
@@ -121,30 +126,18 @@ public class EdFluidBarrel
       return stacks;
     }
 
-    // Block/IForgeBlock -----------------------------------------------------------------------------
-
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(final ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
+    public void appendHoverText(final ItemStack stack, @Nullable BlockGetter world, List<Component> tooltip, TooltipFlag flag)
     {
-      if(
-        (!(stack.getItem() instanceof FluidBarrelItem)) ||
-        (Auxiliaries.Tooltip.helpCondition())
-      ) {
+      if((!(stack.getItem() instanceof FluidBarrelItem)) || (Auxiliaries.Tooltip.helpCondition())) {
         super.appendHoverText(stack, world, tooltip, flag); return;
       }
       FluidStack fs = FluidBarrelItem.getFluid(stack);
       if(!fs.isEmpty()) {
-        tooltip.add(Auxiliaries.localizable(getDescriptionId()+".status.tip", new Object[] {
-          Integer.toString(fs.getAmount()),
-          Integer.toString(capacity_),
-          new TranslationTextComponent(fs.getTranslationKey())
-        }));
+        tooltip.add(Auxiliaries.localizable(getDescriptionId()+".status.tip", Integer.toString(fs.getAmount()), Integer.toString(capacity_), new TranslatableComponent(fs.getTranslationKey())));
       } else {
-        tooltip.add(Auxiliaries.localizable(getDescriptionId()+".status.tip.empty", new Object[] {
-          "0",
-          Integer.toString(capacity_),
-        }));
+        tooltip.add(Auxiliaries.localizable(getDescriptionId()+".status.tip.empty", "0", Integer.toString(capacity_)));
       }
       if(!Auxiliaries.Tooltip.extendedTipCondition()) {
         super.appendHoverText(stack, world, tooltip, flag);
@@ -152,21 +145,12 @@ public class EdFluidBarrel
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state)
-    { return true; }
-
-    @Override
-    @Nullable
-    public TileEntity createTileEntity(BlockState state, IBlockReader world)
-    { return new EdFluidBarrel.FluidBarrelTileEntity(); }
-
-    @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     { super.createBlockStateDefinition(builder); builder.add(FILL_LEVEL); }
 
     @Override
     @Nullable
-    public BlockState getStateForPlacement(BlockItemUseContext context)
+    public BlockState getStateForPlacement(BlockPlaceContext context)
     {
       BlockState state = super.getStateForPlacement(context);
       if(!context.getPlayer().isShiftKeyDown()) state = state.setValue(FACING, Direction.UP);
@@ -174,30 +158,29 @@ public class EdFluidBarrel
     }
 
     @Override
-    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
     {
       if(world.isClientSide) return;
       if((!stack.hasTag()) || (!stack.getTag().contains("tedata"))) return;
-      CompoundNBT te_nbt = stack.getTag().getCompound("tedata");
+      CompoundTag te_nbt = stack.getTag().getCompound("tedata");
       if(te_nbt.isEmpty()) return;
-      final TileEntity te = world.getBlockEntity(pos);
+      final BlockEntity te = world.getBlockEntity(pos);
       if(!(te instanceof FluidBarrelTileEntity)) return;
       ((FluidBarrelTileEntity)te).readnbt(te_nbt);
-      ((FluidBarrelTileEntity)te).setChanged();
+      te.setChanged();
       world.getBlockTicks().scheduleTick(pos, this, 4);
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult)
     {
-      if(player.getItemInHand(hand).getItem() == asItem()) return ActionResultType.PASS; // Pass that to block placement.
-      if(world.isClientSide()) return ActionResultType.SUCCESS;
-      TileEntity te = world.getBlockEntity(pos);
-      if(!(te instanceof FluidBarrelTileEntity)) return ActionResultType.FAIL;
-      if(!((FluidBarrelTileEntity)te).handlePlayerInteraction(state, world, pos, player, hand)) return ActionResultType.PASS;
+      if(player.getItemInHand(hand).getItem() == asItem()) return InteractionResult.PASS; // Pass that to block placement.
+      if(world.isClientSide()) return InteractionResult.SUCCESS;
+      if(!(world.getBlockEntity(pos) instanceof final FluidBarrelTileEntity te)) return InteractionResult.FAIL;
+      if(!te.handlePlayerInteraction(state, world, pos, player, hand)) return InteractionResult.PASS;
       world.getBlockTicks().scheduleTick(pos, this, 4);
-      return ActionResultType.CONSUME;
+      return InteractionResult.CONSUME;
     }
 
     @Override
@@ -207,15 +190,15 @@ public class EdFluidBarrel
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getAnalogOutputSignal(BlockState state, World world, BlockPos pos)
+    public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos)
     {
-      TileEntity te = world.getBlockEntity(pos);
+      BlockEntity te = world.getBlockEntity(pos);
       if(!(te instanceof FluidBarrelTileEntity)) return 0;
-      return (int)MathHelper.clamp(((FluidBarrelTileEntity)te).getNormalizedFillLevel() * 15, 0, 15);
+      return (int)Mth.clamp(((FluidBarrelTileEntity)te).getNormalizedFillLevel() * 15, 0, 15);
     }
 
     @Override
-    public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+    public boolean shouldCheckWeakPower(BlockState state, LevelReader world, BlockPos pos, Direction side)
     { return false; }
 
   }
@@ -224,57 +207,45 @@ public class EdFluidBarrel
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class FluidBarrelTileEntity extends TileEntity implements ICapabilityProvider, ITickableTileEntity
+  public static class FluidBarrelTileEntity extends StandardEntityBlocks.StandardBlockEntity implements ICapabilityProvider
   {
     private final int TICK_INTERVAL = 10;
     private int tick_timer_ = 0;
-    private final Fluidics.Tank tank_;
-    private final LazyOptional<IFluidHandler> fluid_handler_;
+    private final Fluidics.Tank tank_ = (new Fluidics.Tank(capacity_)).setInteractionNotifier((t,d)->on_tank_changed());
+    private final LazyOptional<IFluidHandler> fluid_handler_ = tank_.createFluidHandler();
 
-    public FluidBarrelTileEntity()
-    { this(ModContent.TET_FLUID_BARREL); }
+    public FluidBarrelTileEntity(BlockPos pos, BlockState state)
+    { super(ModContent.TET_FLUID_BARREL, pos, state); }
 
-    public FluidBarrelTileEntity(TileEntityType<?> te_type)
-    {
-      super(te_type);
-      tank_ = new Fluidics.Tank(capacity_);
-      tank_.setInteractionNotifier((t,d)->on_tank_changed());
-      fluid_handler_ = tank_.createFluidHandler();
-    }
-
-    public void readnbt(CompoundNBT nbt)
+    public void readnbt(CompoundTag nbt)
     { tank_.load(nbt); }
 
-    public CompoundNBT writenbt(CompoundNBT nbt)
+    public CompoundTag writenbt(CompoundTag nbt)
     { tank_.save(nbt); return nbt; }
 
-    public boolean handlePlayerInteraction(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand)
+    public boolean handlePlayerInteraction(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand)
     {
       if(world.isClientSide()) return false;
       {
         Tuple<Fluid,Integer> transferred = Fluidics.manualTrackedFluidHandlerInteraction(world, pos, null, player, hand);
         if(transferred==null) {
-          world.playSound(null, pos, SoundEvents.IRON_TRAPDOOR_OPEN, SoundCategory.BLOCKS, 0.2f, 0.02f);
+          world.playSound(null, pos, SoundEvents.IRON_TRAPDOOR_OPEN, SoundSource.BLOCKS, 0.2f, 0.02f);
         } else if(transferred.getB() > 0) {
           SoundEvent se = (transferred.getA()==Fluids.LAVA) ? SoundEvents.BUCKET_EMPTY_LAVA: SoundEvents.BUCKET_EMPTY;
-          world.playSound(null, pos, se, SoundCategory.BLOCKS, 1f, 1f);
+          world.playSound(null, pos, se, SoundSource.BLOCKS, 1f, 1f);
         } else {
           SoundEvent se = (transferred.getA()==Fluids.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL;
-          world.playSound(null, pos, se, SoundCategory.BLOCKS, 1f, 1f);
+          world.playSound(null, pos, se, SoundSource.BLOCKS, 1f, 1f);
         }
       }
       {
         int vol = tank_.getFluidAmount();
         int cap = tank_.getCapacity();
-        String name = (new TranslationTextComponent(tank_.getFluid().getTranslationKey())).getString();
+        String name = (new TranslatableComponent(tank_.getFluid().getTranslationKey())).getString();
         if((vol>0) && (cap>0)) {
-          Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.fluid_barrel.status", new Object[]{
-            Integer.toString(vol), Integer.toString(cap), name
-          }));
+          Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.fluid_barrel.status", Integer.toString(vol), Integer.toString(cap), name));
         } else {
-          Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.fluid_barrel.status.empty", new Object[]{
-            Integer.toString(vol), Integer.toString(cap)
-          }));
+          Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.fluid_barrel.status.empty", Integer.toString(vol), Integer.toString(cap)));
         }
       }
       return true;
@@ -286,22 +257,22 @@ public class EdFluidBarrel
     protected void on_tank_changed()
     { if(tick_timer_ > 2) tick_timer_ = 2; }
 
-    // TileEntity ------------------------------------------------------------------------------
+    // BlockEntity ------------------------------------------------------------------------------
 
     @Override
-    public void load(BlockState state, CompoundNBT nbt)
-    { super.load(state, nbt); readnbt(nbt); }
+    public void load(CompoundTag nbt)
+    { super.load(nbt); readnbt(nbt); }
 
     @Override
-    public CompoundNBT save(CompoundNBT nbt)
+    public CompoundTag save(CompoundTag nbt)
     { super.save(nbt); return writenbt(nbt); }
 
     @Override
     public void setRemoved()
     { super.setRemoved(); fluid_handler_.invalidate(); }
 
-    public CompoundNBT clear_getnbt()
-    { return tank_.save(new CompoundNBT()); }
+    public CompoundTag clear_getnbt()
+    { return tank_.save(new CompoundTag()); }
 
     // ICapabilityProvider --------------------------------------------------------------------
 
@@ -312,18 +283,18 @@ public class EdFluidBarrel
       return super.getCapability(capability, facing);
     }
 
-    // ITickableTileEntity --------------------------------------------------------------------
+    // Tick --------------------------------------------------------------------
 
     private boolean transfer_down()
     {
       if(tank_.isEmpty()) return false;
-      final IFluidHandler fh = FluidUtil.getFluidHandler(level, worldPosition.below(), Direction.UP).orElse(null);
+      final IFluidHandler fh = Fluidics.handler(level, worldPosition.below(), Direction.UP);
       if(fh==null) return false;
       final FluidStack fs = tank_.getFluid().copy();
       if(fs.getAmount() > tile_fluid_handler_transfer_rate_) fs.setAmount(tile_fluid_handler_transfer_rate_);
-      final int nfilled = fh.fill(fs, FluidAction.EXECUTE);
+      final int nfilled = fh.fill(fs, IFluidHandler.FluidAction.EXECUTE);
       if(nfilled <= 0) return false;
-      tank_.drain(nfilled, FluidAction.EXECUTE);
+      tank_.drain(nfilled, IFluidHandler.FluidAction.EXECUTE);
       return true;
     }
 
@@ -336,7 +307,7 @@ public class EdFluidBarrel
       if(!(block instanceof FluidBarrelBlock)) return;
       if(state.getValue(FluidBarrelBlock.FACING).getAxis().isVertical()) transfer_down(); // tick_timer_ ==> 1 if something was transferred, otherwise no need to waste CPU
       double norm_level = getNormalizedFillLevel();
-      int fill_level = (norm_level <= 0) ? 0 : ((int)MathHelper.clamp((norm_level * FluidBarrelBlock.FILL_LEVEL_MAX)+0.5, 1, FluidBarrelBlock.FILL_LEVEL_MAX));
+      int fill_level = (norm_level <= 0) ? 0 : ((int)Mth.clamp((norm_level * FluidBarrelBlock.FILL_LEVEL_MAX)+0.5, 1, FluidBarrelBlock.FILL_LEVEL_MAX));
       if(fill_level != state.getValue(FluidBarrelBlock.FILL_LEVEL)) {
         level.setBlock(worldPosition, state.setValue(FluidBarrelBlock.FILL_LEVEL, fill_level), 2);
         level.updateNeighborsAt(worldPosition, block);
@@ -354,28 +325,28 @@ public class EdFluidBarrel
     public FluidBarrelItem(Block block, Item.Properties builder)
     { super(block, builder); }
 
-    private static CompoundNBT read_fluid_nbt(ItemStack stack)
+    private static CompoundTag read_fluid_nbt(ItemStack stack)
     {
-      if((!stack.hasTag()) || (!stack.getTag().contains("tedata"))) return new CompoundNBT();
-      final CompoundNBT nbt = stack.getTag().getCompound("tedata");
-      if(!nbt.contains("tank", Constants.NBT.TAG_COMPOUND)) return new CompoundNBT();
+      if((!stack.hasTag()) || (!stack.getTag().contains("tedata"))) return new CompoundTag();
+      final CompoundTag nbt = stack.getTag().getCompound("tedata");
+      if(!nbt.contains("tank", Constants.NBT.TAG_COMPOUND)) return new CompoundTag();
       return nbt.getCompound("tank");
     }
 
-    private static void write_fluid_nbt(ItemStack stack, CompoundNBT fluid_nbt)
+    private static void write_fluid_nbt(ItemStack stack, CompoundTag fluid_nbt)
     {
       if((fluid_nbt==null) || (fluid_nbt.isEmpty())) {
         if((!stack.hasTag()) || (!stack.getTag().contains("tedata", Constants.NBT.TAG_COMPOUND))) return;
-        final CompoundNBT tag = stack.getTag();
-        final CompoundNBT tedata = tag.getCompound("tedata");
+        final CompoundTag tag = stack.getTag();
+        final CompoundTag tedata = tag.getCompound("tedata");
         if(tedata.contains("tank")) tedata.remove("tank");
         if(tedata.isEmpty()) tag.remove("tedata");
         stack.setTag(tag.isEmpty() ? null : tag);
       } else {
-        CompoundNBT tag = stack.getTag();
-        if(tag==null) tag = new CompoundNBT();
-        CompoundNBT tedata = tag.getCompound("tedata");
-        if(tedata==null) tedata = new CompoundNBT();
+        CompoundTag tag = stack.getTag();
+        if(tag==null) tag = new CompoundTag();
+        CompoundTag tedata = tag.getCompound("tedata");
+        if(tedata==null) tedata = new CompoundTag();
         tedata.put("tank", fluid_nbt);
         tag.put("tedata", tedata);
         stack.setTag(tag);
@@ -384,12 +355,12 @@ public class EdFluidBarrel
 
     public static FluidStack getFluid(ItemStack stack)
     {
-      final CompoundNBT nbt = read_fluid_nbt(stack);
+      final CompoundTag nbt = read_fluid_nbt(stack);
       return (nbt.isEmpty()) ? (FluidStack.EMPTY) : (FluidStack.loadFluidStackFromNBT(nbt));
     }
 
     public static ItemStack setFluid(ItemStack stack, FluidStack fs)
-    { write_fluid_nbt(stack, fs.writeToNBT(new CompoundNBT())); return stack; }
+    { write_fluid_nbt(stack, fs.writeToNBT(new CompoundTag())); return stack; }
 
     @Override
     public int getItemStackLimit(ItemStack stack)
@@ -401,15 +372,15 @@ public class EdFluidBarrel
 
     @Override
     public double getDurabilityForDisplay(ItemStack stack)
-    { return 1.0 - MathHelper.clamp(((double)(getFluid(stack).getAmount()))/((double)capacity_), 0.0, 1.0); }
+    { return 1.0 - Mth.clamp(((double)(getFluid(stack).getAmount()))/((double)capacity_), 0.0, 1.0); }
 
     @Override
     public int getRGBDurabilityForDisplay(ItemStack stack)
     { return 0x336633; }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt)
-    { return new Fluidics.FluidContainerItemCapabilityWrapper(stack, capacity_, item_fluid_handler_transfer_rate_, (s)->read_fluid_nbt(s), (s,n)->write_fluid_nbt(s,n), e->true); }
+    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt)
+    { return new Fluidics.FluidContainerItemCapabilityWrapper(stack, capacity_, item_fluid_handler_transfer_rate_, FluidBarrelItem::read_fluid_nbt, FluidBarrelItem::write_fluid_nbt, e->true); }
 
     @Override
     public boolean hasContainerItem(ItemStack stack)

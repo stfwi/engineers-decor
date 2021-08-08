@@ -8,61 +8,68 @@
  */
 package wile.engineersdecor.blocks;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.item.*;
-import net.minecraft.item.crafting.AbstractCookingRecipe;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.*;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.inventory.*;
-import net.minecraft.inventory.container.*;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.stats.Stats;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.*;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fmllegacy.hooks.BasicEventHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
-import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.blocks.EdFurnace.FurnaceTileEntity;
-import wile.engineersdecor.libmc.detail.Inventories.StorageInventory;
-import wile.engineersdecor.libmc.detail.Inventories.MappedItemHandler;
-import wile.engineersdecor.libmc.detail.TooltipDisplay;
-import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
-import wile.engineersdecor.libmc.client.ContainerGui;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.blocks.StandardEntityBlocks;
+import wile.engineersdecor.libmc.detail.Crafting;
 import wile.engineersdecor.libmc.detail.Inventories;
+import wile.engineersdecor.libmc.detail.Inventories.MappedItemHandler;
+import wile.engineersdecor.libmc.detail.Inventories.StorageInventory;
 import wile.engineersdecor.libmc.detail.Networking;
+import wile.engineersdecor.libmc.detail.RfEnergy;
+import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
+import wile.engineersdecor.libmc.ui.Guis;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
+import java.util.List;
 
 
 public class EdElectricalFurnace
@@ -74,56 +81,103 @@ public class EdElectricalFurnace
   // Block
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class ElectricalFurnaceBlock extends EdFurnace.FurnaceBlock implements IDecorBlock
+  public static class ElectricalFurnaceBlock extends StandardBlocks.Horizontal implements StandardEntityBlocks.IStandardEntityBlock<ElectricalFurnaceTileEntity>
   {
-    public ElectricalFurnaceBlock(long config, AbstractBlock.Properties builder, final AxisAlignedBB[] unrotatedAABBs)
+    public static final BooleanProperty LIT = BlockStateProperties.LIT;
+
+    public ElectricalFurnaceBlock(long config, BlockBehaviour.Properties builder, final AABB[] unrotatedAABBs)
     { super(config, builder, unrotatedAABBs); }
+
+    @Nullable
+    @Override
+    public BlockEntityType<EdElectricalFurnace.ElectricalFurnaceTileEntity> getBlockEntityType()
+    { return ModContent.TET_SMALL_ELECTRICAL_FURNACE; }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
+    { super.createBlockStateDefinition(builder); builder.add(LIT); }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos)
+    { return state.getValue(LIT) ? super.getLightEmission(state, world, pos) : 0; }
 
     @Override
     @Nullable
-    public TileEntity createTileEntity(BlockState state, IBlockReader world)
-    { return new EdElectricalFurnace.ElectricalFurnaceTileEntity(); }
+    public BlockState getStateForPlacement(BlockPlaceContext context)
+    { return super.getStateForPlacement(context).setValue(LIT, false); }
 
     @Override
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+    @SuppressWarnings("deprecation")
+    public boolean hasAnalogOutputSignal(BlockState state)
+    { return true; }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public int getAnalogOutputSignal(BlockState blockState, Level world, BlockPos pos)
     {
-      if(world.isClientSide()) return ActionResultType.SUCCESS;
-      final TileEntity te = world.getBlockEntity(pos);
-      if(!(te instanceof EdElectricalFurnace.ElectricalFurnaceTileEntity)) return ActionResultType.FAIL;
-      if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return ActionResultType.FAIL;
-      NetworkHooks.openGui((ServerPlayerEntity)player,(INamedContainerProvider)te);
-      player.awardStat(Stats.INTERACT_WITH_FURNACE);
-      return ActionResultType.CONSUME;
+      BlockEntity te = world.getBlockEntity(pos);
+      return (te instanceof EdElectricalFurnace.ElectricalFurnaceTileEntity) ? ((EdElectricalFurnace.ElectricalFurnaceTileEntity)te).getComparatorOutput() : 0;
     }
 
     @Override
-    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    public boolean shouldCheckWeakPower(BlockState state, LevelReader world, BlockPos pos, Direction side)
+    { return false; }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult)
+    { return useOpenGui(state, world, pos, player); }
+
+    @Override
+    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
     {
       world.setBlockAndUpdate(pos, state.setValue(LIT, false));
       if(world.isClientSide) return;
       if((!stack.hasTag()) || (!stack.getTag().contains("inventory"))) return;
-      CompoundNBT inventory_nbt = stack.getTag().getCompound("inventory");
+      CompoundTag inventory_nbt = stack.getTag().getCompound("inventory");
       if(inventory_nbt.isEmpty()) return;
-      final TileEntity te = world.getBlockEntity(pos);
-      if(!(te instanceof EdElectricalFurnace.ElectricalFurnaceTileEntity)) return;
-      ElectricalFurnaceTileEntity bte = (EdElectricalFurnace.ElectricalFurnaceTileEntity)te;
+      final BlockEntity te = world.getBlockEntity(pos);
+      if(!(te instanceof ElectricalFurnaceTileEntity bte)) return;
       bte.readnbt(inventory_nbt);
       bte.setChanged();
       world.setBlockAndUpdate(pos, state.setValue(LIT, bte.burning()));
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void animateTick(BlockState state, World world, BlockPos pos, Random rnd)
-    {}
+    public boolean hasDynamicDropList()
+    { return true; }
+
+    @Override
+    public List<ItemStack> dropList(BlockState state, Level world, final BlockEntity te, boolean explosion) {
+      final List<ItemStack> stacks = new ArrayList<>();
+      if(world.isClientSide) return stacks;
+      if(!(te instanceof EdElectricalFurnace.ElectricalFurnaceTileEntity)) return stacks;
+      if(!explosion) {
+        ItemStack stack = new ItemStack(this, 1);
+        CompoundTag inventory_nbt = ((EdElectricalFurnace.ElectricalFurnaceTileEntity)te).reset_getnbt();
+        if(!inventory_nbt.isEmpty()) {
+          CompoundTag nbt = new CompoundTag();
+          nbt.put("inventory", inventory_nbt);
+          stack.setTag(nbt);
+        }
+        stacks.add(stack);
+      } else {
+        for(ItemStack stack: ((EdElectricalFurnace.ElectricalFurnaceTileEntity)te).inventory_) stacks.add(stack);
+        ((EdElectricalFurnace.ElectricalFurnaceTileEntity)te).reset();
+      }
+      return stacks;
+    }
   }
 
   //--------------------------------------------------------------------------------------------------------------------
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class ElectricalFurnaceTileEntity extends EdFurnace.FurnaceTileEntity implements ITickableTileEntity, INameable, INamedContainerProvider
+  public static class ElectricalFurnaceTileEntity extends StandardEntityBlocks.StandardBlockEntity implements MenuProvider, Nameable
   {
+    private static final RecipeType<SmeltingRecipe> RECIPE_TYPE = RecipeType.SMELTING;
+    private static final int DEFAULT_SMELTING_TIME = 200;
     private static final int NUM_OF_FIELDS = 8;
     private static final int TICK_INTERVAL = 4;
     private static final int FIFO_INTERVAL = 20;
@@ -142,6 +196,7 @@ public class EdElectricalFurnace
     private static final int FIFO_INPUT_1_SLOT_NO = 4;
     private static final int FIFO_OUTPUT_0_SLOT_NO = 5;
     private static final int FIFO_OUTPUT_1_SLOT_NO = 6;
+
     public  static final int DEFAULT_SPEED_PERCENT = 290;
     public  static final int DEFAULT_ENERGY_CONSUMPTION = 16;
     public  static final int DEFAULT_SCALED_ENERGY_CONSUMPTION = DEFAULT_ENERGY_CONSUMPTION * TICK_INTERVAL;
@@ -152,50 +207,67 @@ public class EdElectricalFurnace
     private static int energy_consumption_ = DEFAULT_SCALED_ENERGY_CONSUMPTION;
     private static int transfer_energy_consumption_ = DEFAULT_SCALED_ENERGY_CONSUMPTION / 8;
     private static int proc_speed_percent_ = DEFAULT_SPEED_PERCENT;
-    private static final double speed_setting_factor_[] = {0.0, 1.0, 1.5, 2.0};
+    private static final double[] speed_setting_factor_ = {0.0, 1.0, 1.5, 2.0};
 
     public static void on_config(int speed_percent, int standard_energy_per_tick, boolean with_automatic_inventory_pulling)
     {
-      proc_speed_percent_ = MathHelper.clamp(speed_percent, 10, 800);
-      energy_consumption_ = MathHelper.clamp(standard_energy_per_tick, 4, 4096) * TICK_INTERVAL;
-      transfer_energy_consumption_ = MathHelper.clamp(energy_consumption_ / 8, 8, HEAT_INCREMENT);
+      proc_speed_percent_ = Mth.clamp(speed_percent, 10, 800);
+      energy_consumption_ = Mth.clamp(standard_energy_per_tick, 4, 4096) * TICK_INTERVAL;
+      transfer_energy_consumption_ = Mth.clamp(energy_consumption_ / 8, 8, HEAT_INCREMENT);
       with_automatic_inventory_pulling_ = with_automatic_inventory_pulling;
       ModConfig.log("Config electrical furnace speed:" + proc_speed_percent_ + "%, heat-loss: 1K/t, heating consumption:" + (energy_consumption_/TICK_INTERVAL)+"rf/t.");
     }
 
     // ElectricalFurnaceTileEntity -----------------------------------------------------------------------------
-
+    private int tick_timer_;
+    private int fifo_timer_;
+    private double proc_time_elapsed_;
+    private int proc_time_needed_;
+    private int burntime_left_;
+    private int field_is_burning_;
+    private float xp_stored_;
+    private @Nullable Recipe<?> current_recipe_ = null;
+    private int fuel_burntime_;
+    private int field_proc_time_elapsed_;
+    private final StorageInventory inventory_;
+    private final LazyOptional<IItemHandler> item_handler_;
+    private final RfEnergy.Battery battery_;
+    private final LazyOptional<IEnergyStorage> energy_handler_;
     private int speed_ = 1;
     private boolean enabled_ = false;
-    protected int field_power_consumption_;
-    protected int power_consumption_accumulator_;
-    protected int power_consumption_timer_;
-    private final LazyOptional<IItemHandler> item_handler_;
+    private int field_power_consumption_;
+    private int power_consumption_accumulator_;
+    private int power_consumption_timer_;
 
-    public ElectricalFurnaceTileEntity()
-    { this(ModContent.TET_SMALL_ELECTRICAL_FURNACE); }
-
-    public ElectricalFurnaceTileEntity(TileEntityType<?> te_type)
+    public ElectricalFurnaceTileEntity(BlockPos pos, BlockState state)
     {
-      super(te_type, NUM_OF_SLOTS);
-      battery_.setMaxEnergyStored(MAX_ENERGY_BUFFER);
-      battery_.setChargeRate(MAX_ENERGY_TRANSFER);
-      battery_.setDischargeRate(0);
-      inventory_.setValidator((index, stack)->{
-        switch(index) {
-          case SMELTING_INPUT_SLOT_NO:
-          case FIFO_INPUT_0_SLOT_NO:
-          case FIFO_INPUT_1_SLOT_NO:
-            return true;
-          default:
-            return false;
+      super(ModContent.TET_SMALL_ELECTRICAL_FURNACE, pos, state);
+      inventory_ = new StorageInventory(this, NUM_OF_SLOTS) {
+        @Override
+        public void setItem(int index, ItemStack stack)
+        {
+          ItemStack slot_stack = stacks_.get(index);
+          boolean already_in_slot = (!stack.isEmpty()) && (Inventories.areItemStacksIdentical(stack, slot_stack));
+          stacks_.set(index, stack);
+          if(stack.getCount() > getMaxStackSize()) stack.setCount(getMaxStackSize());
+          if((index == SMELTING_INPUT_SLOT_NO) && (!already_in_slot)) {
+            proc_time_needed_ = Crafting.getSmeltingTimeNeeded(RECIPE_TYPE, level, stack);
+            proc_time_elapsed_ = 0;
+            setChanged();
+          }
         }
+      };
+      inventory_.setValidator((index, stack)->switch (index) {
+        case SMELTING_INPUT_SLOT_NO, FIFO_INPUT_0_SLOT_NO, FIFO_INPUT_1_SLOT_NO -> true;
+        default -> false;
       });
       item_handler_ = MappedItemHandler.createGenericHandler(inventory_,
         (slot,stack)->((slot==FIFO_OUTPUT_0_SLOT_NO) || (slot==FIFO_OUTPUT_1_SLOT_NO)),
         (slot,stack)->((slot==FIFO_INPUT_0_SLOT_NO) || (slot==FIFO_INPUT_1_SLOT_NO)),
         Arrays.asList(FIFO_OUTPUT_0_SLOT_NO,FIFO_OUTPUT_1_SLOT_NO,FIFO_INPUT_0_SLOT_NO,FIFO_INPUT_1_SLOT_NO)
       );
+      battery_ = new RfEnergy.Battery(MAX_ENERGY_BUFFER, MAX_ENERGY_TRANSFER, 0);
+      energy_handler_ = battery_.createEnergyHandler();
     }
 
     public void reset()
@@ -211,7 +283,15 @@ public class EdElectricalFurnace
       field_is_burning_ = 0;
     }
 
-    public void readnbt(CompoundNBT nbt)
+    public CompoundTag reset_getnbt()
+    {
+      CompoundTag nbt = new CompoundTag();
+      writenbt(nbt);
+      reset();
+      return nbt;
+    }
+
+    public void readnbt(CompoundTag nbt)
     {
       burntime_left_ = nbt.getInt("BurnTime");
       proc_time_elapsed_ = nbt.getInt("CookTime");
@@ -223,13 +303,13 @@ public class EdElectricalFurnace
       inventory_.load(nbt);
     }
 
-    protected void writenbt(CompoundNBT nbt)
+    protected void writenbt(CompoundTag nbt)
     {
-      nbt.putInt("BurnTime", MathHelper.clamp(burntime_left_, 0, HEAT_CAPACITY));
-      nbt.putInt("CookTime", MathHelper.clamp((int)proc_time_elapsed_, 0, MAX_BURNTIME));
-      nbt.putInt("CookTimeTotal", MathHelper.clamp(proc_time_needed_, 0, MAX_BURNTIME));
-      nbt.putInt("SpeedSetting", MathHelper.clamp(speed_, -1, MAX_SPEED_SETTING));
-      nbt.putFloat("XpStored", MathHelper.clamp(xp_stored_, 0, MAX_XP_STORED));
+      nbt.putInt("BurnTime", Mth.clamp(burntime_left_, 0, HEAT_CAPACITY));
+      nbt.putInt("CookTime", Mth.clamp((int)proc_time_elapsed_, 0, MAX_BURNTIME));
+      nbt.putInt("CookTimeTotal", Mth.clamp(proc_time_needed_, 0, MAX_BURNTIME));
+      nbt.putInt("SpeedSetting", Mth.clamp(speed_, -1, MAX_SPEED_SETTING));
+      nbt.putFloat("XpStored", Mth.clamp(xp_stored_, 0, MAX_XP_STORED));
       battery_.save(nbt, "Energy");
       inventory_.save(nbt);
     }
@@ -243,14 +323,14 @@ public class EdElectricalFurnace
       );
     }
 
-    // TileEntity ------------------------------------------------------------------------------
+    // BlockEntity ------------------------------------------------------------------------------
 
     @Override
-    public void load(BlockState state, CompoundNBT nbt)
-    { super.load(state, nbt); readnbt(nbt); }
+    public void load(CompoundTag nbt)
+    { super.load(nbt); readnbt(nbt); }
 
     @Override
-    public CompoundNBT save(CompoundNBT nbt)
+    public CompoundTag save(CompoundTag nbt)
     { super.save(nbt); writenbt(nbt); return nbt; }
 
     @Override
@@ -261,49 +341,53 @@ public class EdElectricalFurnace
       energy_handler_.invalidate();
     }
 
-    // INameable -------------------------------------------------------------------------------
+    @Override
+    public Component getName()
+    { final Block block=getBlockState().getBlock(); return new TextComponent((block!=null) ? block.getDescriptionId() : "Small electrical furnace"); }
 
     @Override
-    public ITextComponent getName()
-    { final Block block=getBlockState().getBlock(); return new StringTextComponent((block!=null) ? block.getDescriptionId() : "Small electrical furnace"); }
-
-    // IContainerProvider ----------------------------------------------------------------------
+    public Component getDisplayName()
+    { return Nameable.super.getDisplayName(); }
 
     @Override
-    public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player )
-    { return new EdElectricalFurnace.ElectricalFurnaceContainer(id, inventory, inventory_, IWorldPosCallable.create(level, worldPosition), fields); }
+    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player )
+    { return new EdElectricalFurnace.ElectricalFurnaceContainer(id, inventory, inventory_, ContainerLevelAccess.create(level, worldPosition), fields); }
 
     // Fields -----------------------------------------------------------------------------------------------
 
-    protected final IIntArray fields = new IntArray(ElectricalFurnaceTileEntity.NUM_OF_FIELDS)
+    protected final ContainerData fields = new ContainerData()
     {
+      @Override
+      public int getCount()
+      { return ElectricalFurnaceTileEntity.NUM_OF_FIELDS; }
+
       @Override
       public int get(int id)
       {
-        switch(id) {
-          case 0: return ElectricalFurnaceTileEntity.this.burntime_left_;
-          case 1: return ElectricalFurnaceTileEntity.this.battery_.getEnergyStored();
-          case 2: return (int)ElectricalFurnaceTileEntity.this.proc_time_elapsed_;
-          case 3: return ElectricalFurnaceTileEntity.this.proc_time_needed_;
-          case 4: return ElectricalFurnaceTileEntity.this.speed_;
-          case 5: return ElectricalFurnaceTileEntity.this.battery_.getMaxEnergyStored();
-          case 6: return ElectricalFurnaceTileEntity.this.field_is_burning_;
-          case 7: return ElectricalFurnaceTileEntity.this.field_power_consumption_;
-          default: return 0;
-        }
+        return switch(id) {
+          case 0 -> ElectricalFurnaceTileEntity.this.burntime_left_;
+          case 1 -> ElectricalFurnaceTileEntity.this.battery_.getEnergyStored();
+          case 2 -> (int) ElectricalFurnaceTileEntity.this.proc_time_elapsed_;
+          case 3 -> ElectricalFurnaceTileEntity.this.proc_time_needed_;
+          case 4 -> ElectricalFurnaceTileEntity.this.speed_;
+          case 5 -> ElectricalFurnaceTileEntity.this.battery_.getMaxEnergyStored();
+          case 6 -> ElectricalFurnaceTileEntity.this.field_is_burning_;
+          case 7 -> ElectricalFurnaceTileEntity.this.field_power_consumption_;
+          default -> 0;
+        };
       }
       @Override
       public void set(int id, int value)
       {
         switch(id) {
-          case 0: ElectricalFurnaceTileEntity.this.burntime_left_ = value; break;
-          case 1: ElectricalFurnaceTileEntity.this.battery_.setEnergyStored(value); break;
-          case 2: ElectricalFurnaceTileEntity.this.proc_time_elapsed_ = value; break;
-          case 3: ElectricalFurnaceTileEntity.this.proc_time_needed_ = value; break;
-          case 4: ElectricalFurnaceTileEntity.this.speed_ = value; break;
-          case 5: ElectricalFurnaceTileEntity.this.battery_.setMaxEnergyStored(value); break;
-          case 6: ElectricalFurnaceTileEntity.this.field_is_burning_ = value; break;
-          case 7: ElectricalFurnaceTileEntity.this.field_power_consumption_ = value; break;
+          case 0 -> ElectricalFurnaceTileEntity.this.burntime_left_ = value;
+          case 1 -> ElectricalFurnaceTileEntity.this.battery_.setEnergyStored(value);
+          case 2 -> ElectricalFurnaceTileEntity.this.proc_time_elapsed_ = value;
+          case 3 -> ElectricalFurnaceTileEntity.this.proc_time_needed_ = value;
+          case 4 -> ElectricalFurnaceTileEntity.this.speed_ = value;
+          case 5 -> ElectricalFurnaceTileEntity.this.battery_.setMaxEnergyStored(value);
+          case 6 -> ElectricalFurnaceTileEntity.this.field_is_burning_ = value;
+          case 7 -> ElectricalFurnaceTileEntity.this.field_power_consumption_ = value;
         }
       }
     };
@@ -318,7 +402,7 @@ public class EdElectricalFurnace
       return super.getCapability(capability, facing);
     }
 
-    // ITickableTileEntity -------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------------------------------
 
     @Override
     public void tick()
@@ -348,7 +432,7 @@ public class EdElectricalFurnace
         enabled_ = true;
       }
       if((!(inventory_.getItem(SMELTING_INPUT_SLOT_NO)).isEmpty()) && (enabled_) && (speed_>0)) {
-        IRecipe<?> last_recipe = currentRecipe();
+        Recipe<?> last_recipe = currentRecipe();
         updateCurrentRecipe();
         if(currentRecipe() != last_recipe) {
           proc_time_elapsed_ = 0;
@@ -360,7 +444,7 @@ public class EdElectricalFurnace
           if(transferItems(SMELTING_INPUT_SLOT_NO, SMELTING_OUTPUT_SLOT_NO, 1)) dirty = true;
         } else {
           // smelt, automatically choke speed on low power storage
-          final int speed = MathHelper.clamp((battery_.getSOC() >= 25) ? (speed_) : (1), 0, MAX_SPEED_SETTING);
+          final int speed = Mth.clamp((battery_.getSOC() >= 25) ? (speed_) : (1), 0, MAX_SPEED_SETTING);
           if(!burning() && can_smelt) {
             if(heat_up(speed)) { dirty = true; update_blockstate = true; }
           }
@@ -442,7 +526,7 @@ public class EdElectricalFurnace
       if(!(state.getBlock() instanceof ElectricalFurnaceBlock)) return false;
       final Direction out_facing = state.getValue(ElectricalFurnaceBlock.HORIZONTAL_FACING);
       if(out && (!inventory_.getItem(FIFO_OUTPUT_1_SLOT_NO).isEmpty())) {
-        TileEntity te = level.getBlockEntity(worldPosition.relative(out_facing));
+        BlockEntity te = level.getBlockEntity(worldPosition.relative(out_facing));
         if(te!=null) {
           IItemHandler hnd = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, out_facing).orElse(null);
           if(hnd != null) {
@@ -456,7 +540,7 @@ public class EdElectricalFurnace
       if(with_automatic_inventory_pulling_ || is_accepted_hopper(inventory_.getItem(SMELTING_AUX_SLOT_NO))) {
         final Direction inp_facing = state.getValue(ElectricalFurnaceBlock.HORIZONTAL_FACING).getOpposite();
         if(inp && (inventory_.getItem(FIFO_INPUT_1_SLOT_NO).isEmpty()) && (battery_.getEnergyStored() >= transfer_energy_consumption_)) {
-          final int max_count = MathHelper.clamp((transfer_energy_consumption_ <= 0) ? (64) : (battery_.getEnergyStored()/transfer_energy_consumption_), 1, 64);
+          final int max_count = Mth.clamp((transfer_energy_consumption_ <= 0) ? (64) : (battery_.getEnergyStored()/transfer_energy_consumption_), 1, 64);
           final ItemStack retrieved = Inventories.extract(Inventories.itemhandler(level, worldPosition.relative(inp_facing), inp_facing), null, max_count, false);
           if(!retrieved.isEmpty()) {
             inventory_.setItem(FIFO_INPUT_1_SLOT_NO, retrieved);
@@ -473,12 +557,12 @@ public class EdElectricalFurnace
 
     private int energy_consumption(int speed)
     {
-      switch(speed) {
-        case 1: return energy_consumption_;
-        case 2: return energy_consumption_ * 2;
-        case 3: return energy_consumption_ * 4;
-        default: return 0;
-      }
+      return switch (speed) {
+        case 1 -> energy_consumption_;
+        case 2 -> energy_consumption_ * 2;
+        case 3 -> energy_consumption_ * 4;
+        default -> 0;
+      };
     }
 
     private boolean heat_up(int speed)
@@ -498,44 +582,184 @@ public class EdElectricalFurnace
       }
     }
 
+    ////////////////////
+    // Furnace -------------------------------------------------------------------------------------
+
+    @Nullable
+    public static <T extends AbstractCookingRecipe> T getSmeltingResult(RecipeType<T> recipe_type, Level world, ItemStack stack)
+    {
+      if(stack.isEmpty()) return null;
+      Container inventory = new SimpleContainer(3);
+      inventory.setItem(0, stack);
+      return world.getRecipeManager().getRecipeFor(recipe_type, inventory, world).orElse(null);
+    }
+
+    public boolean burning()
+    { return burntime_left_ > 0; }
+
+    public int getSmeltingTimeNeeded(Level world, ItemStack stack)
+    {
+      if(stack.isEmpty()) return 0;
+      AbstractCookingRecipe recipe = getSmeltingResult(RECIPE_TYPE, world, stack);
+      if(recipe == null) return 0;
+      int t = recipe.getCookingTime();
+      return (t<=0) ? DEFAULT_SMELTING_TIME : t;
+    }
+
+    protected boolean canSmeltCurrentItem()
+    {
+      if((currentRecipe()==null) || (inventory_.getItem(SMELTING_INPUT_SLOT_NO).isEmpty())) return false;
+      final ItemStack recipe_result_items = getSmeltingResult(inventory_.getItem(SMELTING_INPUT_SLOT_NO));
+      if(recipe_result_items.isEmpty()) return false;
+      final ItemStack result_stack = inventory_.getItem(SMELTING_OUTPUT_SLOT_NO);
+      if(result_stack.isEmpty()) return true;
+      if(!result_stack.sameItem(recipe_result_items)) return false;
+      if(result_stack.getCount() + recipe_result_items.getCount() <= inventory_.getMaxStackSize() && result_stack.getCount() + recipe_result_items.getCount() <= result_stack.getMaxStackSize()) return true;
+      return result_stack.getCount() + recipe_result_items.getCount() <= recipe_result_items.getMaxStackSize();
+    }
+
+    protected void smeltCurrentItem()
+    {
+      if(!canSmeltCurrentItem()) return;
+      final ItemStack smelting_input_stack = inventory_.getItem(SMELTING_INPUT_SLOT_NO);
+      final ItemStack recipe_result_items = getSmeltingResult(smelting_input_stack);
+      final ItemStack smelting_output_stack = inventory_.getItem(SMELTING_OUTPUT_SLOT_NO);
+      final float xp = getCurrentSmeltingXp(smelting_output_stack);
+      if(smelting_output_stack.isEmpty()) {
+        inventory_.setItem(SMELTING_OUTPUT_SLOT_NO, recipe_result_items.copy());
+      } else if(smelting_output_stack.getItem() == recipe_result_items.getItem()) {
+        smelting_output_stack.grow(recipe_result_items.getCount());
+      }
+      smelting_input_stack.shrink(1);
+      xp_stored_ += xp;
+    }
+
+    public static int getFuelBurntime(Level world, ItemStack stack)
+    {
+      if(stack.isEmpty()) return 0;
+      int t = ForgeHooks.getBurnTime(stack, null);
+      return Math.max(t, 0);
+    }
+
+    public static boolean isFuel(Level world, ItemStack stack)
+    { return (getFuelBurntime(world, stack) > 0) || (stack.getItem()==Items.LAVA_BUCKET); }
+
+    public int consumeSmeltingExperience(ItemStack stack)
+    {
+      if(xp_stored_ < 1) return 0;
+      float xp = xp_stored_;
+      if(xp >= 15) xp /= 2;
+      xp = Math.min((float)Math.floor(xp), 150);
+      xp_stored_ -= xp;
+      return (int)xp;
+    }
+
+    public ItemStack getSmeltingResult(final ItemStack stack)
+    { return (currentRecipe()==null) ? (ItemStack.EMPTY) : (currentRecipe().getResultItem()); }
+
+    public float getCurrentSmeltingXp(final ItemStack stack)
+    {
+      float xp = (currentRecipe() instanceof AbstractCookingRecipe) ? (((AbstractCookingRecipe)currentRecipe()).getExperience()) : (stack.getItem().getSmeltingExperience(stack));
+      return (xp <= 0) ? 0.7f : xp; // default value for recipes without defined xp
+    }
+
+    public static boolean canSmelt(Level world, final ItemStack stack)
+    { return getSmeltingResult(RECIPE_TYPE, world, stack) != null; }
+
+    @Nullable
+    protected Recipe<?> currentRecipe()
+    { return current_recipe_; }
+
+    protected void updateCurrentRecipe()
+    { setCurrentRecipe(getSmeltingResult(RECIPE_TYPE, getLevel(), inventory_.getItem(SMELTING_INPUT_SLOT_NO))); }
+
+    protected void setCurrentRecipe(Recipe<?> recipe)
+    { current_recipe_ = recipe; }
+
   }
 
   //--------------------------------------------------------------------------------------------------------------------
   // Container
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class ElectricalFurnaceContainer extends Container implements Networking.INetworkSynchronisableContainer
+  public static class ElectricalFurnaceContainer extends AbstractContainerMenu implements Networking.INetworkSynchronisableContainer
   {
+
+    // Slots --------------------------------------------------------------------------------------------
+
+    public static class OutputSlot extends Slot
+    {
+      private final Container inventory_;
+      private final Player player_;
+      private int removeCount = 0;
+
+      public OutputSlot(Player player, Container inventory, int index, int xpos, int ypos)
+      { super(inventory, index, xpos, ypos); inventory_ = inventory; player_ = player; }
+
+      @Override
+      public boolean mayPlace(ItemStack stack)
+      { return false; }
+
+      @Override
+      public ItemStack remove(int amount)
+      { removeCount += hasItem() ? Math.min(amount, getItem().getCount()) : 0; return super.remove(amount); }
+
+      @Override
+      public void onTake(Player thePlayer, ItemStack stack)
+      { checkTakeAchievements(stack); super.onTake(thePlayer, stack); }
+
+      @Override
+      protected void onQuickCraft(ItemStack stack, int amount)
+      { removeCount += amount; checkTakeAchievements(stack); }
+
+      @Override
+      protected void checkTakeAchievements(ItemStack stack)
+      {
+        stack.onCraftedBy(player_.level, player_, removeCount);
+        if((!player_.level.isClientSide()) && (inventory_ instanceof StorageInventory)) {
+          ElectricalFurnaceTileEntity te = (ElectricalFurnaceTileEntity)(((StorageInventory)inventory_).getTileEntity());
+          int xp = te.consumeSmeltingExperience(stack);
+          while(xp > 0) {
+            int k = ExperienceOrb.getExperienceValue(xp);
+            xp -= k;
+            player_.level.addFreshEntity((new ExperienceOrb(player_.level, player_.blockPosition().getX(), player_.blockPosition().getY()+0.5, player_.blockPosition().getZ()+0.5, k)));
+          }
+        }
+        removeCount = 0;
+        BasicEventHooks.firePlayerSmeltedEvent(player_, stack);
+      }
+    }
+
     private static final int PLAYER_INV_START_SLOTNO = 7;
-    protected final PlayerEntity player_;
-    protected final IInventory inventory_;
-    protected final IWorldPosCallable wpc_;
-    private final IIntArray fields_;
-    private final IRecipeType<? extends AbstractCookingRecipe> recipe_type_;
+    protected final Player player_;
+    protected final Container inventory_;
+    protected final ContainerLevelAccess wpc_;
+    private final ContainerData fields_;
+    private final RecipeType<? extends AbstractCookingRecipe> recipe_type_;
 
     public int field(int index) { return fields_.get(index); }
-    public PlayerEntity player() { return player_ ; }
-    public IInventory inventory() { return inventory_ ; }
-    public World world() { return player_.level; }
+    public Player player() { return player_ ; }
+    public Container inventory() { return inventory_ ; }
+    public Level world() { return player_.level; }
 
-    public ElectricalFurnaceContainer(int cid, PlayerInventory player_inventory)
-    { this(cid, player_inventory, new Inventory(ElectricalFurnaceTileEntity.NUM_OF_SLOTS), IWorldPosCallable.NULL, new IntArray(ElectricalFurnaceTileEntity.NUM_OF_FIELDS)); }
+    public ElectricalFurnaceContainer(int cid, Inventory player_inventory)
+    { this(cid, player_inventory, new SimpleContainer(ElectricalFurnaceTileEntity.NUM_OF_SLOTS), ContainerLevelAccess.NULL, new SimpleContainerData(ElectricalFurnaceTileEntity.NUM_OF_FIELDS)); }
 
-    private ElectricalFurnaceContainer(int cid, PlayerInventory player_inventory, IInventory block_inventory, IWorldPosCallable wpc, IIntArray fields)
+    private ElectricalFurnaceContainer(int cid, Inventory player_inventory, Container block_inventory, ContainerLevelAccess wpc, ContainerData fields)
     {
       super(ModContent.CT_SMALL_ELECTRICAL_FURNACE, cid);
       player_ = player_inventory.player;
       inventory_ = block_inventory;
       wpc_ = wpc;
       fields_ = fields;
-      recipe_type_ = FurnaceTileEntity.RECIPE_TYPE;
+      recipe_type_ = ElectricalFurnaceTileEntity.RECIPE_TYPE;
       addSlot(new Slot(inventory_, 0, 59, 28)); // smelting input
       addSlot(new Slot(inventory_, 1, 16, 52)); // aux
-      addSlot(new EdFurnace.FurnaceContainer.BSlotResult(player_, inventory_, 2, 101, 28)); // smelting result
-      addSlot(new EdFurnace.FurnaceContainer.BSlotInpFifo(inventory_, 3, 34, 28)); // input fifo 0
-      addSlot(new EdFurnace.FurnaceContainer.BSlotInpFifo(inventory_, 4, 16, 28)); // input fifo 1
-      addSlot(new EdFurnace.FurnaceContainer.BSlotOutFifo(player_, inventory_, 5, 126, 28)); // out fifo 0
-      addSlot(new EdFurnace.FurnaceContainer.BSlotOutFifo(player_, inventory_, 6, 144, 28)); // out fifo 1
+      addSlot(new OutputSlot(player_, inventory_, 2, 101, 28)); // smelting result
+      addSlot(new Slot(inventory_, 3, 34, 28)); // input fifo 0
+      addSlot(new Slot(inventory_, 4, 16, 28)); // input fifo 1
+      addSlot(new OutputSlot(player_, inventory_, 5, 126, 28)); // out fifo 0
+      addSlot(new OutputSlot(player_, inventory_, 6, 144, 28)); // out fifo 1
       for(int x=0; x<9; ++x) {
         addSlot(new Slot(player_inventory, x, 8+x*18, 144)); // player slots: 0..8
       }
@@ -548,11 +772,11 @@ public class EdElectricalFurnace
     }
 
     @Override
-    public boolean stillValid(PlayerEntity player)
+    public boolean stillValid(Player player)
     { return inventory_.stillValid(player); }
 
     @Override
-    public ItemStack quickMoveStack(PlayerEntity player, int index)
+    public ItemStack quickMoveStack(Player player, int index)
     {
       Slot slot = getSlot(index);
       if((slot==null) || (!slot.hasItem())) return ItemStack.EMPTY;
@@ -600,22 +824,22 @@ public class EdElectricalFurnace
     // INetworkSynchronisableContainer ---------------------------------------------------------
 
     @OnlyIn(Dist.CLIENT)
-    public void onGuiAction(CompoundNBT nbt)
+    public void onGuiAction(CompoundTag nbt)
     { Networking.PacketContainerSyncClientToServer.sendToServer(containerId, nbt); }
 
     @OnlyIn(Dist.CLIENT)
     public void onGuiAction(String key, int value)
-    { CompoundNBT nbt=new CompoundNBT(); nbt.putInt(key, value); Networking.PacketContainerSyncClientToServer.sendToServer(containerId, nbt); }
+    { CompoundTag nbt=new CompoundTag(); nbt.putInt(key, value); Networking.PacketContainerSyncClientToServer.sendToServer(containerId, nbt); }
 
     @Override
-    public void onServerPacketReceived(int windowId, CompoundNBT nbt)
+    public void onServerPacketReceived(int windowId, CompoundTag nbt)
     {}
 
-    public void onClientPacketReceived(int windowId, PlayerEntity player, CompoundNBT nbt)
+    public void onClientPacketReceived(int windowId, Player player, CompoundTag nbt)
     {
       if(!(inventory_ instanceof StorageInventory)) return;
       ElectricalFurnaceTileEntity te = (ElectricalFurnaceTileEntity)(((StorageInventory)inventory_).getTileEntity());
-      if(nbt.contains("speed")) te.speed_ = MathHelper.clamp(nbt.getInt("speed"), 0, ElectricalFurnaceTileEntity.MAX_SPEED_SETTING);
+      if(nbt.contains("speed")) te.speed_ = Mth.clamp(nbt.getInt("speed"), 0, ElectricalFurnaceTileEntity.MAX_SPEED_SETTING);
       te.setChanged();
     }
   }
@@ -625,13 +849,10 @@ public class EdElectricalFurnace
   //--------------------------------------------------------------------------------------------------------------------
 
   @OnlyIn(Dist.CLIENT)
-  public static class ElectricalFurnaceGui extends ContainerGui<ElectricalFurnaceContainer>
+  public static class ElectricalFurnaceGui extends Guis.ContainerGui<ElectricalFurnaceContainer>
   {
-    protected final PlayerEntity player_;
-    protected final TooltipDisplay tooltip_ = new TooltipDisplay();
-
-    public ElectricalFurnaceGui(ElectricalFurnaceContainer container, PlayerInventory player_inventory, ITextComponent title)
-    { super(container, player_inventory, title); this.player_ = player_inventory.player; }
+    public ElectricalFurnaceGui(ElectricalFurnaceContainer container, Inventory player_inventory, Component title)
+    { super(container, player_inventory, title, "textures/gui/small_electrical_furnace_gui.png"); }
 
     @Override
     public void init()
@@ -641,35 +862,19 @@ public class EdElectricalFurnace
       final int x0 = getGuiLeft(), y0 = getGuiTop();
       final Slot aux = menu.getSlot(ElectricalFurnaceTileEntity.SMELTING_AUX_SLOT_NO);
       tooltip_.init(
-        new TipRange(x0+135, y0+50, 25, 25, new TranslationTextComponent(prefix + "speed")),
-        new TipRange(x0+aux.x, y0+aux.y, 16, 16, new TranslationTextComponent(prefix + "auxslot")),
+        new TipRange(x0+135, y0+50, 25, 25, new TranslatableComponent(prefix + "speed")),
+        new TipRange(x0+aux.x, y0+aux.y, 16, 16, new TranslatableComponent(prefix + "auxslot")),
         new TipRange(x0+80, y0+55, 50, 14, ()->{
           final int soc = getMenu().field(1) * 100 / Math.max(getMenu().field(5), 1);
           final int consumption = getMenu().field(7);
-          return new TranslationTextComponent(prefix + "capacitors", soc, consumption);
+          return new TranslatableComponent(prefix + "capacitors", soc, consumption);
         })
       );
     }
 
     @Override
-    public void render(MatrixStack mx, int mouseX, int mouseY, float partialTicks)
+    protected void renderBgWidgets(PoseStack mx, float partialTicks, int mouseX, int mouseY)
     {
-      renderBackground(mx);
-      super.render(mx, mouseX, mouseY, partialTicks);
-      if(!tooltip_.render(mx, this, mouseX, mouseY)) renderTooltip(mx, mouseX, mouseY);
-    }
-
-    @Override
-    protected void renderLabels(MatrixStack mx, int x, int y)
-    {}
-
-    @Override
-    @SuppressWarnings("deprecation")
-    protected void renderBg(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
-    {
-      RenderSystem.enableBlend();
-      RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-      getMinecraft().getTextureManager().bind(new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/small_electrical_furnace_gui.png"));
       final int x0=leftPos, y0=topPos, w=imageWidth, h=imageHeight;
       blit(mx, x0, y0, 0, 0, w, h);
       if(getMenu().field(6)!=0)  {
@@ -687,14 +892,13 @@ public class EdElectricalFurnace
         case 3: blit(mx, x0+143, y0+58, 210, 58, 9, 6); break;
         default: break;
       }
-      RenderSystem.disableBlend();
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
       tooltip_.resetTimer();
-      ElectricalFurnaceContainer container = (ElectricalFurnaceContainer)getMenu();
+      ElectricalFurnaceContainer container = getMenu();
       int mx = (int)(mouseX - getGuiLeft() + .5), my = (int)(mouseY - getGuiTop() + .5);
       if((!isHovering(136, 48, 28, 28, mouseX, mouseY))) {
         return super.mouseClicked(mouseX, mouseY, mouseButton);

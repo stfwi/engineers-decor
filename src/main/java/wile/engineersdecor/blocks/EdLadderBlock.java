@@ -12,39 +12,42 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.entity.EntitySpawnPlacementRegistry;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.world.IWorldReader;
-import wile.engineersdecor.ModConfig;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import net.minecraft.entity.EntityType;
-import net.minecraft.util.math.vector.*;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.*;
-import net.minecraft.block.material.PushReaction;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.LadderBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import wile.engineersdecor.ModConfig;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+
 import javax.annotation.Nullable;
 import java.util.List;
 
 
-public class EdLadderBlock extends LadderBlock implements IDecorBlock
+public class EdLadderBlock extends LadderBlock implements StandardBlocks.IStandardBlock
 {
-  protected static final AxisAlignedBB EDLADDER_UNROTATED_AABB = Auxiliaries.getPixeledAABB(3, 0, 0, 13, 16, 3);
-  protected static final VoxelShape EDLADDER_SOUTH_AABB =  VoxelShapes.create(Auxiliaries.getRotatedAABB(EDLADDER_UNROTATED_AABB, Direction.SOUTH, false));
-  protected static final VoxelShape EDLADDER_EAST_AABB  = VoxelShapes.create(Auxiliaries.getRotatedAABB(EDLADDER_UNROTATED_AABB, Direction.EAST, false));
-  protected static final VoxelShape EDLADDER_WEST_AABB  = VoxelShapes.create(Auxiliaries.getRotatedAABB(EDLADDER_UNROTATED_AABB, Direction.WEST, false));
-  protected static final VoxelShape EDLADDER_NORTH_AABB = VoxelShapes.create(Auxiliaries.getRotatedAABB(EDLADDER_UNROTATED_AABB, Direction.NORTH, false));
+  protected static final AABB EDLADDER_UNROTATED_AABB = Auxiliaries.getPixeledAABB(3, 0, 0, 13, 16, 3);
+  protected static final VoxelShape EDLADDER_SOUTH_AABB =  Shapes.create(Auxiliaries.getRotatedAABB(EDLADDER_UNROTATED_AABB, Direction.SOUTH, false));
+  protected static final VoxelShape EDLADDER_EAST_AABB  = Shapes.create(Auxiliaries.getRotatedAABB(EDLADDER_UNROTATED_AABB, Direction.EAST, false));
+  protected static final VoxelShape EDLADDER_WEST_AABB  = Shapes.create(Auxiliaries.getRotatedAABB(EDLADDER_UNROTATED_AABB, Direction.WEST, false));
+  protected static final VoxelShape EDLADDER_NORTH_AABB = Shapes.create(Auxiliaries.getRotatedAABB(EDLADDER_UNROTATED_AABB, Direction.NORTH, false));
   private static boolean without_speed_boost_ = false;
 
   public static void on_config(boolean without_speed_boost)
@@ -53,7 +56,7 @@ public class EdLadderBlock extends LadderBlock implements IDecorBlock
     ModConfig.log("Config ladder: without-speed-boost:" + without_speed_boost_);
   }
 
-  public EdLadderBlock(long config, AbstractBlock.Properties builder)
+  public EdLadderBlock(long config, BlockBehaviour.Properties builder)
   { super(builder); }
 
   @Override
@@ -62,17 +65,17 @@ public class EdLadderBlock extends LadderBlock implements IDecorBlock
 
   @Override
   @OnlyIn(Dist.CLIENT)
-  public void appendHoverText(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
+  public void appendHoverText(ItemStack stack, @Nullable BlockGetter world, List<Component> tooltip, TooltipFlag flag)
   { Auxiliaries.Tooltip.addInformation(stack, world, tooltip, flag, true); }
 
-  public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos)
+  public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos)
   {
-    switch ((Direction)state.getValue(FACING)) {
-      case NORTH: return EDLADDER_NORTH_AABB;
-      case SOUTH: return EDLADDER_SOUTH_AABB;
-      case WEST: return EDLADDER_WEST_AABB;
-      default: return EDLADDER_EAST_AABB;
-    }
+    return switch(state.getValue(FACING)) {
+      case NORTH -> EDLADDER_NORTH_AABB;
+      case SOUTH -> EDLADDER_SOUTH_AABB;
+      case WEST -> EDLADDER_WEST_AABB;
+      default -> EDLADDER_EAST_AABB;
+    };
   }
 
   @Override
@@ -80,7 +83,7 @@ public class EdLadderBlock extends LadderBlock implements IDecorBlock
   { return false; }
 
   @Override
-  public boolean canCreatureSpawn(BlockState state, IBlockReader world, BlockPos pos, EntitySpawnPlacementRegistry.PlacementType type, @Nullable EntityType<?> entityType)
+  public boolean canCreatureSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, @Nullable EntityType<?> entityType)
   { return false; }
 
   @Override
@@ -89,11 +92,11 @@ public class EdLadderBlock extends LadderBlock implements IDecorBlock
   { return PushReaction.NORMAL; }
 
   @Override
-  public boolean isLadder(BlockState state, IWorldReader world, BlockPos pos, LivingEntity entity)
+  public boolean isLadder(BlockState state, LevelReader world, BlockPos pos, LivingEntity entity)
   { return true; }
 
   // Player update event, forwarded from the main mod instance.
-  public static void onPlayerUpdateEvent(final PlayerEntity player)
+  public static void onPlayerUpdateEvent(final Player player)
   {
     if((without_speed_boost_) || (player.isOnGround()) || (!player.onClimbable()) || (player.isSteppingCarefully()) || (player.isSpectator())) return;
     double lvy = player.getLookAngle().y;
@@ -103,15 +106,15 @@ public class EdLadderBlock extends LadderBlock implements IDecorBlock
     if(!(state.getBlock() instanceof EdLadderBlock)) return;
     player.fallDistance = 0;
     if((player.getDeltaMovement().y() < 0) == (player.getLookAngle().y < 0)) {
-      player.makeStuckInBlock(state, new Vector3d(0.2, (lvy>0)?(3):(6), 0.2));
+      player.makeStuckInBlock(state, new Vec3(0.2, (lvy>0)?(3):(6), 0.2));
       if(Math.abs(player.getDeltaMovement().y()) > 0.1) {
-        Vector3d vdiff = Vector3d.atBottomCenterOf(pos).subtract(player.position()).scale(1);
-        vdiff.add(Vector3d.atBottomCenterOf(state.getValue(FACING).getNormal()).scale(0.5));
-        vdiff = new Vector3d(vdiff.x, player.getDeltaMovement().y, vdiff.z);
+        Vec3 vdiff = Vec3.atBottomCenterOf(pos).subtract(player.position()).scale(1);
+        vdiff.add(Vec3.atBottomCenterOf(state.getValue(FACING).getNormal()).scale(0.5));
+        vdiff = new Vec3(vdiff.x, player.getDeltaMovement().y, vdiff.z);
         player.setDeltaMovement(vdiff);
       }
     } else if(player.getLookAngle().y > 0) {
-      player.makeStuckInBlock(state, new Vector3d(1, 0.05, 1));
+      player.makeStuckInBlock(state, new Vec3(1, 0.05, 1));
     }
   }
 

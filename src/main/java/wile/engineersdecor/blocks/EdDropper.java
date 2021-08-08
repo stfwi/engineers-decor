@@ -8,61 +8,57 @@
  */
 package wile.engineersdecor.blocks;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.DoorBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.*;
-import net.minecraft.inventory.*;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.SoundEvents;
-import net.minecraftforge.fml.network.NetworkHooks;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.util.Tuple;
+import net.minecraft.world.*;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.libmc.client.ContainerGui;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.libmc.detail.Inventories;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.blocks.StandardEntityBlocks;
+import wile.engineersdecor.libmc.detail.*;
 import wile.engineersdecor.libmc.detail.Inventories.InventoryRange;
 import wile.engineersdecor.libmc.detail.Inventories.StorageInventory;
-import wile.engineersdecor.libmc.detail.Networking;
-import wile.engineersdecor.libmc.detail.TooltipDisplay;
 import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
+import wile.engineersdecor.libmc.ui.Guis;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -85,28 +81,33 @@ public class EdDropper
   // Block
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class DropperBlock extends DecorBlock.Directed implements IDecorBlock
+  public static class DropperBlock extends StandardBlocks.Directed implements StandardEntityBlocks.IStandardEntityBlock<DropperTileEntity>
   {
-    public static final BooleanProperty OPEN = DoorBlock.OPEN;
+    public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
 
-    public DropperBlock(long config, AbstractBlock.Properties builder, final AxisAlignedBB unrotatedAABB)
+    public DropperBlock(long config, BlockBehaviour.Properties builder, final AABB unrotatedAABB)
     { super(config, builder, unrotatedAABB); }
+
+    @Nullable
+    @Override
+    public BlockEntityType<EdDropper.DropperTileEntity> getBlockEntityType()
+    { return ModContent.TET_FACTORY_DROPPER; }
 
     @Override
     public RenderTypeHint getRenderTypeHint()
     { return RenderTypeHint.SOLID; }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext)
-    { return VoxelShapes.block(); }
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext selectionContext)
+    { return Shapes.block(); }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     { super.createBlockStateDefinition(builder); builder.add(OPEN); }
 
     @Override
     @Nullable
-    public BlockState getStateForPlacement(BlockItemUseContext context)
+    public BlockState getStateForPlacement(BlockPlaceContext context)
     { return super.getStateForPlacement(context).setValue(OPEN, false); }
 
     @Override
@@ -116,30 +117,21 @@ public class EdDropper
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getAnalogOutputSignal(BlockState blockState, World world, BlockPos pos)
-    { return Container.getRedstoneSignalFromBlockEntity(world.getBlockEntity(pos)); }
+    public int getAnalogOutputSignal(BlockState blockState, Level world, BlockPos pos)
+    { return (world.getBlockEntity(pos) instanceof DropperTileEntity te) ? RsSignals.fromContainer(te.storage_slot_range_) : 0; }
 
     @Override
-    public boolean hasTileEntity(BlockState state)
-    { return true; }
-
-    @Override
-    @Nullable
-    public TileEntity createTileEntity(BlockState state, IBlockReader world)
-    { return new EdDropper.DropperTileEntity(); }
-
-    @Override
-    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
     {
       if(world.isClientSide) return;
       if((!stack.hasTag()) || (!stack.getTag().contains("tedata"))) return;
-      CompoundNBT te_nbt = stack.getTag().getCompound("tedata");
+      CompoundTag te_nbt = stack.getTag().getCompound("tedata");
       if(te_nbt.isEmpty()) return;
-      final TileEntity te = world.getBlockEntity(pos);
+      final BlockEntity te = world.getBlockEntity(pos);
       if(!(te instanceof EdDropper.DropperTileEntity)) return;
       ((EdDropper.DropperTileEntity)te).readnbt(te_nbt, false);
       ((EdDropper.DropperTileEntity)te).reset_rtstate();
-      ((EdDropper.DropperTileEntity)te).setChanged();
+      te.setChanged();
     }
 
     @Override
@@ -147,16 +139,16 @@ public class EdDropper
     { return true; }
 
     @Override
-    public List<ItemStack> dropList(BlockState state, World world, final TileEntity te, boolean explosion)
+    public List<ItemStack> dropList(BlockState state, Level world, final BlockEntity te, boolean explosion)
     {
-      final List<ItemStack> stacks = new ArrayList<ItemStack>();
+      final List<ItemStack> stacks = new ArrayList<>();
       if(world.isClientSide) return stacks;
       if(!(te instanceof DropperTileEntity)) return stacks;
       if(!explosion) {
         ItemStack stack = new ItemStack(this, 1);
-        CompoundNBT te_nbt = ((DropperTileEntity) te).clear_getnbt();
+        CompoundTag te_nbt = ((DropperTileEntity) te).clear_getnbt();
         if(!te_nbt.isEmpty()) {
-          CompoundNBT nbt = new CompoundNBT();
+          CompoundTag nbt = new CompoundTag();
           nbt.put("tedata", te_nbt);
           stack.setTag(nbt);
         }
@@ -172,28 +164,21 @@ public class EdDropper
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
-    {
-      if(world.isClientSide()) return ActionResultType.SUCCESS;
-      final TileEntity te = world.getBlockEntity(pos);
-      if(!(te instanceof EdDropper.DropperTileEntity)) return ActionResultType.FAIL;
-      if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return ActionResultType.FAIL;
-      NetworkHooks.openGui((ServerPlayerEntity)player,(INamedContainerProvider)te);
-      return ActionResultType.CONSUME;
-    }
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult)
+    { return useOpenGui(state, world, pos, player); }
 
     @Override
     @SuppressWarnings("deprecation")
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean unused)
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean unused)
     {
-      if(!(world instanceof World) || (((World) world).isClientSide)) return;
-      TileEntity te = world.getBlockEntity(pos);
+      if(!(world instanceof Level) || (world.isClientSide)) return;
+      BlockEntity te = world.getBlockEntity(pos);
       if(!(te instanceof DropperTileEntity)) return;
       ((DropperTileEntity)te).block_updated();
     }
 
     @Override
-    public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+    public boolean shouldCheckWeakPower(BlockState state, LevelReader world, BlockPos pos, Direction side)
     { return false; }
   }
 
@@ -201,7 +186,7 @@ public class EdDropper
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class DropperTileEntity extends TileEntity implements ITickableTileEntity, INameable, INamedContainerProvider
+  public static class DropperTileEntity extends StandardEntityBlocks.StandardBlockEntity implements MenuProvider, Nameable
   {
     public static final int NUM_OF_FIELDS = 16;
     public static final int TICK_INTERVAL = 32;
@@ -221,7 +206,7 @@ public class EdDropper
     public static final int DROPLOGIC_CONTINUOUS     = 0x10;
     public static final int DROPLOGIC_IGNORE_EXT     = 0x20;
     ///
-    private final int filter_matches_[] = new int[CTRL_SLOTS_SIZE];
+    private final int[] filter_matches_ = new int[CTRL_SLOTS_SIZE];
     private int open_timer_ = 0;
     private int drop_timer_ = 0;
     private boolean triggered_ = false;
@@ -239,16 +224,14 @@ public class EdDropper
     protected final Inventories.StorageInventory main_inventory_ = new StorageInventory(this, NUM_OF_SLOTS, 1);
     protected final InventoryRange storage_slot_range_ = new InventoryRange(main_inventory_, INPUT_SLOTS_FIRST, INPUT_SLOTS_SIZE);
     protected final InventoryRange filter_slot_range_ = new InventoryRange(main_inventory_, CTRL_SLOTS_FIRST, CTRL_SLOTS_SIZE);
+    protected LazyOptional<? extends IItemHandler> item_handler_ = Inventories.MappedItemHandler.createGenericHandler(storage_slot_range_);
 
-    public DropperTileEntity()
-    { this(ModContent.TET_FACTORY_DROPPER); }
+    public DropperTileEntity(BlockPos pos, BlockState state)
+    { super(ModContent.TET_FACTORY_DROPPER, pos, state); reset_rtstate(); }
 
-    public DropperTileEntity(TileEntityType<?> te_type)
-    { super(te_type); reset_rtstate(); }
-
-    public CompoundNBT clear_getnbt()
+    public CompoundTag clear_getnbt()
     {
-      CompoundNBT nbt = new CompoundNBT();
+      CompoundTag nbt = new CompoundTag();
       writenbt(nbt, false);
       main_inventory_.clearContent();
       reset_rtstate();
@@ -264,7 +247,7 @@ public class EdDropper
       Arrays.fill(filter_matches_, 0);
     }
 
-    public void readnbt(CompoundNBT nbt, boolean update_packet)
+    public void readnbt(CompoundTag nbt, boolean update_packet)
     {
       main_inventory_.load(nbt);
       block_power_signal_ = nbt.getBoolean("powered");
@@ -274,12 +257,12 @@ public class EdDropper
       drop_xdev_ = nbt.getInt("drop_xdev");
       drop_ydev_ = nbt.getInt("drop_ydev");
       drop_slot_index_ = nbt.getInt("drop_slot_index");
-      drop_count_ = MathHelper.clamp(nbt.getInt("drop_count"), 1, MAX_DROP_COUNT);
+      drop_count_ = Mth.clamp(nbt.getInt("drop_count"), 1, MAX_DROP_COUNT);
       drop_logic_ = nbt.getInt("drop_logic");
       drop_period_ = nbt.getInt("drop_period");
     }
 
-    protected void writenbt(CompoundNBT nbt, boolean update_packet)
+    protected void writenbt(CompoundTag nbt, boolean update_packet)
     {
       main_inventory_.save(nbt);
       nbt.putBoolean("powered", block_power_signal_);
@@ -306,14 +289,14 @@ public class EdDropper
     public boolean is_input_slot(int index)
     { return (index >= INPUT_SLOTS_FIRST) && (index < (INPUT_SLOTS_FIRST+INPUT_SLOTS_SIZE)); }
 
-    // TileEntity ------------------------------------------------------------------------------
+    // BlockEntity ------------------------------------------------------------------------------
 
     @Override
-    public void load(BlockState state, CompoundNBT nbt)
-    { super.load(state, nbt); readnbt(nbt, false); }
+    public void load(CompoundTag nbt)
+    { super.load(nbt); readnbt(nbt, false); }
 
     @Override
-    public CompoundNBT save(CompoundNBT nbt)
+    public CompoundTag save(CompoundTag nbt)
     { super.save(nbt); writenbt(nbt, false); return nbt; }
 
     @Override
@@ -323,81 +306,82 @@ public class EdDropper
       item_handler_.invalidate();
     }
 
-    // INamable ----------------------------------------------------------------------------------------------
+    // Namable -----------------------------------------------------------------------------------------------
 
     @Override
-    public ITextComponent getName()
-    { final Block block=getBlockState().getBlock(); return new StringTextComponent((block!=null) ? block.getDescriptionId() : "Factory dropper"); }
+    public Component getName()
+    { final Block block=getBlockState().getBlock(); return new TextComponent((block!=null) ? block.getDescriptionId() : "Factory dropper"); }
 
     @Override
     public boolean hasCustomName()
     { return false; }
 
     @Override
-    public ITextComponent getCustomName()
+    public Component getCustomName()
     { return getName(); }
 
     // INamedContainerProvider ------------------------------------------------------------------------------
 
     @Override
-    public ITextComponent getDisplayName()
-    { return INameable.super.getDisplayName(); }
+    public Component getDisplayName()
+    { return Nameable.super.getDisplayName(); }
 
     @Override
-    public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player )
-    { return new DropperUiContainer(id, inventory, main_inventory_, IWorldPosCallable.create(level, worldPosition), fields); }
+    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player )
+    { return new DropperUiContainer(id, inventory, main_inventory_, ContainerLevelAccess.create(level, worldPosition), fields); }
 
     // Fields -----------------------------------------------------------------------------------------------
 
-    protected final IIntArray fields = new IntArray(DropperTileEntity.NUM_OF_FIELDS)
+    protected final ContainerData fields = new ContainerData()
     {
+      @Override
+      public int getCount()
+      { return DropperTileEntity.NUM_OF_FIELDS; }
+
       @Override
       public int get(int id)
       {
-        switch(id) {
-          case  0: return drop_speed_;
-          case  1: return drop_xdev_;
-          case  2: return drop_ydev_;
-          case  3: return drop_noise_;
-          case  4: return drop_count_;
-          case  5: return drop_logic_;
-          case  6: return drop_period_;
-          case  9: return drop_timer_;
-          case 10: return open_timer_;
-          case 11: return block_power_signal_ ? 1 : 0;
-          case 12: return filter_matches_[0];
-          case 13: return filter_matches_[1];
-          case 14: return filter_matches_[2];
-          case 15: return drop_slot_index_;
-          default: return 0;
-        }
+        return switch (id) {
+          case 0 -> drop_speed_;
+          case 1 -> drop_xdev_;
+          case 2 -> drop_ydev_;
+          case 3 -> drop_noise_;
+          case 4 -> drop_count_;
+          case 5 -> drop_logic_;
+          case 6 -> drop_period_;
+          case 9 -> drop_timer_;
+          case 10 -> open_timer_;
+          case 11 -> block_power_signal_ ? 1 : 0;
+          case 12 -> filter_matches_[0];
+          case 13 -> filter_matches_[1];
+          case 14 -> filter_matches_[2];
+          case 15 -> drop_slot_index_;
+          default -> 0;
+        };
       }
       @Override
       public void set(int id, int value)
       {
-        switch(id) {
-          case  0: drop_speed_ = MathHelper.clamp(value,    0, 100); return;
-          case  1: drop_xdev_  = MathHelper.clamp(value, -100, 100); return;
-          case  2: drop_ydev_  = MathHelper.clamp(value, -100, 100); return;
-          case  3: drop_noise_ = MathHelper.clamp(value,    0, 100); return;
-          case  4: drop_count_ = MathHelper.clamp(value,    1,  MAX_DROP_COUNT); return;
-          case  5: drop_logic_ = value; return;
-          case  6: drop_period_ = MathHelper.clamp(value,   0,  100); return;
-          case  9: drop_timer_ = MathHelper.clamp(value,    0,  400); return;
-          case 10: open_timer_ = MathHelper.clamp(value,    0,  400); return;
-          case 11: block_power_signal_ = (value != 0); return;
-          case 12: filter_matches_[0] = (value & 0x3); return;
-          case 13: filter_matches_[1] = (value & 0x3); return;
-          case 14: filter_matches_[2] = (value & 0x3); return;
-          case 15: drop_slot_index_ = MathHelper.clamp(value, INPUT_SLOTS_FIRST, INPUT_SLOTS_FIRST+INPUT_SLOTS_SIZE-1); return;
-          default: return;
+        switch (id) {
+          case 0 -> drop_speed_ = Mth.clamp(value, 0, 100);
+          case 1 -> drop_xdev_ = Mth.clamp(value, -100, 100);
+          case 2 -> drop_ydev_ = Mth.clamp(value, -100, 100);
+          case 3 -> drop_noise_ = Mth.clamp(value, 0, 100);
+          case 4 -> drop_count_ = Mth.clamp(value, 1, MAX_DROP_COUNT);
+          case 5 -> drop_logic_ = value;
+          case 6 -> drop_period_ = Mth.clamp(value, 0, 100);
+          case 9 -> drop_timer_ = Mth.clamp(value, 0, 400);
+          case 10 -> open_timer_ = Mth.clamp(value, 0, 400);
+          case 11 -> block_power_signal_ = (value != 0);
+          case 12 -> filter_matches_[0] = (value & 0x3);
+          case 13 -> filter_matches_[1] = (value & 0x3);
+          case 14 -> filter_matches_[2] = (value & 0x3);
+          case 15 -> drop_slot_index_ = Mth.clamp(value, INPUT_SLOTS_FIRST, INPUT_SLOTS_FIRST + INPUT_SLOTS_SIZE - 1);
         }
       }
     };
 
     // Capability export ------------------------------------------------------------------------------------
-
-    protected LazyOptional<? extends IItemHandler> item_handler_ = LazyOptional.of(()->new InvWrapper(storage_slot_range_));
 
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
@@ -408,22 +392,22 @@ public class EdDropper
 
     // ITickable and aux methods ----------------------------------------------------------------------------
 
-    private static void drop(World world, BlockPos pos, Direction facing, ItemStack stack, int speed_percent, int xdeviation, int ydeviation, int noise_percent)
+    private static void drop(Level world, BlockPos pos, Direction facing, ItemStack stack, int speed_percent, int xdeviation, int ydeviation, int noise_percent)
     {
       final double ofs = facing==Direction.DOWN ? 0.8 : 0.7;
-      Vector3d v0 = new Vector3d(facing.getStepX(), facing.getStepY(), facing.getStepZ());
+      Vec3 v0 = new Vec3(facing.getStepX(), facing.getStepY(), facing.getStepZ());
       final ItemEntity ei = new ItemEntity(world, (pos.getX()+0.5)+(ofs*v0.x), (pos.getY()+0.5)+(ofs*v0.y), (pos.getZ()+0.5)+(ofs*v0.z), stack);
       if((xdeviation != 0) || (ydeviation != 0)) {
-        double vdx = 1e-2 * MathHelper.clamp(xdeviation, -100, 100);
-        double vdy = 1e-2 * MathHelper.clamp(ydeviation, -100, 100);
-        switch(facing) { // switch-case faster than coorsys fwd transform
-          case DOWN:  v0 = v0.add( vdx, 0,-vdy); break;
-          case NORTH: v0 = v0.add( vdx, vdy, 0); break;
-          case SOUTH: v0 = v0.add(-vdx, vdy, 0); break;
-          case EAST:  v0 = v0.add(0, vdy,  vdx); break;
-          case WEST:  v0 = v0.add(0, vdy, -vdx); break;
-          case UP:    v0 = v0.add( vdx, 0, vdy); break;
-        }
+        double vdx = 1e-2 * Mth.clamp(xdeviation, -100, 100);
+        double vdy = 1e-2 * Mth.clamp(ydeviation, -100, 100);
+        v0 = switch (facing) { // switch-case faster than coorsys fwd transform
+          case DOWN -> v0.add(vdx, 0, -vdy);
+          case NORTH -> v0.add(vdx, vdy, 0);
+          case SOUTH -> v0.add(-vdx, vdy, 0);
+          case EAST -> v0.add(0, vdy, vdx);
+          case WEST -> v0.add(0, vdy, -vdx);
+          case UP -> v0.add(vdx, 0, vdy);
+        };
       }
       if(noise_percent > 0) {
         v0 = v0.add(
@@ -441,30 +425,28 @@ public class EdDropper
       world.addFreshEntity(ei);
     }
 
-    private static Tuple<Boolean, List<ItemStack>> try_eject(World world, BlockPos pos, Direction facing, ItemStack[] stacks, int speed_percent, int xdeviation, int ydeviation, int noise_percent)
+    private static Tuple<Boolean, List<ItemStack>> try_eject(Level world, BlockPos pos, Direction facing, ItemStack[] stacks, int speed_percent, int xdeviation, int ydeviation, int noise_percent)
     {
-      if(Arrays.stream(stacks).allMatch(e->e.isEmpty())) return new Tuple<>(false, Arrays.asList(stacks));
+      if(Arrays.stream(stacks).allMatch(ItemStack::isEmpty)) return new Tuple<>(false, Arrays.asList(stacks));
       if(with_adjacent_item_insertion) {
-        final TileEntity te = world.getBlockEntity(pos.relative(facing));
+        final BlockEntity te = world.getBlockEntity(pos.relative(facing));
         if(te != null) {
           final IItemHandler ih = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, (facing==null)?(null):(facing.getOpposite())).orElse(null);
           if(ih != null) {
             boolean inserted = false;
             List<ItemStack> remaining = new ArrayList<>();
-            for(int i = 0; i < stacks.length; ++i) {
-              ItemStack rs = Inventories.insert(ih, stacks[i].copy(), false);
-              if(rs.getCount() < stacks[i].getCount()) inserted = true;
-              if(!rs.isEmpty()) remaining.add(rs);
+            for(final ItemStack stack : stacks) {
+              final ItemStack rs = Inventories.insert(ih, stack.copy(), false);
+              if (rs.getCount() < stack.getCount()) inserted = true;
+              if (!rs.isEmpty()) remaining.add(rs);
             }
             return new Tuple<>(inserted, remaining);
-          } else {
-            // The TE could also be small, so that dropping over it is intended.
           }
         }
       }
-      for(int i = 0; i < stacks.length; ++i) {
-        if(stacks[i].isEmpty()) continue;
-        drop(world, pos, facing, stacks[i], speed_percent, xdeviation, ydeviation, noise_percent);
+      for(ItemStack stack: stacks) {
+        if(stack.isEmpty()) continue;
+        drop(world, pos, facing, stack, speed_percent, xdeviation, ydeviation, noise_percent);
       }
       return new Tuple<>(true, Collections.emptyList());
     }
@@ -480,9 +462,9 @@ public class EdDropper
         level.setBlock(worldPosition, state, 2|16);
         if((drop_logic_ & DROPLOGIC_SILENT_OPEN) == 0) {
           if(open) {
-            level.playSound(null, worldPosition, SoundEvents.WOODEN_TRAPDOOR_OPEN, SoundCategory.BLOCKS, 0.08f, 3f);
+            level.playSound(null, worldPosition, SoundEvents.WOODEN_TRAPDOOR_OPEN, SoundSource.BLOCKS, 0.08f, 3f);
           } else {
-            level.playSound(null, worldPosition, SoundEvents.WOODEN_TRAPDOOR_CLOSE, SoundCategory.BLOCKS, 0.08f, 3f);
+            level.playSound(null, worldPosition, SoundEvents.WOODEN_TRAPDOOR_CLOSE, SoundSource.BLOCKS, 0.08f, 3f);
           }
         }
       }
@@ -513,7 +495,7 @@ public class EdDropper
         // From filters / inventory checks
         {
           int filter_nset = 0;
-          int last_filter_matches_[] = filter_matches_.clone();
+          int[] last_filter_matches_ = filter_matches_.clone();
           for(int ci=0; ci<CTRL_SLOTS_SIZE; ++ci) {
             filter_matches_[ci] = 0;
             final ItemStack cmp_stack = main_inventory_.getItem(CTRL_SLOTS_FIRST+ci);
@@ -568,7 +550,7 @@ public class EdDropper
       // dispense action
       if(trigger && (drop_timer_ <= 0)) {
         // drop stack for non-filter triggers
-        ItemStack drop_stacks[] = {ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY};
+        ItemStack[] drop_stacks = {ItemStack.EMPTY,ItemStack.EMPTY,ItemStack.EMPTY};
         if(!filter_trigger) {
           for(int i=0; i<INPUT_SLOTS_SIZE; ++i) {
             if(drop_slot_index_ >= INPUT_SLOTS_SIZE) drop_slot_index_ = 0;
@@ -623,13 +605,13 @@ public class EdDropper
           if(dropped) drop_timer_ = DROP_PERIOD_OFFSET + drop_period_ * 2; // 0.1s time base -> 100%===10s
           // drop sound
           if(dropped && ((drop_logic_ & DROPLOGIC_SILENT_DROP) == 0)) {
-            level.playSound(null, worldPosition, SoundEvents.WOOD_HIT, SoundCategory.BLOCKS, 0.1f, 4f);
+            level.playSound(null, worldPosition, SoundEvents.WOOD_HIT, SoundSource.BLOCKS, 0.1f, 4f);
           }
         }
         // advance to next nonempty slot.
         {
           boolean found = false;
-          for(int i = 0; i < storage_slot_range_.size; ++i) {
+          for(int i = 0; i < storage_slot_range_.size(); ++i) {
             if(!main_inventory_.getItem(drop_slot_index_).isEmpty()) { found=true; break; }
             drop_slot_index_ = next_slot(drop_slot_index_);
           }
@@ -645,23 +627,23 @@ public class EdDropper
   // Container
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class DropperUiContainer extends Container implements Networking.INetworkSynchronisableContainer
+  public static class DropperUiContainer extends AbstractContainerMenu implements Networking.INetworkSynchronisableContainer
   {
     protected static final String QUICK_MOVE_ALL = "quick-move-all";
     private static final int PLAYER_INV_START_SLOTNO = DropperTileEntity.NUM_OF_SLOTS;
-    private final PlayerEntity player_;
-    private final IInventory inventory_;
-    private final IWorldPosCallable wpc_;
-    private final IIntArray fields_;
+    private final Player player_;
+    private final Container inventory_;
+    private final ContainerLevelAccess wpc_;
+    private final ContainerData fields_;
     private final InventoryRange player_inventory_range_;
     private final InventoryRange block_storage_range_;
 
     public final int field(int index) { return fields_.get(index); }
 
-    public DropperUiContainer(int cid, PlayerInventory player_inventory)
-    { this(cid, player_inventory, new Inventory(DropperTileEntity.NUM_OF_SLOTS), IWorldPosCallable.NULL, new IntArray(DropperTileEntity.NUM_OF_FIELDS)); }
+    public DropperUiContainer(int cid, Inventory player_inventory)
+    { this(cid, player_inventory, new SimpleContainer(DropperTileEntity.NUM_OF_SLOTS), ContainerLevelAccess.NULL, new SimpleContainerData(DropperTileEntity.NUM_OF_FIELDS)); }
 
-    private DropperUiContainer(int cid, PlayerInventory player_inventory, IInventory block_inventory, IWorldPosCallable wpc, IIntArray fields)
+    private DropperUiContainer(int cid, Inventory player_inventory, Container block_inventory, ContainerLevelAccess wpc, ContainerData fields)
     {
       super(ModContent.CT_FACTORY_DROPPER, cid);
       fields_ = fields;
@@ -695,11 +677,11 @@ public class EdDropper
     }
 
     @Override
-    public boolean stillValid(PlayerEntity player)
+    public boolean stillValid(Player player)
     { return inventory_.stillValid(player); }
 
     @Override
-    public ItemStack quickMoveStack(PlayerEntity player, int index)
+    public ItemStack quickMoveStack(Player player, int index)
     {
       Slot slot = getSlot(index);
       if((slot==null) || (!slot.hasItem())) return ItemStack.EMPTY;
@@ -728,56 +710,56 @@ public class EdDropper
     // INetworkSynchronisableContainer ---------------------------------------------------------
 
     @OnlyIn(Dist.CLIENT)
-    public void onGuiAction(CompoundNBT nbt)
+    public void onGuiAction(CompoundTag nbt)
     { Networking.PacketContainerSyncClientToServer.sendToServer(containerId, nbt); }
 
     @OnlyIn(Dist.CLIENT)
     public void onGuiAction(String key, int value)
     {
-      CompoundNBT nbt = new CompoundNBT();
+      CompoundTag nbt = new CompoundTag();
       nbt.putInt(key, value);
       Networking.PacketContainerSyncClientToServer.sendToServer(containerId, nbt);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void onGuiAction(String message, CompoundNBT nbt)
+    public void onGuiAction(String message, CompoundTag nbt)
     {
       nbt.putString("action", message);
       Networking.PacketContainerSyncClientToServer.sendToServer(containerId, nbt);
     }
 
     @Override
-    public void onServerPacketReceived(int windowId, CompoundNBT nbt)
+    public void onServerPacketReceived(int windowId, CompoundTag nbt)
     {}
 
     @Override
-    public void onClientPacketReceived(int windowId, PlayerEntity player, CompoundNBT nbt)
+    public void onClientPacketReceived(int windowId, Player player, CompoundTag nbt)
     {
       if((!(inventory_ instanceof StorageInventory)) || (!(((StorageInventory)inventory_).getTileEntity() instanceof DropperTileEntity))) return;
       if(nbt.contains("action")) {
         boolean changed = false;
         final int slotId = nbt.contains("slot") ? nbt.getInt("slot") : -1;
         switch(nbt.getString("action")) {
-          case QUICK_MOVE_ALL: {
-            if((slotId >= 0) && (slotId < PLAYER_INV_START_SLOTNO) && (getSlot(slotId).hasItem())) {
+          case QUICK_MOVE_ALL -> {
+            if ((slotId >= 0) && (slotId < PLAYER_INV_START_SLOTNO) && (getSlot(slotId).hasItem())) {
               changed = block_storage_range_.move(getSlot(slotId).getSlotIndex(), player_inventory_range_, true, false, true, true);
-            } else if((slotId >= PLAYER_INV_START_SLOTNO) && (slotId < PLAYER_INV_START_SLOTNO+36) && (getSlot(slotId).hasItem())) {
+            } else if ((slotId >= PLAYER_INV_START_SLOTNO) && (slotId < PLAYER_INV_START_SLOTNO + 36) && (getSlot(slotId).hasItem())) {
               changed = player_inventory_range_.move(getSlot(slotId).getSlotIndex(), block_storage_range_, true, false, false, true);
             }
-          } break;
+          }
         }
         if(changed) {
           inventory_.setChanged();
-          player.inventory.setChanged();
+          player.getInventory().setChanged();
           broadcastChanges();
         }
       } else {
         DropperTileEntity te = (DropperTileEntity)((StorageInventory)inventory_).getTileEntity();
-        if(nbt.contains("drop_speed")) te.drop_speed_ = MathHelper.clamp(nbt.getInt("drop_speed"), 0, 100);
-        if(nbt.contains("drop_xdev"))  te.drop_xdev_  = MathHelper.clamp(nbt.getInt("drop_xdev"), -100, 100);
-        if(nbt.contains("drop_ydev"))  te.drop_ydev_  = MathHelper.clamp(nbt.getInt("drop_ydev"), -100, 100);
-        if(nbt.contains("drop_count")) te.drop_count_  = MathHelper.clamp(nbt.getInt("drop_count"), 1, DropperTileEntity.MAX_DROP_COUNT);
-        if(nbt.contains("drop_period")) te.drop_period_ = MathHelper.clamp(nbt.getInt("drop_period"),   0,  100);
+        if(nbt.contains("drop_speed")) te.drop_speed_ = Mth.clamp(nbt.getInt("drop_speed"), 0, 100);
+        if(nbt.contains("drop_xdev"))  te.drop_xdev_  = Mth.clamp(nbt.getInt("drop_xdev"), -100, 100);
+        if(nbt.contains("drop_ydev"))  te.drop_ydev_  = Mth.clamp(nbt.getInt("drop_ydev"), -100, 100);
+        if(nbt.contains("drop_count")) te.drop_count_  = Mth.clamp(nbt.getInt("drop_count"), 1, DropperTileEntity.MAX_DROP_COUNT);
+        if(nbt.contains("drop_period")) te.drop_period_ = Mth.clamp(nbt.getInt("drop_period"),   0,  100);
         if(nbt.contains("drop_logic")) te.drop_logic_  = nbt.getInt("drop_logic");
         if(nbt.contains("manual_rstrigger") && (nbt.getInt("manual_rstrigger")!=0)) { te.block_power_signal_=true; te.block_power_updated_=true; te.tick_timer_=1; }
         if(nbt.contains("manual_trigger") && (nbt.getInt("manual_trigger")!=0)) { te.tick_timer_ = 1; te.triggered_ = true; }
@@ -792,13 +774,10 @@ public class EdDropper
   //--------------------------------------------------------------------------------------------------------------------
 
   @OnlyIn(Dist.CLIENT)
-  public static class DropperGui extends ContainerGui<DropperUiContainer>
+  public static class DropperGui extends Guis.ContainerGui<DropperUiContainer>
   {
-    protected final PlayerEntity player_;
-    protected final TooltipDisplay tooltip_ = new TooltipDisplay();
-
-    public DropperGui(DropperUiContainer container, PlayerInventory player_inventory, ITextComponent title)
-    { super(container, player_inventory, title); this.player_ = player_inventory.player; }
+    public DropperGui(DropperUiContainer container, Inventory player_inventory, Component title)
+    {  super(container, player_inventory, title, "textures/gui/factory_dropper_gui.png"); }
 
     @Override
     public void init()
@@ -808,114 +787,23 @@ public class EdDropper
         final String prefix = ModContent.FACTORY_DROPPER.getDescriptionId() + ".tooltips.";
         final int x0 = getGuiLeft(), y0 = getGuiTop();
         tooltip_.init(
-          new TipRange(x0+130, y0+10, 12, 25, new TranslationTextComponent(prefix + "velocity")),
-          new TipRange(x0+145, y0+10, 25, 25, new TranslationTextComponent(prefix + "direction")),
-          new TipRange(x0+129, y0+40, 44, 10, new TranslationTextComponent(prefix + "dropcount")),
-          new TipRange(x0+129, y0+50, 44, 10, new TranslationTextComponent(prefix + "period")),
-          new TipRange(x0+114, y0+51, 9, 9, new TranslationTextComponent(prefix + "rssignal")),
-          new TipRange(x0+162, y0+66, 7, 9, new TranslationTextComponent(prefix + "triggermode")),
-          new TipRange(x0+132, y0+66, 9, 9, new TranslationTextComponent(prefix + "filtergate")),
-          new TipRange(x0+148, y0+66, 9, 9, new TranslationTextComponent(prefix + "externgate"))
+          new TipRange(x0+130, y0+10, 12, 25, new TranslatableComponent(prefix + "velocity")),
+          new TipRange(x0+145, y0+10, 25, 25, new TranslatableComponent(prefix + "direction")),
+          new TipRange(x0+129, y0+40, 44, 10, new TranslatableComponent(prefix + "dropcount")),
+          new TipRange(x0+129, y0+50, 44, 10, new TranslatableComponent(prefix + "period")),
+          new TipRange(x0+114, y0+51, 9, 9, new TranslatableComponent(prefix + "rssignal")),
+          new TipRange(x0+162, y0+66, 7, 9, new TranslatableComponent(prefix + "triggermode")),
+          new TipRange(x0+132, y0+66, 9, 9, new TranslatableComponent(prefix + "filtergate")),
+          new TipRange(x0+148, y0+66, 9, 9, new TranslatableComponent(prefix + "externgate"))
         );
       }
     }
 
     @Override
-    public void render(MatrixStack mx, int mouseX, int mouseY, float partialTicks)
+    protected void renderBgWidgets(PoseStack mx, float partialTicks, int mouseX, int mouseY)
     {
-      renderBackground(mx);
-      super.render(mx, mouseX, mouseY, partialTicks);
-      if(!tooltip_.render(mx, this, mouseX, mouseY)) renderTooltip(mx, mouseX, mouseY);
-    }
-
-    @Override
-    protected void renderLabels(MatrixStack mx, int x, int y)
-    {}
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
-    {
-      tooltip_.resetTimer();
-      DropperUiContainer container = (DropperUiContainer)getMenu();
-      int mx = (int)(mouseX - getGuiLeft() + .5), my = (int)(mouseY - getGuiTop() + .5);
-      if((!isHovering(114, 1, 61, 79, mouseX, mouseY))) {
-        return super.mouseClicked(mouseX, mouseY, mouseButton);
-      } else if(isHovering(130, 10, 12, 25, mouseX, mouseY)) {
-        int force_percent = 100 - MathHelper.clamp(((my-10)*100)/25, 0, 100);
-        container.onGuiAction("drop_speed", force_percent);
-      } else if(isHovering(145, 10, 25, 25, mouseX, mouseY)) {
-        int xdev = MathHelper.clamp( (int)Math.round(((double)((mx-157) * 100)) / 12), -100, 100);
-        int ydev = MathHelper.clamp(-(int)Math.round(((double)((my- 22) * 100)) / 12), -100, 100);
-        if(Math.abs(xdev) < 9) xdev = 0;
-        if(Math.abs(ydev) < 9) ydev = 0;
-        CompoundNBT nbt = new CompoundNBT();
-        nbt.putInt("drop_xdev", xdev);
-        nbt.putInt("drop_ydev", ydev);
-        container.onGuiAction(nbt);
-      } else if(isHovering(129, 40, 44, 10, mouseX, mouseY)) {
-        int ndrop = (mx-135);
-        if(ndrop < -1) {
-          ndrop = container.field(4) - 1; // -
-        } else if(ndrop >= 34) {
-          ndrop = container.field(4) + 1; // +
-        } else {
-          ndrop = MathHelper.clamp(1+ndrop, 1, DropperTileEntity.MAX_DROP_COUNT); // slider
-        }
-        container.onGuiAction("drop_count", ndrop);
-      } else if(isHovering(129, 50, 44, 10, mouseX, mouseY)) {
-        int period = (mx-135);
-        if(period < -1) {
-          period = container.field(6) - 3; // -
-        } else if(period >= 34) {
-          period = container.field(6) + 3; // +
-        } else {
-          period = (int)(0.5 + ((100.0 * period)/34));
-        }
-        period = MathHelper.clamp(period, 0, 100);
-        container.onGuiAction("drop_period", period);
-      } else if(isHovering(114, 51, 9, 9, mouseX, mouseY)) {
-        container.onGuiAction("manual_rstrigger", 1);
-      } else if(isHovering(162, 66, 7, 9, mouseX, mouseY)) {
-        container.onGuiAction("drop_logic", container.field(5) ^ DropperTileEntity.DROPLOGIC_CONTINUOUS);
-      } else if(isHovering(132, 66, 9, 9, mouseX, mouseY)) {
-        container.onGuiAction("drop_logic", container.field(5) ^ DropperTileEntity.DROPLOGIC_FILTER_ANDGATE);
-      } else if(isHovering(148, 66, 9, 9, mouseX, mouseY)) {
-        final int mask = (DropperTileEntity.DROPLOGIC_EXTERN_ANDGATE|DropperTileEntity.DROPLOGIC_IGNORE_EXT);
-        int logic = (container.field(5) & mask);
-        switch(logic) {
-          case DropperTileEntity.DROPLOGIC_EXTERN_ANDGATE: logic = 0; break;
-          case 0:                                          logic = DropperTileEntity.DROPLOGIC_IGNORE_EXT; break;
-          case DropperTileEntity.DROPLOGIC_IGNORE_EXT:     logic = DropperTileEntity.DROPLOGIC_EXTERN_ANDGATE; break;
-          default: logic = DropperTileEntity.DROPLOGIC_EXTERN_ANDGATE;
-        }
-        container.onGuiAction("drop_logic", (container.field(5) & (~mask)) | logic);
-      }
-      return true;
-    }
-
-    @Override
-    protected void slotClicked(Slot slot, int slotId, int button, ClickType type)
-    {
-      tooltip_.resetTimer();
-      if((type == ClickType.QUICK_MOVE) && (slot!=null) && slot.hasItem() && Auxiliaries.isShiftDown() && Auxiliaries.isCtrlDown()) {
-        CompoundNBT nbt = new CompoundNBT();
-        nbt.putInt("slot", slotId);
-        menu.onGuiAction(DropperUiContainer.QUICK_MOVE_ALL, nbt);
-      } else {
-        super.slotClicked(slot, slotId, button, type);
-      }
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    protected void renderBg(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
-    {
-      RenderSystem.enableBlend();
-      RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-      getMinecraft().getTextureManager().bind(new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/factory_dropper_gui.png"));
       final int x0=getGuiLeft(), y0=getGuiTop(), w=getXSize(), h=getYSize();
-      blit(mx, x0, y0, 0, 0, w, h);
-      DropperUiContainer container = (DropperUiContainer)getMenu();
+      DropperUiContainer container = getMenu();
       // active drop slot
       {
         int drop_slot_index = container.field(15);
@@ -954,7 +842,7 @@ public class EdDropper
       // drop period
       {
         int px = (int)Math.round(((33.0 * container.field(6)) / 100) + 1);
-        int x = x0 + 134 - 2 + MathHelper.clamp(px, 0, 33);
+        int x = x0 + 134 - 2 + Mth.clamp(px, 0, 33);
         int y = y0 + 56;
         blit(mx, x, y, 190, 31, 5, 5);
       }
@@ -981,8 +869,81 @@ public class EdDropper
           blit(mx, x0+149, y0+51, 201, 39, 3, 3);
         }
       }
-      RenderSystem.disableBlend();
     }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
+    {
+      tooltip_.resetTimer();
+      DropperUiContainer container = getMenu();
+      int mx = (int)(mouseX - getGuiLeft() + .5), my = (int)(mouseY - getGuiTop() + .5);
+      if((!isHovering(114, 1, 61, 79, mouseX, mouseY))) {
+        return super.mouseClicked(mouseX, mouseY, mouseButton);
+      } else if(isHovering(130, 10, 12, 25, mouseX, mouseY)) {
+        int force_percent = 100 - Mth.clamp(((my-10)*100)/25, 0, 100);
+        container.onGuiAction("drop_speed", force_percent);
+      } else if(isHovering(145, 10, 25, 25, mouseX, mouseY)) {
+        int xdev = Mth.clamp( (int)Math.round(((double)((mx-157) * 100)) / 12), -100, 100);
+        int ydev = Mth.clamp(-(int)Math.round(((double)((my- 22) * 100)) / 12), -100, 100);
+        if(Math.abs(xdev) < 9) xdev = 0;
+        if(Math.abs(ydev) < 9) ydev = 0;
+        CompoundTag nbt = new CompoundTag();
+        nbt.putInt("drop_xdev", xdev);
+        nbt.putInt("drop_ydev", ydev);
+        container.onGuiAction(nbt);
+      } else if(isHovering(129, 40, 44, 10, mouseX, mouseY)) {
+        int ndrop = (mx-135);
+        if(ndrop < -1) {
+          ndrop = container.field(4) - 1; // -
+        } else if(ndrop >= 34) {
+          ndrop = container.field(4) + 1; // +
+        } else {
+          ndrop = Mth.clamp(1+ndrop, 1, DropperTileEntity.MAX_DROP_COUNT); // slider
+        }
+        container.onGuiAction("drop_count", ndrop);
+      } else if(isHovering(129, 50, 44, 10, mouseX, mouseY)) {
+        int period = (mx-135);
+        if(period < -1) {
+          period = container.field(6) - 3; // -
+        } else if(period >= 34) {
+          period = container.field(6) + 3; // +
+        } else {
+          period = (int)(0.5 + ((100.0 * period)/34));
+        }
+        period = Mth.clamp(period, 0, 100);
+        container.onGuiAction("drop_period", period);
+      } else if(isHovering(114, 51, 9, 9, mouseX, mouseY)) {
+        container.onGuiAction("manual_rstrigger", 1);
+      } else if(isHovering(162, 66, 7, 9, mouseX, mouseY)) {
+        container.onGuiAction("drop_logic", container.field(5) ^ DropperTileEntity.DROPLOGIC_CONTINUOUS);
+      } else if(isHovering(132, 66, 9, 9, mouseX, mouseY)) {
+        container.onGuiAction("drop_logic", container.field(5) ^ DropperTileEntity.DROPLOGIC_FILTER_ANDGATE);
+      } else if(isHovering(148, 66, 9, 9, mouseX, mouseY)) {
+        final int mask = (DropperTileEntity.DROPLOGIC_EXTERN_ANDGATE|DropperTileEntity.DROPLOGIC_IGNORE_EXT);
+        final int logic = switch((container.field(5) & mask)) {
+          case DropperTileEntity.DROPLOGIC_EXTERN_ANDGATE -> 0;
+          case 0 -> DropperTileEntity.DROPLOGIC_IGNORE_EXT;
+          case DropperTileEntity.DROPLOGIC_IGNORE_EXT -> DropperTileEntity.DROPLOGIC_EXTERN_ANDGATE;
+          default -> DropperTileEntity.DROPLOGIC_EXTERN_ANDGATE;
+        };
+        container.onGuiAction("drop_logic", (container.field(5) & (~mask)) | logic);
+      }
+      return true;
+    }
+
+    @Override
+    protected void slotClicked(Slot slot, int slotId, int button, ClickType type)
+    {
+      tooltip_.resetTimer();
+      if((type == ClickType.QUICK_MOVE) && (slot!=null) && slot.hasItem() && Auxiliaries.isShiftDown() && Auxiliaries.isCtrlDown()) {
+        CompoundTag nbt = new CompoundTag();
+        nbt.putInt("slot", slotId);
+        menu.onGuiAction(DropperUiContainer.QUICK_MOVE_ALL, nbt);
+      } else {
+        super.slotClicked(slot, slotId, button, type);
+      }
+    }
+
   }
 
 }

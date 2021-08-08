@@ -8,56 +8,61 @@
  */
 package wile.engineersdecor.libmc.blocks;
 
-import net.minecraft.entity.EntitySpawnPlacementRegistry;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.state.StateContainer;
-import net.minecraft.block.*;
-import net.minecraft.block.BlockState;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.state.properties.SlabType;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
-import net.minecraft.util.math.vector.*;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.SlabType;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 
-import wile.engineersdecor.libmc.blocks.StandardBlocks.IStandardBlock.RenderTypeHint;
-
 public class VariantSlabBlock extends StandardBlocks.WaterLoggable implements StandardBlocks.IStandardBlock
 {
   public static final EnumProperty<SlabType> TYPE = BlockStateProperties.SLAB_TYPE;
   public static final IntegerProperty TEXTURE_VARIANT = IntegerProperty.create("tvariant", 0, 3);
 
-  protected static final VoxelShape AABBs[] = {
-    VoxelShapes.create(new AxisAlignedBB(0,  8./16, 0, 1, 16./16, 1)), // top slab
-    VoxelShapes.create(new AxisAlignedBB(0,  0./16, 0, 1,  8./16, 1)), // bottom slab
-    VoxelShapes.create(new AxisAlignedBB(0,  0./16, 0, 1, 16./16, 1)), // both slabs
-    VoxelShapes.create(new AxisAlignedBB(0,  0./16, 0, 1, 16./16, 1))  // << 2bit fill
+  protected static final VoxelShape[] AABBs = {
+    Shapes.create(new AABB(0,  8./16, 0, 1, 16./16, 1)), // top slab
+    Shapes.create(new AABB(0,  0./16, 0, 1,  8./16, 1)), // bottom slab
+    Shapes.create(new AABB(0,  0./16, 0, 1, 16./16, 1)), // both slabs
+    Shapes.create(new AABB(0,  0./16, 0, 1, 16./16, 1))  // << 2bit fill
   };
-  protected static final int num_slabs_contained_in_parts_[] = {1,1,2,2};
+  protected static final int[] num_slabs_contained_in_parts_ = {1,1,2,2};
   private static boolean with_pickup = false;
 
   public static void on_config(boolean direct_slab_pickup)
@@ -66,7 +71,7 @@ public class VariantSlabBlock extends StandardBlocks.WaterLoggable implements St
   protected boolean is_cube(BlockState state)
   { return state.getValue(TYPE) == SlabType.DOUBLE; }
 
-  public VariantSlabBlock(long config, AbstractBlock.Properties builder)
+  public VariantSlabBlock(long config, BlockBehaviour.Properties builder)
   { super(config, builder); registerDefaultState(defaultBlockState().setValue(TYPE, SlabType.BOTTOM)); }
 
   @Override
@@ -75,7 +80,7 @@ public class VariantSlabBlock extends StandardBlocks.WaterLoggable implements St
 
   @Override
   @OnlyIn(Dist.CLIENT)
-  public void appendHoverText(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
+  public void appendHoverText(ItemStack stack, @Nullable BlockGetter world, List<Component> tooltip, TooltipFlag flag)
   {
     if(!Auxiliaries.Tooltip.addInformation(stack, world, tooltip, flag, true)) return;
     if(with_pickup) Auxiliaries.Tooltip.addInformation("engineersdecor.tooltip.slabpickup", "engineersdecor.tooltip.slabpickup", tooltip, flag, true);
@@ -85,35 +90,35 @@ public class VariantSlabBlock extends StandardBlocks.WaterLoggable implements St
   @OnlyIn(Dist.CLIENT)
   @SuppressWarnings("deprecation")
   public boolean skipRendering(BlockState state, BlockState adjacentBlockState, Direction side)
-  { return (adjacentBlockState==state) ? true : super.skipRendering(state, adjacentBlockState, side); }
+  { return (adjacentBlockState==state) || (super.skipRendering(state, adjacentBlockState, side)); }
 
   @Override
   public boolean isPossibleToRespawnInThis()
   { return false; }
 
   @Override
-  public boolean canCreatureSpawn(BlockState state, IBlockReader world, BlockPos pos, EntitySpawnPlacementRegistry.PlacementType type, @Nullable EntityType<?> entityType)
+  public boolean canCreatureSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, @Nullable EntityType<?> entityType)
   { return false; }
 
   @Override
-  public VoxelShape getShape(BlockState state, IBlockReader source, BlockPos pos, ISelectionContext selectionContext)
+  public VoxelShape getShape(BlockState state, BlockGetter source, BlockPos pos, CollisionContext selectionContext)
   { return AABBs[state.getValue(TYPE).ordinal() & 0x3]; }
 
   @Override
-  public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext)
+  public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext selectionContext)
   { return getShape(state, world, pos, selectionContext); }
 
   @Override
-  protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+  protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
   { super.createBlockStateDefinition(builder); builder.add(TYPE, TEXTURE_VARIANT); }
 
   @Override
   @Nullable
-  public BlockState getStateForPlacement(BlockItemUseContext context)
+  public BlockState getStateForPlacement(BlockPlaceContext context)
   {
     BlockPos pos = context.getClickedPos();
     if(context.getLevel().getBlockState(pos).getBlock() == this) return context.getLevel().getBlockState(pos).setValue(TYPE, SlabType.DOUBLE).setValue(WATERLOGGED, false);
-    final int rnd = MathHelper.clamp((int)(MathHelper.getSeed(context.getClickedPos()) & 0x3), 0, 3);
+    final int rnd = Mth.clamp((int)(Mth.getSeed(context.getClickedPos()) & 0x3), 0, 3);
     final Direction face = context.getClickedFace();
     final BlockState placement_state = super.getStateForPlacement(context).setValue(TEXTURE_VARIANT, rnd); // fluid state
     if(face == Direction.UP) return placement_state.setValue(TYPE, SlabType.BOTTOM);
@@ -125,7 +130,7 @@ public class VariantSlabBlock extends StandardBlocks.WaterLoggable implements St
 
   @Override
   @SuppressWarnings("deprecation")
-  public boolean canBeReplaced(BlockState state, BlockItemUseContext context)
+  public boolean canBeReplaced(BlockState state, BlockPlaceContext context)
   {
     if(context.getItemInHand().getItem() != this.asItem()) return false;
     if(!context.replacingClickedOnBlock()) return true;
@@ -153,18 +158,18 @@ public class VariantSlabBlock extends StandardBlocks.WaterLoggable implements St
   { return true; }
 
   @Override
-  public List<ItemStack> dropList(BlockState state, World world, TileEntity te, boolean explosion)
-  { return new ArrayList<ItemStack>(Collections.singletonList(new ItemStack(this.asItem(), num_slabs_contained_in_parts_[state.getValue(TYPE).ordinal() & 0x3]))); }
+  public List<ItemStack> dropList(BlockState state, Level world, BlockEntity te, boolean explosion)
+  { return new ArrayList<>(Collections.singletonList(new ItemStack(this.asItem(), num_slabs_contained_in_parts_[state.getValue(TYPE).ordinal() & 0x3]))); }
 
   @Override
   @SuppressWarnings("deprecation")
-  public void attack(BlockState state, World world, BlockPos pos, PlayerEntity player)
+  public void attack(BlockState state, Level world, BlockPos pos, Player player)
   {
     if((world.isClientSide) || (!with_pickup)) return;
     final ItemStack stack = player.getMainHandItem();
     if(stack.isEmpty() || (Block.byItem(stack.getItem()) != this)) return;
     if(stack.getCount() >= stack.getMaxStackSize()) return;
-    Vector3d lv = player.getLookAngle();
+    Vec3 lv = player.getLookAngle();
     Direction facing = Direction.getNearest((float)lv.x, (float)lv.y, (float)lv.z);
     if((facing != Direction.UP) && (facing != Direction.DOWN)) return;
     if(state.getBlock() != this) return;
@@ -184,18 +189,18 @@ public class VariantSlabBlock extends StandardBlocks.WaterLoggable implements St
     }
     if(!player.isCreative()) {
       stack.grow(1);
-      if(player.inventory != null) player.inventory.setChanged();
+      if(player.getInventory() != null) player.getInventory().setChanged();
     }
     SoundType st = this.getSoundType(state, world, pos, null);
-    world.playSound(player, pos, st.getPlaceSound(), SoundCategory.BLOCKS, (st.getVolume()+1f)/2.5f, 0.9f*st.getPitch());
+    world.playSound(player, pos, st.getPlaceSound(), SoundSource.BLOCKS, (st.getVolume()+1f)/2.5f, 0.9f*st.getPitch());
   }
 
   @Override
-  public boolean placeLiquid(IWorld world, BlockPos pos, BlockState state, FluidState fluidState)
-  { return (state.getValue(TYPE)==SlabType.DOUBLE) ? false : super.placeLiquid(world, pos, state, fluidState); }
+  public boolean placeLiquid(LevelAccessor world, BlockPos pos, BlockState state, FluidState fluidState)
+  { return (state.getValue(TYPE) != SlabType.DOUBLE) && super.placeLiquid(world, pos, state, fluidState); }
 
   @Override
-  public boolean canPlaceLiquid(IBlockReader world, BlockPos pos, BlockState state, Fluid fluid)
-  { return (state.getValue(TYPE)==SlabType.DOUBLE) ? false : super.canPlaceLiquid(world, pos, state, fluid); }
+  public boolean canPlaceLiquid(BlockGetter world, BlockPos pos, BlockState state, Fluid fluid)
+  { return (state.getValue(TYPE) != SlabType.DOUBLE) && super.canPlaceLiquid(world, pos, state, fluid); }
 
 }

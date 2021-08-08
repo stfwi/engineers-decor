@@ -43,7 +43,7 @@
         ],
         "key": {
           "W": { "item": "engineersdecor:old_industrial_wood_slab" },
-          "G": { "tag": "engineersdecor:plain_glass_panes" }
+          "G": { "item": "minecraft:glass_pane" }
         },
         "result": {
           "item": "engineersdecor:treated_wood_window",

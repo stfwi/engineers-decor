@@ -8,86 +8,95 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.LightType;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.blocks.StandardEntityBlocks;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.Overlay;
+import wile.engineersdecor.libmc.detail.RfEnergy;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-
-import net.minecraft.block.AbstractBlock;
-
 public class EdSolarPanel
 {
-  public static void on_config(int peak_power_per_tick)
-  { SolarPanelTileEntity.on_config(peak_power_per_tick); }
+  public static final int DEFAULT_PEAK_POWER = 40;
+  private static int peak_power_per_tick_ = DEFAULT_PEAK_POWER;
+  private static int max_power_storage_ = 64000;
+  private static int max_feed_power = 4096;
+  private static int feeding_threshold = max_power_storage_/5;
+  private static int balancing_threshold = max_power_storage_/10;
+
+  public static void on_config(int peak_power_per_tick, int battery_capacity, int max_feed_in_power)
+  {
+    final int t = SolarPanelTileEntity.TICK_INTERVAL;
+    peak_power_per_tick_ = Mth.clamp(peak_power_per_tick, 12, 8192);
+    feeding_threshold = Math.max(max_power_storage_/5, 1000);
+    balancing_threshold = Math.max(max_power_storage_/10, 1000);
+    max_power_storage_ = battery_capacity;
+    max_feed_power = max_feed_in_power * t;
+    ModConfig.log("Config small solar panel: Peak production:" + peak_power_per_tick_ + "/t, capacity:" + max_power_storage_ + "rf, max-feed:" + (max_feed_power/t) + "rf/t");
+  }
 
   //--------------------------------------------------------------------------------------------------------------------
   // Block
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class SolarPanelBlock extends DecorBlock.Cutout implements IDecorBlock
+  public static class SolarPanelBlock extends StandardBlocks.Cutout implements StandardEntityBlocks.IStandardEntityBlock<SolarPanelTileEntity>
   {
     public static final IntegerProperty EXPOSITION = IntegerProperty.create("exposition", 0, 4);
 
-    public SolarPanelBlock(long config, AbstractBlock.Properties builder, final AxisAlignedBB[] unrotatedAABB)
+    public SolarPanelBlock(long config, BlockBehaviour.Properties builder, final AABB[] unrotatedAABB)
     {
       super(config, builder, unrotatedAABB);
       registerDefaultState(super.defaultBlockState().setValue(EXPOSITION, 1));
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    @Nullable
+    public BlockEntityType<EdSolarPanel.SolarPanelTileEntity> getBlockEntityType()
+    { return ModContent.TET_SMALL_SOLAR_PANEL; }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     { super.createBlockStateDefinition(builder); builder.add(EXPOSITION); }
 
     @Override
-    public boolean hasTileEntity(BlockState state)
-    { return true; }
-
-    @Override
-    @Nullable
-    public TileEntity createTileEntity(BlockState state, IBlockReader world)
-    { return new EdSolarPanel.SolarPanelTileEntity(); }
-
-    @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
     {
-      if(world.isClientSide()) return ActionResultType.SUCCESS;
-      TileEntity te = world.getBlockEntity(pos);
+      if(world.isClientSide()) return InteractionResult.SUCCESS;
+      BlockEntity te = world.getBlockEntity(pos);
       if(te instanceof SolarPanelTileEntity) ((SolarPanelTileEntity)te).state_message(player);
-      return ActionResultType.CONSUME;
+      return InteractionResult.CONSUME;
     }
 
     @Override
-    public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+    public boolean shouldCheckWeakPower(BlockState state, LevelReader world, BlockPos pos, Direction side)
     { return false; }
   }
 
@@ -95,85 +104,39 @@ public class EdSolarPanel
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class SolarPanelTileEntity extends TileEntity implements ITickableTileEntity, ICapabilityProvider, IEnergyStorage
+  public static class SolarPanelTileEntity extends StandardEntityBlocks.StandardBlockEntity
   {
-    public static final int DEFAULT_PEAK_POWER = 40;
     public static final int TICK_INTERVAL = 4;
     public static final int ACCUMULATION_INTERVAL = 8;
-    private static final Direction transfer_directions_[] = {Direction.DOWN, Direction.EAST, Direction.SOUTH, Direction.WEST, Direction.NORTH };
-    private static int peak_power_per_tick_ = DEFAULT_PEAK_POWER;
-    private static final int max_power_storage_ = 64000;
-    private static final int max_feed_power = 8192;
-    private static int feeding_threshold = max_power_storage_/5;
-    private static int balancing_threshold = max_power_storage_/10;
+    private static final Direction[] transfer_directions_ = {Direction.DOWN, Direction.EAST, Direction.SOUTH, Direction.WEST, Direction.NORTH };
+
     private int tick_timer_ = 0;
     private int recalc_timer_ = 0;
-    private int accumulated_power_ = 0;
     private int current_production_ = 0;
     private int current_feedin_ = 0;
     private boolean output_enabled_ = false;
 
-    public static void on_config(int peak_power_per_tick)
-    {
-      peak_power_per_tick_ = MathHelper.clamp(peak_power_per_tick, 2, 8192);
-      feeding_threshold = Math.max(max_power_storage_/5, 1000);
-      balancing_threshold = Math.max(max_power_storage_/10, 1000);
-      ModConfig.log("Config small solar panel: Peak production:" + peak_power_per_tick_ + "/t.");
-    }
+    private final RfEnergy.Battery battery_ = new RfEnergy.Battery(max_power_storage_, 0, 1024);
+    private final LazyOptional<IEnergyStorage> energy_handler_ = battery_.createEnergyHandler();
 
     //------------------------------------------------------------------------------------------------------------------
 
-    public SolarPanelTileEntity()
-    { this(ModContent.TET_SMALL_SOLAR_PANEL); }
+    public SolarPanelTileEntity(BlockPos pos, BlockState state)
+    { super(ModContent.TET_SMALL_SOLAR_PANEL, pos, state); }
 
-    public SolarPanelTileEntity(TileEntityType<?> te_type)
-    { super(te_type); }
+    public void readnbt(CompoundTag nbt, boolean update_packet)
+    { battery_.load(nbt); }
 
-    public void readnbt(CompoundNBT nbt, boolean update_packet)
-    { accumulated_power_ = nbt.getInt("energy"); }
+    protected void writenbt(CompoundTag nbt, boolean update_packet)
+    { battery_.save(nbt); }
 
-    protected void writenbt(CompoundNBT nbt, boolean update_packet)
-    { nbt.putInt("energy", accumulated_power_); }
-
-    public void state_message(PlayerEntity player)
+    public void state_message(Player player)
     {
-      String soc = Integer.toString(MathHelper.clamp((accumulated_power_*100/max_power_storage_),0,100));
-      Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.small_solar_panel.status", new Object[]{soc, max_power_storage_, current_production_, current_feedin_ }));
+      String soc = Integer.toString(Mth.clamp((battery_.getEnergyStored()*100/max_power_storage_),0,100));
+      Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.small_solar_panel.status", soc, max_power_storage_, current_production_, current_feedin_));
     }
-
-    // IEnergyStorage --------------------------------------------------------------------------
-
-    @Override
-    public boolean canExtract()
-    { return true; }
-
-    @Override
-    public boolean canReceive()
-    { return false; }
-
-    @Override
-    public int getMaxEnergyStored()
-    { return max_power_storage_; }
-
-    @Override
-    public int getEnergyStored()
-    { return accumulated_power_; }
-
-    @Override
-    public int extractEnergy(int maxExtract, boolean simulate)
-    {
-      int p = Math.min(accumulated_power_, maxExtract);
-      if(!simulate) accumulated_power_ -= p;
-      return p;
-    }
-
-    @Override
-    public int receiveEnergy(int maxReceive, boolean simulate)
-    { return 0; }
 
     // ICapabilityProvider ---------------------------------------------------------------------
-
-    protected LazyOptional<IEnergyStorage> energy_handler_ = LazyOptional.of(() -> (IEnergyStorage)this);
 
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
@@ -182,14 +145,14 @@ public class EdSolarPanel
       return super.getCapability(capability, facing);
     }
 
-    // TileEntity ------------------------------------------------------------------------------
+    // BlockEntity ------------------------------------------------------------------------------
 
     @Override
-    public void load(BlockState state, CompoundNBT nbt)
-    { super.load(state, nbt); readnbt(nbt, false); }
+    public void load(CompoundTag nbt)
+    { super.load(nbt); readnbt(nbt, false); }
 
     @Override
-    public CompoundNBT save(CompoundNBT nbt)
+    public CompoundTag save(CompoundTag nbt)
     { super.save(nbt); writenbt(nbt, false); return nbt; }
 
     @Override
@@ -209,9 +172,9 @@ public class EdSolarPanel
       current_feedin_ = 0;
       final List<SolarPanelTileEntity> adjacent_panels = new ArrayList<>();
       if(output_enabled_) {
-        for(int i=0; (i<transfer_directions_.length) && (accumulated_power_>0); ++i) {
+        for(int i=0; (i<transfer_directions_.length) && (!battery_.isEmpty()); ++i) {
           final Direction f = transfer_directions_[i];
-          TileEntity te = level.getBlockEntity(worldPosition.relative(f));
+          BlockEntity te = level.getBlockEntity(worldPosition.relative(f));
           if(te==null) continue;
           IEnergyStorage es = te.getCapability(CapabilityEnergy.ENERGY, f.getOpposite()).orElse(null);
           if(es==null) continue;
@@ -220,29 +183,29 @@ public class EdSolarPanel
             adjacent_panels.add((SolarPanelTileEntity)te);
             continue;
           }
-          final int feed_power = (accumulated_power_ > (max_power_storage_/10)) ? max_feed_power : Math.max(current_production_*2, (peak_power_per_tick_/4));
-          int fed = es.receiveEnergy(Math.min(accumulated_power_, feed_power * TICK_INTERVAL), false);
-          accumulated_power_ = MathHelper.clamp(accumulated_power_-fed,0, accumulated_power_);
+          final int feed_power = (battery_.getEnergyStored() > (max_power_storage_/10)) ? max_feed_power : Math.max(current_production_*2, (peak_power_per_tick_/4));
+          final int fed = es.receiveEnergy(Math.min(battery_.getEnergyStored(), feed_power * TICK_INTERVAL), false);
+          battery_.draw(fed);
           current_feedin_ += fed;
         }
       }
       current_feedin_ /= TICK_INTERVAL;
-      if((current_feedin_ <= 0) && ((accumulated_power_ >= balancing_threshold) || (current_production_ <= 0))) {
+      if((current_feedin_ <= 0) && ((battery_.getEnergyStored() >= balancing_threshold) || (current_production_ <= 0))) {
         for(SolarPanelTileEntity panel: adjacent_panels) {
-          if(panel.accumulated_power_ >= (accumulated_power_-balancing_threshold)) continue;
-          panel.accumulated_power_ += balancing_threshold;
-          accumulated_power_ -= balancing_threshold;
-          if(accumulated_power_ < balancing_threshold) break;
+          if(panel.battery_.getEnergyStored() >= (battery_.getEnergyStored()-balancing_threshold)) continue;
+          panel.battery_.setEnergyStored(panel.battery_.getEnergyStored() + balancing_threshold);
+          battery_.setEnergyStored(battery_.getEnergyStored() - balancing_threshold);
+          if(battery_.getEnergyStored() < balancing_threshold) break;
         }
       }
       if(!level.canSeeSkyFromBelowWater(worldPosition)) {
         tick_timer_ = TICK_INTERVAL * 10;
         current_production_ = 0;
-        if((accumulated_power_ > 0)) output_enabled_ = true;
+        if((!battery_.isEmpty())) output_enabled_ = true;
         if(state.getValue((SolarPanelBlock.EXPOSITION))!=2) level.setBlockAndUpdate(worldPosition, state.setValue(SolarPanelBlock.EXPOSITION, 2));
         return;
       }
-      if(accumulated_power_ <= 0) output_enabled_ = false;
+      if(battery_.isEmpty()) output_enabled_ = false;
       if(--recalc_timer_ > 0) return;
       recalc_timer_ = ACCUMULATION_INTERVAL + ((int)(Math.random()+.5));
       int theta = ((((int)(level.getSunAngle(1f) * (180.0/Math.PI)))+90) % 360);
@@ -256,11 +219,11 @@ public class EdSolarPanel
       BlockState nstate = state.setValue(SolarPanelBlock.EXPOSITION, e);
       if(nstate != state) level.setBlock(worldPosition, nstate, 1|2);
       final double eff = (1.0-((level.getRainLevel(1f)*0.6)+(level.getThunderLevel(1f)*0.3)));
-      final double ll = ((double)(level.getLightEngine().getLayerListener(LightType.SKY).getLightValue(getBlockPos())))/15;
+      final double ll = ((double)(level.getLightEngine().getLayerListener(LightLayer.SKY).getLightValue(getBlockPos())))/15;
       final double rf = Math.sin((Math.PI/2) * Math.sqrt(((double)(((theta<0)||(theta>180))?(0):((theta>90)?(180-theta):(theta))))/90));
       current_production_ = (int)(Math.min(rf*rf*eff*ll, 1) * peak_power_per_tick_);
-      accumulated_power_ = Math.min(accumulated_power_ + (current_production_*(TICK_INTERVAL*ACCUMULATION_INTERVAL)), max_power_storage_);
-      if(accumulated_power_ >= (feeding_threshold)) output_enabled_ = true;
+      battery_.setEnergyStored(Math.min(battery_.getEnergyStored() + (current_production_*(TICK_INTERVAL*ACCUMULATION_INTERVAL)), max_power_storage_));
+      if(battery_.getEnergyStored() >= (feeding_threshold)) output_enabled_ = true;
     }
   }
 }

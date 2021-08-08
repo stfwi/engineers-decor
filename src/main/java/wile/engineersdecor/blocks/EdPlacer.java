@@ -8,57 +8,59 @@
  */
 package wile.engineersdecor.blocks;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.block.*;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.item.*;
-import net.minecraft.inventory.*;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.SoundEvents;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.*;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.fml.network.NetworkHooks;
-import wile.engineersdecor.libmc.detail.TooltipDisplay;
-import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
-import wile.engineersdecor.libmc.client.ContainerGui;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.libmc.detail.Inventories.InventoryRange;
-import wile.engineersdecor.libmc.detail.Networking;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.blocks.StandardEntityBlocks;
+import wile.engineersdecor.libmc.detail.*;
+import wile.engineersdecor.libmc.ui.Guis;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -75,14 +77,19 @@ public class EdPlacer
   // Block
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class PlacerBlock extends DecorBlock.Directed implements IDecorBlock
+  public static class PlacerBlock extends StandardBlocks.Directed implements StandardEntityBlocks.IStandardEntityBlock<PlacerTileEntity>
   {
-    public PlacerBlock(long config, AbstractBlock.Properties builder, final AxisAlignedBB[] unrotatedAABB)
+    public PlacerBlock(long config, BlockBehaviour.Properties builder, final AABB[] unrotatedAABB)
     { super(config, builder, unrotatedAABB); }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext)
-    { return VoxelShapes.block(); }
+    @Nullable
+    public BlockEntityType<EdPlacer.PlacerTileEntity> getBlockEntityType()
+    { return ModContent.TET_FACTORY_PLACER; }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext selectionContext)
+    { return Shapes.block(); }
 
     @Override
     @SuppressWarnings("deprecation")
@@ -91,34 +98,24 @@ public class EdPlacer
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getAnalogOutputSignal(BlockState blockState, World world, BlockPos pos)
-    { return Container.getRedstoneSignalFromBlockEntity(world.getBlockEntity(pos)); }
+    public int getAnalogOutputSignal(BlockState blockState, Level world, BlockPos pos)
+    { return (world.getBlockEntity(pos) instanceof EdPlacer.PlacerTileEntity te) ? RsSignals.fromContainer(te.inventory_) : 0; }
 
     @Override
-    public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+    public boolean shouldCheckWeakPower(BlockState state, LevelReader world, BlockPos pos, Direction side)
     { return false; }
 
     @Override
-    public boolean hasTileEntity(BlockState state)
-    { return true; }
-
-    @Override
-    @Nullable
-    public TileEntity createTileEntity(BlockState state, IBlockReader world)
-    { return new PlacerTileEntity(); }
-
-    @Override
-    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
     {
       if(world.isClientSide) return;
       if((!stack.hasTag()) || (!stack.getTag().contains("tedata"))) return;
-      CompoundNBT te_nbt = stack.getTag().getCompound("tedata");
+      CompoundTag te_nbt = stack.getTag().getCompound("tedata");
       if(te_nbt.isEmpty()) return;
-      final TileEntity te = world.getBlockEntity(pos);
-      if(!(te instanceof PlacerTileEntity)) return;
-      ((PlacerTileEntity)te).readnbt(te_nbt, false);
-      ((PlacerTileEntity)te).reset_rtstate();
-      ((PlacerTileEntity)te).setChanged();
+      if(!(world.getBlockEntity(pos) instanceof final PlacerTileEntity te)) return;
+      te.readnbt(te_nbt, false);
+      te.reset_rtstate();
+      te.setChanged();
     }
 
     @Override
@@ -126,22 +123,22 @@ public class EdPlacer
     { return true; }
 
     @Override
-    public List<ItemStack> dropList(BlockState state, World world, final TileEntity te, boolean explosion)
+    public List<ItemStack> dropList(BlockState state, Level world, final BlockEntity te, boolean explosion)
     {
-      final List<ItemStack> stacks = new ArrayList<ItemStack>();
+      final List<ItemStack> stacks = new ArrayList<>();
       if(world.isClientSide) return stacks;
       if(!(te instanceof PlacerTileEntity)) return stacks;
       if(!explosion) {
         ItemStack stack = new ItemStack(this, 1);
-        CompoundNBT te_nbt = ((PlacerTileEntity) te).clear_getnbt();
+        CompoundTag te_nbt = ((PlacerTileEntity) te).clear_getnbt();
         if(!te_nbt.isEmpty()) {
-          CompoundNBT nbt = new CompoundNBT();
+          CompoundTag nbt = new CompoundTag();
           nbt.put("tedata", te_nbt);
           stack.setTag(nbt);
         }
         stacks.add(stack);
       } else {
-        for(ItemStack stack: ((PlacerTileEntity)te).stacks_) {
+        for(ItemStack stack: ((PlacerTileEntity)te).inventory_) {
           if(!stack.isEmpty()) stacks.add(stack);
         }
         ((PlacerTileEntity)te).reset_rtstate();
@@ -151,22 +148,15 @@ public class EdPlacer
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
-    {
-      if(world.isClientSide()) return ActionResultType.SUCCESS;
-      final TileEntity te = world.getBlockEntity(pos);
-      if(!(te instanceof PlacerTileEntity)) return ActionResultType.FAIL;
-      if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return ActionResultType.FAIL;
-      NetworkHooks.openGui((ServerPlayerEntity)player,(INamedContainerProvider)te);
-      return ActionResultType.CONSUME;
-    }
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult)
+    { return useOpenGui(state, world, pos, player); }
 
     @Override
     @SuppressWarnings("deprecation")
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean unused)
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean unused)
     {
-      if(!(world instanceof World) || (((World) world).isClientSide)) return;
-      TileEntity te = world.getBlockEntity(pos);
+      if(!(world instanceof Level) || (world.isClientSide)) return;
+      BlockEntity te = world.getBlockEntity(pos);
       if(!(te instanceof PlacerTileEntity)) return;
       ((PlacerTileEntity)te).block_updated();
     }
@@ -178,12 +168,12 @@ public class EdPlacer
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
+    public int getSignal(BlockState blockState, BlockGetter blockAccess, BlockPos pos, Direction side)
     { return 0; }
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getDirectSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
+    public int getDirectSignal(BlockState blockState, BlockGetter blockAccess, BlockPos pos, Direction side)
     { return 0; }
   }
 
@@ -191,12 +181,11 @@ public class EdPlacer
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class PlacerTileEntity extends TileEntity implements ITickableTileEntity, INameable, IInventory, INamedContainerProvider, ISidedInventory
+  public static class PlacerTileEntity extends StandardEntityBlocks.StandardBlockEntity implements MenuProvider, Nameable
   {
     public static final int TICK_INTERVAL = 40;
     public static final int NUM_OF_SLOTS = 18;
     public static final int NUM_OF_FIELDS = 3;
-    ///
     public static final int LOGIC_NOT_INVERTED = 0x00;
     public static final int LOGIC_INVERTED     = 0x01;
     public static final int LOGIC_CONTINUOUS   = 0x02;
@@ -207,23 +196,17 @@ public class EdPlacer
     private int logic_ = LOGIC_IGNORE_EXT|LOGIC_CONTINUOUS;
     private int current_slot_index_ = 0;
     private int tick_timer_ = 0;
-    protected NonNullList<ItemStack> stacks_;
+    private final Inventories.StorageInventory inventory_ = new Inventories.StorageInventory(this, NUM_OF_SLOTS, 1);
+    private final LazyOptional<IItemHandler> item_handler_ = Inventories.MappedItemHandler.createGenericHandler(inventory_);
 
-    public PlacerTileEntity()
-    { this(ModContent.TET_FACTORY_PLACER); }
+    public PlacerTileEntity(BlockPos pos, BlockState state)
+    { super(ModContent.TET_FACTORY_PLACER, pos, state); }
 
-    public PlacerTileEntity(TileEntityType<?> te_type)
+    public CompoundTag clear_getnbt()
     {
-      super(te_type);
-      stacks_ = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
-      reset_rtstate();
-    }
-
-    public CompoundNBT clear_getnbt()
-    {
-      CompoundNBT nbt = new CompoundNBT();
+      CompoundTag nbt = new CompoundTag();
       writenbt(nbt, false);
-      for(int i=0; i<stacks_.size(); ++i) stacks_.set(i, ItemStack.EMPTY);
+      inventory_.clearContent();
       reset_rtstate();
       block_power_updated_ = false;
       return nbt;
@@ -235,19 +218,17 @@ public class EdPlacer
       block_power_updated_ = false;
     }
 
-    public void readnbt(CompoundNBT nbt, boolean update_packet)
+    public void readnbt(CompoundTag nbt, boolean update_packet)
     {
-      stacks_ = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
-      ItemStackHelper.loadAllItems(nbt, stacks_);
-      while(stacks_.size() < NUM_OF_SLOTS) stacks_.add(ItemStack.EMPTY);
+      inventory_.load(nbt);
       block_power_signal_ = nbt.getBoolean("powered");
       current_slot_index_ = nbt.getInt("act_slot_index");
       logic_ = nbt.getInt("logic");
     }
 
-    protected void writenbt(CompoundNBT nbt, boolean update_packet)
+    protected void writenbt(CompoundTag nbt, boolean update_packet)
     {
-      ItemStackHelper.saveAllItems(nbt, stacks_);
+      inventory_.save(nbt);
       nbt.putBoolean("powered", block_power_signal_);
       nbt.putInt("act_slot_index", current_slot_index_);
       nbt.putInt("logic", logic_);
@@ -268,162 +249,105 @@ public class EdPlacer
     public boolean is_input_slot(int index)
     { return (index >= 0) && (index < NUM_OF_SLOTS); }
 
-    // TileEntity ------------------------------------------------------------------------------
+    // BlockEntity ------------------------------------------------------------------------------
 
     @Override
-    public void load(BlockState state, CompoundNBT nbt)
-    { super.load(state, nbt); readnbt(nbt, false); }
+    public void load(CompoundTag nbt)
+    { super.load(nbt); readnbt(nbt, false); }
 
     @Override
-    public CompoundNBT save(CompoundNBT nbt)
+    public CompoundTag save(CompoundTag nbt)
     { super.save(nbt); writenbt(nbt, false); return nbt; }
 
     @Override
     public void setRemoved()
     {
       super.setRemoved();
-      Arrays.stream(item_handlers).forEach(LazyOptional::invalidate);
+      item_handler_.invalidate();
     }
 
-    // INamable ----------------------------------------------------------------------------------------------
+    // Namable -----------------------------------------------------------------------------------------------
 
     @Override
-    public ITextComponent getName()
-    { final Block block=getBlockState().getBlock(); return new StringTextComponent((block!=null) ? block.getDescriptionId() : "Factory placer"); }
+    public Component getName()
+    { final Block block=getBlockState().getBlock(); return new TextComponent((block!=null) ? block.getDescriptionId() : "Factory placer"); }
 
     @Override
     public boolean hasCustomName()
     { return false; }
 
     @Override
-    public ITextComponent getCustomName()
+    public Component getCustomName()
     { return getName(); }
 
     // INamedContainerProvider ------------------------------------------------------------------------------
 
     @Override
-    public ITextComponent getDisplayName()
-    { return INameable.super.getDisplayName(); }
+    public Component getDisplayName()
+    { return Nameable.super.getDisplayName(); }
 
     @Override
-    public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player )
-    { return new PlacerContainer(id, inventory, this, IWorldPosCallable.create(level, worldPosition), fields); }
-
-    // IInventory -------------------------------------------------------------------------------------------
-
-    @Override
-    public int getContainerSize()
-    { return stacks_.size(); }
-
-    @Override
-    public boolean isEmpty()
-    { for(ItemStack stack: stacks_) { if(!stack.isEmpty()) return false; } return true; }
-
-    @Override
-    public ItemStack getItem(int index)
-    { return (index < getContainerSize()) ? stacks_.get(index) : ItemStack.EMPTY; }
-
-    @Override
-    public ItemStack removeItem(int index, int count)
-    { return ItemStackHelper.removeItem(stacks_, index, count); }
-
-    @Override
-    public ItemStack removeItemNoUpdate(int index)
-    { return ItemStackHelper.takeItem(stacks_, index); }
-
-    @Override
-    public void setItem(int index, ItemStack stack)
-    {
-      if((index<0) || (index >= NUM_OF_SLOTS)) return;
-      stacks_.set(index, stack);
-      if(stack.getCount() > getMaxStackSize()) stack.setCount(getMaxStackSize());
-      if(tick_timer_ > 8) tick_timer_ = 8;
-      setChanged();
-    }
-
-    @Override
-    public int getMaxStackSize()
-    { return 64; }
-
-    @Override
-    public void setChanged()
-    { super.setChanged(); }
-
-    @Override
-    public boolean stillValid(PlayerEntity player)
-    { return ((getLevel().getBlockEntity(getBlockPos()) == this)) && (getBlockPos().distSqr(player.blockPosition()) < 64); }
-
-    @Override
-    public void startOpen(PlayerEntity player)
-    {}
-
-    @Override
-    public void stopOpen(PlayerEntity player)
-    { setChanged(); }
-
-    @Override
-    public boolean canPlaceItem(int index, ItemStack stack)
-    { return (index>=0) && (index<NUM_OF_SLOTS); }
-
-    @Override
-    public void clearContent()
-    { for(int i=0; i<stacks_.size(); ++i) stacks_.set(i, ItemStack.EMPTY); } // should search a better vectorizing method here.
+    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player )
+    { return new PlacerContainer(id, inventory, inventory_, ContainerLevelAccess.create(level, worldPosition), fields); }
 
     // Fields -----------------------------------------------------------------------------------------------
 
-    protected final IIntArray fields = new IntArray(PlacerTileEntity.NUM_OF_FIELDS)
+    protected final ContainerData fields = new ContainerData()
     {
+      @Override
+      public int getCount()
+      { return PlacerTileEntity.NUM_OF_FIELDS; }
+
       @Override
       public int get(int id)
       {
-        switch(id) {
-          case 0: return logic_;
-          case 1: return block_power_signal_ ? 1 : 0;
-          case 2: return MathHelper.clamp(current_slot_index_, 0, NUM_OF_SLOTS-1);
-          default: return 0;
-        }
+        return switch (id) {
+          case 0 -> logic_;
+          case 1 -> block_power_signal_ ? 1 : 0;
+          case 2 -> Mth.clamp(current_slot_index_, 0, NUM_OF_SLOTS - 1);
+          default -> 0;
+        };
       }
       @Override
       public void set(int id, int value)
       {
-        switch(id) {
-          case 0: logic_ = value; return;
-          case 1: block_power_signal_ = (value != 0); return;
-          case 2: current_slot_index_ = MathHelper.clamp(value, 0, NUM_OF_SLOTS-1); return;
-          default: return;
+        switch (id) {
+          case 0 -> logic_ = value;
+          case 1 -> block_power_signal_ = (value != 0);
+          case 2 -> current_slot_index_ = Mth.clamp(value, 0, NUM_OF_SLOTS - 1);
         }
       }
     };
 
     // ISidedInventory --------------------------------------------------------------------------------------
-
-    LazyOptional<? extends IItemHandler>[] item_handlers = SidedInvWrapper.create(this, Direction.UP);
-    private static final int[] SIDED_INV_SLOTS;
-    static {
-      SIDED_INV_SLOTS = new int[NUM_OF_SLOTS];
-      for(int i=0; i<NUM_OF_SLOTS; ++i) SIDED_INV_SLOTS[i] = i;
-    }
-
-    @Override
-    public int[] getSlotsForFace(Direction side)
-    { return SIDED_INV_SLOTS; }
-
-    @Override
-    public boolean canPlaceItemThroughFace(int index, ItemStack stack, Direction direction)
-    { return is_input_slot(index) && canPlaceItem(index, stack); }
-
-    @Override
-    public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction)
-    { return false; }
+//
+//    LazyOptional<? extends IItemHandler>[] item_handlers = SidedInvWrapper.create(this, Direction.UP);
+//    private static final int[] SIDED_INV_SLOTS;
+//    static {
+//      SIDED_INV_SLOTS = new int[NUM_OF_SLOTS];
+//      for(int i=0; i<NUM_OF_SLOTS; ++i) SIDED_INV_SLOTS[i] = i;
+//    }
+//
+//    @Override
+//    public int[] getSlotsForFace(Direction side)
+//    { return SIDED_INV_SLOTS; }
+//
+//    @Override
+//    public boolean canPlaceItemThroughFace(int index, ItemStack stack, Direction direction)
+//    { return is_input_slot(index) && canPlaceItem(index, stack); }
+//
+//    @Override
+//    public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction)
+//    { return false; }
 
     // Capability export ------------------------------------------------------------------------------------
 
-    @Override
-    public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
-    {
-      if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handlers[0].cast();
-      return super.getCapability(capability, facing);
-    }
+//    @Override
+//    public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
+//    {
+//      if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handlers[0].cast();
+//      return super.getCapability(capability, facing);
+//    }
 
     // ITickable and aux methods ----------------------------------------------------------------------------
 
@@ -435,20 +359,20 @@ public class EdPlacer
 
     private boolean spit_out(Direction facing, boolean all)
     {
-      ItemStack stack = stacks_.get(current_slot_index_);
+      ItemStack stack = inventory_.getItem(current_slot_index_);
       ItemStack drop = stack.copy();
       if(!all) {
         stack.shrink(1);
-        stacks_.set(current_slot_index_, stack);
+        inventory_.setItem(current_slot_index_, stack);
         drop.setCount(1);
       } else {
-        stacks_.set(current_slot_index_, ItemStack.EMPTY);
+        inventory_.setItem(current_slot_index_, ItemStack.EMPTY);
       }
       for(int i=0; i<8; ++i) {
         BlockPos p = worldPosition.relative(facing, i);
         if(!level.isEmptyBlock(p)) continue;
         level.addFreshEntity(new ItemEntity(level, (p.getX()+0.5), (p.getY()+0.5), (p.getZ()+0.5), drop));
-        level.playSound(null, p, SoundEvents.ITEM_PICKUP, SoundCategory.BLOCKS, 0.7f, 0.8f);
+        level.playSound(null, p, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.7f, 0.8f);
         break;
       }
       return true;
@@ -462,7 +386,7 @@ public class EdPlacer
       ItemStack current_stack = ItemStack.EMPTY;
       for(int i=0; i<NUM_OF_SLOTS; ++i) {
         if(current_slot_index_ >= NUM_OF_SLOTS) current_slot_index_ = 0;
-        current_stack = stacks_.get(current_slot_index_);
+        current_stack = inventory_.getItem(current_slot_index_);
         if(!current_stack.isEmpty()) break;
         current_slot_index_ = next_slot(current_slot_index_);
       }
@@ -474,8 +398,6 @@ public class EdPlacer
         if(item != null) {
           Auxiliaries.logDebug("Placer spit: No block for item " + item.getRegistryName().toString());
           return spit_out(facing); // Item not accepted
-        } else {
-          // try next slot
         }
       } else if(block instanceof IPlantable) {
         if(level.isEmptyBlock(placement_pos)) {
@@ -508,11 +430,11 @@ public class EdPlacer
         @SuppressWarnings("deprecation")
         final boolean replacable = (current_placement_pos_state.getBlock().canBeReplaced(current_placement_pos_state, Fluids.EMPTY)) && (
           level.isEmptyBlock(placement_pos) ||
-          (current_placement_pos_state.getBlock() instanceof FlowingFluidBlock) ||
+          (current_placement_pos_state.getBlock() instanceof IFluidBlock) ||
           (current_placement_pos_state.getMaterial().isReplaceable() && (!current_placement_pos_state.getMaterial().isSolid()))
         );
         if((!replacable) || (
-          (!level.getEntitiesOfClass(Entity.class, new AxisAlignedBB(placement_pos), (Entity e)->{
+          (!level.getEntitiesOfClass(Entity.class, new AABB(placement_pos), (Entity e)->{
             if(e.isPickable()) return true;
             if(triggered) return false;
             if((e instanceof ItemEntity)) {
@@ -529,23 +451,23 @@ public class EdPlacer
       // println("PLACE " + current_stack + "  --> " + block + " at " + placement_pos.subtract(pos) + "( item=" + item + ")");
       if(block != Blocks.AIR) {
         try {
-          BlockItemUseContext use_context = null;
+          BlockPlaceContext use_context = null;
           {
-            final FakePlayer placer = net.minecraftforge.common.util.FakePlayerFactory.getMinecraft((ServerWorld)level);
+            final FakePlayer placer = net.minecraftforge.common.util.FakePlayerFactory.getMinecraft((ServerLevel)level);
             if(placer != null) {
               ItemStack placement_stack = current_stack.copy();
               placement_stack.setCount(1);
-              ItemStack held = placer.getItemInHand(Hand.MAIN_HAND);
-              placer.setItemInHand(Hand.MAIN_HAND, placement_stack);
+              ItemStack held = placer.getItemInHand(InteractionHand.MAIN_HAND);
+              placer.setItemInHand(InteractionHand.MAIN_HAND, placement_stack);
               List<Direction> directions = new ArrayList<>(Arrays.asList(Direction.UP, facing.getOpposite()));
               for(Direction d:Direction.values()) if(!directions.contains(d)) directions.add(d);
               for(Direction d:directions) {
-                Vector3d v = Vector3d.atCenterOf(placement_pos).subtract(Vector3d.atLowerCornerOf(d.getNormal()));
-                use_context = new BlockItemUseContext(new ItemUseContext(placer, Hand.MAIN_HAND, new BlockRayTraceResult(v, d, placement_pos, false)));
+                Vec3 v = Vec3.atCenterOf(placement_pos).subtract(Vec3.atLowerCornerOf(d.getNormal()));
+                use_context = new BlockPlaceContext(new UseOnContext(placer, InteractionHand.MAIN_HAND, new BlockHitResult(v, d, placement_pos, false)));
                 if(block.getStateForPlacement(use_context) == null) use_context = null;
                 if(use_context!=null) break;
               }
-              placer.setItemInHand(Hand.MAIN_HAND, held);
+              placer.setItemInHand(InteractionHand.MAIN_HAND, held);
             }
           }
           BlockState placement_state = (use_context==null) ? (block.defaultBlockState()) : (block.getStateForPlacement(use_context));
@@ -553,13 +475,13 @@ public class EdPlacer
             Auxiliaries.logDebug("Placer spit: No valid placement state for item " + item.getRegistryName().toString());
             return spit_out(facing);
           } else if((use_context!=null) && (item instanceof BlockItem)) {
-            if(((BlockItem)item).place(use_context) != ActionResultType.FAIL) {
+            if(((BlockItem)item).place(use_context) != InteractionResult.FAIL) {
               SoundType stype = block.getSoundType(placement_state, level, worldPosition, null);
-              if(stype != null) level.playSound(null, placement_pos, stype.getPlaceSound(), SoundCategory.BLOCKS, stype.getVolume()*0.6f, stype.getPitch());
+              if(stype != null) level.playSound(null, placement_pos, stype.getPlaceSound(), SoundSource.BLOCKS, stype.getVolume()*0.6f, stype.getPitch());
             } else if(block instanceof IPlantable) {
               if(level.setBlock(placement_pos, placement_state, 1|2|8)) {
                 SoundType stype = block.getSoundType(placement_state, level, worldPosition, null);
-                if(stype != null) level.playSound(null, placement_pos, stype.getPlaceSound(), SoundCategory.BLOCKS, stype.getVolume()*0.6f, stype.getPitch());
+                if(stype != null) level.playSound(null, placement_pos, stype.getPlaceSound(), SoundSource.BLOCKS, stype.getVolume()*0.6f, stype.getPitch());
               }
             } else {
               Auxiliaries.logDebug("Placer spit: try-place and planting failed for item " + item.getRegistryName().toString());
@@ -568,11 +490,11 @@ public class EdPlacer
           } else {
             if(level.setBlock(placement_pos, placement_state, 1|2|8)) {
               SoundType stype = block.getSoundType(placement_state, level, worldPosition, null);
-              if(stype != null) level.playSound(null, placement_pos, stype.getPlaceSound(), SoundCategory.BLOCKS, stype.getVolume()*0.6f, stype.getPitch());
+              if(stype != null) level.playSound(null, placement_pos, stype.getPlaceSound(), SoundSource.BLOCKS, stype.getVolume()*0.6f, stype.getPitch());
             }
           }
           current_stack.shrink(1);
-          stacks_.set(current_slot_index_, current_stack);
+          inventory_.setItem(current_slot_index_, current_stack);
           return true;
         } catch(Throwable e) {
           // The block really needs a player or other issues happened during placement.
@@ -587,7 +509,7 @@ public class EdPlacer
         // There is space, but the current plant cannot be planted there, so try next.
         for(int i=0; i<NUM_OF_SLOTS; ++i) {
           current_slot_index_ = next_slot(current_slot_index_);
-          if(!stacks_.get(current_slot_index_).isEmpty()) break;
+          if(!inventory_.getItem(current_slot_index_).isEmpty()) break;
         }
       }
       return false;
@@ -626,31 +548,31 @@ public class EdPlacer
   // Container
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class PlacerContainer extends Container implements Networking.INetworkSynchronisableContainer
+  public static class PlacerContainer extends AbstractContainerMenu implements Networking.INetworkSynchronisableContainer
   {
     protected static final String QUICK_MOVE_ALL = "quick-move-all";
     private static final int PLAYER_INV_START_SLOTNO = PlacerTileEntity.NUM_OF_SLOTS;
-    private final PlayerEntity player_;
-    private final IInventory inventory_;
-    private final IWorldPosCallable wpc_;
-    private final IIntArray fields_;
-    private final InventoryRange player_inventory_range_;
-    private final InventoryRange block_storage_range_;
+    private final Player player_;
+    private final Container inventory_;
+    private final ContainerLevelAccess wpc_;
+    private final ContainerData fields_;
+    private final Inventories.InventoryRange player_inventory_range_;
+    private final Inventories.InventoryRange block_storage_range_;
 
     public final int field(int index) { return fields_.get(index); }
 
-    public PlacerContainer(int cid, PlayerInventory player_inventory)
-    { this(cid, player_inventory, new Inventory(PlacerTileEntity.NUM_OF_SLOTS), IWorldPosCallable.NULL, new IntArray(PlacerTileEntity.NUM_OF_FIELDS)); }
+    public PlacerContainer(int cid, Inventory player_inventory)
+    { this(cid, player_inventory, new SimpleContainer(PlacerTileEntity.NUM_OF_SLOTS), ContainerLevelAccess.NULL, new SimpleContainerData(PlacerTileEntity.NUM_OF_FIELDS)); }
 
-    private PlacerContainer(int cid, PlayerInventory player_inventory, IInventory block_inventory, IWorldPosCallable wpc, IIntArray fields)
+    private PlacerContainer(int cid, Inventory player_inventory, Container block_inventory, ContainerLevelAccess wpc, ContainerData fields)
     {
       super(ModContent.CT_FACTORY_PLACER, cid);
       fields_ = fields;
       wpc_ = wpc;
       player_ = player_inventory.player;
       inventory_ = block_inventory;
-      block_storage_range_ = new InventoryRange(inventory_, 0, PlacerTileEntity.NUM_OF_SLOTS);
-      player_inventory_range_ = InventoryRange.fromPlayerInventory(player_);
+      block_storage_range_ = new Inventories.InventoryRange(inventory_, 0, PlacerTileEntity.NUM_OF_SLOTS);
+      player_inventory_range_ = Inventories.InventoryRange.fromPlayerInventory(player_);
       int i=-1;
       // device slots (stacks 0 to 17)
       for(int y=0; y<3; ++y) {
@@ -672,11 +594,11 @@ public class EdPlacer
     }
 
     @Override
-    public boolean stillValid(PlayerEntity player)
+    public boolean stillValid(Player player)
     { return inventory_.stillValid(player); }
 
     @Override
-    public ItemStack quickMoveStack(PlayerEntity player, int index)
+    public ItemStack quickMoveStack(Player player, int index)
     {
       Slot slot = getSlot(index);
       if((slot==null) || (!slot.hasItem())) return ItemStack.EMPTY;
@@ -705,51 +627,50 @@ public class EdPlacer
     // INetworkSynchronisableContainer ---------------------------------------------------------
 
     @OnlyIn(Dist.CLIENT)
-    public void onGuiAction(CompoundNBT nbt)
+    public void onGuiAction(CompoundTag nbt)
     { Networking.PacketContainerSyncClientToServer.sendToServer(containerId, nbt); }
 
     @OnlyIn(Dist.CLIENT)
     public void onGuiAction(String key, int value)
     {
-      CompoundNBT nbt = new CompoundNBT();
+      CompoundTag nbt = new CompoundTag();
       nbt.putInt(key, value);
       Networking.PacketContainerSyncClientToServer.sendToServer(containerId, nbt);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void onGuiAction(String message, CompoundNBT nbt)
+    public void onGuiAction(String message, CompoundTag nbt)
     {
       nbt.putString("action", message);
       Networking.PacketContainerSyncClientToServer.sendToServer(containerId, nbt);
     }
 
     @Override
-    public void onServerPacketReceived(int windowId, CompoundNBT nbt)
+    public void onServerPacketReceived(int windowId, CompoundTag nbt)
     {}
 
     @Override
-    public void onClientPacketReceived(int windowId, PlayerEntity player, CompoundNBT nbt)
+    public void onClientPacketReceived(int windowId, Player player, CompoundTag nbt)
     {
-      if(!(inventory_ instanceof PlacerTileEntity)) return;
+      if((!(inventory_ instanceof Inventories.StorageInventory)) || (!((((Inventories.StorageInventory)inventory_).getTileEntity()) instanceof PlacerTileEntity te))) return;
       if(nbt.contains("action")) {
-        boolean changed = false;
         final int slotId = nbt.contains("slot") ? nbt.getInt("slot") : -1;
+        boolean changed = false;
         switch(nbt.getString("action")) {
-          case QUICK_MOVE_ALL: {
-            if((slotId >= 0) && (slotId < PLAYER_INV_START_SLOTNO) && (getSlot(slotId).hasItem())) {
+          case QUICK_MOVE_ALL -> {
+            if ((slotId >= 0) && (slotId < PLAYER_INV_START_SLOTNO) && (getSlot(slotId).hasItem())) {
               changed = block_storage_range_.move(getSlot(slotId).getSlotIndex(), player_inventory_range_, true, false, true, true);
-            } else if((slotId >= PLAYER_INV_START_SLOTNO) && (slotId < PLAYER_INV_START_SLOTNO+36) && (getSlot(slotId).hasItem())) {
+            } else if ((slotId >= PLAYER_INV_START_SLOTNO) && (slotId < PLAYER_INV_START_SLOTNO + 36) && (getSlot(slotId).hasItem())) {
               changed = player_inventory_range_.move(getSlot(slotId).getSlotIndex(), block_storage_range_, true, false, false, true);
             }
-          } break;
+          }
         }
         if(changed) {
           inventory_.setChanged();
-          player.inventory.setChanged();
+          player.getInventory().setChanged();
           broadcastChanges();
         }
       } else {
-        PlacerTileEntity te = (PlacerTileEntity)inventory_;
         if(nbt.contains("logic")) te.logic_  = nbt.getInt("logic");
         if(nbt.contains("manual_trigger") && (nbt.getInt("manual_trigger")!=0)) { te.block_power_signal_=true; te.block_power_updated_=true; te.tick_timer_=1; }
         te.setChanged();
@@ -763,13 +684,10 @@ public class EdPlacer
   //--------------------------------------------------------------------------------------------------------------------
 
   @OnlyIn(Dist.CLIENT)
-  public static class PlacerGui extends ContainerGui<PlacerContainer>
+  public static class PlacerGui extends Guis.ContainerGui<PlacerContainer>
   {
-    protected final PlayerEntity player_;
-    protected final TooltipDisplay tooltip_ = new TooltipDisplay();
-
-    public PlacerGui(PlacerContainer container, PlayerInventory player_inventory, ITextComponent title)
-    { super(container, player_inventory, title); this.player_ = player_inventory.player; }
+    public PlacerGui(PlacerContainer container, Inventory player_inventory, Component title)
+    { super(container, player_inventory, title,"textures/gui/factory_placer_gui.png"); }
 
     @Override
     public void init()
@@ -779,30 +697,18 @@ public class EdPlacer
         final String prefix = ModContent.FACTORY_PLACER.getDescriptionId() + ".tooltips.";
         final int x0 = getGuiLeft(), y0 = getGuiTop();
         tooltip_.init(
-          new TipRange(x0+133, y0+49,  9,  9, new TranslationTextComponent(prefix + "rssignal")),
-          new TipRange(x0+145, y0+49,  9,  9, new TranslationTextComponent(prefix + "inversion")),
-          new TipRange(x0+159, y0+49,  9,  9, new TranslationTextComponent(prefix + "triggermode"))
+          new TooltipDisplay.TipRange(x0+133, y0+49,  9,  9, new TranslatableComponent(prefix + "rssignal")),
+          new TooltipDisplay.TipRange(x0+145, y0+49,  9,  9, new TranslatableComponent(prefix + "inversion")),
+          new TooltipDisplay.TipRange(x0+159, y0+49,  9,  9, new TranslatableComponent(prefix + "triggermode"))
         );
       }
     }
 
     @Override
-    public void render(MatrixStack mx, int mouseX, int mouseY, float partialTicks)
-    {
-      renderBackground(mx);
-      super.render(mx, mouseX, mouseY, partialTicks);
-      if(!tooltip_.render(mx, this, mouseX, mouseY)) renderTooltip(mx, mouseX, mouseY);
-    }
-
-    @Override
-    protected void renderLabels(MatrixStack mx, int x, int y)
-    {}
-
-    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
       tooltip_.resetTimer();
-      PlacerContainer container = (PlacerContainer)getMenu();
+      PlacerContainer container = getMenu();
       int mx = (int)(mouseX - getGuiLeft() + .5), my = (int)(mouseY - getGuiTop() + .5);
       if((!isHovering(126, 1, 49, 60, mouseX, mouseY))) {
         return super.mouseClicked(mouseX, mouseY, mouseButton);
@@ -810,13 +716,12 @@ public class EdPlacer
         container.onGuiAction("manual_trigger", 1);
       } else if(isHovering(145, 49, 9, 9, mouseX, mouseY)) {
         final int mask = (PlacerTileEntity.LOGIC_INVERTED|PlacerTileEntity.LOGIC_IGNORE_EXT|PlacerTileEntity.LOGIC_NOT_INVERTED);
-        int logic = (container.field(0) & mask);
-        switch(logic) {
-          case PlacerTileEntity.LOGIC_NOT_INVERTED: logic = PlacerTileEntity.LOGIC_INVERTED; break;
-          case PlacerTileEntity.LOGIC_INVERTED:     logic = PlacerTileEntity.LOGIC_IGNORE_EXT; break;
-          case PlacerTileEntity.LOGIC_IGNORE_EXT:   logic = PlacerTileEntity.LOGIC_NOT_INVERTED; break;
-          default: logic = PlacerTileEntity.LOGIC_IGNORE_EXT;
-        }
+        final int logic = switch((container.field(0) & mask)) {
+          case PlacerTileEntity.LOGIC_NOT_INVERTED -> PlacerTileEntity.LOGIC_INVERTED;
+          case PlacerTileEntity.LOGIC_INVERTED -> PlacerTileEntity.LOGIC_IGNORE_EXT;
+          case PlacerTileEntity.LOGIC_IGNORE_EXT -> PlacerTileEntity.LOGIC_NOT_INVERTED;
+          default -> PlacerTileEntity.LOGIC_IGNORE_EXT;
+        };
         container.onGuiAction("logic", (container.field(0) & (~mask)) | logic);
       } else if(isHovering(159, 49, 7, 9, mouseX, mouseY)) {
         container.onGuiAction("logic", container.field(0) ^ PlacerTileEntity.LOGIC_CONTINUOUS);
@@ -829,7 +734,7 @@ public class EdPlacer
     {
       tooltip_.resetTimer();
       if((type == ClickType.QUICK_MOVE) && (slot!=null) && slot.hasItem() && Auxiliaries.isShiftDown() && Auxiliaries.isCtrlDown()) {
-        CompoundNBT nbt = new CompoundNBT();
+        CompoundTag nbt = new CompoundTag();
         nbt.putInt("slot", slotId);
         menu.onGuiAction(PlacerContainer.QUICK_MOVE_ALL, nbt);
       } else {
@@ -838,15 +743,10 @@ public class EdPlacer
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    protected void renderBg(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
+    protected void renderBgWidgets(PoseStack mx, float partialTicks, int mouseX, int mouseY)
     {
-      RenderSystem.enableBlend();
-      RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-      this.getMinecraft().getTextureManager().bind(new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/factory_placer_gui.png"));
       final int x0=getGuiLeft(), y0=getGuiTop(), w=getXSize(), h=getYSize();
-      blit(mx, x0, y0, 0, 0, w, h);
-      PlacerContainer container = (PlacerContainer)getMenu();
+      PlacerContainer container = getMenu();
       // active slot
       {
         int slot_index = container.field(2);
@@ -869,7 +769,6 @@ public class EdPlacer
         int pulse_mode_offset  = ((container.field(0) & PlacerTileEntity.LOGIC_CONTINUOUS    ) != 0) ? 9 : 0;
         blit(mx, x0+159, y0+49, 199+pulse_mode_offset, 49, 9, 9);
       }
-      RenderSystem.disableBlend();
     }
   }
 

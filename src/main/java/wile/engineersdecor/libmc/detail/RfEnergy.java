@@ -8,12 +8,12 @@
  */
 package wile.engineersdecor.libmc.detail;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -22,9 +22,9 @@ import javax.annotation.Nullable;
 
 public class RfEnergy
 {
-  public static int feed(World world, BlockPos pos, @Nullable Direction side, int rf_energy)
+  public static int feed(Level world, BlockPos pos, @Nullable Direction side, int rf_energy)
   {
-    final TileEntity te = world.getBlockEntity(pos);
+    final BlockEntity te = world.getBlockEntity(pos);
     if(te == null) return 0;
     final IEnergyStorage es = te.getCapability(CapabilityEnergy.ENERGY, side).orElse(null);
     if(es == null) return 0;
@@ -50,9 +50,9 @@ public class RfEnergy
     public Battery(int capacity, int charge_rate, int discharge_rate, int energy)
     {
       capacity_ = Math.max(capacity, 1);
-      charge_rate_ = MathHelper.clamp(charge_rate, 0, capacity_);
-      discharge_rate_ = MathHelper.clamp(discharge_rate, 0, capacity_);
-      energy_ = MathHelper.clamp(energy, 0, capacity_);
+      charge_rate_ = Mth.clamp(charge_rate, 0, capacity_);
+      discharge_rate_ = Mth.clamp(discharge_rate, 0, capacity_);
+      energy_ = Mth.clamp(energy, 0, capacity_);
     }
 
     // ---------------------------------------------------------------------------------------------------
@@ -61,13 +61,13 @@ public class RfEnergy
     { capacity_ = Math.max(capacity, 1); return this; }
 
     public Battery setEnergyStored(int energy)
-    { energy_ = MathHelper.clamp(energy, 0, capacity_); return this; }
+    { energy_ = Mth.clamp(energy, 0, capacity_); return this; }
 
     public Battery setChargeRate(int in_rate)
-    { charge_rate_ = MathHelper.clamp(in_rate, 0, capacity_); return this; }
+    { charge_rate_ = Mth.clamp(in_rate, 0, capacity_); return this; }
 
     public Battery setDischargeRate(int out_rate)
-    { discharge_rate_ = MathHelper.clamp(out_rate, 0, capacity_); return this; }
+    { discharge_rate_ = Mth.clamp(out_rate, 0, capacity_); return this; }
 
     public int getChargeRate()
     { return charge_rate_; }
@@ -82,10 +82,10 @@ public class RfEnergy
     { return energy_ >= capacity_; }
 
     public int getSOC()
-    { return (int)MathHelper.clamp((100.0 * energy_ / capacity_ + .5), 0, 100); }
+    { return (int)Mth.clamp((100.0 * energy_ / capacity_ + .5), 0, 100); }
 
     public int getComparatorOutput()
-    { return (int)MathHelper.clamp((15.0 * energy_ / capacity_ + .2), 0, 15); }
+    { return (int)Mth.clamp((15.0 * energy_ / capacity_ + .2), 0, 15); }
 
     public boolean draw(int energy)
     {
@@ -103,20 +103,20 @@ public class RfEnergy
     public Battery clear()
     { energy_ = 0; return this; }
 
-    public Battery load(CompoundNBT nbt, String key)
+    public Battery load(CompoundTag nbt, String key)
     { setEnergyStored(nbt.getInt(key)); return this; }
 
-    public Battery load(CompoundNBT nbt)
+    public Battery load(CompoundTag nbt)
     { return load(nbt, "Energy"); }
 
-    public CompoundNBT save(CompoundNBT nbt, String key)
+    public CompoundTag save(CompoundTag nbt, String key)
     { nbt.putInt(key, energy_); return nbt; }
 
-    public CompoundNBT save(CompoundNBT nbt)
+    public CompoundTag save(CompoundTag nbt)
     { return save(nbt, "Energy"); }
 
     public LazyOptional<IEnergyStorage> createEnergyHandler()
-    { return LazyOptional.of(() -> (IEnergyStorage)this); }
+    { return LazyOptional.of(() -> this); }
 
     // IEnergyStorage ------------------------------------------------------------------------------------
 

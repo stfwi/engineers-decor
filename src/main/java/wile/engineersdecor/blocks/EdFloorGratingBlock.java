@@ -8,24 +8,25 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySpawnPlacementRegistry;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
 
 import javax.annotation.Nullable;
 
 
-public class EdFloorGratingBlock extends DecorBlock.WaterLoggable implements IDecorBlock
+public class EdFloorGratingBlock extends StandardBlocks.WaterLoggable
 {
-  public EdFloorGratingBlock(long config, AbstractBlock.Properties builder, final AxisAlignedBB unrotatedAABB)
+  public EdFloorGratingBlock(long config, BlockBehaviour.Properties builder, final AABB unrotatedAABB)
   { super(config, builder, unrotatedAABB); }
 
   @Override
@@ -33,22 +34,22 @@ public class EdFloorGratingBlock extends DecorBlock.WaterLoggable implements IDe
   { return RenderTypeHint.CUTOUT; }
 
   @Override
-  public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos)
+  public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos)
   { return true; }
 
   @Override
-  public boolean canCreatureSpawn(BlockState state, IBlockReader world, BlockPos pos, EntitySpawnPlacementRegistry.PlacementType type, @Nullable EntityType<?> entityType)
+  public boolean canCreatureSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, @Nullable EntityType<?> entityType)
   { return false; }
 
   @Override
   @SuppressWarnings("deprecation")
-  public void entityInside(BlockState state, World world, BlockPos pos, Entity entity)
+  public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity)
   {
     if(!(entity instanceof ItemEntity)) return;
     final boolean colliding = ((entity.position().y-pos.getY()) > 0.7);
     if(colliding || (entity.getDeltaMovement().y() > 0)) {
       double x = pos.getX() + 0.5;
-      double y = MathHelper.clamp(entity.position().y-0.3, pos.getY(), pos.getY()+0.6);
+      double y = Mth.clamp(entity.position().y-0.3, pos.getY(), pos.getY()+0.6);
       double z = pos.getZ() + 0.5;
       double vx = entity.getDeltaMovement().x();
       double vy = entity.getDeltaMovement().y();
@@ -62,7 +63,7 @@ public class EdFloorGratingBlock extends DecorBlock.WaterLoggable implements IDe
         entity.yo = y+0.1;
         entity.zo = z+0.1;
       }
-      vy = MathHelper.clamp(vy, -0.3, 0);
+      vy = Mth.clamp(vy, -0.3, 0);
       entity.setDeltaMovement(vx, vy, vz);
       entity.fallDistance = 0;
       entity.teleportTo(x,y,z);

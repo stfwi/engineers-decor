@@ -10,32 +10,35 @@ package wile.engineersdecor.libmc.blocks;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
-import net.minecraft.entity.EntitySpawnPlacementRegistry;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.world.*;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.entity.EntityType;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.state.StateContainer;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.block.*;
-import net.minecraft.block.material.PushReaction;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.FenceGateBlock;
+import net.minecraft.world.level.block.WallBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.*;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
@@ -44,17 +47,17 @@ import java.util.Map;
 public class VariantWallBlock extends WallBlock implements StandardBlocks.IStandardBlock
 {
   public static final BooleanProperty UP = BlockStateProperties.UP;
-  public static final EnumProperty<WallHeight> WALL_EAST = BlockStateProperties.EAST_WALL;
-  public static final EnumProperty<WallHeight> WALL_NORTH = BlockStateProperties.NORTH_WALL;
-  public static final EnumProperty<WallHeight> WALL_SOUTH = BlockStateProperties.SOUTH_WALL;
-  public static final EnumProperty<WallHeight> WALL_WEST = BlockStateProperties.WEST_WALL;
+  public static final EnumProperty<WallSide> WALL_EAST = BlockStateProperties.EAST_WALL;
+  public static final EnumProperty<WallSide> WALL_NORTH = BlockStateProperties.NORTH_WALL;
+  public static final EnumProperty<WallSide> WALL_SOUTH = BlockStateProperties.SOUTH_WALL;
+  public static final EnumProperty<WallSide> WALL_WEST = BlockStateProperties.WEST_WALL;
   public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
   public static final IntegerProperty TEXTURE_VARIANT = IntegerProperty.create("tvariant", 0, 7);
   private final Map<BlockState, VoxelShape> shape_voxels;
   private final Map<BlockState, VoxelShape> collision_shape_voxels;
   private final long config;
 
-  public VariantWallBlock(long config, AbstractBlock.Properties builder)
+  public VariantWallBlock(long config, BlockBehaviour.Properties builder)
   {
     super(builder);
     shape_voxels = buildWallShapes(4, 16, 4, 0, 16, 16);
@@ -68,13 +71,13 @@ public class VariantWallBlock extends WallBlock implements StandardBlocks.IStand
 
   @Override
   @OnlyIn(Dist.CLIENT)
-  public void appendHoverText(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
+  public void appendHoverText(ItemStack stack, @Nullable BlockGetter world, List<Component> tooltip, TooltipFlag flag)
   { Auxiliaries.Tooltip.addInformation(stack, world, tooltip, flag, true); }
 
-  private static VoxelShape combinedShape(VoxelShape pole, WallHeight height, VoxelShape low, VoxelShape high)
+  private static VoxelShape combinedShape(VoxelShape pole, WallSide height, VoxelShape low, VoxelShape high)
   {
-    if(height == WallHeight.TALL) return VoxelShapes.or(pole, high);
-    if(height == WallHeight.LOW)  return VoxelShapes.or(pole, low);
+    if(height == WallSide.TALL) return Shapes.or(pole, high);
+    if(height == WallSide.LOW)  return Shapes.or(pole, low);
     return pole;
   }
 
@@ -92,16 +95,16 @@ public class VariantWallBlock extends WallBlock implements StandardBlocks.IStand
     VoxelShape vs8 = Block.box(sx0, side_min_y, sx0, 16, side_max_tall_y, sx1);
     Builder<BlockState, VoxelShape> builder = ImmutableMap.builder();
     for(Boolean up : UP.getPossibleValues()) {
-      for(WallHeight wh_east : WALL_EAST.getPossibleValues()) {
-        for(WallHeight wh_north : WALL_NORTH.getPossibleValues()) {
-          for(WallHeight wh_west : WALL_WEST.getPossibleValues()) {
-            for(WallHeight wh_south : WALL_SOUTH.getPossibleValues()) {
-              VoxelShape shape = VoxelShapes.empty();
+      for(WallSide wh_east : WALL_EAST.getPossibleValues()) {
+        for(WallSide wh_north : WALL_NORTH.getPossibleValues()) {
+          for(WallSide wh_west : WALL_WEST.getPossibleValues()) {
+            for(WallSide wh_south : WALL_SOUTH.getPossibleValues()) {
+              VoxelShape shape = Shapes.empty();
               shape = combinedShape(shape, wh_east, vs4, vs8);
               shape = combinedShape(shape, wh_west, vs3, vs7);
               shape = combinedShape(shape, wh_north, vs1, vs5);
               shape = combinedShape(shape, wh_south, vs2, vs6);
-              if(up) shape = VoxelShapes.or(shape, vp);
+              if(up) shape = Shapes.or(shape, vp);
               BlockState bs = defaultBlockState().setValue(UP, up)
                 .setValue(WALL_EAST, wh_east)
                 .setValue(WALL_NORTH, wh_north)
@@ -121,18 +124,18 @@ public class VariantWallBlock extends WallBlock implements StandardBlocks.IStand
   }
 
   @Override
-  public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext)
-  { return shape_voxels.getOrDefault(state, VoxelShapes.block()); }
+  public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext selectionContext)
+  { return shape_voxels.getOrDefault(state, Shapes.block()); }
 
   @Override
-  public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext)
-  { return collision_shape_voxels.getOrDefault(state, VoxelShapes.block()); }
+  public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext selectionContext)
+  { return collision_shape_voxels.getOrDefault(state, Shapes.block()); }
 
   @Override
-  protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+  protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
   { super.createBlockStateDefinition(builder); builder.add(TEXTURE_VARIANT); }
 
-  protected boolean attachesTo(BlockState facingState, IWorldReader world, BlockPos facingPos, Direction side)
+  protected boolean attachesTo(BlockState facingState, LevelReader world, BlockPos facingPos, Direction side)
   {
     final Block block = facingState.getBlock();
     if((block instanceof FenceGateBlock) || (block instanceof WallBlock)) return true;
@@ -141,14 +144,12 @@ public class VariantWallBlock extends WallBlock implements StandardBlocks.IStand
     return facingState.isRedstoneConductor(world, facingPos) && Block.canSupportCenter(world, facingPos, side);
   }
 
-  protected WallHeight selectWallHeight(IWorldReader world, BlockPos pos, Direction direction)
-  {
-    return WallHeight.LOW; // @todo: implement
-  }
+  protected WallSide selectWallHeight(LevelReader world, BlockPos pos, Direction direction)
+  { return WallSide.LOW; }
 
-  public BlockState getStateForPlacement(BlockItemUseContext context)
+  public BlockState getStateForPlacement(BlockPlaceContext context)
   {
-    IWorldReader world = context.getLevel();
+    LevelReader world = context.getLevel();
     BlockPos pos = context.getClickedPos();
     FluidState fs = context.getLevel().getFluidState(context.getClickedPos());
     boolean n = attachesTo(world.getBlockState(pos.north()), world, pos.north(), Direction.SOUTH);
@@ -157,33 +158,33 @@ public class VariantWallBlock extends WallBlock implements StandardBlocks.IStand
     boolean w = attachesTo(world.getBlockState(pos.west()), world, pos.west(), Direction.EAST);
     boolean not_straight = (!n || !s || e || w) && (n  || s || !e || !w);
     return defaultBlockState().setValue(UP, not_straight)
-      .setValue(WALL_NORTH, n ? selectWallHeight(world, pos, Direction.NORTH) : WallHeight.NONE)
-      .setValue(WALL_EAST , e ? selectWallHeight(world, pos, Direction.EAST)  : WallHeight.NONE)
-      .setValue(WALL_SOUTH, s ? selectWallHeight(world, pos, Direction.SOUTH) : WallHeight.NONE)
-      .setValue(WALL_WEST , w ? selectWallHeight(world, pos, Direction.WEST)  : WallHeight.NONE)
+      .setValue(WALL_NORTH, n ? selectWallHeight(world, pos, Direction.NORTH) : WallSide.NONE)
+      .setValue(WALL_EAST , e ? selectWallHeight(world, pos, Direction.EAST)  : WallSide.NONE)
+      .setValue(WALL_SOUTH, s ? selectWallHeight(world, pos, Direction.SOUTH) : WallSide.NONE)
+      .setValue(WALL_WEST , w ? selectWallHeight(world, pos, Direction.WEST)  : WallSide.NONE)
       .setValue(WATERLOGGED, fs.getType()==Fluids.WATER);
   }
 
   @Override
-  public BlockState updateShape(BlockState state, Direction side, BlockState facingState, IWorld world, BlockPos pos, BlockPos facingPos)
+  public BlockState updateShape(BlockState state, Direction side, BlockState facingState, LevelAccessor world, BlockPos pos, BlockPos facingPos)
   {
     if(state.getValue(WATERLOGGED)) world.getLiquidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
     if(side == Direction.DOWN) return super.updateShape(state, side, facingState, world, pos, facingPos);
-    boolean n = (side==Direction.NORTH) ? this.attachesTo(facingState, world, facingPos, side) : state.getValue(WALL_NORTH)!=WallHeight.NONE;
-    boolean e = (side==Direction.EAST) ? this.attachesTo(facingState, world, facingPos, side) : state.getValue(WALL_EAST)!=WallHeight.NONE;
-    boolean s = (side==Direction.SOUTH) ? this.attachesTo(facingState, world, facingPos, side) : state.getValue(WALL_SOUTH)!=WallHeight.NONE;
-    boolean w = (side==Direction.WEST) ? this.attachesTo(facingState, world, facingPos, side) : state.getValue(WALL_WEST)!=WallHeight.NONE;
+    boolean n = (side==Direction.NORTH) ? this.attachesTo(facingState, world, facingPos, side) : state.getValue(WALL_NORTH)!=WallSide.NONE;
+    boolean e = (side==Direction.EAST) ? this.attachesTo(facingState, world, facingPos, side) : state.getValue(WALL_EAST)!=WallSide.NONE;
+    boolean s = (side==Direction.SOUTH) ? this.attachesTo(facingState, world, facingPos, side) : state.getValue(WALL_SOUTH)!=WallSide.NONE;
+    boolean w = (side==Direction.WEST) ? this.attachesTo(facingState, world, facingPos, side) : state.getValue(WALL_WEST)!=WallSide.NONE;
     boolean not_straight = (!n || !s || e || w) && (n  || s || !e || !w);
     return state.setValue(UP, not_straight)
-      .setValue(WALL_NORTH, n ? selectWallHeight(world, pos, Direction.NORTH) : WallHeight.NONE)
-      .setValue(WALL_EAST , e ? selectWallHeight(world, pos, Direction.EAST)  : WallHeight.NONE)
-      .setValue(WALL_SOUTH, s ? selectWallHeight(world, pos, Direction.SOUTH) : WallHeight.NONE)
-      .setValue(WALL_WEST , w ? selectWallHeight(world, pos, Direction.WEST)  : WallHeight.NONE)
-      .setValue(TEXTURE_VARIANT, ((int)MathHelper.getSeed(pos)) & 0x7);
+      .setValue(WALL_NORTH, n ? selectWallHeight(world, pos, Direction.NORTH) : WallSide.NONE)
+      .setValue(WALL_EAST , e ? selectWallHeight(world, pos, Direction.EAST)  : WallSide.NONE)
+      .setValue(WALL_SOUTH, s ? selectWallHeight(world, pos, Direction.SOUTH) : WallSide.NONE)
+      .setValue(WALL_WEST , w ? selectWallHeight(world, pos, Direction.WEST)  : WallSide.NONE)
+      .setValue(TEXTURE_VARIANT, ((int)Mth.getSeed(pos)) & 0x7);
   }
 
   @Override
-  public boolean canCreatureSpawn(BlockState state, IBlockReader world, BlockPos pos, EntitySpawnPlacementRegistry.PlacementType type, @Nullable EntityType<?> entityType)
+  public boolean canCreatureSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, @Nullable EntityType<?> entityType)
   { return false; }
 
   @Override

@@ -8,69 +8,69 @@
  */
 package wile.engineersdecor.blocks;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.tileentity.*;
-import net.minecraft.inventory.container.*;
-import net.minecraft.item.crafting.AbstractCookingRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.block.RedstoneTorchBlock;
-import net.minecraft.entity.item.ExperienceOrbEntity;
-import net.minecraft.item.crafting.FurnaceRecipe;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.stats.Stats;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.item.Items;
-import net.minecraft.item.*;
-import net.minecraft.inventory.*;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.*;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.fml.hooks.BasicEventHooks;
-import net.minecraftforge.fml.network.NetworkHooks;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fmllegacy.hooks.BasicEventHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
-import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.libmc.client.ContainerGui;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.blocks.StandardEntityBlocks;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.Inventories;
-import wile.engineersdecor.libmc.detail.Inventories.StorageInventory;
 import wile.engineersdecor.libmc.detail.Inventories.MappedItemHandler;
+import wile.engineersdecor.libmc.detail.Inventories.StorageInventory;
 import wile.engineersdecor.libmc.detail.Networking;
 import wile.engineersdecor.libmc.detail.RfEnergy;
+import wile.engineersdecor.libmc.ui.Guis;
 
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
-
 
 
 public class EdFurnace
@@ -82,25 +82,30 @@ public class EdFurnace
   // Block
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class FurnaceBlock extends DecorBlock.Horizontal implements IDecorBlock
+  public static class FurnaceBlock extends StandardBlocks.Horizontal implements StandardEntityBlocks.IStandardEntityBlock<FurnaceTileEntity>
   {
-    public static final BooleanProperty LIT = RedstoneTorchBlock.LIT;
+    public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
-    public FurnaceBlock(long config, AbstractBlock.Properties properties, final AxisAlignedBB[] unrotatedAABB)
+    public FurnaceBlock(long config, BlockBehaviour.Properties properties, final AABB[] unrotatedAABB)
     { super(config, properties, unrotatedAABB); registerDefaultState(super.defaultBlockState().setValue(LIT, false)); }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    @Nullable
+    public BlockEntityType<EdFurnace.FurnaceTileEntity> getBlockEntityType()
+    { return ModContent.TET_SMALL_LAB_FURNACE; }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     { super.createBlockStateDefinition(builder); builder.add(LIT); }
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getLightValue(BlockState state, IBlockReader world, BlockPos pos)
-    { return state.getValue(LIT) ? super.getLightValue(state, world, pos) : 0; }
+    public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos)
+    { return state.getValue(LIT) ? super.getLightEmission(state, world, pos) : 0; }
 
     @Override
     @Nullable
-    public BlockState getStateForPlacement(BlockItemUseContext context)
+    public BlockState getStateForPlacement(BlockPlaceContext context)
     { return super.getStateForPlacement(context).setValue(LIT, false); }
 
     @Override
@@ -110,36 +115,26 @@ public class EdFurnace
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getAnalogOutputSignal(BlockState blockState, World world, BlockPos pos)
+    public int getAnalogOutputSignal(BlockState blockState, Level world, BlockPos pos)
     {
-      TileEntity te = world.getBlockEntity(pos);
+      BlockEntity te = world.getBlockEntity(pos);
       return (te instanceof FurnaceTileEntity) ? ((FurnaceTileEntity)te).getComparatorOutput() : 0;
     }
 
     @Override
-    public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+    public boolean shouldCheckWeakPower(BlockState state, LevelReader world, BlockPos pos, Direction side)
     { return false; }
 
     @Override
-    public boolean hasTileEntity(BlockState state)
-    { return true; }
-
-    @Override
-    @Nullable
-    public TileEntity createTileEntity(BlockState state, IBlockReader world)
-    { return new FurnaceTileEntity(); }
-
-    @Override
-    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
     {
       world.setBlockAndUpdate(pos, state.setValue(LIT, false));
       if(world.isClientSide) return;
       if((!stack.hasTag()) || (!stack.getTag().contains("inventory"))) return;
-      CompoundNBT inventory_nbt = stack.getTag().getCompound("inventory");
+      CompoundTag inventory_nbt = stack.getTag().getCompound("inventory");
       if(inventory_nbt.isEmpty()) return;
-      final TileEntity te = world.getBlockEntity(pos);
-      if(!(te instanceof FurnaceTileEntity)) return;
-      final FurnaceTileEntity bte = ((FurnaceTileEntity)te);
+      final BlockEntity te = world.getBlockEntity(pos);
+      if(!(te instanceof final FurnaceTileEntity bte)) return;
       bte.readnbt(inventory_nbt);
       bte.setChanged();
       world.setBlockAndUpdate(pos, state.setValue(LIT, bte.burning()));
@@ -150,15 +145,15 @@ public class EdFurnace
     { return true; }
 
     @Override
-    public List<ItemStack> dropList(BlockState state, World world, final TileEntity te, boolean explosion) {
-      final List<ItemStack> stacks = new ArrayList<ItemStack>();
+    public List<ItemStack> dropList(BlockState state, Level world, final BlockEntity te, boolean explosion) {
+      final List<ItemStack> stacks = new ArrayList<>();
       if(world.isClientSide) return stacks;
       if(!(te instanceof FurnaceTileEntity)) return stacks;
       if(!explosion) {
         ItemStack stack = new ItemStack(this, 1);
-        CompoundNBT inventory_nbt = ((FurnaceTileEntity)te).reset_getnbt();
+        CompoundTag inventory_nbt = ((FurnaceTileEntity)te).reset_getnbt();
         if(!inventory_nbt.isEmpty()) {
-          CompoundNBT nbt = new CompoundNBT();
+          CompoundTag nbt = new CompoundTag();
           nbt.put("inventory", inventory_nbt);
           stack.setTag(nbt);
         }
@@ -172,32 +167,24 @@ public class EdFurnace
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
-    {
-      if(world.isClientSide()) return ActionResultType.SUCCESS;
-      final TileEntity te = world.getBlockEntity(pos);
-      if(!(te instanceof FurnaceTileEntity)) return ActionResultType.FAIL;
-      if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return ActionResultType.FAIL;
-      NetworkHooks.openGui((ServerPlayerEntity)player,(INamedContainerProvider)te);
-      player.awardStat(Stats.INTERACT_WITH_FURNACE);
-      return ActionResultType.CONSUME;
-    }
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult)
+    { return useOpenGui(state, world, pos, player); }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void animateTick(BlockState state, World world, BlockPos pos, Random rnd)
+    public void animateTick(BlockState state, Level world, BlockPos pos, Random rnd)
     {
       if((state.getBlock()!=this) || (!state.getValue(LIT))) return;
       final double rv = rnd.nextDouble();
       if(rv > 0.5) return;
       final double x=0.5+pos.getX(), y=0.5+pos.getY(), z=0.5+pos.getZ();
       final double xc=0.52, xr=rnd.nextDouble()*0.4-0.2, yr=(y-0.3+rnd.nextDouble()*0.2);
-      if(rv < 0.1d) world.playLocalSound(x, y, z, SoundEvents.FURNACE_FIRE_CRACKLE, SoundCategory.BLOCKS, 0.4f, 0.5f, false);
+      if(rv < 0.1d) world.playLocalSound(x, y, z, SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 0.4f, 0.5f, false);
       switch(state.getValue(HORIZONTAL_FACING)) {
-        case WEST:  world.addParticle(ParticleTypes.SMOKE, x-xc, yr, z+xr, 0.0, 0.0, 0.0); break;
-        case EAST:  world.addParticle(ParticleTypes.SMOKE, x+xc, yr, z+xr, 0.0, 0.0, 0.0); break;
-        case NORTH: world.addParticle(ParticleTypes.SMOKE, x+xr, yr, z-xc, 0.0, 0.0, 0.0); break;
-        default:    world.addParticle(ParticleTypes.SMOKE, x+xr, yr, z+xc, 0.0, 0.0, 0.0); break;
+        case WEST -> world.addParticle(ParticleTypes.SMOKE, x - xc, yr, z + xr, 0.0, 0.0, 0.0);
+        case EAST -> world.addParticle(ParticleTypes.SMOKE, x + xc, yr, z + xr, 0.0, 0.0, 0.0);
+        case NORTH -> world.addParticle(ParticleTypes.SMOKE, x + xr, yr, z - xc, 0.0, 0.0, 0.0);
+        default -> world.addParticle(ParticleTypes.SMOKE, x + xr, yr, z + xc, 0.0, 0.0, 0.0);
       }
     }
 
@@ -207,9 +194,9 @@ public class EdFurnace
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class FurnaceTileEntity extends TileEntity implements ITickableTileEntity, INameable, INamedContainerProvider
+  public static class FurnaceTileEntity extends StandardEntityBlocks.StandardBlockEntity implements MenuProvider, Nameable
   {
-    protected static final IRecipeType<FurnaceRecipe> RECIPE_TYPE = IRecipeType.SMELTING;
+    private static final RecipeType<SmeltingRecipe> RECIPE_TYPE = RecipeType.SMELTING;
     private static final int MAX_BURNTIME = 0x7fff;
     private static final int MAX_XP_STORED = 65535;
     private static final int NUM_OF_FIELDS = 5;
@@ -239,12 +226,12 @@ public class EdFurnace
 
     public static void on_config(int speed_percent, int fuel_efficiency_percent, int boost_energy_per_tick, String accepted_heaters_csv)
     {
-      proc_speed_ = ((double)MathHelper.clamp(speed_percent, 10, 500)) / 100;
-      proc_fuel_efficiency_ = ((double) MathHelper.clamp(fuel_efficiency_percent, 10, 500)) / 100;
-      boost_energy_consumption = TICK_INTERVAL * MathHelper.clamp(boost_energy_per_tick, 4, 4096);
+      proc_speed_ = ((double)Mth.clamp(speed_percent, 10, 500)) / 100;
+      proc_fuel_efficiency_ = ((double) Mth.clamp(fuel_efficiency_percent, 10, 500)) / 100;
+      boost_energy_consumption = TICK_INTERVAL * Mth.clamp(boost_energy_per_tick, 4, 4096);
       {
         List<String> heater_resource_locations = Arrays.stream(accepted_heaters_csv.toLowerCase().split("[\\s,;]+"))
-          .map(s->s.trim())
+          .map(String::trim)
           .collect(Collectors.toList());
         accepted_heaters_.clear();
         for(String rlstr: heater_resource_locations) {
@@ -267,34 +254,28 @@ public class EdFurnace
 
     // DecorFurnaceTileEntity -----------------------------------------------------------------------------
 
-    protected int tick_timer_;
-    protected int fifo_timer_;
-    protected double proc_time_elapsed_;
-    protected int proc_time_needed_;
-    protected int burntime_left_;
-    protected int field_is_burning_;
-    protected float xp_stored_;
-    protected @Nullable IRecipe<?> current_recipe_ = null;
+    private int tick_timer_;
+    private int fifo_timer_;
+    private double proc_time_elapsed_;
+    private int proc_time_needed_;
+    private int burntime_left_;
+    private int field_is_burning_;
+    private float xp_stored_;
+    private @Nullable Recipe<?> current_recipe_ = null;
     private int fuel_burntime_;
     private int field_proc_time_elapsed_;
     private boolean heater_inserted_ = false;
-    protected final RfEnergy.Battery battery_;
-    protected final StorageInventory inventory_;
-    protected final LazyOptional<IEnergyStorage> energy_handler_;
+    private final StorageInventory inventory_;
     private final LazyOptional<IItemHandler> item_extraction_handler_;
     private final LazyOptional<IItemHandler> item_insertion_handler_;
     private final LazyOptional<IItemHandler> item_fuel_insertion_handler_;
+    private final RfEnergy.Battery battery_ = new RfEnergy.Battery(boost_energy_consumption * 16, boost_energy_consumption, 0);
+    private final LazyOptional<IEnergyStorage> energy_handler_ = battery_.createEnergyHandler();
 
-    public FurnaceTileEntity()
-    { this(ModContent.TET_SMALL_LAB_FURNACE); }
-
-    public FurnaceTileEntity(TileEntityType<?> te_type)
-    { this(te_type, NUM_OF_SLOTS); }
-
-    public FurnaceTileEntity(TileEntityType<?> te_type, int num_slots)
+    public FurnaceTileEntity(BlockPos pos, BlockState state)
     {
-      super(te_type);
-      inventory_ = new StorageInventory(this, num_slots) {
+      super(ModContent.TET_SMALL_LAB_FURNACE, pos, state);
+      inventory_ = new StorageInventory(this, NUM_OF_SLOTS) {
         @Override
         public void setItem(int index, ItemStack stack)
         {
@@ -339,13 +320,11 @@ public class EdFurnace
       item_fuel_insertion_handler_ = MappedItemHandler.createInsertionHandler(inventory_,
         FIFO_FUEL_1_SLOT_NO,FIFO_FUEL_0_SLOT_NO,SMELTING_FUEL_SLOT_NO
       );
-      battery_ = new RfEnergy.Battery(boost_energy_consumption * 16, boost_energy_consumption, 0);
-      energy_handler_ = battery_.createEnergyHandler();
     }
 
-    public CompoundNBT reset_getnbt()
+    public CompoundTag reset_getnbt()
     {
-      CompoundNBT nbt = new CompoundNBT();
+      CompoundTag nbt = new CompoundTag();
       writenbt(nbt);
       reset();
       return nbt;
@@ -364,7 +343,7 @@ public class EdFurnace
       current_recipe_ = null;
     }
 
-    public void readnbt(CompoundNBT nbt)
+    public void readnbt(CompoundTag nbt)
     {
       burntime_left_ = nbt.getInt("BurnTime");
       proc_time_elapsed_ = nbt.getInt("CookTime");
@@ -375,13 +354,13 @@ public class EdFurnace
       inventory_.load(nbt);
     }
 
-    protected void writenbt(CompoundNBT nbt)
+    protected void writenbt(CompoundTag nbt)
     {
-      nbt.putInt("BurnTime", MathHelper.clamp(burntime_left_,0 , MAX_BURNTIME));
-      nbt.putInt("CookTime", MathHelper.clamp((int)proc_time_elapsed_, 0, MAX_BURNTIME));
-      nbt.putInt("CookTimeTotal", MathHelper.clamp(proc_time_needed_, 0, MAX_BURNTIME));
-      nbt.putInt("FuelBurnTime", MathHelper.clamp(fuel_burntime_, 0, MAX_BURNTIME));
-      nbt.putFloat("XpStored", MathHelper.clamp(xp_stored_, 0, MAX_XP_STORED));
+      nbt.putInt("BurnTime", Mth.clamp(burntime_left_,0 , MAX_BURNTIME));
+      nbt.putInt("CookTime", Mth.clamp((int)proc_time_elapsed_, 0, MAX_BURNTIME));
+      nbt.putInt("CookTimeTotal", Mth.clamp(proc_time_needed_, 0, MAX_BURNTIME));
+      nbt.putInt("FuelBurnTime", Mth.clamp(fuel_burntime_, 0, MAX_BURNTIME));
+      nbt.putFloat("XpStored", Mth.clamp(xp_stored_, 0, MAX_XP_STORED));
       battery_.save(nbt, "Energy");
       inventory_.save(nbt);
     }
@@ -399,14 +378,14 @@ public class EdFurnace
       }
     }
 
-    // TileEntity ------------------------------------------------------------------------------
+    // BlockEntity ------------------------------------------------------------------------------
 
     @Override
-    public void load(BlockState state, CompoundNBT nbt)
-    { super.load(state, nbt); readnbt(nbt); }
+    public void load(CompoundTag nbt)
+    { super.load(nbt); readnbt(nbt); }
 
     @Override
-    public CompoundNBT save(CompoundNBT nbt)
+    public CompoundTag save(CompoundTag nbt)
     { super.save(nbt); writenbt(nbt); return nbt; }
 
     @Override
@@ -419,55 +398,59 @@ public class EdFurnace
       energy_handler_.invalidate();
     }
 
-    // INamedContainerProvider / INameable ------------------------------------------------------
+    // INamedContainerProvider / Nameable ------------------------------------------------------
 
     @Override
-    public ITextComponent getName()
-    { final Block block=getBlockState().getBlock(); return new StringTextComponent((block!=null) ? block.getDescriptionId() : "Lab furnace"); }
+    public Component getName()
+    { final Block block=getBlockState().getBlock(); return new TextComponent((block!=null) ? block.getDescriptionId() : "Lab furnace"); }
 
     @Override
     public boolean hasCustomName()
     { return false; }
 
     @Override
-    public ITextComponent getCustomName()
+    public Component getCustomName()
     { return getName(); }
 
     // IContainerProvider ----------------------------------------------------------------------
 
     @Override
-    public ITextComponent getDisplayName()
-    { return INameable.super.getDisplayName(); }
+    public Component getDisplayName()
+    { return Nameable.super.getDisplayName(); }
 
     @Override
-    public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player )
-    { return new FurnaceContainer(id, inventory, inventory_, IWorldPosCallable.create(level, worldPosition), fields); }
+    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player )
+    { return new FurnaceContainer(id, inventory, inventory_, ContainerLevelAccess.create(level, worldPosition), fields); }
 
     // Fields -----------------------------------------------------------------------------------------------
 
-    protected final IIntArray fields = new IntArray(FurnaceTileEntity.NUM_OF_FIELDS)
+    protected final ContainerData fields = new ContainerData()
     {
+      @Override
+      public int getCount()
+      { return FurnaceTileEntity.NUM_OF_FIELDS; }
+
       @Override
       public int get(int id)
       {
-        switch(id) {
-          case 0: return FurnaceTileEntity.this.burntime_left_;
-          case 1: return FurnaceTileEntity.this.fuel_burntime_;
-          case 2: return (int)FurnaceTileEntity.this.field_proc_time_elapsed_;
-          case 3: return FurnaceTileEntity.this.proc_time_needed_;
-          case 4: return FurnaceTileEntity.this.field_is_burning_;
-          default: return 0;
-        }
+        return switch(id) {
+          case 0 -> FurnaceTileEntity.this.burntime_left_;
+          case 1 -> FurnaceTileEntity.this.fuel_burntime_;
+          case 2 -> FurnaceTileEntity.this.field_proc_time_elapsed_;
+          case 3 -> FurnaceTileEntity.this.proc_time_needed_;
+          case 4 -> FurnaceTileEntity.this.field_is_burning_;
+          default -> 0;
+        };
       }
       @Override
       public void set(int id, int value)
       {
         switch(id) {
-          case 0: FurnaceTileEntity.this.burntime_left_ = value; break;
-          case 1: FurnaceTileEntity.this.fuel_burntime_ = value; break;
-          case 2: FurnaceTileEntity.this.field_proc_time_elapsed_ = value; break;
-          case 3: FurnaceTileEntity.this.proc_time_needed_ = value; break;
-          case 4: FurnaceTileEntity.this.field_is_burning_ = value;
+          case 0 -> FurnaceTileEntity.this.burntime_left_ = value;
+          case 1 -> FurnaceTileEntity.this.fuel_burntime_ = value;
+          case 2 -> FurnaceTileEntity.this.field_proc_time_elapsed_ = value;
+          case 3 -> FurnaceTileEntity.this.proc_time_needed_ = value;
+          case 4 -> FurnaceTileEntity.this.field_is_burning_ = value;
         }
       }
     };
@@ -516,15 +499,15 @@ public class EdFurnace
       }
       ItemStack fuel = inventory_.getItem(SMELTING_FUEL_SLOT_NO);
       if(burning() || (!fuel.isEmpty()) && (!(inventory_.getItem(SMELTING_INPUT_SLOT_NO)).isEmpty())) {
-        IRecipe<?> last_recipe = currentRecipe();
+        Recipe<?> last_recipe = currentRecipe();
         updateCurrentRecipe();
         if(currentRecipe() != last_recipe) {
           proc_time_elapsed_ = 0;
           proc_time_needed_ = getSmeltingTimeNeeded(level, inventory_.getItem(SMELTING_INPUT_SLOT_NO));
         }
         if(!burning() && canSmeltCurrentItem()) {
-          burntime_left_ = (int)MathHelper.clamp((proc_fuel_efficiency_ * getFuelBurntime(level, fuel)), 0, MAX_BURNTIME);
-          fuel_burntime_ = (int)MathHelper.clamp(((double)burntime_left_)/((proc_speed_ > 0) ? proc_speed_ : 1), 1, MAX_BURNTIME);
+          burntime_left_ = (int)Mth.clamp((proc_fuel_efficiency_ * getFuelBurntime(level, fuel)), 0, MAX_BURNTIME);
+          fuel_burntime_ = (int)Mth.clamp(((double)burntime_left_)/((proc_speed_ > 0) ? proc_speed_ : 1), 1, MAX_BURNTIME);
           if(burning()) {
             dirty = true;
             if(!fuel.isEmpty()) {
@@ -549,7 +532,7 @@ public class EdFurnace
           proc_time_elapsed_ = 0;
         }
       } else if((!burning()) && (proc_time_elapsed_ > 0)) {
-        proc_time_elapsed_ = MathHelper.clamp(proc_time_elapsed_-2, 0, proc_time_needed_);
+        proc_time_elapsed_ = Mth.clamp(proc_time_elapsed_-2, 0, proc_time_needed_);
       }
       if(was_burning != burning()) {
         dirty = true;
@@ -565,10 +548,10 @@ public class EdFurnace
     // Furnace -------------------------------------------------------------------------------------
 
     @Nullable
-    public static final <T extends AbstractCookingRecipe> T getSmeltingResult(IRecipeType<T> recipe_type, World world, ItemStack stack)
+    public static <T extends AbstractCookingRecipe> T getSmeltingResult(RecipeType<T> recipe_type, Level world, ItemStack stack)
     {
       if(stack.isEmpty()) return null;
-      Inventory inventory = new Inventory(3);
+      Container inventory = new SimpleContainer(3);
       inventory.setItem(0, stack);
       return world.getRecipeManager().getRecipeFor(recipe_type, inventory, world).orElse(null);
     }
@@ -576,7 +559,7 @@ public class EdFurnace
     public boolean burning()
     { return burntime_left_ > 0; }
 
-    public int getSmeltingTimeNeeded(World world, ItemStack stack)
+    public int getSmeltingTimeNeeded(Level world, ItemStack stack)
     {
       if(stack.isEmpty()) return 0;
       AbstractCookingRecipe recipe = getSmeltingResult(RECIPE_TYPE, world, stack);
@@ -643,14 +626,14 @@ public class EdFurnace
       xp_stored_ += xp;
     }
 
-    public static int getFuelBurntime(World world, ItemStack stack)
+    public static int getFuelBurntime(Level world, ItemStack stack)
     {
       if(stack.isEmpty()) return 0;
-      int t = ForgeHooks.getBurnTime(stack);
+      int t = ForgeHooks.getBurnTime(stack, null);
       return Math.max(t, 0);
     }
 
-    public static boolean isFuel(World world, ItemStack stack)
+    public static boolean isFuel(Level world, ItemStack stack)
     { return (getFuelBurntime(world, stack) > 0) || (stack.getItem()==Items.LAVA_BUCKET); }
 
     public int consumeSmeltingExperience(ItemStack stack)
@@ -672,17 +655,17 @@ public class EdFurnace
       return (xp <= 0) ? 0.7f : xp; // default value for recipes without defined xp
     }
 
-    public static boolean canSmelt(World world, final ItemStack stack)
+    public static boolean canSmelt(Level world, final ItemStack stack)
     { return getSmeltingResult(RECIPE_TYPE, world, stack) != null; }
 
     @Nullable
-    protected IRecipe<?> currentRecipe()
+    protected Recipe<?> currentRecipe()
     { return current_recipe_; }
 
     protected void updateCurrentRecipe()
     { setCurrentRecipe(getSmeltingResult(RECIPE_TYPE, getLevel(), inventory_.getItem(SMELTING_INPUT_SLOT_NO))); }
 
-    protected void setCurrentRecipe(IRecipe<?> recipe)
+    protected void setCurrentRecipe(Recipe<?> recipe)
     { current_recipe_ = recipe; }
   }
 
@@ -690,35 +673,17 @@ public class EdFurnace
   // Container slots
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class FurnaceContainer extends Container implements Networking.INetworkSynchronisableContainer
+  public static class FurnaceContainer extends AbstractContainerMenu implements Networking.INetworkSynchronisableContainer
   {
     // Slots --------------------------------------------------------------------------------------------
 
-    public static class BSlotInpFifo extends Slot
+    public static class OutputSlot extends Slot
     {
-      public BSlotInpFifo(IInventory inv, int index, int xpos, int ypos)
-      { super(inv, index, xpos, ypos); }
-    }
-
-    public static class BSlotFuelFifo extends Slot
-    {
-      public BSlotFuelFifo(IInventory inv, int index, int xpos, int ypos)
-      { super(inv, index, xpos, ypos); }
-    }
-
-    public static class BSlotOutFifo extends BSlotResult
-    {
-      public BSlotOutFifo(PlayerEntity player, IInventory inventory, int index, int xpos, int ypos)
-      { super(player, inventory, index, xpos, ypos); }
-    }
-
-    public static class BSlotResult extends Slot
-    {
-      private final IInventory inventory_;
-      private final PlayerEntity player_;
+      private final Container inventory_;
+      private final Player player_;
       private int removeCount = 0;
 
-      public BSlotResult(PlayerEntity player, IInventory inventory, int index, int xpos, int ypos)
+      public OutputSlot(Player player, Container inventory, int index, int xpos, int ypos)
       { super(inventory, index, xpos, ypos); inventory_ = inventory; player_ = player; }
 
       @Override
@@ -730,8 +695,8 @@ public class EdFurnace
       { removeCount += hasItem() ? Math.min(amount, getItem().getCount()) : 0; return super.remove(amount); }
 
       @Override
-      public ItemStack onTake(PlayerEntity thePlayer, ItemStack stack)
-      { checkTakeAchievements(stack); super.onTake(thePlayer, stack); return stack; }
+      public void onTake(Player thePlayer, ItemStack stack)
+      { checkTakeAchievements(stack); super.onTake(thePlayer, stack); }
 
       @Override
       protected void onQuickCraft(ItemStack stack, int amount)
@@ -745,9 +710,9 @@ public class EdFurnace
           FurnaceTileEntity te = (FurnaceTileEntity)(((StorageInventory)inventory_).getTileEntity());
           int xp = te.consumeSmeltingExperience(stack);
           while(xp > 0) {
-            int k = ExperienceOrbEntity.getExperienceValue(xp);
+            int k = ExperienceOrb.getExperienceValue(xp);
             xp -= k;
-            player_.level.addFreshEntity((new ExperienceOrbEntity(player_.level, player_.blockPosition().getX(), player_.blockPosition().getY()+0.5, player_.blockPosition().getZ()+0.5, k)));
+            player_.level.addFreshEntity((new ExperienceOrb(player_.level, player_.blockPosition().getX(), player_.blockPosition().getY()+0.5, player_.blockPosition().getZ()+0.5, k)));
           }
         }
         removeCount = 0;
@@ -755,11 +720,11 @@ public class EdFurnace
       }
     }
 
-    public static class BFuelSlot extends Slot
+    public static class FuelSlot extends Slot
     {
       private final FurnaceContainer container_;
 
-      public BFuelSlot(IInventory inventory, int index, int xpos, int ypos, FurnaceContainer container)
+      public FuelSlot(Container inventory, int index, int xpos, int ypos, FurnaceContainer container)
       { super(inventory, index, xpos, ypos); container_=container; }
 
       @Override
@@ -777,21 +742,21 @@ public class EdFurnace
     // Container ----------------------------------------------------------------------------------------
 
     private static final int PLAYER_INV_START_SLOTNO = 11;
-    protected final PlayerEntity player_;
-    protected final IInventory inventory_;
-    protected final IWorldPosCallable wpc_;
-    private final IIntArray fields_;
-    private final IRecipeType<? extends AbstractCookingRecipe> recipe_type_;
+    protected final Player player_;
+    protected final Container inventory_;
+    protected final ContainerLevelAccess wpc_;
+    private final ContainerData fields_;
+    private final RecipeType<? extends AbstractCookingRecipe> recipe_type_;
 
     public int field(int index) { return fields_.get(index); }
-    public PlayerEntity player() { return player_ ; }
-    public IInventory inventory() { return inventory_ ; }
-    public World world() { return player_.level; }
+    public Player player() { return player_ ; }
+    public Container inventory() { return inventory_ ; }
+    public Level world() { return player_.level; }
 
-    public FurnaceContainer(int cid, PlayerInventory player_inventory)
-    { this(cid, player_inventory, new Inventory(FurnaceTileEntity.NUM_OF_SLOTS), IWorldPosCallable.NULL, new IntArray(FurnaceTileEntity.NUM_OF_FIELDS)); }
+    public FurnaceContainer(int cid, Inventory player_inventory)
+    { this(cid, player_inventory, new SimpleContainer(FurnaceTileEntity.NUM_OF_SLOTS), ContainerLevelAccess.NULL, new SimpleContainerData(FurnaceTileEntity.NUM_OF_FIELDS)); }
 
-    private FurnaceContainer(int cid, PlayerInventory player_inventory, IInventory block_inventory, IWorldPosCallable wpc, IIntArray fields)
+    private FurnaceContainer(int cid, Inventory player_inventory, Container block_inventory, ContainerLevelAccess wpc, ContainerData fields)
     {
       super(ModContent.CT_SMALL_LAB_FURNACE, cid);
       player_ = player_inventory.player;
@@ -800,14 +765,14 @@ public class EdFurnace
       fields_ = fields;
       recipe_type_ = FurnaceTileEntity.RECIPE_TYPE;
       addSlot(new Slot(inventory_, 0, 59, 17)); // smelting input
-      addSlot(new BFuelSlot(inventory_, 1, 59, 53, this)); // fuel
-      addSlot(new BSlotResult(player_, inventory_, 2, 101, 35)); // smelting result
-      addSlot(new BSlotInpFifo(inventory_, 3, 34, 17)); // input fifo 0
-      addSlot(new BSlotInpFifo(inventory_, 4, 16, 17)); // input fifo 1
-      addSlot(new BSlotFuelFifo(inventory_, 5, 34, 53)); // fuel fifo 0
-      addSlot(new BSlotFuelFifo(inventory_, 6, 16, 53)); // fuel fifo 1
-      addSlot(new BSlotOutFifo(player_inventory.player, inventory_, 7, 126, 35)); // out fifo 0
-      addSlot(new BSlotOutFifo(player_inventory.player, inventory_, 8, 144, 35)); // out fifo 1
+      addSlot(new FuelSlot(inventory_, 1, 59, 53, this)); // fuel
+      addSlot(new OutputSlot(player_, inventory_, 2, 101, 35)); // smelting result
+      addSlot(new Slot(inventory_, 3, 34, 17)); // input fifo 0
+      addSlot(new Slot(inventory_, 4, 16, 17)); // input fifo 1
+      addSlot(new Slot(inventory_, 5, 34, 53)); // fuel fifo 0
+      addSlot(new Slot(inventory_, 6, 16, 53)); // fuel fifo 1
+      addSlot(new OutputSlot(player_inventory.player, inventory_, 7, 126, 35)); // out fifo 0
+      addSlot(new OutputSlot(player_inventory.player, inventory_, 8, 144, 35)); // out fifo 1
       addSlot(new Slot(inventory_,  9, 126, 61)); // aux slot 1
       addSlot(new Slot(inventory_, 10, 144, 61)); // aux slot 2
       for(int x=0; x<9; ++x) {
@@ -822,11 +787,11 @@ public class EdFurnace
     }
 
     @Override
-    public boolean stillValid(PlayerEntity player)
+    public boolean stillValid(Player player)
     { return inventory_.stillValid(player); }
 
     @Override
-    public ItemStack quickMoveStack(PlayerEntity player, int index)
+    public ItemStack quickMoveStack(Player player, int index)
     {
       Slot slot = getSlot(index);
       if((slot==null) || (!slot.hasItem())) return ItemStack.EMPTY;
@@ -883,23 +848,23 @@ public class EdFurnace
     // INetworkSynchronisableContainer ---------------------------------------------------------
 
     @OnlyIn(Dist.CLIENT)
-    public void onGuiAction(CompoundNBT nbt)
+    public void onGuiAction(CompoundTag nbt)
     { Networking.PacketContainerSyncClientToServer.sendToServer(containerId, nbt); }
 
     @OnlyIn(Dist.CLIENT)
     public void onGuiAction(String key, int value)
     {
-      CompoundNBT nbt = new CompoundNBT();
+      CompoundTag nbt = new CompoundTag();
       nbt.putInt(key, value);
       Networking.PacketContainerSyncClientToServer.sendToServer(containerId, nbt);
     }
 
     @Override
-    public void onServerPacketReceived(int windowId, CompoundNBT nbt)
+    public void onServerPacketReceived(int windowId, CompoundTag nbt)
     {}
 
     @Override
-    public void onClientPacketReceived(int windowId, PlayerEntity player, CompoundNBT nbt)
+    public void onClientPacketReceived(int windowId, Player player, CompoundTag nbt)
     {}
 
   }
@@ -909,44 +874,20 @@ public class EdFurnace
   //--------------------------------------------------------------------------------------------------------------------
 
   @OnlyIn(Dist.CLIENT)
-  public static class FurnaceGui extends ContainerGui<FurnaceContainer>
+  public static class FurnaceGui extends Guis.ContainerGui<FurnaceContainer>
   {
-    protected final PlayerEntity player_;
-
-    public FurnaceGui(FurnaceContainer container, PlayerInventory player_inventory, ITextComponent title)
-    { super(container, player_inventory, title); this.player_ = player_inventory.player; }
+    public FurnaceGui(FurnaceContainer container, Inventory player_inventory, Component title)
+    { super(container, player_inventory, title, "textures/gui/small_lab_furnace_gui.png"); }
 
     @Override
-    public void init()
-    { super.init(); }
-
-    @Override
-    public void render(MatrixStack mx, int mouseX, int mouseY, float partialTicks)
+    protected void renderBgWidgets(PoseStack mx, float partialTicks, int mouseX, int mouseY)
     {
-      renderBackground/*renderBackground*/(mx);
-      super.render(mx, mouseX, mouseY, partialTicks);
-      renderTooltip(mx, mouseX, mouseY);
-    }
-
-    @Override
-    protected void renderLabels(MatrixStack mx, int x, int y)
-    {}
-
-    @Override
-    @SuppressWarnings("deprecation")
-    protected void renderBg(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
-    {
-      RenderSystem.enableBlend();
-      RenderSystem.color3f(1.0F, 1.0F, 1.0F);
-      getMinecraft().getTextureManager().bind(new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/small_lab_furnace_gui.png"));
       final int x0=leftPos, y0=topPos, w=imageWidth, h=imageHeight;
-      blit(mx, x0, y0, 0, 0, w, h);
       if(getMenu().field(4) != 0) {
         final int k = flame_px(13);
         blit(mx, x0+59, y0+36+12-k, 176, 12-k, 14, k+1);
       }
       blit(mx, x0+79, y0+36, 176, 15, 1+progress_px(17), 15);
-      RenderSystem.disableBlend();
     }
 
     private int progress_px(int pixels)

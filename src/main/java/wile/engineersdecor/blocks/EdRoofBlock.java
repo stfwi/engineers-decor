@@ -8,43 +8,45 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.pathfinding.PathType;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.state.properties.Half;
-import net.minecraft.state.properties.StairsShape;
-import net.minecraft.util.*;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.IBooleanFunction;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.block.*;
-import net.minecraft.block.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.Half;
+import net.minecraft.world.level.block.state.properties.StairsShape;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 
 
-public class EdRoofBlock extends StandardBlocks.HorizontalWaterLoggable implements IDecorBlock
+public class EdRoofBlock extends StandardBlocks.HorizontalWaterLoggable
 {
   public static final EnumProperty<StairsShape> SHAPE = BlockStateProperties.STAIRS_SHAPE;
   public static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
   private final VoxelShape[][][] shape_cache_;
 
-  public EdRoofBlock(long config, AbstractBlock.Properties properties)
-  { this(config, properties.dynamicShape(), VoxelShapes.empty(), VoxelShapes.empty()); }
+  public EdRoofBlock(long config, BlockBehaviour.Properties properties)
+  { this(config, properties.dynamicShape(), Shapes.empty(), Shapes.empty()); }
 
-  public EdRoofBlock(long config, AbstractBlock.Properties properties, VoxelShape add, VoxelShape cut)
+  public EdRoofBlock(long config, BlockBehaviour.Properties properties, VoxelShape add, VoxelShape cut)
   {
     super(config, properties, Auxiliaries.getPixeledAABB(0, 0,0,16, 8, 16));
     registerDefaultState(super.defaultBlockState().setValue(HORIZONTAL_FACING, Direction.NORTH).setValue(SHAPE, StairsShape.STRAIGHT));
@@ -58,20 +60,20 @@ public class EdRoofBlock extends StandardBlocks.HorizontalWaterLoggable implemen
 
   @OnlyIn(Dist.CLIENT)
   @SuppressWarnings("deprecation")
-  public float getShadeBrightness(BlockState state, IBlockReader world, BlockPos pos)
+  public float getShadeBrightness(BlockState state, BlockGetter world, BlockPos pos)
   { return 0.98f; }
 
   @Override
   @SuppressWarnings("deprecation")
-  public int getLightBlock(BlockState state, IBlockReader world, BlockPos pos)
+  public int getLightBlock(BlockState state, BlockGetter world, BlockPos pos)
   { return 1; }
 
   @Override
-  public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)
+  public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context)
   { return shape_cache_[state.getValue(HALF).ordinal()][state.getValue(HORIZONTAL_FACING).get3DDataValue()][state.getValue(SHAPE).ordinal()]; }
 
   @Override
-  protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+  protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
   { super.createBlockStateDefinition(builder); builder.add(SHAPE, HALF); }
 
   @Override
@@ -79,11 +81,11 @@ public class EdRoofBlock extends StandardBlocks.HorizontalWaterLoggable implemen
   { return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state); }
 
   @Override
-  public boolean isPathfindable(BlockState state, IBlockReader world, BlockPos pos, PathType type)
+  public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type)
   { return false; }
 
   @Override
-  public BlockState getStateForPlacement(BlockItemUseContext context)
+  public BlockState getStateForPlacement(BlockPlaceContext context)
   {
     BlockPos pos = context.getClickedPos();
     Direction face = context.getClickedFace();
@@ -95,7 +97,7 @@ public class EdRoofBlock extends StandardBlocks.HorizontalWaterLoggable implemen
   }
 
   @Override
-  public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos pos, BlockPos facingPos)
+  public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world, BlockPos pos, BlockPos facingPos)
   {
     if(state.getValue(WATERLOGGED)) world.getLiquidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
     return (facing.getAxis().isHorizontal()) ? (state.setValue(SHAPE, getStairsShapeProperty(state, world, pos))) : (super.updateShape(state, facing, facingState, world, pos, facingPos));
@@ -110,21 +112,21 @@ public class EdRoofBlock extends StandardBlocks.HorizontalWaterLoggable implemen
   public BlockState mirror(BlockState state, Mirror where)
   {
     if((where==Mirror.LEFT_RIGHT) && (state.getValue(HORIZONTAL_FACING).getAxis()==Direction.Axis.Z)) {
-      switch(state.getValue(SHAPE)) {
-        case INNER_LEFT:  return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_RIGHT);
-        case INNER_RIGHT: return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_LEFT);
-        case OUTER_LEFT:  return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_RIGHT);
-        case OUTER_RIGHT: return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_LEFT);
-        default:          return state.rotate(Rotation.CLOCKWISE_180);
-      }
+      return switch (state.getValue(SHAPE)) {
+        case INNER_LEFT -> state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_RIGHT);
+        case INNER_RIGHT -> state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_LEFT);
+        case OUTER_LEFT -> state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_RIGHT);
+        case OUTER_RIGHT -> state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_LEFT);
+        default -> state.rotate(Rotation.CLOCKWISE_180);
+      };
     } else if((where==Mirror.FRONT_BACK) && (state.getValue(HORIZONTAL_FACING).getAxis() == Direction.Axis.X)) {
-      switch(state.getValue(SHAPE)) {
-        case INNER_LEFT:  return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_LEFT);
-        case INNER_RIGHT: return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_RIGHT);
-        case OUTER_LEFT:  return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_RIGHT);
-        case OUTER_RIGHT: return state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_LEFT);
-        case STRAIGHT:    return state.rotate(Rotation.CLOCKWISE_180);
-      }
+      return switch (state.getValue(SHAPE)) {
+        case INNER_LEFT -> state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_LEFT);
+        case INNER_RIGHT -> state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_RIGHT);
+        case OUTER_LEFT -> state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_RIGHT);
+        case OUTER_RIGHT -> state.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_LEFT);
+        case STRAIGHT -> state.rotate(Rotation.CLOCKWISE_180);
+      };
     }
     return super.mirror(state, where);
   }
@@ -132,7 +134,7 @@ public class EdRoofBlock extends StandardBlocks.HorizontalWaterLoggable implemen
   private static boolean isRoofBlock(BlockState state)
   { return (state.getBlock() instanceof EdRoofBlock); }
 
-  private static boolean isOtherRoofState(BlockState state, IBlockReader world, BlockPos pos, Direction facing)
+  private static boolean isOtherRoofState(BlockState state, BlockGetter world, BlockPos pos, Direction facing)
   {
     BlockState st = world.getBlockState(pos.relative(facing));
     return (!isRoofBlock(st)) || (st.getValue(HORIZONTAL_FACING) != state.getValue(HORIZONTAL_FACING));
@@ -148,8 +150,8 @@ public class EdRoofBlock extends StandardBlocks.HorizontalWaterLoggable implemen
           try {
             // Only in case something changes and this fails, log but do not prevent the game from starting.
             // Roof shapes are not the most important thing in the world.
-            if(!add.isEmpty()) shape = VoxelShapes.joinUnoptimized(shape, add, IBooleanFunction.OR);
-            if(!cut.isEmpty()) shape = VoxelShapes.joinUnoptimized(shape, cut, IBooleanFunction.ONLY_FIRST);
+            if(!add.isEmpty()) shape = Shapes.joinUnoptimized(shape, add, BooleanOp.OR);
+            if(!cut.isEmpty()) shape = Shapes.joinUnoptimized(shape, cut, BooleanOp.ONLY_FIRST);
           } catch(Throwable ex) {
             Auxiliaries.logError("Failed to cut shape using Boolean function. This is bug.");
           }
@@ -162,13 +164,13 @@ public class EdRoofBlock extends StandardBlocks.HorizontalWaterLoggable implemen
 
   private static VoxelShape makeShape(int half_index, int direction_index, int stairs_shape_index)
   {
-    AxisAlignedBB[] straight = new AxisAlignedBB[]{
+    AABB[] straight = new AABB[]{
       Auxiliaries.getPixeledAABB( 0,  0, 0, 16,   4, 16),
       Auxiliaries.getPixeledAABB( 4,  4, 0, 16,   8, 16),
       Auxiliaries.getPixeledAABB( 8,  8, 0, 16,  12, 16),
       Auxiliaries.getPixeledAABB(12, 12, 0, 16,  16, 16)
     };
-    AxisAlignedBB[] pyramid = new AxisAlignedBB[]{
+    AABB[] pyramid = new AABB[]{
       Auxiliaries.getPixeledAABB( 0,  0,  0, 16,   4, 16),
       Auxiliaries.getPixeledAABB( 4,  4,  4, 16,   8, 16),
       Auxiliaries.getPixeledAABB( 8,  8,  8, 16,  12, 16),
@@ -176,36 +178,29 @@ public class EdRoofBlock extends StandardBlocks.HorizontalWaterLoggable implemen
     };
     final Half half = Half.values()[half_index];
     if(half==Half.TOP) {
-      straight = Auxiliaries.getMirroredAABB(straight, Axis.Y);
-      pyramid = Auxiliaries.getMirroredAABB(pyramid, Axis.Y);
+      straight = Auxiliaries.getMirroredAABB(straight, Direction.Axis.Y);
+      pyramid = Auxiliaries.getMirroredAABB(pyramid, Direction.Axis.Y);
     }
     Direction direction = Direction.from3DDataValue(direction_index);
-    if((direction==Direction.UP) || (direction==Direction.DOWN)) return VoxelShapes.block();
+    if((direction==Direction.UP) || (direction==Direction.DOWN)) return Shapes.block();
     direction_index = (direction.get2DDataValue()+1) & 0x03; // ref NORTH -> EAST for stairs compliancy.
     final StairsShape stairs = StairsShape.values()[stairs_shape_index];
-    switch(stairs) {
-      case STRAIGHT:
-        return Auxiliaries.getUnionShape(Auxiliaries.getYRotatedAABB(straight, direction_index));
-      case OUTER_LEFT:
-        return Auxiliaries.getUnionShape(Auxiliaries.getYRotatedAABB(pyramid, direction_index-1));
-      case OUTER_RIGHT:
-        return Auxiliaries.getUnionShape(Auxiliaries.getYRotatedAABB(pyramid, direction_index));
-      case INNER_LEFT:
-        return Auxiliaries.getUnionShape(
-          Auxiliaries.getYRotatedAABB(straight, direction_index),
-          Auxiliaries.getYRotatedAABB(straight, direction_index-1)
-        );
-      case INNER_RIGHT:
-        return Auxiliaries.getUnionShape(
-          Auxiliaries.getYRotatedAABB(straight, direction_index),
-          Auxiliaries.getYRotatedAABB(straight, direction_index+1)
-        );
-      default:
-        return VoxelShapes.block();
-    }
+    return switch (stairs) {
+      case STRAIGHT -> Auxiliaries.getUnionShape(Auxiliaries.getYRotatedAABB(straight, direction_index));
+      case OUTER_LEFT -> Auxiliaries.getUnionShape(Auxiliaries.getYRotatedAABB(pyramid, direction_index - 1));
+      case OUTER_RIGHT -> Auxiliaries.getUnionShape(Auxiliaries.getYRotatedAABB(pyramid, direction_index));
+      case INNER_LEFT -> Auxiliaries.getUnionShape(
+        Auxiliaries.getYRotatedAABB(straight, direction_index),
+        Auxiliaries.getYRotatedAABB(straight, direction_index - 1)
+      );
+      case INNER_RIGHT -> Auxiliaries.getUnionShape(
+        Auxiliaries.getYRotatedAABB(straight, direction_index),
+        Auxiliaries.getYRotatedAABB(straight, direction_index + 1)
+      );
+    };
   }
 
-  private static StairsShape getStairsShapeProperty(BlockState state, IBlockReader world, BlockPos pos)
+  private static StairsShape getStairsShapeProperty(BlockState state, BlockGetter world, BlockPos pos)
   {
     Direction direction = state.getValue(HORIZONTAL_FACING);
     {

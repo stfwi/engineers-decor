@@ -8,30 +8,29 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -42,6 +41,8 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import wile.engineersdecor.ModContent;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.blocks.StandardEntityBlocks;
 import wile.engineersdecor.libmc.detail.*;
 
 import javax.annotation.Nullable;
@@ -56,30 +57,27 @@ public class EdTestBlock
   // Block
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class TestBlock extends DecorBlock.Directed implements Auxiliaries.IExperimentalFeature, IDecorBlock
+  public static class TestBlock extends StandardBlocks.Directed implements StandardEntityBlocks.IStandardEntityBlock<TestTileEntity>, Auxiliaries.IExperimentalFeature
   {
-    public TestBlock(long config, AbstractBlock.Properties builder, final AxisAlignedBB unrotatedAABB)
+    public TestBlock(long config, BlockBehaviour.Properties builder, final AABB unrotatedAABB)
     { super(config, builder, unrotatedAABB); }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext)
-    { return VoxelShapes.block(); }
-
-    @Override
-    public boolean hasTileEntity(BlockState state)
-    { return true; }
-
-    @Override
     @Nullable
-    public TileEntity createTileEntity(BlockState state, IBlockReader world)
-    { return new TestTileEntity(); }
+    public BlockEntityType<EdTestBlock.TestTileEntity> getBlockEntityType()
+    { return ModContent.TET_TEST_BLOCK; }
 
     @Override
-    public boolean canConnectRedstone(BlockState state, IBlockReader world, BlockPos pos, @Nullable Direction side)
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext selectionContext)
+    { return Shapes.block(); }
+
+    @Override
+    @SuppressWarnings("deprecation") // public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, @Nullable Direction side) { return true; }
+    public boolean isSignalSource(BlockState p_60571_)
     { return true; }
 
     @Override
-    public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+    public boolean shouldCheckWeakPower(BlockState state, LevelReader world, BlockPos pos, Direction side)
     { return false; }
 
     @Override
@@ -87,17 +85,17 @@ public class EdTestBlock
     { return true; }
 
     @Override
-    public List<ItemStack> dropList(BlockState state, World world, TileEntity te, boolean explosion)
+    public List<ItemStack> dropList(BlockState state, Level world, BlockEntity te, boolean explosion)
     { return Collections.singletonList(new ItemStack(this)); }
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
     {
-      if(world.isClientSide()) return ActionResultType.SUCCESS;
-      TileEntity te = world.getBlockEntity(pos);
-      if(!(te instanceof TestTileEntity)) return ActionResultType.FAIL;
-      return ((TestTileEntity)te).activated(player, hand, hit) ? ActionResultType.CONSUME : ActionResultType.PASS;
+      if(world.isClientSide()) return InteractionResult.SUCCESS;
+      BlockEntity te = world.getBlockEntity(pos);
+      if(!(te instanceof TestTileEntity)) return InteractionResult.FAIL;
+      return ((TestTileEntity)te).activated(player, hand, hit) ? InteractionResult.CONSUME : InteractionResult.PASS;
     }
   }
 
@@ -105,7 +103,7 @@ public class EdTestBlock
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class TestTileEntity extends TileEntity implements ITickableTileEntity
+  public static class TestTileEntity extends StandardEntityBlocks.StandardBlockEntity
   {
     private final RfEnergy.Battery battery_;
     private final LazyOptional<IEnergyStorage> energy_handler_;
@@ -132,12 +130,10 @@ public class EdTestBlock
     private Direction block_facing = Direction.NORTH;
     private boolean paused = false;
 
-    public TestTileEntity()
-    { this(ModContent.TET_TEST_BLOCK); }
 
-    public TestTileEntity(TileEntityType<?> te_type)
+    public TestTileEntity(BlockPos pos, BlockState state)
     {
-      super(te_type);
+      super(ModContent.TET_TEST_BLOCK, pos, state);
       battery_ = new RfEnergy.Battery((int)1e9, (int)1e9, 0, 0);
       energy_handler_ = battery_.createEnergyHandler();
       tank_ = new Fluidics.Tank((int)1e9);
@@ -147,9 +143,9 @@ public class EdTestBlock
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT nbt)
+    public void load(CompoundTag nbt)
     {
-      super.load(state, nbt);
+      super.load(nbt);
       tank_.load(nbt);
       battery_.load(nbt);
       rf_fed_avg = nbt.getInt("rf_fed_avg");
@@ -170,7 +166,7 @@ public class EdTestBlock
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT nbt)
+    public CompoundTag save(CompoundTag nbt)
     {
       super.save(nbt);
       tank_.save(nbt);
@@ -188,8 +184,8 @@ public class EdTestBlock
       nbt.putInt("rf_feed_setting", rf_feed_setting);
       nbt.putInt("items_received_total", items_received_total);
       nbt.putInt("items_inserted_total", items_inserted_total);
-      if(!liq_fill_stack.isEmpty()) nbt.put("liq_fill_stack", liq_fill_stack.writeToNBT(new CompoundNBT()));
-      if(!insertion_item.isEmpty()) nbt.put("insertion_item", insertion_item.save(new CompoundNBT()));
+      if(!liq_fill_stack.isEmpty()) nbt.put("liq_fill_stack", liq_fill_stack.writeToNBT(new CompoundTag()));
+      if(!insertion_item.isEmpty()) nbt.put("insertion_item", insertion_item.save(new CompoundTag()));
       return nbt;
     }
 
@@ -209,7 +205,7 @@ public class EdTestBlock
       return stack;
     }
 
-    public boolean activated(PlayerEntity player, Hand hand, BlockRayTraceResult hit)
+    public boolean activated(Player player, InteractionHand hand, BlockHitResult hit)
     {
       final ItemStack held = player.getItemInHand(hand);
       if(held.isEmpty()) {
@@ -225,7 +221,7 @@ public class EdTestBlock
         if(items_received_total > 0) msgs.add("+" + items_received_total + "items");
         if(items_inserted_total > 0) msgs.add("-" + items_inserted_total + "items");
         if(msgs.isEmpty()) msgs.add("Nothing transferred yet.");
-        Overlay.show(player, new StringTextComponent(String.join(" | ", msgs)), 1000);
+        Overlay.show(player, new TextComponent(String.join(" | ", msgs)), 1000);
         return true;
       } else if(paused) {
         if(!getFillFluid(held).isEmpty()) {
@@ -239,19 +235,19 @@ public class EdTestBlock
             liq_fill_stack.setAmount(amount);
           }
           if(liq_fill_stack.isEmpty()) {
-            Overlay.show(player, new StringTextComponent("Fluid fill: none"), 1000);
+            Overlay.show(player, new TextComponent("Fluid fill: none"), 1000);
           } else {
-            Overlay.show(player, new StringTextComponent("Fluid fill: " + liq_fill_stack.getAmount() + "mb/t of " + liq_fill_stack.getFluid().getRegistryName()), 1000);
+            Overlay.show(player, new TextComponent("Fluid fill: " + liq_fill_stack.getAmount() + "mb/t of " + liq_fill_stack.getFluid().getRegistryName()), 1000);
           }
         } else if(held.getItem() == Items.REDSTONE) {
           rf_feed_setting = (rf_feed_setting<<1) & 0x00fffff0;
           if(rf_feed_setting == 0) rf_feed_setting = 0x10;
-          Overlay.show(player, new StringTextComponent("RF feed rate: " + rf_feed_setting + "rf/t"), 1000);
+          Overlay.show(player, new TextComponent("RF feed rate: " + rf_feed_setting + "rf/t"), 1000);
         } else {
           BlockState adjacent_state = level.getBlockState(worldPosition.relative(block_facing));
           if(adjacent_state.getBlock()==Blocks.HOPPER || adjacent_state.getBlock()==ModContent.FACTORY_HOPPER) {
             insertion_item = held.copy();
-            Overlay.show(player, new StringTextComponent("Insertion item: " + (insertion_item.getItem()==Items.LEVER ? "random" : insertion_item.toString()) + "/s"), 1000);
+            Overlay.show(player, new TextComponent("Insertion item: " + (insertion_item.getItem()==Items.LEVER ? "random" : insertion_item.toString()) + "/s"), 1000);
           }
         }
         return true;

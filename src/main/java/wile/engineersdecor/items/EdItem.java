@@ -8,17 +8,17 @@
  */
 package wile.engineersdecor.items;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -28,19 +28,19 @@ import java.util.List;
 
 public class EdItem extends Item
 {
-  public static final Collection<ItemGroup> ENABLED_TABS  = Collections.singletonList(ModEngineersDecor.ITEMGROUP);
-  public static final Collection<ItemGroup> DISABLED_TABS = new ArrayList<ItemGroup>();
+  public static final Collection<CreativeModeTab> ENABLED_TABS  = Collections.singletonList(ModEngineersDecor.ITEMGROUP);
+  public static final Collection<CreativeModeTab> DISABLED_TABS = new ArrayList<CreativeModeTab>();
 
   public EdItem(Item.Properties properties)
   { super(properties.tab(ModEngineersDecor.ITEMGROUP)); }
 
   @Override
   @OnlyIn(Dist.CLIENT)
-  public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag)
+  public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag)
   { Auxiliaries.Tooltip.addInformation(stack, world, tooltip, flag, true); }
 
   @Override
-  public Collection<ItemGroup> getCreativeTabs()
+  public Collection<CreativeModeTab> getCreativeTabs()
   { return ModConfig.isOptedOut(this) ? (DISABLED_TABS) : (ENABLED_TABS); }
 
 }

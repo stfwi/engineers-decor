@@ -8,16 +8,16 @@
  */
 package wile.engineersdecor.libmc.detail;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants;
@@ -42,9 +42,6 @@ import java.util.function.Predicate;
 
 public class Fluidics
 {
-  /**
-   * Dedicated fluid handler for a single tank.
-   */
   public static class SingleTankFluidHandler implements IFluidHandler
   {
     private final IFluidTank tank_;
@@ -71,9 +68,6 @@ public class Fluidics
     @Override public FluidStack drain(int maxDrain, FluidAction action) { return tank_.drain(maxDrain, action); }
   }
 
-  /**
-   * Simple fluid tank, validator concept according to reference implementation by KingLemming.
-   */
   public static class Tank implements IFluidTank
   {
     private Predicate<FluidStack> validator_ = ((e)->true);
@@ -97,7 +91,7 @@ public class Fluidics
       setValidator(validator);
     }
 
-    public Tank load(CompoundNBT nbt)
+    public Tank load(CompoundTag nbt)
     {
       if(nbt.contains("tank", Constants.NBT.TAG_COMPOUND)) {
         setFluid(FluidStack.loadFluidStackFromNBT(nbt.getCompound("tank")));
@@ -107,8 +101,8 @@ public class Fluidics
       return this;
     }
 
-    public CompoundNBT save(CompoundNBT nbt)
-    { if(!isEmpty()) { nbt.put("tank", fluid_.writeToNBT(new CompoundNBT())); } return nbt; }
+    public CompoundTag save(CompoundTag nbt)
+    { if(!isEmpty()) { nbt.put("tank", fluid_.writeToNBT(new CompoundTag())); } return nbt; }
 
     public void reset()
     { clear(); }
@@ -126,13 +120,13 @@ public class Fluidics
     { return drain_rate_; }
 
     public Tank setMaxDrainRate(int rate)
-    { drain_rate_ = MathHelper.clamp(rate, 0, capacity_); return this; }
+    { drain_rate_ = Mth.clamp(rate, 0, capacity_); return this; }
 
     public int getMaxFillRate()
     { return fill_rate_; }
 
     public Tank setMaxFillRate(int rate)
-    { fill_rate_ = MathHelper.clamp(rate, 0, capacity_); return this; }
+    { fill_rate_ = Mth.clamp(rate, 0, capacity_); return this; }
 
     public Tank setValidator(Predicate<FluidStack> validator)
     { validator_ = (validator!=null) ? validator : ((e)->true); return this; }
@@ -221,22 +215,30 @@ public class Fluidics
     }
   }
 
+  // -------------------------------------------------------------------------------------------------------------------
+
+  public static @Nullable IFluidHandler handler(Level world, BlockPos pos, @Nullable Direction side)
+  { return FluidUtil.getFluidHandler(world, pos, side).orElse(null); }
+
   /**
    * Fills or drains items with fluid handlers from or into tile blocks with fluid handlers.
    */
-  public static boolean manualFluidHandlerInteraction(World world, BlockPos pos, @Nullable Direction side, PlayerEntity player, Hand hand)
+  public static boolean manualFluidHandlerInteraction(Level world, BlockPos pos, @Nullable Direction side, Player player, InteractionHand hand)
   { return manualTrackedFluidHandlerInteraction(world, pos, side, player, hand) != null; }
+
+  public static boolean manualFluidHandlerInteraction(Player player, InteractionHand hand, IFluidHandler handler)
+  { return FluidUtil.interactWithFluidHandler(player, hand, handler); }
 
   /**
    * Fills or drains items with fluid handlers from or into tile blocks with fluid handlers.
    * Returns the fluid and (possibly negative) amount that transferred from the item into the block.
    */
-  public static @Nullable Tuple<Fluid, Integer> manualTrackedFluidHandlerInteraction(World world, BlockPos pos, @Nullable Direction side, PlayerEntity player, Hand hand)
+  public static @Nullable Tuple<Fluid, Integer> manualTrackedFluidHandlerInteraction(Level world, BlockPos pos, @Nullable Direction side, Player player, InteractionHand hand)
   {
     if(world.isClientSide()) return null;
     final ItemStack held = player.getItemInHand(hand);
     if(held.isEmpty()) return null;
-    final IFluidHandler fh = FluidUtil.getFluidHandler(world, pos, side).orElse(null);
+    final IFluidHandler fh = handler(world, pos, side);
     if(fh==null) return null;
     final IItemHandler ih = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElse(null);
     if(ih==null) return null;
@@ -261,13 +263,16 @@ public class Fluidics
     return null;
   }
 
-  public static int fill(World world, BlockPos pos, Direction side, FluidStack fs, FluidAction action)
+  public static boolean manualFluidHandlerInteraction(Player player, InteractionHand hand, Level world, BlockPos pos, @Nullable Direction side)
+  { return FluidUtil.interactWithFluidHandler(player, hand, world, pos, side); }
+
+  public static int fill(Level world, BlockPos pos, Direction side, FluidStack fs, FluidAction action)
   {
     IFluidHandler fh = FluidUtil.getFluidHandler(world, pos, side).orElse(null);
     return (fh==null) ? (0) : (fh.fill(fs, action));
   }
 
-  public static int fill(World world, BlockPos pos, Direction side, FluidStack fs)
+  public static int fill(Level world, BlockPos pos, Direction side, FluidStack fs)
   { return fill(world, pos, side, fs, FluidAction.EXECUTE); }
 
   /**
@@ -276,16 +281,16 @@ public class Fluidics
   public static class FluidContainerItemCapabilityWrapper implements IFluidHandlerItem, ICapabilityProvider
   {
     private final LazyOptional<IFluidHandlerItem> handler_ = LazyOptional.of(()->this);
-    private final Function<ItemStack, CompoundNBT> nbt_getter_;
-    private final BiConsumer<ItemStack, CompoundNBT> nbt_setter_;
+    private final Function<ItemStack, CompoundTag> nbt_getter_;
+    private final BiConsumer<ItemStack, CompoundTag> nbt_setter_;
     private final Predicate<FluidStack> validator_;
     private final ItemStack container_;
     private final int capacity_;
     private final int transfer_rate_;
 
     public FluidContainerItemCapabilityWrapper(ItemStack container, int capacity, int transfer_rate,
-                                               Function<ItemStack, CompoundNBT> nbt_getter,
-                                               BiConsumer<ItemStack, CompoundNBT> nbt_setter,
+                                               Function<ItemStack, CompoundTag> nbt_getter,
+                                               BiConsumer<ItemStack, CompoundTag> nbt_setter,
                                                Predicate<FluidStack> validator)
     {
       container_ = container;
@@ -302,13 +307,13 @@ public class Fluidics
 
     protected FluidStack readnbt()
     {
-      final CompoundNBT nbt = nbt_getter_.apply(container_);
+      final CompoundTag nbt = nbt_getter_.apply(container_);
       return ((nbt==null) || (nbt.isEmpty())) ? FluidStack.EMPTY : FluidStack.loadFluidStackFromNBT(nbt);
     }
 
     protected void writenbt(FluidStack fs)
     {
-      CompoundNBT nbt = new CompoundNBT();
+      CompoundTag nbt = new CompoundTag();
       if(!fs.isEmpty()) fs.writeToNBT(nbt);
       nbt_setter_.accept(container_, nbt);
     }

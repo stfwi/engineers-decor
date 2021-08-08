@@ -8,56 +8,50 @@
  */
 package wile.engineersdecor.blocks;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.item.*;
-import net.minecraft.inventory.*;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.*;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
-import com.mojang.blaze3d.systems.RenderSystem;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
-import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.blocks.EdFurnace.FurnaceBlock;
-import wile.engineersdecor.libmc.client.ContainerGui;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.blocks.StandardEntityBlocks;
 import wile.engineersdecor.libmc.detail.Inventories;
+import wile.engineersdecor.libmc.detail.RfEnergy;
+import wile.engineersdecor.libmc.detail.RsSignals;
+import wile.engineersdecor.libmc.ui.Guis;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,27 +60,40 @@ import java.util.Random;
 
 public class EdWasteIncinerator
 {
+  public static final int MAX_ENERGY_BUFFER = 16000;
+  public static final int MAX_ENERGY_TRANSFER = 256;
+  public static final int DEFAULT_ENERGY_CONSUMPTION = 16;
+  private static int energy_consumption = DEFAULT_ENERGY_CONSUMPTION;
+
   public static void on_config(int boost_energy_per_tick)
-  { WasteIncineratorTileEntity.on_config(boost_energy_per_tick); }
+  {
+    energy_consumption = Mth.clamp(boost_energy_per_tick, 4, 4096);
+    ModConfig.log("Config waste incinerator: boost energy consumption:" + energy_consumption + ".");
+  }
 
   //--------------------------------------------------------------------------------------------------------------------
   // Block
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class WasteIncineratorBlock extends DecorBlock.Cutout implements IDecorBlock
+  public static class WasteIncineratorBlock extends StandardBlocks.Cutout implements StandardEntityBlocks.IStandardEntityBlock<WasteIncineratorTileEntity>
   {
     public static final BooleanProperty LIT = FurnaceBlock.LIT;
 
-    public WasteIncineratorBlock(long config, AbstractBlock.Properties builder, final AxisAlignedBB unrotatedAABB)
+    public WasteIncineratorBlock(long config, BlockBehaviour.Properties builder, final AABB unrotatedAABB)
     { super(config, builder, unrotatedAABB); }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    @Nullable
+    public BlockEntityType<EdWasteIncinerator.WasteIncineratorTileEntity> getBlockEntityType()
+    { return ModContent.TET_WASTE_INCINERATOR; }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     { super.createBlockStateDefinition(builder); builder.add(LIT); }
 
     @Override
     @Nullable
-    public BlockState getStateForPlacement(BlockItemUseContext context)
+    public BlockState getStateForPlacement(BlockPlaceContext context)
     { return super.getStateForPlacement(context).setValue(LIT, false); }
 
     @Override
@@ -96,33 +103,24 @@ public class EdWasteIncinerator
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getAnalogOutputSignal(BlockState blockState, World world, BlockPos pos)
-    { return Container.getRedstoneSignalFromBlockEntity(world.getBlockEntity(pos)); }
+    public int getAnalogOutputSignal(BlockState blockState, Level world, BlockPos pos)
+    { return (!(world.getBlockEntity(pos) instanceof WasteIncineratorTileEntity te)) ? 0 : RsSignals.fromContainer(te.main_inventory_); }
 
     @Override
-    public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+    public boolean shouldCheckWeakPower(BlockState state, LevelReader world, BlockPos pos, Direction side)
     { return false; }
 
     @Override
-    public boolean hasTileEntity(BlockState state)
-    { return true; }
-
-    @Override
-    @Nullable
-    public TileEntity createTileEntity(BlockState state, IBlockReader world)
-    { return new EdWasteIncinerator.WasteIncineratorTileEntity(); }
-
-    @Override
-    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
     {
       if(world.isClientSide) return;
       if((!stack.hasTag()) || (!stack.getTag().contains("tedata"))) return;
-      CompoundNBT te_nbt = stack.getTag().getCompound("tedata");
+      CompoundTag te_nbt = stack.getTag().getCompound("tedata");
       if(te_nbt.isEmpty()) return;
-      final TileEntity te = world.getBlockEntity(pos);
+      final BlockEntity te = world.getBlockEntity(pos);
       if(!(te instanceof EdWasteIncinerator.WasteIncineratorTileEntity)) return;
       ((EdWasteIncinerator.WasteIncineratorTileEntity)te).readnbt(te_nbt);
-      ((EdWasteIncinerator.WasteIncineratorTileEntity)te).setChanged();
+      te.setChanged();
     }
 
     @Override
@@ -130,22 +128,22 @@ public class EdWasteIncinerator
     { return true; }
 
     @Override
-    public List<ItemStack> dropList(BlockState state, World world, final TileEntity te, boolean explosion)
+    public List<ItemStack> dropList(BlockState state, Level world, final BlockEntity te, boolean explosion)
     {
-      final List<ItemStack> stacks = new ArrayList<ItemStack>();
+      final List<ItemStack> stacks = new ArrayList<>();
       if(world.isClientSide) return stacks;
       if(!(te instanceof WasteIncineratorTileEntity)) return stacks;
       if(!explosion) {
         ItemStack stack = new ItemStack(this, 1);
-        CompoundNBT te_nbt = ((WasteIncineratorTileEntity) te).getnbt();
+        CompoundTag te_nbt = ((WasteIncineratorTileEntity) te).getnbt();
         if(!te_nbt.isEmpty()) {
-          CompoundNBT nbt = new CompoundNBT();
+          CompoundTag nbt = new CompoundTag();
           nbt.put("tedata", te_nbt);
           stack.setTag(nbt);
         }
         stacks.add(stack);
       } else {
-        for(ItemStack stack: ((WasteIncineratorTileEntity)te).stacks_) stacks.add(stack);
+        for(ItemStack stack: ((WasteIncineratorTileEntity)te).main_inventory_) stacks.add(stack);
         ((WasteIncineratorTileEntity)te).getnbt();
       }
       return stacks;
@@ -153,19 +151,12 @@ public class EdWasteIncinerator
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
-    {
-      if(world.isClientSide()) return ActionResultType.SUCCESS;
-      final TileEntity te = world.getBlockEntity(pos);
-      if(!(te instanceof WasteIncineratorTileEntity)) return ActionResultType.FAIL;
-      if((!(player instanceof ServerPlayerEntity) && (!(player instanceof FakePlayer)))) return ActionResultType.FAIL;
-      NetworkHooks.openGui((ServerPlayerEntity)player,(INamedContainerProvider)te);
-      return ActionResultType.CONSUME;
-    }
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult)
+    { return useOpenGui(state, world, pos, player); }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void animateTick(BlockState state, World world, BlockPos pos, Random rnd)
+    public void animateTick(BlockState state, Level world, BlockPos pos, Random rnd)
     {
       if((state.getBlock()!=this) || (!state.getValue(LIT))) return;
       final double rv = rnd.nextDouble();
@@ -180,76 +171,59 @@ public class EdWasteIncinerator
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class WasteIncineratorTileEntity extends TileEntity implements ITickableTileEntity, INameable, IInventory, INamedContainerProvider, ISidedInventory, IEnergyStorage
+  public static class WasteIncineratorTileEntity extends StandardEntityBlocks.StandardBlockEntity implements MenuProvider, Nameable
   {
     public static final int NUM_OF_FIELDS = 1;
     public static final int TICK_INTERVAL = 20;
     public static final int ENERGIZED_TICK_INTERVAL = 5;
     public static final int INCINERATION_STACK_DECREMENT = 4;
-    public static final int MAX_ENERGY_BUFFER = 16000;
-    public static final int MAX_ENERGY_TRANSFER = 256;
-    public static final int DEFAULT_ENERGY_CONSUMPTION = 16;
     public static final int NUM_OF_SLOTS = 16;
     public static final int INPUT_SLOT_NO = 0;
     public static final int BURN_SLOT_NO = NUM_OF_SLOTS-1;
-
-    // Config ----------------------------------------------------------------------------------
-
-    private static int energy_consumption = DEFAULT_ENERGY_CONSUMPTION;
-
-    public static void on_config(int boost_energy_per_tick)
-    {
-      energy_consumption = MathHelper.clamp(boost_energy_per_tick, 4, 4096);
-      ModConfig.log("Config waste incinerator: boost energy consumption:" + energy_consumption + ".");
-    }
 
     // WasteIncineratorTileEntity -----------------------------------------------------------------------------
 
     private int tick_timer_;
     private int check_timer_;
-    private int energy_stored_;
-    protected NonNullList<ItemStack> stacks_ = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
+    private final Inventories.StorageInventory main_inventory_ = new Inventories.StorageInventory(this, NUM_OF_SLOTS, 1);
+    private final LazyOptional<? extends IItemHandler> item_handler_ = Inventories.MappedItemHandler.createInsertionHandler(main_inventory_, INPUT_SLOT_NO);
+    private final RfEnergy.Battery battery_ = new RfEnergy.Battery(MAX_ENERGY_BUFFER, MAX_ENERGY_TRANSFER, 0);
+    private final LazyOptional<IEnergyStorage> energy_handler_ = battery_.createEnergyHandler();
 
-    public WasteIncineratorTileEntity()
-    { this(ModContent.TET_WASTE_INCINERATOR); }
+    public WasteIncineratorTileEntity(BlockPos pos, BlockState state)
+    { super(ModContent.TET_WASTE_INCINERATOR, pos, state); reset(); }
 
-    public WasteIncineratorTileEntity(TileEntityType<?> te_type)
-    { super(te_type); reset(); }
-
-    public CompoundNBT getnbt()
-    { return writenbt(new CompoundNBT()); }
+    public CompoundTag getnbt()
+    { return writenbt(new CompoundTag()); }
 
     protected void reset()
     {
-      stacks_ = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
+      main_inventory_.clearContent();
       check_timer_ = 0;
       tick_timer_ = 0;
     }
 
-    public void readnbt(CompoundNBT compound)
+    public void readnbt(CompoundTag nbt)
     {
-      NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(NUM_OF_SLOTS, ItemStack.EMPTY);
-      ItemStackHelper.loadAllItems(compound, stacks);
-      while(stacks.size() < NUM_OF_SLOTS) stacks.add(ItemStack.EMPTY);
-      stacks_ = stacks;
-      energy_stored_ = compound.getInt("Energy");
+      main_inventory_.load(nbt);
+      battery_.load(nbt);
     }
 
-    protected CompoundNBT writenbt(CompoundNBT nbt)
+    protected CompoundTag writenbt(CompoundTag nbt)
     {
-      nbt.putInt("Energy", MathHelper.clamp(energy_stored_,0 , MAX_ENERGY_BUFFER));
-      ItemStackHelper.saveAllItems(nbt, stacks_);
+      main_inventory_.save(nbt);
+      battery_.save(nbt);
       return nbt;
     }
 
-    // TileEntity ------------------------------------------------------------------------------
+    // BlockEntity ------------------------------------------------------------------------------
 
     @Override
-    public void load(BlockState state, CompoundNBT nbt)
-    { super.load(state, nbt); readnbt(nbt); }
+    public void load(CompoundTag nbt)
+    { super.load(nbt); readnbt(nbt); }
 
     @Override
-    public CompoundNBT save(CompoundNBT nbt)
+    public CompoundTag save(CompoundTag nbt)
     { super.save(nbt); return writenbt(nbt); }
 
     @Override
@@ -257,101 +231,47 @@ public class EdWasteIncinerator
     {
       super.setRemoved();
       energy_handler_.invalidate();
-      item_handler_.invalidate();
+//      item_handler_.invalidate();
     }
 
     // INameable  ---------------------------------------------------------------------------
 
     @Override
-    public ITextComponent getName()
-    { final Block block=getBlockState().getBlock(); return new StringTextComponent((block!=null) ? block.getDescriptionId() : "Small Waste Incinerator"); }
+    public Component getName()
+    { final Block block=getBlockState().getBlock(); return new TextComponent((block!=null) ? block.getDescriptionId() : "Small Waste Incinerator"); }
 
     @Override
     public boolean hasCustomName()
     { return false; }
 
     @Override
-    public ITextComponent getCustomName()
+    public Component getCustomName()
     { return getName(); }
 
     // IContainerProvider ----------------------------------------------------------------------
 
     @Override
-    public ITextComponent getDisplayName()
-    { return INameable.super.getDisplayName(); }
+    public Component getDisplayName()
+    { return Nameable.super.getDisplayName(); }
 
     @Override
-    public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player )
-    { return new EdWasteIncinerator.WasteIncineratorContainer(id, inventory, this, IWorldPosCallable.create(level, worldPosition), fields); }
-
-    // IInventory ------------------------------------------------------------------------------
-
-    @Override
-    public int getContainerSize()
-    { return stacks_.size(); }
-
-    @Override
-    public boolean isEmpty()
-    { for(ItemStack stack: stacks_) { if(!stack.isEmpty()) return false; } return true; }
-
-    @Override
-    public ItemStack getItem(int index)
-    { return ((index >= 0) && (index < getContainerSize())) ? stacks_.get(index) : ItemStack.EMPTY; }
-
-    @Override
-    public ItemStack removeItem(int index, int count)
-    { return ItemStackHelper.removeItem(stacks_, index, count); }
-
-    @Override
-    public ItemStack removeItemNoUpdate(int index)
-    { return ItemStackHelper.takeItem(stacks_, index); }
-
-    @Override
-    public void setItem(int index, ItemStack stack)
-    {
-      if(stack.getCount() > getMaxStackSize()) stack.setCount(getMaxStackSize());
-      stacks_.set(index, stack);
-      setChanged();
-    }
-
-    @Override
-    public int getMaxStackSize()
-    { return 64; }
-
-    @Override
-    public void setChanged()
-    { super.setChanged(); }
-
-    @Override
-    public boolean stillValid(PlayerEntity player)
-    { return ((getLevel().getBlockEntity(getBlockPos()) == this)) && (getBlockPos().distSqr(player.blockPosition()) < 64); }
-
-    @Override
-    public void startOpen(PlayerEntity player)
-    {}
-
-    @Override
-    public void stopOpen(PlayerEntity player)
-    { setChanged(); }
-
-    @Override
-    public boolean canPlaceItem(int index, ItemStack stack)
-    { return (index==0); }
-
-    @Override
-    public void clearContent()
-    { stacks_.clear(); }
+    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player )
+    { return new EdWasteIncinerator.WasteIncineratorContainer(id, inventory, main_inventory_, ContainerLevelAccess.create(level, worldPosition), fields); }
 
     // Fields -----------------------------------------------------------------------------------------------
 
-    protected final IIntArray fields = new IntArray(WasteIncineratorTileEntity.NUM_OF_FIELDS)
+    protected final ContainerData fields = new ContainerData()
     {
+      @Override
+      public int getCount()
+      { return WasteIncineratorTileEntity.NUM_OF_FIELDS; }
+
       @Override
       public int get(int id)
       {
-        switch(id) {
-          default: return 0;
-        }
+        return switch (id) {
+          default -> 0;
+        };
       }
       @Override
       public void set(int id, int value)
@@ -362,142 +282,92 @@ public class EdWasteIncinerator
       }
     };
 
-    // ISidedInventory ----------------------------------------------------------------------------
-
-    private static final int[] SIDED_INV_SLOTS = new int[] { INPUT_SLOT_NO };
-
-    @Override
-    public int[] getSlotsForFace(Direction side)
-    { return SIDED_INV_SLOTS; }
-
-    @Override
-    public boolean canPlaceItemThroughFace(int index, ItemStack itemStackIn, Direction direction)
-    { return canPlaceItem(index, itemStackIn); }
-
-    @Override
-    public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction)
-    { return false; }
-
-    // IEnergyStorage ----------------------------------------------------------------------------
-
-    @Override
-    public boolean canExtract()
-    { return false; }
-
-    @Override
-    public boolean canReceive()
-    { return true; }
-
-    @Override
-    public int getMaxEnergyStored()
-    { return MAX_ENERGY_BUFFER; }
-
-    @Override
-    public int getEnergyStored()
-    { return energy_stored_; }
-
-    @Override
-    public int extractEnergy(int maxExtract, boolean simulate)
-    { return 0; }
-
-    @Override
-    public int receiveEnergy(int maxReceive, boolean simulate)
-    {
-      if(energy_stored_ >= MAX_ENERGY_BUFFER) return 0;
-      int n = Math.min(maxReceive, (MAX_ENERGY_BUFFER - energy_stored_));
-      if(n > MAX_ENERGY_TRANSFER) n = MAX_ENERGY_TRANSFER;
-      if(!simulate) {energy_stored_ += n; setChanged(); }
-      return n;
-    }
 
     // IItemHandler  --------------------------------------------------------------------------------
-
-    protected static class BItemHandler implements IItemHandler
-    {
-      private final WasteIncineratorTileEntity te;
-
-      BItemHandler(WasteIncineratorTileEntity te)
-      { this.te = te; }
-
-      @Override
-      public int getSlots()
-      { return 1; }
-
-      @Override
-      public int getSlotLimit(int index)
-      { return te.getMaxStackSize(); }
-
-      @Override
-      public boolean isItemValid(int slot, @Nonnull ItemStack stack)
-      { return true; }
-
-      @Override
-      @Nonnull
-      public ItemStack insertItem(int index, @Nonnull ItemStack stack, boolean simulate)
-      {
-        if(stack.isEmpty()) return ItemStack.EMPTY;
-        if(index != 0) return ItemStack.EMPTY;
-        int slotno = 0;
-        ItemStack slotstack = getStackInSlot(slotno);
-        if(!slotstack.isEmpty())
-        {
-          if(slotstack.getCount() >= Math.min(slotstack.getMaxStackSize(), getSlotLimit(index))) return stack;
-          if(!ItemHandlerHelper.canItemStacksStack(stack, slotstack)) return stack;
-          if(!te.canPlaceItemThroughFace(slotno, stack, Direction.UP) || (!te.canPlaceItem(slotno, stack))) return stack;
-          int n = Math.min(stack.getMaxStackSize(), getSlotLimit(index)) - slotstack.getCount();
-          if(stack.getCount() <= n) {
-            if(!simulate) {
-              ItemStack copy = stack.copy();
-              copy.grow(slotstack.getCount());
-              te.setItem(slotno, copy);
-            }
-            return ItemStack.EMPTY;
-          } else {
-            stack = stack.copy();
-            if(!simulate) {
-              ItemStack copy = stack.split(n);
-              copy.grow(slotstack.getCount());
-              te.setItem(slotno, copy);
-              return stack;
-            } else {
-              stack.shrink(n);
-              return stack;
-            }
-          }
-        } else {
-          if(!te.canPlaceItemThroughFace(slotno, stack, Direction.UP) || (!te.canPlaceItem(slotno, stack))) return stack;
-          int n = Math.min(stack.getMaxStackSize(), getSlotLimit(index));
-          if(n < stack.getCount()) {
-            stack = stack.copy();
-            if(!simulate) {
-              te.setItem(slotno, stack.split(n));
-              return stack;
-            } else {
-              stack.shrink(n);
-              return stack;
-            }
-          } else {
-            if(!simulate) te.setItem(slotno, stack);
-            return ItemStack.EMPTY;
-          }
-        }
-      }
-
-      @Override
-      @Nonnull
-      public ItemStack extractItem(int index, int amount, boolean simulate)
-      { return ItemStack.EMPTY; }
-
-      @Override
-      @Nonnull
-      public ItemStack getStackInSlot(int index)
-      { return te.getItem(index); }
-    }
+//
+//    protected static class BItemHandler implements IItemHandler
+//    {
+//      private final WasteIncineratorTileEntity te;
+//
+//      BItemHandler(WasteIncineratorTileEntity te)
+//      { this.te = te; }
+//
+//      @Override
+//      public int getSlots()
+//      { return 1; }
+//
+//      @Override
+//      public int getSlotLimit(int index)
+//      { return te.getMaxStackSize(); }
+//
+//      @Override
+//      public boolean isItemValid(int slot, @Nonnull ItemStack stack)
+//      { return true; }
+//
+//      @Override
+//      @Nonnull
+//      public ItemStack insertItem(int index, @Nonnull ItemStack stack, boolean simulate)
+//      {
+//        if(stack.isEmpty()) return ItemStack.EMPTY;
+//        if(index != 0) return ItemStack.EMPTY;
+//        int slotno = 0;
+//        ItemStack slotstack = getStackInSlot(slotno);
+//        if(!slotstack.isEmpty())
+//        {
+//          if(slotstack.getCount() >= Math.min(slotstack.getMaxStackSize(), getSlotLimit(index))) return stack;
+//          if(!ItemHandlerHelper.canItemStacksStack(stack, slotstack)) return stack;
+//          if(!te.canPlaceItemThroughFace(slotno, stack, Direction.UP) || (!te.canPlaceItem(slotno, stack))) return stack;
+//          int n = Math.min(stack.getMaxStackSize(), getSlotLimit(index)) - slotstack.getCount();
+//          if(stack.getCount() <= n) {
+//            if(!simulate) {
+//              ItemStack copy = stack.copy();
+//              copy.grow(slotstack.getCount());
+//              te.setItem(slotno, copy);
+//            }
+//            return ItemStack.EMPTY;
+//          } else {
+//            stack = stack.copy();
+//            if(!simulate) {
+//              ItemStack copy = stack.split(n);
+//              copy.grow(slotstack.getCount());
+//              te.setItem(slotno, copy);
+//              return stack;
+//            } else {
+//              stack.shrink(n);
+//              return stack;
+//            }
+//          }
+//        } else {
+//          if(!te.canPlaceItemThroughFace(slotno, stack, Direction.UP) || (!te.canPlaceItem(slotno, stack))) return stack;
+//          int n = Math.min(stack.getMaxStackSize(), getSlotLimit(index));
+//          if(n < stack.getCount()) {
+//            stack = stack.copy();
+//            if(!simulate) {
+//              te.setItem(slotno, stack.split(n));
+//              return stack;
+//            } else {
+//              stack.shrink(n);
+//              return stack;
+//            }
+//          } else {
+//            if(!simulate) te.setItem(slotno, stack);
+//            return ItemStack.EMPTY;
+//          }
+//        }
+//      }
+//
+//      @Override
+//      @Nonnull
+//      public ItemStack extractItem(int index, int amount, boolean simulate)
+//      { return ItemStack.EMPTY; }
+//
+//      @Override
+//      @Nonnull
+//      public ItemStack getStackInSlot(int index)
+//      { return te.getItem(index); }
+//    }
 
     // Capability export ----------------------------------------------------------------------------
-
-    protected LazyOptional<IItemHandler> item_handler_ = LazyOptional.of(() -> new WasteIncineratorTileEntity.BItemHandler(this));
-    protected LazyOptional<IEnergyStorage> energy_handler_ = LazyOptional.of(() -> (IEnergyStorage)this);
 
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
@@ -507,7 +377,7 @@ public class EdWasteIncinerator
       return super.getCapability(capability, facing);
     }
 
-    // ITickableTileEntity ---------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------------------------------
 
     @Override
     public void tick()
@@ -516,12 +386,12 @@ public class EdWasteIncinerator
       tick_timer_ = TICK_INTERVAL;
       if(level.isClientSide) return;
       boolean dirty = false;
-      ItemStack processing_stack = stacks_.get(BURN_SLOT_NO);
+      ItemStack processing_stack = main_inventory_.getItem(BURN_SLOT_NO);
       final boolean was_processing = !processing_stack.isEmpty();
       boolean is_processing = was_processing;
       boolean new_stack_processing = false;
-      if((!stacks_.get(0).isEmpty()) && transferItems(0, 1, getMaxStackSize())) dirty = true;
-      ItemStack first_stack = stacks_.get(0);
+      if((!main_inventory_.getItem(0).isEmpty()) && transferItems(0, 1, main_inventory_.getMaxStackSize())) dirty = true;
+      ItemStack first_stack = main_inventory_.getItem(0);
       boolean shift = !first_stack.isEmpty();
       if(is_processing) {
         processing_stack.shrink(INCINERATION_STACK_DECREMENT);
@@ -529,9 +399,8 @@ public class EdWasteIncinerator
           processing_stack = ItemStack.EMPTY;
           is_processing = false;
         }
-        stacks_.set(BURN_SLOT_NO, processing_stack);
-        if(energy_stored_ >= (energy_consumption * TICK_INTERVAL)) {
-          energy_stored_ -= (energy_consumption * TICK_INTERVAL);
+        main_inventory_.setItem(BURN_SLOT_NO, processing_stack);
+        if(battery_.draw(energy_consumption * TICK_INTERVAL)) {
           tick_timer_ = ENERGIZED_TICK_INTERVAL;
         }
         dirty = true;
@@ -539,7 +408,7 @@ public class EdWasteIncinerator
       if(shift) {
         boolean transferred = false;
         for(int i=BURN_SLOT_NO-1; i>0; --i) {
-          transferred |= transferItems(i-1, i, getMaxStackSize());
+          transferred |= transferItems(i-1, i, main_inventory_.getMaxStackSize());
         }
         if((!is_processing) && (!transferred)) {
           shiftStacks(0, BURN_SLOT_NO);
@@ -547,7 +416,7 @@ public class EdWasteIncinerator
         }
       }
       if((was_processing != is_processing) || (new_stack_processing)) {
-        if(new_stack_processing) level.playSound(null, worldPosition, SoundEvents.LAVA_AMBIENT, SoundCategory.BLOCKS, 0.05f, 2.4f);
+        if(new_stack_processing) level.playSound(null, worldPosition, SoundEvents.LAVA_AMBIENT, SoundSource.BLOCKS, 0.05f, 2.4f);
         final BlockState state = level.getBlockState(worldPosition);
         if(state.getBlock() instanceof WasteIncineratorBlock) {
           level.setBlock(worldPosition, state.setValue(WasteIncineratorBlock.LIT, is_processing), 2|16);
@@ -562,26 +431,26 @@ public class EdWasteIncinerator
     {
       if(index_from >= index_to) return ItemStack.EMPTY;
       ItemStack out_stack = ItemStack.EMPTY;
-      ItemStack stack = stacks_.get(index_from);
+      ItemStack stack = main_inventory_.getItem(index_from);
       for(int i=index_from+1; i<=index_to; ++i) {
-        out_stack = stacks_.get(i);
-        stacks_.set(i, stack);
+        out_stack = main_inventory_.getItem(i);
+        main_inventory_.setItem(i, stack);
         stack = out_stack;
       }
-      stacks_.set(index_from, ItemStack.EMPTY);
+      main_inventory_.setItem(index_from, ItemStack.EMPTY);
       return out_stack;
     }
 
     private boolean transferItems(final int index_from, final int index_to, int count)
     {
-      ItemStack from = stacks_.get(index_from);
+      ItemStack from = main_inventory_.getItem(index_from);
       if(from.isEmpty()) return false;
-      ItemStack to = stacks_.get(index_to);
+      ItemStack to = main_inventory_.getItem(index_to);
       if(from.getCount() < count) count = from.getCount();
       if(count <= 0) return false;
       boolean changed = true;
       if(to.isEmpty()) {
-        stacks_.set(index_to, from.split(count));
+        main_inventory_.setItem(index_to, from.split(count));
       } else if(to.getCount() >= to.getMaxStackSize()) {
         changed = false;
       } else if(Inventories.areItemStacksDifferent(from, to)) {
@@ -596,7 +465,7 @@ public class EdWasteIncinerator
         }
       }
       if(from.isEmpty() && from!=ItemStack.EMPTY) {
-        stacks_.set(index_from, ItemStack.EMPTY);
+        main_inventory_.setItem(index_from, ItemStack.EMPTY);
         changed = true;
       }
       return changed;
@@ -607,24 +476,24 @@ public class EdWasteIncinerator
   // Container
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class WasteIncineratorContainer extends Container
+  public static class WasteIncineratorContainer extends AbstractContainerMenu
   {
     private static final int PLAYER_INV_START_SLOTNO = WasteIncineratorTileEntity.NUM_OF_SLOTS;
-    protected final PlayerEntity player_;
-    protected final IInventory inventory_;
-    protected final IWorldPosCallable wpc_;
-    private final IIntArray fields_;
+    protected final Player player_;
+    protected final Container inventory_;
+    protected final ContainerLevelAccess wpc_;
+    private final ContainerData fields_;
     private int proc_time_needed_;
 
     public int field(int index) { return fields_.get(index); }
-    public PlayerEntity player() { return player_ ; }
-    public IInventory inventory() { return inventory_ ; }
-    public World world() { return player_.level; }
+    public Player player() { return player_ ; }
+    public Container inventory() { return inventory_ ; }
+    public Level world() { return player_.level; }
 
-    public WasteIncineratorContainer(int cid, PlayerInventory player_inventory)
-    { this(cid, player_inventory, new Inventory(WasteIncineratorTileEntity.NUM_OF_SLOTS), IWorldPosCallable.NULL, new IntArray(WasteIncineratorTileEntity.NUM_OF_FIELDS)); }
+    public WasteIncineratorContainer(int cid, Inventory player_inventory)
+    { this(cid, player_inventory, new SimpleContainer(WasteIncineratorTileEntity.NUM_OF_SLOTS), ContainerLevelAccess.NULL, new SimpleContainerData(WasteIncineratorTileEntity.NUM_OF_FIELDS)); }
 
-    private WasteIncineratorContainer(int cid, PlayerInventory player_inventory, IInventory block_inventory, IWorldPosCallable wpc, IIntArray fields)
+    private WasteIncineratorContainer(int cid, Inventory player_inventory, Container block_inventory, ContainerLevelAccess wpc, ContainerData fields)
     {
       super(ModContent.CT_WASTE_INCINERATOR, cid);
       player_ = player_inventory.player;
@@ -659,11 +528,11 @@ public class EdWasteIncinerator
     }
 
     @Override
-    public boolean stillValid(PlayerEntity player)
+    public boolean stillValid(Player player)
     { return inventory_.stillValid(player); }
 
     @Override
-    public ItemStack quickMoveStack(PlayerEntity player, int index)
+    public ItemStack quickMoveStack(Player player, int index)
     {
       Slot slot = getSlot(index);
       if((slot==null) || (!slot.hasItem())) return ItemStack.EMPTY;
@@ -695,40 +564,10 @@ public class EdWasteIncinerator
   //--------------------------------------------------------------------------------------------------------------------
 
   @OnlyIn(Dist.CLIENT)
-  public static class WasteIncineratorGui extends ContainerGui<WasteIncineratorContainer>
+  public static class WasteIncineratorGui extends Guis.ContainerGui<WasteIncineratorContainer>
   {
-    protected final PlayerEntity player_;
-
-    public WasteIncineratorGui(WasteIncineratorContainer container, PlayerInventory player_inventory, ITextComponent title)
-    { super(container, player_inventory, title); this.player_ = player_inventory.player; }
-
-    @Override
-    public void init()
-    { super.init(); }
-
-    @Override
-    public void render(MatrixStack mx, int mouseX, int mouseY, float partialTicks)
-    {
-      renderBackground/*renderBackground*/(mx);
-      super.render(mx, mouseX, mouseY, partialTicks);
-      renderTooltip(mx, mouseX, mouseY);
-    }
-
-    @Override
-    protected void renderLabels(MatrixStack mx, int x, int y)
-    {}
-
-    @Override
-    @SuppressWarnings("deprecation")
-    protected void renderBg(MatrixStack mx, float partialTicks, int mouseX, int mouseY)
-    {
-      RenderSystem.enableBlend();
-      RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-      getMinecraft().getTextureManager().bind(new ResourceLocation(ModEngineersDecor.MODID, "textures/gui/small_waste_incinerator_gui.png"));
-      final int x0=leftPos, y0=this.topPos, w=imageWidth, h=imageHeight;
-      blit(mx, x0, y0, 0, 0, w, h);
-      RenderSystem.disableBlend();
-    }
+    public WasteIncineratorGui(WasteIncineratorContainer container, Inventory player_inventory, Component title)
+    { super(container, player_inventory, title, "textures/gui/small_waste_incinerator_gui.png"); }
   }
 
 }

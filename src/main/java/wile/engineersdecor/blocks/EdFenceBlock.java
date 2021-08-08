@@ -8,22 +8,23 @@
  */
 package wile.engineersdecor.blocks;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import wile.engineersdecor.libmc.blocks.StandardFenceBlock;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.block.*;
 
 
-public class EdFenceBlock extends StandardFenceBlock implements IDecorBlock
+public class EdFenceBlock extends StandardFenceBlock
 {
-  public EdFenceBlock(long config, AbstractBlock.Properties properties)
+  public EdFenceBlock(long config, BlockBehaviour.Properties properties)
   { super(config, properties); }
 
-  public EdFenceBlock(long config, AbstractBlock.Properties properties, double pole_width, double pole_height, double side_width, double side_min_y, double side_max_low_y, double side_max_tall_y)
+  public EdFenceBlock(long config, BlockBehaviour.Properties properties, double pole_width, double pole_height, double side_width, double side_min_y, double side_max_low_y, double side_max_tall_y)
   { super(config, properties, pole_width, pole_height, side_width, side_min_y, side_max_low_y, side_max_tall_y); }
 
   @Override
-  protected boolean attachesTo(BlockState facingState, IWorldReader world, BlockPos facingPos, Direction side)
+  protected boolean attachesTo(BlockState facingState, LevelReader world, BlockPos facingPos, Direction side)
   { return ((facingState.getBlock()) instanceof EdDoubleGateBlock) || super.attachesTo(facingState, world, facingPos, side); }
 }

@@ -8,36 +8,38 @@
  */
 package wile.engineersdecor.libmc.blocks;
 
-import net.minecraft.entity.EntitySpawnPlacementRegistry;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import net.minecraft.entity.EntityType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.block.*;
-import net.minecraft.block.material.PushReaction;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+
 import javax.annotation.Nullable;
 import java.util.List;
 
 
-public class StandardStairsBlock extends StairsBlock implements StandardBlocks.IStandardBlock
+public class StandardStairsBlock extends StairBlock implements StandardBlocks.IStandardBlock
 {
   private final long config;
 
-  public StandardStairsBlock(long config, BlockState state, AbstractBlock.Properties properties)
+  public StandardStairsBlock(long config, BlockState state, BlockBehaviour.Properties properties)
   { super(()->state, properties); this.config = config; }
 
-  public StandardStairsBlock(long config, java.util.function.Supplier<BlockState> state, AbstractBlock.Properties properties)
+  public StandardStairsBlock(long config, java.util.function.Supplier<BlockState> state, BlockBehaviour.Properties properties)
   { super(state, properties); this.config = config; }
 
   @Override
   @OnlyIn(Dist.CLIENT)
-  public void appendHoverText(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag)
+  public void appendHoverText(ItemStack stack, @Nullable BlockGetter world, List<Component> tooltip, TooltipFlag flag)
   { Auxiliaries.Tooltip.addInformation(stack, world, tooltip, flag, true); }
 
   @Override
@@ -45,7 +47,7 @@ public class StandardStairsBlock extends StairsBlock implements StandardBlocks.I
   { return false; }
 
   @Override
-  public boolean canCreatureSpawn(BlockState state, IBlockReader world, BlockPos pos, EntitySpawnPlacementRegistry.PlacementType type, @Nullable EntityType<?> entityType)
+  public boolean canCreatureSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, @Nullable EntityType<?> entityType)
   { return false; }
 
   @Override

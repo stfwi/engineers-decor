@@ -9,35 +9,37 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.blocks.StandardEntityBlocks;
+import wile.engineersdecor.libmc.detail.RsSignals;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -51,8 +53,8 @@ public class EdPipeValve
 
   public static void on_config(int container_size_decl, int redstone_slope)
   {
-    PipeValveTileEntity.fluid_maxflow_mb = MathHelper.clamp(container_size_decl, 1, 10000);
-    PipeValveTileEntity.redstone_flow_slope_mb = MathHelper.clamp(redstone_slope, 1, 10000);
+    PipeValveTileEntity.fluid_maxflow_mb = Mth.clamp(container_size_decl, 1, 10000);
+    PipeValveTileEntity.redstone_flow_slope_mb = Mth.clamp(redstone_slope, 1, 10000);
     ModConfig.log("Config pipe valve: maxflow:" + PipeValveTileEntity.fluid_maxflow_mb + "mb, redstone amp:" + PipeValveTileEntity.redstone_flow_slope_mb + "mb/sig.");
   }
 
@@ -60,7 +62,7 @@ public class EdPipeValve
   // Block
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class PipeValveBlock extends DecorBlock.DirectedWaterLoggable implements IDecorBlock
+  public static class PipeValveBlock extends StandardBlocks.DirectedWaterLoggable implements StandardEntityBlocks.IStandardEntityBlock<PipeValveTileEntity>
   {
     public static final BooleanProperty RS_CN_N = BooleanProperty.create("rs_n");
     public static final BooleanProperty RS_CN_S = BooleanProperty.create("rs_s");
@@ -68,13 +70,69 @@ public class EdPipeValve
     public static final BooleanProperty RS_CN_W = BooleanProperty.create("rs_w");
     public static final BooleanProperty RS_CN_U = BooleanProperty.create("rs_u");
     public static final BooleanProperty RS_CN_D = BooleanProperty.create("rs_d");
-
     public final int valve_config;
 
-    public PipeValveBlock(long config, int valve_config, AbstractBlock.Properties builder, final AxisAlignedBB[] unrotatedAABB)
+    public PipeValveBlock(long config, int valve_config, BlockBehaviour.Properties builder, final AABB[] unrotatedAABB)
     { super(config, builder, unrotatedAABB); this.valve_config = valve_config; }
 
-    private BlockState get_rsconnector_state(BlockState state, IWorld world, BlockPos pos, @Nullable BlockPos fromPos)
+    @Override
+    @Nullable
+    public BlockEntityType<EdPipeValve.PipeValveTileEntity> getBlockEntityType()
+    { return ModContent.TET_STRAIGHT_PIPE_VALVE; }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext selectionContext)
+    { return Shapes.block(); }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
+    { super.createBlockStateDefinition(builder); builder.add(RS_CN_N, RS_CN_S, RS_CN_E, RS_CN_W, RS_CN_U, RS_CN_D); }
+
+    @Override
+    @Nullable
+    public BlockState getStateForPlacement(BlockPlaceContext context)
+    {
+      return super.getStateForPlacement(context).setValue(RS_CN_N, false).setValue(RS_CN_S, false).setValue(RS_CN_E, false)
+                  .setValue(RS_CN_W, false).setValue(RS_CN_U, false).setValue(RS_CN_D, false);
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world, BlockPos pos, BlockPos facingPos)
+    { return get_rsconnector_state(state, world, pos, null); }
+
+    @Override
+    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    { world.updateNeighborsAt(pos,this); }
+
+    @Override
+    public BlockState rotate(BlockState state, LevelAccessor world, BlockPos pos, Rotation direction)
+    { return get_rsconnector_state(state, world, pos, null); } // don't rotate at all
+
+    @Override
+    public boolean hasSignalConnector(BlockState state, BlockGetter world, BlockPos pos, @Nullable Direction side)
+    { return (side!=null) && (side!=state.getValue(FACING)) && (side!=state.getValue(FACING).getOpposite()); }
+
+    @Override
+    public boolean shouldCheckWeakPower(BlockState state, LevelReader world, BlockPos pos, Direction side)
+    { return false; }
+
+    @Override
+    @SuppressWarnings("deprecation") // public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, @Nullable Direction side) { return true; }
+    public boolean isSignalSource(BlockState p_60571_)
+    { return true; }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public int getSignal(BlockState blockState, BlockGetter blockAccess, BlockPos pos, Direction side)
+    { return 0; }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public int getDirectSignal(BlockState blockState, BlockGetter blockAccess, BlockPos pos, Direction side)
+    { return 0; }
+
+    private BlockState get_rsconnector_state(BlockState state, LevelAccessor world, BlockPos pos, @Nullable BlockPos fromPos)
     {
       if((valve_config & (CFG_REDSTONE_CONTROLLED_VALVE))==0) return state;
       Direction.Axis bfa = state.getValue(FACING).getAxis();
@@ -84,99 +142,36 @@ public class EdPipeValve
           BlockPos nbp = pos.relative(f);
           if((fromPos != null) && (!nbp.equals(fromPos))) continue; // do not change connectors except form the frompos.
           BlockState nbs = world.getBlockState(nbp);
-          if((nbs.getBlock() instanceof PipeValveBlock) || ((!nbs.isSignalSource()) && (!nbs.canConnectRedstone(world, nbp, f.getOpposite())))) cn = false;
+          if((nbs.getBlock() instanceof PipeValveBlock) || (!nbs.isSignalSource()) && (RsSignals.hasSignalConnector(nbs, world, nbp, f.getOpposite()))) cn = false;
         }
-        switch(f) {
-          case NORTH: state = state.setValue(RS_CN_N, cn); break;
-          case SOUTH: state = state.setValue(RS_CN_S, cn); break;
-          case EAST:  state = state.setValue(RS_CN_E, cn); break;
-          case WEST:  state = state.setValue(RS_CN_W, cn); break;
-          case UP:    state = state.setValue(RS_CN_U, cn); break;
-          case DOWN:  state = state.setValue(RS_CN_D, cn); break;
+        switch (f) {
+          case NORTH -> state = state.setValue(RS_CN_N, cn);
+          case SOUTH -> state = state.setValue(RS_CN_S, cn);
+          case EAST -> state = state.setValue(RS_CN_E, cn);
+          case WEST -> state = state.setValue(RS_CN_W, cn);
+          case UP -> state = state.setValue(RS_CN_U, cn);
+          case DOWN -> state = state.setValue(RS_CN_D, cn);
         }
       }
       return state;
     }
 
-    @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext selectionContext)
-    { return VoxelShapes.block(); }
-
-    @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
-    { super.createBlockStateDefinition(builder); builder.add(RS_CN_N, RS_CN_S, RS_CN_E, RS_CN_W, RS_CN_U, RS_CN_D); }
-
-    @Override
-    @Nullable
-    public BlockState getStateForPlacement(BlockItemUseContext context)
-    {
-      return super.getStateForPlacement(context).setValue(RS_CN_N, false).setValue(RS_CN_S, false).setValue(RS_CN_E, false)
-                  .setValue(RS_CN_W, false).setValue(RS_CN_U, false).setValue(RS_CN_D, false);
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos pos, BlockPos facingPos)
-    { return get_rsconnector_state(state, world, pos, null); }
-
-    @Override
-    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
-    { world.updateNeighborsAt(pos,this); }
-
-    @Override
-    public boolean hasTileEntity(BlockState state)
-    { return true; }
-
-    @Override
-    @Nullable
-    public TileEntity createTileEntity(BlockState state, IBlockReader world)
-    { return new PipeValveTileEntity(); }
-
-    @Override
-    public BlockState rotate(BlockState state, IWorld world, BlockPos pos, Rotation direction)
-    { return get_rsconnector_state(state, world, pos, null); } // don't rotate at all
-
-    @Override
-    public boolean canConnectRedstone(BlockState state, IBlockReader world, BlockPos pos, @Nullable Direction side)
-    { return (side!=null) && (side!=state.getValue(FACING)) && (side!=state.getValue(FACING).getOpposite()); }
-
-    @Override
-    public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
-    { return false; }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public boolean isSignalSource(BlockState state)
-    { return true; }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public int getSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
-    { return 0; }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public int getDirectSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
-    { return 0; }
   }
 
   //--------------------------------------------------------------------------------------------------------------------
   // Tile entity
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class PipeValveTileEntity extends TileEntity implements ICapabilityProvider //, IFluidPipe
+  public static class PipeValveTileEntity extends StandardEntityBlocks.StandardBlockEntity
   {
     protected static int fluid_maxflow_mb = 1000;
     protected static int redstone_flow_slope_mb = 1000/15;
-    private Direction block_facing_ = null;
+    private final Direction block_facing_ = null;
     private boolean filling_ = false;
     private int valve_config_;
 
-    public PipeValveTileEntity()
-    { this(ModContent.TET_STRAIGHT_PIPE_VALVE); }
-
-    public PipeValveTileEntity(TileEntityType<?> te_type)
-    { super(te_type); }
+    public PipeValveTileEntity(BlockPos pos, BlockState state)
+    { super(ModContent.TET_STRAIGHT_PIPE_VALVE, pos, state); }
 
     private Direction block_facing()
     {
@@ -193,7 +188,7 @@ public class EdPipeValve
       return valve_config_;
     }
 
-    // TileEntity -----------------------------------------------------------------------------
+    // BlockEntity -----------------------------------------------------------------------------
 
     @Override
     public void setRemoved()
@@ -205,8 +200,8 @@ public class EdPipeValve
 
     // ICapabilityProvider --------------------------------------------------------------------
 
-    private final LazyOptional<IFluidHandler> back_flow_handler_ = LazyOptional.of(() -> (IFluidHandler)new BackFlowHandler());
-    private final LazyOptional<IFluidHandler> fluid_handler_ = LazyOptional.of(() -> (IFluidHandler)new MainFlowHandler(this));
+    private final LazyOptional<IFluidHandler> back_flow_handler_ = LazyOptional.of(BackFlowHandler::new);
+    private final LazyOptional<IFluidHandler> fluid_handler_ = LazyOptional.of(() -> new MainFlowHandler(this));
 
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
@@ -225,7 +220,7 @@ public class EdPipeValve
     @Nullable
     private IFluidHandler forward_fluid_handler()
     {
-      final TileEntity te = level.getBlockEntity(worldPosition.relative(block_facing()));
+      final BlockEntity te = level.getBlockEntity(worldPosition.relative(block_facing()));
       if(te == null) return null;
       return te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, block_facing().getOpposite()).orElse(null);
     }
@@ -252,7 +247,7 @@ public class EdPipeValve
         if((te.valve_config() & CFG_REDSTONE_CONTROLLED_VALVE) != 0) {
           int rs = te.level.getBestNeighborSignal(te.worldPosition);
           if(rs <= 0) return 0;
-          if(((te.valve_config() & CFG_ANALOG_VALVE) != 0) && (rs < 15)) res.setAmount(MathHelper.clamp(rs * redstone_flow_slope_mb, 1, res.getAmount()));
+          if(((te.valve_config() & CFG_ANALOG_VALVE) != 0) && (rs < 15)) res.setAmount(Mth.clamp(rs * redstone_flow_slope_mb, 1, res.getAmount()));
         }
         if(res.getAmount() > fluid_maxflow_mb) res.setAmount(fluid_maxflow_mb);
         te.filling_ = true;

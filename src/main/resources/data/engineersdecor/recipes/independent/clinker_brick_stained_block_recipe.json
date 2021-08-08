@@ -13,7 +13,7 @@
         "type": "minecraft:crafting_shapeless",
         "ingredients": [
           { "item": "engineersdecor:clinker_brick_block" },
-          { "tag": "engineersdecor:dirts" }
+          { "item": "minecraft:dirt" }
         ],
         "result": {
           "item": "engineersdecor:clinker_brick_stained_block"

@@ -8,24 +8,24 @@
  */
 package wile.engineersdecor.libmc.detail;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.TagCollectionManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.JSONUtils;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.*;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
-import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.ForgeRegistries;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.logging.log4j.Logger;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
 
 
@@ -97,7 +97,7 @@ public class OptionalRecipeCondition implements ICondition
     if(without_recipes) return false;
     if((experimental) && (!with_experimental)) return false;
     final IForgeRegistry<Item> item_registry = ForgeRegistries.ITEMS;
-    final Map<ResourceLocation, ITag<Item>> item_tags = TagCollectionManager.getInstance().getItems().getAllTags();
+    final Collection<ResourceLocation> item_tags = SerializationTags.getInstance().getOrEmpty(Registry.ITEM_REGISTRY).getAvailableTags();
     if(result != null) {
       boolean item_registered = item_registry.containsKey(result);
       if(!item_registered) return false; // required result not registered
@@ -111,8 +111,7 @@ public class OptionalRecipeCondition implements ICondition
     }
     if(!all_required_tags.isEmpty()) {
       for(ResourceLocation rl:all_required_tags) {
-        if(!item_tags.containsKey(rl)) return false;
-        if(item_tags.get(rl).getValues().isEmpty()) return false;
+        if(!item_tags.contains(rl)) return false;
       }
     }
     if(!any_missing.isEmpty()) {
@@ -123,8 +122,7 @@ public class OptionalRecipeCondition implements ICondition
     }
     if(!any_missing_tags.isEmpty()) {
       for(ResourceLocation rl:any_missing_tags) {
-        if(!item_tags.containsKey(rl)) return true;
-        if(item_tags.get(rl).getValues().isEmpty()) return true;
+        if(!item_tags.contains(rl)) return true;
       }
       return false;
     }
@@ -149,7 +147,7 @@ public class OptionalRecipeCondition implements ICondition
       json.add("required", required);
       json.add("missing", missing);
       if(condition.result != null) {
-        json.addProperty("result", (condition.result_is_tag ? "#" : "") + condition.result.toString());
+        json.addProperty("result", (condition.result_is_tag ? "#" : "") + condition.result);
       }
     }
 
@@ -173,7 +171,7 @@ public class OptionalRecipeCondition implements ICondition
         }
       }
       if(json.has("required")) {
-        for(JsonElement e:JSONUtils.getAsJsonArray(json, "required")) {
+        for(JsonElement e:GsonHelper.getAsJsonArray(json, "required")) {
           String s = e.getAsString();
           if(s.startsWith("#")) {
             required_tags.add(new ResourceLocation(s.substring(1)));
@@ -183,7 +181,7 @@ public class OptionalRecipeCondition implements ICondition
         }
       }
       if(json.has("missing")) {
-        for(JsonElement e:JSONUtils.getAsJsonArray(json, "missing")) {
+        for(JsonElement e:GsonHelper.getAsJsonArray(json, "missing")) {
           String s = e.getAsString();
           if(s.startsWith("#")) {
             missing_tags.add(new ResourceLocation(s.substring(1)));

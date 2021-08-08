@@ -6,7 +6,7 @@
         {
           "type": "engineersdecor:optional",
           "result": "engineersdecor:steel_framed_window",
-          "required": ["#engineersdecor:plain_glass_panes", "engineersdecor:metal_bar"]
+          "required": ["minecraft:glass_pane", "engineersdecor:metal_bar"]
         }
       ],
       "recipe": {
@@ -18,7 +18,7 @@
         ],
         "key": {
           "W": { "item": "engineersdecor:metal_bar" },
-          "G": { "tag": "engineersdecor:plain_glass_panes" }
+          "G": { "item": "minecraft:glass_pane" }
         },
         "result": {
           "item": "engineersdecor:steel_framed_window",

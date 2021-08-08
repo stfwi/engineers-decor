@@ -7,8 +7,9 @@
  * JEI plugin (see https://github.com/mezz/JustEnoughItems/wiki/Creating-Plugins)
  */
 package wile.engineersdecor.eapi.jei;
-//public class JEIPlugin {}
+public class JEIPlugin {}
 
+/*
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.ModConfig;
@@ -35,7 +36,7 @@ public class JEIPlugin implements mezz.jei.api.IModPlugin
 {
   @Override
   public ResourceLocation getPluginUid()
-  { return new ResourceLocation(ModEngineersDecor.MODID, "jei_plugin_uid"); }
+  { return new ResourceLocation(Auxiliaries.modid(), "jei_plugin_uid"); }
 
   @Override
   public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration)
@@ -91,3 +92,4 @@ public class JEIPlugin implements mezz.jei.api.IModPlugin
     }
   }
 }
+*/

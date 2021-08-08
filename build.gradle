@@ -1,20 +1,18 @@
 // @file build.gradle
 // Engineer's decor mod gradle build.
-import net.minecraftforge.gradle.common.task.SignJar
 buildscript {
   repositories {
-    maven { url = 'https://files.minecraftforge.net/maven' }
-    jcenter()
-    mavenCentral()
+      maven { url = 'https://maven.minecraftforge.net' }
+      mavenCentral()
   }
   dependencies {
-    classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+      classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
   }
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 //----------------------------------------------------------------------------------------------------------------------
 version = "${version_engineersdecor}"
 group = "wile.engineersdecor"
@@ -23,51 +21,40 @@ archivesBaseName = "engineersdecor-${version_minecraft}"
 repositories {
   maven { name = "Progwml6 maven"; url = "https://dvs1.progwml6.com/files/maven/" } // JEI files
   maven { name = "ModMaven"; url = "https://modmaven.k-4u.nl" } // JEI files, fallback
+  flatDir { dir 'libs' } // Mod jar dependencies in ./libs
 }
 
 minecraft {
   // mappings channel: 'snapshot', version: "${version_fml_mappings}"
-  mappings channel: "official", version: "1.16.5"
+  mappings channel: "official", version: "1.17.1"
   // accessTransformer = file('build/resources/main/META-INF/accesstransformer.cfg')
   runs {
     client {
       workingDirectory project.file('run')
       property 'forge.logging.markers', '' // SCAN,REGISTRIES,REGISTRYDUMP
-      property 'forge.logging.console.level', 'debug'
-      mods {
-        engineersdecor {
-          source sourceSets.main
-        }
-      }
+      property 'forge.logging.console.level', 'info'
+      mods { engineersdecor { source sourceSets.main } }
     }
     server {
       workingDirectory project.file('run')
       property 'forge.logging.markers', '' // SCAN,REGISTRIES,REGISTRYDUMP
-      property 'forge.logging.console.level', 'debug'
-      mods {
-        engineersdecor {
-          source sourceSets.main
-        }
-      }
+      property 'forge.logging.console.level', 'info'
+      mods { engineersdecor { source sourceSets.main } }
     }
-    data {
-      workingDirectory project.file('run')
-      property 'forge.logging.markers', '' // SCAN,REGISTRIES,REGISTRYDUMP
-      property 'forge.logging.console.level', 'debug'
-      args '--mod', 'engineersdecor', '--all', '--output', file('src/generated/resources/')
-      mods {
-        engineersdecor {
-          source sourceSets.main
-        }
-      }
-    }
+    // data {
+    //   workingDirectory project.file('run')
+    //   property 'forge.logging.markers', '' // SCAN,REGISTRIES,REGISTRYDUMP
+    //   property 'forge.logging.console.level', 'info'
+    //   args '--mod', 'engineersdecor', '--all', '--output', file('src/generated/resources/')
+    //   mods { engineersdecor { source sourceSets.main } }
+    // }
   }
 }
 
 dependencies {
   minecraft "net.minecraftforge:forge:${version_forge_minecraft}"
-  compileOnly fg.deobf("mezz.jei:jei-${version_jei}:api")
-  runtimeOnly fg.deobf("mezz.jei:jei-${version_jei}")
+  //compileOnly fg.deobf("mezz.jei:jei-${version_jei}:api")
+  //runtimeOnly fg.deobf("mezz.jei:jei-${version_jei}")
 }
 
 processResources {
@@ -89,25 +76,29 @@ jar {
   }
 }
 
-def reobfFile = file("$buildDir/reobfJar/output.jar")
-def reobfArtifact = artifacts.add('default', reobfFile) { type 'jar'; builtBy 'reobfJar' }
+sourceSets.main.resources { srcDir 'src/generated/resources' } // Include datagen resources
+jar.finalizedBy('reobfJar')
 
-task signJar(type: SignJar, dependsOn: jar) {
-  onlyIf { project.hasProperty("keystore_file") }
-  if(project.hasProperty("keystore_file")) {
-    keyStore = project.getProperty("keystore_file")
-    alias = project.getProperty("keystore_alias")
-    storePass = project.getProperty("keystore_pass")
-    keyPass = project.getProperty("keystore_keypass")
-    inputFile = jar.archivePath
-    outputFile = jar.archivePath
-  } else {
-    logger.warn("[WARNING] Signing skipped.")
-  }
-}
-build.dependsOn signJar
+// import net.minecraftforge.gradle.common.task.SignJar
+// def reobfFile = file("$buildDir/reobfJar/output.jar")
+// def reobfArtifact = artifacts.add('default', reobfFile) { type 'jar'; builtBy 'reobfJar' }
+
+// task signJar(type: SignJar, dependsOn: jar) {
+//   onlyIf { project.hasProperty("keystore_file") }
+//   if(project.hasProperty("keystore_file")) {
+//     keyStore = project.getProperty("keystore_file")
+//     alias = project.getProperty("keystore_alias")
+//     storePass = project.getProperty("keystore_pass")
+//     keyPass = project.getProperty("keystore_keypass")
+//     inputFile = jar.archivePath
+//     outputFile = jar.archivePath
+//   } else {
+//     logger.warn("[WARNING] Signing skipped.")
+//   }
+// }
+// build.dependsOn signJar
 
 publishing {
-  publications { mavenJava(MavenPublication) { artifact reobfArtifact } }
+  publications { mavenJava(MavenPublication) { artifact jar } }
   repositories { maven { url "file:///${project.projectDir}/mcmodsrepo" } }
 }

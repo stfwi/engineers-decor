@@ -8,23 +8,32 @@
  */
 package wile.engineersdecor.blocks;
 
-import net.minecraft.entity.monster.piglin.PiglinEntity;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.World;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.*;
-import net.minecraft.entity.monster.*;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.util.math.*;
-import net.minecraft.util.*;
-import net.minecraftforge.fml.network.FMLPlayMessages;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.monster.*;
+import net.minecraft.world.entity.monster.piglin.Piglin;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
+
 import java.util.List;
 import java.util.Random;
 
@@ -39,8 +48,8 @@ public class EdChair
   public static void on_config(boolean without_sitting, boolean without_mob_sitting, double sitting_probability_percent, double standup_probability_percent)
   {
     sitting_enabled = (!without_sitting);
-    sitting_probability = (without_sitting||without_mob_sitting) ? 0.0 : MathHelper.clamp(sitting_probability_percent/100, 0, 0.9);
-    standup_probability = (without_sitting||without_mob_sitting) ? 1.0 : MathHelper.clamp(standup_probability_percent/100, 1e-6, 1e-2);
+    sitting_probability = (without_sitting||without_mob_sitting) ? 0.0 : Mth.clamp(sitting_probability_percent/100, 0, 0.9);
+    standup_probability = (without_sitting||without_mob_sitting) ? 1.0 : Mth.clamp(standup_probability_percent/100, 1e-6, 1e-2);
     ModConfig.log("Config chairs: sit:" + sitting_enabled + ", mob-sit: " + (sitting_probability*100) + "%, standup: " + (standup_probability) + "%.");
   }
 
@@ -48,34 +57,34 @@ public class EdChair
   // Block
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class ChairBlock extends DecorBlock.HorizontalWaterLoggable implements IDecorBlock
+  public static class ChairBlock extends StandardBlocks.HorizontalWaterLoggable
   {
-    public ChairBlock(long config, AbstractBlock.Properties builder, final AxisAlignedBB[] unrotatedAABBs)
+    public ChairBlock(long config, BlockBehaviour.Properties builder, final AABB[] unrotatedAABBs)
     { super(config, builder.randomTicks(), unrotatedAABBs); }
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult)
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult)
     {
-      if(!sitting_enabled) return ActionResultType.PASS;
-      if(world.isClientSide()) return ActionResultType.SUCCESS;
+      if(!sitting_enabled) return InteractionResult.PASS;
+      if(world.isClientSide()) return InteractionResult.SUCCESS;
       EntityChair.sit(world, player, pos);
-      return ActionResultType.CONSUME;
+      return InteractionResult.CONSUME;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public void entityInside(BlockState state, World world, BlockPos pos, Entity entity)
+    public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity)
     {
-      if(sitting_enabled && (Math.random() < sitting_probability) && (entity instanceof MobEntity)) EntityChair.sit(world, (LivingEntity)entity, pos);
+      if(sitting_enabled && (Math.random() < sitting_probability) && (entity instanceof Mob)) EntityChair.sit(world, (LivingEntity)entity, pos);
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rnd)
+    public void tick(BlockState state, ServerLevel world, BlockPos pos, Random rnd)
     {
       if((!sitting_enabled) || (sitting_probability < 1e-6)) return;
-      final List<LivingEntity> entities = world.getEntitiesOfClass(MobEntity.class, new AxisAlignedBB(pos).inflate(2,1,2).expandTowards(0,1,0), e->true);
+      final List<Mob> entities = world.getEntitiesOfClass(Mob.class, new AABB(pos).inflate(2,1,2).expandTowards(0,1,0), e->true);
       if(entities.isEmpty()) return;
       int index = rnd.nextInt(entities.size());
       if((index < 0) || (index >= entities.size())) return;
@@ -95,45 +104,45 @@ public class EdChair
     private int t_sit = 0;
     public BlockPos chair_pos = new BlockPos(0,0,0);
 
-    public EntityChair(EntityType<? extends Entity> entityType, World world)
+    public EntityChair(EntityType<? extends Entity> entityType, Level world)
     {
       super(entityType, world);
       blocksBuilding=true;
-      setDeltaMovement(Vector3d.ZERO);
+      setDeltaMovement(Vec3.ZERO);
       canUpdate(true);
       noPhysics=true;
     }
 
-    public EntityChair(World world)
+    public EntityChair(Level world)
     { this(ModContent.ET_CHAIR, world); }
 
-    public static EntityChair customClientFactory(FMLPlayMessages.SpawnEntity spkt, World world)
+    public static EntityChair customClientFactory(FMLPlayMessages.SpawnEntity spkt, Level world)
     { return new EntityChair(world); }
 
-    public IPacket<?> getAddEntityPacket()
+    public Packet<?> getAddEntityPacket()
     { return NetworkHooks.getEntitySpawningPacket(this); }
 
     public static boolean accepts_mob(LivingEntity entity)
     {
-      if(!(entity instanceof net.minecraft.entity.monster.MonsterEntity)) return false;
+      if(!(entity instanceof Monster)) return false;
       if((entity.getType().getDimensions().height > 2.5) || (entity.getType().getDimensions().height > 2.0)) return false;
-      if(entity instanceof ZombieEntity) return true;
-      if(entity instanceof ZombieVillagerEntity) return true;
-      if(entity instanceof ZombifiedPiglinEntity) return true;
-      if(entity instanceof PiglinEntity) return true;
-      if(entity instanceof HuskEntity) return true;
-      if(entity instanceof StrayEntity) return true;
-      if(entity instanceof SkeletonEntity) return true;
-      if(entity instanceof WitherSkeletonEntity) return true;
+      if(entity instanceof Zombie) return true;
+      if(entity instanceof ZombieVillager) return true;
+      if(entity instanceof ZombifiedPiglin) return true;
+      if(entity instanceof Piglin) return true;
+      if(entity instanceof Husk) return true;
+      if(entity instanceof Stray) return true;
+      if(entity instanceof Skeleton) return true;
+      if(entity instanceof WitherSkeleton) return true;
       return false;
     }
 
-    public static void sit(World world, LivingEntity sitter, BlockPos pos)
+    public static void sit(Level world, LivingEntity sitter, BlockPos pos)
     {
       if(!sitting_enabled) return;
       if((world==null) || (world.isClientSide) || (sitter==null) || (pos==null)) return;
-      if((!(sitter instanceof PlayerEntity)) && (!accepts_mob(sitter))) return;
-      if(!world.getEntitiesOfClass(EntityChair.class, new AxisAlignedBB(pos)).isEmpty()) return;
+      if((!(sitter instanceof Player)) && (!accepts_mob(sitter))) return;
+      if(!world.getEntitiesOfClass(EntityChair.class, new AABB(pos)).isEmpty()) return;
       if(sitter.isVehicle() || (!sitter.isAlive()) || (sitter.isPassenger()) ) return;
       if((!world.isEmptyBlock(pos.above())) || (!world.isEmptyBlock(pos.above(2)))) return;
       boolean on_top_of_block_position = true;
@@ -154,10 +163,10 @@ public class EdChair
     protected void defineSynchedData() {}
 
     @Override
-    protected void readAdditionalSaveData(CompoundNBT compound) {}
+    protected void readAdditionalSaveData(CompoundTag compound) {}
 
     @Override
-    protected void addAdditionalSaveData(CompoundNBT compound) {}
+    protected void addAdditionalSaveData(CompoundTag compound) {}
 
     @Override
     public boolean isPushable()
@@ -175,19 +184,19 @@ public class EdChair
       if(--t_sit > 0) return;
       Entity sitter = getPassengers().isEmpty() ? null : getPassengers().get(0);
       if((sitter==null) || (!sitter.isAlive())) {
-        this.remove();
+        this.remove(RemovalReason.DISCARDED);
         return;
       }
       boolean abort = (!sitting_enabled);
       final BlockState state = level.getBlockState(chair_pos);
       if((state==null) || (!(state.getBlock() instanceof ChairBlock))) abort = true;
       if(!level.isEmptyBlock(chair_pos.above())) abort = true;
-      if((!(sitter instanceof PlayerEntity)) && (Math.random() < standup_probability)) abort = true;
+      if((!(sitter instanceof Player)) && (Math.random() < standup_probability)) abort = true;
       if(abort) {
         for(Entity e:getPassengers()) {
           if(e.isAlive()) e.stopRiding();
         }
-        this.remove();
+        this.remove(RemovalReason.DISCARDED);
       }
     }
   }
