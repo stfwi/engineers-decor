@@ -11,7 +11,7 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
-    ~ v1.1.15-b1 [F]
+    ~ v1.1.15-b1 [F] Updated lang zh_cn (thx Lyaiya, PR#183).
 
     - v1.1.14    [R] Release build v1.1.14.
 
