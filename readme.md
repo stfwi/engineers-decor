@@ -11,7 +11,9 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
-    ~ v1.1.17-b1 [U] Initial MC 1.17.1 port.
+    ~ v1.1.17-b2 [F]
+
+    - v1.1.17-b1 [U] Initial MC 1.17.1 port.
                  [M] Clinker Brick textures adapted to contemporary MC textures.
                  [D] Gas Concrete dropped (Rebar Concrete suffices for texture variation).
                  [D] Treated Wood Side Table dropped.
