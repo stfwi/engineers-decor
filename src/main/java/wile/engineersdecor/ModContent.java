@@ -41,7 +41,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.commons.lang3.ArrayUtils;
@@ -307,12 +306,12 @@ public class ModContent
 
   public static final StandardBlocks.BaseBlock DENSE_GRIT_SAND = (StandardBlocks.BaseBlock)(new StandardBlocks.BaseBlock(
     DecorBlock.CFG_DEFAULT,
-    BlockBehaviour.Properties.of(Material.DIRT, MaterialColor.DIRT).strength(0.5f, 3f).sound(SoundType.GRAVEL).harvestTool(ToolType.SHOVEL)
+    BlockBehaviour.Properties.of(Material.DIRT, MaterialColor.DIRT).strength(0.1f, 3f).sound(SoundType.GRAVEL)
   )).setRegistryName(new ResourceLocation(MODID, "dense_grit_sand_block"));
 
   public static final StandardBlocks.BaseBlock DENSE_GRIT_DIRT = (StandardBlocks.BaseBlock)(new StandardBlocks.BaseBlock(
     DecorBlock.CFG_DEFAULT,
-    BlockBehaviour.Properties.of(Material.DIRT, MaterialColor.DIRT).strength(0.5f, 3f).sound(SoundType.GRAVEL).harvestTool(ToolType.SHOVEL)
+    BlockBehaviour.Properties.of(Material.DIRT, MaterialColor.DIRT).strength(0.1f, 3f).sound(SoundType.GRAVEL)
   )).setRegistryName(new ResourceLocation(MODID, "dense_grit_dirt_block"));
 
   public static final SlabSliceBlock HALFSLAB_DARK_CERAMIC_SHINGLE_ROOF = (SlabSliceBlock)(new SlabSliceBlock(
