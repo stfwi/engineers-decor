@@ -223,7 +223,7 @@ public class EdMineralSmelter
     public static final int MAX_ENERGY_BUFFER = 32000;
     public static final int MAX_ENERGY_TRANSFER = 8192;
     public static final int DEFAULT_ENERGY_CONSUMPTION = 92;
-    public static final int DEFAULT_HEATUP_RATE = 2; // -> 50s for one smelting process
+    public static final int DEFAULT_HEATUP_RATE = 10; //2; // -> 50s for one smelting process
     public static final int PHASE_WARMUP = 0;
     public static final int PHASE_HOT = 1;
     public static final int PHASE_MAGMABLOCK = 2;
@@ -267,7 +267,7 @@ public class EdMineralSmelter
         .setStackLimit(1)
         .setValidator((index,stack)-> ((index==1) || ((index==0) && accepts_input(stack))))
         .setSlotChangeAction((slot,stack)->{
-          System.out.println("slot"+slot+"<<"+stack);
+          //System.out.println("slot"+slot+"<<"+stack);
         });
       item_handler_ = Inventories.MappedItemHandler.createGenericHandler(
         main_inventory_,
@@ -329,10 +329,15 @@ public class EdMineralSmelter
       return stack;
     }
 
+    protected void drain_lava_bucket()
+    {
+    }
+
     protected void reset_process()
     {
       main_inventory_.setItem(0, ItemStack.EMPTY);
       main_inventory_.setItem(1, ItemStack.EMPTY);
+      tank_.clear();
       force_block_update_ = true;
       tick_timer_ = 0;
       progress_ = 0;
@@ -396,14 +401,14 @@ public class EdMineralSmelter
       boolean dirty = false;
       final int last_phase = phase();
       final ItemStack istack = main_inventory_.getItem(0);
-      if(istack.isEmpty() && tank_.isEmpty()) {
+      if(istack.isEmpty() && (tank_.getFluidAmount()<1000)) {
         progress_ = 0;
       } else if((battery_.isEmpty()) || (level.hasNeighborSignal(worldPosition))) {
         progress_ = Mth.clamp(progress_-cooldown_rate, 0,100);
       } else if(progress_ >= 100) {
         progress_ = 100;
         if(!battery_.draw(energy_consumption*TICK_INTERVAL/20)) battery_.clear();
-      } else {
+      } else if((phase()>=PHASE_LAVA) || (!istack.isEmpty())) {
         if(!battery_.draw(energy_consumption*TICK_INTERVAL)) battery_.clear();
         progress_ = Mth.clamp(progress_+heatup_rate, 0, 100);
       }
@@ -447,9 +452,13 @@ public class EdMineralSmelter
         // Cool-down to prev phase happened.
         switch(new_phase) {
           case PHASE_MAGMABLOCK -> {
-            main_inventory_.setItem(0, (tank_.getFluidAmount() >= MAX_BUCKET_EXTRACT_FLUID_LEVEL) ? (MAGMA_STACK.copy()) : (ItemStack.EMPTY));
-            main_inventory_.setItem(1, main_inventory_.getItem(0).copy());
-            tank_.clear();
+            if(tank_.getFluidAmount() < 1000) {
+              reset_process();
+            } else {
+              main_inventory_.setItem(0, (tank_.getFluidAmount() >= MAX_BUCKET_EXTRACT_FLUID_LEVEL) ? (MAGMA_STACK.copy()) : (ItemStack.EMPTY));
+              main_inventory_.setItem(1, main_inventory_.getItem(0).copy());
+              tank_.clear();
+            }
             level.playSound(null, worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5f, 1.1f);
             dirty = true;
           }
@@ -466,17 +475,16 @@ public class EdMineralSmelter
             level.playSound(null, worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.3f, 0.7f);
           }
         }
-      } else if((phase()==PHASE_LAVA) && fluid_extraction_possible()) {
+      } else if((phase()==PHASE_LAVA) && (tank_.getFluidAmount()>0)) {
         // Phase unchanged, fluid transfer check.
-        final IFluidHandler fh = Fluidics.handler(level, getBlockPos().below(), Direction.UP);
-        if(fh != null) {
-          int n = fh.fill(LAVA_BUCKET_FLUID_STACK.copy(), IFluidHandler.FluidAction.SIMULATE);
-          if(n >= LAVA_BUCKET_FLUID_STACK.getAmount()/2) {
-            n = fh.fill(LAVA_BUCKET_FLUID_STACK.copy(), IFluidHandler.FluidAction.EXECUTE);
-            if(n > 0) {
-              reset_process();
-              level.playSound(null, worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.3f, 0.7f);
-            }
+        FluidStack fs = tank_.getFluid().copy();
+        if(fs.getAmount() > 100) fs.setAmount(100);
+        final int n = Fluidics.fill(level, getBlockPos().below(), Direction.UP, fs);
+        if(n > 0) {
+          tank_.drain(n);
+          if(tank_.isEmpty()) {
+            reset_process();
+            level.playSound(null, worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.3f, 0.7f);
           }
         }
       }

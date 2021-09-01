@@ -706,8 +706,9 @@ public class EdFurnace
       protected void checkTakeAchievements(ItemStack stack)
       {
         stack.onCraftedBy(player_.level, player_, removeCount);
-        if((!player_.level.isClientSide()) && (inventory_ instanceof StorageInventory)) {
-          FurnaceTileEntity te = (FurnaceTileEntity)(((StorageInventory)inventory_).getTileEntity());
+        if((!player_.level.isClientSide()) && (inventory_ instanceof StorageInventory) &&
+          ((((StorageInventory)inventory_).getTileEntity()) instanceof final FurnaceTileEntity te)
+        ) {
           int xp = te.consumeSmeltingExperience(stack);
           while(xp > 0) {
             int k = ExperienceOrb.getExperienceValue(xp);

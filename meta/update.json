@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.17.1": {
+    "1.1.17-b3": "[F] Fixed Factory Hopper GUI element events.",
     "1.1.17-b2": "[F] Updated to Forge 1.17.1-37.0.51 to fix `ToolType not found` startup crash.\n[A] JEI plugin enabled.\n[A] Dark Shingle Roof recipe variant added.",
     "1.1.17-b1": "[U] Initial MC 1.17.1 port.\n[M] Clinker Brick textures adapted to contemporary MC textures.\n[D] Gas Concrete dropped (Rebar Concrete suffices for texture variation).\n[D] Treated Wood Side Table dropped.\n[M] Updated zh_cn (PR#183, Lyaiya).",
     "1.1.14": "[R] Release build v1.1.14.",
@@ -42,6 +43,6 @@
   },
   "promos": {
     "1.17.1-recommended": "1.1.14",
-    "1.17.1-latest": "1.1.17-b2"
+    "1.17.1-latest": "1.1.17-b3"
   }
 }

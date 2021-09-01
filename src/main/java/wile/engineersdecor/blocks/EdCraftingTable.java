@@ -331,8 +331,8 @@ public class EdCraftingTable
       inventory_ = block_inventory;
       inventory_.startOpen(player_);
       Level world = player_.level;
-      if((inventory_ instanceof StorageInventory) && ((((StorageInventory)inventory_).getTileEntity()) instanceof CraftingTableTileEntity)) {
-        te_ = (CraftingTableTileEntity)(((StorageInventory)inventory_).getTileEntity());
+      if((inventory_ instanceof StorageInventory) && ((((StorageInventory)inventory_).getTileEntity()) instanceof final CraftingTableTileEntity te)) {
+        te_ = te;
       } else {
         te_ = null;
       }

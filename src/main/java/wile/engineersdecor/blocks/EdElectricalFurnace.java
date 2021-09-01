@@ -716,8 +716,8 @@ public class EdElectricalFurnace
       protected void checkTakeAchievements(ItemStack stack)
       {
         stack.onCraftedBy(player_.level, player_, removeCount);
-        if((!player_.level.isClientSide()) && (inventory_ instanceof StorageInventory)) {
-          ElectricalFurnaceTileEntity te = (ElectricalFurnaceTileEntity)(((StorageInventory)inventory_).getTileEntity());
+        if((!player_.level.isClientSide()) && (inventory_ instanceof StorageInventory) &&
+          (((StorageInventory)inventory_).getTileEntity()) instanceof final ElectricalFurnaceTileEntity te) {
           int xp = te.consumeSmeltingExperience(stack);
           while(xp > 0) {
             int k = ExperienceOrb.getExperienceValue(xp);
@@ -838,7 +838,7 @@ public class EdElectricalFurnace
     public void onClientPacketReceived(int windowId, Player player, CompoundTag nbt)
     {
       if(!(inventory_ instanceof StorageInventory)) return;
-      ElectricalFurnaceTileEntity te = (ElectricalFurnaceTileEntity)(((StorageInventory)inventory_).getTileEntity());
+      if(!((((StorageInventory)inventory_).getTileEntity()) instanceof final ElectricalFurnaceTileEntity te)) return;
       if(nbt.contains("speed")) te.speed_ = Mth.clamp(nbt.getInt("speed"), 0, ElectricalFurnaceTileEntity.MAX_SPEED_SETTING);
       te.setChanged();
     }

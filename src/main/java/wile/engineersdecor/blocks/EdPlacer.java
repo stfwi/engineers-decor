@@ -652,7 +652,8 @@ public class EdPlacer
     @Override
     public void onClientPacketReceived(int windowId, Player player, CompoundTag nbt)
     {
-      if((!(inventory_ instanceof Inventories.StorageInventory)) || (!((((Inventories.StorageInventory)inventory_).getTileEntity()) instanceof PlacerTileEntity te))) return;
+      if(!(inventory_ instanceof Inventories.StorageInventory)) return;
+      if(!((((Inventories.StorageInventory)inventory_).getTileEntity()) instanceof PlacerTileEntity te)) return;
       if(nbt.contains("action")) {
         final int slotId = nbt.contains("slot") ? nbt.getInt("slot") : -1;
         boolean changed = false;

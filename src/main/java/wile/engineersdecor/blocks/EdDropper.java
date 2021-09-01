@@ -735,7 +735,8 @@ public class EdDropper
     @Override
     public void onClientPacketReceived(int windowId, Player player, CompoundTag nbt)
     {
-      if((!(inventory_ instanceof StorageInventory)) || (!(((StorageInventory)inventory_).getTileEntity() instanceof DropperTileEntity))) return;
+      if(!(inventory_ instanceof Inventories.StorageInventory)) return;
+      if(!(((Inventories.StorageInventory)inventory_).getTileEntity() instanceof final DropperTileEntity te)) return;
       if(nbt.contains("action")) {
         boolean changed = false;
         final int slotId = nbt.contains("slot") ? nbt.getInt("slot") : -1;
@@ -754,7 +755,6 @@ public class EdDropper
           broadcastChanges();
         }
       } else {
-        DropperTileEntity te = (DropperTileEntity)((StorageInventory)inventory_).getTileEntity();
         if(nbt.contains("drop_speed")) te.drop_speed_ = Mth.clamp(nbt.getInt("drop_speed"), 0, 100);
         if(nbt.contains("drop_xdev"))  te.drop_xdev_  = Mth.clamp(nbt.getInt("drop_xdev"), -100, 100);
         if(nbt.contains("drop_ydev"))  te.drop_ydev_  = Mth.clamp(nbt.getInt("drop_ydev"), -100, 100);

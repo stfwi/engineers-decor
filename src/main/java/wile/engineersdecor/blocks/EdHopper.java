@@ -716,7 +716,8 @@ public class EdHopper
     @Override
     public void onClientPacketReceived(int windowId, Player player, CompoundTag nbt)
     {
-      if(!(inventory_ instanceof HopperTileEntity te)) return;
+      if(!(inventory_ instanceof Inventories.StorageInventory)) return;
+      if(!((((((Inventories.StorageInventory)inventory_).getTileEntity())) instanceof final EdHopper.HopperTileEntity te))) return;
       if(nbt.contains("xsize")) te.transfer_count_  = Mth.clamp(nbt.getInt("xsize"), 1, HopperTileEntity.MAX_TRANSFER_COUNT);
       if(nbt.contains("period")) te.transfer_period_ = Mth.clamp(nbt.getInt("period"),   0,  100);
       if(nbt.contains("range")) te.collection_range_ = Mth.clamp(nbt.getInt("range"),   0,  HopperTileEntity.MAX_COLLECTION_RANGE);
