@@ -233,7 +233,7 @@ More to come slowly but steadily.
     blocks under development to be registered as well.
 
 ----
-## Version history
+### Version history
 
 Mod versions are tracked in the readme files for individual Minecraft versions, and
 of course in the commits of this repository. Simply take a look into the other branches.
