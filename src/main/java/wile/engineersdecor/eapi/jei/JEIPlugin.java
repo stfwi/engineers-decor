@@ -7,24 +7,25 @@
  * JEI plugin (see https://github.com/mezz/JustEnoughItems/wiki/Creating-Plugins)
  */
 package wile.engineersdecor.eapi.jei;
-public class JEIPlugin {}
-
 /*
+public class JEIPlugin {}
+*/
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
-import wile.engineersdecor.ModEngineersDecor;
-import wile.engineersdecor.ModConfig;
-import wile.engineersdecor.ModContent;
-import wile.engineersdecor.blocks.EdCraftingTable;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.runtime.IJeiRuntime;
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import wile.engineersdecor.blocks.EdCraftingTable.CraftingTableTileEntity;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.ModConfig;
+import wile.engineersdecor.ModContent;
+import wile.engineersdecor.blocks.EdCraftingTable;
 
 import java.util.HashSet;
 import java.util.List;
@@ -92,4 +93,3 @@ public class JEIPlugin implements mezz.jei.api.IModPlugin
     }
   }
 }
-*/

@@ -1,0 +1,33 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:dark_shingle_roof"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "D  ",
+          "BD ",
+          "DBD"
+        ],
+        "key": {
+          "B": {
+            "item": "minecraft:brick"
+          },
+          "D": {
+            "item": "minecraft:deepslate_tile_stairs"
+          }
+        },
+        "result": {
+          "item": "engineersdecor:dark_shingle_roof",
+          "count": 6
+        }
+      }
+    }
+  ]
+}

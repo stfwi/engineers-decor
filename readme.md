@@ -11,7 +11,9 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
-    ~ v1.1.17-b2 [F]
+    - v1.1.17-b2 [F] Updated to Forge 1.17.1-37.0.51 to fix `ToolType not found` startup crash.
+                 [A] JEI plugin enabled.
+                 [A] Dark Shingle Roof recipe variant added.
 
     - v1.1.17-b1 [U] Initial MC 1.17.1 port.
                  [M] Clinker Brick textures adapted to contemporary MC textures.
