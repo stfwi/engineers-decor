@@ -19,13 +19,13 @@ logoFile="logo.png"
 [[dependencies.engineersdecor]]
   modId="forge"
   mandatory=true
-  versionRange="[35.0.2,)"
+  versionRange="[36.2.0,)"
   ordering="NONE"
   side="BOTH"
 
 [[dependencies.engineersdecor]]
   modId="minecraft"
   mandatory=true
-  versionRange="[1.16.4,)"
+  versionRange="[1.16.5,)"
   ordering="NONE"
   side="BOTH"
