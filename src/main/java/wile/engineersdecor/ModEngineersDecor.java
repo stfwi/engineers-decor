@@ -17,6 +17,7 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -44,8 +45,6 @@ public class ModEngineersDecor
     ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.COMMON, ModConfig.COMMON_CONFIG_SPEC);
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onSetup);
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientSetup);
-    // FMLJavaModLoadingContext.get().getModEventBus().addListener(ForgeEvents::onConfigLoad);
-    // FMLJavaModLoadingContext.get().getModEventBus().addListener(ForgeEvents::onConfigReload);
     MinecraftForge.EVENT_BUS.register(this);
   }
 
@@ -93,20 +92,20 @@ public class ModEngineersDecor
     public static void onRegisterContainerTypes(final RegistryEvent.Register<MenuType<?>> event)
     { ModContent.registerContainers(event); }
 
-    /*
-    public static void onConfigLoad(net.minecraftforge.fml.config.ModConfig.Loading configEvent)
+    @SubscribeEvent
+    public static void onConfigLoad(final ModConfigEvent.Loading event)
     { ModConfig.apply(); }
 
-    public static void onConfigReload(net.minecraftforge.fml.config.ModConfig.Reloading configEvent)
+    @SubscribeEvent
+    public static void onConfigReload(final ModConfigEvent.Reloading event)
     {
       try {
-        ModEngineersDecor.logger().info("Config file changed {}", configEvent.getConfig().getFileName());
+        ModEngineersDecor.logger().info("Config file changed {}", event.getConfig().getFileName());
         ModConfig.apply();
       } catch(Throwable e) {
         ModEngineersDecor.logger().error("Failed to load changed config: " + e.getMessage());
       }
     }
-   */
   }
 
   //

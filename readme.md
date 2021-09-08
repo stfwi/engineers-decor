@@ -11,6 +11,10 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
+    - v1.1.17-b4 [F] Config event update fixed.
+                 [F] Milker fluid tank handling issue fixed.
+                 [F] Device collision shapes adapted to allow attaching levers.
+
     - v1.1.17-b3 [F] Fixed Factory Hopper GUI element events.
 
     - v1.1.17-b2 [F] Updated to Forge 1.17.1-37.0.51 to fix `ToolType not found` startup crash.

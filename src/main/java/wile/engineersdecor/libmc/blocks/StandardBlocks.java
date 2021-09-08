@@ -273,12 +273,14 @@ public class StandardBlocks
   {
     public static final DirectionProperty FACING = DirectionalBlock.FACING;
     protected final ArrayList<VoxelShape> vshapes;
+    protected final ArrayList<VoxelShape> cshapes;
 
     public Directed(long config, BlockBehaviour.Properties properties, final Supplier<ArrayList<VoxelShape>> shape_supplier)
     {
       super(config, properties);
       registerDefaultState(super.defaultBlockState().setValue(FACING, Direction.UP));
       vshapes = shape_supplier.get();
+      cshapes = new ArrayList<>(vshapes);
     }
 
     public Directed(long config, BlockBehaviour.Properties properties, final AABB[] unrotatedAABBs)
@@ -301,6 +303,9 @@ public class StandardBlocks
     public Directed(long config, BlockBehaviour.Properties properties, final AABB unrotatedAABB)
     { this(config, properties, new AABB[]{unrotatedAABB}); }
 
+    protected void overrideCollisionShape(final AABB unrotatedAABB)
+    { for(int i=0; i<cshapes.size(); ++i) cshapes.set(i, Shapes.create(unrotatedAABB)); }
+
     @Override
     public boolean isPossibleToRespawnInThis()
     { return false; }
@@ -315,7 +320,7 @@ public class StandardBlocks
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext selectionContext)
-    { return getShape(state, world, pos, selectionContext); }
+    { return cshapes.get((state.getValue(FACING)).get3DDataValue() & 0x7); }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
@@ -346,12 +351,14 @@ public class StandardBlocks
   {
     public static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
     protected final ArrayList<VoxelShape> vshapes;
+    protected final ArrayList<VoxelShape> cshapes;
 
     public Horizontal(long config, BlockBehaviour.Properties properties, final Supplier<ArrayList<VoxelShape>> shape_supplier)
     {
       super(config|CFG_HORIZIONTAL, properties);
       registerDefaultState(super.defaultBlockState().setValue(HORIZONTAL_FACING, Direction.NORTH));
       vshapes = shape_supplier.get();
+      cshapes = new ArrayList<>(vshapes);
     }
 
     public Horizontal(long config, BlockBehaviour.Properties properties, final AABB[] unrotatedAABBs)
@@ -374,13 +381,16 @@ public class StandardBlocks
       ));
     }
 
+    protected void overrideCollisionShape(final AABB unrotatedAABB)
+    { for(int i=0; i<cshapes.size(); ++i) cshapes.set(i, Shapes.create(unrotatedAABB)); }
+
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter source, BlockPos pos, CollisionContext selectionContext)
     { return vshapes.get((state.getValue(HORIZONTAL_FACING)).get3DDataValue() & 0x7); }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext selectionContext)
-    { return getShape(state, world, pos, selectionContext); }
+    { return cshapes.get((state.getValue(HORIZONTAL_FACING)).get3DDataValue() & 0x7); }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)

@@ -43,8 +43,10 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -76,7 +78,7 @@ public class EdMilker
   public static final int MAX_ENERGY_TRANSFER = 512;
   public static final int DEFAULT_ENERGY_CONSUMPTION = 0;
   public static final int DEFAULT_MILKING_DELAY_PER_COW = 4000;
-  private static final FluidStack NO_MILK_FLUID = new FluidStack(Fluids.WATER, 0);
+  private static final FluidStack NO_MILK_FLUID = new FluidStack(Fluids.WATER, 1000);
 
   private static FluidStack milk_fluid_ = NO_MILK_FLUID;
   private static final HashMap<ItemStack, ItemStack> milk_containers_ = new HashMap<>();
@@ -113,7 +115,10 @@ public class EdMilker
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     public MilkerBlock(long config, BlockBehaviour.Properties builder, final AABB[] unrotatedAABBs)
-    { super(config, builder, unrotatedAABBs); }
+    {
+      super(config, builder, unrotatedAABBs);
+      overrideCollisionShape(Auxiliaries.getPixeledAABB(0,0,0, 16,24,16));
+    }
 
     @Override
     @Nullable
@@ -213,8 +218,8 @@ public class EdMilker
     public MilkerTileEntity(BlockPos pos, BlockState state)
     {
       super(ModContent.TET_SMALL_MILKING_MACHINE, pos, state);
-      tank_ = new Fluidics.Tank(TANK_CAPACITY, 0, BUCKET_SIZE, (fs)->(has_milk_fluid() && fs.isFluidEqual(milk_fluid_)));
-      fluid_handler_ = tank_.createFluidHandler();
+      tank_ = new Fluidics.Tank(TANK_CAPACITY, 0, BUCKET_SIZE, fs->fs.isFluidEqual(milk_fluid_));
+      fluid_handler_ = tank_.createOutputFluidHandler();
       battery_ = new RfEnergy.Battery(MAX_ENERGY_BUFFER, MAX_ENERGY_TRANSFER, 0);
       energy_handler_ = battery_.createEnergyHandler();
       reset();
@@ -252,6 +257,9 @@ public class EdMilker
       if(!battery_.isEmpty()) battery_.save(nbt);
     }
 
+    private boolean has_milk_fluid()
+    { return !(NO_MILK_FLUID.isFluidEqual(milk_fluid_)); }
+
     private IFluidHandler fluid_handler()
     { return fluid_handler_.orElse(null); }
 
@@ -285,54 +293,15 @@ public class EdMilker
       fluid_handler_.invalidate();
     }
 
-    // IFluidTank ------------------------------------------------------------------------------------------
-
-    private boolean has_milk_fluid()
-    { return !(NO_MILK_FLUID.isFluidEqual(milk_fluid_)); }
-
-//    @Override
-//    @Nonnull
-//    public FluidStack getFluid()
-//    { return has_milk_fluid() ? (new FluidStack(milk_fluid_, fluid_level())) : (FluidStack.EMPTY); }
-//
-//    @Override
-//    public int getFluidAmount()
-//    { return has_milk_fluid() ? fluid_level() : 0; }
-//
-//    @Override
-//    public int getCapacity()
-//    { return TANK_CAPACITY; }
-//
-//    @Override
-//    public boolean isFluidValid(FluidStack stack)
-//    { return has_milk_fluid() && stack.isFluidEqual(milk_fluid_); }
-//
-//    @Override
-//    public int fill(FluidStack resource, IFluidHandler.FluidAction action)
-//    { return 0; }
-//
-//    @Override
-//    @Nonnull
-//    public FluidStack drain(FluidStack resource, IFluidHandler.FluidAction action)
-//    { return (!resource.isFluidEqual(milk_fluid_)) ? (FluidStack.EMPTY) : drain(resource.getAmount(), action); }
-//
-//    @Override
-//    @Nonnull
-//    public FluidStack drain(int maxDrain, IFluidHandler.FluidAction action)
-//    {
-//      if((!has_milk_fluid()) || (fluid_level() <= 0)) return FluidStack.EMPTY;
-//      return tank_.drain(maxDrain, action);
-//    }
-
     // ICapabilityProvider ---------------------------------------------------------------------------
 
-//    @Override
-//    public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
-//    {
-//      if((capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) && has_milk_fluid()) return fluid_handler_.cast();
-//      if((capability == CapabilityEnergy.ENERGY) && (energy_consumption_>0)) return energy_handler_.cast();
-//      return super.getCapability(capability, facing);
-//    }
+    @Override
+    public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
+    {
+      if((capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) && has_milk_fluid()) return fluid_handler_.cast();
+      if((capability == CapabilityEnergy.ENERGY) && (energy_consumption_>0)) return energy_handler_.cast();
+      return super.getCapability(capability, facing);
+    }
 
     // ITickable ------------------------------------------------------------------------------------
 
