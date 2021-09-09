@@ -54,6 +54,7 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.IFluidBlock;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
@@ -197,10 +198,16 @@ public class EdPlacer
     private int current_slot_index_ = 0;
     private int tick_timer_ = 0;
     private final Inventories.StorageInventory inventory_ = new Inventories.StorageInventory(this, NUM_OF_SLOTS, 1);
-    private final LazyOptional<IItemHandler> item_handler_ = Inventories.MappedItemHandler.createGenericHandler(inventory_);
+    private final LazyOptional<IItemHandler> item_handler_;
 
     public PlacerTileEntity(BlockPos pos, BlockState state)
-    { super(ModContent.TET_FACTORY_PLACER, pos, state); }
+    {
+      super(ModContent.TET_FACTORY_PLACER, pos, state);
+      item_handler_ = Inventories.MappedItemHandler.createGenericHandler(inventory_,
+        (stack, slot) -> true,
+        (stack, slot) -> true
+      );
+    }
 
     public CompoundTag clear_getnbt()
     {
@@ -245,9 +252,6 @@ public class EdPlacer
         tick_timer_ = 4;
       }
     }
-
-    public boolean is_input_slot(int index)
-    { return (index >= 0) && (index < NUM_OF_SLOTS); }
 
     // BlockEntity ------------------------------------------------------------------------------
 
@@ -319,35 +323,14 @@ public class EdPlacer
       }
     };
 
-    // ISidedInventory --------------------------------------------------------------------------------------
-//
-//    LazyOptional<? extends IItemHandler>[] item_handlers = SidedInvWrapper.create(this, Direction.UP);
-//    private static final int[] SIDED_INV_SLOTS;
-//    static {
-//      SIDED_INV_SLOTS = new int[NUM_OF_SLOTS];
-//      for(int i=0; i<NUM_OF_SLOTS; ++i) SIDED_INV_SLOTS[i] = i;
-//    }
-//
-//    @Override
-//    public int[] getSlotsForFace(Direction side)
-//    { return SIDED_INV_SLOTS; }
-//
-//    @Override
-//    public boolean canPlaceItemThroughFace(int index, ItemStack stack, Direction direction)
-//    { return is_input_slot(index) && canPlaceItem(index, stack); }
-//
-//    @Override
-//    public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction)
-//    { return false; }
-
     // Capability export ------------------------------------------------------------------------------------
 
-//    @Override
-//    public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
-//    {
-//      if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handlers[0].cast();
-//      return super.getCapability(capability, facing);
-//    }
+    @Override
+    public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
+    {
+      if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handler_.cast();
+      return super.getCapability(capability, facing);
+    }
 
     // ITickable and aux methods ----------------------------------------------------------------------------
 

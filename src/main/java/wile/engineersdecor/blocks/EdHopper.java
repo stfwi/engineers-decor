@@ -266,9 +266,6 @@ public class EdHopper
       tick_timer_ = 1;
     }
 
-    public boolean is_input_slot(int index)
-    { return (index >= 0) && (index < NUM_OF_STORAGE_SLOTS); }
-
     // BlockEntity --------------------------------------------------------------------------------------------
 
     @Override

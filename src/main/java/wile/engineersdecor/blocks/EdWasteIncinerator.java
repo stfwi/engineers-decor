@@ -231,7 +231,7 @@ public class EdWasteIncinerator
     {
       super.setRemoved();
       energy_handler_.invalidate();
-//      item_handler_.invalidate();
+      item_handler_.invalidate();
     }
 
     // INameable  ---------------------------------------------------------------------------
@@ -281,91 +281,6 @@ public class EdWasteIncinerator
         }
       }
     };
-
-
-    // IItemHandler  --------------------------------------------------------------------------------
-//
-//    protected static class BItemHandler implements IItemHandler
-//    {
-//      private final WasteIncineratorTileEntity te;
-//
-//      BItemHandler(WasteIncineratorTileEntity te)
-//      { this.te = te; }
-//
-//      @Override
-//      public int getSlots()
-//      { return 1; }
-//
-//      @Override
-//      public int getSlotLimit(int index)
-//      { return te.getMaxStackSize(); }
-//
-//      @Override
-//      public boolean isItemValid(int slot, @Nonnull ItemStack stack)
-//      { return true; }
-//
-//      @Override
-//      @Nonnull
-//      public ItemStack insertItem(int index, @Nonnull ItemStack stack, boolean simulate)
-//      {
-//        if(stack.isEmpty()) return ItemStack.EMPTY;
-//        if(index != 0) return ItemStack.EMPTY;
-//        int slotno = 0;
-//        ItemStack slotstack = getStackInSlot(slotno);
-//        if(!slotstack.isEmpty())
-//        {
-//          if(slotstack.getCount() >= Math.min(slotstack.getMaxStackSize(), getSlotLimit(index))) return stack;
-//          if(!ItemHandlerHelper.canItemStacksStack(stack, slotstack)) return stack;
-//          if(!te.canPlaceItemThroughFace(slotno, stack, Direction.UP) || (!te.canPlaceItem(slotno, stack))) return stack;
-//          int n = Math.min(stack.getMaxStackSize(), getSlotLimit(index)) - slotstack.getCount();
-//          if(stack.getCount() <= n) {
-//            if(!simulate) {
-//              ItemStack copy = stack.copy();
-//              copy.grow(slotstack.getCount());
-//              te.setItem(slotno, copy);
-//            }
-//            return ItemStack.EMPTY;
-//          } else {
-//            stack = stack.copy();
-//            if(!simulate) {
-//              ItemStack copy = stack.split(n);
-//              copy.grow(slotstack.getCount());
-//              te.setItem(slotno, copy);
-//              return stack;
-//            } else {
-//              stack.shrink(n);
-//              return stack;
-//            }
-//          }
-//        } else {
-//          if(!te.canPlaceItemThroughFace(slotno, stack, Direction.UP) || (!te.canPlaceItem(slotno, stack))) return stack;
-//          int n = Math.min(stack.getMaxStackSize(), getSlotLimit(index));
-//          if(n < stack.getCount()) {
-//            stack = stack.copy();
-//            if(!simulate) {
-//              te.setItem(slotno, stack.split(n));
-//              return stack;
-//            } else {
-//              stack.shrink(n);
-//              return stack;
-//            }
-//          } else {
-//            if(!simulate) te.setItem(slotno, stack);
-//            return ItemStack.EMPTY;
-//          }
-//        }
-//      }
-//
-//      @Override
-//      @Nonnull
-//      public ItemStack extractItem(int index, int amount, boolean simulate)
-//      { return ItemStack.EMPTY; }
-//
-//      @Override
-//      @Nonnull
-//      public ItemStack getStackInSlot(int index)
-//      { return te.getItem(index); }
-//    }
 
     // Capability export ----------------------------------------------------------------------------
 

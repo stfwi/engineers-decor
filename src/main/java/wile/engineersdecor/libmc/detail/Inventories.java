@@ -12,7 +12,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.Entity;
@@ -157,11 +156,19 @@ public class Inventories
   {
     private final BiPredicate<Integer, ItemStack> extraction_predicate_;
     private final BiPredicate<Integer, ItemStack> insertion_predicate_;
+    private final BiConsumer<Integer, ItemStack> insertion_notifier_;
+    private final BiConsumer<Integer, ItemStack> extraction_notifier_;
     private final List<Integer> slot_map_;
     private final Container inv_;
 
+    public MappedItemHandler(Container inv, BiPredicate<Integer, ItemStack> extraction_predicate, BiPredicate<Integer, ItemStack> insertion_predicate, BiConsumer<Integer, ItemStack> insertion_notifier, BiConsumer<Integer, ItemStack> extraction_notifier)
+    { inv_ = inv; extraction_predicate_ = extraction_predicate; insertion_predicate_ = insertion_predicate; insertion_notifier_=insertion_notifier; extraction_notifier_=extraction_notifier;  slot_map_ = IntStream.range(0, inv.getContainerSize()).boxed().collect(Collectors.toList()); }
+
+    public MappedItemHandler(Container inv, List<Integer> slot_map, BiPredicate<Integer, ItemStack> extraction_predicate, BiPredicate<Integer, ItemStack> insertion_predicate, BiConsumer<Integer, ItemStack> insertion_notifier, BiConsumer<Integer, ItemStack> extraction_notifier)
+    { inv_ = inv; extraction_predicate_ = extraction_predicate; insertion_predicate_ = insertion_predicate; insertion_notifier_=insertion_notifier; extraction_notifier_=extraction_notifier;  slot_map_ = slot_map; }
+
     public MappedItemHandler(Container inv, List<Integer> slot_map, BiPredicate<Integer, ItemStack> extraction_predicate, BiPredicate<Integer, ItemStack> insertion_predicate)
-    { inv_ = inv; extraction_predicate_ = extraction_predicate; insertion_predicate_ = insertion_predicate; slot_map_ = slot_map; }
+    { this(inv, slot_map, extraction_predicate, insertion_predicate, (i,s)->{}, (i,s)->{}); }
 
     public MappedItemHandler(Container inv, BiPredicate<Integer, ItemStack> extraction_predicate, BiPredicate<Integer, ItemStack> insertion_predicate)
     { this(inv, IntStream.range(0, inv.getContainerSize()).boxed().collect(Collectors.toList()), extraction_predicate, insertion_predicate); }
@@ -221,6 +228,7 @@ public class Inventories
             stack.grow(sst.getCount());
             inv_.setItem(slot, stack);
             inv_.setChanged();
+            insertion_notifier_.accept(slot, sst);
           }
           return ItemStack.EMPTY;
         } else {
@@ -228,10 +236,11 @@ public class Inventories
           if(simulate) {
             stack.shrink(limit);
           } else {
-            ItemStack diff = stack.split(limit);
-            diff.grow(sst.getCount());
-            inv_.setItem(slot, diff);
+            final ItemStack diff = stack.split(limit);
+            sst.grow(diff.getCount());
+            inv_.setItem(slot, sst);
             inv_.setChanged();
+            insertion_notifier_.accept(slot, diff);
           }
           return stack;
         }
@@ -243,6 +252,7 @@ public class Inventories
           if(!simulate) {
             inv_.setItem(slot, ins);
             inv_.setChanged();
+            insertion_notifier_.accept(slot, ins.copy());
           }
           if(stack.isEmpty()) {
             stack = ItemStack.EMPTY;
@@ -252,6 +262,7 @@ public class Inventories
           if(!simulate) {
             inv_.setItem(slot, stack.copy());
             inv_.setChanged();
+            insertion_notifier_.accept(slot, stack.copy());
           }
           return ItemStack.EMPTY;
         }
@@ -272,11 +283,18 @@ public class Inventories
       } else {
         stack = inv_.removeItem(slot, Math.min(stack.getCount(), amount));
         inv_.setChanged();
+        extraction_notifier_.accept(slot, stack.copy());
       }
       return stack;
     }
 
     // Factories --------------------------------------------------------------------------------------------
+
+    public static LazyOptional<IItemHandler> createGenericHandler(Container inv, BiPredicate<Integer, ItemStack> extraction_predicate, BiPredicate<Integer, ItemStack> insertion_predicate, BiConsumer<Integer, ItemStack> insertion_notifier, BiConsumer<Integer, ItemStack> extraction_notifier)
+    { return LazyOptional.of(() -> new MappedItemHandler(inv, extraction_predicate, insertion_predicate, insertion_notifier, extraction_notifier)); }
+
+    public static LazyOptional<IItemHandler> createGenericHandler(Container inv, BiPredicate<Integer, ItemStack> extraction_predicate, BiPredicate<Integer, ItemStack> insertion_predicate, BiConsumer<Integer, ItemStack> insertion_notifier, BiConsumer<Integer, ItemStack> extraction_notifier, List<Integer> slot_map)
+    { return LazyOptional.of(() -> new MappedItemHandler(inv, slot_map, extraction_predicate, insertion_predicate, insertion_notifier, extraction_notifier)); }
 
     public static LazyOptional<IItemHandler> createGenericHandler(Container inv, BiPredicate<Integer, ItemStack> extraction_predicate, BiPredicate<Integer, ItemStack> insertion_predicate, List<Integer> slot_map)
     { return LazyOptional.of(() -> new MappedItemHandler(inv, slot_map, extraction_predicate, insertion_predicate)); }

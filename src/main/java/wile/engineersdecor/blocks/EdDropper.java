@@ -286,9 +286,6 @@ public class EdDropper
       tick_timer_ = 1;
     }
 
-    public boolean is_input_slot(int index)
-    { return (index >= INPUT_SLOTS_FIRST) && (index < (INPUT_SLOTS_FIRST+INPUT_SLOTS_SIZE)); }
-
     // BlockEntity ------------------------------------------------------------------------------
 
     @Override

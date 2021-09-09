@@ -231,7 +231,7 @@ public class EdMineralSmelter
     public static final int MAX_ENERGY_BUFFER = 32000;
     public static final int MAX_ENERGY_TRANSFER = 8192;
     public static final int DEFAULT_ENERGY_CONSUMPTION = 92;
-    public static final int DEFAULT_HEATUP_RATE = 10; //2; // -> 50s for one smelting process
+    public static final int DEFAULT_HEATUP_RATE = 2; // -> 50s for one smelting process
     public static final int PHASE_WARMUP = 0;
     public static final int PHASE_HOT = 1;
     public static final int PHASE_MAGMABLOCK = 2;
@@ -271,16 +271,13 @@ public class EdMineralSmelter
     public MineralSmelterTileEntity(BlockPos pos, BlockState state)
     {
       super(ModContent.TET_MINERAL_SMELTER, pos, state);
-      main_inventory_ = (new Inventories.StorageInventory(this, NUM_OF_SLOTS, 1))
-        .setStackLimit(1)
-        .setValidator((index,stack)-> ((index==1) || ((index==0) && accepts_input(stack))))
-        .setSlotChangeAction((slot,stack)->{
-          //System.out.println("slot"+slot+"<<"+stack);
-        });
+      main_inventory_ = (new Inventories.StorageInventory(this, NUM_OF_SLOTS, 1)).setStackLimit(1);
       item_handler_ = Inventories.MappedItemHandler.createGenericHandler(
         main_inventory_,
         (index,stack)->((index==1) && (phase()!=PHASE_LAVA)),
-        (index,stack)->((index==0) && accepts_input(stack))
+        (index,stack)->((index==0) && accepts_input(stack)),
+        (index,stack)->{},
+        (index,stack)->{ if(index!=0) reset_process(); }
       );
     }
 
@@ -335,10 +332,6 @@ public class EdMineralSmelter
       if(stack.isEmpty()) return ItemStack.EMPTY;
       if(!simulate) reset_process();
       return stack;
-    }
-
-    protected void drain_lava_bucket()
-    {
     }
 
     protected void reset_process()
@@ -409,8 +402,10 @@ public class EdMineralSmelter
       boolean dirty = false;
       final int last_phase = phase();
       final ItemStack istack = main_inventory_.getItem(0);
-      if(istack.isEmpty() && (tank_.getFluidAmount()<1000)) {
+      if(istack.isEmpty() && (tank_.getFluidAmount()<MAX_BUCKET_EXTRACT_FLUID_LEVEL) && (phase()!=PHASE_LAVA)) {
         progress_ = 0;
+        tank_.clear();
+        main_inventory_.clearContent();
       } else if((battery_.isEmpty()) || (level.hasNeighborSignal(worldPosition))) {
         progress_ = Mth.clamp(progress_-cooldown_rate, 0,100);
       } else if(progress_ >= 100) {
@@ -420,12 +415,13 @@ public class EdMineralSmelter
         if(!battery_.draw(energy_consumption*TICK_INTERVAL)) battery_.clear();
         progress_ = Mth.clamp(progress_+heatup_rate, 0, 100);
       }
-      int new_phase = phase();
+      final int new_phase = phase();
       if(accepts_lava_container(istack)) {
         // That stays in the slot until its extracted or somone takes it out.
         if(istack.sameItem(BUCKET_STACK)) {
           if(!main_inventory_.getItem(1).sameItem(LAVA_BUCKET_STACK)) {
             if(fluid_extraction_possible()) {
+              reset_process();
               main_inventory_.setItem(1, LAVA_BUCKET_STACK);
               level.playSound(null, worldPosition, SoundEvents.BUCKET_FILL_LAVA, SoundSource.BLOCKS, 0.2f, 1.3f);
             } else {
@@ -439,7 +435,7 @@ public class EdMineralSmelter
         }
       } else if(new_phase > last_phase) {
         // Heat-up to next phase happened.
-        switch (new_phase) {
+        switch(new_phase) {
           case PHASE_LAVA -> {
             tank_.fill(new FluidStack(Fluids.LAVA, 1000), IFluidHandler.FluidAction.EXECUTE);
             main_inventory_.setItem(1, ItemStack.EMPTY);
@@ -460,11 +456,11 @@ public class EdMineralSmelter
         // Cool-down to prev phase happened.
         switch(new_phase) {
           case PHASE_MAGMABLOCK -> {
-            if(tank_.getFluidAmount() < 1000) {
+            if(tank_.getFluidAmount() < MAX_BUCKET_EXTRACT_FLUID_LEVEL) {
               reset_process();
             } else {
-              main_inventory_.setItem(0, (tank_.getFluidAmount() >= MAX_BUCKET_EXTRACT_FLUID_LEVEL) ? (MAGMA_STACK.copy()) : (ItemStack.EMPTY));
-              main_inventory_.setItem(1, main_inventory_.getItem(0).copy());
+              main_inventory_.setItem(0, MAGMA_STACK.copy());
+              main_inventory_.setItem(1, MAGMA_STACK.copy());
               tank_.clear();
             }
             level.playSound(null, worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5f, 1.1f);

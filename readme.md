@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
+    - v1.1.17-b5 [F] Refurbished Mineral Melter code.
+                 [F] Fixed Block Placer item insertion.
+
     - v1.1.17-b4 [F] Config event update fixed.
                  [F] Milker fluid tank handling issue fixed.
                  [F] Device collision shapes adapted to allow attaching levers.

@@ -456,8 +456,8 @@ public class ModConfig
     EdElectricalFurnace.on_config(SERVER.e_furnace_speed_percent.get(), SERVER.e_furnace_power_consumption.get(), SERVER.e_furnace_automatic_pulling.get());
     EdSolarPanel.on_config(SERVER.small_solar_panel_peak_production.get(), 64000, 1024);
     EdMilker.on_config(SERVER.milking_machine_energy_consumption.get(), SERVER.milking_machine_milking_delay.get());
-    EdFreezer.on_config(92, 2);
-    EdMineralSmelter.on_config(92, 2);
+    EdFreezer.on_config(144, 2);
+    EdMineralSmelter.on_config(144, 2);
     EdWasteIncinerator.on_config(8);
     // -----------------------------------------------------------------------------------------------------------------
     {

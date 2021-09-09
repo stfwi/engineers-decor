@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.17.1": {
+    "1.1.17-b5": "[F] Refurbished Mineral Melter code.\n[F] Fixed Block Placer item insertion.",
     "1.1.17-b4": "[F] Config event update fixed.\n[F] Milker fluid tank handling issue fixed.\n[F] Device collision shapes adapted to allow attaching levers.",
     "1.1.17-b3": "[F] Fixed Factory Hopper GUI element events.",
     "1.1.17-b2": "[F] Updated to Forge 1.17.1-37.0.51 to fix `ToolType not found` startup crash.\n[A] JEI plugin enabled.\n[A] Dark Shingle Roof recipe variant added.",
@@ -44,6 +45,6 @@
   },
   "promos": {
     "1.17.1-recommended": "1.1.14",
-    "1.17.1-latest": "1.1.17-b4"
+    "1.17.1-latest": "1.1.17-b5"
   }
 }
