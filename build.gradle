@@ -41,13 +41,6 @@ minecraft {
       property 'forge.logging.console.level', 'info'
       mods { engineersdecor { source sourceSets.main } }
     }
-    // data {
-    //   workingDirectory project.file('run')
-    //   property 'forge.logging.markers', '' // SCAN,REGISTRIES,REGISTRYDUMP
-    //   property 'forge.logging.console.level', 'info'
-    //   args '--mod', 'engineersdecor', '--all', '--output', file('src/generated/resources/')
-    //   mods { engineersdecor { source sourceSets.main } }
-    // }
   }
 }
 
@@ -76,7 +69,6 @@ jar {
   }
 }
 
-sourceSets.main.resources { srcDir 'src/generated/resources' } // Include datagen resources
 jar.finalizedBy('reobfJar')
 
 // import net.minecraftforge.gradle.common.task.SignJar

@@ -12,14 +12,14 @@ displayName="Engineer's Decor"
 description="Adds cosmetic blocks for the engineer's workshop, factory and home."
 authors="wilechaote"
 credits="BluSunrize, Damien Hazard, malte0811, et al., the Forge Smiths."
-updateJSONURL="https://raw.githubusercontent.com/stfwi/engineers-decor/1.16/meta/update.json"
+updateJSONURL="https://raw.githubusercontent.com/stfwi/engineers-decor/1.17/meta/update.json"
 displayURL="https://github.com/stfwi/engineers-decor/"
 logoFile="logo.png"
 
 [[dependencies.engineersdecor]]
   modId="forge"
   mandatory=true
-  versionRange="[37,)"
+  versionRange="[37.0.82,)"
   ordering="NONE"
   side="BOTH"
 

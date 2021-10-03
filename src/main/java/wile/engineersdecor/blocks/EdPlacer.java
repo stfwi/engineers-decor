@@ -461,14 +461,11 @@ public class EdPlacer
             if(((BlockItem)item).place(use_context) != InteractionResult.FAIL) {
               SoundType stype = block.getSoundType(placement_state, level, worldPosition, null);
               if(stype != null) level.playSound(null, placement_pos, stype.getPlaceSound(), SoundSource.BLOCKS, stype.getVolume()*0.6f, stype.getPitch());
-            } else if(block instanceof IPlantable) {
+            } else {
               if(level.setBlock(placement_pos, placement_state, 1|2|8)) {
                 SoundType stype = block.getSoundType(placement_state, level, worldPosition, null);
                 if(stype != null) level.playSound(null, placement_pos, stype.getPlaceSound(), SoundSource.BLOCKS, stype.getVolume()*0.6f, stype.getPitch());
               }
-            } else {
-              Auxiliaries.logDebug("Placer spit: try-place and planting failed for item " + item.getRegistryName().toString());
-              return spit_out(facing);
             }
           } else {
             if(level.setBlock(placement_pos, placement_state, 1|2|8)) {
@@ -484,7 +481,11 @@ public class EdPlacer
           // A hard crash should not be fired here, instead spit out the item to indicated that this
           // block is not compatible.
           ModEngineersDecor.logger().error("Exception while trying to place " + ((block==null)?(""):(""+block)) + ", spitting out. Exception is: " + e);
-          level.removeBlock(placement_pos, false);
+          try {
+            level.removeBlock(placement_pos, false);
+          } catch(Throwable e1) {
+            ModEngineersDecor.logger().error("Exception while removing failed block placement " + ((block==null)?(""):(""+block)) + ", spitting out. Exception is: " + e1);
+          }
           return spit_out(facing, true);
         }
       }

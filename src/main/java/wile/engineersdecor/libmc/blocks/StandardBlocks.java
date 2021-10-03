@@ -465,7 +465,7 @@ public class StandardBlocks
     protected final Map<BlockState, VoxelShape> shapes;
     protected final Map<BlockState, VoxelShape> collision_shapes;
 
-    public HorizontalFourWayWaterLoggable(long config, BlockBehaviour.Properties properties, AABB base_aabb, final AABB side_aabb, int railing_height_extension)
+    public HorizontalFourWayWaterLoggable(long config, BlockBehaviour.Properties properties, AABB base_aabb, final AABB side_aabb[], int railing_height_extension)
     {
       super(config, properties, base_aabb);
       Map<BlockState, VoxelShape> build_shapes = new HashMap<>();
@@ -473,10 +473,10 @@ public class StandardBlocks
       for(BlockState state:getStateDefinition().getPossibleStates()) {
         {
           VoxelShape shape = ((base_aabb.getXsize()==0) || (base_aabb.getYsize()==0) || (base_aabb.getZsize()==0)) ? Shapes.empty() : Shapes.create(base_aabb);
-          if(state.getValue(NORTH)) shape = Shapes.joinUnoptimized(shape,Shapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.NORTH, true)), BooleanOp.OR);
-          if(state.getValue(EAST))  shape = Shapes.joinUnoptimized(shape,Shapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.EAST, true)), BooleanOp.OR);
-          if(state.getValue(SOUTH)) shape = Shapes.joinUnoptimized(shape,Shapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.SOUTH, true)), BooleanOp.OR);
-          if(state.getValue(WEST))  shape = Shapes.joinUnoptimized(shape,Shapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.WEST, true)), BooleanOp.OR);
+          if(state.getValue(NORTH)) shape = Shapes.joinUnoptimized(shape,Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(side_aabb, Direction.NORTH, true)), BooleanOp.OR);
+          if(state.getValue(EAST))  shape = Shapes.joinUnoptimized(shape,Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(side_aabb, Direction.EAST, true)), BooleanOp.OR);
+          if(state.getValue(SOUTH)) shape = Shapes.joinUnoptimized(shape,Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(side_aabb, Direction.SOUTH, true)), BooleanOp.OR);
+          if(state.getValue(WEST))  shape = Shapes.joinUnoptimized(shape,Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(side_aabb, Direction.WEST, true)), BooleanOp.OR);
           if(shape.isEmpty()) shape = Shapes.block();
           build_shapes.put(state.setValue(WATERLOGGED, false), shape);
           build_shapes.put(state.setValue(WATERLOGGED, true), shape);
@@ -484,10 +484,14 @@ public class StandardBlocks
         {
           // how the hack to extend a shape, these are the above with y+4px.
           VoxelShape shape = ((base_aabb.getXsize()==0) || (base_aabb.getYsize()==0) || (base_aabb.getZsize()==0)) ? Shapes.empty() : Shapes.create(base_aabb);
-          if(state.getValue(NORTH)) shape = Shapes.joinUnoptimized(shape,Shapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.NORTH, true).expandTowards(0, railing_height_extension, 0)), BooleanOp.OR);
-          if(state.getValue(EAST))  shape = Shapes.joinUnoptimized(shape,Shapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.EAST, true).expandTowards(0, railing_height_extension, 0)), BooleanOp.OR);
-          if(state.getValue(SOUTH)) shape = Shapes.joinUnoptimized(shape,Shapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.SOUTH, true).expandTowards(0, railing_height_extension, 0)), BooleanOp.OR);
-          if(state.getValue(WEST))  shape = Shapes.joinUnoptimized(shape,Shapes.create(Auxiliaries.getRotatedAABB(side_aabb, Direction.WEST, true).expandTowards(0, railing_height_extension, 0)), BooleanOp.OR);
+          if(state.getValue(NORTH)) shape = Shapes.joinUnoptimized(shape,Auxiliaries.getUnionShape(Auxiliaries.getMappedAABB(Auxiliaries.getRotatedAABB(side_aabb,
+            Direction.NORTH, true), bb->bb.expandTowards(0, railing_height_extension, 0))), BooleanOp.OR);
+          if(state.getValue(EAST))  shape = Shapes.joinUnoptimized(shape,Auxiliaries.getUnionShape(Auxiliaries.getMappedAABB(Auxiliaries.getRotatedAABB(side_aabb,
+            Direction.EAST, true), bb->bb.expandTowards(0, railing_height_extension, 0))), BooleanOp.OR);
+          if(state.getValue(SOUTH)) shape = Shapes.joinUnoptimized(shape,Auxiliaries.getUnionShape(Auxiliaries.getMappedAABB(Auxiliaries.getRotatedAABB(side_aabb,
+            Direction.SOUTH, true), bb->bb.expandTowards(0, railing_height_extension, 0))), BooleanOp.OR);
+          if(state.getValue(WEST))  shape = Shapes.joinUnoptimized(shape,Auxiliaries.getUnionShape(Auxiliaries.getMappedAABB(Auxiliaries.getRotatedAABB(side_aabb,
+            Direction.WEST, true), bb->bb.expandTowards(0, railing_height_extension, 0))), BooleanOp.OR);
           if(shape.isEmpty()) shape = Shapes.block();
           build_collision_shapes.put(state.setValue(WATERLOGGED, false), shape);
           build_collision_shapes.put(state.setValue(WATERLOGGED, true), shape);
@@ -497,6 +501,9 @@ public class StandardBlocks
       collision_shapes = build_collision_shapes;
       registerDefaultState(super.defaultBlockState().setValue(NORTH, false).setValue(EAST, false).setValue(SOUTH, false).setValue(WEST, false).setValue(WATERLOGGED, false));
     }
+
+    public HorizontalFourWayWaterLoggable(long config, BlockBehaviour.Properties properties, AABB base_aabb, final AABB side_aabb, int railing_height_extension)
+    { this(config, properties, base_aabb, new AABB[]{side_aabb}, railing_height_extension); }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)

@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.17.1": {
+    "1.1.18": "[F] Block Placer placement context issue fix.\n[F] Fixed compatibility to Forge >=37.0.82.\n[M] Update lang ru_ru (PR#191, Smollet777).",
     "1.1.17": "[R] Initial 1.17.1 release.",
     "1.1.17-b5": "[F] Refurbished Mineral Melter code.\n[F] Fixed Block Placer item insertion.",
     "1.1.17-b4": "[F] Config event update fixed.\n[F] Milker fluid tank handling issue fixed.\n[F] Device collision shapes adapted to allow attaching levers.",
@@ -45,7 +46,7 @@
     "1.1.2-b1": "[U] Ported to MC1.16.2."
   },
   "promos": {
-    "1.17.1-recommended": "1.1.17",
-    "1.17.1-latest": "1.1.17"
+    "1.17.1-recommended": "1.1.18",
+    "1.17.1-latest": "1.1.18"
   }
 }
