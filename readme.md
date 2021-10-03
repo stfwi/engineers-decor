@@ -11,6 +11,8 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
+    - v1.1.17    [R] Initial 1.17.1 release.
+
     - v1.1.17-b5 [F] Refurbished Mineral Melter code.
                  [F] Fixed Block Placer item insertion.
 
