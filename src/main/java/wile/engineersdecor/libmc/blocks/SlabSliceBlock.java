@@ -1,11 +1,11 @@
 /*
- * @file BlockDecorHalfSlab.java
+ * @file SlabSliceBlock.java
  * @author Stefan Wilhelm (wile)
  * @copyright (C) 2020 Stefan Wilhelm
  * @license MIT (see https://opensource.org/licenses/MIT)
  *
  * Half slab ("slab slices") characteristics class. Actually
- * it's now a quater slab, but who cares.
+ * it's now a quarter slab, but who cares.
  */
 package wile.engineersdecor.libmc.blocks;
 

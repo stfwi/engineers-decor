@@ -43,6 +43,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -371,6 +372,12 @@ public class Auxiliaries
       for(AABB aabb: aabbs) shape = Shapes.joinUnoptimized(shape, Shapes.create(aabb), BooleanOp.OR);
     }
     return shape;
+  }
+
+  public static final AABB[] getMappedAABB(AABB[] bbs, Function<AABB,AABB> mapper) {
+    final AABB[] transformed = new AABB[bbs.length];
+    for(int i=0; i<bbs.length; ++i) transformed[i] = mapper.apply(bbs[i]);
+    return transformed;
   }
 
   public static final class BlockPosRange implements Iterable<BlockPos>
