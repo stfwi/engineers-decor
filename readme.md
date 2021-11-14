@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
+    - v1.1.15    [R] Release build 1.1.15.
+                 [M] Update lang ru_ru (PR#191, Smollet777).
+
     - v1.1.15-b1 [U] Mappings updated to official, updated to Forge 1.16.5-36.2.0.
                  [F] Updated lang zh_cn (thx Lyaiya, PR#183).
 

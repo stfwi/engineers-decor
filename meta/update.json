@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.16.5": {
+    "1.1.15": "[R] Release build 1.1.15.\n[M] Update lang ru_ru (PR#191, Smollet777).",
     "1.1.15-b1": "[U] Mappings updated to official, updated to Forge 1.16.5-36.2.0.\n[F] Updated lang zh_cn (thx Lyaiya, PR#183).",
     "1.1.14": "[R] Release build v1.1.14.",
     "1.1.14-b3": "[A] Spanish language support added (PR#180, thx FrannDzs).",
@@ -40,7 +41,7 @@
     "1.1.2-b1": "[U] Ported to MC1.16.2."
   },
   "promos": {
-    "1.16.5-recommended": "1.1.14",
-    "1.16.5-latest": "1.1.15-b1"
+    "1.16.5-recommended": "1.1.15",
+    "1.16.5-latest": "1.1.15"
   }
 }
