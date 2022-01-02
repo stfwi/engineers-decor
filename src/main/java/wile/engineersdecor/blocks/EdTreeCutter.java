@@ -70,6 +70,10 @@ public class EdTreeCutter
     { return ModContent.TET_SMALL_TREE_CUTTER; }
 
     @Override
+    public boolean isBlockEntityTicking(Level world, BlockState state)
+    { return true; }
+
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     { super.createBlockStateDefinition(builder); builder.add(ACTIVE); }
 
@@ -83,7 +87,7 @@ public class EdTreeCutter
     {
       if((state.getBlock()!=this) || (!state.getValue(ACTIVE))) return;
       // Sound
-      if(true || (world.getGameTime() & 0x1) == 0) {
+      /*if((world.getGameTime() & 0x1) == 0)*/ {
         world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.WOOD_HIT, SoundSource.BLOCKS, 0.1f, 1.0f, false);
       }
       // Particles
@@ -174,7 +178,7 @@ public class EdTreeCutter
 
     @Override
     protected void saveAdditional(CompoundTag nbt)
-    { super.save(nbt); writenbt(nbt); }
+    { super.saveAdditional(nbt); writenbt(nbt); }
 
     @Override
     public void setRemoved()

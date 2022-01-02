@@ -88,6 +88,10 @@ public class EdMineralSmelter
     { return ModContent.TET_MINERAL_SMELTER; }
 
     @Override
+    public boolean isBlockEntityTicking(Level world, BlockState state)
+    { return true; }
+
+    @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext selectionContext)
     { return Shapes.block(); }
 
@@ -368,7 +372,7 @@ public class EdMineralSmelter
 
     @Override
     protected void saveAdditional(CompoundTag nbt)
-    { super.save(nbt); writenbt(nbt); }
+    { super.saveAdditional(nbt); writenbt(nbt); }
 
     @Override
     public void setRemoved()

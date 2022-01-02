@@ -105,6 +105,10 @@ public class EdFluidBarrel
     { return ModContent.TET_FLUID_BARREL; }
 
     @Override
+    public boolean isBlockEntityTicking(Level world, BlockState state)
+    { return true; }
+
+    @Override
     public BlockItem getBlockItem(Block block, Item.Properties builder)
     { return new FluidBarrelItem(block, builder); }
 
@@ -272,7 +276,7 @@ public class EdFluidBarrel
 
     @Override
     protected void saveAdditional(CompoundTag nbt)
-    { super.save(nbt); writenbt(nbt); }
+    { super.saveAdditional(nbt); writenbt(nbt); }
 
     @Override
     public void setRemoved()
@@ -379,7 +383,7 @@ public class EdFluidBarrel
 
     @Override
     public int getBarWidth(ItemStack stack)
-    { return Math.round(13f * ((stack.getMaxDamage()<=0) ? (1f) : Mth.clamp((float)stack.getDamageValue()/(float)stack.getMaxDamage(), 0f, 1f))); }
+    { return (int)Math.round(13f * Mth.clamp(((double)(getFluid(stack).getAmount()))/((double)capacity_), 0.0, 1.0)); }
 
     @Override
     public int getBarColor(ItemStack stack)

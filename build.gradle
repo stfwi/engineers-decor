@@ -2,18 +2,17 @@
 // Engineer's decor mod gradle build.
 buildscript {
   repositories {
-      maven { url = 'https://maven.minecraftforge.net' }
-      mavenCentral()
+    maven { url = 'https://maven.minecraftforge.net' }
+    mavenCentral()
   }
   dependencies {
-      classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+    classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
   }
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 //-----------------------------------------------------------------------------
 version = "${version_engineersdecor}"
 group = "wile.engineersdecor"
@@ -68,27 +67,22 @@ jar {
 }
 
 jar.finalizedBy('reobfJar')
-// def reobfFile = file("$buildDir/reobfJar/output.jar")
-// def reobfArtifact = artifacts.add('default', reobfFile) { type 'jar'; builtBy 'reobfJar' }
 
-
-//import net.minecraftforge.gradle.common.task.SignJar
-// task signJar(type: SignJar, dependsOn: jar) {
-//   onlyIf { project.hasProperty("keystore_file") }
-//   if(project.hasProperty("keystore_file")) {
-//     keyStore = project.getProperty("keystore_file")
-//     alias = project.getProperty("keystore_alias")
-//     storePass = project.getProperty("keystore_pass")
-//     keyPass = project.getProperty("keystore_keypass")
-//     inputFile = jar.archivePath
-//     outputFile = jar.archivePath
-//   } else {
-//     logger.warn("[WARNING] Signing skipped.")
-//   }
-// }
-// build.dependsOn signJar
-
-publishing {
-  publications { mavenJava(MavenPublication) { artifact jar } }
-  repositories { maven { url "file:///${project.projectDir}/mcmodsrepo" } }
+// Signing
+import net.minecraftforge.gradle.common.tasks.SignJar
+project.afterEvaluate {
+  task signJar(type: SignJar, dependsOn: jar) {
+    onlyIf { project.hasProperty("keystore_file") }
+    if(project.hasProperty("keystore_file")) {
+      keyStore = project.getProperty("keystore_file")
+      alias = project.getProperty("keystore_alias")
+      storePass = project.getProperty("keystore_pass")
+      keyPass = project.getProperty("keystore_keypass")
+      inputFile = jar.archiveFile
+      outputFile = jar.archiveFile
+    } else {
+      logger.warn("[WARNING] Signing skipped.")
+    }
+  }
+  reobfJar.finalizedBy('signJar')
 }

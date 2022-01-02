@@ -33,11 +33,14 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class EdHatchBlock extends StandardBlocks.HorizontalWaterLoggable
@@ -55,6 +58,20 @@ public class EdHatchBlock extends StandardBlocks.HorizontalWaterLoggable
   public EdHatchBlock(long config, BlockBehaviour.Properties builder, final AABB[] unrotatedAABBsClosed, final AABB[] unrotatedAABBsOpen)
   { super(config, builder, unrotatedAABBsClosed); vshapes_open = makeHorizontalShapeLookup(unrotatedAABBsOpen); }
 
+  protected static ArrayList<VoxelShape> makeHorizontalShapeLookup(final AABB[] unrotatedAABBs)
+  {
+    return new ArrayList<>(Arrays.asList(
+      Shapes.block(),
+      Shapes.block(),
+      Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.NORTH, true)),
+      Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.SOUTH, true)),
+      Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.WEST, true)),
+      Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.EAST, true)),
+      Shapes.block(),
+      Shapes.block()
+    ));
+  }
+
   @Override
   public RenderTypeHint getRenderTypeHint()
   { return RenderTypeHint.CUTOUT; }
@@ -62,6 +79,10 @@ public class EdHatchBlock extends StandardBlocks.HorizontalWaterLoggable
   @Override
   public VoxelShape getShape(BlockState state, BlockGetter source, BlockPos pos, CollisionContext selectionContext)
   { return state.getValue(OPEN) ? vshapes_open.get((state.getValue(HORIZONTAL_FACING)).get3DDataValue() & 0x7) : super.getShape(state, source, pos, selectionContext); }
+
+  @Override
+  public VoxelShape getCollisionShape(BlockState state, BlockGetter source, BlockPos pos, CollisionContext selectionContext)
+  { return getShape(state, source, pos, selectionContext); }
 
   @Override
   public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos)
@@ -135,6 +156,6 @@ public class EdHatchBlock extends StandardBlocks.HorizontalWaterLoggable
     Vec3 v = centre.subtract(ppos);
     if(ppos.y() < (centre.y()-0.1) || (v.lengthSqr() > 0.3)) return;
     v = v.scale(0.3);
-    player.push(v.x, 0, v.z);
+    player.push(v.x, -0.1, v.z);
   }
 }

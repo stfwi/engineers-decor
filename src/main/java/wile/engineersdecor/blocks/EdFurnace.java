@@ -95,6 +95,10 @@ public class EdFurnace
     { return ModContent.TET_SMALL_LAB_FURNACE; }
 
     @Override
+    public boolean isBlockEntityTicking(Level world, BlockState state)
+    { return true; }
+
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     { super.createBlockStateDefinition(builder); builder.add(LIT); }
 
@@ -386,7 +390,7 @@ public class EdFurnace
 
     @Override
     protected void saveAdditional(CompoundTag nbt)
-    { super.save(nbt); writenbt(nbt); }
+    { super.saveAdditional(nbt); writenbt(nbt); }
 
     @Override
     public void setRemoved()

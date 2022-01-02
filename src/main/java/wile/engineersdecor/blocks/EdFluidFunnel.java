@@ -83,6 +83,10 @@ public class EdFluidFunnel
     { return ModContent.TET_SMALL_FLUID_FUNNEL; }
 
     @Override
+    public boolean isBlockEntityTicking(Level world, BlockState state)
+    { return true; }
+
+    @Override
     public RenderTypeHint getRenderTypeHint()
     { return RenderTypeHint.CUTOUT; }
 
@@ -215,7 +219,7 @@ public class EdFluidFunnel
 
     @Override
     protected void saveAdditional(CompoundTag nbt)
-    { super.save(nbt); writenbt(nbt); }
+    { super.saveAdditional(nbt); writenbt(nbt); }
 
     @Override
     public void setRemoved()

@@ -42,6 +42,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -117,13 +118,17 @@ public class EdMilker
     public MilkerBlock(long config, BlockBehaviour.Properties builder, final AABB[] unrotatedAABBs)
     {
       super(config, builder, unrotatedAABBs);
-      overrideCollisionShape(Auxiliaries.getPixeledAABB(0,0,0, 16,24,16));
+      cshapes.replaceAll((state,shape)->Shapes.create(Auxiliaries.getPixeledAABB(0,0,0, 16,24,16)));
     }
 
     @Override
     @Nullable
     public BlockEntityType<EdMilker.MilkerTileEntity> getBlockEntityType()
     { return ModContent.TET_SMALL_MILKING_MACHINE; }
+
+    @Override
+    public boolean isBlockEntityTicking(Level world, BlockState state)
+    { return true; }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
@@ -283,7 +288,7 @@ public class EdMilker
 
     @Override
     protected void saveAdditional(CompoundTag nbt)
-    { super.save(nbt); writenbt(nbt, false); }
+    { super.saveAdditional(nbt); writenbt(nbt, false); }
 
     @Override
     public void setRemoved()

@@ -88,6 +88,10 @@ public class EdWasteIncinerator
     { return ModContent.TET_WASTE_INCINERATOR; }
 
     @Override
+    public boolean isBlockEntityTicking(Level world, BlockState state)
+    { return true; }
+
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     { super.createBlockStateDefinition(builder); builder.add(LIT); }
 
@@ -224,7 +228,7 @@ public class EdWasteIncinerator
 
     @Override
     protected void saveAdditional(CompoundTag nbt)
-    { writenbt(nbt); }
+    { super.saveAdditional(nbt); writenbt(nbt); }
 
     @Override
     public void setRemoved()

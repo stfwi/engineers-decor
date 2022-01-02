@@ -81,6 +81,10 @@ public class EdPipeValve
     { return ModContent.TET_STRAIGHT_PIPE_VALVE; }
 
     @Override
+    public boolean isBlockEntityTicking(Level world, BlockState state)
+    { return false; }
+
+    @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext selectionContext)
     { return Shapes.block(); }
 

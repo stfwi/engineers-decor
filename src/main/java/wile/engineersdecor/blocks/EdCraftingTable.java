@@ -99,6 +99,10 @@ public class EdCraftingTable
     { return ModContent.TET_CRAFTING_TABLE; }
 
     @Override
+    public boolean isBlockEntityTicking(Level world, BlockState state)
+    { return false; }
+
+    @Override
     public boolean shouldCheckWeakPower(BlockState state, LevelReader world, BlockPos pos, Direction side)
     { return false; }
 
@@ -211,7 +215,7 @@ public class EdCraftingTable
 
     @Override
     protected void saveAdditional(CompoundTag nbt)
-    { super.save(nbt); writenbt(nbt); }
+    { super.saveAdditional(nbt); writenbt(nbt); }
 
     @Override
     public CompoundTag getUpdateTag()

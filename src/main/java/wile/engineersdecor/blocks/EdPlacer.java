@@ -89,6 +89,10 @@ public class EdPlacer
     { return ModContent.TET_FACTORY_PLACER; }
 
     @Override
+    public boolean isBlockEntityTicking(Level world, BlockState state)
+    { return true; }
+
+    @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext selectionContext)
     { return Shapes.block(); }
 
@@ -261,7 +265,7 @@ public class EdPlacer
 
     @Override
     protected void saveAdditional(CompoundTag nbt)
-    { super.save(nbt); writenbt(nbt, false); }
+    { super.saveAdditional(nbt); writenbt(nbt, false); }
 
     @Override
     public void setRemoved()

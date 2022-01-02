@@ -1,7 +1,8 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.18.1": {
-    "1.1.19-b1": "[R] Initial 1.18.1 port.",
+    "1.1.19-b2": "[F] Fixed waterlogging.\n[F] Block entity parent saving corrected, ticker unified.\n[U] Forge/gradle update.",
+    "1.1.19-b1": "[U] Initial 1.18.1 port.",
     "1.1.18": "[F] Block Placer placement context issue fix.\n[F] Fixed compatibility to Forge >=37.0.82.\n[M] Update lang ru_ru (PR#191, Smollet777).",
     "1.1.17": "[R] Initial 1.17.1 release.",
     "1.1.17-b5": "[F] Refurbished Mineral Melter code.\n[F] Fixed Block Placer item insertion.",
@@ -48,6 +49,6 @@
   },
   "promos": {
     "1.18.1-recommended": "1.1.18",
-    "1.18.1-latest": "1.1.19-b1"
+    "1.18.1-latest": "1.1.19-b2"
   }
 }

@@ -94,6 +94,10 @@ public class EdDropper
     { return ModContent.TET_FACTORY_DROPPER; }
 
     @Override
+    public boolean isBlockEntityTicking(Level world, BlockState state)
+    { return true; }
+
+    @Override
     public RenderTypeHint getRenderTypeHint()
     { return RenderTypeHint.SOLID; }
 
@@ -294,7 +298,7 @@ public class EdDropper
 
     @Override
     protected void saveAdditional(CompoundTag nbt)
-    { super.save(nbt); writenbt(nbt, false); }
+    { super.saveAdditional(nbt); writenbt(nbt, false); }
 
     @Override
     public void setRemoved()

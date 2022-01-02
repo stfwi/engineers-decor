@@ -121,12 +121,17 @@ public class Auxiliaries
   // -------------------------------------------------------------------------------------------------------------------
 
   /**
-   * Text localisation wrapper, implicitly prepends `MODID` to the
+   * Text localization wrapper, implicitly prepends `MODID` to the
    * translation keys. Forces formatting argument, nullable if no special formatting shall be applied..
    */
   public static TranslatableComponent localizable(String modtrkey, Object... args)
+  { return new TranslatableComponent((modtrkey.startsWith("block.") || (modtrkey.startsWith("item."))) ? (modtrkey) : (modid+"."+modtrkey), args); }
+
+  public static TranslatableComponent localizable(String modtrkey, @Nullable ChatFormatting color, Object... args)
   {
-    return new TranslatableComponent((modtrkey.startsWith("block.") || (modtrkey.startsWith("item."))) ? (modtrkey) : (modid+"."+modtrkey), args);
+    TranslatableComponent tr = new TranslatableComponent(modid+"."+modtrkey, args);
+    if(color!=null) tr.withStyle(color);
+    return tr;
   }
 
   public static TranslatableComponent localizable(String modtrkey)

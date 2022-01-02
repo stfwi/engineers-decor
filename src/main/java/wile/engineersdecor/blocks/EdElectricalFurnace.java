@@ -97,6 +97,10 @@ public class EdElectricalFurnace
     { return ModContent.TET_SMALL_ELECTRICAL_FURNACE; }
 
     @Override
+    public boolean isBlockEntityTicking(Level world, BlockState state)
+    { return true; }
+
+    @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext selectionContext)
     { return Shapes.block(); }
 
@@ -338,7 +342,7 @@ public class EdElectricalFurnace
 
     @Override
     protected void saveAdditional(CompoundTag nbt)
-    { super.save(nbt); writenbt(nbt); }
+    { super.saveAdditional(nbt); writenbt(nbt); }
 
     @Override
     public void setRemoved()

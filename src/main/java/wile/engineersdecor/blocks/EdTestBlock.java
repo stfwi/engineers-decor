@@ -68,6 +68,10 @@ public class EdTestBlock
     { return ModContent.TET_TEST_BLOCK; }
 
     @Override
+    public boolean isBlockEntityTicking(Level world, BlockState state)
+    { return true; }
+
+    @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext selectionContext)
     { return Shapes.block(); }
 
@@ -168,7 +172,7 @@ public class EdTestBlock
     @Override
     protected void saveAdditional(CompoundTag nbt)
     {
-      super.save(nbt);
+      super.saveAdditional(nbt);
       tank_.save(nbt);
       battery_.save(nbt);
       nbt.putInt("rf_fed_avg", rf_fed_avg);

@@ -11,7 +11,11 @@ Mod sources for Minecraft version 1.18.x.
 
 ## Version history
 
-    - v1.1.19-b1 [R] Initial 1.18.1 port.
+    - v1.1.19-b2 [F] Fixed waterlogging.
+                 [F] Block entity parent saving corrected, ticker unified.
+                 [U] Forge/gradle update.
+
+    - v1.1.19-b1 [U] Initial 1.18.1 port.
 
     - v1.1.18    [F] Block Placer placement context issue fix.
                  [F] Fixed compatibility to Forge >=37.0.82.

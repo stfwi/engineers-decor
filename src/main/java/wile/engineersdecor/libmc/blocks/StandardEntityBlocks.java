@@ -31,20 +31,8 @@ public class StandardEntityBlocks
     @Nullable
     BlockEntityType<ET> getBlockEntityType();
 
-    @Override
-    @Nullable
-    default BlockEntity newBlockEntity(BlockPos pos, BlockState state)
-    { return (getBlockEntityType()==null) ? null : getBlockEntityType().create(pos, state); }
-
-    @Override
-    @Nullable
-    default <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> te_type)
-    { return (world.isClientSide) ? (null) : ((Level w, BlockPos p, BlockState s, T te) -> ((StandardBlockEntity)te).tick()); } // To be evaluated if
-
-    @Override
-    @Nullable
-    default <T extends BlockEntity> GameEventListener getListener(Level world, T te)
-    { return null; }
+    default boolean isBlockEntityTicking(Level world, BlockState state)
+    { return false; }
 
     default InteractionResult useOpenGui(BlockState state, Level world, BlockPos pos, Player player)
     {
@@ -54,6 +42,21 @@ public class StandardEntityBlocks
       player.openMenu((MenuProvider)te);
       return InteractionResult.CONSUME;
     }
+
+    @Override
+    @Nullable
+    default BlockEntity newBlockEntity(BlockPos pos, BlockState state)
+    { return (getBlockEntityType()==null) ? null : getBlockEntityType().create(pos, state); }
+
+    @Override
+    @Nullable
+    default <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> te_type)
+    { return (world.isClientSide || (!isBlockEntityTicking(world, state))) ? (null) : ((Level w, BlockPos p, BlockState s, T te) -> ((StandardBlockEntity)te).tick()); }
+
+    @Override
+    @Nullable
+    default <T extends BlockEntity> GameEventListener getListener(Level world, T te)
+    { return null; }
   }
 
   public static abstract class StandardBlockEntity extends BlockEntity

@@ -82,6 +82,10 @@ public class EdSolarPanel
     { return ModContent.TET_SMALL_SOLAR_PANEL; }
 
     @Override
+    public boolean isBlockEntityTicking(Level world, BlockState state)
+    { return true; }
+
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     { super.createBlockStateDefinition(builder); builder.add(EXPOSITION); }
 
@@ -153,7 +157,7 @@ public class EdSolarPanel
 
     @Override
     protected void saveAdditional(CompoundTag nbt)
-    { super.save(nbt); writenbt(nbt, false); }
+    { super.saveAdditional(nbt); writenbt(nbt, false); }
 
     @Override
     public void setRemoved()
