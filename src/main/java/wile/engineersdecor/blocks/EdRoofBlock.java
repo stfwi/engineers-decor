@@ -99,7 +99,7 @@ public class EdRoofBlock extends StandardBlocks.HorizontalWaterLoggable
   @Override
   public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world, BlockPos pos, BlockPos facingPos)
   {
-    if(state.getValue(WATERLOGGED)) world.getLiquidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+    if(state.getValue(WATERLOGGED)) world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
     return (facing.getAxis().isHorizontal()) ? (state.setValue(SHAPE, getStairsShapeProperty(state, world, pos))) : (super.updateShape(state, facing, facingState, world, pos, facingPos));
   }
 

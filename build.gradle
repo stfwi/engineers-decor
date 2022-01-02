@@ -12,8 +12,9 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
-java.toolchain.languageVersion = JavaLanguageVersion.of(16)
-//----------------------------------------------------------------------------------------------------------------------
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+//-----------------------------------------------------------------------------
 version = "${version_engineersdecor}"
 group = "wile.engineersdecor"
 archivesBaseName = "engineersdecor-${version_minecraft}"
@@ -25,16 +26,13 @@ repositories {
 }
 
 minecraft {
-  // mappings channel: 'snapshot', version: "${version_fml_mappings}"
-  mappings channel: "official", version: "1.17.1"
-  // accessTransformer = file('build/resources/main/META-INF/accesstransformer.cfg')
+  mappings channel: "official", version: "1.18.1"
   runs {
     client {
       workingDirectory project.file('run')
       property 'forge.logging.markers', '' // SCAN,REGISTRIES,REGISTRYDUMP
       property 'forge.logging.console.level', 'info'
-      mods { engineersdecor { source sourceSets.main } }
-    }
+      mods { engineersdecor { source sourceSets.main } } }
     server {
       workingDirectory project.file('run')
       property 'forge.logging.markers', '' // SCAN,REGISTRIES,REGISTRYDUMP
@@ -51,7 +49,7 @@ dependencies {
 }
 
 processResources {
-  outputs.upToDateWhen { false } // thx to @tterrag for this hint
+  outputs.upToDateWhen { false }
   doLast { file("${sourceSets.main.output.resourcesDir}/.gitversion-engineersdecor").text = 'git log "-1" "--format=%h"'.execute().in.text.trim() }
 }
 
@@ -70,11 +68,11 @@ jar {
 }
 
 jar.finalizedBy('reobfJar')
-
-// import net.minecraftforge.gradle.common.task.SignJar
 // def reobfFile = file("$buildDir/reobfJar/output.jar")
 // def reobfArtifact = artifacts.add('default', reobfFile) { type 'jar'; builtBy 'reobfJar' }
 
+
+//import net.minecraftforge.gradle.common.task.SignJar
 // task signJar(type: SignJar, dependsOn: jar) {
 //   onlyIf { project.hasProperty("keystore_file") }
 //   if(project.hasProperty("keystore_file")) {

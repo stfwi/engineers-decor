@@ -20,7 +20,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
@@ -93,7 +93,7 @@ public class Fluidics
 
     public Tank load(CompoundTag nbt)
     {
-      if(nbt.contains("tank", Constants.NBT.TAG_COMPOUND)) {
+      if(nbt.contains("tank", Tag.TAG_COMPOUND)) {
         setFluid(FluidStack.loadFluidStackFromNBT(nbt.getCompound("tank")));
       } else {
         clear();

@@ -1,7 +1,7 @@
 
-## Engineer's Decor (MC1.17.x)
+## Engineer's Decor (MC1.18.x)
 
-Mod sources for Minecraft version 1.17.x.
+Mod sources for Minecraft version 1.18.x.
 
 - Description, credits, and features: Please see the readme in the repository root.
 
@@ -10,6 +10,8 @@ Mod sources for Minecraft version 1.17.x.
 ----
 
 ## Version history
+
+    - v1.1.19-b1 [R] Initial 1.18.1 port.
 
     - v1.1.18    [F] Block Placer placement context issue fix.
                  [F] Fixed compatibility to Forge >=37.0.82.

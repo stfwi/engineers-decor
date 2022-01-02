@@ -223,8 +223,8 @@ public class EdWasteIncinerator
     { super.load(nbt); readnbt(nbt); }
 
     @Override
-    public CompoundTag save(CompoundTag nbt)
-    { super.save(nbt); return writenbt(nbt); }
+    protected void saveAdditional(CompoundTag nbt)
+    { writenbt(nbt); }
 
     @Override
     public void setRemoved()

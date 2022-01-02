@@ -171,7 +171,7 @@ public class StandardFenceBlock extends WallBlock implements StandardBlocks.ISta
   @Override
   public BlockState updateShape(BlockState state, Direction side, BlockState facingState, LevelAccessor world, BlockPos pos, BlockPos facingPos)
   {
-    if(state.getValue(BlockStateProperties.WATERLOGGED)) world.getLiquidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+    if(state.getValue(BlockStateProperties.WATERLOGGED)) world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
     if(side == Direction.DOWN) return super.updateShape(state, side, facingState, world, pos, facingPos);
     boolean n = (side==Direction.NORTH) ? attachesTo(facingState, world, facingPos, side) : (state.getValue(WALL_NORTH)!=WallSide.NONE);
     boolean e = (side==Direction.EAST)  ? attachesTo(facingState, world, facingPos, side) : (state.getValue(WALL_EAST) !=WallSide.NONE);
@@ -186,7 +186,7 @@ public class StandardFenceBlock extends WallBlock implements StandardBlocks.ISta
   }
 
   @Override
-  public boolean canCreatureSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, @Nullable EntityType<?> entityType)
+  public boolean isValidSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, @Nullable EntityType<?> entityType)
   { return false; }
 
   @Override

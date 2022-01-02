@@ -260,8 +260,8 @@ public class EdPlacer
     { super.load(nbt); readnbt(nbt, false); }
 
     @Override
-    public CompoundTag save(CompoundTag nbt)
-    { super.save(nbt); writenbt(nbt, false); return nbt; }
+    protected void saveAdditional(CompoundTag nbt)
+    { super.save(nbt); writenbt(nbt, false); }
 
     @Override
     public void setRemoved()

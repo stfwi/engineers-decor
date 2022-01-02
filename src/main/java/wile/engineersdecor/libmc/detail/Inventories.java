@@ -23,7 +23,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -798,7 +798,6 @@ public class Inventories
       stacks_ = NonNullList.withSize(size_, ItemStack.EMPTY);
       num_rows_ = Mth.clamp(num_rows, 1, size_);
     }
-
     public CompoundTag save(CompoundTag nbt, String key)
     { nbt.put(key, save(new CompoundTag(), false)); return nbt; }
 
@@ -813,7 +812,7 @@ public class Inventories
 
     public StorageInventory load(CompoundTag nbt, String key)
     {
-      if(!nbt.contains("key", Constants.NBT.TAG_COMPOUND)) {
+      if(!nbt.contains("key", Tag.TAG_COMPOUND)) {
         stacks_.clear();
         return this;
       } else {

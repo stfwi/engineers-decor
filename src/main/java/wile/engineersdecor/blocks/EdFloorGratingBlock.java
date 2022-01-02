@@ -38,7 +38,7 @@ public class EdFloorGratingBlock extends StandardBlocks.WaterLoggable
   { return true; }
 
   @Override
-  public boolean canCreatureSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, @Nullable EntityType<?> entityType)
+  public boolean isValidSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, @Nullable EntityType<?> entityType)
   { return false; }
 
   @Override

@@ -11,16 +11,16 @@
       "recipe": {
         "type": "minecraft:crafting_shaped",
         "pattern": [
-          "B  ",
-          "BB ",
-          "DBB"
+          "D  ",
+          "BD ",
+          "BBD"
         ],
         "key": {
           "B": {
             "item": "minecraft:brick"
           },
           "D": {
-            "item": "minecraft:black_dye"
+            "item": "minecraft:deepslate_tile_stairs"
           }
         },
         "result": {

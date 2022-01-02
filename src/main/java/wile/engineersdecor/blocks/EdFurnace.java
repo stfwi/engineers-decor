@@ -52,7 +52,7 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fmllegacy.hooks.BasicEventHooks;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -385,8 +385,8 @@ public class EdFurnace
     { super.load(nbt); readnbt(nbt); }
 
     @Override
-    public CompoundTag save(CompoundTag nbt)
-    { super.save(nbt); writenbt(nbt); return nbt; }
+    protected void saveAdditional(CompoundTag nbt)
+    { super.save(nbt); writenbt(nbt); }
 
     @Override
     public void setRemoved()
@@ -651,7 +651,7 @@ public class EdFurnace
 
     public float getCurrentSmeltingXp(final ItemStack stack)
     {
-      float xp = (currentRecipe() instanceof AbstractCookingRecipe) ? (((AbstractCookingRecipe)currentRecipe()).getExperience()) : (stack.getItem().getSmeltingExperience(stack));
+      float xp = (currentRecipe() instanceof AbstractCookingRecipe) ? (((AbstractCookingRecipe)currentRecipe()).getExperience()) : (0);
       return (xp <= 0) ? 0.7f : xp; // default value for recipes without defined xp
     }
 
@@ -717,7 +717,7 @@ public class EdFurnace
           }
         }
         removeCount = 0;
-        BasicEventHooks.firePlayerSmeltedEvent(player_, stack);
+        ForgeEventFactory.firePlayerSmeltedEvent(player_, stack);
       }
     }
 

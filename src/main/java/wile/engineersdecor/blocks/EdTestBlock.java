@@ -166,7 +166,7 @@ public class EdTestBlock
     }
 
     @Override
-    public CompoundTag save(CompoundTag nbt)
+    protected void saveAdditional(CompoundTag nbt)
     {
       super.save(nbt);
       tank_.save(nbt);
@@ -186,7 +186,6 @@ public class EdTestBlock
       nbt.putInt("items_inserted_total", items_inserted_total);
       if(!liq_fill_stack.isEmpty()) nbt.put("liq_fill_stack", liq_fill_stack.writeToNBT(new CompoundTag()));
       if(!insertion_item.isEmpty()) nbt.put("insertion_item", insertion_item.save(new CompoundTag()));
-      return nbt;
     }
 
     private FluidStack getFillFluid(ItemStack stack)

@@ -173,7 +173,7 @@ public class Guis
     public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
       super.renderButton(matrixStack, mouseX, mouseY, partialTicks);
-      if(isHovered()) renderToolTip(matrixStack, mouseX, mouseY);
+      if(isHovered) renderToolTip(matrixStack, mouseX, mouseY);
     }
 
     @Override

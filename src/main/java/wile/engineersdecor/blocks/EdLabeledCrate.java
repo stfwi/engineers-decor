@@ -41,7 +41,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -188,13 +188,12 @@ public class EdLabeledCrate
         }
       }
       int num_free_slots = LabeledCrateTileEntity.ITEMFRAME_SLOTNO - num_used_slots;
-      String[] lines = Auxiliaries.localize(getDescriptionId()+".tip", new Object[] {
+      String[] lines = Auxiliaries.localize(getDescriptionId()+".tip",
         (frameStack.isEmpty() ? (new TextComponent("-/-")) : (new TranslatableComponent(frameStack.getDescriptionId()))),
         num_used_slots,
         num_free_slots,
         total_items,
-        stats
-      }).split("\n");
+        stats).split("\n");
       for(String line:lines) {
         tooltip.add(new TextComponent(line.trim()));
       }
@@ -238,7 +237,7 @@ public class EdLabeledCrate
 
     public CompoundTag readnbt(CompoundTag nbt)
     {
-      if(nbt.contains("name", Constants.NBT.TAG_STRING)) custom_name_ = Auxiliaries.unserializeTextComponent(nbt.getString("name"));
+      if(nbt.contains("name", Tag.TAG_STRING)) custom_name_ = Auxiliaries.unserializeTextComponent(nbt.getString("name"));
       main_inventory_.load(nbt);
       return nbt;
     }
@@ -278,8 +277,8 @@ public class EdLabeledCrate
     { super.load(nbt); readnbt(nbt); }
 
     @Override
-    public CompoundTag save(CompoundTag nbt)
-    { super.save(nbt); writenbt(nbt); return nbt; }
+    protected void saveAdditional(CompoundTag nbt)
+    { super.save(nbt); writenbt(nbt); }
 
     @Override
     public void setRemoved()
@@ -295,11 +294,11 @@ public class EdLabeledCrate
     @Override
     @Nullable
     public ClientboundBlockEntityDataPacket getUpdatePacket()
-    { return new ClientboundBlockEntityDataPacket(worldPosition, 1, getUpdateTag()); }
+    { return ClientboundBlockEntityDataPacket.create(this); }
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) // on client
-    { readnbt(pkt.getTag()); super.onDataPacket(net, pkt); }
+    { super.onDataPacket(net, pkt); if(pkt.getTag() != null) { readnbt(pkt.getTag()); } }
 
     @Override
     public void handleUpdateTag(CompoundTag tag) // on client

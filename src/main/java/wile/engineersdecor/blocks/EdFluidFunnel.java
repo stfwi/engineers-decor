@@ -214,8 +214,8 @@ public class EdFluidFunnel
     { super.load(nbt); readnbt(nbt); }
 
     @Override
-    public CompoundTag save(CompoundTag nbt)
-    { super.save(nbt); writenbt(nbt); return nbt; }
+    protected void saveAdditional(CompoundTag nbt)
+    { super.save(nbt); writenbt(nbt); }
 
     @Override
     public void setRemoved()

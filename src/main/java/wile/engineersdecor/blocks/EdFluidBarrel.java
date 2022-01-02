@@ -47,7 +47,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -175,7 +175,7 @@ public class EdFluidBarrel
       if(!(te instanceof FluidBarrelTileEntity)) return;
       ((FluidBarrelTileEntity)te).readnbt(te_nbt);
       te.setChanged();
-      world.getBlockTicks().scheduleTick(pos, this, 4);
+      world.scheduleTick(pos, this, 4);
     }
 
     @Override
@@ -186,7 +186,7 @@ public class EdFluidBarrel
       if(world.isClientSide()) return InteractionResult.SUCCESS;
       if(!(world.getBlockEntity(pos) instanceof final FluidBarrelTileEntity te)) return InteractionResult.FAIL;
       if(!te.handlePlayerInteraction(state, world, pos, player, hand)) return InteractionResult.PASS;
-      world.getBlockTicks().scheduleTick(pos, this, 4);
+      world.scheduleTick(pos, this, 4);
       return InteractionResult.CONSUME;
     }
 
@@ -271,8 +271,8 @@ public class EdFluidBarrel
     { super.load(nbt); readnbt(nbt); }
 
     @Override
-    public CompoundTag save(CompoundTag nbt)
-    { super.save(nbt); return writenbt(nbt); }
+    protected void saveAdditional(CompoundTag nbt)
+    { super.save(nbt); writenbt(nbt); }
 
     @Override
     public void setRemoved()
@@ -336,14 +336,14 @@ public class EdFluidBarrel
     {
       if((!stack.hasTag()) || (!stack.getTag().contains("tedata"))) return new CompoundTag();
       final CompoundTag nbt = stack.getTag().getCompound("tedata");
-      if(!nbt.contains("tank", Constants.NBT.TAG_COMPOUND)) return new CompoundTag();
+      if(!nbt.contains("tank", Tag.TAG_COMPOUND)) return new CompoundTag();
       return nbt.getCompound("tank");
     }
 
     private static void write_fluid_nbt(ItemStack stack, CompoundTag fluid_nbt)
     {
       if((fluid_nbt==null) || (fluid_nbt.isEmpty())) {
-        if((!stack.hasTag()) || (!stack.getTag().contains("tedata", Constants.NBT.TAG_COMPOUND))) return;
+        if((!stack.hasTag()) || (!stack.getTag().contains("tedata", Tag.TAG_COMPOUND))) return;
         final CompoundTag tag = stack.getTag();
         final CompoundTag tedata = tag.getCompound("tedata");
         if(tedata.contains("tank")) tedata.remove("tank");
@@ -374,15 +374,15 @@ public class EdFluidBarrel
     { return (!getFluid(stack).isEmpty()) ? 1 : super.getItemStackLimit(stack); }
 
     @Override
-    public boolean showDurabilityBar(ItemStack stack)
+    public boolean isBarVisible(ItemStack stack)
     { return (!getFluid(stack).isEmpty()); }
 
     @Override
-    public double getDurabilityForDisplay(ItemStack stack)
-    { return 1.0 - Mth.clamp(((double)(getFluid(stack).getAmount()))/((double)capacity_), 0.0, 1.0); }
+    public int getBarWidth(ItemStack stack)
+    { return Math.round(13f * ((stack.getMaxDamage()<=0) ? (1f) : Mth.clamp((float)stack.getDamageValue()/(float)stack.getMaxDamage(), 0f, 1f))); }
 
     @Override
-    public int getRGBDurabilityForDisplay(ItemStack stack)
+    public int getBarColor(ItemStack stack)
     { return 0x336633; }
 
     @Override

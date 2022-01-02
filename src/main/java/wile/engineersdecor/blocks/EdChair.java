@@ -28,8 +28,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraftforge.network.PlayMessages;
+import net.minecraftforge.network.NetworkHooks;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
@@ -116,7 +116,7 @@ public class EdChair
     public EntityChair(Level world)
     { this(ModContent.ET_CHAIR, world); }
 
-    public static EntityChair customClientFactory(FMLPlayMessages.SpawnEntity spkt, Level world)
+    public static EntityChair customClientFactory(PlayMessages.SpawnEntity spkt, Level world)
     { return new EntityChair(world); }
 
     public Packet<?> getAddEntityPacket()

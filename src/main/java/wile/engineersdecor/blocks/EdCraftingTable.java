@@ -36,7 +36,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.TickPriority;
+import net.minecraft.world.ticks.TickPriority;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -46,7 +46,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fmllegacy.hooks.BasicEventHooks;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.registries.ForgeRegistries;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
@@ -210,8 +210,8 @@ public class EdCraftingTable
     { super.load(nbt); readnbt(nbt); }
 
     @Override
-    public CompoundTag save(CompoundTag nbt)
-    { super.save(nbt); writenbt(nbt); return nbt; }
+    protected void saveAdditional(CompoundTag nbt)
+    { super.save(nbt); writenbt(nbt); }
 
     @Override
     public CompoundTag getUpdateTag()
@@ -220,11 +220,11 @@ public class EdCraftingTable
     @Override
     @Nullable
     public ClientboundBlockEntityDataPacket getUpdatePacket()
-    { return new ClientboundBlockEntityDataPacket(worldPosition, 1, getUpdateTag()); }
+    { return ClientboundBlockEntityDataPacket.create(this); }
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) // on client
-    { readnbt(pkt.getTag()); super.onDataPacket(net, pkt); }
+    { super.onDataPacket(net, pkt); if(pkt.getTag() != null) { readnbt(pkt.getTag()); } }
 
     @Override
     public void handleUpdateTag(CompoundTag tag) // on client
@@ -276,7 +276,7 @@ public class EdCraftingTable
       final Block crafting_table_block = getBlockState().getBlock();
       if(!(crafting_table_block instanceof CraftingTableBlock)) return;
       if(level.getBlockTicks().hasScheduledTick(getBlockPos(), crafting_table_block)) return;
-      level.getBlockTicks().scheduleTick(getBlockPos(), crafting_table_block, 10, TickPriority.LOW);
+      level.scheduleTick(getBlockPos(), crafting_table_block, 10, TickPriority.LOW);
     }
   }
 
@@ -1534,7 +1534,7 @@ public class EdCraftingTable
       // Normal crafting result slot behaviour
       if(amountCrafted > 0) {
         stack.onCraftedBy(this.player.level, this.player, this.amountCrafted);
-        BasicEventHooks.firePlayerCraftingEvent(this.player, stack, this.craftMatrix);
+        ForgeEventFactory.firePlayerCraftingEvent(this.player, stack, this.craftMatrix);
       }
       if(uicontainer instanceof RecipeHolder) {
         ((RecipeHolder)uicontainer).awardUsedRecipes(player);

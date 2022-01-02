@@ -142,7 +142,7 @@ public class EdPipeValve
           BlockPos nbp = pos.relative(f);
           if((fromPos != null) && (!nbp.equals(fromPos))) continue; // do not change connectors except form the frompos.
           BlockState nbs = world.getBlockState(nbp);
-          if((nbs.getBlock() instanceof PipeValveBlock) || (!nbs.isSignalSource()) && (RsSignals.hasSignalConnector(nbs, world, nbp, f.getOpposite()))) cn = false;
+          if((nbs.getBlock() instanceof PipeValveBlock) || (!nbs.isSignalSource()) || (!RsSignals.hasSignalConnector(nbs, world, nbp, f.getOpposite()))) cn = false;
         }
         switch (f) {
           case NORTH -> state = state.setValue(RS_CN_N, cn);
