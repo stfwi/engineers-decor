@@ -11,6 +11,10 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
+    - v1.1.16-b2 [F] Block Placer placement context issue fix.
+
+    - v1.1.16-b1 [F] RB mapping to fix cross-compat problems (#193, #192).
+
     - v1.1.15    [R] Release build 1.1.15.
                  [M] Update lang ru_ru (PR#191, Smollet777).
 
