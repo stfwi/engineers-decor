@@ -9,6 +9,7 @@
  */
 package wile.engineersdecor.detail;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.util.text.ITextComponent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.blocks.EdCraftingTable;
@@ -70,10 +71,10 @@ public class ModRenderers
   public static class CraftingTableTer extends TileEntityRenderer<EdCraftingTable.CraftingTableTileEntity>
   {
     private static int tesr_error_counter = 4;
-    private static float scaler = 0.1f;
-    private static float gap = 0.19f;
-    private static float yrotations[] = {0, 90, 180, 270}; // [hdirection] S-W-N-E
-    private static float offsets[][][] = { // [hdirection][slotindex][xz]
+    private static final float scaler = 0.1f;
+    private static final float gap = 0.19f;
+    private static final float yrotations[] = {0, 90, 180, 270}; // [hdirection] S-W-N-E
+    private static final float offsets[][][] = { // [hdirection][slotindex][xz]
       { {-1,-1},{+0,-1},{+1,-1}, {-1,+0},{+0,+0},{+1,+0}, {-1,+1},{+0,+1},{+1,+1} }, // S
       { {+1,-1},{+1,+0},{+1,+1}, {+0,-1},{+0,+0},{+0,+1}, {-1,-1},{-1,+0},{-1,+1} }, // W
       { {+1,+1},{+0,+1},{-1,+1}, {+1,+0},{+0,+0},{-1,+0}, {+1,-1},{+0,-1},{-1,-1} }, // N
@@ -89,7 +90,9 @@ public class ModRenderers
     {
       if(tesr_error_counter <= 0) return;
       try {
-        final int di = MathHelper.clamp(te.getLevel().getBlockState(te.getBlockPos()).getValue(CraftingTableBlock.HORIZONTAL_FACING).get2DDataValue(), 0, 3);
+        final BlockState state = te.getLevel().getBlockState(te.getBlockPos());
+        if(!(state.getBlock() instanceof EdCraftingTable.CraftingTableBlock)) return;
+        final int di = MathHelper.clamp(state.getValue(CraftingTableBlock.HORIZONTAL_FACING).get2DDataValue(), 0, 3);
         long posrnd = te.getBlockPos().asLong();
         posrnd = (posrnd>>16)^(posrnd<<1);
         for(int i=0; i<9; ++i) {
@@ -127,7 +130,7 @@ public class ModRenderers
   public static class DecorLabeledCrateTer extends TileEntityRenderer<EdLabeledCrate.LabeledCrateTileEntity>
   {
     private static int tesr_error_counter = 4;
-    private static float scaler = 0.35f;
+    private static final float scaler = 0.35f;
     double tr[][]= { // [hdirection=S-W-N-E][param]
       {  +8.0/32, -8.0/32, +15.5/32, 180.0 }, // N
       { -15.5/32, -8.0/32,  +8.0/32,  90.0 }, // E
@@ -146,7 +149,9 @@ public class ModRenderers
       try {
         final ItemStack stack = te.getItemFrameStack();
         if(stack.isEmpty()) return;
-        final int di = MathHelper.clamp(te.getLevel().getBlockState(te.getBlockPos()).getValue(EdLabeledCrate.LabeledCrateBlock.HORIZONTAL_FACING).get2DDataValue(), 0, 3);
+        final BlockState state = te.getLevel().getBlockState(te.getBlockPos());
+        if(!(state.getBlock() instanceof EdLabeledCrate.LabeledCrateBlock)) return;
+        final int di = MathHelper.clamp(state.getValue(EdLabeledCrate.LabeledCrateBlock.HORIZONTAL_FACING).get2DDataValue(), 0, 3);
         double ox = tr[di][0], oy = tr[di][1], oz = tr[di][2];
         float ry = (float)tr[di][3];
         mxs.pushPose();

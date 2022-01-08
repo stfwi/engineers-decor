@@ -1,6 +1,7 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
   "1.16.5": {
+    "1.1.16": "[R] Release build v1.1.16.\n[U] Forge/gradle update.\n[F] Fixed rendering issue.",
     "1.1.16-b2": "[F] Block Placer placement context issue fix.",
     "1.1.16-b1": "[F] RB mapping to fix cross-compat problems (#193, #192).",
     "1.1.15": "[R] Release build 1.1.15.\n[M] Update lang ru_ru (PR#191, Smollet777).",
@@ -43,7 +44,7 @@
     "1.1.2-b1": "[U] Ported to MC1.16.2."
   },
   "promos": {
-    "1.16.5-recommended": "1.1.15",
-    "1.16.5-latest": "1.1.16-b2"
+    "1.16.5-recommended": "1.1.16",
+    "1.16.5-latest": "1.1.16"
   }
 }
