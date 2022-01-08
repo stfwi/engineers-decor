@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.17.x.
 
 ## Version history
 
+    - v1.1.19    [F] Forge/gradle update.
+                 [A] French translation added (PR#205, dracnis)
+
     - v1.1.18    [F] Block Placer placement context issue fix.
                  [F] Fixed compatibility to Forge >=37.0.82.
                  [M] Update lang ru_ru (PR#191, Smollet777).
