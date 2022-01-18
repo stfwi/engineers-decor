@@ -24,6 +24,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -71,7 +72,7 @@ public class ModRenderers
   @OnlyIn(Dist.CLIENT)
   public static class CraftingTableTer implements BlockEntityRenderer<EdCraftingTable.CraftingTableTileEntity>
   {
-    private static int tesr_error_counter = 4;
+    private static int tesr_error_counter = 16;
     private static final float scaler = 0.1f;
     private static final float gap = 0.19f;
     private static final float[] yrotations = {0, 90, 180, 270}; // [hdirection] S-W-N-E
@@ -92,7 +93,9 @@ public class ModRenderers
     {
       if(tesr_error_counter <= 0) return;
       try {
-        final int di = Mth.clamp(te.getLevel().getBlockState(te.getBlockPos()).getValue(CraftingTableBlock.HORIZONTAL_FACING).get2DDataValue(), 0, 3);
+        final BlockState state = te.getLevel().getBlockState(te.getBlockPos());
+        if(!(state.getBlock() instanceof EdCraftingTable.CraftingTableBlock)) return;
+        final int di = Mth.clamp(state.getValue(CraftingTableBlock.HORIZONTAL_FACING).get2DDataValue(), 0, 3);
         long posrnd = te.getBlockPos().asLong();
         posrnd = (posrnd>>16)^(posrnd<<1);
         for(int i=0; i<9; ++i) {
@@ -150,7 +153,9 @@ public class ModRenderers
       try {
         final ItemStack stack = te.getItemFrameStack();
         if(stack.isEmpty()) return;
-        final int di = Mth.clamp(te.getLevel().getBlockState(te.getBlockPos()).getValue(EdLabeledCrate.LabeledCrateBlock.HORIZONTAL_FACING).get2DDataValue(), 0, 3);
+        final BlockState state = te.getLevel().getBlockState(te.getBlockPos());
+        if(!(state.getBlock() instanceof EdLabeledCrate.LabeledCrateBlock)) return;
+        final int di = Mth.clamp(state.getValue(EdLabeledCrate.LabeledCrateBlock.HORIZONTAL_FACING).get2DDataValue(), 0, 3);
         double ox = tr[di][0], oy = tr[di][1], oz = tr[di][2];
         float ry = (float)tr[di][3];
         mxs.pushPose();

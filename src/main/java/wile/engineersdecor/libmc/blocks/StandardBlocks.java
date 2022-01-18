@@ -209,12 +209,7 @@ public class StandardBlocks
     { this(conf, properties, Arrays.stream(aabbs).map(Shapes::create).reduce(Shapes.empty(), (shape, aabb)->Shapes.joinUnoptimized(shape, aabb, BooleanOp.OR))); }
 
     public Cutout(long conf, BlockBehaviour.Properties properties, VoxelShape voxel_shape)
-    {
-      super(conf, properties);
-      vshape = voxel_shape;
-      BlockState state = getStateDefinition().any();
-      registerDefaultState(state);
-    }
+    { super(conf, properties); vshape = voxel_shape; }
 
     @Override
     @SuppressWarnings("deprecation")
@@ -304,7 +299,7 @@ public class StandardBlocks
     public Directed(long config, BlockBehaviour.Properties properties, final Function<List<BlockState>, Map<BlockState,VoxelShape>> shape_supplier)
     {
       super(config, properties);
-      registerDefaultState(stateDefinition.any().setValue(FACING, Direction.UP));
+      registerDefaultState(super.defaultBlockState().setValue(FACING, Direction.UP));
       vshapes = shape_supplier.apply(getStateDefinition().getPossibleStates());
     }
 
@@ -459,7 +454,7 @@ public class StandardBlocks
     public Horizontal(long config, BlockBehaviour.Properties properties, final Function<List<BlockState>, Map<BlockState,VoxelShape>> shape_supplier)
     {
       super(config|CFG_HORIZIONTAL, properties);
-      registerDefaultState(stateDefinition.any().setValue(HORIZONTAL_FACING, Direction.NORTH));
+      registerDefaultState(super.defaultBlockState().setValue(HORIZONTAL_FACING, Direction.NORTH));
       vshapes = shape_supplier.apply(getStateDefinition().getPossibleStates());
       cshapes = shape_supplier.apply(getStateDefinition().getPossibleStates());
     }
