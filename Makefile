@@ -12,13 +12,11 @@ MOD_JAR=$(filter-out %-sources.jar,$(wildcard build/libs/${MOD_JAR_PREFIX}*.jar)
 ifeq ($(OS),Windows_NT)
 GRADLE=gradlew.bat --no-daemon
 GRADLE_STOP=gradlew.bat --stop
-DJS=djs
 else
 GRADLE=./gradlew --no-daemon
 GRADLE_STOP=./gradlew --stop
-DJS=djs
 endif
-TASK=$(DJS) ../meta/lib/tasks.js
+TASK=djs ../../zmeta/lib/tasks.js
 
 wildcardr=$(foreach d,$(wildcard $1*),$(call wildcardr,$d/,$2) $(filter $(subst *,%,$2),$d))
 
