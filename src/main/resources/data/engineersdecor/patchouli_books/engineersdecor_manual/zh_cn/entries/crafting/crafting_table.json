@@ -1,7 +1,7 @@
 {
   "name": "金属工作台",
   "icon": "engineersdecor:metal_crafting_table",
-  "category": "crafting",
+  "category": "engineersdecor:crafting",
   "sortnum": 5010,
   "pages": [
     {

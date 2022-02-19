@@ -1,7 +1,7 @@
 {
   "name": "标志牌",
   "icon": "engineersdecor:sign_hotwire",
-  "category": "cosmetic",
+  "category": "engineersdecor:cosmetic",
   "sortnum": 3020,
   "pages": [
     {

@@ -1,7 +1,7 @@
 {
   "name": "Slab Slices",
   "icon": "engineersdecor:halfslab_rebar_concrete",
-  "category": "buildingblocks",
+  "category": "engineersdecor:buildingblocks",
   "sortnum":  1040,
   "pages": [
     {

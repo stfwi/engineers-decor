@@ -1,7 +1,7 @@
 {
   "name": "门",
   "icon": "engineersdecor:steel_mesh_fence_gate",
-  "category": "buildingblocks",
+  "category": "engineersdecor:buildingblocks",
   "sortnum": 1060,
   "pages": [
     {

@@ -1,7 +1,7 @@
 {
   "name": "Concretes",
   "icon": "engineersdecor:rebar_concrete",
-  "category": "buildingblocks",
+  "category": "engineersdecor:buildingblocks",
   "sortnum": 1020,
   "pages": [
     {
@@ -13,10 +13,6 @@
     {
       "type": "text",
       "text": "The rebar concrete you see here is quite expensive. It $(t:...except maybe when a Draconic Core blows up)withstands explosions$() and is comparatively hard to break.$(br2)It comes with varying textures for seamless look (placement position dependent), and can also be transformed to Stairs, Walls, Slabs, and Slab Slices. The Wall shape differs from vanilla walls."
-    },
-    {
-      "type": "text",
-      "text": "The Gas Concrete blocks have a smooth looking surface with texture variations, are fast to break, cheap to make, and have not much resistance against explosions.$(br)They are good material if you need to fill vast volumes like basement walls, tunnel walls, or floors.$(br)Walls, Stairs, Slabs, as well as Slab Slices can be crafted from Gas Concrete, too."
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "name": "Glass",
   "icon": "engineersdecor:panzerglass_block",
-  "category": "buildingblocks",
+  "category": "engineersdecor:buildingblocks",
   "sortnum": 1030,
   "pages": [
     {

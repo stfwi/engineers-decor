@@ -1,7 +1,7 @@
 {
   "name": "流体收集漏斗",
   "icon": "engineersdecor:small_fluid_funnel",
-  "category": "fluidics",
+  "category": "engineersdecor:fluidics",
   "sortnum": 7050,
   "pages": [
     {

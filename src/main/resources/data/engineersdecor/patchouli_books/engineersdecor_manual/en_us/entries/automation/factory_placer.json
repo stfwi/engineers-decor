@@ -1,7 +1,7 @@
 {
   "name": "Factory Block Placer",
   "icon": "engineersdecor:factory_placer",
-  "category": "automation",
+  "category": "engineersdecor:automation",
   "sortnum": 6030,
   "pages": [
     {

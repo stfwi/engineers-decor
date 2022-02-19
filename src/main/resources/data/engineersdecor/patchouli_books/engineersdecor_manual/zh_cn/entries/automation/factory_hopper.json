@@ -1,7 +1,7 @@
 {
   "name": "工厂漏斗",
   "icon": "engineersdecor:factory_hopper",
-  "category": "automation",
+  "category": "engineersdecor:automation",
   "sortnum": 6010,
   "pages": [
     {

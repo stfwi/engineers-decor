@@ -1,7 +1,7 @@
 {
   "name": "小型电炉",
   "icon": "engineersdecor:small_electrical_furnace",
-  "category": "crafting",
+  "category": "engineersdecor:crafting",
   "sortnum": 5040,
   "pages": [
     {

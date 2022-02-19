@@ -1,7 +1,7 @@
 {
   "name": "工厂方块放置器",
   "icon": "engineersdecor:factory_placer",
-  "category": "automation",
+  "category": "engineersdecor:automation",
   "sortnum": 6030,
   "pages": [
     {

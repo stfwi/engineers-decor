@@ -1,7 +1,7 @@
 {
   "name": "Ladders",
   "icon": "engineersdecor:treated_wood_ladder",
-  "category": "buildingblocks",
+  "category": "engineersdecor:buildingblocks",
   "sortnum": 1080,
   "pages": [
     {

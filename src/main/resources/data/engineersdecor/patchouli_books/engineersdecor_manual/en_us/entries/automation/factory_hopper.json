@@ -1,7 +1,7 @@
 {
   "name": "Factory Hopper",
   "icon": "engineersdecor:factory_hopper",
-  "category": "automation",
+  "category": "engineersdecor:automation",
   "sortnum": 6010,
   "pages": [
     {

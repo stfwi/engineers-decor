@@ -1,7 +1,7 @@
 {
   "name": "Fluid Collection Funnel",
   "icon": "engineersdecor:small_fluid_funnel",
-  "category": "fluidics",
+  "category": "engineersdecor:fluidics",
   "sortnum": 7050,
   "pages": [
     {

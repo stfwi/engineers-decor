@@ -1,7 +1,7 @@
 {
   "name": "家具",
   "icon": "engineersdecor:treated_wood_table",
-  "category": "cosmetic",
+  "category": "engineersdecor:cosmetic",
   "sortnum": 3010,
   "pages": [
     {

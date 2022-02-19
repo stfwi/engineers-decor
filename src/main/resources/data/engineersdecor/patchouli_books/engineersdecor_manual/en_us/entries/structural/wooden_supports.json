@@ -1,7 +1,7 @@
 {
   "name": "Wooden Supports",
   "icon": "engineersdecor:treated_wood_pole_support",
-  "category": "structural",
+  "category": "engineersdecor:structural",
   "sortnum": 2010,
   "pages": [
     {

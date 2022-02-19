@@ -1,7 +1,7 @@
 {
   "name": "小型太阳能板",
   "icon": "engineersdecor:small_solar_panel",
-  "category": "power",
+  "category": "engineersdecor:power",
   "sortnum": 8010,
   "pages": [
     {

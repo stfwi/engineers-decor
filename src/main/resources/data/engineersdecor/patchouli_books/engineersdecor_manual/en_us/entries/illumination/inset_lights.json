@@ -1,7 +1,7 @@
 {
   "name": "Inset Lights",
   "icon": "engineersdecor:iron_inset_light",
-  "category": "illumination",
+  "category": "engineersdecor:illumination",
   "sortnum": 4010,
   "pages": [
     {

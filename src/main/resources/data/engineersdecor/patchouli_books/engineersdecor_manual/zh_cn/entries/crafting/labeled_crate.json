@@ -1,7 +1,7 @@
 {
   "name": "带标签的储物箱",
   "icon": "engineersdecor:labeled_crate",
-  "category": "crafting",
+  "category": "engineersdecor:crafting",
   "sortnum": 5020,
   "pages": [
     {

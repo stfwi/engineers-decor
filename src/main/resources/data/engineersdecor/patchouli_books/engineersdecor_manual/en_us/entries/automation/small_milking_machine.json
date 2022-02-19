@@ -1,7 +1,7 @@
 {
   "name": "Small Milking Machine",
   "icon": "engineersdecor:small_milking_machine",
-  "category": "automation",
+  "category": "engineersdecor:automation",
   "sortnum": 6070,
   "pages": [
     {

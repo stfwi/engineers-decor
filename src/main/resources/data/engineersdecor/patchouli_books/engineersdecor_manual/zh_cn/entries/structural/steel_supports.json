@@ -1,7 +1,7 @@
 {
   "name": "钢支架",
   "icon": "engineersdecor:thick_steel_pole_head",
-  "category": "structural",
+  "category": "engineersdecor:structural",
   "sortnum": 2020,
   "pages": [
     {

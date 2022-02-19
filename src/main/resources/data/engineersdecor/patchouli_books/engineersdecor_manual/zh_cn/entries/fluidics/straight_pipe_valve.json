@@ -1,7 +1,7 @@
 {
   "name": "输液管止回阀",
   "icon": "engineersdecor:straight_pipe_valve",
-  "category": "fluidics",
+  "category": "engineersdecor:fluidics",
   "sortnum": 7010,
   "pages": [
     {

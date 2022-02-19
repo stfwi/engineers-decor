@@ -1,7 +1,7 @@
 {
   "name": "Small Block Breaker",
   "icon": "engineersdecor:small_block_breaker",
-  "category": "automation",
+  "category": "engineersdecor:automation",
   "sortnum": 6040,
   "pages": [
     {

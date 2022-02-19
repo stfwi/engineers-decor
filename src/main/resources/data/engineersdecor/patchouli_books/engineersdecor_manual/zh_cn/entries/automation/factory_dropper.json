@@ -1,7 +1,7 @@
 {
   "name": "工厂投掷器",
   "icon": "engineersdecor:factory_dropper",
-  "category": "automation",
+  "category": "engineersdecor:automation",
   "sortnum": 6020,
   "pages": [
     {

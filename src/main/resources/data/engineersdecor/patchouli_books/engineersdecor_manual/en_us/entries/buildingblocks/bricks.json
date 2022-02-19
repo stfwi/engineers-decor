@@ -1,7 +1,7 @@
 {
   "name": "Bricks",
   "icon": "engineersdecor:clinker_brick_block",
-  "category": "buildingblocks",
+  "category": "engineersdecor:buildingblocks",
   "sortnum": 1010,
   "pages": [
     {

@@ -1,7 +1,7 @@
 {
   "name": "Redstone Fluid Valve",
   "icon": "engineersdecor:straight_pipe_valve_redstone",
-  "category": "fluidics",
+  "category": "engineersdecor:fluidics",
   "sortnum": 7020,
   "pages": [
     {

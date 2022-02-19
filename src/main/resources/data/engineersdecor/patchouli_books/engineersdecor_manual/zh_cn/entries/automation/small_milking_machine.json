@@ -1,7 +1,7 @@
 {
   "name": "小型挤奶机",
   "icon": "engineersdecor:small_milking_machine",
-  "category": "automation",
+  "category": "engineersdecor:automation",
   "sortnum": 6070,
   "pages": [
     {

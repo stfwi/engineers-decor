@@ -1,7 +1,7 @@
 {
   "name": "小型实验室炉",
   "icon": "engineersdecor:small_lab_furnace",
-  "category": "crafting",
+  "category": "engineersdecor:crafting",
   "sortnum": 5030,
   "pages": [
     {

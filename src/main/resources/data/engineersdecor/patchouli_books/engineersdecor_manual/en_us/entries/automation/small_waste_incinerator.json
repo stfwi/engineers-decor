@@ -1,7 +1,7 @@
 {
   "name": "Small Waste Incinerator",
   "icon": "engineersdecor:small_waste_incinerator",
-  "category": "automation",
+  "category": "engineersdecor:automation",
   "sortnum": 6060,
   "pages": [
     {

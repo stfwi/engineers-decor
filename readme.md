@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.18.x.
 
 ## Version history
 
+    - v1.1.19    [R] Release build.
+                 [F] Manual category RLs prefixed (issue #199, ty freopt).
+
     - v1.1.19-b3 [F] Fixed rendering issue.
 
     - v1.1.19-b2 [F] Fixed waterlogging.

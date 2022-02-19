@@ -1,7 +1,7 @@
 {
   "name": "Floor Gratings",
   "icon": "engineersdecor:steel_floor_grating",
-  "category": "structural",
+  "category": "engineersdecor:structural",
   "sortnum": 2030,
   "pages": [
     {

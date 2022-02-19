@@ -1,7 +1,7 @@
 {
   "name": "栅栏和墙",
   "icon": "engineersdecor:steel_mesh_fence",
-  "category": "buildingblocks",
+  "category": "engineersdecor:buildingblocks",
   "sortnum": 1050,
   "pages": [
     {

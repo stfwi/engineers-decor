@@ -1,7 +1,7 @@
 {
   "name": "红石流体阀",
   "icon": "engineersdecor:straight_pipe_valve_redstone",
-  "category": "fluidics",
+  "category": "engineersdecor:fluidics",
   "sortnum": 7020,
   "pages": [
     {
