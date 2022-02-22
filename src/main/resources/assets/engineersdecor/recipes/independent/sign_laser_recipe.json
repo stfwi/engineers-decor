@@ -1,0 +1,16 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:sign_radioactive",
+      "required": ["engineersdecor:sign_exit"]
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    { "item": "engineersdecor:sign_exit" }
+  ],
+  "result": {
+    "item": "engineersdecor:sign_radioactive"
+  }
+}

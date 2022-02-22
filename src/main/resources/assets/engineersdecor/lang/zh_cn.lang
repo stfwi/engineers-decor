@@ -225,7 +225,14 @@ tile.engineersdecor.sign_defense.help=§6用于警告炮塔、特斯拉线圈和
 tile.engineersdecor.sign_factoryarea.name=指示牌 "工厂区域"
 tile.engineersdecor.sign_factoryarea.help=§6用于指示真的很大的机器所在的建筑和区域。
 tile.engineersdecor.sign_exit.name=出口指示牌
-tile.engineersdecor.sign_exit.help=§6There's the door, please ...
+tile.engineersdecor.sign_exit.help=§6门在这边，请……
+tile.engineersdecor.sign_firehazard.name=§6标志牌“小心火焰”
+tile.engineersdecor.sign_frost.name=§6标志牌“小心霜冻”
+tile.engineersdecor.sign_hotsurface.name=§6标志牌“小心热表面”"
+tile.engineersdecor.sign_laser.name=§6标志牌“小心激光”
+tile.engineersdecor.sign_magichazard.name=§6标志牌“小心魔法危害”
+tile.engineersdecor.sign_magneticfield.name=§6标志牌“小心强磁场”
+tile.engineersdecor.sign_radioactive.name=§6标志牌“小心放射性危害”
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.halfslab_rebar_concrete.name=强化混凝土切片
 tile.engineersdecor.halfslab_rebar_concrete.help=§6可垂直堆叠的切片。§r手持切片右/左击切片堆叠的顶端或底部来添加/移除切片。

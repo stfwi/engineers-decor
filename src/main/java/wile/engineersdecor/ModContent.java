@@ -423,6 +423,62 @@ public class ModContent
     ModAuxiliaries.getPixeledAABB(3,7,0, 13,13,0.5)
   );
 
+  public static final BlockDecorDirected SIGN_RADIOACTIVE = new BlockDecorDirected(
+    "sign_radioactive",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+    Material.WOOD, 0.1f, 1f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(2,2,0, 14,14,0.5)
+  );
+
+  public static final BlockDecorDirected SIGN_LASER = new BlockDecorDirected(
+    "sign_laser",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+    Material.WOOD, 0.1f, 1f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(2,2,0, 14,14,0.5)
+  );
+
+  public static final BlockDecorDirected SIGN_CAUTION = new BlockDecorDirected(
+    "sign_caution",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+    Material.WOOD, 0.1f, 1f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(2,2,0, 14,14,0.5)
+  );
+
+  public static final BlockDecorDirected SIGN_MAGIC_HAZARD = new BlockDecorDirected(
+    "sign_magichazard",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+    Material.WOOD, 0.1f, 1f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(2,2,0, 14,14,0.5)
+  );
+
+  public static final BlockDecorDirected SIGN_FIRE_HAZARD = new BlockDecorDirected(
+    "sign_firehazard",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+    Material.WOOD, 0.1f, 1f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(2,2,0, 14,14,0.5)
+  );
+
+  public static final BlockDecorDirected SIGN_HOT_SURFACE = new BlockDecorDirected(
+    "sign_hotsurface",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+    Material.WOOD, 0.1f, 1f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(2,2,0, 14,14,0.5)
+  );
+
+  public static final BlockDecorDirected SIGN_MAGNETIC_FIELD = new BlockDecorDirected(
+    "sign_magneticfield",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+    Material.WOOD, 0.1f, 1f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(2,2,0, 14,14,0.5)
+  );
+
+  public static final BlockDecorDirected SIGN_FROST_WARNING = new BlockDecorDirected(
+    "sign_frost",
+    BlockDecor.CFG_CUTOUT|BlockDecor.CFG_HORIZIONTAL|BlockDecor.CFG_OPPOSITE_PLACEMENT,
+    Material.WOOD, 0.1f, 1f, SoundType.WOOD,
+    ModAuxiliaries.getPixeledAABB(2,2,0, 14,14,0.5)
+  );
+
   //--------------------------------------------------------------------------------------------------------------------
 
   public static final BlockDecorHalfSlab HALFSLAB_REBARCONCRETE = new BlockDecorHalfSlab(
@@ -614,7 +670,9 @@ public class ModContent
     STEEL_FLOOR_GRATING,
     STEEL_MESH_FENCE,
     STEEL_MESH_FENCE_GATE,
-    SIGN_HOTWIRE, SIGN_DANGER, SIGN_DEFENSE, SIGN_FACTORY_AREA, SIGN_EXIT, SIGN_MODLOGO,
+    SIGN_HOTWIRE, SIGN_DANGER, SIGN_DEFENSE, SIGN_FACTORY_AREA, SIGN_EXIT,
+    SIGN_RADIOACTIVE, SIGN_LASER, SIGN_CAUTION, SIGN_MAGIC_HAZARD, SIGN_FIRE_HAZARD, SIGN_HOT_SURFACE, SIGN_MAGNETIC_FIELD, SIGN_FROST_WARNING,
+    SIGN_MODLOGO,
     TREATED_WOOD_SIDE_TABLE,
     HALFSLAB_REBARCONCRETE, HALFSLAB_CONCRETE, HALFSLAB_GAS_CONCRETE, HALFSLAB_TREATEDWOOD,
     HALFSLAB_SHEETMETALIRON, HALFSLAB_SHEETMETALSTEEL, HALFSLAB_SHEETMETALCOPPER,

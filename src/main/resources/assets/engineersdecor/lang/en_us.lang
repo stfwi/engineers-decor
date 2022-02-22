@@ -232,6 +232,13 @@ tile.engineersdecor.sign_factoryarea.name=Sign "Factory Area"
 tile.engineersdecor.sign_factoryarea.help=§6Marker sign for buildings or areas where the really big machines are located.
 tile.engineersdecor.sign_exit.name=Exit Sign
 tile.engineersdecor.sign_exit.help=§6There's the door, please ...
+tile.engineersdecor.sign_firehazard.name=§6Sign "Fire Hazard"
+tile.engineersdecor.sign_frost.name=§6Sign "Frost Warning"
+tile.engineersdecor.sign_hotsurface.name=§6Sign "Caution Hot Surface"
+tile.engineersdecor.sign_laser.name=§6Sign "Laser Hazard"
+tile.engineersdecor.sign_magichazard.name=§6Sign "Caution Magical Hazard"
+tile.engineersdecor.sign_magneticfield.name=§6Sign "Caution Strong Magnetic Field"
+tile.engineersdecor.sign_radioactive.name=§6Sign "Radioactive Hazard"
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.halfslab_rebar_concrete.name=Rebar Concrete Slice
 tile.engineersdecor.halfslab_rebar_concrete.help=§6Vertically stackable slice.§r Right/left click with the slice stack on the top or bottom surface to add/remove slices.

@@ -1,0 +1,16 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:sign_firehazard",
+      "required": ["engineersdecor:sign_magichazard"]
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    { "item": "engineersdecor:sign_magichazard" }
+  ],
+  "result": {
+    "item": "engineersdecor:sign_firehazard"
+  }
+}

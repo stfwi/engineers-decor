@@ -3,12 +3,12 @@
     {
       "type": "engineersdecor:optional",
       "result": "engineersdecor:sign_hotwire",
-      "required": ["engineersdecor:sign_exit"]
+      "required": ["engineersdecor:sign_frost"]
     }
   ],
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    { "item": "engineersdecor:sign_exit" }
+    { "item": "engineersdecor:sign_frost" }
   ],
   "result": {
     "item": "engineersdecor:sign_hotwire"

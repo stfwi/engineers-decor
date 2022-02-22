@@ -10,6 +10,8 @@ Mod sources for Minecraft version 1.12.2.
 ----
 ## Version history
 
+    - v1.1.4      [A] Back ported signs.
+
     - v1.1.3      [M] Lang file update ru_ru (PR#128, Smollet777).
                   [F] Fixed Block Breaker target block hardness query (issue #187, ty liopard).
 

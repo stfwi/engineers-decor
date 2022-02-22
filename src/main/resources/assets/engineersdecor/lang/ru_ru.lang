@@ -233,6 +233,13 @@ tile.engineersdecor.sign_factoryarea.name=Знак «Заводская зона
 tile.engineersdecor.sign_factoryarea.help=§6Маркерный знак для зданий или областей, где расположены действительно большие машины.
 tile.engineersdecor.sign_exit.name=Знак «Выход»
 tile.engineersdecor.sign_exit.help=§6Там дверь, пожалуйста ...
+tile.engineersdecor.sign_firehazard.name=§6Знак «Пожароопасность»
+tile.engineersdecor.sign_frost.name=§6Sign "Знак «Осторожно, мороз»
+tile.engineersdecor.sign_hotsurface.name=§6Знак «Горячая поверхность»
+tile.engineersdecor.sign_laser.name=§6Знак «Осторожно, лазеры»
+tile.engineersdecor.sign_magichazard.name=§6Знак «Осторожно, магические штуки»
+tile.engineersdecor.sign_magneticfield.name=§6Знак «Сильное магнитное поле»
+tile.engineersdecor.sign_radioactive.name=§6Знак «Радиоактивная опасность»
 #-----------------------------------------------------------------------------------------------------------
 tile.engineersdecor.halfslab_rebar_concrete.name=Арматура для бетона
 tile.engineersdecor.halfslab_rebar_concrete.help=§6Вертикально наращиваемая часть.§rПравый/левый щелчок со стеком частей на верхней или нижней поверхности для добавления/удаления частей.

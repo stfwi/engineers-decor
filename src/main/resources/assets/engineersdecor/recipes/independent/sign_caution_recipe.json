@@ -1,0 +1,16 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:sign_caution",
+      "required": ["engineersdecor:sign_laser"]
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    { "item": "engineersdecor:sign_laser" }
+  ],
+  "result": {
+    "item": "engineersdecor:sign_caution"
+  }
+}

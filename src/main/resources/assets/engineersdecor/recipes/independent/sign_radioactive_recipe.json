@@ -1,0 +1,16 @@
+{
+  "conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:sign_laser",
+      "required": ["engineersdecor:sign_radioactive"]
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    { "item": "engineersdecor:sign_radioactive" }
+  ],
+  "result": {
+    "item": "engineersdecor:sign_laser"
+  }
+}
