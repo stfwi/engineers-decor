@@ -73,6 +73,10 @@ public class EdRoofBlock extends StandardBlocks.HorizontalWaterLoggable
   { return shape_cache_[state.getValue(HALF).ordinal()][state.getValue(HORIZONTAL_FACING).get3DDataValue()][state.getValue(SHAPE).ordinal()]; }
 
   @Override
+  public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext selectionContext)
+  { return getShape(state, world, pos, selectionContext); }
+
+  @Override
   protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
   { super.createBlockStateDefinition(builder); builder.add(SHAPE, HALF); }
 

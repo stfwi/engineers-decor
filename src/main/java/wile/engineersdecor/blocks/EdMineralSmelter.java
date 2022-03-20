@@ -149,7 +149,7 @@ public class EdMineralSmelter
       boolean dirty = false;
       if(te.accepts_lava_container(stack)) {
         if(stack.sameItemStackIgnoreDurability(MineralSmelterTileEntity.BUCKET_STACK)) { // check how this works with item capabilities or so
-          if(te.fluid_extraction_possible()) {
+          if(te.bucket_extraction_possible()) {
             if(stack.getCount() > 1) {
               int target_stack_index = -1;
               for(int i=0; i<player.getInventory().getContainerSize(); ++i) {
@@ -279,7 +279,7 @@ public class EdMineralSmelter
       item_handler_ = Inventories.MappedItemHandler.createGenericHandler(
         main_inventory_,
         (index,stack)->((index==1) && (phase()!=PHASE_LAVA)),
-        (index,stack)->((index==0) && accepts_input(stack)),
+        (index,stack)->((index==0) && (progress_==0) && accepts_input(stack)),
         (index,stack)->{},
         (index,stack)->{ if(index!=0) reset_process(); }
       );
@@ -296,7 +296,7 @@ public class EdMineralSmelter
       return PHASE_WARMUP;
     }
 
-    public boolean fluid_extraction_possible()
+    public boolean bucket_extraction_possible()
     { return tank_.getFluidAmount() >= MAX_BUCKET_EXTRACT_FLUID_LEVEL; }
 
     public int comparator_signal()
@@ -309,7 +309,7 @@ public class EdMineralSmelter
     {
       if(!main_inventory_.isEmpty()) {
         return false;
-      } else if(fluid_extraction_possible()) {
+      } else if(bucket_extraction_possible()) {
         return accepts_lava_container(stack);
       } else {
         if(stack.getItem().getTags().contains(new ResourceLocation(Auxiliaries.modid(), "accepted_mineral_smelter_input"))) return true;
@@ -424,7 +424,7 @@ public class EdMineralSmelter
         // That stays in the slot until its extracted or somone takes it out.
         if(istack.sameItem(BUCKET_STACK)) {
           if(!main_inventory_.getItem(1).sameItem(LAVA_BUCKET_STACK)) {
-            if(fluid_extraction_possible()) {
+            if(bucket_extraction_possible()) {
               reset_process();
               main_inventory_.setItem(1, LAVA_BUCKET_STACK);
               level.playSound(null, worldPosition, SoundEvents.BUCKET_FILL_LAVA, SoundSource.BLOCKS, 0.2f, 1.3f);
@@ -465,7 +465,7 @@ public class EdMineralSmelter
             } else {
               main_inventory_.setItem(0, MAGMA_STACK.copy());
               main_inventory_.setItem(1, MAGMA_STACK.copy());
-              tank_.clear();
+              tank_.drain(1000);
             }
             level.playSound(null, worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5f, 1.1f);
             dirty = true;
@@ -491,7 +491,9 @@ public class EdMineralSmelter
         if(n > 0) {
           tank_.drain(n);
           if(tank_.isEmpty()) {
+            final ItemStack prev = main_inventory_.getItem(0);
             reset_process();
+            main_inventory_.setItem(0, prev);
             level.playSound(null, worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.3f, 0.7f);
           }
         }

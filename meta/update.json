@@ -1,6 +1,7 @@
 {
  "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
  "1.18.1": {
+  "1.1.20": "[F] Fixed Shingle Roof Wire Conduit collision shape (thx os, issue #202).\n[F] Mineral Melter accepts input items only when empty (issue #198, ty Archie).",
   "1.1.19": "[R] Release build.\n[F] Manual category RLs prefixed (issue #199, ty freopt).",
   "1.1.19-b3": "[F] Fixed rendering issue.",
   "1.1.19-b2": "[F] Fixed waterlogging.\n[F] Block entity parent saving corrected, ticker unified.\n[U] Forge/gradle update.",
@@ -50,7 +51,7 @@
   "1.1.2-b1": "[U] Ported to MC1.16.2."
  },
  "promos": {
-  "1.18.1-recommended": "1.1.19",
-  "1.18.1-latest": "1.1.19"
+  "1.18.1-recommended": "1.1.20",
+  "1.18.1-latest": "1.1.20"
  }
 }

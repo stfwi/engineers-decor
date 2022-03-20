@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.18.x.
 
 ## Version history
 
+    - v1.1.20    [F] Fixed Shingle Roof Wire Conduit collision shape (thx os, issue #202).
+                 [F] Mineral Melter accepts input items only when empty (issue #198, ty Archie).
+
     - v1.1.19    [R] Release build.
                  [F] Manual category RLs prefixed (issue #199, ty freopt).
 
