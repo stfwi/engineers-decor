@@ -15,6 +15,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -32,7 +33,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -54,9 +54,12 @@ import wile.engineersdecor.ModContent;
 import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
 import wile.engineersdecor.libmc.blocks.StandardEntityBlocks;
-import wile.engineersdecor.libmc.detail.*;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.Inventories;
 import wile.engineersdecor.libmc.detail.Inventories.InventoryRange;
 import wile.engineersdecor.libmc.detail.Inventories.StorageInventory;
+import wile.engineersdecor.libmc.detail.Networking;
+import wile.engineersdecor.libmc.detail.RsSignals;
 import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
 import wile.engineersdecor.libmc.ui.Guis;
 
@@ -88,10 +91,9 @@ public class EdDropper
     public DropperBlock(long config, BlockBehaviour.Properties builder, final AABB unrotatedAABB)
     { super(config, builder, unrotatedAABB); }
 
-    @Nullable
     @Override
-    public BlockEntityType<EdDropper.DropperTileEntity> getBlockEntityType()
-    { return ModContent.TET_FACTORY_DROPPER; }
+    public ResourceLocation getBlockRegistryName()
+    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -231,7 +233,7 @@ public class EdDropper
     protected LazyOptional<? extends IItemHandler> item_handler_ = Inventories.MappedItemHandler.createGenericHandler(storage_slot_range_);
 
     public DropperTileEntity(BlockPos pos, BlockState state)
-    { super(ModContent.TET_FACTORY_DROPPER, pos, state); reset_rtstate(); }
+    { super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state); reset_rtstate(); }
 
     public CompoundTag clear_getnbt()
     {
@@ -646,7 +648,7 @@ public class EdDropper
 
     private DropperUiContainer(int cid, Inventory player_inventory, Container block_inventory, ContainerLevelAccess wpc, ContainerData fields)
     {
-      super(ModContent.CT_FACTORY_DROPPER, cid);
+      super(ModContent.getMenuType("factory_dropper"), cid); // @todo: class mapping
       fields_ = fields;
       wpc_ = wpc;
       player_ = player_inventory.player;
@@ -785,7 +787,8 @@ public class EdDropper
     {
       super.init();
       {
-        final String prefix = ModContent.FACTORY_DROPPER.getDescriptionId() + ".tooltips.";
+        final Block block = ModContent.getBlock(getMenu().getType().getRegistryName().getPath().replaceAll("^ct_",""));
+        final String prefix = block.getDescriptionId() + ".tooltips.";
         final int x0 = getGuiLeft(), y0 = getGuiTop();
         tooltip_.init(
           new TipRange(x0+130, y0+10, 12, 25, new TranslatableComponent(prefix + "velocity")),

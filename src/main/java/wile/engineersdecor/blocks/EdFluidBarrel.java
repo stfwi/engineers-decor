@@ -11,8 +11,10 @@ package wile.engineersdecor.blocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -32,7 +34,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -47,7 +48,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -99,10 +99,9 @@ public class EdFluidBarrel
       registerDefaultState(super.defaultBlockState().setValue(FACING, Direction.UP).setValue(FILL_LEVEL, 0));
     }
 
-    @Nullable
     @Override
-    public BlockEntityType<EdFluidBarrel.FluidBarrelTileEntity> getBlockEntityType()
-    { return ModContent.TET_FLUID_BARREL; }
+    public ResourceLocation getBlockRegistryName()
+    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -226,7 +225,7 @@ public class EdFluidBarrel
     private final LazyOptional<IFluidHandler> fluid_handler_ = tank_.createFluidHandler();
 
     public FluidBarrelTileEntity(BlockPos pos, BlockState state)
-    { super(ModContent.TET_FLUID_BARREL, pos, state); }
+    { super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state); }
 
     public void readnbt(CompoundTag nbt)
     { tank_.load(nbt); }

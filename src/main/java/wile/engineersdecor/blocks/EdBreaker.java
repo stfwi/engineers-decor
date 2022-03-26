@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -30,7 +31,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -93,10 +93,9 @@ public class EdBreaker
     public BreakerBlock(long config, BlockBehaviour.Properties builder, final AABB[] unrotatedAABBs)
     { super(config, builder, unrotatedAABBs); }
 
-    @Nullable
     @Override
-    public BlockEntityType<BreakerTileEntity> getBlockEntityType()
-    { return ModContent.TET_SMALL_BLOCK_BREAKER; }
+    public ResourceLocation getBlockRegistryName()
+    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -117,7 +116,7 @@ public class EdBreaker
     {
       if((state.getBlock()!=this) || (!state.getValue(ACTIVE))) return;
       // Sound
-      if(true || (world.getGameTime() & 0x1) == 0) {
+      {
         SoundEvent sound = SoundEvents.WOOD_HIT;
         BlockState target_state = world.getBlockState(pos.relative(state.getValue(BreakerBlock.HORIZONTAL_FACING)));
         SoundType stype = target_state.getBlock().getSoundType(target_state);
@@ -196,7 +195,7 @@ public class EdBreaker
     private final LazyOptional<IEnergyStorage> energy_handler_ = battery_.createEnergyHandler();
 
     public BreakerTileEntity(BlockPos pos, BlockState state)
-    { super(ModContent.TET_SMALL_BLOCK_BREAKER, pos, state); }
+    { super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state); }
 
     public void block_updated()
     { if(tick_timer_ > 2) tick_timer_ = 2; }
@@ -284,7 +283,7 @@ public class EdBreaker
       // Maybe make a tag for that. The question is if it is actually worth it, or if that would be only
       // tag spamming the game. So for now only FH and VH.
       final BlockState state = world.getBlockState(pos);
-      return (state.getBlock() == ModContent.FACTORY_HOPPER) || (state.getBlock() == Blocks.HOPPER);
+      return (state.getBlock() == ModContent.getBlock("factory_hopper")) || (state.getBlock() == Blocks.HOPPER);
     }
 
     private boolean breakBlock(BlockState state, BlockPos pos, Level world)

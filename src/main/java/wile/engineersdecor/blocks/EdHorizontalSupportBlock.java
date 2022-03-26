@@ -119,9 +119,9 @@ public class EdHorizontalSupportBlock extends StandardBlocks.WaterLoggable
     if((dstate.getBlock() instanceof final EdStraightPoleBlock pole)) {
       final Direction dfacing = dstate.getValue(EdStraightPoleBlock.FACING);
       if((dfacing.getAxis() == Direction.Axis.Y)) {
-        if((pole== ModContent.THICK_STEEL_POLE) || ((pole==ModContent.THICK_STEEL_POLE_HEAD) && (dfacing==Direction.UP))) {
+        if((pole==ModContent.getBlock("thick_steel_pole")) || ((pole==ModContent.getBlock("thick_steel_pole_head")) && (dfacing==Direction.UP))) {
           down_connector = 2;
-        } else if((pole==ModContent.THIN_STEEL_POLE) || ((pole==ModContent.THIN_STEEL_POLE_HEAD) && (dfacing==Direction.UP))) {
+        } else if((pole==ModContent.getBlock("thin_steel_pole")) || ((pole==ModContent.getBlock("thin_steel_pole_head")) && (dfacing==Direction.UP))) {
           down_connector = 1;
         }
       }

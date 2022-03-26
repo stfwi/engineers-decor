@@ -114,7 +114,7 @@ public class EdChair
     }
 
     public EntityChair(Level world)
-    { this(ModContent.ET_CHAIR, world); }
+    { this(ModContent.getEntityType("et_chair"), world); }
 
     public static EntityChair customClientFactory(PlayMessages.SpawnEntity spkt, Level world)
     { return new EntityChair(world); }

@@ -321,7 +321,7 @@ public class ModConfig
   //--------------------------------------------------------------------------------------------------------------------
 
   public static boolean isOptedOut(final @Nullable Block block)
-  { return isOptedOut(block.asItem()); }
+  { return (block==null) || isOptedOut(block.asItem()); }
 
   public static boolean isOptedOut(final @Nullable Item item)
   { return (item!=null) && optouts_.contains(item.getRegistryName().getPath()); }
@@ -379,12 +379,9 @@ public class ModConfig
     if(!includes.isEmpty()) log("Config pattern includes: '" + String.join(",", includes) + "'");
     {
       HashSet<String> optouts = new HashSet<>();
-      ModContent.getRegisteredItems().stream().filter(Objects::nonNull).forEach(
-        e -> optouts.add(e.getRegistryName().getPath())
-      );
       ModContent.getRegisteredBlocks().stream().filter((Block block) -> {
         if(block==null) return true;
-        if(block==ModContent.SIGN_MODLOGO) return true;
+        if(block==ModContent.getBlock("sign_decor")) return true;
         try {
           if(!with_experimental_features_) {
             if(block instanceof Auxiliaries.IExperimentalFeature) return true;

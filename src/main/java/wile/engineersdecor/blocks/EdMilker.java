@@ -32,7 +32,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -122,9 +121,8 @@ public class EdMilker
     }
 
     @Override
-    @Nullable
-    public BlockEntityType<EdMilker.MilkerTileEntity> getBlockEntityType()
-    { return ModContent.TET_SMALL_MILKING_MACHINE; }
+    public ResourceLocation getBlockRegistryName()
+    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -222,7 +220,7 @@ public class EdMilker
 
     public MilkerTileEntity(BlockPos pos, BlockState state)
     {
-      super(ModContent.TET_SMALL_MILKING_MACHINE, pos, state);
+      super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state);
       tank_ = new Fluidics.Tank(TANK_CAPACITY, 0, BUCKET_SIZE, fs->fs.isFluidEqual(milk_fluid_));
       fluid_handler_ = tank_.createOutputFluidHandler();
       battery_ = new RfEnergy.Battery(MAX_ENERGY_BUFFER, MAX_ENERGY_TRANSFER, 0);
@@ -718,8 +716,8 @@ public class EdMilker
     @Override
     public void tick()
     {
-      BlockPos testpos = new BlockPos(target_pos_.x(), mob.position().y(), target_pos_.z());
-      if(!testpos.closerThan(mob.position(), acceptedDistance())) {
+      final BlockPos testpos = new BlockPos(target_pos_.x(), mob.position().y(), target_pos_.z());
+      if(!testpos.closerToCenterThan(mob.position(), acceptedDistance())) {
         if((++tryTicks > motion_timeout)) {
           log("tick() -> abort, timeoutCounter");
           abort();

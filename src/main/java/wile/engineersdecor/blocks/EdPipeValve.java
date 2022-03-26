@@ -11,6 +11,7 @@ package wile.engineersdecor.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -76,9 +77,16 @@ public class EdPipeValve
     { super(config, builder, unrotatedAABB); this.valve_config = valve_config; }
 
     @Override
+    public ResourceLocation getBlockRegistryName()
+    { return getRegistryName(); }
+
+    @Override
     @Nullable
-    public BlockEntityType<EdPipeValve.PipeValveTileEntity> getBlockEntityType()
-    { return ModContent.TET_STRAIGHT_PIPE_VALVE; }
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
+    {
+      final BlockEntityType<?> tet = ModContent.getBlockEntityTypeOfBlock("straight_pipe_valve");
+      return (tet==null) ? null : tet.create(pos, state);
+    }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -175,7 +183,7 @@ public class EdPipeValve
     private int valve_config_;
 
     public PipeValveTileEntity(BlockPos pos, BlockState state)
-    { super(ModContent.TET_STRAIGHT_PIPE_VALVE, pos, state); }
+    { super(ModContent.getBlockEntityTypeOfBlock("straight_pipe_valve"), pos, state); }
 
     private Direction block_facing()
     {

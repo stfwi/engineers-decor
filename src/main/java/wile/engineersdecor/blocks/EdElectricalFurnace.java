@@ -15,6 +15,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -35,7 +36,6 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -91,10 +91,9 @@ public class EdElectricalFurnace
     public ElectricalFurnaceBlock(long config, BlockBehaviour.Properties builder, final AABB[] unrotatedAABBs)
     { super(config, builder, unrotatedAABBs); }
 
-    @Nullable
     @Override
-    public BlockEntityType<EdElectricalFurnace.ElectricalFurnaceTileEntity> getBlockEntityType()
-    { return ModContent.TET_SMALL_ELECTRICAL_FURNACE; }
+    public ResourceLocation getBlockRegistryName()
+    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -252,7 +251,7 @@ public class EdElectricalFurnace
 
     public ElectricalFurnaceTileEntity(BlockPos pos, BlockState state)
     {
-      super(ModContent.TET_SMALL_ELECTRICAL_FURNACE, pos, state);
+      super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state);
       inventory_ = new StorageInventory(this, NUM_OF_SLOTS) {
         @Override
         public void setItem(int index, ItemStack stack)
@@ -497,7 +496,7 @@ public class EdElectricalFurnace
     // Furnace --------------------------------------------------------------------------------------
 
     private boolean is_accepted_hopper(final ItemStack stack)
-    { return (stack.getItem() == Blocks.HOPPER.asItem()) || (stack.getItem() == ModContent.FACTORY_HOPPER.asItem()); }
+    { return (stack.getItem() == Blocks.HOPPER.asItem()) || (stack.getItem() == ModContent.getBlock("factory_hopper").asItem()); }
 
     private boolean transferItems(final int index_from, final int index_to, int count)
     {
@@ -758,7 +757,7 @@ public class EdElectricalFurnace
 
     private ElectricalFurnaceContainer(int cid, Inventory player_inventory, Container block_inventory, ContainerLevelAccess wpc, ContainerData fields)
     {
-      super(ModContent.CT_SMALL_ELECTRICAL_FURNACE, cid);
+      super(ModContent.getMenuType("small_electrical_furnace"), cid); // @todo: class mapping,
       player_ = player_inventory.player;
       inventory_ = block_inventory;
       wpc_ = wpc;
@@ -869,7 +868,8 @@ public class EdElectricalFurnace
     public void init()
     {
       super.init();
-      final String prefix = ModContent.SMALL_ELECTRICAL_FURNACE.getDescriptionId() + ".tooltips.";
+      final Block block = ModContent.getBlock(getMenu().getType().getRegistryName().getPath().replaceAll("^ct_",""));
+      final String prefix = block.getDescriptionId() + ".tooltips.";
       final int x0 = getGuiLeft(), y0 = getGuiTop();
       final Slot aux = menu.getSlot(ElectricalFurnaceTileEntity.SMELTING_AUX_SLOT_NO);
       tooltip_.init(

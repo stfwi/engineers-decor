@@ -11,6 +11,7 @@ package wile.engineersdecor.blocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -20,7 +21,6 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -77,9 +77,8 @@ public class EdSolarPanel
     }
 
     @Override
-    @Nullable
-    public BlockEntityType<EdSolarPanel.SolarPanelTileEntity> getBlockEntityType()
-    { return ModContent.TET_SMALL_SOLAR_PANEL; }
+    public ResourceLocation getBlockRegistryName()
+    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -126,7 +125,7 @@ public class EdSolarPanel
     //------------------------------------------------------------------------------------------------------------------
 
     public SolarPanelTileEntity(BlockPos pos, BlockState state)
-    { super(ModContent.TET_SMALL_SOLAR_PANEL, pos, state); }
+    { super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state); }
 
     public void readnbt(CompoundTag nbt, boolean update_packet)
     { battery_.load(nbt); }

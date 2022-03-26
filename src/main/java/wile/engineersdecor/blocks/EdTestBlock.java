@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -22,7 +23,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
@@ -63,9 +63,8 @@ public class EdTestBlock
     { super(config, builder, unrotatedAABB); }
 
     @Override
-    @Nullable
-    public BlockEntityType<EdTestBlock.TestTileEntity> getBlockEntityType()
-    { return ModContent.TET_TEST_BLOCK; }
+    public ResourceLocation getBlockRegistryName()
+    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -137,7 +136,7 @@ public class EdTestBlock
 
     public TestTileEntity(BlockPos pos, BlockState state)
     {
-      super(ModContent.TET_TEST_BLOCK, pos, state);
+      super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state);
       battery_ = new RfEnergy.Battery((int)1e9, (int)1e9, 0, 0);
       energy_handler_ = battery_.createEnergyHandler();
       tank_ = new Fluidics.Tank((int)1e9);
@@ -248,7 +247,7 @@ public class EdTestBlock
           Overlay.show(player, new TextComponent("RF feed rate: " + rf_feed_setting + "rf/t"), 1000);
         } else {
           BlockState adjacent_state = level.getBlockState(worldPosition.relative(block_facing));
-          if(adjacent_state.getBlock()==Blocks.HOPPER || adjacent_state.getBlock()==ModContent.FACTORY_HOPPER) {
+          if(adjacent_state.getBlock()==Blocks.HOPPER || adjacent_state.getBlock()==ModContent.getBlock("factory_hopper")) {
             insertion_item = held.copy();
             Overlay.show(player, new TextComponent("Insertion item: " + (insertion_item.getItem()==Items.LEVER ? "random" : insertion_item.toString()) + "/s"), 1000);
           }
@@ -306,7 +305,7 @@ public class EdTestBlock
         if((tick_timer == 1) && (!insertion_item.isEmpty())) {
           BlockState adjacent_state = level.getBlockState(worldPosition.relative(block_facing));
           ItemStack stack = (insertion_item.getItem()==Items.LEVER) ? getRandomItemstack() : insertion_item.copy();
-          if(adjacent_state.getBlock()==Blocks.HOPPER || adjacent_state.getBlock()==ModContent.FACTORY_HOPPER) {
+          if(adjacent_state.getBlock()==Blocks.HOPPER || adjacent_state.getBlock()==ModContent.getBlock("factory_hopper")) {
             ItemStack remaining = Inventories.insert(getLevel(), getBlockPos().relative(block_facing), block_facing.getOpposite(), stack, false);
             int n = stack.getCount() - remaining.getCount();
             items_inserted_total += n;

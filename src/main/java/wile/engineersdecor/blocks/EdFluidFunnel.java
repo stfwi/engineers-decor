@@ -14,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -27,7 +28,6 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -77,10 +77,9 @@ public class EdFluidFunnel
     public FluidFunnelBlock(long config, BlockBehaviour.Properties builder, final AABB[] unrotatedAABB)
     { super(config, builder, unrotatedAABB); }
 
-    @Nullable
     @Override
-    public BlockEntityType<EdFluidFunnel.FluidFunnelTileEntity> getBlockEntityType()
-    { return ModContent.TET_SMALL_FLUID_FUNNEL; }
+    public ResourceLocation getBlockRegistryName()
+    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -196,7 +195,7 @@ public class EdFluidFunnel
     private final LazyOptional<IFluidHandler> fluid_handler_ = tank_.createOutputFluidHandler();
 
     public FluidFunnelTileEntity(BlockPos pos, BlockState state)
-    { super(ModContent.TET_SMALL_FLUID_FUNNEL, pos, state); }
+    { super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state); }
 
     public void readnbt(CompoundTag nbt)
     {

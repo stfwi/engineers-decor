@@ -127,17 +127,17 @@ public class EdCatwalkStairsBlock extends StandardBlocks.HorizontalWaterLoggable
       place_state = place_state.setValue(WATERLOGGED,adjacent_state.getFluidState().getType()==Fluids.WATER);
       EdCatwalkBlock.place_consume(place_state, world, adjacent_pos, player, hand, 1);
       return world.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
-    } else if((block == ModContent.STEEL_CATWALK) || (block == ModContent.STEEL_CATWALK_TOP_ALIGNED)) {
+    } else if((block == ModContent.getBlock("steel_catwalk")) || (block == ModContent.getBlock("steel_catwalk_ta"))) {
       BlockPos adjacent_pos;
       adjacent_pos = pos.relative(facing);
       final BlockState adjacent_state = world.getBlockState(adjacent_pos);
       if(adjacent_state == null) return InteractionResult.CONSUME;
       if(!adjacent_state.canBeReplaced(new DirectionalPlaceContext(world, adjacent_pos, hit.getDirection().getOpposite(), player.getItemInHand(hand), hit.getDirection()))) return InteractionResult.CONSUME;
-      BlockState place_state = ModContent.STEEL_CATWALK_TOP_ALIGNED.defaultBlockState();
+      BlockState place_state = ModContent.getBlock("steel_catwalk_ta").defaultBlockState(); // ModContent.STEEL_CATWALK_TOP_ALIGNED
       place_state = place_state.setValue(WATERLOGGED,adjacent_state.getFluidState().getType()==Fluids.WATER);
       EdCatwalkBlock.place_consume(place_state, world, adjacent_pos, player, hand, 1);
       return world.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
-    } else if(block == ModContent.STEEL_RAILING) {
+    } else if(block == ModContent.getBlock("steel_railing")) {
       Direction face = hit.getDirection();
       int shrink = 0;
       BlockState place_state = state;
@@ -179,7 +179,7 @@ public class EdCatwalkStairsBlock extends StandardBlocks.HorizontalWaterLoggable
     List<ItemStack> drops = new ArrayList<>();
     drops.add(new ItemStack(state.getBlock().asItem()));
     int n = (state.getValue(LEFT_RAILING)?1:0)+(state.getValue(RIGHT_RAILING)?1:0);
-    if(n > 0) drops.add(new ItemStack(ModContent.STEEL_RAILING, n));
+    if(n > 0) drops.add(new ItemStack(ModContent.getBlock("steel_railing"), n));
     return drops;
   }
 

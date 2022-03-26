@@ -3,13 +3,9 @@ package wile.engineersdecor;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.RegistryEvent;
@@ -26,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 import wile.engineersdecor.blocks.EdLadderBlock;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.OptionalRecipeCondition;
+import wile.engineersdecor.libmc.detail.Registries;
 
 
 @Mod("engineersdecor")
@@ -40,6 +37,8 @@ public class ModEngineersDecor
   {
     Auxiliaries.init(MODID, LOGGER, ModConfig::getServerConfig);
     Auxiliaries.logGitVersion(MODNAME);
+    Registries.init(MODID, "sign_decor");
+    ModContent.init(MODID);
     OptionalRecipeCondition.init(MODID, LOGGER);
     ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.SERVER, ModConfig.SERVER_CONFIG_SPEC);
     ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.COMMON, ModConfig.COMMON_CONFIG_SPEC);
@@ -63,8 +62,8 @@ public class ModEngineersDecor
 
   private void onClientSetup(final FMLClientSetupEvent event)
   {
-    ModContent.registerContainerGuis(event);
-    ModContent.registerTileEntityRenderers(event);
+    ModContent.registerMenuGuis(event);
+    ModContent.registerBlockEntityRenderers(event);
     ModContent.processContentClientSide(event);
     wile.engineersdecor.libmc.detail.Overlay.register();
   }
@@ -73,24 +72,24 @@ public class ModEngineersDecor
   public static class ForgeEvents
   {
     @SubscribeEvent
-    public static void onBlocksRegistry(final RegistryEvent.Register<Block> event)
+    public static void onRegisterBlocks(final RegistryEvent.Register<Block> event)
     { ModContent.registerBlocks(event); }
 
     @SubscribeEvent
-    public static void onItemRegistry(final RegistryEvent.Register<Item> event)
-    { ModContent.registerItems(event); ModContent.registerBlockItems(event); }
+    public static void onRegisterItems(final RegistryEvent.Register<Item> event)
+    { ModContent.registerItems(event); }
 
     @SubscribeEvent
-    public static void onTileEntityRegistry(final RegistryEvent.Register<BlockEntityType<?>> event)
-    { ModContent.registerTileEntities(event); }
+    public static void onRegisterBlockEntityTypes(final RegistryEvent.Register<BlockEntityType<?>> event)
+    { ModContent.registerBlockEntityTypes(event); }
 
     @SubscribeEvent
     public static void onRegisterEntityTypes(final RegistryEvent.Register<EntityType<?>> event)
-    { ModContent.registerEntities(event); }
+    { ModContent.registerEntityTypes(event); }
 
     @SubscribeEvent
-    public static void onRegisterContainerTypes(final RegistryEvent.Register<MenuType<?>> event)
-    { ModContent.registerContainers(event); }
+    public static void onRegisterMenuTypes(final RegistryEvent.Register<MenuType<?>> event)
+    { ModContent.registerMenuTypes(event); }
 
     @SubscribeEvent
     public static void onConfigLoad(final ModConfigEvent.Loading event)
@@ -107,15 +106,6 @@ public class ModEngineersDecor
       }
     }
   }
-
-  //
-  // Item group / creative tab
-  //
-  public static final CreativeModeTab ITEMGROUP = (new CreativeModeTab("tab" + MODID) {
-    @OnlyIn(Dist.CLIENT)
-    public ItemStack makeIcon()
-    { return new ItemStack(ModContent.SIGN_MODLOGO); }
-  });
 
   //
   // Player update event

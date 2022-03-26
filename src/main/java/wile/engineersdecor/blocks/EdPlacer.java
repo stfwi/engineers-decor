@@ -15,6 +15,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -38,7 +39,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
@@ -84,9 +84,8 @@ public class EdPlacer
     { super(config, builder, unrotatedAABB); }
 
     @Override
-    @Nullable
-    public BlockEntityType<EdPlacer.PlacerTileEntity> getBlockEntityType()
-    { return ModContent.TET_FACTORY_PLACER; }
+    public ResourceLocation getBlockRegistryName()
+    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -201,12 +200,13 @@ public class EdPlacer
     private int logic_ = LOGIC_IGNORE_EXT|LOGIC_CONTINUOUS;
     private int current_slot_index_ = 0;
     private int tick_timer_ = 0;
+    private final boolean debug_ = false; // @todo debug stick in `self::use()` toggling.
     private final Inventories.StorageInventory inventory_ = new Inventories.StorageInventory(this, NUM_OF_SLOTS, 1);
     private final LazyOptional<IItemHandler> item_handler_;
 
     public PlacerTileEntity(BlockPos pos, BlockState state)
     {
-      super(ModContent.TET_FACTORY_PLACER, pos, state);
+      super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state);
       item_handler_ = Inventories.MappedItemHandler.createGenericHandler(inventory_,
         (stack, slot) -> true,
         (stack, slot) -> true
@@ -383,7 +383,7 @@ public class EdPlacer
       Block block = Block.byItem(item);
       if(block == Blocks.AIR) {
         if(item != null) {
-          Auxiliaries.logDebug("Placer spit: No block for item " + item.getRegistryName().toString());
+          if(debug_) Auxiliaries.logInfo("Placer spit: No block for item " + item.getRegistryName().toString());
           return spit_out(facing); // Item not accepted
         }
       } else if(block instanceof IPlantable) {
@@ -459,7 +459,7 @@ public class EdPlacer
           }
           BlockState placement_state = (use_context==null) ? (block.defaultBlockState()) : (block.getStateForPlacement(use_context));
           if(placement_state == null) {
-            Auxiliaries.logDebug("Placer spit: No valid placement state for item " + item.getRegistryName().toString());
+            if(debug_) Auxiliaries.logInfo("Placer spit: No valid placement state for item " + item.getRegistryName().toString());
             return spit_out(facing);
           } else if((use_context!=null) && (item instanceof BlockItem)) {
             if(((BlockItem)item).place(use_context) != InteractionResult.FAIL) {
@@ -554,7 +554,7 @@ public class EdPlacer
 
     private PlacerContainer(int cid, Inventory player_inventory, Container block_inventory, ContainerLevelAccess wpc, ContainerData fields)
     {
-      super(ModContent.CT_FACTORY_PLACER, cid);
+      super(ModContent.getMenuType("factory_placer"), cid); // @todo: class mapping
       fields_ = fields;
       wpc_ = wpc;
       player_ = player_inventory.player;
@@ -683,7 +683,8 @@ public class EdPlacer
     {
       super.init();
       {
-        final String prefix = ModContent.FACTORY_PLACER.getDescriptionId() + ".tooltips.";
+        final Block block = ModContent.getBlock(getMenu().getType().getRegistryName().getPath().replaceAll("^ct_",""));
+        final String prefix = block.getDescriptionId() + ".tooltips.";
         final int x0 = getGuiLeft(), y0 = getGuiTop();
         tooltip_.init(
           new TooltipDisplay.TipRange(x0+133, y0+49,  9,  9, new TranslatableComponent(prefix + "rssignal")),

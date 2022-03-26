@@ -11,6 +11,8 @@ Mod sources for Minecraft version 1.18.x.
 
 ## Version history
 
+    - v1.1.22-b1 [U] Updated to 1.18.2.
+
     - v1.1.21    [A] Added French translation (PR#203, dracnis).
 
     - v1.1.20    [F] Fixed Shingle Roof Wire Conduit collision shape (thx os, issue #202).

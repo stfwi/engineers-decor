@@ -14,6 +14,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -28,7 +29,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -83,9 +83,8 @@ public class EdWasteIncinerator
     { super(config, builder, unrotatedAABB); }
 
     @Override
-    @Nullable
-    public BlockEntityType<EdWasteIncinerator.WasteIncineratorTileEntity> getBlockEntityType()
-    { return ModContent.TET_WASTE_INCINERATOR; }
+    public ResourceLocation getBlockRegistryName()
+    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -195,7 +194,7 @@ public class EdWasteIncinerator
     private final LazyOptional<IEnergyStorage> energy_handler_ = battery_.createEnergyHandler();
 
     public WasteIncineratorTileEntity(BlockPos pos, BlockState state)
-    { super(ModContent.TET_WASTE_INCINERATOR, pos, state); reset(); }
+    { super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state); reset(); }
 
     public CompoundTag getnbt()
     { return writenbt(new CompoundTag()); }
@@ -414,7 +413,7 @@ public class EdWasteIncinerator
 
     private WasteIncineratorContainer(int cid, Inventory player_inventory, Container block_inventory, ContainerLevelAccess wpc, ContainerData fields)
     {
-      super(ModContent.CT_WASTE_INCINERATOR, cid);
+      super(ModContent.getMenuType("small_waste_incinerator"), cid); // @todo: class mapping
       player_ = player_inventory.player;
       inventory_ = block_inventory;
       wpc_ = wpc;

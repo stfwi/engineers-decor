@@ -38,7 +38,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -90,9 +89,8 @@ public class EdFurnace
     { super(config, properties, unrotatedAABB); registerDefaultState(super.defaultBlockState().setValue(LIT, false)); }
 
     @Override
-    @Nullable
-    public BlockEntityType<EdFurnace.FurnaceTileEntity> getBlockEntityType()
-    { return ModContent.TET_SMALL_LAB_FURNACE; }
+    public ResourceLocation getBlockRegistryName()
+    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -278,7 +276,7 @@ public class EdFurnace
 
     public FurnaceTileEntity(BlockPos pos, BlockState state)
     {
-      super(ModContent.TET_SMALL_LAB_FURNACE, pos, state);
+      super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state);
       inventory_ = new StorageInventory(this, NUM_OF_SLOTS) {
         @Override
         public void setItem(int index, ItemStack stack)
@@ -763,7 +761,7 @@ public class EdFurnace
 
     private FurnaceContainer(int cid, Inventory player_inventory, Container block_inventory, ContainerLevelAccess wpc, ContainerData fields)
     {
-      super(ModContent.CT_SMALL_LAB_FURNACE, cid);
+      super(ModContent.getMenuType("small_lab_furnace"), cid); // @todo: class mapping
       player_ = player_inventory.player;
       inventory_ = block_inventory;
       wpc_ = wpc;

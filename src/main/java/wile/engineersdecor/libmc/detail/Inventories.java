@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.TagTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.Entity;
@@ -942,11 +943,20 @@ public class Inventories
   public static NonNullList<ItemStack> readNbtStacks(CompoundTag nbt, String key, int size)
   {
     NonNullList<ItemStack> stacks = NonNullList.withSize(size, ItemStack.EMPTY);
-    if((nbt == null) || (!nbt.contains(key,10))) return stacks;
+    if((nbt == null) || (!nbt.contains(key, Tag.TAG_COMPOUND))) return stacks;
     CompoundTag stacknbt = nbt.getCompound(key);
     ContainerHelper.loadAllItems(stacknbt, stacks);
     return stacks;
   }
+
+  public static NonNullList<ItemStack> readNbtStacks(CompoundTag nbt, int size)
+  {
+    NonNullList<ItemStack> stacks = NonNullList.withSize(size, ItemStack.EMPTY);
+    if((nbt == null) || (!nbt.contains("Items", Tag.TAG_LIST))) return stacks;
+    ContainerHelper.loadAllItems(nbt, stacks);
+    return stacks;
+  }
+
 
   public static CompoundTag writeNbtStacks(CompoundTag nbt, String key, NonNullList<ItemStack> stacks, boolean omit_trailing_empty)
   {

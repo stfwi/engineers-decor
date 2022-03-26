@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -23,7 +24,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -65,9 +65,8 @@ public class EdTreeCutter
     { super(config, builder, unrotatedAABB); }
 
     @Override
-    @Nullable
-    public BlockEntityType<EdTreeCutter.TreeCutterTileEntity> getBlockEntityType()
-    { return ModContent.TET_SMALL_TREE_CUTTER; }
+    public ResourceLocation getBlockRegistryName()
+    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -152,7 +151,7 @@ public class EdTreeCutter
     }
 
     public TreeCutterTileEntity(BlockPos pos, BlockState state)
-    { super(ModContent.TET_SMALL_TREE_CUTTER, pos, state); }
+    { super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state); }
 
     public void readnbt(CompoundTag nbt)
     { energy_ = nbt.getInt("energy"); }

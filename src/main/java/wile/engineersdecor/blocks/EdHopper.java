@@ -15,6 +15,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.Entity;
@@ -30,7 +31,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -71,9 +71,8 @@ public class EdHopper
     { super(config, builder, shape_supplier); }
 
     @Override
-    @Nullable
-    public BlockEntityType<EdHopper.HopperTileEntity> getBlockEntityType()
-    { return ModContent.TET_FACTORY_HOPPER; }
+    public ResourceLocation getBlockRegistryName()
+    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -216,7 +215,7 @@ public class EdHopper
 
     public HopperTileEntity(BlockPos pos, BlockState state)
     {
-      super(ModContent.TET_FACTORY_HOPPER, pos, state);
+      super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state);
       main_inventory_.setSlotChangeAction((slot,stack)->tick_timer_ = Math.min(tick_timer_, 8));
     }
 
@@ -631,7 +630,7 @@ public class EdHopper
 
     private HopperContainer(int cid, Inventory player_inventory, Container block_inventory, ContainerLevelAccess wpc, ContainerData fields)
     {
-      super(ModContent.CT_FACTORY_HOPPER, cid);
+      super(ModContent.getMenuType("factory_hopper"), cid); // @todo: class mapping
       fields_ = fields;
       wpc_ = wpc;
       player_ = player_inventory.player;
@@ -761,7 +760,8 @@ public class EdHopper
     {
       super.init();
       {
-        final String prefix = ModContent.FACTORY_HOPPER.getDescriptionId() + ".tooltips.";
+        final Block block = ModContent.getBlock(getMenu().getType().getRegistryName().getPath().replaceAll("^ct_",""));
+        final String prefix = block.getDescriptionId() + ".tooltips.";
         final int x0 = getGuiLeft(), y0 = getGuiTop();
         tooltip_.init(
           new TooltipDisplay.TipRange(x0+148, y0+22,  3,  3, new TranslatableComponent(prefix + "delayindicator")),

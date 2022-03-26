@@ -10,13 +10,13 @@ package wile.engineersdecor.eapi.jei;
 /*
 public class JEIPlugin {}
 */
+import mezz.jei.api.constants.RecipeTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
-import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.runtime.IJeiRuntime;
@@ -42,11 +42,11 @@ public class JEIPlugin implements mezz.jei.api.IModPlugin
   @Override
   public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration)
   {
-    if(!ModConfig.isOptedOut(ModContent.CRAFTING_TABLE)) {
+    if(!ModConfig.isOptedOut(ModContent.getBlock("metal_crafting_table"))) {
       try {
         registration.addRecipeTransferHandler(
           EdCraftingTable.CraftingTableUiContainer.class,
-          VanillaRecipeCategoryUid.CRAFTING,
+          RecipeTypes.CRAFTING,
           1, 9, 10, 36+CraftingTableTileEntity.NUM_OF_STORAGE_SLOTS
         );
       } catch(Throwable e) {
@@ -82,14 +82,14 @@ public class JEIPlugin implements mezz.jei.api.IModPlugin
   @Override
   public void registerRecipeCatalysts(IRecipeCatalystRegistration registration)
   {
-    if(!ModConfig.isOptedOut(ModContent.CRAFTING_TABLE)) {
-      registration.addRecipeCatalyst(new ItemStack(ModContent.CRAFTING_TABLE), VanillaRecipeCategoryUid.CRAFTING);
+    if(!ModConfig.isOptedOut(ModContent.getBlock("metal_crafting_table"))) {
+      registration.addRecipeCatalyst(new ItemStack(ModContent.getBlock("metal_crafting_table")), RecipeTypes.CRAFTING);
     }
-    if(!ModConfig.isOptedOut(ModContent.SMALL_LAB_FURNACE)) {
-      registration.addRecipeCatalyst(new ItemStack(ModContent.SMALL_LAB_FURNACE), VanillaRecipeCategoryUid.FURNACE);
+    if(!ModConfig.isOptedOut(ModContent.getBlock("small_lab_furnace"))) {
+      registration.addRecipeCatalyst(new ItemStack(ModContent.getBlock("small_lab_furnace")), RecipeTypes.SMELTING);
     }
-    if(!ModConfig.isOptedOut(ModContent.SMALL_ELECTRICAL_FURNACE)) {
-      registration.addRecipeCatalyst(new ItemStack(ModContent.SMALL_ELECTRICAL_FURNACE), VanillaRecipeCategoryUid.FURNACE);
+    if(!ModConfig.isOptedOut(ModContent.getBlock("small_electrical_furnace"))) {
+      registration.addRecipeCatalyst(new ItemStack(ModContent.getBlock("small_electrical_furnace")), RecipeTypes.SMELTING);
     }
   }
 }

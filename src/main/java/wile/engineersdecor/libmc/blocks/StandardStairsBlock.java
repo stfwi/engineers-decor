@@ -31,9 +31,6 @@ public class StandardStairsBlock extends StairBlock implements StandardBlocks.IS
 {
   private final long config;
 
-  public StandardStairsBlock(long config, BlockState state, BlockBehaviour.Properties properties)
-  { super(()->state, properties); this.config = config; }
-
   public StandardStairsBlock(long config, java.util.function.Supplier<BlockState> state, BlockBehaviour.Properties properties)
   { super(state, properties); this.config = config; }
 

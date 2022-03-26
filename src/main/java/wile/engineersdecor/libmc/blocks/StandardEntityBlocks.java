@@ -9,6 +9,7 @@
 package wile.engineersdecor.libmc.blocks;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
@@ -20,6 +21,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraftforge.common.util.FakePlayer;
+import wile.engineersdecor.libmc.detail.Registries;
 
 import javax.annotation.Nullable;
 
@@ -28,8 +30,8 @@ public class StandardEntityBlocks
 {
   public interface IStandardEntityBlock<ET extends StandardBlockEntity> extends EntityBlock
   {
-    @Nullable
-    BlockEntityType<ET> getBlockEntityType();
+
+    ResourceLocation getBlockRegistryName();
 
     default boolean isBlockEntityTicking(Level world, BlockState state)
     { return false; }
@@ -46,7 +48,10 @@ public class StandardEntityBlocks
     @Override
     @Nullable
     default BlockEntity newBlockEntity(BlockPos pos, BlockState state)
-    { return (getBlockEntityType()==null) ? null : getBlockEntityType().create(pos, state); }
+    {
+      BlockEntityType<?> tet = Registries.getBlockEntityTypeOfBlock(getBlockRegistryName().getPath());
+      return (tet==null) ? null : tet.create(pos, state);
+    }
 
     @Override
     @Nullable

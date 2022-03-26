@@ -13,11 +13,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.LivingEntity;
@@ -33,7 +35,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.PushReaction;
@@ -41,7 +42,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -71,7 +71,7 @@ public class EdLabeledCrate
     with_gui_mouse_handling = !without_gui_mouse_handling;
     // Currently no config, using a tag for this small feature may be uselessly stressing the registry.
     unstorable_containers.clear();
-    unstorable_containers.add(ModContent.LABELED_CRATE.asItem());
+    unstorable_containers.add(ModContent.getBlock("labeled_crate").asItem());
     unstorable_containers.add(Items.SHULKER_BOX);
     ModConfig.log("Config crate: unstorable:" + unstorable_containers.stream().map(e->e.getRegistryName().toString()).collect(Collectors.joining(",")));
   }
@@ -86,9 +86,8 @@ public class EdLabeledCrate
     { super(config, builder, unrotatedAABB); }
 
     @Override
-    @Nullable
-    public BlockEntityType<EdLabeledCrate.LabeledCrateTileEntity> getBlockEntityType()
-    { return ModContent.TET_LABELED_CRATE; }
+    public ResourceLocation getBlockRegistryName()
+    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -171,7 +170,7 @@ public class EdLabeledCrate
       if(stack.hasTag() && stack.getTag().contains("tedata")) {
         final CompoundTag nbt = stack.getTag().getCompound("tedata");
         if(nbt.contains("Items")) {
-          final NonNullList<ItemStack> all_items = Inventories.readNbtStacks(nbt, "Items", LabeledCrateTileEntity.NUM_OF_SLOTS);
+          final NonNullList<ItemStack> all_items = Inventories.readNbtStacks(nbt, LabeledCrateTileEntity.NUM_OF_SLOTS);
           frameStack = all_items.get(LabeledCrateTileEntity.ITEMFRAME_SLOTNO);
           all_items.set(LabeledCrateTileEntity.ITEMFRAME_SLOTNO, ItemStack.EMPTY);
           Map<Item,Integer> item_map = new HashMap<>();
@@ -224,7 +223,7 @@ public class EdLabeledCrate
 
     public LabeledCrateTileEntity(BlockPos pos, BlockState state)
     {
-      super(ModContent.TET_LABELED_CRATE, pos, state);
+      super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state);
       main_inventory_.setCloseAction((player)->Networking.PacketTileNotifyServerToClient.sendToPlayers(this, writenbt(new CompoundTag())));
       main_inventory_.setSlotChangeAction((index,stack)->{
         if(index==ITEMFRAME_SLOTNO) Networking.PacketTileNotifyServerToClient.sendToPlayers(this, writenbt(new CompoundTag()));
@@ -422,7 +421,7 @@ public class EdLabeledCrate
 
     private LabeledCrateContainer(int cid, Inventory player_inventory, Container block_inventory, ContainerLevelAccess wpc, ContainerData fields)
     {
-      super(ModContent.CT_LABELED_CRATE, cid);
+      super(ModContent.getMenuType("labeled_crate"), cid); // @todo: class mapping
       player_ = player_inventory.player;
       inventory_ = block_inventory;
       wpc_ = wpc;

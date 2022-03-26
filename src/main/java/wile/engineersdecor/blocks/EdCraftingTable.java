@@ -36,14 +36,13 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.ticks.TickPriority;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.ticks.TickPriority;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -93,10 +92,9 @@ public class EdCraftingTable
     public CraftingTableBlock(long config, BlockBehaviour.Properties builder, final AABB[] unrotatedAABBs)
     { super(config, builder, unrotatedAABBs); }
 
-    @Nullable
     @Override
-    public BlockEntityType<EdCraftingTable.CraftingTableTileEntity> getBlockEntityType()
-    { return ModContent.TET_CRAFTING_TABLE; }
+    public ResourceLocation getBlockRegistryName()
+    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -179,7 +177,7 @@ public class EdCraftingTable
 
     public CraftingTableTileEntity(BlockPos pos, BlockState state)
     {
-      super(ModContent.TET_CRAFTING_TABLE, pos, state);
+      super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state);
       inventory_ = new StorageInventory(this, NUM_OF_SLOTS, 1);
       inventory_.setCloseAction((player)->{
         if(getLevel() instanceof Level) {
@@ -329,7 +327,7 @@ public class EdCraftingTable
 
     private CraftingTableUiContainer(int cid, Inventory pinv, Container block_inventory, ContainerLevelAccess wpc)
     {
-      super(ModContent.CT_TREATED_WOOD_CRAFTING_TABLE, cid);
+      super(ModContent.getMenuType("metal_crafting_table"), cid); // @todo: class mapping, this stuff is continuously changed to break mods.
       wpc_ = wpc;
       player_ = pinv.player;
       inventory_ = block_inventory;
@@ -463,7 +461,7 @@ public class EdCraftingTable
       super.clicked(slotId, button, clickType, player);
       if((with_outslot_defined_refab) && (slotId == 0) && (clickType == ClickType.PICKUP)) {
         if((!crafting_matrix_changed_now_) && (!player.level.isClientSide()) && (crafting_grid_empty())) {
-          final ItemStack dragged = player.inventoryMenu.getCarried();
+          final ItemStack dragged = getCarried();
           if((dragged != null) && (!dragged.isEmpty())) {
             try_result_stack_refab(dragged, player.level);
           } else if(!history().current().isEmpty()) {
@@ -803,6 +801,9 @@ public class EdCraftingTable
       if(recipe != null) {
         sync();
         onCraftMatrixChanged();
+      } else {
+        history().reset_current();
+        sync();
       }
     }
 
@@ -1048,7 +1049,8 @@ public class EdCraftingTable
       }
       {
         List<TipRange> tooltips = new ArrayList<>();
-        final String prefix = ModContent.CRAFTING_TABLE.getDescriptionId() + ".tooltips.";
+        final Block block = ModContent.getBlock(getMenu().getType().getRegistryName().getPath().replaceAll("^ct_",""));
+        final String prefix = block.getDescriptionId() + ".tooltips.";
         String[] translation_keys = { "next", "prev", "clear", "nextcollisionrecipe", "fromstorage", "tostorage", "fromplayer", "toplayer" };
         for(int i=0; (i<buttons.size()) && (i<translation_keys.length); ++i) {
           Button bt = buttons.get(i);

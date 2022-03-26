@@ -83,7 +83,7 @@ public class VariantSlabBlock extends StandardBlocks.WaterLoggable implements St
   public void appendHoverText(ItemStack stack, @Nullable BlockGetter world, List<Component> tooltip, TooltipFlag flag)
   {
     if(!Auxiliaries.Tooltip.addInformation(stack, world, tooltip, flag, true)) return;
-    if(with_pickup) Auxiliaries.Tooltip.addInformation("engineersdecor.tooltip.slabpickup", "engineersdecor.tooltip.slabpickup", tooltip, flag, true);
+    if(with_pickup && Auxiliaries.Tooltip.helpCondition()) Auxiliaries.Tooltip.addInformation("engineersdecor.tooltip.slabpickup", "engineersdecor.tooltip.slabpickup", tooltip, flag, true);
   }
 
   @Override

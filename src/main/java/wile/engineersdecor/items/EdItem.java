@@ -16,9 +16,9 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.Registries;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -28,11 +28,8 @@ import java.util.List;
 
 public class EdItem extends Item
 {
-  public static final Collection<CreativeModeTab> ENABLED_TABS  = Collections.singletonList(ModEngineersDecor.ITEMGROUP);
-  public static final Collection<CreativeModeTab> DISABLED_TABS = new ArrayList<CreativeModeTab>();
-
   public EdItem(Item.Properties properties)
-  { super(properties.tab(ModEngineersDecor.ITEMGROUP)); }
+  { super(properties.tab(Registries.getCreativeModeTab())); }
 
   @Override
   @OnlyIn(Dist.CLIENT)
@@ -41,6 +38,5 @@ public class EdItem extends Item
 
   @Override
   public Collection<CreativeModeTab> getCreativeTabs()
-  { return ModConfig.isOptedOut(this) ? (DISABLED_TABS) : (ENABLED_TABS); }
-
+  { return ModConfig.isOptedOut(this) ? (new ArrayList<>()) : (Collections.singletonList(Registries.getCreativeModeTab())); }
 }

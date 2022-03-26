@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.VineBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import wile.engineersdecor.ModEngineersDecor;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
 
 import java.util.*;
 
@@ -40,7 +41,7 @@ public class TreeCutting
   );
 
   private static boolean isLog(BlockState state)
-  { return (state.is(BlockTags.LOGS)) || (state.getBlock().getTags().contains(new ResourceLocation("minecraft","logs"))); }
+  { return (state.is(BlockTags.LOGS)); }
 
   private static boolean isSameLog(BlockState a, BlockState b)
   { return (a.getBlock()==b.getBlock()); }
@@ -48,7 +49,7 @@ public class TreeCutting
   private static boolean isLeaves(BlockState state)
   {
     if(state.getBlock() instanceof LeavesBlock) return true;
-    if(state.getBlock().getTags().contains(new ResourceLocation("minecraft","leaves"))) return true;
+    if(state.is(BlockTags.LEAVES)) return true;
     return false;
   }
 

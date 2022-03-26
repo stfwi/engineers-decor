@@ -32,7 +32,6 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -83,9 +82,8 @@ public class EdMineralSmelter
     { super(config, builder, unrotatedAABB); }
 
     @Override
-    @Nullable
-    public BlockEntityType<EdMineralSmelter.MineralSmelterTileEntity> getBlockEntityType()
-    { return ModContent.TET_MINERAL_SMELTER; }
+    public ResourceLocation getBlockRegistryName()
+    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -274,7 +272,7 @@ public class EdMineralSmelter
 
     public MineralSmelterTileEntity(BlockPos pos, BlockState state)
     {
-      super(ModContent.TET_MINERAL_SMELTER, pos, state);
+      super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state);
       main_inventory_ = (new Inventories.StorageInventory(this, NUM_OF_SLOTS, 1)).setStackLimit(1);
       item_handler_ = Inventories.MappedItemHandler.createGenericHandler(
         main_inventory_,
@@ -312,8 +310,7 @@ public class EdMineralSmelter
       } else if(bucket_extraction_possible()) {
         return accepts_lava_container(stack);
       } else {
-        if(stack.getItem().getTags().contains(new ResourceLocation(Auxiliaries.modid(), "accepted_mineral_smelter_input"))) return true;
-        return accepted_minerals.contains(stack.getItem());
+        return (accepted_minerals.contains(stack.getItem())) || (Auxiliaries.isInItemTag(stack.getItem(), new ResourceLocation(Auxiliaries.modid(), "accepted_mineral_smelter_input")));
       }
     }
 

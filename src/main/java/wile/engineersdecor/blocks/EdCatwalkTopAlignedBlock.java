@@ -103,8 +103,8 @@ public class EdCatwalkTopAlignedBlock extends StandardBlocks.WaterLoggable
   {
     BlockState below = world.getBlockState(pos.below());
     if((below == null) || (state == null)) return state;
-    if((below.getBlock() == ModContent.THICK_STEEL_POLE) || (below.getBlock() == ModContent.THICK_STEEL_POLE_HEAD)) return state.setValue(VARIANT, 1);
-    if((below.getBlock() == ModContent.THIN_STEEL_POLE) || (below.getBlock() == ModContent.THIN_STEEL_POLE_HEAD)) return state.setValue(VARIANT, 2);
+    if((below.getBlock() == ModContent.getBlock("thick_steel_pole")) || (below.getBlock() == ModContent.getBlock("thick_steel_pole_head"))) return state.setValue(VARIANT, 1);
+    if((below.getBlock() == ModContent.getBlock("thin_steel_pole")) || (below.getBlock() == ModContent.getBlock("thin_steel_pole_head"))) return state.setValue(VARIANT, 2);
     return state;
   }
 

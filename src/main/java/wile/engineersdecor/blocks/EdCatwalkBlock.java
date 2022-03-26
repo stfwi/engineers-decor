@@ -131,7 +131,7 @@ public class EdCatwalkBlock extends StandardBlocks.HorizontalFourWayWaterLoggabl
     List<ItemStack> drops = new ArrayList<>();
     drops.add(new ItemStack(state.getBlock().asItem()));
     int n = (state.getValue(NORTH)?1:0)+(state.getValue(EAST)?1:0)+(state.getValue(SOUTH)?1:0)+(state.getValue(WEST)?1:0);
-    if(n > 0) drops.add(new ItemStack(ModContent.STEEL_RAILING, n));
+    if(n > 0) drops.add(new ItemStack(ModContent.getBlock("steel_railing"), n));
     return drops;
   }
 
