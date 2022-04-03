@@ -416,7 +416,7 @@ public class EdCraftingTable
           result_.setItem(0, stack);
           broadcastChanges();
         } catch(Throwable exc) {
-          ModEngineersDecor.logger().error("Recipe failed:", exc);
+          Auxiliaries.logger().error("Recipe failed:", exc);
         }
       });
     }
@@ -690,7 +690,7 @@ public class EdCraftingTable
           }
           onCraftMatrixChanged();
         } catch(Throwable exc) {
-          ModEngineersDecor.logger().error("Recipe failed:", exc);
+          Auxiliaries.logger().error("Recipe failed:", exc);
         }
       });
     }
@@ -1270,7 +1270,7 @@ public class EdCraftingTable
         stash_ = nbt.getString("stash");
         update_current();
       } catch(Throwable ex) {
-        ModEngineersDecor.logger().error("Exception reading crafting table history NBT, resetting, exception is:" + ex.getMessage());
+        Auxiliaries.logger().error("Exception reading crafting table history NBT, resetting, exception is:" + ex.getMessage());
         clear();
       }
     }
@@ -1388,7 +1388,7 @@ public class EdCraftingTable
         if(!(recipe instanceof CraftingRecipe)) return null;
         return new Tuple<>((CraftingRecipe)recipe, stacks);
       } catch(Throwable ex) {
-        ModEngineersDecor.logger().error("History stack building failed: " + ex.getMessage());
+        Auxiliaries.logger().error("History stack building failed: " + ex.getMessage());
         return null;
       }
     }

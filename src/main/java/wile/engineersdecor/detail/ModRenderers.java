@@ -28,10 +28,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.blocks.EdCraftingTable;
 import wile.engineersdecor.blocks.EdCraftingTable.CraftingTableBlock;
 import wile.engineersdecor.blocks.EdLabeledCrate;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
 
 
 public class ModRenderers
@@ -118,8 +118,8 @@ public class ModRenderers
         }
       } catch(Throwable e) {
         if(--tesr_error_counter<=0) {
-          ModEngineersDecor.logger().error("TER was disabled because broken, exception was: " + e.getMessage());
-          ModEngineersDecor.logger().error(e.getStackTrace());
+          Auxiliaries.logger().error("TER was disabled because broken, exception was: " + e.getMessage());
+          Auxiliaries.logger().error(e.getStackTrace());
         }
       }
     }
@@ -166,7 +166,7 @@ public class ModRenderers
         mxs.popPose();
       } catch(Throwable e) {
         if(--tesr_error_counter<=0) {
-          ModEngineersDecor.logger().error("TER was disabled (because broken), exception was: " + e.getMessage());
+          Auxiliaries.logger().error("TER was disabled (because broken), exception was: " + e.getMessage());
         }
       }
     }

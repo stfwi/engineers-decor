@@ -7,6 +7,7 @@
  * Common game registry handling.
  */
 package wile.engineersdecor.libmc.detail;
+import wile.engineersdecor.libmc.blocks.StandardBlocks;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -21,7 +22,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.ForgeRegistries;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -148,6 +148,17 @@ public class Registries
   }
 
   @SuppressWarnings("unchecked")
+  public static <T extends BlockEntity> void addBlockEntityType(String registry_name, BlockEntityType.BlockEntitySupplier<T> ctor, Class<? extends Block> block_clazz)
+  {
+    block_entity_type_suppliers.add(new Tuple<>(registry_name, ()->{
+      final Block[] blocks = registered_blocks.values().stream().filter(block_clazz::isInstance).collect(Collectors.toList()).toArray(new Block[]{});
+      final BlockEntityType<T> instance =  BlockEntityType.Builder.of(ctor, blocks).build(null);
+      instance.setRegistryName(modid, registry_name);
+      return instance;
+    }));
+  }
+
+  @SuppressWarnings("unchecked")
   public static <T extends EntityType<?>> void addEntityType(String registry_name, Supplier<EntityType<?>> supplier)
   { entity_type_suppliers.add(new Tuple<>(registry_name, supplier)); }
 
@@ -184,13 +195,19 @@ public class Registries
     registered_block_tag_keys.put(tag_name, key);
   }
 
-  public static void addOptionaItemTag(String tag_name, ResourceLocation... default_items)
+  public static void addOptionalBlockTag(String tag_name, String... default_blocks)
+  { addOptionalBlockTag(tag_name, Arrays.stream(default_blocks).map(ResourceLocation::new).collect(Collectors.toList()).toArray(new ResourceLocation[]{})); }
+
+  public static void addOptionalItemTag(String tag_name, ResourceLocation... default_items)
   {
     final Set<Supplier<Item>> default_suppliers = new HashSet<>();
     for(ResourceLocation rl: default_items) default_suppliers.add(()->ForgeRegistries.ITEMS.getValue(rl));
     final TagKey<Item> key = ForgeRegistries.ITEMS.tags().createOptionalTagKey(new ResourceLocation(modid, tag_name), default_suppliers);
     registered_item_tag_keys.put(tag_name, key);
   }
+
+  public static void addOptionalItemTag(String tag_name, String... default_items)
+  { addOptionalBlockTag(tag_name, Arrays.stream(default_items).map(ResourceLocation::new).collect(Collectors.toList()).toArray(new ResourceLocation[]{})); }
 
   // -------------------------------------------------------------------------------------------------------------
 

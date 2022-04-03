@@ -601,7 +601,7 @@ public class EdDropper
           final boolean dropped = res.getA();
           final List<ItemStack> remaining = res.getB();
           for(ItemStack st:remaining) {
-            if(!storage_slot_range_.insert(st).isEmpty()) ModEngineersDecor.logger().debug("NOT ALL NON-DROPPED ITEMS PUT BACK:" + st);
+            if(!storage_slot_range_.insert(st).isEmpty()) Auxiliaries.logger().debug("NOT ALL NON-DROPPED ITEMS PUT BACK:" + st);
           }
           if(dropped || (!remaining.isEmpty())) dirty = true;
           // cooldown

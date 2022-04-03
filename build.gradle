@@ -25,7 +25,7 @@ repositories {
 }
 
 minecraft {
-  mappings channel: "official", version: "1.18.2"
+  mappings channel: "official", version: "${version_minecraft}"
   runs {
     client {
       workingDirectory project.file('run')

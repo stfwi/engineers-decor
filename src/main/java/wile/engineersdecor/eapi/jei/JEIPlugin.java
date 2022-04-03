@@ -21,11 +21,10 @@ import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.runtime.IJeiRuntime;
 import wile.engineersdecor.blocks.EdCraftingTable.CraftingTableTileEntity;
+import wile.engineersdecor.blocks.EdCraftingTable;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
-import wile.engineersdecor.blocks.EdCraftingTable;
 
 import java.util.HashSet;
 import java.util.List;
@@ -50,7 +49,7 @@ public class JEIPlugin implements mezz.jei.api.IModPlugin
           1, 9, 10, 36+CraftingTableTileEntity.NUM_OF_STORAGE_SLOTS
         );
       } catch(Throwable e) {
-        ModEngineersDecor.logger().warn("Exception in JEI crafting table handler registration: '" + e.getMessage() + "'.");
+        Auxiliaries.logger().warn("Exception in JEI crafting table handler registration: '" + e.getMessage() + "'.");
       }
     }
   }
@@ -74,7 +73,7 @@ public class JEIPlugin implements mezz.jei.api.IModPlugin
       try {
         jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM, blacklist);
       } catch(Exception e) {
-        ModEngineersDecor.logger().warn("Exception in JEI opt-out processing: '" + e.getMessage() + "', skipping further JEI optout processing.");
+        Auxiliaries.logger().warn("Exception in JEI opt-out processing: '" + e.getMessage() + "', skipping further JEI optout processing.");
       }
     }
   }

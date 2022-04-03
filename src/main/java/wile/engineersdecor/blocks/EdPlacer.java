@@ -484,11 +484,11 @@ public class EdPlacer
           // The block really needs a player or other issues happened during placement.
           // A hard crash should not be fired here, instead spit out the item to indicated that this
           // block is not compatible.
-          ModEngineersDecor.logger().error("Exception while trying to place " + ((block==null)?(""):(""+block)) + ", spitting out. Exception is: " + e);
+          Auxiliaries.logger().error("Exception while trying to place " + ((block==null)?(""):(""+block)) + ", spitting out. Exception is: " + e);
           try {
             level.removeBlock(placement_pos, false);
           } catch(Throwable e1) {
-            ModEngineersDecor.logger().error("Exception while removing failed block placement " + ((block==null)?(""):(""+block)) + ", spitting out. Exception is: " + e1);
+            Auxiliaries.logger().error("Exception while removing failed block placement " + ((block==null)?(""):(""+block)) + ", spitting out. Exception is: " + e1);
           }
           return spit_out(facing, true);
         }

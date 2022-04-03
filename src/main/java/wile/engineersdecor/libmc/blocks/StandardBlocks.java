@@ -8,7 +8,7 @@
  * Mainly needed for:
  * - MC block defaults.
  * - Tooltip functionality
- * - Model initialisation
+ * - Model initialization
  */
 package wile.engineersdecor.libmc.blocks;
 
@@ -60,7 +60,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-
+@SuppressWarnings("deprecation")
 public class StandardBlocks
 {
   public static final long CFG_DEFAULT                    = 0x0000000000000000L; // no special config

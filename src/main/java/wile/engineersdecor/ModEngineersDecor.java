@@ -47,15 +47,12 @@ public class ModEngineersDecor
     MinecraftForge.EVENT_BUS.register(this);
   }
 
-  public static Logger logger() { return LOGGER; }
-
   //
   // Events
   //
 
   private void onSetup(final FMLCommonSetupEvent event)
   {
-    LOGGER.info("Registering recipe condition processor ...");
     CraftingHelper.register(OptionalRecipeCondition.Serializer.INSTANCE);
     wile.engineersdecor.libmc.detail.Networking.init(MODID);
   }
@@ -99,10 +96,10 @@ public class ModEngineersDecor
     public static void onConfigReload(final ModConfigEvent.Reloading event)
     {
       try {
-        ModEngineersDecor.logger().info("Config file changed {}", event.getConfig().getFileName());
+        Auxiliaries.logger().info("Config file changed {}", event.getConfig().getFileName());
         ModConfig.apply();
       } catch(Throwable e) {
-        ModEngineersDecor.logger().error("Failed to load changed config: " + e.getMessage());
+        Auxiliaries.logger().error("Failed to load changed config: " + e.getMessage());
       }
     }
   }

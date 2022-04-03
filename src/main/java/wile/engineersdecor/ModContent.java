@@ -90,7 +90,7 @@ public class ModContent
     ));
     Registries.addBlock("clinker_brick_stairs", ()->new StandardStairsBlock(
       StandardBlocks.CFG_DEFAULT,
-      ()->Registries.getBlock("clinker_brick").defaultBlockState(),
+      ()->Registries.getBlock("clinker_brick_block").defaultBlockState(),
       BlockBehaviour.Properties.of(Material.STONE, MaterialColor.STONE).strength(0.5f, 7f).sound(SoundType.STONE)
     ));
     Registries.addBlock("clinker_brick_wall", ()->new EdWallBlock(
@@ -107,7 +107,7 @@ public class ModContent
     ));
     Registries.addBlock("clinker_brick_stained_stairs", ()->new StandardStairsBlock(
       StandardBlocks.CFG_DEFAULT,
-      ()->Registries.getBlock("clinker_brick_stained").defaultBlockState(),
+      ()->Registries.getBlock("clinker_brick_stained_block").defaultBlockState(),
       BlockBehaviour.Properties.of(Material.STONE, MaterialColor.STONE).strength(0.5f, 7f).sound(SoundType.STONE)
     ));
     Registries.addBlock("clinker_brick_sastor_corner_block", ()->new EdCornerOrnamentedBlock(
@@ -160,7 +160,7 @@ public class ModContent
     ));
     Registries.addBlock("slag_brick_stairs", ()->new StandardStairsBlock(
       StandardBlocks.CFG_DEFAULT,
-      ()->Registries.getBlock("slag_brick").defaultBlockState(),
+      ()->Registries.getBlock("slag_brick_block").defaultBlockState(),
       BlockBehaviour.Properties.of(Material.STONE, MaterialColor.STONE).strength(0.5f, 7f).sound(SoundType.STONE)
     ));
     Registries.addBlock("slag_brick_wall", ()->new EdWallBlock(
@@ -1048,7 +1048,7 @@ public class ModContent
   public static void processContentClientSide(final FMLClientSetupEvent event)
   {
     // Block renderer selection
-    for(Block block: getRegisteredBlocks()) {
+    for(Block block: Registries.getRegisteredBlocks()) {
       if(block instanceof IStandardBlock) {
         switch(((IStandardBlock)block).getRenderTypeHint()) {
           case CUTOUT: ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutout()); break;

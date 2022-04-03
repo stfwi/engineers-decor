@@ -11,6 +11,8 @@ Mod sources for Minecraft version 1.18.x.
 
 ## Version history
 
+    - v1.1.22-b2 [F] Fixed stairs block reference (issue #207, ty freopt)
+
     - v1.1.22-b1 [U] Updated to 1.18.2.
 
     - v1.1.21    [A] Added French translation (PR#203, dracnis).

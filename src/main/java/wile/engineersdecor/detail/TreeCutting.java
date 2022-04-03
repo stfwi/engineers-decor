@@ -27,8 +27,6 @@ import java.util.*;
 
 public class TreeCutting
 {
-  private static final org.apache.logging.log4j.Logger LOGGER = ModEngineersDecor.logger();
-
   public static boolean canChop(BlockState state)
   { return isLog(state); }
 
