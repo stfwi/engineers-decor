@@ -11,6 +11,8 @@ Mod sources for Minecraft version 1.16.x.
 
 ## Version history
 
+    - v1.1.18    [F] Factory Dropper stack size ignored for un-stackable items (#209, ty LesBeans).
+
     - v1.1.17    [M] Update tracker URL adapted.
                  [A] French translation added (PR#204, dracnis).
 

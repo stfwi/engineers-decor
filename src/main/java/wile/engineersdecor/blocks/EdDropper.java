@@ -575,7 +575,7 @@ public class EdDropper
             final int ic = drop_slot_index_;
             drop_slot_index_ = next_slot(drop_slot_index_);
             ItemStack ds = main_inventory_.getItem(ic);
-            if((!ds.isEmpty()) && (ds.getCount() >= drop_count_)) {
+            if((!ds.isEmpty()) && ((ds.getCount() >= drop_count_) || (!ds.isStackable()))) {
               boolean skip_stack = false;
               for(int ci = 0; (ci<CTRL_SLOTS_SIZE)&&(!skip_stack); ++ci) {
                 final ItemStack cmp_stack = main_inventory_.getItem(CTRL_SLOTS_FIRST+ci);
