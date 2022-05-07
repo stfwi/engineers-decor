@@ -37,7 +37,7 @@ public class BlockDecorWindow extends BlockDecorDirected
   @Override
   @SideOnly(Side.CLIENT)
   public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer)
-  { return (layer==BlockRenderLayer.CUTOUT_MIPPED) || (layer==BlockRenderLayer.TRANSLUCENT); }
+  { return (layer==BlockRenderLayer.SOLID) || (layer==BlockRenderLayer.TRANSLUCENT); }
 
   @Override
   @SideOnly(Side.CLIENT)

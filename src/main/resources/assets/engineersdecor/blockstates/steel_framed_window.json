@@ -5,7 +5,7 @@
     "transform": "forge:default-block",
     "custom": {
       "base": "engineersdecor:steel_framed_window#frame",
-      "Mipped Cutout": "engineersdecor:steel_framed_window#frame",
+      "Solid": "engineersdecor:steel_framed_window#frame",
       "Translucent": "engineersdecor:steel_framed_window#pane"
     }
 },

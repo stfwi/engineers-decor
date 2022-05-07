@@ -18,7 +18,7 @@ GRADLE=./gradlew --no-daemon
 GRADLE_STOP=./gradlew --stop
 DJS=djs
 endif
-TASK=$(DJS) ../meta/lib/tasks.js
+TASK=$(DJS) ../../zmeta/lib/tasks.js
 
 wildcardr=$(foreach d,$(wildcard $1*),$(call wildcardr,$d/,$2) $(filter $(subst *,%,$2),$d))
 

@@ -8,7 +8,10 @@ Mod sources for Minecraft version 1.12.2.
 - Compiled mod distribution channel is curseforge: https://www.curseforge.com/minecraft/mc-mods/engineers-decor/files.
 
 ----
+
 ## Version history
+
+    - v1.1.5      [F] Fixed window compat with Better Foliage (fixed by xemnes, #213).
 
     - v1.1.4      [A] Back ported signs.
 
