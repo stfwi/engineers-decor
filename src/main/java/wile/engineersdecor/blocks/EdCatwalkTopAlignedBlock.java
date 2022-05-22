@@ -46,7 +46,7 @@ public class EdCatwalkTopAlignedBlock extends StandardBlocks.WaterLoggable
 {
   public static final IntegerProperty VARIANT = IntegerProperty.create("variant", 0, 4);
   protected final List<VoxelShape> variant_shapes;
-  final Block inset_light_block;
+  protected final Block inset_light_block;
 
   public EdCatwalkTopAlignedBlock(long config, BlockBehaviour.Properties properties, final VoxelShape[] variant_shapes, final Block inset_light_block)
   {
