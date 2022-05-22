@@ -120,7 +120,7 @@ public class EdCatwalkTopAlignedBlock extends StandardBlocks.WaterLoggable
   private BlockState adapted_state(BlockState state, LevelAccessor world, BlockPos pos)
   {
     BlockState below = world.getBlockState(pos.below());
-    if (state.getValue(VARIANT) == 4) return state;
+    if (state == null || state.getValue(VARIANT) == 4) return state;
     if((below.getBlock() == ModContent.getBlock("thick_steel_pole")) || (below.getBlock() == ModContent.getBlock("thick_steel_pole_head"))) return state.setValue(VARIANT, 1);
     if((below.getBlock() == ModContent.getBlock("thin_steel_pole")) || (below.getBlock() == ModContent.getBlock("thin_steel_pole_head"))) return state.setValue(VARIANT, 2);
     return state;
