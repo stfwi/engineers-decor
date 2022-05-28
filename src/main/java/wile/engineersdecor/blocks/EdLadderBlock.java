@@ -103,10 +103,10 @@ public class EdLadderBlock extends LadderBlock implements StandardBlocks.IStanda
     double lvy = player.getLookAngle().y;
     if(Math.abs(lvy) < 0.92) return;
     final BlockPos pos = player.blockPosition();
-    final BlockState state = player.level.getBlockState(pos);
+    final BlockState state = player.getLevel().getBlockState(pos);
     final Block block = state.getBlock();
     if(!(block instanceof EdLadderBlock || block instanceof EdHatchBlock && state.getValue(EdHatchBlock.OPEN))) return;
-    player.fallDistance = 0;
+    player.resetFallDistance();
     if((player.getDeltaMovement().y() < 0) == (player.getLookAngle().y < 0)) {
       player.makeStuckInBlock(state, new Vec3(0.2, (lvy>0)?(3):(6), 0.2));
       if(Math.abs(player.getDeltaMovement().y()) > 0.1) {
