@@ -39,15 +39,14 @@ import wile.engineersdecor.libmc.blocks.StandardBlocks;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 
 public class EdHatchBlock extends StandardBlocks.HorizontalWaterLoggable
 {
   public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
   public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
-  protected final ArrayList<VoxelShape> vshapes_open;
+  protected final List<VoxelShape> vshapes_open;
 
   public EdHatchBlock(long config, BlockBehaviour.Properties builder, final AABB unrotatedAABBClosed, final AABB unrotatedAABBOpen)
   {
@@ -58,18 +57,16 @@ public class EdHatchBlock extends StandardBlocks.HorizontalWaterLoggable
   public EdHatchBlock(long config, BlockBehaviour.Properties builder, final AABB[] unrotatedAABBsClosed, final AABB[] unrotatedAABBsOpen)
   { super(config, builder, unrotatedAABBsClosed); vshapes_open = makeHorizontalShapeLookup(unrotatedAABBsOpen); }
 
-  protected static ArrayList<VoxelShape> makeHorizontalShapeLookup(final AABB[] unrotatedAABBs)
+  protected static List<VoxelShape> makeHorizontalShapeLookup(final AABB[] unrotatedAABBs)
   {
-    return new ArrayList<>(Arrays.asList(
+    return List.of(
       Shapes.block(),
       Shapes.block(),
       Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.NORTH, true)),
       Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.SOUTH, true)),
       Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.WEST, true)),
-      Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.EAST, true)),
-      Shapes.block(),
-      Shapes.block()
-    ));
+      Auxiliaries.getUnionShape(Auxiliaries.getRotatedAABB(unrotatedAABBs, Direction.EAST, true))
+    );
   }
 
   @Override
@@ -78,7 +75,7 @@ public class EdHatchBlock extends StandardBlocks.HorizontalWaterLoggable
 
   @Override
   public VoxelShape getShape(BlockState state, BlockGetter source, BlockPos pos, CollisionContext selectionContext)
-  { return state.getValue(OPEN) ? vshapes_open.get((state.getValue(HORIZONTAL_FACING)).get3DDataValue() & 0x7) : super.getShape(state, source, pos, selectionContext); }
+  { return state.getValue(OPEN) ? vshapes_open.get((state.getValue(HORIZONTAL_FACING)).get3DDataValue()) : super.getShape(state, source, pos, selectionContext); }
 
   @Override
   public VoxelShape getCollisionShape(BlockState state, BlockGetter source, BlockPos pos, CollisionContext selectionContext)
@@ -141,6 +138,18 @@ public class EdHatchBlock extends StandardBlocks.HorizontalWaterLoggable
   }
 
   @Override
+  @SuppressWarnings("deprecation")
+  public boolean useShapeForLightOcclusion(BlockState state) {
+    return !state.getValue(OPEN);
+  }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  public VoxelShape getOcclusionShape(BlockState state, BlockGetter world, BlockPos pos) {
+    return state.getValue(OPEN) ? Shapes.empty() : super.getOcclusionShape(state, world, pos);
+  }
+
+  @Override
   public boolean shouldCheckWeakPower(BlockState state, LevelReader world, BlockPos pos, Direction side)
   { return false; }
 
@@ -149,13 +158,14 @@ public class EdHatchBlock extends StandardBlocks.HorizontalWaterLoggable
   public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity)
   {
     if((!state.getValue(OPEN)) || (!(entity instanceof final Player player))) return;
+    if(player.isSteppingCarefully()) return;
     if(entity.getLookAngle().y() > -0.75) return;
     if(player.getDirection() != state.getValue(HORIZONTAL_FACING)) return;
     Vec3 ppos = player.position();
     Vec3 centre = Vec3.atBottomCenterOf(pos);
     Vec3 v = centre.subtract(ppos);
     if(ppos.y() < (centre.y()-0.1) || (v.lengthSqr() > 0.3)) return;
-    v = v.scale(0.3);
+    v = v.scale(0.2);
     player.push(v.x, -0.1, v.z);
   }
 }
