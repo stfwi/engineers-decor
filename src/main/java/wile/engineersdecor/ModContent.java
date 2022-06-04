@@ -298,9 +298,14 @@ public class ModContent
     ));
     Registries.addBlock("iron_hatch", ()->new EdHatchBlock(
       StandardBlocks.CFG_LOOK_PLACEMENT,
-      BlockBehaviour.Properties.of(Material.METAL, MaterialColor.METAL).strength(0.3f, 2000f).sound(SoundType.METAL).noOcclusion(),
-      Auxiliaries.getPixeledAABB(0.5,1,0, 15.5,3,14),
-      Auxiliaries.getPixeledAABB(0.5,1,0, 15.5,14.,2)
+      BlockBehaviour.Properties.of(Material.METAL, MaterialColor.METAL).strength(0.3f, 2000f).sound(SoundType.METAL),
+      new AABB[] { Auxiliaries.getPixeledAABB(0,0,0, 16,3,16) },
+      new AABB[] {
+        Auxiliaries.getPixeledAABB( 0,0, 0, 16,16, 3),
+        Auxiliaries.getPixeledAABB( 0,0, 3,  1, 1,16),
+        Auxiliaries.getPixeledAABB(15,0, 3, 16, 1,16),
+        Auxiliaries.getPixeledAABB( 1,0,14, 15, 1,16)
+      }
     ));
     Registries.addBlock("metal_sliding_door", ()->new StandardDoorBlock(
       StandardBlocks.CFG_TRANSLUCENT|StandardBlocks.CFG_HORIZIONTAL,

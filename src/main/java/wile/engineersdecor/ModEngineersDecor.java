@@ -110,7 +110,7 @@ public class ModEngineersDecor
   @SubscribeEvent
   public void onPlayerEvent(final LivingEvent.LivingUpdateEvent event)
   {
-    if((event.getEntity().level == null) || (!(event.getEntity() instanceof final Player player))) return;
+    if(!(event.getEntity() instanceof final Player player)) return;
     if(player.onClimbable()) EdLadderBlock.onPlayerUpdateEvent(player);
   }
 
