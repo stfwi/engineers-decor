@@ -1,6 +1,7 @@
 {
  "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
  "1.18.2": {
+  "1.1.23-b1": "[A] Added ability to install inset lights in top-aligned catwalks (PR#215, Sergii).\n[A] Iron Hatch improved (PR#216, Sergii).",
   "1.1.22": "[R] Release build v1.1.22.\n[M] Factory Dropper stack size ignored for un-stackable items (issue #209, ty LesBeans).",
   "1.1.22-b2": "[F] Fixed stairs block reference (issue #207, ty freopt)",
   "1.1.22-b1": "[U] Updated to 1.18.2.",
@@ -56,6 +57,6 @@
  },
  "promos": {
   "1.18.2-recommended": "1.1.22",
-  "1.18.2-latest": "1.1.22"
+  "1.18.2-latest": "1.1.23-b1"
  }
 }

@@ -13,7 +13,7 @@ description="Adds cosmetic blocks for the engineer's workshop, factory and home.
 authors="wilechaote"
 credits="BluSunrize, Damien Hazard, malte0811, et al., the Forge Smiths."
 updateJSONURL="https://raw.githubusercontent.com/stfwi/engineers-decor/versions/1.18.json"
-displayURL="https://github.com/stfwi/engineers-decor/"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/engineers-decor"
 logoFile="logo.png"
 
 [[dependencies.engineersdecor]]

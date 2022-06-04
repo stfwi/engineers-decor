@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.18.x.
 
 ## Version history
 
+    - v1.1.23-b1 [A] Added ability to install inset lights in top-aligned catwalks (PR#215, Sergii).
+                 [A] Iron Hatch improved (PR#216, Sergii).
+
     - v1.1.22    [R] Release build v1.1.22.
                  [M] Factory Dropper stack size ignored for un-stackable items (issue #209, ty LesBeans).
 
