@@ -62,7 +62,7 @@ public class EdCatwalkBlock extends StandardBlocks.HorizontalFourWayWaterLoggabl
 
   public static boolean place_consume(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, int shrink)
   {
-    if(!world.setBlock(pos, state, 1|2)) return false;
+    if(!world.setBlock(pos, state, Block.UPDATE_ALL)) return false;
     world.playSound(player, pos, SoundEvents.METAL_PLACE, SoundSource.BLOCKS, 1f, 1f);
     if((!player.isCreative()) && (!world.isClientSide())) {
       ItemStack stack = player.getItemInHand(hand);
@@ -94,7 +94,7 @@ public class EdCatwalkBlock extends StandardBlocks.HorizontalFourWayWaterLoggabl
         place_state = place_state.setValue(WATERLOGGED,adjacent_state.getFluidState().getType()==Fluids.WATER);
         place_consume(place_state, world, adjacent_pos, player, hand, 1);
       }
-      return world.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
+      return InteractionResult.sidedSuccess(world.isClientSide());
     }
     if(block == railing_block) {
       Direction face = hit.getDirection();
@@ -108,14 +108,14 @@ public class EdCatwalkBlock extends StandardBlocks.HorizontalFourWayWaterLoggabl
       } else {
         // far automatic placement
         face = Direction.getNearest(player.getLookAngle().x, 0, player.getLookAngle().z);
-        List<Direction> free_sides = Arrays.stream(Direction.values()).filter(d->d.getAxis().isHorizontal() && (world.getBlockState(pos.relative(d)).getBlock()!=this)).collect(Collectors.toList());
-        if(free_sides.isEmpty()) return world.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
+        List<Direction> free_sides = Arrays.stream(Direction.values()).filter(d -> d.getAxis().isHorizontal() && (world.getBlockState(pos.relative(d)).getBlock() != this)).toList();
+        if(free_sides.isEmpty()) return InteractionResult.sidedSuccess(world.isClientSide());
         if(!free_sides.contains(face)) face = free_sides.get(0);
       }
       BooleanProperty railing = getDirectionProperty(face);
       boolean add = (!state.getValue(railing));
       place_consume(state.setValue(railing, add), world, pos, player, hand, add ? 1 : -1);
-      return world.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
+      return InteractionResult.sidedSuccess(world.isClientSide());
     }
     return InteractionResult.PASS;
   }
@@ -131,7 +131,7 @@ public class EdCatwalkBlock extends StandardBlocks.HorizontalFourWayWaterLoggabl
     List<ItemStack> drops = new ArrayList<>();
     drops.add(new ItemStack(state.getBlock().asItem()));
     int n = (state.getValue(NORTH)?1:0)+(state.getValue(EAST)?1:0)+(state.getValue(SOUTH)?1:0)+(state.getValue(WEST)?1:0);
-    if(n > 0) drops.add(new ItemStack(ModContent.getBlock("steel_railing"), n));
+    if(n > 0) drops.add(new ItemStack(railing_block, n));
     return drops;
   }
 

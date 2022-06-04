@@ -387,12 +387,16 @@ public class ModContent
     Registries.addBlock("iron_inset_light", ()->new StandardBlocks.DirectedWaterLoggable(
       StandardBlocks.CFG_CUTOUT|StandardBlocks.CFG_FACING_PLACEMENT|StandardBlocks.CFG_OPPOSITE_PLACEMENT|StandardBlocks.CFG_AI_PASSABLE,
       BlockBehaviour.Properties.of(Material.METAL, MaterialColor.METAL).strength(0.5f, 8f).sound(SoundType.METAL).lightLevel((state)->15).noOcclusion(),
-      Auxiliaries.getPixeledAABB(5.2,5.2,0, 10.8,10.8,0.3)
+      new AABB[] {
+        Auxiliaries.getPixeledAABB( 5,7,0, 11, 9,0.375),
+        Auxiliaries.getPixeledAABB( 6,6,0, 10,10,0.375),
+        Auxiliaries.getPixeledAABB( 7,5,0,  9,11,0.375)
+      }
     ));
     Registries.addBlock("iron_floor_edge_light", ()->new StandardBlocks.DirectedWaterLoggable(
       StandardBlocks.CFG_CUTOUT|StandardBlocks.CFG_LOOK_PLACEMENT|StandardBlocks.CFG_HORIZIONTAL|StandardBlocks.CFG_AI_PASSABLE,
       BlockBehaviour.Properties.of(Material.METAL, MaterialColor.METAL).strength(0.5f, 8f).sound(SoundType.METAL).lightLevel((state)->15).noOcclusion(),
-      Auxiliaries.getPixeledAABB(5,0,0, 11,2,0.5)
+      Auxiliaries.getPixeledAABB(5,0,0, 11,1.8125,0.375)
     ));
     Registries.addBlock("iron_ceiling_edge_light", ()->new StandardBlocks.DirectedWaterLoggable(
       StandardBlocks.CFG_CUTOUT|StandardBlocks.CFG_LOOK_PLACEMENT|StandardBlocks.CFG_HORIZIONTAL|StandardBlocks.CFG_AI_PASSABLE,
@@ -537,8 +541,12 @@ public class ModContent
           Auxiliaries.getPixeledAABB(15, 0, 0, 16, 16, 1),
           Auxiliaries.getPixeledAABB(15, 0,15, 16, 16,16),
           Auxiliaries.getPixeledAABB( 0, 0,15,  1, 16,16)
+        ),
+        Auxiliaries.getUnionShape( // base with inset light
+          Auxiliaries.getPixeledAABB( 0,14,0, 16,16,16)
         )
-      }
+      },
+      Registries.getBlock("iron_inset_light")
     ));
     Registries.addBlock("steel_catwalk_stairs", ()->new EdCatwalkStairsBlock(
       StandardBlocks.CFG_CUTOUT,
