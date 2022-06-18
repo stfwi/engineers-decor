@@ -13,11 +13,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -47,6 +46,7 @@ import wile.engineersdecor.ModContent;
 import wile.engineersdecor.blocks.EdFurnace.FurnaceBlock;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
 import wile.engineersdecor.libmc.blocks.StandardEntityBlocks;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.Inventories;
 import wile.engineersdecor.libmc.detail.RfEnergy;
 import wile.engineersdecor.libmc.detail.RsSignals;
@@ -55,7 +55,6 @@ import wile.engineersdecor.libmc.ui.Guis;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 
 public class EdWasteIncinerator
@@ -81,10 +80,6 @@ public class EdWasteIncinerator
 
     public WasteIncineratorBlock(long config, BlockBehaviour.Properties builder, final AABB unrotatedAABB)
     { super(config, builder, unrotatedAABB); }
-
-    @Override
-    public ResourceLocation getBlockRegistryName()
-    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -159,7 +154,7 @@ public class EdWasteIncinerator
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void animateTick(BlockState state, Level world, BlockPos pos, Random rnd)
+    public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource rnd)
     {
       if((state.getBlock()!=this) || (!state.getValue(LIT))) return;
       final double rv = rnd.nextDouble();
@@ -194,7 +189,7 @@ public class EdWasteIncinerator
     private final LazyOptional<IEnergyStorage> energy_handler_ = battery_.createEnergyHandler();
 
     public WasteIncineratorTileEntity(BlockPos pos, BlockState state)
-    { super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state); reset(); }
+    { super(ModContent.getBlockEntityTypeOfBlock(state.getBlock()), pos, state); reset(); }
 
     public CompoundTag getnbt()
     { return writenbt(new CompoundTag()); }
@@ -241,7 +236,7 @@ public class EdWasteIncinerator
 
     @Override
     public Component getName()
-    { final Block block=getBlockState().getBlock(); return new TextComponent((block!=null) ? block.getDescriptionId() : "Small Waste Incinerator"); }
+    { return Auxiliaries.localizable(getBlockState().getBlock().getDescriptionId()); }
 
     @Override
     public boolean hasCustomName()

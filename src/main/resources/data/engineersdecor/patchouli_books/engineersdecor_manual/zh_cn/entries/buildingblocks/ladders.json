@@ -1,15 +1,9 @@
 {
   "name": "梯子",
-  "icon": "engineersdecor:treated_wood_ladder",
+  "icon": "engineersdecor:metal_rung_ladder",
   "category": "engineersdecor:buildingblocks",
   "sortnum": 1080,
   "pages": [
-    {
-      "type": "spotlight",
-      "title": "木梯子",
-      "item": "engineersdecor:treated_wood_ladder",
-      "text": "坚固又抗候的梯子，放置和使用与原版梯子类似。$(br2)攀爬时竖直向下或向上看可以加快爬梯速度。"
-    },
     {
       "type": "spotlight",
       "title": "Metal Ladders",

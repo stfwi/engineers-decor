@@ -12,7 +12,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.TagTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.Entity;
@@ -827,7 +826,7 @@ public class Inventories
     public List<ItemStack> stacks()
     { return stacks_; }
 
-    public BlockEntity getTileEntity()
+    public BlockEntity getBlockEntity()
     { return te_; }
 
     public StorageInventory setOpenAction(Consumer<Player> fn)
@@ -922,7 +921,8 @@ public class Inventories
   public static void give(Player entity, ItemStack stack)
   { ItemHandlerHelper.giveItemToPlayer(entity, stack); }
 
-  public static void setItemInPlayerHand(Player player, InteractionHand hand, ItemStack stack) {
+  public static void setItemInPlayerHand(Player player, InteractionHand hand, ItemStack stack)
+  {
     if(stack.isEmpty()) stack = ItemStack.EMPTY;
     if(hand == InteractionHand.MAIN_HAND) {
       player.getInventory().items.set(player.getInventory().selected, stack);
@@ -956,7 +956,6 @@ public class Inventories
     ContainerHelper.loadAllItems(nbt, stacks);
     return stacks;
   }
-
 
   public static CompoundTag writeNbtStacks(CompoundTag nbt, String key, NonNullList<ItemStack> stacks, boolean omit_trailing_empty)
   {

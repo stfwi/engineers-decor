@@ -13,6 +13,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -35,8 +36,6 @@ import wile.engineersdecor.ModContent;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
 
 import java.util.List;
-import java.util.Random;
-
 
 
 public class EdChair
@@ -81,7 +80,7 @@ public class EdChair
 
     @Override
     @SuppressWarnings("deprecation")
-    public void tick(BlockState state, ServerLevel world, BlockPos pos, Random rnd)
+    public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rnd)
     {
       if((!sitting_enabled) || (sitting_probability < 1e-6)) return;
       final List<Mob> entities = world.getEntitiesOfClass(Mob.class, new AABB(pos).inflate(2,1,2).expandTowards(0,1,0), e->true);

@@ -13,8 +13,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -88,7 +86,7 @@ public class EdFluidBarrel
   // Block
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static class FluidBarrelBlock extends StandardBlocks.DirectedWaterLoggable implements StandardEntityBlocks.IStandardEntityBlock<FluidBarrelTileEntity>, StandardBlocks.IBlockItemFactory
+  public static class FluidBarrelBlock extends StandardBlocks.DirectedWaterLoggable implements StandardEntityBlocks.IStandardEntityBlock<FluidBarrelTileEntity>
   {
     public static final int FILL_LEVEL_MAX = 4;
     public static final IntegerProperty FILL_LEVEL = IntegerProperty.create("level", 0, FILL_LEVEL_MAX);
@@ -100,16 +98,8 @@ public class EdFluidBarrel
     }
 
     @Override
-    public ResourceLocation getBlockRegistryName()
-    { return getRegistryName(); }
-
-    @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
     { return true; }
-
-    @Override
-    public BlockItem getBlockItem(Block block, Item.Properties builder)
-    { return new FluidBarrelItem(block, builder); }
 
     @Override
     public boolean hasDynamicDropList()
@@ -141,7 +131,7 @@ public class EdFluidBarrel
       }
       FluidStack fs = FluidBarrelItem.getFluid(stack);
       if(!fs.isEmpty()) {
-        tooltip.add(Auxiliaries.localizable(getDescriptionId()+".status.tip", Integer.toString(fs.getAmount()), Integer.toString(capacity_), new TranslatableComponent(fs.getTranslationKey())));
+        tooltip.add(Auxiliaries.localizable(getDescriptionId()+".status.tip", Integer.toString(fs.getAmount()), Integer.toString(capacity_), Component.translatable(fs.getTranslationKey())));
       } else {
         tooltip.add(Auxiliaries.localizable(getDescriptionId()+".status.tip.empty", "0", Integer.toString(capacity_)));
       }
@@ -225,7 +215,7 @@ public class EdFluidBarrel
     private final LazyOptional<IFluidHandler> fluid_handler_ = tank_.createFluidHandler();
 
     public FluidBarrelTileEntity(BlockPos pos, BlockState state)
-    { super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state); }
+    { super(ModContent.getBlockEntityTypeOfBlock(state.getBlock()), pos, state); }
 
     public void readnbt(CompoundTag nbt)
     { tank_.load(nbt); }
@@ -251,7 +241,7 @@ public class EdFluidBarrel
       {
         int vol = tank_.getFluidAmount();
         int cap = tank_.getCapacity();
-        String name = (new TranslatableComponent(tank_.getFluid().getTranslationKey())).getString();
+        String name = (Component.translatable(tank_.getFluid().getTranslationKey())).getString();
         if((vol>0) && (cap>0)) {
           Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.fluid_barrel.status", Integer.toString(vol), Integer.toString(cap), name));
         } else {

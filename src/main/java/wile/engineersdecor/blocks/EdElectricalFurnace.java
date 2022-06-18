@@ -13,9 +13,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -60,12 +57,9 @@ import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
 import wile.engineersdecor.libmc.blocks.StandardEntityBlocks;
-import wile.engineersdecor.libmc.detail.Crafting;
-import wile.engineersdecor.libmc.detail.Inventories;
+import wile.engineersdecor.libmc.detail.*;
 import wile.engineersdecor.libmc.detail.Inventories.MappedItemHandler;
 import wile.engineersdecor.libmc.detail.Inventories.StorageInventory;
-import wile.engineersdecor.libmc.detail.Networking;
-import wile.engineersdecor.libmc.detail.RfEnergy;
 import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
 import wile.engineersdecor.libmc.ui.Guis;
 
@@ -90,10 +84,6 @@ public class EdElectricalFurnace
 
     public ElectricalFurnaceBlock(long config, BlockBehaviour.Properties builder, final AABB[] unrotatedAABBs)
     { super(config, builder, unrotatedAABBs); }
-
-    @Override
-    public ResourceLocation getBlockRegistryName()
-    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -251,7 +241,7 @@ public class EdElectricalFurnace
 
     public ElectricalFurnaceTileEntity(BlockPos pos, BlockState state)
     {
-      super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state);
+      super(ModContent.getBlockEntityTypeOfBlock(state.getBlock()), pos, state);
       inventory_ = new StorageInventory(this, NUM_OF_SLOTS) {
         @Override
         public void setItem(int index, ItemStack stack)
@@ -353,7 +343,7 @@ public class EdElectricalFurnace
 
     @Override
     public Component getName()
-    { final Block block=getBlockState().getBlock(); return new TextComponent((block!=null) ? block.getDescriptionId() : "Small electrical furnace"); }
+    { return Auxiliaries.localizable(getBlockState().getBlock().getDescriptionId()); }
 
     @Override
     public Component getDisplayName()
@@ -727,7 +717,7 @@ public class EdElectricalFurnace
       {
         stack.onCraftedBy(player_.level, player_, removeCount);
         if((!player_.level.isClientSide()) && (inventory_ instanceof StorageInventory) &&
-          (((StorageInventory)inventory_).getTileEntity()) instanceof final ElectricalFurnaceTileEntity te) {
+          (((StorageInventory)inventory_).getBlockEntity()) instanceof final ElectricalFurnaceTileEntity te) {
           int xp = te.consumeSmeltingExperience(stack);
           while(xp > 0) {
             int k = ExperienceOrb.getExperienceValue(xp);
@@ -848,7 +838,7 @@ public class EdElectricalFurnace
     public void onClientPacketReceived(int windowId, Player player, CompoundTag nbt)
     {
       if(!(inventory_ instanceof StorageInventory)) return;
-      if(!((((StorageInventory)inventory_).getTileEntity()) instanceof final ElectricalFurnaceTileEntity te)) return;
+      if(!((((StorageInventory)inventory_).getBlockEntity()) instanceof final ElectricalFurnaceTileEntity te)) return;
       if(nbt.contains("speed")) te.speed_ = Mth.clamp(nbt.getInt("speed"), 0, ElectricalFurnaceTileEntity.MAX_SPEED_SETTING);
       te.setChanged();
     }
@@ -868,17 +858,17 @@ public class EdElectricalFurnace
     public void init()
     {
       super.init();
-      final Block block = ModContent.getBlock(getMenu().getType().getRegistryName().getPath().replaceAll("^ct_",""));
+      final Block block = ModContent.getBlock(Auxiliaries.getResourceLocation(getMenu().getType()).getPath().replaceAll("^ct_",""));
       final String prefix = block.getDescriptionId() + ".tooltips.";
       final int x0 = getGuiLeft(), y0 = getGuiTop();
       final Slot aux = menu.getSlot(ElectricalFurnaceTileEntity.SMELTING_AUX_SLOT_NO);
       tooltip_.init(
-        new TipRange(x0+135, y0+50, 25, 25, new TranslatableComponent(prefix + "speed")),
-        new TipRange(x0+aux.x, y0+aux.y, 16, 16, new TranslatableComponent(prefix + "auxslot")),
+        new TipRange(x0+135, y0+50, 25, 25, Component.translatable(prefix + "speed")),
+        new TipRange(x0+aux.x, y0+aux.y, 16, 16, Component.translatable(prefix + "auxslot")),
         new TipRange(x0+80, y0+55, 50, 14, ()->{
           final int soc = getMenu().field(1) * 100 / Math.max(getMenu().field(5), 1);
           final int consumption = getMenu().field(7);
-          return new TranslatableComponent(prefix + "capacitors", soc, consumption);
+          return Component.translatable(prefix + "capacitors", soc, consumption);
         })
       );
     }

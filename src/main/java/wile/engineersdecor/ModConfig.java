@@ -16,7 +16,6 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 import wile.engineersdecor.blocks.*;
 import wile.engineersdecor.libmc.blocks.SlabSliceBlock;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
 import wile.engineersdecor.libmc.blocks.VariantSlabBlock;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.OptionalRecipeCondition;
@@ -324,7 +323,7 @@ public class ModConfig
   { return (block==null) || isOptedOut(block.asItem()); }
 
   public static boolean isOptedOut(final @Nullable Item item)
-  { return (item!=null) && optouts_.contains(item.getRegistryName().getPath()); }
+  { return (item!=null) && optouts_.contains(Auxiliaries.getResourceLocation(item).getPath()); }
 
   public static boolean withExperimental()
   { return with_experimental_features_; }
@@ -385,14 +384,9 @@ public class ModConfig
         try {
           if(!with_experimental_features_) {
             if(block instanceof Auxiliaries.IExperimentalFeature) return true;
-            if(ModContent.isExperimentalBlock(block)) return true;
-          }
-          // Hard IE dependent blocks
-          if(!immersiveengineering_installed) {
-            if((block instanceof StandardBlocks.IStandardBlock) && ((((StandardBlocks.IStandardBlock)block).config() & DecorBlock.CFG_HARD_IE_DEPENDENT)!=0)) return true;
           }
           // Force-include/exclude pattern matching
-          final String rn = block.getRegistryName().getPath();
+          final String rn = Auxiliaries.getResourceLocation(block).getPath();
           try {
             for(String e : includes) {
               if(rn.matches(e)) {
@@ -416,7 +410,7 @@ public class ModConfig
         }
         return false;
       }).forEach(
-        e -> optouts.add(e.getRegistryName().getPath())
+        e -> optouts.add(Auxiliaries.getResourceLocation(e).getPath())
       );
       optouts_ = optouts;
     }
@@ -439,8 +433,6 @@ public class ModConfig
     EdLadderBlock.on_config(SERVER.without_ladder_speed_boost.get());
     VariantSlabBlock.on_config(!SERVER.without_direct_slab_pickup.get());
     SlabSliceBlock.on_config(!SERVER.without_direct_slab_pickup.get());
-    EdLabeledCrate.on_config(false);
-    EdCraftingTable.on_config(SERVER.without_crafting_table_history.get(), false, SERVER.without_crafting_mouse_scrolling.get());
     EdFluidBarrel.on_config(12000, 1000);
     EdFluidFunnel.on_config(with_experimental_features_);
     EdPipeValve.on_config(SERVER.pipevalve_max_flowrate.get(), SERVER.pipevalve_redstone_gain.get());

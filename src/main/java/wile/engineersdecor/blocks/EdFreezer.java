@@ -12,10 +12,10 @@ package wile.engineersdecor.blocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -57,7 +57,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class EdFreezer
 {
@@ -75,10 +74,6 @@ public class EdFreezer
 
     public FreezerBlock(long config, BlockBehaviour.Properties builder, final AABB unrotatedAABB)
     { super(config, builder, unrotatedAABB); }
-
-    @Override
-    public ResourceLocation getBlockRegistryName()
-    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -162,7 +157,7 @@ public class EdFreezer
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void animateTick(BlockState state, Level world, BlockPos pos, Random rnd)
+    public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource rnd)
     {}
 
     @Nullable
@@ -207,7 +202,7 @@ public class EdFreezer
     }
 
     public FreezerTileEntity(BlockPos pos, BlockState state)
-    { super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state); }
+    { super(ModContent.getBlockEntityTypeOfBlock(state.getBlock()), pos, state); }
 
     public int progress()
     { return progress_; }

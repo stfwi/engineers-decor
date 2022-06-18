@@ -1,8 +1,20 @@
+/*
+ * @file Guis.java
+ * @author Stefan Wilhelm (wile)
+ * @copyright (C) 2020 Stefan Wilhelm
+ * @license MIT (see https://opensource.org/licenses/MIT)
+ *
+ * Gui Wrappers and Widgets.
+ */
 package wile.engineersdecor.libmc.ui;
+import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.detail.TooltipDisplay;
 
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -10,7 +22,6 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
@@ -19,9 +30,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.libmc.detail.TooltipDisplay;
 
+import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -47,7 +57,7 @@ public class Guis
       this.player_ = player_inv.player;
       this.imageWidth = width;
       this.imageHeight = height;
-      gui_background_ = new Guis.BackgroundImage(background_image_, width, height, new Coord2d(0,0));
+      gui_background_ = new Guis.BackgroundImage(background_image_, width, height, Coord2d.ORIGIN);
     }
 
     public ContainerGui(T menu, Inventory player_inv, Component title, String background_image)
@@ -55,14 +65,14 @@ public class Guis
       super(menu, player_inv, title);
       this.background_image_ = new ResourceLocation(Auxiliaries.modid(), background_image);
       this.player_ = player_inv.player;
-      gui_background_ = new Guis.BackgroundImage(background_image_, imageWidth, imageHeight, new Coord2d(0,0));
+      gui_background_ = new Guis.BackgroundImage(background_image_, imageWidth, imageHeight, Coord2d.ORIGIN);
     }
 
     @Override
     public void init()
     {
       super.init();
-      gui_background_.init(this, new Coord2d(0,0)).show();
+      gui_background_.init(this, Coord2d.ORIGIN).show();
     }
 
     @Override
@@ -128,23 +138,29 @@ public class Guis
   @OnlyIn(Dist.CLIENT)
   public static class Coord2d
   {
+    public static final Coord2d ORIGIN = new Coord2d(0,0);
     public final int x, y;
     public Coord2d(int x, int y) { this.x=x; this.y=y; }
+    public static Coord2d of(int x, int y) { return new Coord2d(x,y); }
+    public String toString() { return "["+x+","+y+"]"; }
   }
 
   @OnlyIn(Dist.CLIENT)
   public static class UiWidget extends net.minecraft.client.gui.components.AbstractWidget
   {
-    protected static final Component EMPTY_TEXT = new TextComponent("");
+    protected static final Component EMPTY_TEXT = Component.literal("");
     protected static final Function<UiWidget,Component> NO_TOOLTIP = (uiw)->EMPTY_TEXT;
 
-    @SuppressWarnings("all") private Function<UiWidget,Component> tooltip_ = NO_TOOLTIP;
+    private final Minecraft mc_;
+    private Function<UiWidget,Component> tooltip_ = NO_TOOLTIP;
+    private Screen parent_;
 
     public UiWidget(int x, int y, int width, int height, Component title)
-    { super(x, y, width, height, title); }
+    { super(x, y, width, height, title); mc_ = Minecraft.getInstance(); }
 
     public UiWidget init(Screen parent)
     {
+      this.parent_ = parent;
       this.x += ((parent instanceof AbstractContainerScreen<?>) ? ((AbstractContainerScreen<?>)parent).getGuiLeft() : 0);
       this.y += ((parent instanceof AbstractContainerScreen<?>) ? ((AbstractContainerScreen<?>)parent).getGuiTop() : 0);
       return this;
@@ -152,16 +168,35 @@ public class Guis
 
     public UiWidget init(Screen parent, Coord2d position)
     {
+      this.parent_ = parent;
       this.x = position.x + ((parent instanceof AbstractContainerScreen<?>) ? ((AbstractContainerScreen<?>)parent).getGuiLeft() : 0);
       this.y = position.y + ((parent instanceof AbstractContainerScreen<?>) ? ((AbstractContainerScreen<?>)parent).getGuiTop() : 0);
       return this;
     }
 
-    public int getWidth()
+    public final UiWidget tooltip(Function<UiWidget,Component> tip)
+    { tooltip_ = tip; return this; }
+
+    public final UiWidget tooltip(Component tip)
+    { tooltip_ = (o)->tip; return this; }
+
+    public final int getWidth()
     { return this.width; }
 
-    public int getHeight()
+    public final int getHeight()
     { return this.height; }
+
+    public Coord2d getMousePosition()
+    {
+      final Window win = mc_.getWindow();
+      return Coord2d.of(
+        Mth.clamp(((int)(mc_.mouseHandler.xpos() * (double)win.getGuiScaledWidth() / (double)win.getScreenWidth()))-this.x, -1, this.width+1),
+        Mth.clamp(((int)(mc_.mouseHandler.ypos() * (double)win.getGuiScaledHeight() / (double)win.getScreenHeight()))-this.y, -1, this.height+1)
+      );
+    }
+
+    protected final Coord2d screenCoordinates(Coord2d xy, boolean reverse)
+    { return (reverse) ? (Coord2d.of(xy.x+x, xy.y+y)) : (Coord2d.of(xy.x-x, xy.y-y)); }
 
     public UiWidget show()
     { visible = true; return this; }
@@ -170,18 +205,20 @@ public class Guis
     { visible = false; return this; }
 
     @Override
-    public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks)
+    public void renderButton(PoseStack mxs, int mouseX, int mouseY, float partialTicks)
     {
-      super.renderButton(matrixStack, mouseX, mouseY, partialTicks);
-      if(isHovered) renderToolTip(matrixStack, mouseX, mouseY);
+      super.renderButton(mxs, mouseX, mouseY, partialTicks);
+      if(isHovered) renderToolTip(mxs, mouseX, mouseY);
     }
 
     @Override
     @SuppressWarnings("all")
-    public void renderToolTip(PoseStack matrixStack, int mouseX, int mouseY)
+    public void renderToolTip(PoseStack mx, int mouseX, int mouseY)
     {
-      if(tooltip_ == NO_TOOLTIP) return;
-      /// todo: need a Screen for that, not sure if adding a reference initialized in init() may cause GC problems.
+      if(!visible || (!active) || (tooltip_ == NO_TOOLTIP)) return;
+      final Component tip = tooltip_.apply(this);
+      if(tip.getString().trim().isEmpty()) return;
+      parent_.renderTooltip(mx, Arrays.asList(tip.getVisualOrderText()), mouseX, mouseY);
     }
 
     @Override
@@ -233,18 +270,19 @@ public class Guis
     {}
 
     @Override
-    public void renderButton(PoseStack mx, int mouseX, int mouseY, float partialTicks)
+    public void renderButton(PoseStack mxs, int mouseX, int mouseY, float partialTicks)
     {
       RenderSystem.setShaderTexture(0, atlas_);
       RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
       RenderSystem.enableBlend();
       RenderSystem.defaultBlendFunc();
       RenderSystem.enableDepthTest();
-      blit(mx, x, y, texture_position_base_.x, texture_position_base_.y, width, height);
+      blit(mxs, x, y, texture_position_base_.x, texture_position_base_.y, width, height);
       if((progress_max_ > 0) && (progress_ > 0)) {
         int w = Mth.clamp((int)Math.round((progress_ * width) / progress_max_), 0, width);
-        blit(mx, x, y, texture_position_filled_.x, texture_position_filled_.y, w, height);
+        blit(mxs, x, y, texture_position_filled_.x, texture_position_filled_.y, w, height);
       }
+      if(isHovered) renderToolTip(mxs, mouseX, mouseY);
     }
   }
 
@@ -271,7 +309,6 @@ public class Guis
       RenderSystem.setShaderTexture(0, atlas_);
       parent.blit(mx, x, y, atlas_position_.x, atlas_position_.y, width, height);
     }
-
   }
 
   @OnlyIn(Dist.CLIENT)
@@ -305,7 +342,7 @@ public class Guis
     { checked_ = !checked_; on_click_.accept(this); }
 
     @Override
-    public void renderButton(PoseStack mx, int mouseX, int mouseY, float partialTicks)
+    public void renderButton(PoseStack mxs, int mouseX, int mouseY, float partialTicks)
     {
       RenderSystem.setShader(GameRenderer::getPositionTexShader);
       RenderSystem.setShaderTexture(0, atlas_);
@@ -314,9 +351,88 @@ public class Guis
       RenderSystem.defaultBlendFunc();
       RenderSystem.enableDepthTest();
       Coord2d pos = checked_ ? texture_position_on_ : texture_position_off_;
-      blit(mx, x, y, pos.x, pos.y, width, height);
+      blit(mxs, x, y, pos.x, pos.y, width, height);
+      if(isHovered) renderToolTip(mxs, mouseX, mouseY);
     }
-
   }
 
+  @OnlyIn(Dist.CLIENT)
+  public static class ImageButton extends UiWidget
+  {
+    private final Coord2d texture_position_;
+    private final ResourceLocation atlas_;
+    private Consumer<ImageButton> on_click_ = (bt)->{};
+
+
+    public ImageButton(ResourceLocation atlas, int width, int height, Coord2d atlas_texture_position)
+    {
+      super(0, 0, width, height, Component.empty());
+      texture_position_ = atlas_texture_position;
+      atlas_ = atlas;
+    }
+
+    public ImageButton onclick(Consumer<ImageButton> action)
+    { on_click_ = action; return this; }
+
+    @Override
+    public void onClick(double mouseX, double mouseY)
+    { on_click_.accept(this); }
+
+    @Override
+    public void renderButton(PoseStack mxs, int mouseX, int mouseY, float partialTicks)
+    {
+      RenderSystem.setShader(GameRenderer::getPositionTexShader);
+      RenderSystem.setShaderTexture(0, atlas_);
+      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
+      RenderSystem.enableBlend();
+      RenderSystem.defaultBlendFunc();
+      RenderSystem.enableDepthTest();
+      Coord2d pos = texture_position_;
+      blit(mxs, x, y, pos.x, pos.y, width, height);
+      if(isHovered) renderToolTip(mxs, mouseX, mouseY);
+    }
+  }
+
+  @OnlyIn(Dist.CLIENT)
+  public static class Image extends UiWidget
+  {
+    private final Coord2d texture_position_;
+    private final ResourceLocation atlas_;
+
+    public Image(ResourceLocation atlas, int width, int height, Coord2d atlas_texture_position)
+    {
+      super(0, 0, width, height, Component.empty());
+      texture_position_ = atlas_texture_position;
+      atlas_ = atlas;
+    }
+
+    @Override
+    public void onClick(double mouseX, double mouseY)
+    {}
+
+    @Override
+    public void renderButton(PoseStack mxs, int mouseX, int mouseY, float partialTicks)
+    {
+      RenderSystem.setShader(GameRenderer::getPositionTexShader);
+      RenderSystem.setShaderTexture(0, atlas_);
+      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
+      RenderSystem.enableBlend();
+      RenderSystem.defaultBlendFunc();
+      RenderSystem.enableDepthTest();
+      Coord2d pos = texture_position_;
+      blit(mxs, x, y, pos.x, pos.y, width, height);
+      if(isHovered) renderToolTip(mxs, mouseX, mouseY);
+    }
+  }
+
+  @OnlyIn(Dist.CLIENT)
+  public static class TextBox extends net.minecraft.client.gui.components.EditBox
+  {
+    public TextBox(int x, int y, int width, int height, Component title, Font font) { super(font, x, y, width, height, title); setBordered(false); }
+    public TextBox withMaxLength(int len) { super.setMaxLength(len); return this; }
+    public TextBox withBordered(boolean b) { super.setBordered(b); return this; }
+    public TextBox withValue(String s) { super.setValue(s); return this; }
+    public TextBox withEditable(boolean e) { super.setEditable(e); return this; }
+    public TextBox withResponder(Consumer<String> r) { super.setResponder(r); return this; }
+  }
 }

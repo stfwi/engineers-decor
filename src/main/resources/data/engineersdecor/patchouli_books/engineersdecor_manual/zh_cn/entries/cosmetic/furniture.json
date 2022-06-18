@@ -1,6 +1,6 @@
 {
   "name": "家具",
-  "icon": "engineersdecor:treated_wood_table",
+  "icon": "engineersdecor:steel_table",
   "category": "engineersdecor:cosmetic",
   "sortnum": 3010,
   "pages": [
@@ -12,21 +12,9 @@
     },
     {
       "type": "spotlight",
-      "title": "木桌",
-      "item": "engineersdecor:treated_wood_table",
-      "text": "这个桌子更多的是为了工程师的家而不是工厂，你可以制作一张普通的四脚桌和一张茶几来放置装饰品。没什么好说的了——除了因为是防腐木，所以它们肯定是抗候的。"
-    },
-    {
-      "type": "spotlight",
       "title": "木凳",
       "item": "engineersdecor:treated_wood_stool",
       "text": "面对现实吧：舒适的扶手椅完全没有说服力。劳动人口坐在没有垫子的普通凳子上，他们可以随时跳起来，然后奔赴下一个任务。$(br)然而，不管出于什么原因，这个凳子似乎足够舒适，以至于其他生物有时会坐下来（你也可以）。村民不会，可能他们是超工人。"
-    },
-    {
-      "type": "spotlight",
-      "title": "木窗台",
-      "item": "engineersdecor:treated_wood_windowsill",
-      "text": "在朴素的墙上制造焦点的窗台。你可以合成两种窗台，一种窄的一种宽的。你喜欢的话，后者还能放一个花盆。"
     }
   ]
 }

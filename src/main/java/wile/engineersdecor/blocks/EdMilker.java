@@ -12,7 +12,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -121,10 +120,6 @@ public class EdMilker
     }
 
     @Override
-    public ResourceLocation getBlockRegistryName()
-    { return getRegistryName(); }
-
-    @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
     { return true; }
 
@@ -220,7 +215,7 @@ public class EdMilker
 
     public MilkerTileEntity(BlockPos pos, BlockState state)
     {
-      super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state);
+      super(ModContent.getBlockEntityTypeOfBlock(state.getBlock()), pos, state);
       tank_ = new Fluidics.Tank(TANK_CAPACITY, 0, BUCKET_SIZE, fs->fs.isFluidEqual(milk_fluid_));
       fluid_handler_ = tank_.createOutputFluidHandler();
       battery_ = new RfEnergy.Battery(MAX_ENERGY_BUFFER, MAX_ENERGY_TRANSFER, 0);
@@ -274,7 +269,7 @@ public class EdMilker
 
     public void state_message(Player player)
     {
-      Component rf = (energy_consumption_ <= 0) ? (new TextComponent("")) : (Auxiliaries.localizable("block.engineersdecor.small_milking_machine.status.rf", battery_.getEnergyStored()));
+      Component rf = (energy_consumption_ <= 0) ? (Component.empty()) : (Auxiliaries.localizable("block.engineersdecor.small_milking_machine.status.rf", battery_.getEnergyStored()));
       Overlay.show(player, Auxiliaries.localizable("block.engineersdecor.small_milking_machine.status", tank_.getFluidAmount(), rf));
     }
 

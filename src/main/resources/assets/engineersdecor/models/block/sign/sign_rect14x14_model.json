@@ -4,7 +4,7 @@
 	"textures": {
 		"s": "engineersdecor:block/material/wood_rough_texture",
 		"particle": "engineersdecor:block/material/wood_rough_texture",
-		"f": "engineersdecor:block/sign/sign_factoryarea_texture"
+		"f": "engineersdecor:block/sign/wood_rough_texture"
 	},
 	"elements": [
 		{

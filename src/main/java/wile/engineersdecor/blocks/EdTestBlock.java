@@ -11,8 +11,7 @@ package wile.engineersdecor.blocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -61,10 +60,6 @@ public class EdTestBlock
   {
     public TestBlock(long config, BlockBehaviour.Properties builder, final AABB unrotatedAABB)
     { super(config, builder, unrotatedAABB); }
-
-    @Override
-    public ResourceLocation getBlockRegistryName()
-    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -136,7 +131,7 @@ public class EdTestBlock
 
     public TestTileEntity(BlockPos pos, BlockState state)
     {
-      super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state);
+      super(ModContent.getBlockEntityTypeOfBlock(state.getBlock()), pos, state);
       battery_ = new RfEnergy.Battery((int)1e9, (int)1e9, 0, 0);
       energy_handler_ = battery_.createEnergyHandler();
       tank_ = new Fluidics.Tank((int)1e9);
@@ -223,7 +218,7 @@ public class EdTestBlock
         if(items_received_total > 0) msgs.add("+" + items_received_total + "items");
         if(items_inserted_total > 0) msgs.add("-" + items_inserted_total + "items");
         if(msgs.isEmpty()) msgs.add("Nothing transferred yet.");
-        Overlay.show(player, new TextComponent(String.join(" | ", msgs)), 1000);
+        Overlay.show(player, Component.literal(String.join(" | ", msgs)), 1000);
         return true;
       } else if(paused) {
         if(!getFillFluid(held).isEmpty()) {
@@ -237,19 +232,19 @@ public class EdTestBlock
             liq_fill_stack.setAmount(amount);
           }
           if(liq_fill_stack.isEmpty()) {
-            Overlay.show(player, new TextComponent("Fluid fill: none"), 1000);
+            Overlay.show(player, Component.literal("Fluid fill: none"), 1000);
           } else {
-            Overlay.show(player, new TextComponent("Fluid fill: " + liq_fill_stack.getAmount() + "mb/t of " + liq_fill_stack.getFluid().getRegistryName()), 1000);
+            Overlay.show(player, Component.literal("Fluid fill: " + liq_fill_stack.getAmount() + "mb/t of " + Auxiliaries.getResourceLocation(liq_fill_stack.getFluid())), 1000);
           }
         } else if(held.getItem() == Items.REDSTONE) {
           rf_feed_setting = (rf_feed_setting<<1) & 0x00fffff0;
           if(rf_feed_setting == 0) rf_feed_setting = 0x10;
-          Overlay.show(player, new TextComponent("RF feed rate: " + rf_feed_setting + "rf/t"), 1000);
+          Overlay.show(player, Component.literal("RF feed rate: " + rf_feed_setting + "rf/t"), 1000);
         } else {
           BlockState adjacent_state = level.getBlockState(worldPosition.relative(block_facing));
           if(adjacent_state.getBlock()==Blocks.HOPPER || adjacent_state.getBlock()==ModContent.getBlock("factory_hopper")) {
             insertion_item = held.copy();
-            Overlay.show(player, new TextComponent("Insertion item: " + (insertion_item.getItem()==Items.LEVER ? "random" : insertion_item.toString()) + "/s"), 1000);
+            Overlay.show(player, Component.literal("Insertion item: " + (insertion_item.getItem()==Items.LEVER ? "random" : insertion_item.toString()) + "/s"), 1000);
           }
         }
         return true;

@@ -1,6 +1,6 @@
 {
 	"name": "合成与熔炼",
 	"description": "让东西被建造、烹饪、熔炼或者液化。",
-  "icon": "engineersdecor:metal_crafting_table",
+  "icon": "engineersdecor:small_electrical_furnace",
   "sortnum": 5000
 }

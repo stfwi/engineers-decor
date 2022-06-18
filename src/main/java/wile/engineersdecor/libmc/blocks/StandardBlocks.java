@@ -5,10 +5,6 @@
  * @license MIT (see https://opensource.org/licenses/MIT)
  *
  * Common functionality class for decor blocks.
- * Mainly needed for:
- * - MC block defaults.
- * - Tooltip functionality
- * - Model initialization
  */
 package wile.engineersdecor.libmc.blocks;
 
@@ -60,6 +56,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+
 @SuppressWarnings("deprecation")
 public class StandardBlocks
 {
@@ -100,12 +97,6 @@ public class StandardBlocks
       if((config & CFG_TRANSLUCENT)!=0) return RenderTypeHint.TRANSLUCENT;
       return RenderTypeHint.SOLID;
     }
-  }
-
-  public interface IBlockItemFactory
-  {
-    // BlockItem factory for item registry. Only invoked once.
-    BlockItem getBlockItem(Block block, Item.Properties builder);
   }
 
   public static class BaseBlock extends Block implements IStandardBlock, SimpleWaterloggedBlock

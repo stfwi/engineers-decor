@@ -13,9 +13,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.Entity;
@@ -69,10 +66,6 @@ public class EdHopper
   {
     public HopperBlock(long config, BlockBehaviour.Properties builder, final Supplier<ArrayList<VoxelShape>> shape_supplier)
     { super(config, builder, shape_supplier); }
-
-    @Override
-    public ResourceLocation getBlockRegistryName()
-    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -215,7 +208,7 @@ public class EdHopper
 
     public HopperTileEntity(BlockPos pos, BlockState state)
     {
-      super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state);
+      super(ModContent.getBlockEntityTypeOfBlock(state.getBlock()), pos, state);
       main_inventory_.setSlotChangeAction((slot,stack)->tick_timer_ = Math.min(tick_timer_, 8));
     }
 
@@ -290,7 +283,7 @@ public class EdHopper
 
     @Override
     public Component getName()
-    { final Block block=getBlockState().getBlock(); return new TextComponent((block!=null) ? block.getDescriptionId() : "Factory Hopper"); }
+    { return Auxiliaries.localizable(getBlockState().getBlock().getDescriptionId()); }
 
     @Override
     public boolean hasCustomName()
@@ -717,7 +710,7 @@ public class EdHopper
     public void onClientPacketReceived(int windowId, Player player, CompoundTag nbt)
     {
       if(!(inventory_ instanceof Inventories.StorageInventory)) return;
-      if(!((((((Inventories.StorageInventory)inventory_).getTileEntity())) instanceof final EdHopper.HopperTileEntity te))) return;
+      if(!((((((Inventories.StorageInventory)inventory_).getBlockEntity())) instanceof final EdHopper.HopperTileEntity te))) return;
       if(nbt.contains("xsize")) te.transfer_count_  = Mth.clamp(nbt.getInt("xsize"), 1, HopperTileEntity.MAX_TRANSFER_COUNT);
       if(nbt.contains("period")) te.transfer_period_ = Mth.clamp(nbt.getInt("period"),   0,  100);
       if(nbt.contains("range")) te.collection_range_ = Mth.clamp(nbt.getInt("range"),   0,  HopperTileEntity.MAX_COLLECTION_RANGE);
@@ -760,17 +753,17 @@ public class EdHopper
     {
       super.init();
       {
-        final Block block = ModContent.getBlock(getMenu().getType().getRegistryName().getPath().replaceAll("^ct_",""));
+        final Block block = ModContent.getBlock( Auxiliaries.getResourceLocation(getMenu().getType()).getPath().replaceAll("^ct_",""));
         final String prefix = block.getDescriptionId() + ".tooltips.";
         final int x0 = getGuiLeft(), y0 = getGuiTop();
         tooltip_.init(
-          new TooltipDisplay.TipRange(x0+148, y0+22,  3,  3, new TranslatableComponent(prefix + "delayindicator")),
-          new TooltipDisplay.TipRange(x0+130, y0+ 9, 40, 10, new TranslatableComponent(prefix + "range")),
-          new TooltipDisplay.TipRange(x0+130, y0+22, 40, 10, new TranslatableComponent(prefix + "period")),
-          new TooltipDisplay.TipRange(x0+130, y0+35, 40, 10, new TranslatableComponent(prefix + "count")),
-          new TooltipDisplay.TipRange(x0+133, y0+49,  9,  9, new TranslatableComponent(prefix + "rssignal")),
-          new TooltipDisplay.TipRange(x0+145, y0+49,  9,  9, new TranslatableComponent(prefix + "inversion")),
-          new TooltipDisplay.TipRange(x0+159, y0+49,  9,  9, new TranslatableComponent(prefix + "triggermode"))
+          new TooltipDisplay.TipRange(x0+148, y0+22,  3,  3, Component.translatable(prefix + "delayindicator")),
+          new TooltipDisplay.TipRange(x0+130, y0+ 9, 40, 10, Component.translatable(prefix + "range")),
+          new TooltipDisplay.TipRange(x0+130, y0+22, 40, 10, Component.translatable(prefix + "period")),
+          new TooltipDisplay.TipRange(x0+130, y0+35, 40, 10, Component.translatable(prefix + "count")),
+          new TooltipDisplay.TipRange(x0+133, y0+49,  9,  9, Component.translatable(prefix + "rssignal")),
+          new TooltipDisplay.TipRange(x0+145, y0+49,  9,  9, Component.translatable(prefix + "inversion")),
+          new TooltipDisplay.TipRange(x0+159, y0+49,  9,  9, Component.translatable(prefix + "triggermode"))
         );
       }
     }

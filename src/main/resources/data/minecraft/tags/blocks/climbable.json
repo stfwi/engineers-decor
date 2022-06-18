@@ -2,7 +2,6 @@
   "replace": false,
   "values": [
     "engineersdecor:metal_rung_ladder",
-    "engineersdecor:metal_rung_steps",
-    "engineersdecor:treated_wood_ladder"
+    "engineersdecor:metal_rung_steps"
   ]
 }

@@ -1,8 +1,0 @@
-{
-  "variants": {
-    "facing=north": { "model": "engineersdecor:block/device/metal_crafting_table_model"          },
-    "facing=south": { "model": "engineersdecor:block/device/metal_crafting_table_model", "y":180 },
-    "facing=west":  { "model": "engineersdecor:block/device/metal_crafting_table_model", "y":270 },
-    "facing=east":  { "model": "engineersdecor:block/device/metal_crafting_table_model", "y":90  }
-  }
-}

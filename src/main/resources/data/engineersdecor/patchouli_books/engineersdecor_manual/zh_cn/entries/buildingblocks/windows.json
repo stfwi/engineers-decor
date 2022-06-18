@@ -1,15 +1,9 @@
 {
   "name": "窗户",
-  "icon": "engineersdecor:treated_wood_window",
+  "icon": "engineersdecor:steel_framed_window",
   "category": "engineersdecor:buildingblocks",
   "sortnum": 1070,
   "pages": [
-    {
-      "type": "spotlight",
-      "title": "窗户类型",
-      "item": "engineersdecor:treated_wood_window",
-      "text": "这些 3D 框架的窗户的玻璃板沾上了一点污渍，而且窗户可以水平或垂直放置。$(br)和原版玻璃窗不同，窗户在角落不会转弯，当你破坏窗户方块时，窗户玻璃仍保持完整。（不需要$(o)精准采集$()）。"
-    },
     {
       "type": "spotlight",
       "title": "Placement",

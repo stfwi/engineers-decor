@@ -29,13 +29,17 @@ public class SidedProxy
   public static Minecraft mc()
   { return proxy.mc(); }
 
-  @Nullable
   public static Optional<Boolean> isCtrlDown()
   { return proxy.isCtrlDown(); }
 
-  @Nullable
   public static Optional<Boolean> isShiftDown()
   { return proxy.isShiftDown(); }
+
+  public static Optional<String> getClipboard()
+  { return proxy.getClipboard(); }
+
+  public static boolean setClipboard(String text)
+  { return proxy.setClipboard(text); }
 
   // --------------------------------------------------------------------------------------------------------
 
@@ -48,6 +52,8 @@ public class SidedProxy
     default @Nullable Minecraft mc() { return null; }
     default Optional<Boolean> isCtrlDown() { return Optional.empty(); }
     default Optional<Boolean> isShiftDown() { return Optional.empty(); }
+    default Optional<String> getClipboard() { return Optional.empty(); }
+    default boolean setClipboard(String text) { return false; }
   }
 
   private static final class ClientProxy implements ISidedProxy
@@ -57,6 +63,8 @@ public class SidedProxy
     public @Nullable Minecraft mc() { return Minecraft.getInstance(); }
     public Optional<Boolean> isCtrlDown() { return Optional.of(Auxiliaries.isCtrlDown()); }
     public Optional<Boolean> isShiftDown() { return Optional.of(Auxiliaries.isShiftDown()); }
+    public Optional<String> getClipboard() { return (mc()==null) ? Optional.empty() : Optional.of(net.minecraft.client.gui.font.TextFieldHelper.getClipboardContents(mc())); }
+    public boolean setClipboard(String text) { if(mc()==null) {return false;} net.minecraft.client.gui.font.TextFieldHelper.setClipboardContents(Minecraft.getInstance(), text); return true; }
   }
 
   private static final class ServerProxy implements ISidedProxy

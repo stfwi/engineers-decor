@@ -6,13 +6,13 @@
         {
           "type": "engineersdecor:optional",
           "result": "engineersdecor:sign_exit",
-          "required": ["engineersdecor:sign_factoryarea"]
+          "required": ["engineersdecor:sign_defense"]
         }
       ],
       "recipe": {
         "type": "minecraft:crafting_shapeless",
         "ingredients": [
-          { "item": "engineersdecor:sign_factoryarea" }
+          { "item": "engineersdecor:sign_defense" }
         ],
         "result": {
           "item": "engineersdecor:sign_exit"

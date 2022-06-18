@@ -1,14 +1,8 @@
 package wile.engineersdecor;
 
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -17,8 +11,7 @@ import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 import wile.engineersdecor.blocks.EdLadderBlock;
 import wile.engineersdecor.libmc.detail.Auxiliaries;
 import wile.engineersdecor.libmc.detail.OptionalRecipeCondition;
@@ -31,13 +24,13 @@ public class ModEngineersDecor
   public static final String MODID = "engineersdecor";
   public static final String MODNAME = "Engineer's Decor";
   public static final int VERSION_DATAFIXER = 0;
-  private static final Logger LOGGER = LogManager.getLogger();
+  private static final Logger LOGGER = com.mojang.logging.LogUtils.getLogger();
 
   public ModEngineersDecor()
   {
     Auxiliaries.init(MODID, LOGGER, ModConfig::getServerConfig);
     Auxiliaries.logGitVersion(MODNAME);
-    Registries.init(MODID, "sign_decor");
+    Registries.init(MODID, "sign_decor", (reg)->reg.register(FMLJavaModLoadingContext.get().getModEventBus()));
     ModContent.init(MODID);
     OptionalRecipeCondition.init(MODID, LOGGER);
     ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.SERVER, ModConfig.SERVER_CONFIG_SPEC);
@@ -68,26 +61,6 @@ public class ModEngineersDecor
   @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
   public static class ForgeEvents
   {
-    @SubscribeEvent
-    public static void onRegisterBlocks(final RegistryEvent.Register<Block> event)
-    { ModContent.registerBlocks(event); }
-
-    @SubscribeEvent
-    public static void onRegisterItems(final RegistryEvent.Register<Item> event)
-    { ModContent.registerItems(event); }
-
-    @SubscribeEvent
-    public static void onRegisterBlockEntityTypes(final RegistryEvent.Register<BlockEntityType<?>> event)
-    { ModContent.registerBlockEntityTypes(event); }
-
-    @SubscribeEvent
-    public static void onRegisterEntityTypes(final RegistryEvent.Register<EntityType<?>> event)
-    { ModContent.registerEntityTypes(event); }
-
-    @SubscribeEvent
-    public static void onRegisterMenuTypes(final RegistryEvent.Register<MenuType<?>> event)
-    { ModContent.registerMenuTypes(event); }
-
     @SubscribeEvent
     public static void onConfigLoad(final ModConfigEvent.Loading event)
     { ModConfig.apply(); }

@@ -59,7 +59,7 @@ public class EdHorizontalSupportBlock extends StandardBlocks.WaterLoggable
 
   public EdHorizontalSupportBlock(long config, BlockBehaviour.Properties builder, final AABB mainBeamAABB, final AABB eastBeamAABB, final AABB thinDownBeamAABB, final AABB thickDownBeamAABB)
   {
-    super(config|DecorBlock.CFG_HORIZIONTAL, builder);
+    super(config|StandardBlocks.CFG_HORIZIONTAL, builder);
     Map<BlockState, VoxelShape> aabbs = new HashMap<>();
     for(boolean eastwest:EASTWEST.getPossibleValues()) {
       for(boolean leftbeam:LEFTBEAM.getPossibleValues()) {

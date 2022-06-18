@@ -14,7 +14,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -76,10 +75,6 @@ public class EdFluidFunnel
 
     public FluidFunnelBlock(long config, BlockBehaviour.Properties builder, final AABB[] unrotatedAABB)
     { super(config, builder, unrotatedAABB); }
-
-    @Override
-    public ResourceLocation getBlockRegistryName()
-    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -195,7 +190,7 @@ public class EdFluidFunnel
     private final LazyOptional<IFluidHandler> fluid_handler_ = tank_.createOutputFluidHandler();
 
     public FluidFunnelTileEntity(BlockPos pos, BlockState state)
-    { super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state); }
+    { super(ModContent.getBlockEntityTypeOfBlock(state.getBlock()), pos, state); }
 
     public void readnbt(CompoundTag nbt)
     {

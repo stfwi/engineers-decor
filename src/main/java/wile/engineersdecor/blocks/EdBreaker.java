@@ -12,7 +12,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -92,10 +91,6 @@ public class EdBreaker
 
     public BreakerBlock(long config, BlockBehaviour.Properties builder, final AABB[] unrotatedAABBs)
     { super(config, builder, unrotatedAABBs); }
-
-    @Override
-    public ResourceLocation getBlockRegistryName()
-    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -195,7 +190,7 @@ public class EdBreaker
     private final LazyOptional<IEnergyStorage> energy_handler_ = battery_.createEnergyHandler();
 
     public BreakerTileEntity(BlockPos pos, BlockState state)
-    { super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state); }
+    { super(ModContent.getBlockEntityTypeOfBlock(state.getBlock()), pos, state); }
 
     public void block_updated()
     { if(tick_timer_ > 2) tick_timer_ = 2; }

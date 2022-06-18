@@ -7,9 +7,10 @@
  * JEI plugin (see https://github.com/mezz/JustEnoughItems/wiki/Creating-Plugins)
  */
 package wile.engineersdecor.eapi.jei;
-/*
+
 public class JEIPlugin {}
-*/
+/*
+
 import mezz.jei.api.constants.RecipeTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
@@ -41,17 +42,6 @@ public class JEIPlugin implements mezz.jei.api.IModPlugin
   @Override
   public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration)
   {
-    if(!ModConfig.isOptedOut(ModContent.getBlock("metal_crafting_table"))) {
-      try {
-        registration.addRecipeTransferHandler(
-          EdCraftingTable.CraftingTableUiContainer.class,
-          RecipeTypes.CRAFTING,
-          1, 9, 10, 36+CraftingTableTileEntity.NUM_OF_STORAGE_SLOTS
-        );
-      } catch(Throwable e) {
-        Auxiliaries.logger().warn("Exception in JEI crafting table handler registration: '" + e.getMessage() + "'.");
-      }
-    }
   }
 
   @Override
@@ -81,9 +71,6 @@ public class JEIPlugin implements mezz.jei.api.IModPlugin
   @Override
   public void registerRecipeCatalysts(IRecipeCatalystRegistration registration)
   {
-    if(!ModConfig.isOptedOut(ModContent.getBlock("metal_crafting_table"))) {
-      registration.addRecipeCatalyst(new ItemStack(ModContent.getBlock("metal_crafting_table")), RecipeTypes.CRAFTING);
-    }
     if(!ModConfig.isOptedOut(ModContent.getBlock("small_lab_furnace"))) {
       registration.addRecipeCatalyst(new ItemStack(ModContent.getBlock("small_lab_furnace")), RecipeTypes.SMELTING);
     }
@@ -92,3 +79,4 @@ public class JEIPlugin implements mezz.jei.api.IModPlugin
     }
   }
 }
+*/

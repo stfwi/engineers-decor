@@ -11,6 +11,7 @@ package wile.engineersdecor.blocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -30,7 +31,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public class EdChimneyBlock extends StandardBlocks.Cutout
 {
@@ -78,7 +78,7 @@ public class EdChimneyBlock extends StandardBlocks.Cutout
 
   @Override
   @OnlyIn(Dist.CLIENT)
-  public void animateTick(BlockState state, Level world, BlockPos pos, Random rnd)
+  public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource rnd)
   {
     if(state.getBlock() != this) return;
     final int p = state.getValue(POWER);

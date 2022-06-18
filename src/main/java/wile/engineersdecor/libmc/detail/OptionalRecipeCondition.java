@@ -19,7 +19,7 @@ import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -90,7 +90,7 @@ public class OptionalRecipeCondition implements ICondition
   }
 
   @Override
-  public boolean test()
+  public boolean test(IContext context)
   {
     if(without_recipes) return false;
     if((experimental) && (!with_experimental)) return false;

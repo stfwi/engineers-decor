@@ -13,9 +13,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -57,7 +54,6 @@ import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import wile.engineersdecor.ModContent;
-import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
 import wile.engineersdecor.libmc.blocks.StandardEntityBlocks;
 import wile.engineersdecor.libmc.detail.*;
@@ -82,10 +78,6 @@ public class EdPlacer
   {
     public PlacerBlock(long config, BlockBehaviour.Properties builder, final AABB[] unrotatedAABB)
     { super(config, builder, unrotatedAABB); }
-
-    @Override
-    public ResourceLocation getBlockRegistryName()
-    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -206,7 +198,7 @@ public class EdPlacer
 
     public PlacerTileEntity(BlockPos pos, BlockState state)
     {
-      super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state);
+      super(ModContent.getBlockEntityTypeOfBlock(state.getBlock()), pos, state);
       item_handler_ = Inventories.MappedItemHandler.createGenericHandler(inventory_,
         (stack, slot) -> true,
         (stack, slot) -> true
@@ -278,7 +270,7 @@ public class EdPlacer
 
     @Override
     public Component getName()
-    { final Block block=getBlockState().getBlock(); return new TextComponent((block!=null) ? block.getDescriptionId() : "Factory placer"); }
+    { return Auxiliaries.localizable(getBlockState().getBlock().getDescriptionId()); }
 
     @Override
     public boolean hasCustomName()
@@ -383,7 +375,7 @@ public class EdPlacer
       Block block = Block.byItem(item);
       if(block == Blocks.AIR) {
         if(item != null) {
-          if(debug_) Auxiliaries.logInfo("Placer spit: No block for item " + item.getRegistryName().toString());
+          if(debug_) Auxiliaries.logInfo("Placer spit: No block for item " + Auxiliaries.getResourceLocation(item));
           return spit_out(facing); // Item not accepted
         }
       } else if(block instanceof IPlantable) {
@@ -459,7 +451,7 @@ public class EdPlacer
           }
           BlockState placement_state = (use_context==null) ? (block.defaultBlockState()) : (block.getStateForPlacement(use_context));
           if(placement_state == null) {
-            if(debug_) Auxiliaries.logInfo("Placer spit: No valid placement state for item " + item.getRegistryName().toString());
+            if(debug_) Auxiliaries.logInfo("Placer spit: No valid placement state for item " + Auxiliaries.getResourceLocation(item));
             return spit_out(facing);
           } else if((use_context!=null) && (item instanceof BlockItem)) {
             if(((BlockItem)item).place(use_context) != InteractionResult.FAIL) {
@@ -641,7 +633,7 @@ public class EdPlacer
     public void onClientPacketReceived(int windowId, Player player, CompoundTag nbt)
     {
       if(!(inventory_ instanceof Inventories.StorageInventory)) return;
-      if(!((((Inventories.StorageInventory)inventory_).getTileEntity()) instanceof PlacerTileEntity te)) return;
+      if(!((((Inventories.StorageInventory)inventory_).getBlockEntity()) instanceof PlacerTileEntity te)) return;
       if(nbt.contains("action")) {
         final int slotId = nbt.contains("slot") ? nbt.getInt("slot") : -1;
         boolean changed = false;
@@ -683,13 +675,13 @@ public class EdPlacer
     {
       super.init();
       {
-        final Block block = ModContent.getBlock(getMenu().getType().getRegistryName().getPath().replaceAll("^ct_",""));
+        final Block block = ModContent.getBlock(Auxiliaries.getResourceLocation(getMenu().getType()).getPath().replaceAll("^ct_",""));
         final String prefix = block.getDescriptionId() + ".tooltips.";
         final int x0 = getGuiLeft(), y0 = getGuiTop();
         tooltip_.init(
-          new TooltipDisplay.TipRange(x0+133, y0+49,  9,  9, new TranslatableComponent(prefix + "rssignal")),
-          new TooltipDisplay.TipRange(x0+145, y0+49,  9,  9, new TranslatableComponent(prefix + "inversion")),
-          new TooltipDisplay.TipRange(x0+159, y0+49,  9,  9, new TranslatableComponent(prefix + "triggermode"))
+          new TooltipDisplay.TipRange(x0+133, y0+49,  9,  9, Component.translatable(prefix + "rssignal")),
+          new TooltipDisplay.TipRange(x0+145, y0+49,  9,  9, Component.translatable(prefix + "inversion")),
+          new TooltipDisplay.TipRange(x0+159, y0+49,  9,  9, Component.translatable(prefix + "triggermode"))
         );
       }
     }

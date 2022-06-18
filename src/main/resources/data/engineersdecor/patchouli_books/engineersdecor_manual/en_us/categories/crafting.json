@@ -1,6 +1,6 @@
 {
 	"name": "Crafting and Smelting",
-	"description": "Getting things build, cooked, smelted or liquified. ",
-  "icon": "engineersdecor:metal_crafting_table",
+	"description": "Getting things build, cooked, smelted or liquefied. ",
+  "icon": "engineersdecor:small_electrical_furnace",
   "sortnum": 5000
 }

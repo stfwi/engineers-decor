@@ -1,15 +1,9 @@
 {
   "name": "Ladders",
-  "icon": "engineersdecor:treated_wood_ladder",
+  "icon": "engineersdecor:metal_rung_ladder",
   "category": "engineersdecor:buildingblocks",
   "sortnum": 1080,
   "pages": [
-    {
-      "type": "spotlight",
-      "title": "Wooden Ladders",
-      "item": "engineersdecor:treated_wood_ladder",
-      "text": "Solid, weather-proof ladders, placed and used like vanilla ladders.$(br2)You move faster when looking straight up or down while climbing."
-    },
     {
       "type": "spotlight",
       "title": "Metal Ladders",

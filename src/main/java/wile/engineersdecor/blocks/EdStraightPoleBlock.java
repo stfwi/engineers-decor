@@ -46,7 +46,7 @@ public class EdStraightPoleBlock extends StandardBlocks.DirectedWaterLoggable
   {
     Direction facing = context.getClickedFace();
     BlockState state = super.getStateForPlacement(context).setValue(FACING, facing);
-    if((config & DecorBlock.CFG_FLIP_PLACEMENT_IF_SAME) != 0) {
+    if((config & StandardBlocks.CFG_FLIP_PLACEMENT_IF_SAME) != 0) {
       Level world = context.getLevel();
       BlockPos pos = context.getClickedPos();
       if(world.getBlockState(pos.relative(facing.getOpposite())).getBlock() instanceof EdStraightPoleBlock) {

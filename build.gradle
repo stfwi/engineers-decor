@@ -1,17 +1,10 @@
 // @file build.gradle
 // Engineer's decor mod gradle build.
-buildscript {
-  repositories {
-    maven { url = 'https://maven.minecraftforge.net' }
-    mavenCentral()
-  }
-  dependencies {
-    classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-  }
+plugins {
+  id 'eclipse'
+  id 'maven-publish'
+  id 'net.minecraftforge.gradle' version '5.1.+'
 }
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 //-----------------------------------------------------------------------------
 version = "${version_engineersdecor}"
@@ -43,8 +36,8 @@ minecraft {
 
 dependencies {
   minecraft "net.minecraftforge:forge:${version_forge_minecraft}"
-  compileOnly fg.deobf("mezz.jei:jei-${version_jei}:api")
-  runtimeOnly fg.deobf("mezz.jei:jei-${version_jei}")
+  //compileOnly fg.deobf("mezz.jei:jei-${version_jei}:api")
+  //runtimeOnly fg.deobf("mezz.jei:jei-${version_jei}")
 }
 
 processResources {
@@ -85,4 +78,8 @@ project.afterEvaluate {
     }
   }
   reobfJar.finalizedBy('signJar')
+}
+
+tasks.withType(JavaCompile).configureEach {
+  options.encoding = 'UTF-8'
 }

@@ -13,9 +13,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -89,10 +86,6 @@ public class EdDropper
 
     public DropperBlock(long config, BlockBehaviour.Properties builder, final AABB unrotatedAABB)
     { super(config, builder, unrotatedAABB); }
-
-    @Override
-    public ResourceLocation getBlockRegistryName()
-    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -232,7 +225,7 @@ public class EdDropper
     protected LazyOptional<? extends IItemHandler> item_handler_ = Inventories.MappedItemHandler.createGenericHandler(storage_slot_range_);
 
     public DropperTileEntity(BlockPos pos, BlockState state)
-    { super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state); reset_rtstate(); }
+    { super(ModContent.getBlockEntityTypeOfBlock(state.getBlock()), pos, state); reset_rtstate(); }
 
     public CompoundTag clear_getnbt()
     {
@@ -312,7 +305,7 @@ public class EdDropper
 
     @Override
     public Component getName()
-    { final Block block=getBlockState().getBlock(); return new TextComponent((block!=null) ? block.getDescriptionId() : "Factory dropper"); }
+    { return Auxiliaries.localizable(getBlockState().getBlock().getDescriptionId()); }
 
     @Override
     public boolean hasCustomName()
@@ -738,7 +731,7 @@ public class EdDropper
     public void onClientPacketReceived(int windowId, Player player, CompoundTag nbt)
     {
       if(!(inventory_ instanceof Inventories.StorageInventory)) return;
-      if(!(((Inventories.StorageInventory)inventory_).getTileEntity() instanceof final DropperTileEntity te)) return;
+      if(!(((Inventories.StorageInventory)inventory_).getBlockEntity() instanceof final DropperTileEntity te)) return;
       if(nbt.contains("action")) {
         boolean changed = false;
         final int slotId = nbt.contains("slot") ? nbt.getInt("slot") : -1;
@@ -786,18 +779,18 @@ public class EdDropper
     {
       super.init();
       {
-        final Block block = ModContent.getBlock(getMenu().getType().getRegistryName().getPath().replaceAll("^ct_",""));
+        final Block block = ModContent.getBlock(Auxiliaries.getResourceLocation(getMenu().getType()).getPath().replaceAll("^ct_",""));
         final String prefix = block.getDescriptionId() + ".tooltips.";
         final int x0 = getGuiLeft(), y0 = getGuiTop();
         tooltip_.init(
-          new TipRange(x0+130, y0+10, 12, 25, new TranslatableComponent(prefix + "velocity")),
-          new TipRange(x0+145, y0+10, 25, 25, new TranslatableComponent(prefix + "direction")),
-          new TipRange(x0+129, y0+40, 44, 10, new TranslatableComponent(prefix + "dropcount")),
-          new TipRange(x0+129, y0+50, 44, 10, new TranslatableComponent(prefix + "period")),
-          new TipRange(x0+114, y0+51, 9, 9, new TranslatableComponent(prefix + "rssignal")),
-          new TipRange(x0+162, y0+66, 7, 9, new TranslatableComponent(prefix + "triggermode")),
-          new TipRange(x0+132, y0+66, 9, 9, new TranslatableComponent(prefix + "filtergate")),
-          new TipRange(x0+148, y0+66, 9, 9, new TranslatableComponent(prefix + "externgate"))
+          new TipRange(x0+130, y0+10, 12, 25, Component.translatable(prefix + "velocity")),
+          new TipRange(x0+145, y0+10, 25, 25, Component.translatable(prefix + "direction")),
+          new TipRange(x0+129, y0+40, 44, 10, Component.translatable(prefix + "dropcount")),
+          new TipRange(x0+129, y0+50, 44, 10, Component.translatable(prefix + "period")),
+          new TipRange(x0+114, y0+51, 9, 9, Component.translatable(prefix + "rssignal")),
+          new TipRange(x0+162, y0+66, 7, 9, Component.translatable(prefix + "triggermode")),
+          new TipRange(x0+132, y0+66, 9, 9, Component.translatable(prefix + "filtergate")),
+          new TipRange(x0+148, y0+66, 9, 9, Component.translatable(prefix + "externgate"))
         );
       }
     }

@@ -1,6 +1,6 @@
 {
   "name": "Furniture",
-  "icon": "engineersdecor:treated_wood_table",
+  "icon": "engineersdecor:steel_table",
   "category": "engineersdecor:cosmetic",
   "sortnum": 3010,
   "pages": [
@@ -12,21 +12,9 @@
     },
     {
       "type": "spotlight",
-      "title": "Wood tables",
-      "item": "engineersdecor:treated_wood_table",
-      "text": "More for the Engineer's home rather than a factory, you can craft a normal four-leg table and a side table to place decorative stuff on. Not much more to say - except that they are of corse weather-proof because it's treated wood."
-    },
-    {
-      "type": "spotlight",
       "title": "Wood Stool",
       "item": "engineersdecor:treated_wood_stool",
       "text": "Let's face it: Comfy armchairs are lame. Members of the working population sit on plain stools without cushion, where they can jump up any time and race to their next task.$(br)For whatever reason however, this stool seems to be comfy enough that mobs sometimes sit down (so can you, too). Villagers don't, probably they are Über-Workers."
-    },
-    {
-      "type": "spotlight",
-      "title": "Wood Window Sills",
-      "item": "engineersdecor:treated_wood_windowsill",
-      "text": "Sills make nice accents on plain walls. You can craft two types of windowsill, a small one and a board sill. Latter can cary a flower pot if you like."
     }
   ]
 }

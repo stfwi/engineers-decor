@@ -15,7 +15,6 @@ package wile.engineersdecor;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,7 +39,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import wile.engineersdecor.blocks.*;
 import wile.engineersdecor.detail.ModRenderers;
@@ -292,10 +290,6 @@ public class ModContent
       StandardBlocks.CFG_DEFAULT,
       BlockBehaviour.Properties.of(Material.METAL, MaterialColor.METAL).strength(0.3f, 8f).sound(SoundType.METAL).noOcclusion()
     ));
-    Registries.addBlock("treated_wood_ladder", ()->new EdLadderBlock(
-      StandardBlocks.CFG_DEFAULT,
-      BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.WOOD).strength(0.3f, 8f).sound(SoundType.WOOD).noOcclusion()
-    ));
     Registries.addBlock("iron_hatch", ()->new EdHatchBlock(
       StandardBlocks.CFG_LOOK_PLACEMENT,
       BlockBehaviour.Properties.of(Material.METAL, MaterialColor.METAL).strength(0.3f, 2000f).sound(SoundType.METAL),
@@ -356,11 +350,6 @@ public class ModContent
 
     // -------------------------------------------------------------------------------------------------------------------
 
-    Registries.addBlock("treated_wood_table", ()->new StandardBlocks.WaterLoggable(
-      StandardBlocks.CFG_CUTOUT,
-      BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.WOOD).strength(0.5f, 5f).sound(SoundType.WOOD).noOcclusion(),
-      Auxiliaries.getPixeledAABB(1,0,1, 15,15.9,15)
-    ));
     Registries.addBlock("treated_wood_stool", ()->new EdChair.ChairBlock(
       StandardBlocks.CFG_CUTOUT|StandardBlocks.CFG_HORIZIONTAL|StandardBlocks.CFG_LOOK_PLACEMENT,
       BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.WOOD).strength(0.5f, 5f).sound(SoundType.WOOD).noOcclusion(),
@@ -370,16 +359,6 @@ public class ModContent
         Auxiliaries.getPixeledAABB(4,0,7, 12,1,9),
         Auxiliaries.getPixeledAABB(7,0,4, 9,1,12),
       }
-    ));
-    Registries.addBlock("treated_wood_windowsill", ()->new StandardBlocks.DirectedWaterLoggable(
-      StandardBlocks.CFG_CUTOUT|StandardBlocks.CFG_HORIZIONTAL|StandardBlocks.CFG_FACING_PLACEMENT|StandardBlocks.CFG_AI_PASSABLE,
-      BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.WOOD).strength(0.5f, 5f).sound(SoundType.WOOD).noOcclusion(),
-      Auxiliaries.getPixeledAABB(0.5,15,10.5, 15.5,16,16)
-    ));
-    Registries.addBlock("treated_wood_broad_windowsill", ()->new StandardBlocks.DirectedWaterLoggable(
-      StandardBlocks.CFG_CUTOUT|StandardBlocks.CFG_HORIZIONTAL|StandardBlocks.CFG_FACING_PLACEMENT,
-      BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.WOOD).strength(0.5f, 5f).sound(SoundType.WOOD).noOcclusion(),
-      Auxiliaries.getPixeledAABB(0,14.5,4, 16,16,16)
     ));
 
     // -------------------------------------------------------------------------------------------------------------------
@@ -432,11 +411,6 @@ public class ModContent
 
     // -------------------------------------------------------------------------------------------------------------------
 
-    Registries.addBlock("treated_wood_window", ()->new EdWindowBlock(
-      StandardBlocks.CFG_LOOK_PLACEMENT,
-      BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.WOOD).strength(0.5f, 8f).sound(SoundType.WOOD).noOcclusion(),
-      Auxiliaries.getPixeledAABB(0,0,7, 16,16,9)
-    ));
     Registries.addBlock("steel_framed_window", ()->new EdWindowBlock(
       StandardBlocks.CFG_LOOK_PLACEMENT,
       BlockBehaviour.Properties.of(Material.METAL, MaterialColor.METAL).strength(0.5f, 8f).sound(SoundType.METAL).noOcclusion(),
@@ -642,36 +616,8 @@ public class ModContent
       BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.WOOD).strength(0.2f, 1f).sound(SoundType.WOOD).noOcclusion(),
       Auxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
     ));
-    Registries.addBlock("sign_factoryarea", ()->new StandardBlocks.DirectedWaterLoggable(
-      StandardBlocks.CFG_CUTOUT|StandardBlocks.CFG_FACING_PLACEMENT|StandardBlocks.CFG_HORIZIONTAL|StandardBlocks.CFG_AI_PASSABLE,
-      BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.WOOD).strength(0.2f, 1f).sound(SoundType.WOOD).noOcclusion(),
-      Auxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
-    ));
 
     // -------------------------------------------------------------------------------------------------------------------
-
-    Registries.addBlock("labeled_crate",
-      ()->new EdLabeledCrate.LabeledCrateBlock(
-        StandardBlocks.CFG_HORIZIONTAL|StandardBlocks.CFG_LOOK_PLACEMENT|StandardBlocks.CFG_OPPOSITE_PLACEMENT,
-        BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.WOOD).strength(0.3f, 32f).sound(SoundType.METAL).noOcclusion(),
-        Auxiliaries.getPixeledAABB(0,0,0, 16,16,16)
-      ),
-      EdLabeledCrate.LabeledCrateTileEntity::new,
-      EdLabeledCrate.LabeledCrateContainer::new
-    );
-    Registries.addBlock("metal_crafting_table",
-      ()->new EdCraftingTable.CraftingTableBlock(
-    StandardBlocks.CFG_CUTOUT|StandardBlocks.CFG_HORIZIONTAL|StandardBlocks.CFG_LOOK_PLACEMENT|StandardBlocks.CFG_OPPOSITE_PLACEMENT,
-        BlockBehaviour.Properties.of(Material.METAL, MaterialColor.METAL).strength(0.3f, 12f).sound(SoundType.METAL).noOcclusion(),
-        new AABB[]{
-          Auxiliaries.getPixeledAABB(0,15,0, 16,16,16),
-          Auxiliaries.getPixeledAABB(1, 0,1, 15,16,15)
-        }
-      ),
-      EdCraftingTable.CraftingTableTileEntity::new,
-      EdCraftingTable.CraftingTableUiContainer::new
-      //MenuScreens.register(CT_TREATED_WOOD_CRAFTING_TABLE, EdCraftingTable.CraftingTableGui::new);
-    );
 
     Registries.addBlock("small_lab_furnace",
       ()->new EdFurnace.FurnaceBlock(
@@ -902,6 +848,7 @@ public class ModContent
           Auxiliaries.getPixeledAABB(2,15,0, 14,16,16),
         }
       ),
+      EdFluidBarrel.FluidBarrelItem::new,
       EdFluidBarrel.FluidBarrelTileEntity::new
     );
     Registries.addBlock("small_fluid_funnel",
@@ -916,35 +863,6 @@ public class ModContent
       ),
       EdFluidFunnel.FluidFunnelTileEntity::new
     );
-
-    // -------------------------------------------------------------------------------------------------------------------
-
-    if(Auxiliaries.isModLoaded("immersiveengineeringharddependent")) {
-      //Registries.addBlock("halfslab_treated_wood", ()->new SlabSliceBlock(
-      //  StandardBlocks.CFG_CUTOUT|DecorBlock.CFG_HARD_IE_DEPENDENT,
-      //  BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.WOOD).strength(0.3f, 4f).sound(SoundType.WOOD).noOcclusion()
-      //));
-      //Registries.addBlock("halfslab_sheetmetal_iron", ()->new SlabSliceBlock(
-      //  StandardBlocks.CFG_CUTOUT|DecorBlock.CFG_HARD_IE_DEPENDENT,
-      //  BlockBehaviour.Properties.of(Material.METAL, MaterialColor.METAL).strength(0.3f, 8f).sound(SoundType.METAL).noOcclusion()
-      //));
-      //Registries.addBlock("halfslab_sheetmetal_steel", ()->new SlabSliceBlock(
-      //  StandardBlocks.CFG_CUTOUT|DecorBlock.CFG_HARD_IE_DEPENDENT,
-      //  BlockBehaviour.Properties.of(Material.METAL, MaterialColor.METAL).strength(0.3f, 8f).sound(SoundType.METAL).noOcclusion()
-      //));
-      //Registries.addBlock("halfslab_sheetmetal_copper", ()->new SlabSliceBlock(
-      //  StandardBlocks.CFG_CUTOUT|DecorBlock.CFG_HARD_IE_DEPENDENT,
-      //  BlockBehaviour.Properties.of(Material.METAL, MaterialColor.METAL).strength(0.3f, 8f).sound(SoundType.METAL).noOcclusion()
-      //));
-      //Registries.addBlock("halfslab_sheetmetal_gold", ()->new SlabSliceBlock(
-      //  StandardBlocks.CFG_CUTOUT|DecorBlock.CFG_HARD_IE_DEPENDENT,
-      //  BlockBehaviour.Properties.of(Material.METAL, MaterialColor.METAL).strength(0.3f, 8f).sound(SoundType.METAL).noOcclusion()
-      //));
-      //Registries.addBlock("halfslab_sheetmetal_aluminum", ()->new SlabSliceBlock(
-      //  StandardBlocks.CFG_CUTOUT|DecorBlock.CFG_HARD_IE_DEPENDENT,
-      //  BlockBehaviour.Properties.of(Material.METAL, MaterialColor.METAL).strength(0.3f, 8f).sound(SoundType.METAL).noOcclusion()
-      //));
-    }
 
     // -------------------------------------------------------------------------------------------------------------------
 
@@ -994,15 +912,14 @@ public class ModContent
   public static BlockEntityType<?> getBlockEntityTypeOfBlock(String block_name)
   { return Registries.getBlockEntityTypeOfBlock(block_name); }
 
+  public static BlockEntityType<?> getBlockEntityTypeOfBlock(Block block)
+  { return Registries.getBlockEntityTypeOfBlock(block); }
+
   public static EntityType<?> getEntityType(String name)
   { return Registries.getEntityType(name); }
 
   public static MenuType<?> getMenuType(String block_name)
   { return Registries.getMenuTypeOfBlock(block_name); }
-
-  @SuppressWarnings("deprecation")
-  public static boolean isExperimentalBlock(Block block)
-  { return (block instanceof StandardBlocks.IStandardBlock) && (((((StandardBlocks.IStandardBlock)block).config() & DecorBlock.CFG_EXPERIMENTAL))!=0); }
 
   @Nonnull
   public static List<Block> getRegisteredBlocks()
@@ -1016,31 +933,10 @@ public class ModContent
   // Initialisation events
   //--------------------------------------------------------------------------------------------------------------------
 
-  public static void registerBlocks(final RegistryEvent.Register<Block> event)
-  {
-    final boolean ie_available = Auxiliaries.isModLoaded("immersiveengineering");
-    if(ie_available) Auxiliaries.logInfo("Immersive Engineering also installed ...");
-    Registries.onBlockRegistry((rl, block)->event.getRegistry().register(block));
-  }
-
-  public static void registerItems(final RegistryEvent.Register<Item> event)
-  { Registries.onItemRegistry((rl, item)->event.getRegistry().register(item)); }
-
-  public static void registerBlockEntityTypes(final RegistryEvent.Register<BlockEntityType<?>> event)
-  { Registries.onBlockEntityRegistry((rl, tet)->event.getRegistry().register(tet)); }
-
-  public static void registerEntityTypes(final RegistryEvent.Register<EntityType<?>> event)
-  { Registries.onEntityRegistry((rl, et)->event.getRegistry().register(et)); }
-
-  public static void registerMenuTypes(final RegistryEvent.Register<MenuType<?>> event)
-  { Registries.onMenuTypeRegistry((rl, ct)->event.getRegistry().register(ct)); }
-
   @OnlyIn(Dist.CLIENT)
   @SuppressWarnings("unchecked")
   public static void registerMenuGuis(final FMLClientSetupEvent event)
   {
-    MenuScreens.register((MenuType<EdCraftingTable.CraftingTableUiContainer>)Registries.getMenuTypeOfBlock("metal_crafting_table"), EdCraftingTable.CraftingTableGui::new);
-    MenuScreens.register((MenuType<EdLabeledCrate.LabeledCrateContainer>)Registries.getMenuTypeOfBlock("labeled_crate"), EdLabeledCrate.LabeledCrateGui::new);
     MenuScreens.register((MenuType<EdDropper.DropperUiContainer>)Registries.getMenuTypeOfBlock("factory_dropper"), EdDropper.DropperGui::new);
     MenuScreens.register((MenuType<EdPlacer.PlacerContainer>)Registries.getMenuTypeOfBlock("factory_placer"), EdPlacer.PlacerGui::new);
     MenuScreens.register((MenuType<EdHopper.HopperContainer>)Registries.getMenuTypeOfBlock("factory_hopper"), EdHopper.HopperGui::new);
@@ -1053,8 +949,6 @@ public class ModContent
   @SuppressWarnings("unchecked")
   public static void registerBlockEntityRenderers(final FMLClientSetupEvent event)
   {
-    BlockEntityRenderers.register((BlockEntityType<EdCraftingTable.CraftingTableTileEntity>)Registries.getBlockEntityTypeOfBlock("metal_crafting_table"), wile.engineersdecor.detail.ModRenderers.CraftingTableTer::new);
-    BlockEntityRenderers.register((BlockEntityType<EdLabeledCrate.LabeledCrateTileEntity>)Registries.getBlockEntityTypeOfBlock("labeled_crate"), wile.engineersdecor.detail.ModRenderers.DecorLabeledCrateTer::new);
   }
 
   @OnlyIn(Dist.CLIENT)

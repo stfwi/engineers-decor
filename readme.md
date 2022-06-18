@@ -11,6 +11,11 @@ Mod sources for Minecraft version 1.18.x.
 
 ## Version history
 
+    - v1.1.24-b1 [U] Initial 1.19 port.
+                 [D] Metal/Treated Wood Crafting Table dropped in favour of IE Engineer's Crafting Table.
+                 [D] Labeled Crate dropped.
+                 [D] Obsolete wood blocks dropped.
+
     - v1.1.23    [R] Release build.
                  [F] Updated Forge and re-enabled JSON tags (issue #217, ty snarkbait66).
 

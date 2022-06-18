@@ -18,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -80,10 +81,6 @@ public class EdMineralSmelter
 
     public MineralSmelterBlock(long config, BlockBehaviour.Properties builder, final AABB unrotatedAABB)
     { super(config, builder, unrotatedAABB); }
-
-    @Override
-    public ResourceLocation getBlockRegistryName()
-    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -189,7 +186,7 @@ public class EdMineralSmelter
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void animateTick(BlockState state, Level world, BlockPos pos, Random rnd)
+    public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource rnd)
     {
       if(state.getBlock()!=this) return;
       ParticleOptions particle = ParticleTypes.SMOKE;
@@ -272,7 +269,7 @@ public class EdMineralSmelter
 
     public MineralSmelterTileEntity(BlockPos pos, BlockState state)
     {
-      super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state);
+      super(ModContent.getBlockEntityTypeOfBlock(state.getBlock()), pos, state);
       main_inventory_ = (new Inventories.StorageInventory(this, NUM_OF_SLOTS, 1)).setStackLimit(1);
       item_handler_ = Inventories.MappedItemHandler.createGenericHandler(
         main_inventory_,

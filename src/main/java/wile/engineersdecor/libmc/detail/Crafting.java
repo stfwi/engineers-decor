@@ -43,7 +43,14 @@ public class Crafting
     protected static final CraftingGrid instance3x3 = new CraftingGrid(3,3);
 
     protected CraftingGrid(int width, int height)
-    { super(new AbstractContainerMenu(null,0) { public boolean stillValid(Player player) { return false; } }, width, height); }
+    { super(
+        new AbstractContainerMenu(null,0) {
+          public boolean stillValid(Player player) { return false; }
+          public ItemStack quickMoveStack(Player player, int slot) {return ItemStack.EMPTY; }
+        }
+        , width, height
+      );
+    }
 
     protected void fill(Container grid)
     { for(int i=0; i<getContainerSize(); ++i) setItem(i, i>=grid.getContainerSize() ? ItemStack.EMPTY : grid.getItem(i)); }

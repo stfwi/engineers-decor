@@ -1,6 +1,7 @@
 {
  "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
- "1.18.2": {
+ "1.19": {
+  "1.1.24-b1": "[U] Initial 1.19 port.\n[D] Metal/Treated Wood Crafting Table dropped in favour of IE Engineer's Crafting Table.\n[D] Labeled Crate dropped.\n[D] Obsolete wood blocks dropped.",
   "1.1.23": "[R] Release build.\n[F] Updated Forge and re-enabled JSON tags (issue #217, ty snarkbait66).",
   "1.1.23-b1": "[A] Added ability to install inset lights in top-aligned catwalks (PR#215, Sergii).\n[A] Iron Hatch improved (PR#216, Sergii).",
   "1.1.22": "[R] Release build v1.1.22.\n[M] Factory Dropper stack size ignored for un-stackable items (issue #209, ty LesBeans).",
@@ -57,7 +58,7 @@
   "1.1.2-b1": "[U] Ported to MC1.16.2."
  },
  "promos": {
-  "1.18.2-recommended": "1.1.23",
-  "1.18.2-latest": "1.1.23"
+  "1.19-recommended": "1.1.23",
+  "1.19-latest": "1.1.24-b1"
  }
 }

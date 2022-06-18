@@ -14,11 +14,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
@@ -87,10 +87,6 @@ public class EdFurnace
 
     public FurnaceBlock(long config, BlockBehaviour.Properties properties, final AABB[] unrotatedAABB)
     { super(config, properties, unrotatedAABB); registerDefaultState(super.defaultBlockState().setValue(LIT, false)); }
-
-    @Override
-    public ResourceLocation getBlockRegistryName()
-    { return getRegistryName(); }
 
     @Override
     public boolean isBlockEntityTicking(Level world, BlockState state)
@@ -174,7 +170,7 @@ public class EdFurnace
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void animateTick(BlockState state, Level world, BlockPos pos, Random rnd)
+    public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource rnd)
     {
       if((state.getBlock()!=this) || (!state.getValue(LIT))) return;
       final double rv = rnd.nextDouble();
@@ -250,8 +246,8 @@ public class EdFurnace
           }
         }
       }
-      ModConfig.log("Config lab furnace speed:" + (proc_speed_*100) + "%, efficiency:" + (proc_fuel_efficiency_*100) + "%, boost: " + (boost_energy_consumption/TICK_INTERVAL) + "rf/t.");
-      ModConfig.log("Config lab furnace accepted heaters: " + accepted_heaters_.stream().map(item->item.getRegistryName().toString()).collect(Collectors.joining(","))   + ".");
+      Auxiliaries.logInfo("Config lab furnace speed:" + (proc_speed_*100) + "%, efficiency:" + (proc_fuel_efficiency_*100) + "%, boost: " + (boost_energy_consumption/TICK_INTERVAL) + "rf/t.");
+      Auxiliaries.logInfo("Config lab furnace accepted heaters: " + accepted_heaters_.stream().map(item->Auxiliaries.getResourceLocation(item).toString()).collect(Collectors.joining(","))   + ".");
     }
 
     // DecorFurnaceTileEntity -----------------------------------------------------------------------------
@@ -276,7 +272,7 @@ public class EdFurnace
 
     public FurnaceTileEntity(BlockPos pos, BlockState state)
     {
-      super(ModContent.getBlockEntityTypeOfBlock(state.getBlock().getRegistryName().getPath()), pos, state);
+      super(ModContent.getBlockEntityTypeOfBlock(state.getBlock()), pos, state);
       inventory_ = new StorageInventory(this, NUM_OF_SLOTS) {
         @Override
         public void setItem(int index, ItemStack stack)
@@ -404,7 +400,7 @@ public class EdFurnace
 
     @Override
     public Component getName()
-    { final Block block=getBlockState().getBlock(); return new TextComponent((block!=null) ? block.getDescriptionId() : "Lab furnace"); }
+    { return Auxiliaries.localizable(getBlockState().getBlock().getDescriptionId()); }
 
     @Override
     public boolean hasCustomName()
@@ -709,7 +705,7 @@ public class EdFurnace
       {
         stack.onCraftedBy(player_.level, player_, removeCount);
         if((!player_.level.isClientSide()) && (inventory_ instanceof StorageInventory) &&
-          ((((StorageInventory)inventory_).getTileEntity()) instanceof final FurnaceTileEntity te)
+          ((((StorageInventory)inventory_).getBlockEntity()) instanceof final FurnaceTileEntity te)
         ) {
           int xp = te.consumeSmeltingExperience(stack);
           while(xp > 0) {
