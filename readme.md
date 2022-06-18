@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.18.x.
 
 ## Version history
 
+    - v1.1.23    [R] Release build.
+                 [F] Updated Forge and re-enabled JSON tags (issue #217, ty snarkbait66).
+
     - v1.1.23-b1 [A] Added ability to install inset lights in top-aligned catwalks (PR#215, Sergii).
                  [A] Iron Hatch improved (PR#216, Sergii).
 
