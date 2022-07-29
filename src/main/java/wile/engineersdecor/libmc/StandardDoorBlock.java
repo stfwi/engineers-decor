@@ -6,7 +6,7 @@
  *
  * Door blocks, almost entirely based on vanilla.
  */
-package wile.engineersdecor.libmc.blocks;
+package wile.engineersdecor.libmc;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -38,7 +38,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
 
 import javax.annotation.Nullable;
 import java.util.List;

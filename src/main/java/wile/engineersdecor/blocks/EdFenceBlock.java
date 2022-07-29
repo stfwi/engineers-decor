@@ -13,7 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import wile.engineersdecor.libmc.blocks.StandardFenceBlock;
+import wile.engineersdecor.libmc.StandardFenceBlock;
 
 
 public class EdFenceBlock extends StandardFenceBlock

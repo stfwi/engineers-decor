@@ -52,9 +52,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
-import wile.engineersdecor.libmc.blocks.StandardEntityBlocks;
-import wile.engineersdecor.libmc.detail.*;
+import wile.engineersdecor.libmc.*;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -62,7 +60,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 
 public class EdMilker
@@ -356,7 +353,7 @@ public class EdMilker
         cow.setNoAi(false);
         SingleMoveGoal.abortFor(cow);
         tracked_cows_.remove(cow.getId());
-        for(int id:tracked_cows_.keySet().stream().filter(i->cow.getCommandSenderWorld().getEntity(i)==null).collect(Collectors.toList())) {
+        for(int id: tracked_cows_.keySet().stream().filter(i->cow.getCommandSenderWorld().getEntity(i) == null).toList()) {
           tracked_cows_.remove(id);
         }
       }
@@ -597,7 +594,7 @@ public class EdMilker
       final Level world = entity.getCommandSenderWorld();
       if(world != null) {
         // @todo: check nicer way to filter a map.
-        List<Integer> to_remove = tracked_entities_.keySet().stream().filter(i->(world.getEntity(i) == null)).collect(Collectors.toList());
+        List<Integer> to_remove = tracked_entities_.keySet().stream().filter(i->(world.getEntity(i) == null)).toList();
         for(int id:to_remove)tracked_entities_.remove(id);
       }
     }

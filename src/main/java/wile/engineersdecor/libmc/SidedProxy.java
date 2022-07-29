@@ -4,9 +4,9 @@
  * @copyright (C) 2020 Stefan Wilhelm
  * @license MIT (see https://opensource.org/licenses/MIT)
  *
- * General client/server sideness selection proxy.
+ * General client/server sidedness selection proxy.
  */
-package wile.engineersdecor.libmc.detail;
+package wile.engineersdecor.libmc;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;

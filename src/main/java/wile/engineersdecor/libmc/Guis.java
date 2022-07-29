@@ -6,9 +6,7 @@
  *
  * Gui Wrappers and Widgets.
  */
-package wile.engineersdecor.libmc.ui;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.libmc.detail.TooltipDisplay;
+package wile.engineersdecor.libmc;
 
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;

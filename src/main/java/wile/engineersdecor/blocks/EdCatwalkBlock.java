@@ -31,16 +31,14 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import wile.engineersdecor.ModContent;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
-import wile.engineersdecor.libmc.detail.Inventories;
+import wile.engineersdecor.libmc.StandardBlocks;
+import wile.engineersdecor.libmc.Inventories;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class EdCatwalkBlock extends StandardBlocks.HorizontalFourWayWaterLoggable

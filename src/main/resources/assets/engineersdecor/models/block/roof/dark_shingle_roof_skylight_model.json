@@ -1,5 +1,6 @@
 {
 	"parent": "block/block",
+  "render_type": "translucent",
 	"textures": {
 		"2": "engineersdecor:block/material/steel_texture",
 		"particle": "engineersdecor:block/roof/dark_shingle_roof",

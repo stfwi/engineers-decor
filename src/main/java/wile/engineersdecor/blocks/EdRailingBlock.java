@@ -26,7 +26,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.StandardBlocks;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

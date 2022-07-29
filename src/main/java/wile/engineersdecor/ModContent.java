@@ -13,8 +13,6 @@
 package wile.engineersdecor;
 
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -43,10 +41,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import wile.engineersdecor.blocks.*;
 import wile.engineersdecor.detail.ModRenderers;
 import wile.engineersdecor.items.EdItem;
-import wile.engineersdecor.libmc.blocks.*;
-import wile.engineersdecor.libmc.blocks.StandardBlocks.IStandardBlock;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.libmc.detail.Registries;
+import wile.engineersdecor.libmc.*;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -955,17 +950,18 @@ public class ModContent
   public static void processContentClientSide(final FMLClientSetupEvent event)
   {
     // Block renderer selection
-    for(Block block: Registries.getRegisteredBlocks()) {
-      if(block instanceof IStandardBlock) {
-        switch(((IStandardBlock)block).getRenderTypeHint()) {
-          case CUTOUT: ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutout()); break;
-          case CUTOUT_MIPPED: ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutoutMipped()); break;
-          case TRANSLUCENT: ItemBlockRenderTypes.setRenderLayer(block, RenderType.translucent()); break;
-          case TRANSLUCENT_NO_CRUMBLING: ItemBlockRenderTypes.setRenderLayer(block, RenderType.translucentNoCrumbling()); break;
-          case SOLID: break;
-        }
-      }
-    }
+    // Disabled in Forge, model based {"render_type": "cutout"/"translucent"}
+    //  for(Block block: Registries.getRegisteredBlocks()) {
+    //    if(block instanceof IStandardBlock) {
+    //      switch(((IStandardBlock)block).getRenderTypeHint()) {
+    //        case CUTOUT: ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutout()); break;
+    //        case CUTOUT_MIPPED: ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutoutMipped()); break;
+    //        case TRANSLUCENT: ItemBlockRenderTypes.setRenderLayer(block, RenderType.translucent()); break;
+    //        case TRANSLUCENT_NO_CRUMBLING: ItemBlockRenderTypes.setRenderLayer(block, RenderType.translucentNoCrumbling()); break;
+    //        case SOLID: break;
+    //      }
+    //    }
+    //  }
     // Entity renderers
     EntityRenderers.register(Registries.getEntityType("et_chair"), ModRenderers.InvisibleEntityRenderer::new);
   }

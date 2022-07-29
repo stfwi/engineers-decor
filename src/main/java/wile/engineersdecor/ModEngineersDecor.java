@@ -1,6 +1,8 @@
 package wile.engineersdecor;
 
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -13,9 +15,10 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 import wile.engineersdecor.blocks.EdLadderBlock;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.libmc.detail.OptionalRecipeCondition;
-import wile.engineersdecor.libmc.detail.Registries;
+import wile.engineersdecor.libmc.Auxiliaries;
+import wile.engineersdecor.libmc.OptionalRecipeCondition;
+import wile.engineersdecor.libmc.Overlay;
+import wile.engineersdecor.libmc.Registries;
 
 
 @Mod("engineersdecor")
@@ -40,22 +43,19 @@ public class ModEngineersDecor
     MinecraftForge.EVENT_BUS.register(this);
   }
 
-  //
-  // Events
-  //
-
   private void onSetup(final FMLCommonSetupEvent event)
   {
     CraftingHelper.register(OptionalRecipeCondition.Serializer.INSTANCE);
-    wile.engineersdecor.libmc.detail.Networking.init(MODID);
+    wile.engineersdecor.libmc.Networking.init(MODID);
   }
 
   private void onClientSetup(final FMLClientSetupEvent event)
   {
+    Overlay.TextOverlayGui.on_config(0.75, 0x00ffaa00, 0x55333333, 0x55333333, 0x55444444);
+    wile.engineersdecor.libmc.Networking.OverlayTextMessage.setHandler(Overlay.TextOverlayGui::show);
     ModContent.registerMenuGuis(event);
     ModContent.registerBlockEntityRenderers(event);
     ModContent.processContentClientSide(event);
-    wile.engineersdecor.libmc.detail.Overlay.register();
   }
 
   @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
@@ -77,14 +77,29 @@ public class ModEngineersDecor
     }
   }
 
-  //
-  // Player update event
-  //
   @SubscribeEvent
-  public void onPlayerEvent(final LivingEvent.LivingUpdateEvent event)
+  public void onPlayerEvent(final LivingEvent.LivingTickEvent event)
   {
     if(!(event.getEntity() instanceof final Player player)) return;
     if(player.onClimbable()) EdLadderBlock.onPlayerUpdateEvent(player);
+  }
+
+  @OnlyIn(Dist.CLIENT)
+  @Mod.EventBusSubscriber(Dist.CLIENT)
+  public static class ForgeClientEvents
+  {
+    @SubscribeEvent
+    public static void onRenderGui(net.minecraftforge.client.event.RenderGuiOverlayEvent.Post event)
+    { Overlay.TextOverlayGui.INSTANCE.onRenderGui(event.getPoseStack()); }
+
+    @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
+    public static void onRenderWorldOverlay(net.minecraftforge.client.event.RenderLevelStageEvent event)
+    {
+      if(event.getStage() == net.minecraftforge.client.event.RenderLevelStageEvent.Stage.AFTER_WEATHER) {
+        Overlay.TextOverlayGui.INSTANCE.onRenderWorldOverlay(event.getPoseStack(), event.getPartialTick());
+      }
+    }
   }
 
 }

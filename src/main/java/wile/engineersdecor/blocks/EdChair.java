@@ -33,7 +33,7 @@ import net.minecraftforge.network.PlayMessages;
 import net.minecraftforge.network.NetworkHooks;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.StandardBlocks;
 
 import java.util.List;
 

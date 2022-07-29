@@ -17,8 +17,8 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import wile.engineersdecor.ModConfig;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.libmc.detail.Registries;
+import wile.engineersdecor.libmc.Auxiliaries;
+import wile.engineersdecor.libmc.Registries;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

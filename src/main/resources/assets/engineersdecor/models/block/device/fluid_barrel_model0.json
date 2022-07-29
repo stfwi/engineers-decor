@@ -1,4 +1,5 @@
 {
+  "render_type": "cutout",
 	"textures": {
 		"particle": "engineersdecor:block/pipe/fluid_barrel_side0",
 		"s": "engineersdecor:block/pipe/fluid_barrel_side0",

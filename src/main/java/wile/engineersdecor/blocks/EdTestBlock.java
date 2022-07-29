@@ -40,9 +40,8 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import wile.engineersdecor.ModContent;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
-import wile.engineersdecor.libmc.blocks.StandardEntityBlocks;
-import wile.engineersdecor.libmc.detail.*;
+import wile.engineersdecor.libmc.*;
+
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

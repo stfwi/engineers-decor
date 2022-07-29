@@ -7,11 +7,11 @@
  * Delayed tooltip for a selected area. Constructed with a
  * GUI, invoked in `render()`.
  */
-package wile.engineersdecor.libmc.detail;
+package wile.engineersdecor.libmc;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.*;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.api.distmarker.Dist;
@@ -26,7 +26,7 @@ import java.util.function.Supplier;
 @OnlyIn(Dist.CLIENT)
 public class TooltipDisplay
 {
-  private static long default_delay = 450;
+  private static long default_delay = 800;
   private static int default_max_deviation = 1;
 
   public static void config(long delay, int max_deviation)
@@ -95,19 +95,19 @@ public class TooltipDisplay
     } else if(Math.abs(System.currentTimeMillis()-t) < delay) {
       return false;
     } else if(ranges.stream().noneMatch(
-      (tip)->{
-        if((x<tip.x0) || (x>tip.x1) || (y<tip.y0) || (y>tip.y1)) return false;
-        String text = tip.text.get().getString();
-        if(text.isEmpty()) return false;
-        try {
-          gui.renderTooltip(mx, tip.text.get(), x, y);
-        } catch(Exception ex) {
-          had_render_exception = true;
-          Auxiliaries.logError("Tooltip rendering disabled due to exception: '" + ex.getMessage() + "'");
-          return false;
-        }
-        return true;
-      })
+            (tip)->{
+              if((x<tip.x0) || (x>tip.x1) || (y<tip.y0) || (y>tip.y1)) return false;
+              String text = tip.text.get().toString();
+              if(text.isEmpty()) return false;
+              try {
+                gui.renderComponentTooltip(mx, tip.text.get().toFlatList(Style.EMPTY), x, y);
+              } catch(Exception ex) {
+                had_render_exception = true;
+                Auxiliaries.logError("Tooltip rendering disabled due to exception: '" + ex.getMessage() + "'");
+                return false;
+              }
+              return true;
+            })
     ){
       resetTimer();
       return false;

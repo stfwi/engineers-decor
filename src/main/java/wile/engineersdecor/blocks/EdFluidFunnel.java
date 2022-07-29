@@ -45,9 +45,9 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
-import wile.engineersdecor.libmc.blocks.StandardEntityBlocks;
-import wile.engineersdecor.libmc.detail.Fluidics;
+import wile.engineersdecor.libmc.StandardBlocks;
+import wile.engineersdecor.libmc.StandardEntityBlocks;
+import wile.engineersdecor.libmc.Fluidics;
 
 import javax.annotation.Nullable;
 import java.util.*;

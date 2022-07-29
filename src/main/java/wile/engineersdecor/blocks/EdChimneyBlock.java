@@ -28,7 +28,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
+import wile.engineersdecor.libmc.StandardBlocks;
 
 import javax.annotation.Nullable;
 

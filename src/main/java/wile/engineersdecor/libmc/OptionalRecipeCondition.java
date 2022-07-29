@@ -6,7 +6,7 @@
  *
  * Recipe condition to enable opt'ing out JSON based recipes.
  */
-package wile.engineersdecor.libmc.detail;
+package wile.engineersdecor.libmc;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

@@ -39,9 +39,9 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import wile.engineersdecor.ModContent;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.libmc.detail.Inventories;
+import wile.engineersdecor.libmc.StandardBlocks;
+import wile.engineersdecor.libmc.Auxiliaries;
+import wile.engineersdecor.libmc.Inventories;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;

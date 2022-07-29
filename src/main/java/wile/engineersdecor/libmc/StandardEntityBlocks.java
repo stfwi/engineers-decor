@@ -6,8 +6,7 @@
  *
  * Common functionality class for blocks with block entities.
  */
-package wile.engineersdecor.libmc.blocks;
-import wile.engineersdecor.libmc.detail.Registries;
+package wile.engineersdecor.libmc;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;

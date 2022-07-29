@@ -31,11 +31,11 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
-import wile.engineersdecor.libmc.blocks.StandardEntityBlocks;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.libmc.detail.Overlay;
-import wile.engineersdecor.libmc.detail.RfEnergy;
+import wile.engineersdecor.libmc.StandardBlocks;
+import wile.engineersdecor.libmc.StandardEntityBlocks;
+import wile.engineersdecor.libmc.Auxiliaries;
+import wile.engineersdecor.libmc.Overlay;
+import wile.engineersdecor.libmc.RfEnergy;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

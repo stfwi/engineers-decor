@@ -6,7 +6,7 @@
  *
  * General commonly used functionality.
  */
-package wile.engineersdecor.libmc.detail;
+package wile.engineersdecor.libmc;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.ChatFormatting;
@@ -116,6 +116,9 @@ public class Auxiliaries
 
   public static void logError(final String msg)
   { logger.error(msg); }
+
+  public static void logDebug(final String msg)
+  { /*logger.debug(msg);*/ }
 
   // -------------------------------------------------------------------------------------------------------------------
   // Localization, text formatting

@@ -6,7 +6,7 @@
  *
  * Common game registry handling.
  */
-package wile.engineersdecor.libmc.detail;
+package wile.engineersdecor.libmc;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -60,9 +60,9 @@ public class Registries
     creative_tab_icon = creative_tab_icon_item_name;
     BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, modid);
     ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, modid);
-    BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, modid);
-    MENUS = DeferredRegister.create(ForgeRegistries.CONTAINERS, modid);
-    ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, modid);
+    BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, modid);
+    MENUS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, modid);
+    ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, modid);
     RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, modid);
     List.of(BLOCKS, ITEMS, BLOCK_ENTITIES, MENUS, ENTITIES, RECIPE_SERIALIZERS).forEach(registrar);
   }

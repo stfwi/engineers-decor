@@ -44,13 +44,13 @@ import net.minecraftforge.items.IItemHandler;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.blocks.EdFurnace.FurnaceBlock;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
-import wile.engineersdecor.libmc.blocks.StandardEntityBlocks;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.libmc.detail.Inventories;
-import wile.engineersdecor.libmc.detail.RfEnergy;
-import wile.engineersdecor.libmc.detail.RsSignals;
-import wile.engineersdecor.libmc.ui.Guis;
+import wile.engineersdecor.libmc.StandardBlocks;
+import wile.engineersdecor.libmc.StandardEntityBlocks;
+import wile.engineersdecor.libmc.Auxiliaries;
+import wile.engineersdecor.libmc.Inventories;
+import wile.engineersdecor.libmc.RfEnergy;
+import wile.engineersdecor.libmc.RsSignals;
+import wile.engineersdecor.libmc.Guis;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -273,11 +273,7 @@ public class EdWasteIncinerator
       }
       @Override
       public void set(int id, int value)
-      {
-        switch(id) {
-          default: break;
-        }
-      }
+      {}
     };
 
     // Capability export ----------------------------------------------------------------------------

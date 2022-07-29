@@ -1,5 +1,6 @@
 {
 	"parent": "block/block",
+  "render_type": "translucent",
 	"ambientocclusion": false,
 	"textures": {
 		"bottom": "engineersdecor:block/door/metal_sliding_door_texture_bottom",

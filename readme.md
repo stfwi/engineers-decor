@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.18.x.
 
 ## Version history
 
+    - v1.1.24    [U] Forge updated to 1.19-41.1.0.
+                 [B] Known issue: JEI integration missing.
+
     - v1.1.24-b1 [U] Initial 1.19 port.
                  [D] Metal/Treated Wood Crafting Table dropped in favour of IE Engineer's Crafting Table.
                  [D] Labeled Crate dropped.

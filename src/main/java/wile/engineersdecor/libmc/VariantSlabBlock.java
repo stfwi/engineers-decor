@@ -1,18 +1,18 @@
 /*
- * @file SlabSliceBlock.java
+ * @file VariantSlabBlock.java
  * @author Stefan Wilhelm (wile)
  * @copyright (C) 2020 Stefan Wilhelm
  * @license MIT (see https://opensource.org/licenses/MIT)
  *
- * Half slab ("slab slices") characteristics class. Actually
- * it's now a quarter slab, but who cares.
+ * Standard half block horizontal slab characteristics class.
  */
-package wile.engineersdecor.libmc.blocks;
+package wile.engineersdecor.libmc;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.player.Player;
@@ -30,7 +30,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
@@ -40,59 +43,53 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SlabSliceBlock extends StandardBlocks.WaterLoggable implements StandardBlocks.IStandardBlock
+
+public class VariantSlabBlock extends StandardBlocks.WaterLoggable implements StandardBlocks.IStandardBlock
 {
-  public static final IntegerProperty PARTS = IntegerProperty.create("parts", 0, 14);
+  public static final EnumProperty<SlabType> TYPE = BlockStateProperties.SLAB_TYPE;
+  public static final IntegerProperty TEXTURE_VARIANT = IntegerProperty.create("tvariant", 0, 3);
 
   protected static final VoxelShape[] AABBs = {
-    Shapes.create(new AABB(0,  0./16, 0, 1,  2./16, 1)),
-    Shapes.create(new AABB(0,  0./16, 0, 1,  4./16, 1)),
-    Shapes.create(new AABB(0,  0./16, 0, 1,  6./16, 1)),
-    Shapes.create(new AABB(0,  0./16, 0, 1,  8./16, 1)),
-    Shapes.create(new AABB(0,  0./16, 0, 1, 10./16, 1)),
-    Shapes.create(new AABB(0,  0./16, 0, 1, 12./16, 1)),
-    Shapes.create(new AABB(0,  0./16, 0, 1, 14./16, 1)),
-    Shapes.create(new AABB(0,  0./16, 0, 1, 16./16, 1)),
-    Shapes.create(new AABB(0,  2./16, 0, 1, 16./16, 1)),
-    Shapes.create(new AABB(0,  4./16, 0, 1, 16./16, 1)),
-    Shapes.create(new AABB(0,  6./16, 0, 1, 16./16, 1)),
-    Shapes.create(new AABB(0,  8./16, 0, 1, 16./16, 1)),
-    Shapes.create(new AABB(0, 10./16, 0, 1, 16./16, 1)),
-    Shapes.create(new AABB(0, 12./16, 0, 1, 16./16, 1)),
-    Shapes.create(new AABB(0, 14./16, 0, 1, 16./16, 1)),
-    Shapes.create(new AABB(0,0,0,1,1,1)) // <- with 4bit fill
+    Shapes.create(new AABB(0,  8./16, 0, 1, 16./16, 1)), // top slab
+    Shapes.create(new AABB(0,  0./16, 0, 1,  8./16, 1)), // bottom slab
+    Shapes.create(new AABB(0,  0./16, 0, 1, 16./16, 1)), // both slabs
+    Shapes.create(new AABB(0,  0./16, 0, 1, 16./16, 1))  // << 2bit fill
   };
-
-  protected static final int[] num_slabs_contained_in_parts_ = { 1,2,3,4,5,6,7,8,7,6,5,4,3,2,1 ,0x1 }; // <- with 4bit fill
+  protected static final int[] num_slabs_contained_in_parts_ = {1,1,2,2};
   private static boolean with_pickup = false;
 
   public static void on_config(boolean direct_slab_pickup)
   { with_pickup = direct_slab_pickup; }
 
-  public SlabSliceBlock(long config, BlockBehaviour.Properties builder)
-  { super(config, builder); }
-
   protected boolean is_cube(BlockState state)
-  { return state.getValue(PARTS) == 0x07; }
+  { return state.getValue(TYPE) == SlabType.DOUBLE; }
+
+  public VariantSlabBlock(long config, BlockBehaviour.Properties builder)
+  { super(config, builder); registerDefaultState(defaultBlockState().setValue(TYPE, SlabType.BOTTOM)); }
+
+  @Override
+  public RenderTypeHint getRenderTypeHint()
+  { return (((config & StandardBlocks.CFG_TRANSLUCENT)!=0) ? (RenderTypeHint.TRANSLUCENT) : (RenderTypeHint.CUTOUT)); }
 
   @Override
   @OnlyIn(Dist.CLIENT)
   public void appendHoverText(ItemStack stack, @Nullable BlockGetter world, List<Component> tooltip, TooltipFlag flag)
   {
     if(!Auxiliaries.Tooltip.addInformation(stack, world, tooltip, flag, true)) return;
-    if(with_pickup) Auxiliaries.Tooltip.addInformation("engineersdecor.tooltip.slabpickup", tooltip);
+    if(with_pickup && Auxiliaries.Tooltip.helpCondition()) Auxiliaries.Tooltip.addInformation("engineersdecor.tooltip.slabpickup", "engineersdecor.tooltip.slabpickup", tooltip, flag, true);
   }
 
   @Override
-  public RenderTypeHint getRenderTypeHint()
-  { return (((config & StandardBlocks.CFG_TRANSLUCENT)!=0) ? (RenderTypeHint.TRANSLUCENT) : (RenderTypeHint.CUTOUT)); }
+  @OnlyIn(Dist.CLIENT)
+  @SuppressWarnings("deprecation")
+  public boolean skipRendering(BlockState state, BlockState adjacentBlockState, Direction side)
+  { return (adjacentBlockState==state) || (super.skipRendering(state, adjacentBlockState, side)); }
 
   @Override
   public boolean isPossibleToRespawnInThis()
@@ -104,7 +101,7 @@ public class SlabSliceBlock extends StandardBlocks.WaterLoggable implements Stan
 
   @Override
   public VoxelShape getShape(BlockState state, BlockGetter source, BlockPos pos, CollisionContext selectionContext)
-  { return AABBs[state.getValue(PARTS) & 0xf]; }
+  { return AABBs[state.getValue(TYPE).ordinal() & 0x3]; }
 
   @Override
   public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext selectionContext)
@@ -112,29 +109,22 @@ public class SlabSliceBlock extends StandardBlocks.WaterLoggable implements Stan
 
   @Override
   protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
-  { super.createBlockStateDefinition(builder); builder.add(PARTS); }
+  { super.createBlockStateDefinition(builder); builder.add(TYPE, TEXTURE_VARIANT); }
 
   @Override
   @Nullable
   public BlockState getStateForPlacement(BlockPlaceContext context)
   {
-    final BlockPos pos = context.getClickedPos();
-    BlockState state = context.getLevel().getBlockState(pos);
-    if(state.getBlock() == this) {
-      int parts = state.getValue(PARTS);
-      if(parts == 7) return null; // -> is already a full block.
-      parts += (parts < 7) ? 1 : -1;
-      if(parts==7) state = state.setValue(WATERLOGGED, false);
-      return state.setValue(PARTS, parts);
-    } else {
-      final Direction face = context.getClickedFace();
-      final BlockState placement_state = super.getStateForPlacement(context); // fluid state
-      if(face == Direction.UP) return placement_state.setValue(PARTS, 0);
-      if(face == Direction.DOWN) return placement_state.setValue(PARTS, 14);
-      if(!face.getAxis().isHorizontal()) return placement_state;
-      final boolean isupper = ((context.getClickLocation().y() - context.getClickedPos().getY()) > 0.5);
-      return placement_state.setValue(PARTS, isupper ? 14 : 0);
-    }
+    BlockPos pos = context.getClickedPos();
+    if(context.getLevel().getBlockState(pos).getBlock() == this) return context.getLevel().getBlockState(pos).setValue(TYPE, SlabType.DOUBLE).setValue(WATERLOGGED, false);
+    final int rnd = Mth.clamp((int)(Mth.getSeed(context.getClickedPos()) & 0x3), 0, 3);
+    final Direction face = context.getClickedFace();
+    final BlockState placement_state = super.getStateForPlacement(context).setValue(TEXTURE_VARIANT, rnd); // fluid state
+    if(face == Direction.UP) return placement_state.setValue(TYPE, SlabType.BOTTOM);
+    if(face == Direction.DOWN) return placement_state.setValue(TYPE, SlabType.TOP);
+    if(!face.getAxis().isHorizontal()) return placement_state;
+    final boolean isupper = ((context.getClickLocation().y() - context.getClickedPos().getY()) > 0.5);
+    return placement_state.setValue(TYPE, isupper ? SlabType.TOP : SlabType.BOTTOM);
   }
 
   @Override
@@ -144,13 +134,12 @@ public class SlabSliceBlock extends StandardBlocks.WaterLoggable implements Stan
     if(context.getItemInHand().getItem() != this.asItem()) return false;
     if(!context.replacingClickedOnBlock()) return true;
     final Direction face = context.getClickedFace();
-    final int parts = state.getValue(PARTS);
-    if(parts == 7) return false;
-    if((face == Direction.UP) && (parts < 7)) return true;
-    if((face == Direction.DOWN) && (parts > 7)) return true;
+    final SlabType type = state.getValue(TYPE);
+    if((face == Direction.UP) && (type==SlabType.BOTTOM)) return true;
+    if((face == Direction.DOWN) && (type==SlabType.TOP)) return true;
     if(!face.getAxis().isHorizontal()) return false;
     final boolean isupper = ((context.getClickLocation().y() - context.getClickedPos().getY()) > 0.5);
-    return isupper ? (parts==0) : (parts==1);
+    return isupper ? (type==SlabType.BOTTOM) : (type==SlabType.TOP);
   }
 
   @Override
@@ -169,7 +158,7 @@ public class SlabSliceBlock extends StandardBlocks.WaterLoggable implements Stan
 
   @Override
   public List<ItemStack> dropList(BlockState state, Level world, BlockEntity te, boolean explosion)
-  { return new ArrayList<>(Collections.singletonList(new ItemStack(this.asItem(), num_slabs_contained_in_parts_[state.getValue(PARTS) & 0xf]))); }
+  { return new ArrayList<>(Collections.singletonList(new ItemStack(this.asItem(), num_slabs_contained_in_parts_[state.getValue(TYPE).ordinal() & 0x3]))); }
 
   @Override
   @SuppressWarnings("deprecation")
@@ -183,21 +172,19 @@ public class SlabSliceBlock extends StandardBlocks.WaterLoggable implements Stan
     Direction facing = Direction.getNearest((float)lv.x, (float)lv.y, (float)lv.z);
     if((facing != Direction.UP) && (facing != Direction.DOWN)) return;
     if(state.getBlock() != this) return;
-    int parts = state.getValue(PARTS);
-    if((facing == Direction.DOWN) && (parts <= 7)) {
-      if(parts > 0) {
-        world.setBlock(pos, state.setValue(PARTS, parts-1), 3);
+    SlabType type = state.getValue(TYPE);
+    if(facing == Direction.DOWN) {
+      if(type == SlabType.DOUBLE) {
+        world.setBlock(pos, state.setValue(TYPE, SlabType.BOTTOM), 3);
       } else {
         world.removeBlock(pos, false);
       }
-    } else if((facing == Direction.UP) && (parts >= 7)) {
-      if(parts < 14) {
-        world.setBlock(pos, state.setValue(PARTS, parts + 1), 3);
+    } else if(facing == Direction.UP) {
+      if(type == SlabType.DOUBLE) {
+        world.setBlock(pos, state.setValue(TYPE, SlabType.TOP), 3);
       } else {
         world.removeBlock(pos, false);
       }
-    } else {
-      return;
     }
     if(!player.isCreative()) {
       stack.grow(1);
@@ -209,10 +196,10 @@ public class SlabSliceBlock extends StandardBlocks.WaterLoggable implements Stan
 
   @Override
   public boolean placeLiquid(LevelAccessor world, BlockPos pos, BlockState state, FluidState fluidState)
-  { return (state.getValue(PARTS) != 14) && (super.placeLiquid(world, pos, state, fluidState)); }
+  { return (state.getValue(TYPE) != SlabType.DOUBLE) && super.placeLiquid(world, pos, state, fluidState); }
 
   @Override
   public boolean canPlaceLiquid(BlockGetter world, BlockPos pos, BlockState state, Fluid fluid)
-  { return (state.getValue(PARTS) != 14) && (super.canPlaceLiquid(world, pos, state, fluid)); }
+  { return (state.getValue(TYPE) != SlabType.DOUBLE) && super.canPlaceLiquid(world, pos, state, fluid); }
 
 }

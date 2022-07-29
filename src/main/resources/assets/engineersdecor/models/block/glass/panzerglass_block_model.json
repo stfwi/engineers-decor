@@ -1,1 +1,5 @@
-{ "parent": "block/cube_all", "textures": { "all": "engineersdecor:block/glass/panzerglass_block_texture0" } }
+{
+  "parent": "block/cube_all",
+  "render_type": "translucent",
+  "textures": { "all": "engineersdecor:block/glass/panzerglass_block_texture0" }
+}

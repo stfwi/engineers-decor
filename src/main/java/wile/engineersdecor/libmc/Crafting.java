@@ -6,7 +6,7 @@
  *
  * Recipe utility functionality.
  */
-package wile.engineersdecor.libmc.detail;
+package wile.engineersdecor.libmc;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;

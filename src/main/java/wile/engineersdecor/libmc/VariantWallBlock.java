@@ -6,7 +6,7 @@
  *
  * Wall blocks.
  */
-package wile.engineersdecor.libmc.blocks;
+package wile.engineersdecor.libmc;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
@@ -37,7 +37,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
 
 import javax.annotation.Nullable;
 import java.util.List;

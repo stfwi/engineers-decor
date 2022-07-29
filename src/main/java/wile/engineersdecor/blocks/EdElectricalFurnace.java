@@ -55,13 +55,10 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
-import wile.engineersdecor.libmc.blocks.StandardEntityBlocks;
-import wile.engineersdecor.libmc.detail.*;
-import wile.engineersdecor.libmc.detail.Inventories.MappedItemHandler;
-import wile.engineersdecor.libmc.detail.Inventories.StorageInventory;
-import wile.engineersdecor.libmc.detail.TooltipDisplay.TipRange;
-import wile.engineersdecor.libmc.ui.Guis;
+import wile.engineersdecor.libmc.*;
+import wile.engineersdecor.libmc.Inventories.MappedItemHandler;
+import wile.engineersdecor.libmc.Inventories.StorageInventory;
+import wile.engineersdecor.libmc.TooltipDisplay.TipRange;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -887,11 +884,10 @@ public class EdElectricalFurnace
       int we = energy_px(32, 8);
       if(we>0) blit(mx, x0+90, y0+54, 185, 30, we, 13);
       switch(getMenu().field(4)) {
-        case 0: blit(mx, x0+144, y0+57, 180, 57, 6, 9); break;
-        case 1: blit(mx, x0+142, y0+58, 190, 58, 9, 6); break;
-        case 2: blit(mx, x0+144, y0+56, 200, 57, 6, 9); break;
-        case 3: blit(mx, x0+143, y0+58, 210, 58, 9, 6); break;
-        default: break;
+        case 0 -> blit(mx, x0 + 144, y0 + 57, 180, 57, 6, 9);
+        case 1 -> blit(mx, x0 + 142, y0 + 58, 190, 58, 9, 6);
+        case 2 -> blit(mx, x0 + 144, y0 + 56, 200, 57, 6, 9);
+        case 3 -> blit(mx, x0 + 143, y0 + 58, 210, 58, 9, 6);
       }
     }
 

@@ -15,10 +15,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 import wile.engineersdecor.blocks.*;
-import wile.engineersdecor.libmc.blocks.SlabSliceBlock;
-import wile.engineersdecor.libmc.blocks.VariantSlabBlock;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.libmc.detail.OptionalRecipeCondition;
+import wile.engineersdecor.libmc.SlabSliceBlock;
+import wile.engineersdecor.libmc.VariantSlabBlock;
+import wile.engineersdecor.libmc.Auxiliaries;
+import wile.engineersdecor.libmc.OptionalRecipeCondition;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -358,7 +358,7 @@ public class ModConfig
     final ArrayList<String> includes = new ArrayList<>();
     final ArrayList<String> excludes = new ArrayList<>();
     {
-      String inc = COMMON.pattern_includes.get().toLowerCase().replaceAll(MODID+":", "").replaceAll("[^*_,a-z0-9]", "");
+      String inc = COMMON.pattern_includes.get().toLowerCase().replaceAll(MODID+":", "").replaceAll("[^*_,a-z\\d]", "");
       if(!COMMON.pattern_includes.get().equals(inc)) COMMON.pattern_includes.set(inc);
       String[] incl = inc.split(",");
       for(int i=0; i< incl.length; ++i) {
@@ -367,7 +367,7 @@ public class ModConfig
       }
     }
     {
-      String exc = COMMON.pattern_excludes.get().toLowerCase().replaceAll(MODID+":", "").replaceAll("[^*_,a-z0-9]", "");
+      String exc = COMMON.pattern_excludes.get().toLowerCase().replaceAll(MODID+":", "").replaceAll("[^*_,a-z\\d]", "");
       String[] excl = exc.split(",");
       for(int i=0; i< excl.length; ++i) {
         excl[i] = excl[i].replaceAll("[*]", ".*?");

@@ -33,8 +33,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.StandardBlocks;
+import wile.engineersdecor.libmc.Auxiliaries;
 
 
 public class EdRoofBlock extends StandardBlocks.HorizontalWaterLoggable

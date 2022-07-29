@@ -1,6 +1,7 @@
 {
 	"parent": "block/block",
 	"ambientocclusion": false,
+  "render_type": "cutout",
 	"textures": {
 		"particle": "engineersdecor:block/furniture/steel_catwalk_side",
 		"s": "engineersdecor:block/furniture/steel_catwalk_side",

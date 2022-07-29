@@ -55,12 +55,12 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
-import wile.engineersdecor.libmc.blocks.StandardEntityBlocks;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.libmc.detail.Fluidics;
-import wile.engineersdecor.libmc.detail.Inventories;
-import wile.engineersdecor.libmc.detail.RfEnergy;
+import wile.engineersdecor.libmc.StandardBlocks;
+import wile.engineersdecor.libmc.StandardEntityBlocks;
+import wile.engineersdecor.libmc.Auxiliaries;
+import wile.engineersdecor.libmc.Fluidics;
+import wile.engineersdecor.libmc.Inventories;
+import wile.engineersdecor.libmc.RfEnergy;
 
 import javax.annotation.Nullable;
 import java.util.*;

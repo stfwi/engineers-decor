@@ -26,8 +26,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
-import wile.engineersdecor.libmc.detail.Inventories;
+import wile.engineersdecor.libmc.StandardBlocks;
+import wile.engineersdecor.libmc.Inventories;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;

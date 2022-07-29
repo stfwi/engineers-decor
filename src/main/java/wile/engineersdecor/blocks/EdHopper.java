@@ -42,10 +42,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import wile.engineersdecor.ModContent;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
-import wile.engineersdecor.libmc.blocks.StandardEntityBlocks;
-import wile.engineersdecor.libmc.detail.*;
-import wile.engineersdecor.libmc.ui.Guis;
+import wile.engineersdecor.libmc.*;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

@@ -52,16 +52,15 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
-import wile.engineersdecor.libmc.blocks.StandardEntityBlocks;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.libmc.detail.Fluidics;
-import wile.engineersdecor.libmc.detail.Overlay;
+import wile.engineersdecor.libmc.StandardBlocks;
+import wile.engineersdecor.libmc.StandardEntityBlocks;
+import wile.engineersdecor.libmc.Auxiliaries;
+import wile.engineersdecor.libmc.Fluidics;
+import wile.engineersdecor.libmc.Overlay;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-
 
 
 public class EdFluidBarrel
@@ -363,8 +362,8 @@ public class EdFluidBarrel
     { write_fluid_nbt(stack, fs.writeToNBT(new CompoundTag())); return stack; }
 
     @Override
-    public int getItemStackLimit(ItemStack stack)
-    { return (!getFluid(stack).isEmpty()) ? 1 : super.getItemStackLimit(stack); }
+    public int getMaxStackSize(ItemStack stack)
+    { return (!getFluid(stack).isEmpty()) ? 1 : super.getMaxStackSize(stack); }
 
     @Override
     public boolean isBarVisible(ItemStack stack)
@@ -383,11 +382,11 @@ public class EdFluidBarrel
     { return new Fluidics.FluidContainerItemCapabilityWrapper(stack, capacity_, item_fluid_handler_transfer_rate_, FluidBarrelItem::read_fluid_nbt, FluidBarrelItem::write_fluid_nbt, e->true); }
 
     @Override
-    public boolean hasContainerItem(ItemStack stack)
+    public boolean hasCraftingRemainingItem(ItemStack stack)
     { return (stack.getCount()==1) && (!getFluid(stack).isEmpty()); }
 
     @Override
-    public ItemStack getContainerItem(ItemStack stack)
+    public ItemStack getCraftingRemainingItem(ItemStack stack)
     {
       if(stack.getCount()!=1) return ItemStack.EMPTY;
       FluidStack fs = getFluid(stack);

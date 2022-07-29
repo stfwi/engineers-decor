@@ -32,8 +32,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
+import wile.engineersdecor.libmc.StandardBlocks;
+import wile.engineersdecor.libmc.Auxiliaries;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

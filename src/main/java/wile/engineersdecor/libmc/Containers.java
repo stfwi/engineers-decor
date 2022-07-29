@@ -1,4 +1,4 @@
-package wile.engineersdecor.libmc.ui;
+package wile.engineersdecor.libmc;
 
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;

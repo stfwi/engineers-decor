@@ -1,5 +1,6 @@
 {
 	"ambientocclusion": false,
+  "render_type": "translucent",
 	"textures": {
 		"top": "engineersdecor:block/door/metal_sliding_door_texture_top",
 		"particle": "engineersdecor:block/door/metal_sliding_door_texture_side"

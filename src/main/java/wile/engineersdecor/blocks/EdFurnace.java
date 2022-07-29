@@ -57,15 +57,15 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
-import wile.engineersdecor.libmc.blocks.StandardBlocks;
-import wile.engineersdecor.libmc.blocks.StandardEntityBlocks;
-import wile.engineersdecor.libmc.detail.Auxiliaries;
-import wile.engineersdecor.libmc.detail.Inventories;
-import wile.engineersdecor.libmc.detail.Inventories.MappedItemHandler;
-import wile.engineersdecor.libmc.detail.Inventories.StorageInventory;
-import wile.engineersdecor.libmc.detail.Networking;
-import wile.engineersdecor.libmc.detail.RfEnergy;
-import wile.engineersdecor.libmc.ui.Guis;
+import wile.engineersdecor.libmc.StandardBlocks;
+import wile.engineersdecor.libmc.StandardEntityBlocks;
+import wile.engineersdecor.libmc.Auxiliaries;
+import wile.engineersdecor.libmc.Inventories;
+import wile.engineersdecor.libmc.Inventories.MappedItemHandler;
+import wile.engineersdecor.libmc.Inventories.StorageInventory;
+import wile.engineersdecor.libmc.Networking;
+import wile.engineersdecor.libmc.RfEnergy;
+import wile.engineersdecor.libmc.Guis;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -228,9 +228,7 @@ public class EdFurnace
       proc_fuel_efficiency_ = ((double) Mth.clamp(fuel_efficiency_percent, 10, 500)) / 100;
       boost_energy_consumption = TICK_INTERVAL * Mth.clamp(boost_energy_per_tick, 4, 4096);
       {
-        List<String> heater_resource_locations = Arrays.stream(accepted_heaters_csv.toLowerCase().split("[\\s,;]+"))
-          .map(String::trim)
-          .collect(Collectors.toList());
+        List<String> heater_resource_locations = Arrays.stream(accepted_heaters_csv.toLowerCase().split("[\\s,;]+")).map(String::trim).toList();
         accepted_heaters_.clear();
         for(String rlstr: heater_resource_locations) {
           try {
@@ -511,7 +509,7 @@ public class EdFurnace
             if(!fuel.isEmpty()) {
               Item fuel_item = fuel.getItem();
               fuel.shrink(1);
-              if(fuel.isEmpty()) inventory_.setItem(SMELTING_FUEL_SLOT_NO, fuel_item.getContainerItem(fuel));
+              if(fuel.isEmpty()) inventory_.setItem(SMELTING_FUEL_SLOT_NO, fuel_item.getCraftingRemainingItem(fuel));
             }
           }
         }
