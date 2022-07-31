@@ -9,7 +9,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 //-----------------------------------------------------------------------------
 version = "${version_engineersdecor}"
 group = "wile.engineersdecor"
-archivesBaseName = "engineersdecor-${version_minecraft}"
+archivesBaseName = "engineersdecor-${version_minecraft}-forge"
 
 repositories {
   maven { name = "Progwml6 maven"; url = "https://dvs1.progwml6.com/files/maven/" } // JEI files

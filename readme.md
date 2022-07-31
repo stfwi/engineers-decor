@@ -11,6 +11,8 @@ Mod sources for Minecraft version 1.18.x.
 
 ## Version history
 
+    - v1.2.25    [U] Ported to 1.19.1.
+
     - v1.1.24    [U] Forge updated to 1.19-41.1.0.
                  [B] Known issue: JEI integration missing.
 
