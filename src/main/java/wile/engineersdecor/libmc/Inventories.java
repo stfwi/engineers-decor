@@ -72,14 +72,20 @@ public class Inventories
     return (entity==null) ? (null) : (itemhandler(entity,side));
   }
 
-  public static IItemHandler itemhandler(Entity entity)
-  { return (entity instanceof Container) ? (new InvWrapper((Container)entity)) : null; }
-
   public static IItemHandler itemhandler(Player player)
   { return new PlayerMainInvWrapper(player.getInventory()); }
 
+  public static IItemHandler itemhandler(Entity entity)
+  { return itemhandler(entity, null); }
+
   public static IItemHandler itemhandler(Entity entity, @Nullable Direction side)
-  { return (entity instanceof Container) ? (new InvWrapper((Container)entity)) : null; }
+  {
+    if(entity==null) return null;
+    final IItemHandler ih = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).orElse(null);
+    if(ih!=null) return ih;
+    if(entity instanceof Container container) return (new InvWrapper(container));
+    return null;
+  }
 
   public static boolean insertionPossible(Level world, BlockPos pos, @Nullable Direction side, boolean including_entities)
   { return itemhandler(world, pos, side, including_entities) != null; }
