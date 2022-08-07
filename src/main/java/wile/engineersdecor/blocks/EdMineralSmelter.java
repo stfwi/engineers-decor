@@ -480,18 +480,23 @@ public class EdMineralSmelter
             level.playSound(null, worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.3f, 0.7f);
           }
         }
-      } else if((phase()==PHASE_LAVA) && (tank_.getFluidAmount()>0)) {
-        // Phase unchanged, fluid transfer check.
-        FluidStack fs = tank_.getFluid().copy();
-        if(fs.getAmount() > 100) fs.setAmount(100);
-        final int n = Fluidics.fill(level, getBlockPos().below(), Direction.UP, fs);
-        if(n > 0) {
-          tank_.drain(n);
-          if(tank_.isEmpty()) {
-            final ItemStack prev = main_inventory_.getItem(0);
-            reset_process();
-            main_inventory_.setItem(0, prev);
-            level.playSound(null, worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.3f, 0.7f);
+      } else if(phase()>=PHASE_LAVA) {
+        if(tank_.getFluidAmount()<=0) {
+          reset_process();
+          level.playSound(null, worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.3f, 0.7f);
+        } else {
+          // Phase unchanged, fluid transfer check.
+          FluidStack fs = tank_.getFluid().copy();
+          if(fs.getAmount() > 100) fs.setAmount(100);
+          final int n = Fluidics.fill(level, getBlockPos().below(), Direction.UP, fs);
+          if(n > 0) {
+            tank_.drain(n);
+            if(tank_.isEmpty()) {
+              final ItemStack prev = main_inventory_.getItem(0);
+              reset_process();
+              main_inventory_.setItem(0, prev);
+              level.playSound(null, worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.3f, 0.7f);
+            }
           }
         }
       }
