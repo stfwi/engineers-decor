@@ -1,7 +1,7 @@
 # @file mods.toml
 # @spec TOML v0.5.0 (https://github.com/toml-lang/toml)
 modLoader="javafml"
-loaderVersion="[42,)"
+loaderVersion="[43,)"
 issueTrackerURL="https://github.com/stfwi/engineers-decor/issues/"
 license="MIT"
 
@@ -19,13 +19,13 @@ logoFile="logo.png"
 [[dependencies.engineersdecor]]
   modId="forge"
   mandatory=true
-  versionRange="[42.0.1,)"
+  versionRange="[43.0.16,)"
   ordering="NONE"
   side="BOTH"
 
 [[dependencies.engineersdecor]]
   modId="minecraft"
   mandatory=true
-  versionRange="[1.19.1]"
+  versionRange="[1.19.2]"
   ordering="NONE"
   side="BOTH"

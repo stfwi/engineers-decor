@@ -1,7 +1,7 @@
 {
  "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
- "1.19.1": {
-  "1.2.26": "[F] Fixed Mineral Melting Furnace fluid extraction (issue #223, ty adkinss).",
+ "1.19.2": {
+  "1.3.26": "[U] Ported to 1.19.2.\n[F] Fixed Mineral Melting Furnace fluid extraction (issue #223, ty adkinss).",
   "1.2.25": "[U] Ported to 1.19.1.",
   "1.1.24": "[U] Forge updated to 1.19-41.1.0.\n[B] Known issue: JEI integration missing.",
   "1.1.24-b1": "[U] Initial 1.19 port.\n[D] Metal/Treated Wood Crafting Table dropped in favour of IE Engineer's Crafting Table.\n[D] Labeled Crate dropped.\n[D] Obsolete wood blocks dropped.",
@@ -61,7 +61,7 @@
   "1.1.2-b1": "[U] Ported to MC1.16.2."
  },
  "promos": {
-  "1.19.1-recommended": "1.2.26",
-  "1.19.1-latest": "1.2.26"
+  "1.19.2-recommended": "1.3.26",
+  "1.19.2-latest": "1.3.26"
  }
 }

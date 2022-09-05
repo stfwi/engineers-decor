@@ -11,7 +11,8 @@ Mod sources for Minecraft version 1.18.x.
 
 ## Version history
 
-    - v1.2.26    [F] Fixed Mineral Melting Furnace fluid extraction (issue #223, ty adkinss).
+    - v1.3.26    [U] Ported to 1.19.2.
+                 [F] Fixed Mineral Melting Furnace fluid extraction (issue #223, ty adkinss).
 
     - v1.2.25    [U] Ported to 1.19.1.
 
