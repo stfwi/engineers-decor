@@ -423,7 +423,18 @@ public class EdCraftingTable
 
     @Override
     public void removed(Player player)
-    { inventory_.stopOpen(player); }
+    {
+      inventory_.stopOpen(player);
+      if(!(player instanceof ServerPlayer splayer)) return;
+      final ItemStack stack = getCarried();
+      if(stack.isEmpty()) return;
+      if(player.isAlive() && (!splayer.hasDisconnected())) {
+        player.getInventory().placeItemBackInInventory(stack);
+      } else {
+        player.drop(stack, false);
+      }
+      setCarried(ItemStack.EMPTY);
+    }
 
     @Override
     public boolean canTakeItemForPickAll(ItemStack stack, Slot slot)

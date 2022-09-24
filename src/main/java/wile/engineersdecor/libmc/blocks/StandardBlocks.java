@@ -372,6 +372,16 @@ public class StandardBlocks
       if(((config & CFG_FLIP_PLACEMENT_SHIFTCLICK) != 0) && (context.getPlayer()!=null) &&  (context.getPlayer().isShiftKeyDown())) facing = facing.getOpposite();
       return state.setValue(FACING, facing);
     }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public BlockState rotate(BlockState state, Rotation rot)
+    { return state.setValue(FACING, rot.rotate(state.getValue(FACING))); }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public BlockState mirror(BlockState state, Mirror mirror)
+    { return state.rotate(mirror.getRotation(state.getValue(FACING))); }
   }
 
   public static class AxisAligned extends Cutout implements IStandardBlock
@@ -446,6 +456,11 @@ public class StandardBlocks
       }
       return state;
     }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public BlockState mirror(BlockState state, Mirror mirror)
+    { return state; }
   }
 
   public static class Horizontal extends Cutout implements IStandardBlock
@@ -524,8 +539,8 @@ public class StandardBlocks
 
     @Override
     @SuppressWarnings("deprecation")
-    public BlockState mirror(BlockState state, Mirror mirrorIn)
-    { return state.rotate(mirrorIn.getRotation(state.getValue(HORIZONTAL_FACING))); }
+    public BlockState mirror(BlockState state, Mirror mirror)
+    { return state.rotate(mirror.getRotation(state.getValue(HORIZONTAL_FACING))); }
   }
 
   public static class DirectedWaterLoggable extends Directed implements IStandardBlock
@@ -650,11 +665,36 @@ public class StandardBlocks
 
     public static BooleanProperty getDirectionProperty(Direction face)
     {
-      return switch (face) {
+      return switch(face) {
         case EAST -> HorizontalFourWayWaterLoggable.EAST;
         case SOUTH -> HorizontalFourWayWaterLoggable.SOUTH;
         case WEST -> HorizontalFourWayWaterLoggable.WEST;
         default -> HorizontalFourWayWaterLoggable.NORTH;
+      };
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public BlockState rotate(BlockState state, Rotation rot)
+    {
+      final boolean e=state.getValue(EAST), s=state.getValue(SOUTH), w=state.getValue(WEST), n=state.getValue(NORTH);
+      return switch(rot) {
+        case NONE -> state;
+        case CLOCKWISE_90 -> state.setValue(EAST, n).setValue(SOUTH, e).setValue(WEST, s).setValue(NORTH, w);
+        case COUNTERCLOCKWISE_90 -> state.setValue(EAST, s).setValue(SOUTH, w).setValue(WEST, n).setValue(NORTH, e);
+        case CLOCKWISE_180 -> state.setValue(EAST, w).setValue(SOUTH, n).setValue(WEST, e).setValue(NORTH, n);
+      };
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public BlockState mirror(BlockState state, Mirror mirror)
+    {
+      final boolean e=state.getValue(EAST), s=state.getValue(SOUTH), w=state.getValue(WEST), n=state.getValue(NORTH);
+      return switch(mirror) {
+        case NONE -> state;
+        case LEFT_RIGHT -> state.setValue(EAST, w).setValue(WEST, e);
+        case FRONT_BACK -> state.setValue(NORTH, s).setValue(SOUTH, n);
       };
     }
   }
