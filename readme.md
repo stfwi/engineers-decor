@@ -11,6 +11,8 @@ Mod sources for Minecraft version 1.18.x.
 
 ## Version history
 
+    - v1.1.27    [F] Fixed Block Placer unintended cross-dimensional placement (issue #225, ty Sunekaer/FTB).
+
     - v1.1.26    [F] Fixed directed block rotation (#201, ty emanuele).
 
     - v1.1.25    [F] Fixed Metal Crafting Table carried-stack voiding on close (#224, ty kinlochuk).

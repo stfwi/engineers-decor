@@ -57,7 +57,6 @@ import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import wile.engineersdecor.ModContent;
-import wile.engineersdecor.ModEngineersDecor;
 import wile.engineersdecor.libmc.blocks.StandardBlocks;
 import wile.engineersdecor.libmc.blocks.StandardEntityBlocks;
 import wile.engineersdecor.libmc.detail.*;
@@ -367,7 +366,7 @@ public class EdPlacer
 
     private boolean try_place(Direction facing, boolean triggered)
     {
-      if(level.isClientSide()) return false;
+      if(level.isClientSide() || (!(level instanceof ServerLevel server_level))) return false;
       BlockPos placement_pos = worldPosition.relative(facing);
       if(level.getBlockEntity(placement_pos) != null) return false;
       ItemStack current_stack = ItemStack.EMPTY;
@@ -442,9 +441,11 @@ public class EdPlacer
           {
             final FakePlayer placer = net.minecraftforge.common.util.FakePlayerFactory.getMinecraft((ServerLevel)level);
             if(placer != null) {
-              ItemStack placement_stack = current_stack.copy();
+              final ItemStack placement_stack = current_stack.copy();
               placement_stack.setCount(1);
-              ItemStack held = placer.getItemInHand(InteractionHand.MAIN_HAND);
+              final ItemStack held = placer.getItemInHand(InteractionHand.MAIN_HAND);
+              final ServerLevel lvl = placer.getLevel();
+              placer.setLevel(server_level);
               placer.setItemInHand(InteractionHand.MAIN_HAND, placement_stack);
               List<Direction> directions = new ArrayList<>(Arrays.asList(Direction.UP, facing.getOpposite()));
               for(Direction d:Direction.values()) if(!directions.contains(d)) directions.add(d);
@@ -454,7 +455,8 @@ public class EdPlacer
                 if(block.getStateForPlacement(use_context) == null) use_context = null;
                 if(use_context!=null) break;
               }
-              placer.setItemInHand(InteractionHand.MAIN_HAND, held);
+              placer.setItemInHand(InteractionHand.MAIN_HAND, held); // restore changed fake player fields
+              placer.setLevel(lvl);
             }
           }
           BlockState placement_state = (use_context==null) ? (block.defaultBlockState()) : (block.getStateForPlacement(use_context));

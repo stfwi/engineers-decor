@@ -1,6 +1,7 @@
 {
  "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
  "1.18.2": {
+  "1.1.27": "[F] Fixed Block Placer unintended cross-dimensional placement (issue #225, ty Sunekaer/FTB).",
   "1.1.26": "[F] Fixed directed block rotation (#201, ty emanuele).",
   "1.1.25": "[F] Fixed Metal Crafting Table carried-stack voiding on close (#224, ty kinlochuk).",
   "1.1.24": "[F] Fixed Mineral Melting Furnace fluid extraction (issue #223, ty adkinss).",
@@ -60,7 +61,7 @@
   "1.1.2-b1": "[U] Ported to MC1.16.2."
  },
  "promos": {
-  "1.18.2-recommended": "1.1.26",
-  "1.18.2-latest": "1.1.26"
+  "1.18.2-recommended": "1.1.27",
+  "1.18.2-latest": "1.1.27"
  }
 }
