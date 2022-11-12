@@ -13,10 +13,10 @@ for the Engineer's factory, workshop, and home.
 
 ### Distribution file download
 
-Main distribution channel for this mod is CurseForge:
+Main distribution channels for this mod are:
 
-  - Release/beta versions: https://www.curseforge.com/minecraft/mc-mods/engineers-decor/files
-  - All versions: https://minecraft.curseforge.com/projects/engineers-decor/files
+  - Curse: https://minecraft.curseforge.com/projects/engineers-decor/files
+  - Modrinth: https://modrinth.com/mod/engineersdecor
 
 ----
 ### Details
