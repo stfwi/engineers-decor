@@ -31,9 +31,9 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
@@ -213,7 +213,7 @@ public class EdPipeValve
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
-      if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+      if(capability == ForgeCapabilities.FLUID_HANDLER) {
         Direction bf = block_facing();
         if(facing == bf) return back_flow_handler_.cast();
         if(facing == bf.getOpposite()) return fluid_handler_.cast();
@@ -229,7 +229,7 @@ public class EdPipeValve
     {
       final BlockEntity te = level.getBlockEntity(worldPosition.relative(block_facing()));
       if(te == null) return null;
-      return te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, block_facing().getOpposite()).orElse(null);
+      return te.getCapability(ForgeCapabilities.FLUID_HANDLER, block_facing().getOpposite()).orElse(null);
     }
 
     // Forward flow handler --

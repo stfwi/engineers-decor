@@ -41,11 +41,10 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -293,8 +292,8 @@ public class EdMilker
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
-      if((capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) && has_milk_fluid()) return fluid_handler_.cast();
-      if((capability == CapabilityEnergy.ENERGY) && (energy_consumption_>0)) return energy_handler_.cast();
+      if((capability == ForgeCapabilities.FLUID_HANDLER) && has_milk_fluid()) return fluid_handler_.cast();
+      if((capability == ForgeCapabilities.ENERGY) && (energy_consumption_>0)) return energy_handler_.cast();
       return super.getCapability(capability, facing);
     }
 

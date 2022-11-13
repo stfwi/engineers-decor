@@ -19,6 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.util.LazyOptional;
@@ -26,11 +27,9 @@ import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -240,7 +239,7 @@ public class Fluidics
     if(held.isEmpty()) return null;
     final IFluidHandler fh = handler(world, pos, side);
     if(fh==null) return null;
-    final IItemHandler ih = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElse(null);
+    final IItemHandler ih = player.getCapability(ForgeCapabilities.ITEM_HANDLER).orElse(null);
     if(ih==null) return null;
     FluidActionResult far = FluidUtil.tryFillContainerAndStow(held, fh, ih, Integer.MAX_VALUE, player, true);
     if(!far.isSuccess()) far = FluidUtil.tryEmptyContainerAndStow(held, fh, ih, Integer.MAX_VALUE, player, true);
@@ -303,7 +302,7 @@ public class Fluidics
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction side)
-    { return (capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY) ? handler_.cast() : LazyOptional.empty(); }
+    { return (capability == ForgeCapabilities.FLUID_HANDLER) ? handler_.cast() : LazyOptional.empty(); }
 
     protected FluidStack readnbt()
     {

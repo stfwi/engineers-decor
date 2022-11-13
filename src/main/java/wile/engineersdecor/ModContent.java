@@ -477,7 +477,7 @@ public class ModContent
       BlockBehaviour.Properties.of(Material.METAL, MaterialColor.METAL).strength(0.3f, 10f).sound(SoundType.METAL).noOcclusion(),
       Auxiliaries.getPixeledAABB(0,0,6.5, 16,16,9.5)
     ));
-    Registries.addBlock("steel_railing", ()->new EdRailingBlock(
+    Registries.addBlock("steel_railing", ()->new EdgeAlignedRailingBlock(
       StandardBlocks.CFG_CUTOUT,
       BlockBehaviour.Properties.of(Material.METAL, MaterialColor.METAL).strength(0.3f, 10f).sound(SoundType.METAL).noOcclusion(),
       Auxiliaries.getPixeledAABB(0,0,0,  0, 0,0),

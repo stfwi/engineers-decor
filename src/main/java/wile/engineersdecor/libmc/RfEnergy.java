@@ -14,8 +14,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nullable;
@@ -26,7 +26,7 @@ public class RfEnergy
   {
     final BlockEntity te = world.getBlockEntity(pos);
     if(te == null) return 0;
-    final IEnergyStorage es = te.getCapability(CapabilityEnergy.ENERGY, side).orElse(null);
+    final IEnergyStorage es = te.getCapability(ForgeCapabilities.ENERGY, side).orElse(null);
     if(es == null) return 0;
     return es.receiveEnergy(rf_energy, false);
   }

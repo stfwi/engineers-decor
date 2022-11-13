@@ -30,13 +30,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import wile.engineersdecor.ModContent;
@@ -265,9 +263,9 @@ public class EdTestBlock
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
       if((!paused) && (facing != block_facing)) {
-        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) return fluid_handler_.cast();
-        if(capability == CapabilityEnergy.ENERGY) return energy_handler_.cast();
-        if(capability ==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handler_.cast();
+        if(capability == ForgeCapabilities.FLUID_HANDLER) return fluid_handler_.cast();
+        if(capability == ForgeCapabilities.ENERGY) return energy_handler_.cast();
+        if(capability == ForgeCapabilities.ITEM_HANDLER) return item_handler_.cast();
       }
       return super.getCapability(capability, facing);
     }

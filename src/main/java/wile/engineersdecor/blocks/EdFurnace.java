@@ -48,11 +48,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import wile.engineersdecor.ModConfig;
@@ -456,11 +455,11 @@ public class EdFurnace
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
-      if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+      if(capability == ForgeCapabilities.ITEM_HANDLER) {
         if(facing == Direction.UP) return item_insertion_handler_.cast();
         if(facing == Direction.DOWN) return item_extraction_handler_.cast();
         return item_fuel_insertion_handler_.cast();
-      } else if(capability== CapabilityEnergy.ENERGY) {
+      } else if(capability == ForgeCapabilities.ENERGY) {
         return energy_handler_.cast();
       }
       return super.getCapability(capability, facing);

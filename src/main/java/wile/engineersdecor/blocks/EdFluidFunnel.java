@@ -39,9 +39,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
@@ -227,7 +227,7 @@ public class EdFluidFunnel
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
-      if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) return fluid_handler_.cast();
+      if(capability == ForgeCapabilities.FLUID_HANDLER) return fluid_handler_.cast();
       return super.getCapability(capability, facing);
     }
 
@@ -369,7 +369,7 @@ public class EdFluidFunnel
           if(last_pick_pos_==null) last_pick_pos_ = worldPosition.above();
           BlockEntity te = with_device_fluid_handler_collection ? (level.getBlockEntity(worldPosition.above())) : (null);
           if(te != null) {
-            IFluidHandler fh = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN).orElse(null);
+            IFluidHandler fh = te.getCapability(ForgeCapabilities.FLUID_HANDLER, Direction.DOWN).orElse(null);
             if(fh == null) {
               te = null;
             } else if(tank_.isEmpty()) {

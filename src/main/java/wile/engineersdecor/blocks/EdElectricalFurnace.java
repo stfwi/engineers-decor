@@ -46,11 +46,10 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import wile.engineersdecor.ModConfig;
@@ -394,8 +393,8 @@ public class EdElectricalFurnace
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
-      if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handler_.cast();
-      if(capability == CapabilityEnergy.ENERGY) return energy_handler_.cast();
+      if(capability == ForgeCapabilities.ITEM_HANDLER) return item_handler_.cast();
+      if(capability == ForgeCapabilities.ENERGY) return energy_handler_.cast();
       return super.getCapability(capability, facing);
     }
 
@@ -525,7 +524,7 @@ public class EdElectricalFurnace
       if(out && (!inventory_.getItem(FIFO_OUTPUT_1_SLOT_NO).isEmpty())) {
         BlockEntity te = level.getBlockEntity(worldPosition.relative(out_facing));
         if(te!=null) {
-          IItemHandler hnd = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, out_facing).orElse(null);
+          IItemHandler hnd = te.getCapability(ForgeCapabilities.ITEM_HANDLER, out_facing).orElse(null);
           if(hnd != null) {
             ItemStack remaining = ItemHandlerHelper.insertItemStacked(hnd, inventory_.getItem(FIFO_OUTPUT_1_SLOT_NO).copy(), false);
             inventory_.setItem(FIFO_OUTPUT_1_SLOT_NO, remaining);

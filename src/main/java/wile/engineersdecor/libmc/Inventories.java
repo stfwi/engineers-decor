@@ -24,8 +24,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.nbt.Tag;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -56,7 +56,7 @@ public class Inventories
   {
     BlockEntity te = world.getBlockEntity(pos);
     if(te==null) return null;
-    IItemHandler ih = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).orElse(null);
+    IItemHandler ih = te.getCapability(ForgeCapabilities.ITEM_HANDLER, side).orElse(null);
     if(ih!=null) return ih;
     if((side!=null) && (te instanceof WorldlyContainer)) return new SidedInvWrapper((WorldlyContainer)te, side);
     if(te instanceof Container) return new InvWrapper((Container)te);
@@ -81,7 +81,7 @@ public class Inventories
   public static IItemHandler itemhandler(Entity entity, @Nullable Direction side)
   {
     if(entity==null) return null;
-    final IItemHandler ih = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).orElse(null);
+    final IItemHandler ih = entity.getCapability(ForgeCapabilities.ITEM_HANDLER, side).orElse(null);
     if(ih!=null) return ih;
     if(entity instanceof Container container) return (new InvWrapper(container));
     return null;
@@ -96,7 +96,7 @@ public class Inventories
   public static ItemStack insert(BlockEntity te, @Nullable Direction side, ItemStack stack, boolean simulate)
   {
     if(te == null) return stack;
-    IItemHandler hnd = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).orElse(null);
+    IItemHandler hnd = te.getCapability(ForgeCapabilities.ITEM_HANDLER, side).orElse(null);
     if(hnd == null) {
       if((side != null) && (te instanceof WorldlyContainer)) {
         hnd = new SidedInvWrapper((WorldlyContainer)te, side);

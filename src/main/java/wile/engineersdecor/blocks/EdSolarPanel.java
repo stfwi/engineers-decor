@@ -26,8 +26,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
@@ -139,7 +139,7 @@ public class EdSolarPanel
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
-      if(capability== CapabilityEnergy.ENERGY) return energy_handler_.cast();
+      if(capability == ForgeCapabilities.ENERGY) return energy_handler_.cast();
       return super.getCapability(capability, facing);
     }
 
@@ -174,7 +174,7 @@ public class EdSolarPanel
           final Direction f = transfer_directions_[i];
           BlockEntity te = level.getBlockEntity(worldPosition.relative(f));
           if(te==null) continue;
-          IEnergyStorage es = te.getCapability(CapabilityEnergy.ENERGY, f.getOpposite()).orElse(null);
+          IEnergyStorage es = te.getCapability(ForgeCapabilities.ENERGY, f.getOpposite()).orElse(null);
           if(es==null) continue;
           if(!es.canReceive()) {
             if(!(te instanceof SolarPanelTileEntity)) continue;

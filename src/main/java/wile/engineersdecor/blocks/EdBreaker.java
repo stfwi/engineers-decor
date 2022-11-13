@@ -38,8 +38,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
@@ -232,7 +232,7 @@ public class EdBreaker
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
-      if(capability == CapabilityEnergy.ENERGY) return energy_handler_.cast();
+      if(capability == ForgeCapabilities.ENERGY) return energy_handler_.cast();
       return super.getCapability(capability, facing);
     }
 

@@ -38,8 +38,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import wile.engineersdecor.ModContent;
 import wile.engineersdecor.libmc.*;
@@ -352,7 +352,7 @@ public class EdHopper
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
-      if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handler_.cast();
+      if(capability == ForgeCapabilities.ITEM_HANDLER) return item_handler_.cast();
       return super.getCapability(capability, facing);
     }
 
@@ -416,7 +416,7 @@ public class EdHopper
       {
         final BlockEntity te = level.getBlockEntity(facing_pos);
         if(te != null) {
-          ih = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing.getOpposite()).orElse(null);
+          ih = te.getCapability(ForgeCapabilities.ITEM_HANDLER, facing.getOpposite()).orElse(null);
           if(ih == null) { delay_timer_ = TICK_INTERVAL+2; return false; }
           if(te instanceof net.minecraft.world.level.block.entity.HopperBlockEntity) {
             Direction f = level.getBlockState(facing_pos).getValue(net.minecraft.world.level.block.HopperBlock.FACING);
@@ -564,7 +564,7 @@ public class EdHopper
       if(rssignal || pulse_mode) {
         Direction hopper_input_facing = (hopper_facing==Direction.UP) ? Direction.DOWN : Direction.UP;
         BlockEntity te = level.getBlockEntity(worldPosition.relative(hopper_input_facing));
-        IItemHandler ih = (te==null) ? (null) : (te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, hopper_input_facing.getOpposite()).orElse(null));
+        IItemHandler ih = (te==null) ? (null) : (te.getCapability(ForgeCapabilities.ITEM_HANDLER, hopper_input_facing.getOpposite()).orElse(null));
         if((ih != null) || (te instanceof WorldlyContainer)) {
           // Tile Entity pulling
           if((ih != null)) {

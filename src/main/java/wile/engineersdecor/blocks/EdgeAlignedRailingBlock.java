@@ -1,5 +1,5 @@
 /*
- * @file EdCatwalkBlock.java
+ * @file EdgeAlignedRailingBlock.java
  * @author Stefan Wilhelm (wile)
  * @copyright (C) 2020 Stefan Wilhelm
  * @license MIT (see https://opensource.org/licenses/MIT)
@@ -34,9 +34,9 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class EdRailingBlock extends StandardBlocks.HorizontalFourWayWaterLoggable
+public class EdgeAlignedRailingBlock extends StandardBlocks.HorizontalFourWayWaterLoggable
 {
-  public EdRailingBlock(long config, BlockBehaviour.Properties properties, final AABB base_aabb, final AABB railing_aabb)
+  public EdgeAlignedRailingBlock(long config, BlockBehaviour.Properties properties, final AABB base_aabb, final AABB railing_aabb)
   { super(config, properties, base_aabb, railing_aabb, 0); }
 
   @Override

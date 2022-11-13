@@ -43,8 +43,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import wile.engineersdecor.ModConfig;
 import wile.engineersdecor.ModContent;
@@ -381,7 +381,7 @@ public class EdDropper
     @Override
     public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
-      if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return item_handler_.cast();
+      if(capability == ForgeCapabilities.ITEM_HANDLER) return item_handler_.cast();
       return super.getCapability(capability, facing);
     }
 
@@ -426,7 +426,7 @@ public class EdDropper
       if(with_adjacent_item_insertion) {
         final BlockEntity te = world.getBlockEntity(pos.relative(facing));
         if(te != null) {
-          final IItemHandler ih = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, (facing==null)?(null):(facing.getOpposite())).orElse(null);
+          final IItemHandler ih = te.getCapability(ForgeCapabilities.ITEM_HANDLER, (facing==null)?(null):(facing.getOpposite())).orElse(null);
           if(ih != null) {
             boolean inserted = false;
             List<ItemStack> remaining = new ArrayList<>();
