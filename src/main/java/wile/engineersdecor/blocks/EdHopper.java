@@ -220,7 +220,7 @@ public class EdHopper
       CompoundTag nbt = new CompoundTag();
       block_power_signal_ = false;
       writenbt(nbt, false);
-      boolean is_empty = true;
+      boolean is_empty = main_inventory_.isEmpty();
       main_inventory_.clearContent();
       reset_rtstate();
       block_power_updated_ = false;
