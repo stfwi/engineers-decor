@@ -11,7 +11,9 @@ Mod sources for Minecraft version 1.18.x.
 
 ## Version history
 
-    - v1.1.27    [F] Fixed Block Placer unintended cross-dimensional placement (issue #225, ty Sunekaer/FTB).
+    - v1.1.28    [F] Fixed Factory Hopper on-break item retention bug (issue #226, ty sunekaer/ftb).
+
+    - v1.1.27    [F] Fixed Block Placer unintended cross-dimensional placement (issue #225, ty sunekaer/ftb).
 
     - v1.1.26    [F] Fixed directed block rotation (#201, ty emanuele).
 
