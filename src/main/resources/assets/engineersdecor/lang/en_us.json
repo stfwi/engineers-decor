@@ -230,7 +230,7 @@
   "block.engineersdecor.steel_framed_window": "Steel Framed Window",
   "block.engineersdecor.steel_framed_window.help": "Steel framed triple glazed window.\n Well insulating. Does not connect\n to adjacent blocks like glass panes.",
   "block.engineersdecor.steel_mesh_fence": "Steel Mesh Fence",
-  "block.engineersdecor.steel_mesh_fence.help": "Industrial style fence.\n Does not connect do regular fences.\n Connects to full blocks if in line\n with another mesh fence.",
+  "block.engineersdecor.steel_mesh_fence.help": "Industrial style fence.\n Does not connect to regular fences.\n Connects to full blocks if in line\n with another mesh fence.",
   "block.engineersdecor.steel_mesh_fence_gate": "Steel Mesh Fence Gate",
   "block.engineersdecor.steel_mesh_fence_gate.help": "Industrial style fence gate that\n fits well to the Steel Mesh Fence.\n Can be placed as single or double\n size gate.",
   "block.engineersdecor.steel_railing": "Steel Railing",
