@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 import wile.engineersdecor.blocks.*;
+import wile.engineersdecor.detail.TreeCutting;
 import wile.engineersdecor.libmc.SlabSliceBlock;
 import wile.engineersdecor.libmc.VariantSlabBlock;
 import wile.engineersdecor.libmc.Auxiliaries;
@@ -139,6 +140,7 @@ public class ModConfig
     public final ForgeConfigSpec.IntValue tree_cutter_energy_consumption;
     public final ForgeConfigSpec.IntValue tree_cutter_cutting_time_needed;
     public final ForgeConfigSpec.BooleanValue tree_cutter_requires_power;
+    public final ForgeConfigSpec.ConfigValue<List<String>> tree_cutter_universal_logs;
     public final ForgeConfigSpec.IntValue milking_machine_energy_consumption;
     public final ForgeConfigSpec.IntValue milking_machine_milking_delay;
 
@@ -299,6 +301,10 @@ public class ModConfig
           .translation(MODID + ".config.tree_cutter_requires_power")
           .comment("Defines if the Small Tree Cutter does not work without RF power.")
           .define("tree_cutter_requires_power", false);
+        tree_cutter_universal_logs = builder
+          .translation(MODID + ".config.tree_cutter_universal_logs")
+          .comment("Defines a list of resource locations which blocks are always to be treated as part of a tree. This is usefull for special log blocks containing resources like rubber.")
+          .define("tree_cutter_universal_logs", new ArrayList<>());
         milking_machine_energy_consumption = builder
           .translation(MODID + ".config.milking_machine_energy_consumption")
           .comment("Defines how much time the Small Milking Machine needs work. " +
@@ -448,6 +454,13 @@ public class ModConfig
     EdFreezer.on_config(144, 2);
     EdMineralSmelter.on_config(144, 2);
     EdWasteIncinerator.on_config(8);
+    // -----------------------------------------------------------------------------------------------------------------
+    {
+      final List<String> universal_logs = new ArrayList<>(SERVER.tree_cutter_universal_logs.get());
+      // Fixed known blocks. @todo, also check AE/menril, etc.
+      universal_logs.add("myrtrees:filled_rubberwood_log");
+      TreeCutting.on_config(universal_logs);
+    }
     // -----------------------------------------------------------------------------------------------------------------
     {
       // Check if the config is already synchronized or has to be synchronised.

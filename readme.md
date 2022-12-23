@@ -11,7 +11,9 @@ Mod sources for Minecraft version 1.18.x.
 
 ## Version history
 
-    ~ v1.3.28    [F] Steel Mesh Fence help typo fixed (issue #227, ty shrad).
+    - v1.3.28    [F] Steel Mesh Fence help typo fixed (issue #227, ty shrad).
+                 [A] Added "tree_cutter_universal_logs" server config to enable chopping of modded
+                     resource wood blocks (e.g. rubber, issue #228).
 
     - v1.3.27    [F] Refactored deprecated forge capability references.
                  [F] Fixed Factory Hopper on-break item retention bug (issue #226, ty sunekaer/ftb).

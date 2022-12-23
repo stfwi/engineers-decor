@@ -11,6 +11,7 @@ package wile.engineersdecor.detail;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
@@ -18,14 +19,37 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.VineBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.registries.ForgeRegistries;
+import wile.engineersdecor.libmc.Auxiliaries;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class TreeCutting
 {
-  public static boolean canChop(BlockState state)
-  { return isLog(state); }
+  private static final Set<Block> universal_logs_ = new HashSet<>();
+
+  public static void on_config(List<String> universal_logs)
+  {
+    universal_logs_.clear();
+    if(universal_logs.isEmpty()) return;
+    try {
+      universal_logs.forEach(rls->{
+        final ResourceLocation rl = ResourceLocation.tryParse(rls);
+        if((rl == null) || (!ForgeRegistries.BLOCKS.containsKey(rl))) return;
+        universal_logs_.add(ForgeRegistries.BLOCKS.getValue(rl));
+      });
+    } catch(Throwable ex) {
+      Auxiliaries.logError("Unexpected exception parsing universal log blocks: " + ex.getMessage());
+    }
+    if(!universal_logs_.isEmpty()) {
+      Auxiliaries.logger().info("Tree cutting: Universal logs:" + universal_logs_.stream().map(Block::toString).collect(Collectors.joining()) + ".");
+    }
+  }
+
+  public static boolean canChop(Level world, BlockState state, BlockPos pos)
+  { return isLog(state) || (universal_logs_.contains(state.getBlock()) && isLog(world.getBlockState(pos.above()))); }
 
   // -------------------------------------------------------------------------------------------------------------------
 
@@ -39,7 +63,11 @@ public class TreeCutting
   { return (state.is(BlockTags.LOGS)); }
 
   private static boolean isSameLog(BlockState a, BlockState b)
-  { return (a.getBlock()==b.getBlock()); }
+  {
+    final Block ba = a.getBlock();
+    final Block bb = b.getBlock();
+    return (ba==bb) || (universal_logs_.contains(ba) && isLog(b)) || (universal_logs_.contains(bb) && isLog(a)) || (universal_logs_.contains(ba) && universal_logs_.contains(bb));
+  }
 
   private static boolean isLeaves(BlockState state)
   {
@@ -75,7 +103,9 @@ public class TreeCutting
 
   public static int chopTree(Level world, BlockState broken_state, BlockPos startPos, int max_blocks_to_break, boolean without_target_block)
   {
-    if(world.isClientSide || !isLog(broken_state)) return 0;
+    if(world.isClientSide) return 0;
+    if(universal_logs_.contains(broken_state.getBlock())) broken_state = world.getBlockState(startPos.above()); // For safe detection, at least the block above must be a normal log block.
+    if(!isLog(broken_state)) return 0;
     final long ymin = startPos.getY();
     final long max_leaf_distance = 8;
     Set<BlockPos> checked = new HashSet<>();

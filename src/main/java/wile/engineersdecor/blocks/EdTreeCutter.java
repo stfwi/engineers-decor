@@ -233,7 +233,7 @@ public class EdTreeCutter
       if(!(device_state.getBlock() instanceof TreeCutterBlock)) return;
       final BlockPos tree_pos = worldPosition.relative(device_state.getValue(TreeCutterBlock.HORIZONTAL_FACING));
       final BlockState tree_state = level.getBlockState(tree_pos);
-      if(!TreeCutting.canChop(tree_state) || (level.hasNeighborSignal(worldPosition))) {
+      if(!TreeCutting.canChop(level, tree_state, tree_pos) || (level.hasNeighborSignal(worldPosition))) {
         if(device_state.getValue(TreeCutterBlock.ACTIVE)) level.setBlock(worldPosition, device_state.setValue(TreeCutterBlock.ACTIVE, false), 1|2);
         proc_time_elapsed_ = 0;
         active_timer_ = 0;
