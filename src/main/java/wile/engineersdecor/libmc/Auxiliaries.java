@@ -11,13 +11,14 @@ package wile.engineersdecor.libmc;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.SharedConstants;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -43,10 +44,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
@@ -91,18 +89,29 @@ public class Auxiliaries
   { return SharedConstants.IS_RUNNING_IN_IDE; }
 
   @OnlyIn(Dist.CLIENT)
+  @SuppressWarnings("all")
   public static boolean isShiftDown()
   {
-    return (InputConstants.isKeyDown(SidedProxy.mc().getWindow().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT) ||
-      InputConstants.isKeyDown(SidedProxy.mc().getWindow().getWindow(), GLFW.GLFW_KEY_RIGHT_SHIFT));
+    return (InputConstants.isKeyDown(net.minecraft.client.Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT) ||
+            InputConstants.isKeyDown(net.minecraft.client.Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_RIGHT_SHIFT));
   }
 
   @OnlyIn(Dist.CLIENT)
+  @SuppressWarnings("all")
   public static boolean isCtrlDown()
   {
-    return (InputConstants.isKeyDown(SidedProxy.mc().getWindow().getWindow(), GLFW.GLFW_KEY_LEFT_CONTROL) ||
-      InputConstants.isKeyDown(SidedProxy.mc().getWindow().getWindow(), GLFW.GLFW_KEY_RIGHT_CONTROL));
+    return (InputConstants.isKeyDown(net.minecraft.client.Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_LEFT_CONTROL) ||
+            InputConstants.isKeyDown(net.minecraft.client.Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_RIGHT_CONTROL));
   }
+
+  @OnlyIn(Dist.CLIENT)
+  public static Optional<String> getClipboard()
+  { return Optional.of(net.minecraft.client.gui.font.TextFieldHelper.getClipboardContents(net.minecraft.client.Minecraft.getInstance())); }
+
+  @OnlyIn(Dist.CLIENT)
+  public static boolean setClipboard(String text)
+  { net.minecraft.client.gui.font.TextFieldHelper.setClipboardContents(net.minecraft.client.Minecraft.getInstance(), text); return true; }
+
 
   // -------------------------------------------------------------------------------------------------------------------
   // Logging
@@ -116,9 +125,6 @@ public class Auxiliaries
 
   public static void logError(final String msg)
   { logger.error(msg); }
-
-  public static void logDebug(final String msg)
-  { /*logger.debug(msg);*/ }
 
   // -------------------------------------------------------------------------------------------------------------------
   // Localization, text formatting
@@ -186,6 +192,10 @@ public class Auxiliaries
   @OnlyIn(Dist.CLIENT)
   public static boolean hasTranslation(String key)
   { return net.minecraft.client.resources.language.I18n.exists(key); }
+
+  @OnlyIn(Dist.CLIENT)
+  public static List<Component> wrapText(Component text, int max_width_percent)
+  { return Minecraft.getInstance().font.getSplitter().splitLines(text, ((Minecraft.getInstance().getWindow().getGuiScaledWidth())-10) * max_width_percent/100, Style.EMPTY).stream().map(ft->Component.literal(ft.getString())).collect(Collectors.toList()); }
 
   public static MutableComponent join(Collection<? extends Component> components, String separator)
   { return ComponentUtils.formatList(components, Component.literal(separator), Function.identity()); }
@@ -278,19 +288,18 @@ public class Auxiliaries
 
   @SuppressWarnings("deprecation")
   public static ResourceLocation getResourceLocation(Item item)
-  { return Registry.ITEM.getKey(item); }
+  { return ForgeRegistries.ITEMS.getKey(item); }
 
   @SuppressWarnings("deprecation")
   public static ResourceLocation getResourceLocation(Block block)
-  { return Registry.BLOCK.getKey(block); }
-
+  { return ForgeRegistries.BLOCKS.getKey(block); }
   @SuppressWarnings("deprecation")
   public static ResourceLocation getResourceLocation(net.minecraft.world.inventory.MenuType<?> menu)
-  { return Registry.MENU.getKey(menu); }
+  { return ForgeRegistries.MENU_TYPES.getKey(menu); }
 
   @SuppressWarnings("deprecation")
   public static ResourceLocation getResourceLocation(net.minecraft.world.level.material.Fluid fluid)
-  { return Registry.FLUID.getKey(fluid); }
+  { return ForgeRegistries.FLUIDS.getKey(fluid); }
 
   // -------------------------------------------------------------------------------------------------------------------
   // Item NBT data

@@ -5,6 +5,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -40,6 +41,7 @@ public class ModEngineersDecor
     ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.COMMON, ModConfig.COMMON_CONFIG_SPEC);
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onSetup);
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientSetup);
+    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::addCreativeTab);
     MinecraftForge.EVENT_BUS.register(this);
   }
 
@@ -56,6 +58,12 @@ public class ModEngineersDecor
     ModContent.registerMenuGuis(event);
     ModContent.registerBlockEntityRenderers(event);
     ModContent.processContentClientSide(event);
+  }
+
+  private void addCreativeTab(CreativeModeTabEvent.BuildContents event)
+  {
+    if(event.getTab() != Registries.getCreativeModeTab()) return;
+    Registries.getRegisteredItems().forEach(event::accept);
   }
 
   @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)

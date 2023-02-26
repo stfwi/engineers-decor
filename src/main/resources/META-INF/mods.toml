@@ -12,20 +12,20 @@ displayName="Engineer's Decor"
 description="Adds cosmetic blocks for the engineer's workshop, factory and home."
 authors="wilechaote"
 credits="BluSunrize, Damien Hazard, malte0811, et al., the Forge Smiths."
-updateJSONURL="https://raw.githubusercontent.com/stfwi/engineers-decor/versions/forge-1.19.2.json"
+updateJSONURL="https://raw.githubusercontent.com/stfwi/engineers-decor/versions/forge-1.19.3.json"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/engineers-decor"
 logoFile="logo.png"
 
 [[dependencies.engineersdecor]]
   modId="forge"
   mandatory=true
-  versionRange="[43.0.16,)"
+  versionRange="[44.0.11,)"
   ordering="NONE"
   side="BOTH"
 
 [[dependencies.engineersdecor]]
   modId="minecraft"
   mandatory=true
-  versionRange="[1.19.2]"
+  versionRange="[1.19.3]"
   ordering="NONE"
   side="BOTH"

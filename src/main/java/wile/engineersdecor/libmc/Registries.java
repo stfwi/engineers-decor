@@ -12,10 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -29,7 +26,6 @@ import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class Registries
 {
@@ -70,11 +66,13 @@ public class Registries
 
   public static CreativeModeTab getCreativeModeTab()
   {
-    if(creative_tab==null) {
-      creative_tab = (new CreativeModeTab("tab" + modid) {
-        public ItemStack makeIcon() { return new ItemStack(getItem(creative_tab_icon)); }
-      });
-    }
+    creative_tab = CreativeModeTabs.BUILDING_BLOCKS;
+    //  if(creative_tab==null) {
+    //    creative_tab = (new CreativeModeTab("tab" + modid) {
+    //      public ItemStack makeIcon() { return new ItemStack(getItem(creative_tab_icon)); }
+    //    });
+    //  }
+    //  return creative_tab;
     return creative_tab;
   }
 
@@ -120,19 +118,19 @@ public class Registries
 
   @Nonnull
   public static List<Block> getRegisteredBlocks()
-  { return Collections.unmodifiableList(registered_blocks.values().stream().map(RegistryObject::get).toList()); }
+  { return registered_blocks.values().stream().map(RegistryObject::get).toList(); }
 
   @Nonnull
   public static List<Item> getRegisteredItems()
-  { return Collections.unmodifiableList(registered_items.values().stream().map(RegistryObject::get).toList()); }
+  { return registered_items.values().stream().map(RegistryObject::get).toList(); }
 
   @Nonnull
-  public static List<BlockEntityType<?>> getRegisteredBlockEntityTypes()
-  { return Collections.unmodifiableList(registered_block_entity_types.values().stream().map(RegistryObject::get).toList()); }
+  public static List<? extends BlockEntityType<?>> getRegisteredBlockEntityTypes()
+  { return registered_block_entity_types.values().stream().map(RegistryObject::get).toList(); }
 
   @Nonnull
-  public static List<EntityType<?>> getRegisteredEntityTypes()
-  { return Collections.unmodifiableList(registered_entity_types.values().stream().map(RegistryObject::get).toList()); }
+  public static List<? extends EntityType<?>> getRegisteredEntityTypes()
+  { return registered_entity_types.values().stream().map(RegistryObject::get).toList(); }
 
   // -------------------------------------------------------------------------------------------------------------
 
@@ -142,7 +140,7 @@ public class Registries
   public static <T extends Block> void addBlock(String registry_name, Supplier<T> block_supplier)
   {
     registered_blocks.put(registry_name, BLOCKS.register(registry_name, block_supplier));
-    registered_items.put(registry_name, ITEMS.register(registry_name, ()->new BlockItem(registered_blocks.get(registry_name).get(), (new Item.Properties()).tab(getCreativeModeTab()))));
+    registered_items.put(registry_name, ITEMS.register(registry_name, ()->new BlockItem(registered_blocks.get(registry_name).get(), new Item.Properties())));
   }
 
   public static <TB extends Block, TI extends Item> void addBlock(String registry_name, Supplier<TB> block_supplier, Supplier<TI> item_supplier)
@@ -156,9 +154,9 @@ public class Registries
     registered_block_entity_types.put(registry_name, BLOCK_ENTITIES.register(registry_name, ()->{
       final Block[] blocks = Arrays.stream(block_names).map(s->{
         Block b = BLOCKS.getEntries().stream().filter((ro)->ro.getId().getPath().equals(s)).findFirst().map(RegistryObject::get).orElse(null);
-        if(b==null) Auxiliaries.logError("registered_blocks does not encompass '" + s + "'");
+        if(b == null) Auxiliaries.logError("registered_blocks does not encompass '" + s + "'");
         return b;
-      }).filter(Objects::nonNull).collect(Collectors.toList()).toArray(new Block[]{});
+      }).filter(Objects::nonNull).toList().toArray(new Block[]{});
       return BlockEntityType.Builder.of(ctor, blocks).build(null);
     }));
   }
@@ -191,9 +189,7 @@ public class Registries
   // -------------------------------------------------------------------------------------------------------------
 
   public static <TB extends Block, TI extends Item> void addBlock(String registry_name, Supplier<TB> block_supplier, BiFunction<Block, Item.Properties, Item> item_builder)
-  {
-    addBlock(registry_name, block_supplier, ()->item_builder.apply(registered_blocks.get(registry_name).get(), (new Item.Properties()).tab(getCreativeModeTab())));
-  }
+  { addBlock(registry_name, block_supplier, ()->item_builder.apply(registered_blocks.get(registry_name).get(), new Item.Properties())); }
 
   public static void addBlock(String registry_name, Supplier<? extends Block> block_supplier, BlockEntityType.BlockEntitySupplier<?> block_entity_ctor)
   {

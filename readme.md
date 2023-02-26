@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.18.x.
 
 ## Version history
 
+    - v1.4.28    [U] Initial 1.19.3 port.
+                 [B] Known issue: Creative tab missing (currently using "Building Blocks").
+
     - v1.3.28    [F] Steel Mesh Fence help typo fixed (issue #227, ty shrad).
                  [A] Added "tree_cutter_universal_logs" server config to enable chopping of modded
                      resource wood blocks (e.g. rubber, issue #228).

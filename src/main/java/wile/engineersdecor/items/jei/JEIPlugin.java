@@ -6,7 +6,7 @@
  *
  * JEI plugin (see https://github.com/mezz/JustEnoughItems/wiki/Creating-Plugins)
  */
-package wile.engineersdecor.eapi.jei;
+package wile.engineersdecor.items.jei;
 
 public class JEIPlugin {}
 /*

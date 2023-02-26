@@ -141,7 +141,7 @@ public class EdMineralSmelter
       final ItemStack stack = player.getItemInHand(hand);
       boolean dirty = false;
       if(te.accepts_lava_container(stack)) {
-        if(stack.sameItemStackIgnoreDurability(MineralSmelterTileEntity.BUCKET_STACK)) { // check how this works with item capabilities or so
+        if(stack.sameItem(MineralSmelterTileEntity.BUCKET_STACK)) { // check how this works with item capabilities or so
           if(te.bucket_extraction_possible()) {
             if(stack.getCount() > 1) {
               int target_stack_index = -1;

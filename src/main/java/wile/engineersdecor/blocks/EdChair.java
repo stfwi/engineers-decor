@@ -11,6 +11,7 @@ package wile.engineersdecor.blocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -118,8 +119,8 @@ public class EdChair
     public static EntityChair customClientFactory(PlayMessages.SpawnEntity spkt, Level world)
     { return new EntityChair(world); }
 
-    public Packet<?> getAddEntityPacket()
-    { return NetworkHooks.getEntitySpawningPacket(this); }
+//public Packet<?> getAddEntityPacket()
+//{ return NetworkHooks.getEntitySpawningPacket(this); }
 
     public static boolean accepts_mob(LivingEntity entity)
     {

@@ -874,7 +874,7 @@ public class ModContent
 
   public static void initItems()
   {
-    Registries.addItem("metal_bar", ()->new EdItem((new Item.Properties()).tab(Registries.getCreativeModeTab())));
+    Registries.addItem("metal_bar", ()->new EdItem((new Item.Properties())));
   }
 
   public static void initEntities()

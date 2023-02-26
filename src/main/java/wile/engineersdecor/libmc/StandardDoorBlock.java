@@ -52,7 +52,7 @@ public class StandardDoorBlock extends DoorBlock implements StandardBlocks.IStan
 
   public StandardDoorBlock(long config, BlockBehaviour.Properties properties, AABB[] open_aabbs_top, AABB[] open_aabbs_bottom, AABB[] closed_aabbs_top, AABB[] closed_aabbs_bottom, SoundEvent open_sound, SoundEvent close_sound)
   {
-    super(properties);
+    super(properties, open_sound, close_sound);
     VoxelShape[][][][] shapes = new VoxelShape[Direction.values().length][2][2][2];
     for(Direction facing: Direction.values()) {
       for(boolean open: new boolean[]{false,true}) {

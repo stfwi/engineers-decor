@@ -52,6 +52,9 @@ public class Inventories
   public static boolean areItemStacksDifferent(ItemStack a, ItemStack b)
   { return (a.getItem()!=b.getItem()) || (!ItemStack.tagMatches(a, b)); }
 
+  public static boolean isItemStackableOn(ItemStack a, ItemStack b)
+  { return (!a.isEmpty()) && (a.sameItem(b)) && (a.hasTag() == b.hasTag()) && (!a.hasTag() || a.getTag().equals(b.getTag())) && a.areCapsCompatible(b); }
+
   public static IItemHandler itemhandler(Level world, BlockPos pos, @Nullable Direction side)
   {
     BlockEntity te = world.getBlockEntity(pos);
@@ -226,7 +229,7 @@ public class Inventories
       final int slot_limit = inv_.getMaxStackSize();
       if(!sst.isEmpty()) {
         if(sst.getCount() >= Math.min(sst.getMaxStackSize(), slot_limit)) return stack;
-        if(!ItemHandlerHelper.canItemStacksStack(stack, sst)) return stack;
+        if(!isItemStackableOn(stack, sst)) return stack;
         final int limit = Math.min(stack.getMaxStackSize(), slot_limit) - sst.getCount();
         if(stack.getCount() <= limit) {
           if(!simulate) {
