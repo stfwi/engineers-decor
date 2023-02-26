@@ -382,7 +382,7 @@ public class ModConfig
     }
     if(!excludes.isEmpty()) log("Config pattern excludes: '" + String.join(",", excludes) + "'");
     if(!includes.isEmpty()) log("Config pattern includes: '" + String.join(",", includes) + "'");
-    {
+    try {
       HashSet<String> optouts = new HashSet<>();
       ModContent.getRegisteredBlocks().stream().filter((Block block) -> {
         if(block==null) return true;
@@ -419,8 +419,10 @@ public class ModConfig
         e -> optouts.add(Auxiliaries.getResourceLocation(e).getPath())
       );
       optouts_ = optouts;
+      OptionalRecipeCondition.on_config(withExperimental(), withoutRecipes(), ModConfig::isOptedOut, ModConfig::isOptedOut);
+    } catch(Throwable ex) {
+      Auxiliaries.logger().error("Exception evaluating the optout config: '"+ex.getMessage()+"'"); // Compat issue: config-apply may be called before the registries are all loaded.
     }
-    OptionalRecipeCondition.on_config(withExperimental(), withoutRecipes(), ModConfig::isOptedOut, ModConfig::isOptedOut);
   }
 
   public static void apply()

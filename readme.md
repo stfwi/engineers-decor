@@ -11,6 +11,9 @@ Mod sources for Minecraft version 1.18.x.
 
 ## Version history
 
+    - v1.3.29    [F] Fenced config opt-out processing with exception handling in case config
+                     apply is called before registry events have finished.
+
     - v1.3.28    [F] Steel Mesh Fence help typo fixed (issue #227, ty shrad).
                  [A] Added "tree_cutter_universal_logs" server config to enable chopping of modded
                      resource wood blocks (e.g. rubber, issue #228).

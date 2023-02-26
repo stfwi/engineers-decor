@@ -1,6 +1,7 @@
 {
  "homepage": "https://www.curseforge.com/minecraft/mc-mods/engineers-decor/",
  "1.19.2": {
+  "1.3.29": "[F] Fenced config opt-out processing with exception handling in case config apply is called before registry events have finished.",
   "1.3.28": "[F] Steel Mesh Fence help typo fixed (issue #227, ty shrad).\n[A] Added \"tree_cutter_universal_logs\" server config to enable chopping of modded resource wood blocks (e.g. rubber, issue #228).",
   "1.3.27": "[F] Refactored deprecated forge capability references.\n[F] Fixed Factory Hopper on-break item retention bug (issue #226, ty sunekaer/ftb).",
   "1.3.26": "[U] Ported to 1.19.2.\n[F] Fixed Mineral Melting Furnace fluid extraction (issue #223, ty adkinss).",
@@ -63,7 +64,7 @@
   "1.1.2-b1": "[U] Ported to MC1.16.2."
  },
  "promos": {
-  "1.19.2-recommended": "1.3.28",
-  "1.19.2-latest": "1.3.28"
+  "1.19.2-recommended": "1.3.29",
+  "1.19.2-latest": "1.3.29"
  }
 }

@@ -79,7 +79,7 @@ public class Auxiliaries
   { return logger; }
 
   // -------------------------------------------------------------------------------------------------------------------
-  // Sideness, system/environment, tagging interfaces
+  // Sidedness, system/environment, tagging interfaces
   // -------------------------------------------------------------------------------------------------------------------
 
   public interface IExperimentalFeature {}
