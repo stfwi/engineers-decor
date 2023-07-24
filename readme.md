@@ -7,6 +7,10 @@ for the Engineer's factory, workshop, and home.
 
 ***Note for coders/modders: Please take a look into the MC version branches to view/clone the source code.***
 
+***Note for players and packers***: I am retiring, so only major bugs (like crashes) may be fixed for only the currently implemented mod versions; No feature/porting requests will be worked on. (*The time for this hobby has unfortunately become too short, but it was a major fun factor. Cheer's Ladies & Guys, WilE*).
+
+---
+
 ![](documentation/engineers-decor-v113-brief.png)
 
 [Screenshots in the documentation readme here](documentation/readme.md)
